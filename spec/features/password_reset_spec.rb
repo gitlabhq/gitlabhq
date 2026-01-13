@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Password reset', feature_category: :system_access do
+  before do
+    # Feature specs for when sign_in_form_vue is enabled will be added in
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+    stub_feature_flags(sign_in_form_vue: false)
+  end
+
   describe 'throttling' do
     it 'sends reset instructions when not previously sent' do
       user = create(:user)

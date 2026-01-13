@@ -1,0 +1,7 @@
+---
+name: follow_user
+description: Grants the ability to follow users
+boundaries:
+  - user
+permissions:
+  - follow_user

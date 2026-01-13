@@ -305,11 +305,8 @@ of detached commits is performed, or a cleanup is run manually. Even the cleanup
 You should not change the history when you're working in a public branch
 or a branch that might be used by others.
 
-{{< alert type="note" >}}
-
-Never modify the commit history of your [default branch](../../user/project/repository/branches/default.md) or shared branch.
-
-{{< /alert >}}
+> [!note]
+> Never modify the commit history of your [default branch](../../user/project/repository/branches/default.md) or shared branch.
 
 ### Modify history with `git rebase`
 

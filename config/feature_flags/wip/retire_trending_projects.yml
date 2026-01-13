@@ -1,0 +1,10 @@
+---
+name: retire_trending_projects
+description: Remove the trending tab on Explore > Projects page
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/18493
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215900
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583181
+milestone: '18.7'
+group: group::organizations
+type: wip
+default_enabled: false

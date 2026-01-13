@@ -40,7 +40,7 @@ There are two types of custom roles:
   - Can be assigned to any user on the instance.
   - Gains permissions to perform specific admin actions.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 <!-- Video published on 2023-02-13 -->
 
@@ -233,11 +233,8 @@ You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberr
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 When you [invite a group to a group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
 you can assign a custom role to every user in the group.
@@ -287,11 +284,8 @@ If a user belongs to multiple LDAP groups with different assigned custom admin r
 
 For more information on the administration of LDAP and group sync, see [LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
-{{< alert type="note" >}}
-
-If an LDAP user with a custom admin role is removed from the LDAP group after configuring a sync, the custom role is not removed until the next sync.
-
-{{< /alert >}}
+> [!note]
+> If an LDAP user with a custom admin role is removed from the LDAP group after configuring a sync, the custom role is not removed until the next sync.
 
 ### Link a custom admin role with an LDAP CN
 

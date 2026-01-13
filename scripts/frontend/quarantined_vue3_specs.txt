@@ -1,2 +1,5 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
+spec/frontend/behaviors/markdown/render_image_lightbox_spec.js
+spec/frontend/rapid_diffs/adapters/options_menu_spec.js
+spec/frontend/rapid_diffs/adapters/commit_diffs_options_menu_spec.js

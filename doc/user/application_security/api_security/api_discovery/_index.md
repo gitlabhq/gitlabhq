@@ -18,7 +18,7 @@ title: API Discovery
 
 {{< /history >}}
 
-API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/_index.md) or [API Fuzzing](../../api_fuzzing/_index.md) to perform security scans of the web API.
+API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by the [API security testing analyzer](../../api_security_testing/_index.md) or [API fuzzing](../../api_fuzzing/_index.md) to perform security scans of the web API.
 
 ## Supported frameworks
 
@@ -186,8 +186,5 @@ When experiencing a behavior not working as expected, consider providing context
 - Language runtime with version (for example "Eclipse Temurin v17.0.1").
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
-{{< alert type="warning" >}}
-
-**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
-
-{{< /alert >}}
+> [!warning]
+> **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.

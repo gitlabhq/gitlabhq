@@ -28,11 +28,8 @@ These environments help streamline the development workflow by:
 - Enabling stakeholders to preview changes with a URL.
 - Facilitating faster feedback cycles before changes reach production.
 
-{{< alert type="note" >}}
-
-If you have a Kubernetes cluster, you can set up review apps automatically using [Auto DevOps](../../topics/autodevops/_index.md).
-
-{{< /alert >}}
+> [!note]
+> If you have a Kubernetes cluster, you can set up review apps automatically using [Auto DevOps](../../topics/autodevops/_index.md).
 
 ## Review app workflow
 
@@ -79,14 +76,6 @@ flowchart TD
     Testing --> Approval
     Approval --> Merge
     Merge --> Production
-
-    classDef devNode fill:#e1e1e1,stroke:#666,stroke-width:1px
-    classDef reviewNode fill:#fff0dd,stroke:#f90,stroke-width:1px
-    classDef finalNode fill:#d5f5ff,stroke:#0095cd,stroke-width:1px
-
-    class TopicBranch,Commit,CreateMR devNode
-    class Pipeline,ReviewApp,Testing,Feedback,NewCommits reviewNode
-    class Approval,Merge,Production finalNode
 ```
 
 ## Configure review apps

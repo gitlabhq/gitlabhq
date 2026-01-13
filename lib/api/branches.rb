@@ -51,7 +51,8 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_repositories,
-        allow_public_access_for_enabled_project_features: :repository
+        allow_public_access_for_enabled_project_features: :repository,
+        permissions: :read_branch, boundary_type: :project
       get ':id/repository/branches', urgency: :low do
         cache_action([user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
           repository = user_project.repository
@@ -92,6 +93,7 @@ module API
           failure [{ code: 404, message: 'Not Found' }]
           tags %w[branches]
         end
+        route_setting :authorization, permissions: :read_branch, boundary_type: :project
         head do
           user_project.repository.branch_exists?(params[:branch]) ? no_content! : not_found!
         end
@@ -101,6 +103,7 @@ module API
           failure [{ code: 404, message: 'Branch Not Found' }, { code: 404, message: 'Project Not Found' }]
           tags %w[branches]
         end
+        route_setting :authorization, permissions: :read_branch, boundary_type: :project
         get '/', urgency: :low do
           branch = find_branch!(params[:branch])
 
@@ -124,6 +127,7 @@ module API
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :protect_branch, boundary_type: :project
       put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -164,6 +168,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :protect_branch, boundary_type: :project
       put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
@@ -186,6 +191,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
         requires :ref, type: String, desc: 'Create branch from commit sha or existing branch', allow_blank: false
       end
+      route_setting :authorization, permissions: :create_branch, boundary_type: :project
       post ':id/repository/branches' do
         authorize_push_project
 
@@ -210,6 +216,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch', allow_blank: false
       end
+      route_setting :authorization, permissions: :delete_branch, boundary_type: :project
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
@@ -232,6 +239,7 @@ module API
         failure [{ code: 404, message: '404 Project Not Found' }]
         tags %w[branches]
       end
+      route_setting :authorization, permissions: :delete_merged_branch, boundary_type: :project
       delete ':id/repository/merged_branches' do
         authorize_push_project
 

@@ -17,6 +17,7 @@ import {
   GlFormRadio,
   GlFormRadioGroup,
   GlPopover,
+  GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
@@ -140,6 +141,7 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip,
   },
   mixins: [trackingMixin],
   inject: ['isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
@@ -198,6 +200,7 @@ export default {
       variable: { ...defaultVariableState, ...this.selectedVariable },
       visibility: VISIBILITY_MASKED,
       trackedValidationErrorProperty: undefined,
+      isFullScreen: false,
     };
   },
   computed: {
@@ -334,6 +337,14 @@ export default {
     defaultVariableState() {
       return { ...defaultVariableState, protected: this.isProtectedByDefault };
     },
+    toggleFullScreenIcon() {
+      return this.isFullScreen ? 'minimize' : 'maximize';
+    },
+    toggleFullScreenLabel() {
+      return this.isFullScreen
+        ? s__('CiVariables|Exit full screen')
+        : s__('CiVariables|Go full screen');
+    },
   },
   watch: {
     mutationResponse: {
@@ -386,6 +397,9 @@ export default {
   methods: {
     close() {
       this.$emit('close-form');
+    },
+    toggleFullScreen() {
+      this.isFullScreen = !this.isFullScreen;
     },
     deleteVariable() {
       this.$emit('delete-variable', this.variableToEmit);
@@ -709,16 +723,36 @@ export default {
         <p v-if="isEditingHiddenVariable" class="gl-mb-0 gl-mt-2" data-testid="hidden-variable-tip">
           {{ $options.i18n.variableIsHidden }}
         </p>
-        <gl-form-textarea
-          v-else
-          id="ci-variable-value"
-          v-model="variable.value"
-          :spellcheck="false"
-          class="gl-border-none !gl-font-monospace"
-          rows="5"
-          :no-resize="false"
-          data-testid="ci-variable-value"
-        />
+
+        <template v-else>
+          <div
+            :class="{ 'gl-fixed gl-inset-0 gl-z-200 gl-mb-4 gl-bg-default': isFullScreen }"
+            class="gl-border gl-flex gl-flex-col gl-rounded-base gl-border-strong"
+          >
+            <div class="gl-border-b gl-flex gl-items-center gl-justify-end gl-border-strong gl-p-2">
+              <gl-button
+                v-gl-tooltip
+                size="small"
+                category="tertiary"
+                :icon="toggleFullScreenIcon"
+                :aria-label="toggleFullScreenLabel"
+                :title="toggleFullScreenLabel"
+                data-testid="ci-variable-fullscreen-toggle"
+                @click="toggleFullScreen"
+              />
+            </div>
+            <gl-form-textarea
+              id="ci-variable-value"
+              v-model="variable.value"
+              :spellcheck="false"
+              class="gl-border-none !gl-font-monospace !gl-shadow-none"
+              :class="{ 'gl-flex-1': isFullScreen }"
+              rows="5"
+              :no-resize="false"
+              data-testid="ci-variable-value"
+            />
+          </div>
+        </template>
         <p
           v-if="variable.raw"
           class="gl-mb-0 gl-mt-2 gl-text-subtle"

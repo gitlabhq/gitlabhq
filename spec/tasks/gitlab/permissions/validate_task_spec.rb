@@ -14,8 +14,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     let(:permission_definition) do
       {
         name: permission_name,
-        description: 'a defined permission',
-        feature_category: 'permissions'
+        description: 'a defined permission'
       }
     end
 
@@ -130,7 +129,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         {
           name: permission_name,
           description: 'a defined permission',
-          feature_category: 'unknown',
           key: 'not allowed'
         }
       end
@@ -142,7 +140,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #  The following permissions failed schema validation.
           #
           #    - defined_permission
-          #        - property '/feature_category' does not match format: known_product_category
           #        - property '/key' is invalid: error_type=schema
           #
           #######################################################################

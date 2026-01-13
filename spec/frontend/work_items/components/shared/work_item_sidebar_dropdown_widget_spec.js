@@ -152,7 +152,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     });
 
     it('clears search on item select when props passes', async () => {
-      const listItems = groupIterationsResponse.data.workspace.attributes.nodes.map((item) => ({
+      const listItems = groupIterationsResponse.data.namespace.attributes.nodes.map((item) => ({
         value: item.id,
         ...item,
       }));

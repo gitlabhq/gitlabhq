@@ -133,6 +133,7 @@ module Types
       ::Types::Notes::NoteType,
       null: true,
       description: 'Find a note.',
+      scopes: [:api, :read_api, :ai_workflows],
       experiment: { milestone: '15.9' } do
       argument :id, ::Types::GlobalIDType[::Note],
         required: true,

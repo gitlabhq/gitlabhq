@@ -108,9 +108,10 @@ export default {
         <gl-icon
           v-if="ancestorsArchived"
           v-gl-tooltip="i18n.disabledTooltip"
+          :aria-label="i18n.disabledTooltip"
+          :size="16"
           name="cancel"
           class="gl-cursor-pointer"
-          :size="16"
         />
       </h4>
     </template>

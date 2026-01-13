@@ -39,6 +39,17 @@ RSpec.shared_examples 'a degenerable job' do
   end
 
   describe '#degenerate!' do
+    before_all do
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+      SQL
+    end
+
     before do
       create(:ci_build_metadata, build: job)
       job.needs.create!(name: 'another-job')

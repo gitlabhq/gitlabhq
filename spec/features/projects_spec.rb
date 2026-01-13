@@ -192,24 +192,15 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     let(:path)    { project_path(project) }
 
     before do
-      stub_feature_flags(directory_code_dropdown_updates: false)
       sign_in(project.first_owner)
       visit path
     end
 
-    context 'desktop component' do
-      it 'shows on md and larger breakpoints' do
-        expect(find('.git-clone-holder')).to be_visible
-        expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+    it 'shows in the Code dropdown' do
+      within_testid('code-dropdown') do
+        click_button 'Code'
       end
-    end
-
-    context 'mobile component' do
-      it 'shows mobile component on sm and smaller breakpoints' do
-        resize_screen_xs
-        expect(find('.mobile-git-clone')).to be_visible
-        expect(find('.git-clone-holder', visible: false)).not_to be_visible
-      end
+      expect(page).to have_button('Copy URL')
     end
   end
 
@@ -305,7 +296,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
       end
 
       it 'deletes project delayed and is restorable' do
-        expect(page).to have_content("This action will place this project, including all its resources, in a pending deletion state for 7 days, and delete it permanently on #{permanent_deletion_date_formatted}.")
+        expect(page).to have_content("This action will permanently delete this project, including all its resources, on #{permanent_deletion_date_formatted}. Scheduled pipelines will not run during deletion.")
 
         remove_with_confirm("Delete", project_to_delete.path_with_namespace)
 

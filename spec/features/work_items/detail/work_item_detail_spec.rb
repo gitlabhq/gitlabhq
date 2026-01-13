@@ -71,8 +71,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
 
     context 'with quarantine', quarantine: {
       issue: [
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/562627',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/562624'
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16792',
+        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16793'
       ]
     } do
       it_behaves_like 'work items comments', :issue
@@ -80,7 +80,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
 
     it_behaves_like 'work items toggle status button'
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556213' do
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16794' do
       it_behaves_like 'work items todos'
     end
 
@@ -91,7 +91,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels', 'project'
 
-    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562633' do
+    context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16795' do
       it_behaves_like 'work items milestone'
     end
 

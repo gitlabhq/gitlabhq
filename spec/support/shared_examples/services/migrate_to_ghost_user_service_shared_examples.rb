@@ -12,7 +12,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
     end
   end
 
-  let(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
   before do
     project.add_developer(user)

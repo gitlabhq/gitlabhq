@@ -75,7 +75,11 @@ class Key < ApplicationRecord
   scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
 
   def self.regular_keys
-    where(type: ['Key', nil])
+    where(type: regular_key_types)
+  end
+
+  def self.regular_key_types
+    [nil, 'Key']
   end
 
   def key=(value)
@@ -164,6 +168,10 @@ class Key < ApplicationRecord
     fingerprint
   end
 
+  def regular_key?
+    type.in?(self.class.regular_key_types)
+  end
+
   private
 
   def generate_fingerprint
@@ -193,6 +201,10 @@ class Key < ApplicationRecord
 
   def expiration
     errors.add(:key, message: 'has expired') if expired?
+  end
+
+  def unique_attribute
+    :key
   end
 end
 

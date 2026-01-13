@@ -28,9 +28,21 @@ module Mutations
           description: 'Errors encountered during the mutation.'
 
         def resolve(id:)
-          authorized_find!(id: id)
+          saved_view = authorized_find!(id: id)
 
-          { saved_view: nil, errors: [] }
+          unless saved_view.namespace.owner_entity.work_items_saved_views_enabled?(current_user)
+            return { saved_view: nil, errors: ['Saved views are not enabled for this namespace.'] }
+          end
+
+          saved_view.destroy!
+
+          { saved_view: saved_view, errors: [] }
+        end
+
+        private
+
+        def find_object(id:)
+          GitlabSchema.object_from_id(id, expected_type: ::WorkItems::SavedViews::SavedView)
         end
       end
     end

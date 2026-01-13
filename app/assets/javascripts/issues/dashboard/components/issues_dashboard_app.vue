@@ -8,8 +8,8 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesCountsQuery from 'ee_else_ce/issues/dashboard/queries/get_issues_counts.query.graphql';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -20,9 +20,9 @@ import {
   getInitialPageParams,
   getSortOptions,
   getTypeTokenOptions,
-} from 'ee_else_ce/issues/list/utils';
+} from 'ee_else_ce/work_items/list/utils';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import { i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
+import { i18n, PARAM_STATE, urlSortParams } from '~/work_items/list/constants';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';

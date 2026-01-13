@@ -20,6 +20,7 @@ module API
       params do
         optional :wiki, type: Boolean, desc: 'Set to true to receive the wiki repository'
       end
+      route_setting :authorization, permissions: :read_snapshot, boundary_type: :project
       get ':id/snapshot' do
         send_git_snapshot(snapshot_repository)
       end

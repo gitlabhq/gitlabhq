@@ -131,9 +131,9 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     let_it_be(:subgroup) { create(:group, parent: root_group) }
     let_it_be(:other_group) { create(:group) }
 
-    let_it_be(:root_group_work_item) { create(:work_item, :epic, namespace: root_group) }
+    let_it_be(:root_group_work_item) { create(:work_item, namespace: root_group) }
     let_it_be(:subgroup_work_item) { create(:work_item, :issue, project: reusable_project, namespace: subgroup) }
-    let_it_be(:other_group_work_item) { create(:work_item, :epic, namespace: other_group) }
+    let_it_be(:other_group_work_item) { create(:work_item, namespace: other_group) }
 
     context 'when filtering by root group' do
       it 'returns work items within the hierarchy' do
@@ -159,7 +159,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     let_it_be(:project_with_issues) { create(:project, group: group) }
     let_it_be(:project_without_issues) { create(:project, group: group) }
 
-    let_it_be(:group_work_item) { create(:work_item, :epic, namespace: group) }
+    let_it_be(:group_work_item) { create(:work_item, namespace: group) }
     let_it_be(:project_with_issues_work_item) { create(:work_item, :issue, project: project_with_issues) }
     let_it_be(:project_without_issues_work_item) { create(:work_item, :issue, project: project_without_issues) }
 

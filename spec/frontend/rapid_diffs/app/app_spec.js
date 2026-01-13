@@ -1,6 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { nextTick } from 'vue';
 import { setHTMLFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { initViewSettings } from '~/rapid_diffs/app/view_settings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
@@ -189,5 +190,27 @@ describe('Rapid Diffs App Facade', () => {
     expect(onVisible).toHaveBeenCalled();
     trigger(getDiffFile(), { entry: { isIntersecting: false, target: getDiffFile() } });
     expect(onInvisible).toHaveBeenCalled();
+  });
+
+  describe('appData', () => {
+    it('provides legacyFileFragment with line numbers', () => {
+      setWindowLocation('#1234567890123456789012345678901234567890_10_20');
+      createApp();
+      app.init();
+      expect(app.appData.legacyFileFragment).toMatchObject({
+        fileHash: '1234567890123456789012345678901234567890',
+        oldLine: '10',
+        newLine: '20',
+      });
+    });
+
+    it('provides legacyFileFragment without line numbers', () => {
+      setWindowLocation('#1234567890123456789012345678901234567890');
+      createApp();
+      app.init();
+      expect(app.appData.legacyFileFragment).toMatchObject({
+        fileHash: '1234567890123456789012345678901234567890',
+      });
+    });
   });
 });

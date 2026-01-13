@@ -63,7 +63,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
       )
     end
 
-    it 'shows the last_activity_at attribute as the update date', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514342' do
+    it 'shows the last_activity_at attribute as the update date', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9457' do
       visit member_dashboard_projects_path
       wait_for_requests
 

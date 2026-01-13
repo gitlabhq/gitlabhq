@@ -4,13 +4,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
-import {
-  getCookie,
-  isMetaClick,
-  NO_SCROLL_TO_HASH_CLASS,
-  parseBoolean,
-} from '~/lib/utils/common_utils';
-import { getScrollingElement, scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
+import { getCookie, isMetaClick, parseBoolean } from '~/lib/utils/common_utils';
+import { scrollTo, scrollToElement } from '~/lib/utils/scroll_utils';
+import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';

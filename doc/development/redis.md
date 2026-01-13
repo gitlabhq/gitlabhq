@@ -88,9 +88,9 @@ The minimum size of the pipeline is set to 1000 commands and it can be adjusted 
 
 ## Redis in structured logging
 
-For GitLab Team Members: There are <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For GitLab Team Members: There are <i class="fa-youtube-play" aria-hidden="true"></i>
 [basic](https://www.youtube.com/watch?v=Uhdj19Dc6vU) and
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [advanced](https://youtu.be/jw1Wv2IJxzs)
+<i class="fa-youtube-play" aria-hidden="true"></i> [advanced](https://youtu.be/jw1Wv2IJxzs)
 videos that show how you can work with the Redis
 structured logging fields on GitLab.com.
 

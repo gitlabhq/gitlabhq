@@ -1,0 +1,7 @@
+---
+name: read_snapshot
+description: Grants the ability to read snapshots
+boundaries:
+  - project
+permissions:
+  - read_snapshot

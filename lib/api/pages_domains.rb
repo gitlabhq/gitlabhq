@@ -44,6 +44,7 @@ module API
 
       desc "Get all pages domains" do
         success Entities::PagesDomainBasic
+        tags %w[pages_domains]
       end
       params do
         optional :domain, type: String, desc: 'The domain of the GitLab Pages site to filter on.'
@@ -87,6 +88,7 @@ module API
 
       desc 'Get a single pages domain' do
         success Entities::PagesDomain
+        tags %w[pages_domains]
       end
       params do
         requires :domain, type: String, desc: 'The domain'
@@ -100,6 +102,7 @@ module API
 
       desc 'Create a new pages domain' do
         success Entities::PagesDomain
+        tags %w[pages_domains]
       end
       params do
         requires :domain, type: String, desc: 'The domain'
@@ -127,7 +130,9 @@ module API
         end
       end
 
-      desc 'Updates a pages domain'
+      desc 'Updates a pages domain' do
+        tags %w[pages_domains]
+      end
       params do
         requires :domain, type: String, desc: 'The domain'
         # rubocop:todo Scalability/FileUploads
@@ -160,6 +165,7 @@ module API
 
       desc 'Verify a pages domain' do
         success Entities::PagesDomain
+        tags %w[pages_domains]
       end
       params do
         requires :domain, type: String, desc: 'The domain to verify'
@@ -178,7 +184,9 @@ module API
         end
       end
 
-      desc 'Delete a pages domain'
+      desc 'Delete a pages domain' do
+        tags %w[pages_domains]
+      end
       params do
         requires :domain, type: String, desc: 'The domain'
       end

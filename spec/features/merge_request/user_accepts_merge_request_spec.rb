@@ -115,7 +115,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       visit(merge_request_path(merge_request))
     end
 
-    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471380' do
+    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16774' do
       click_merge_button
 
       expect(page).to have_content('Changes merged into')
@@ -132,7 +132,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       visit(merge_request_path(merge_request, anchor: 'note_123'))
     end
 
-    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462685' do
+    it 'accepts a merge request', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6708' do
       check('Delete source branch')
       click_merge_button
 

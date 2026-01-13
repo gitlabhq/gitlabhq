@@ -12,7 +12,7 @@ you through the structure of the merge request itself, and then the process of
 giving constructive, helpful feedback. By the end of the tutorial, you're ready to
 approve the merge request, or request more changes.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
@@ -40,9 +40,8 @@ To review a merge request:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Either:
-   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
-   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
-<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
+   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Merge requests** page.
+   - In the upper-right corner, select **Merge requests** ({{< icon name="merge-request" >}}).
 
 ## Understand the structure of merge requests
 
@@ -369,7 +368,7 @@ your review. It's time to think broadly, one last time.
      addresses your feedback.
 
 1. Optional. Write a summary of your review. GitLab Premium and Ultimate users can select
-   **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
+   **Add summary** ({{< icon name="tanuki-ai" >}}) to create a summary for you. Include any
    quick actions you want performed.
 
 You can also use the [`/submit_review` quick action](../../user/project/quick_actions.md#submit_review) in the text of a non-review comment.

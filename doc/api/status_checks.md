@@ -163,11 +163,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 | `external_status_check_id` | integer | yes      | ID of an external status check                                                                    |
 | `status`                   | string  | no       | Set to `pending` to mark the check as pending, `passed` to pass the check, or `failed` to fail it |
 
-{{< alert type="note" >}}
-
-`sha` must be the SHA at the `HEAD` of the merge request's source branch.
-
-{{< /alert >}}
+> [!note]
+> `sha` must be the SHA at the `HEAD` of the merge request's source branch.
 
 ## Retry failed status check for a merge request
 

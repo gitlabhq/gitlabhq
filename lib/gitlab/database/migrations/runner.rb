@@ -116,8 +116,6 @@ module Gitlab
         end
 
         def run
-          FileUtils.mkdir_p(result_dir)
-
           verbose_was = ActiveRecord::Migration.verbose
           ActiveRecord::Migration.verbose = true
 

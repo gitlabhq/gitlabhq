@@ -29,6 +29,7 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
   let(:project_path) { nil }
   let(:verification_level) { nil }
   let(:topics) { [] }
+  let(:min_access_level) { nil }
 
   let(:args) do
     {
@@ -37,7 +38,8 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
       search: search,
       scope: scope,
       verification_level: verification_level,
-      topics: topics
+      topics: topics,
+      min_access_level: min_access_level
     }.compact
   end
 
@@ -90,6 +92,92 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
             expect(result.items.pluck(:name)).to contain_exactly('public', 'internal public', 'internal',
               'z private test')
           end
+
+          # rubocop:disable RSpec/MultipleMemoizedHelpers -- Inherits helpers from parent context
+          context 'with min_access_level argument' do
+            let_it_be(:access_level_user) { create(:user) }
+            let_it_be(:maintainer_project) { create(:project, :private, name: 'maintainer project') }
+            let_it_be(:developer_project) { create(:project, :private, name: 'developer project') }
+            let_it_be(:reporter_project) { create(:project, :private, name: 'reporter project') }
+            let_it_be(:owner_project) { create(:project, :private, name: 'owner project') }
+            let_it_be(:maintainer_resource) { create(:ci_catalog_resource, :published, project: maintainer_project) }
+            let_it_be(:developer_resource) { create(:ci_catalog_resource, :published, project: developer_project) }
+            let_it_be(:reporter_resource) { create(:ci_catalog_resource, :published, project: reporter_project) }
+            let_it_be(:owner_resource) { create(:ci_catalog_resource, :published, project: owner_project) }
+
+            let(:ctx) { { current_user: access_level_user } }
+
+            before_all do
+              maintainer_project.add_maintainer(access_level_user)
+              developer_project.add_developer(access_level_user)
+              reporter_project.add_reporter(access_level_user)
+              owner_project.add_owner(access_level_user)
+            end
+
+            context 'when min_access_level is MAINTAINER' do
+              let(:min_access_level) { 'MAINTAINER' }
+
+              it 'returns only resources where user has maintainer or higher access' do
+                expect(result.items.pluck(:name)).to contain_exactly('maintainer project', 'owner project')
+              end
+            end
+
+            context 'when min_access_level is DEVELOPER' do
+              let(:min_access_level) { 'DEVELOPER' }
+
+              it 'returns resources where user has developer or higher access' do
+                expect(result.items.pluck(:name)).to contain_exactly('developer project', 'maintainer project',
+                  'owner project')
+              end
+            end
+
+            context 'when min_access_level is REPORTER' do
+              let(:min_access_level) { 'REPORTER' }
+
+              it 'returns resources where user has reporter or higher access' do
+                expect(result.items.pluck(:name)).to contain_exactly('reporter project', 'developer project',
+                  'maintainer project', 'owner project')
+              end
+            end
+
+            context 'when min_access_level is OWNER' do
+              let(:min_access_level) { 'OWNER' }
+
+              it 'returns only resources where user has owner access' do
+                expect(result.items.pluck(:name)).to contain_exactly('owner project')
+              end
+            end
+
+            context 'when min_access_level is not provided' do
+              let(:min_access_level) { nil }
+
+              it 'returns all visible resources regardless of access level' do
+                expect(result.items.pluck(:name)).to include('reporter project', 'developer project',
+                  'maintainer project', 'owner project')
+              end
+            end
+
+            context 'when combined with other filters' do
+              let(:min_access_level) { 'MAINTAINER' }
+
+              context 'with search' do
+                let(:search) { 'maintainer' }
+
+                it 'returns resources matching both min_access_level and search' do
+                  expect(result.items.pluck(:name)).to contain_exactly('maintainer project')
+                end
+              end
+
+              context 'with sort' do
+                let(:sort) { 'NAME_ASC' }
+
+                it 'returns filtered resources in sorted order' do
+                  expect(result.items.pluck(:name)).to eq(['maintainer project', 'owner project'])
+                end
+              end
+            end
+          end
+          # rubocop:enable RSpec/MultipleMemoizedHelpers
         end
 
         context 'when the scope is invalid' do

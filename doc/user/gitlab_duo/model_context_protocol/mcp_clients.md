@@ -11,7 +11,6 @@ title: GitLab MCP clients
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -26,6 +25,7 @@ title: GitLab MCP clients
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519938) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_mcp_support`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) in GitLab 18.2. Feature flag `duo_workflow_mcp_support` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) from experiment to beta in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -42,7 +42,8 @@ The same MCP configuration file works across all supported IDEs.
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
 - [GitLab Duo Chat (Agentic)](../../../user/gitlab_duo_chat/agentic_chat.md)
-- The [software development flow](../../../user/duo_agent_platform/flows/software_development.md)
+- [Foundational flows](../../../user/duo_agent_platform/flows/foundational_flows/_index.md)
+- [Custom flows](../../../user/duo_agent_platform/flows/custom.md)
 
 These features can then access external context and information to generate more powerful answers.
 
@@ -71,15 +72,14 @@ For JetBrains IDEs:
 - Install a JetBrains IDE.
 - Install and set up the [GitLab Duo plugin for JetBrains IDEs](../../../editor_extensions/jetbrains_ide/setup.md).
 
-## Turn on MCP for your group
+## Allow external MCP tools
 
-To turn MCP on or off for your group:
+To allow the IDE to access external MCP tools:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Model Context Protocol**, select or clear the
-   **Turn on Model Context Protocol (MCP) support** checkbox.
+1. Under **External MCP tools**, select the **Allow external MCP tools** checkbox.
 1. Select **Save changes**.
 
 ## Configure MCP servers
@@ -177,11 +177,8 @@ To do so, add the `approvedTools` field to any server configuration:
 
 If you do not include this field, you must manually approve every tool in the session (this is the default behavior).
 
-{{< alert type="warning" >}}
-
-Only use `"approvedTools": true` for servers you completely trust.
-
-{{< /alert >}}
+> [!warning]
+> Only use `"approvedTools": true` for servers you completely trust.
 
 For example:
 

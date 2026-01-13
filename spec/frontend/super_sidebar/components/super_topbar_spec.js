@@ -12,6 +12,7 @@ import PromoMenu from '~/super_sidebar/components/promo_menu.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { defaultOrganization as mockCurrentOrganization } from 'jest/organizations/mock_data';
+import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { sidebarData as mockSidebarData } from '../mock_data';
 
 describe('SuperTopbar', () => {
@@ -144,6 +145,52 @@ describe('SuperTopbar', () => {
 
       it('should render search modal', () => {
         expect(findSearchModal().exists()).toBe(true);
+      });
+
+      describe('drag and drop on search button', () => {
+        it('dispatches EVENT_OPEN_GLOBAL_SEARCH with dropped text when text is dropped on search button', () => {
+          const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+          const droppedText = 'search this text';
+
+          const dropEvent = {
+            preventDefault: jest.fn(),
+            dataTransfer: {
+              getData: jest.fn().mockReturnValue(droppedText),
+            },
+          };
+
+          findSearchButton().vm.$emit('drop', dropEvent);
+
+          expect(dispatchEventSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+              type: EVENT_OPEN_GLOBAL_SEARCH,
+              detail: { searchText: droppedText },
+            }),
+          );
+
+          dispatchEventSpy.mockRestore();
+        });
+
+        it('does not dispatch event when dropped text is empty', () => {
+          const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
+
+          const dropEvent = {
+            preventDefault: jest.fn(),
+            dataTransfer: {
+              getData: jest.fn().mockReturnValue(''),
+            },
+          };
+
+          findSearchButton().vm.$emit('drop', dropEvent);
+
+          expect(dispatchEventSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+              type: EVENT_OPEN_GLOBAL_SEARCH,
+            }),
+          );
+
+          dispatchEventSpy.mockRestore();
+        });
       });
     });
 

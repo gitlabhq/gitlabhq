@@ -1,4 +1,4 @@
-import { GlAvatar, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlIcon, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -311,6 +311,40 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         shape: 'circle',
         src: exampleUser.avatar_url,
       });
+    });
+
+    describe('user badges', () => {
+      const buildUserWrapper = (overrides = {}) => {
+        buildWrapper({
+          propsData: {
+            char: '@',
+            nodeProps: { referenceType: 'user' },
+            items: [{ ...exampleUser, ...overrides }],
+          },
+        });
+      };
+
+      it.each`
+        availability | composite_identity_enforced | expectedCount | expectedBadges
+        ${undefined} | ${undefined}                | ${0}          | ${[]}
+        ${'busy'}    | ${undefined}                | ${1}          | ${[{ variant: 'warning', text: 'Busy' }]}
+        ${undefined} | ${true}                     | ${1}          | ${[{ variant: 'neutral', text: 'AI' }]}
+        ${'busy'}    | ${true}                     | ${2}          | ${[{ variant: 'warning', text: 'Busy' }, { variant: 'neutral', text: 'AI' }]}
+        ${'not_set'} | ${undefined}                | ${0}          | ${[]}
+      `(
+        'displays $expectedCount badge(s) when availability=$availability and composite_identity_enforced=$composite_identity_enforced',
+        ({ availability, composite_identity_enforced, expectedCount, expectedBadges }) => {
+          buildUserWrapper({ availability, composite_identity_enforced });
+
+          const badges = wrapper.findAllComponents(GlBadge);
+          expect(badges).toHaveLength(expectedCount);
+
+          expectedBadges.forEach((expected, index) => {
+            expect(badges.at(index).props('variant')).toBe(expected.variant);
+            expect(badges.at(index).text()).toBe(expected.text);
+          });
+        },
+      );
     });
   });
 

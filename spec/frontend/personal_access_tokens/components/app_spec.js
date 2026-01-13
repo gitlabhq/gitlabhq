@@ -8,9 +8,12 @@ import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokensApp from '~/personal_access_tokens/components/app.vue';
 import PersonalAccessTokensTable from '~/personal_access_tokens/components/personal_access_tokens_table.vue';
+import PersonalAccessTokenDrawer from '~/personal_access_tokens/components/personal_access_token_drawer.vue';
 import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
+import PersonalAccessTokenStatistics from '~/personal_access_tokens/components/personal_access_token_statistics.vue';
 import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
 import { DEFAULT_SORT, PAGE_SIZE } from '~/personal_access_tokens/constants';
+import { mockTokens, mockPageInfo, mockQueryResponse } from '../mock_data';
 
 jest.mock('~/alert');
 
@@ -19,51 +22,6 @@ Vue.use(VueApollo);
 describe('PersonalAccessTokensApp', () => {
   let wrapper;
   let mockApollo;
-
-  const mockTokens = [
-    {
-      id: 'gid://gitlab/PersonalAccessToken/1',
-      name: 'Token 1',
-      description: 'Test token 1',
-      active: true,
-      revoked: false,
-      expiresAt: '2025-12-31',
-      lastUsedAt: '2025-11-01',
-      createdAt: '2025-01-01',
-      granular: true,
-    },
-    {
-      id: 'gid://gitlab/PersonalAccessToken/2',
-      name: 'Token 2',
-      description: 'Test token 2',
-      active: false,
-      revoked: true,
-      expiresAt: '2025-06-30',
-      lastUsedAt: null,
-      createdAt: '2025-02-01',
-      granular: false,
-    },
-  ];
-
-  const mockPageInfo = {
-    hasNextPage: true,
-    hasPreviousPage: false,
-    startCursor: 'eyJpZCI6IjUxIn0',
-    endCursor: 'eyJpZCI6IjM1In0',
-    __typename: 'PageInfo',
-  };
-
-  const mockQueryResponse = {
-    data: {
-      user: {
-        id: 'gid://gitlab/User/123',
-        personalAccessTokens: {
-          nodes: mockTokens,
-          pageInfo: mockPageInfo,
-        },
-      },
-    },
-  };
 
   const mockQueryHandler = jest.fn().mockResolvedValue(mockQueryResponse);
 
@@ -85,6 +43,8 @@ describe('PersonalAccessTokensApp', () => {
   const findTable = () => wrapper.findComponent(PersonalAccessTokensTable);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findCreateButton = () => wrapper.findComponent(CreatePersonalAccessTokenButton);
+  const findDrawer = () => wrapper.findComponent(PersonalAccessTokenDrawer);
+  const findStatistics = () => wrapper.findComponent(PersonalAccessTokenStatistics);
 
   beforeEach(() => {
     createComponent();
@@ -148,31 +108,87 @@ describe('PersonalAccessTokensApp', () => {
   });
 
   describe('filtering', () => {
-    it('refetches tokens when filter is submitted', async () => {
-      await waitForPromises();
-      mockQueryHandler.mockClear();
-
-      findFilteredSearch().vm.$emit('submit');
-      await nextTick();
-
-      expect(mockQueryHandler).toHaveBeenCalled();
-    });
-
     it('refetches tokens when filter is cleared', async () => {
-      await waitForPromises();
-      mockQueryHandler.mockClear();
-
       findFilteredSearch().vm.$emit('clear');
       await nextTick();
 
-      expect(mockQueryHandler).toHaveBeenCalled();
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+      });
     });
 
-    it('converts filter tokens to GraphQL variables', async () => {
+    it('refetches when date field with less than operator is set', async () => {
+      findFilteredSearch().vm.$emit('input', [
+        { type: 'expires', value: { data: '2026-01-20', operator: '<' } },
+      ]);
+
+      findFilteredSearch().vm.$emit('submit');
+
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+        expiresBefore: '2026-01-20',
+      });
+    });
+
+    it('refetches when date field with greater than or equal to operator is set', async () => {
+      findFilteredSearch().vm.$emit('input', [
+        { type: 'expires', value: { data: '2026-01-20', operator: '≥' } },
+      ]);
+
+      findFilteredSearch().vm.$emit('submit');
+
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+        expiresAfter: '2026-01-20',
+      });
+    });
+
+    it('refetches when when search term is set', async () => {
+      findFilteredSearch().vm.$emit('input', [
+        { type: 'filtered-search-term', value: { data: 'token name' } },
+      ]);
+
+      findFilteredSearch().vm.$emit('submit');
+
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
+        search: 'token name',
+      });
+    });
+
+    it('refetches when filter is submitted', async () => {
       findFilteredSearch().vm.$emit('input', [
         { type: 'state', value: { data: 'INACTIVE' } },
         { type: 'revoked', value: { data: true } },
       ]);
+
+      findFilteredSearch().vm.$emit('submit');
 
       await nextTick();
 
@@ -186,6 +202,20 @@ describe('PersonalAccessTokensApp', () => {
         last: null,
         before: null,
       });
+    });
+
+    it('does not refetch if submit button is not clicked', async () => {
+      await waitForPromises();
+      mockQueryHandler.mockClear();
+
+      findFilteredSearch().vm.$emit('input', [
+        { type: 'state', value: { data: 'INACTIVE' } },
+        { type: 'revoked', value: { data: true } },
+      ]);
+
+      await nextTick();
+
+      expect(mockQueryHandler).not.toHaveBeenCalled();
     });
   });
 
@@ -281,6 +311,58 @@ describe('PersonalAccessTokensApp', () => {
         after: null,
         last: PAGE_SIZE,
         before: 'cursor456',
+      });
+    });
+  });
+
+  describe('drawer integration', () => {
+    it('opens drawer when table emits select event', async () => {
+      await waitForPromises();
+
+      findTable().vm.$emit('select', mockTokens[0]);
+      await nextTick();
+
+      expect(findDrawer().props('token')).toBe(mockTokens[0]);
+    });
+
+    it('closes drawer when drawer emits close event', async () => {
+      await waitForPromises();
+
+      findTable().vm.$emit('select', mockTokens[0]);
+      await nextTick();
+
+      findDrawer().vm.$emit('close');
+      await nextTick();
+
+      expect(findDrawer().props('token')).toBe(null);
+    });
+  });
+
+  describe('statistics', () => {
+    it('renders the statistics component', () => {
+      expect(findStatistics().exists()).toBe(true);
+    });
+
+    it('handles statistics filter events', async () => {
+      await findStatistics().vm.$emit('filter', [
+        {
+          type: 'state',
+          value: {
+            data: 'ACTIVE',
+            operator: '=',
+          },
+        },
+      ]);
+      await nextTick();
+
+      expect(mockQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/User/123',
+        sort: 'EXPIRES_ASC',
+        state: 'ACTIVE',
+        first: PAGE_SIZE,
+        after: null,
+        last: null,
+        before: null,
       });
     });
   });

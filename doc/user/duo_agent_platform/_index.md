@@ -5,12 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Agent Platform
 ---
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
@@ -20,9 +14,10 @@ title: GitLab Duo Agent Platform
 
 {{< history >}}
 
-- Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2.
+- Introduced as a [beta](../../policy/development_stages_support.md) in GitLab 18.2.
 - For GitLab Duo Agent Platform on self-managed instances (both with [self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md) and cloud-connected GitLab models), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -42,9 +37,12 @@ For an overview, see [Developer Onboarding with GitLab Duo Agent Platform](https
 To use the Agent Platform:
 
 - Use GitLab 18.2 or later. For the best experience, use the latest version of GitLab.
+- Have purchased [GitLab Credits](../../subscriptions/gitlab_credits.md).
 - [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
-- [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md)
+- Depending on your GitLab version:
+  - In GitLab 18.8 and later, the [Agent Platform must be turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+  - In GitLab 18.7 and earlier, [beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/configure/gitlab_self_managed.md)
   and the composite identity turned on.
 - For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md),
   you must [install and run the AI gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).

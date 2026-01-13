@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-constraints(::Constraints::ProjectUrlConstrainer.new) do
+constraints(Projects::ProjectUrlConstraint.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
   # the `format` option is not set to false, we need to specify that
@@ -514,7 +514,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :attestations, only: [:index] do
+        resources :attestations, only: [:index, :show] do
           member do
             get :download
           end
@@ -552,7 +552,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         defaults: { format: 'json' },
         constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resource :pages, only: [:new, :show, :update, :destroy, :regenerate_unique_domain] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resource :pages, only: [:new, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         post :regenerate_unique_domain # rubocop:todo Cop/PutProjectRoutesUnderScope
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
@@ -698,7 +698,7 @@ end
 
 # It's under /-/jira scope but cop is only checking /-/
 # rubocop: disable Cop/PutProjectRoutesUnderScope
-scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.new, as: :jira do
+scope path: '(/-/jira)', constraints: Integrations::JiraEncodedUrlConstraint.new, as: :jira do
   scope path: '*namespace_id/:project_id',
     namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
     project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do

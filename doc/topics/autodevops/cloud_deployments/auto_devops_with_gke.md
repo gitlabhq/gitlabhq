@@ -59,7 +59,7 @@ and apply for credit.
 ## Create a Kubernetes cluster
 
 To create a new cluster on Google Kubernetes Engine (GKE), use Infrastructure as Code (IaC) approach
-by following steps in [Create a Google GKE cluster](../../../user/infrastructure/clusters/connect/new_gke_cluster.md) guide.
+by following steps in [Create a Google GKE cluster with OpenTofu and GitLab](../../../user/infrastructure/iac/_index.md) guide.
 The guide requires you to create a new project that uses [Terraform](https://www.terraform.io/) to create a GKE cluster and install a GitLab agent for Kubernetes.
 This project is where configuration for the GitLab agent for Kubernetes resides.
 
@@ -68,11 +68,8 @@ This project is where configuration for the GitLab agent for Kubernetes resides.
 Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
-{{< alert type="warning" >}}
-
-Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
-
-{{< /alert >}}
+> [!warning]
+> Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
 
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
@@ -190,13 +187,13 @@ The jobs are separated into stages:
     vulnerabilities and is allowed to fail ([auto container scanning](../stages.md#auto-container-scanning))
   - The `dependency_scanning` job checks if the application has any dependencies
     susceptible to vulnerabilities and is allowed to fail
-    ([Auto Dependency Scanning](../stages.md#auto-dependency-scanning))
+    ([Auto dependency scanning](../stages.md#auto-dependency-scanning))
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
-  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
+  - The `secret-detection` job checks for leaked secrets and is allowed to fail ([auto secret detection](../stages.md#auto-secret-detection))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
-  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/_index.md).
+  For more information, see [dynamic application security testing (DAST)](../../../user/application_security/dast/_index.md).
 
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).

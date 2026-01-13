@@ -19,15 +19,9 @@ description: Learn about an upcoming redesign of GitLab user interface.
   Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.6.
 - Toggle [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212303) in GitLab 18.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 This interface redesign prepares the GitLab UI for AI-native workflows where intelligent agents
 work alongside development teams.
@@ -39,7 +33,7 @@ and reduces navigation complexity.
 
 ## What's new
 
-When you turn on the new UI, you get a modern design with more rounded edges and the following changes.
+With the new UI, you get a modern design with more rounded edges and the following changes.
 
 ### Search bar moves to the center
 
@@ -67,7 +61,7 @@ They open in a sidebar and can stay open as you move across GitLab.
 
 ### Improved opening work items in the details panel
 
-You could already open [work items in a drawer](project/issues/managing_issues.md#open-issues-in-a-drawer).
+You could already open work items in a drawer.
 GitLab now uses a details panel that fits in better with the context of your work.
 
 To open the item in the full page view, either:

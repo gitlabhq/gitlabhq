@@ -6,7 +6,7 @@ module API
       include ::MarkupHelper
 
       expose :content, documentation: {
-        type: 'string', example: 'Here is an instruction how to deploy this project.'
+        type: 'String', example: 'Here is an instruction how to deploy this project.'
       } do |wiki_page, options|
         if options[:render_html]
           render_wiki_content(
@@ -19,7 +19,7 @@ module API
         end
       end
 
-      expose :encoding, documentation: { type: 'string', example: 'UTF-8' } do |wiki_page|
+      expose :encoding, documentation: { type: 'String', example: 'UTF-8' } do |wiki_page|
         wiki_page.content.encoding.name
       end
 

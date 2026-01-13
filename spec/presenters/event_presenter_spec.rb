@@ -12,28 +12,32 @@ RSpec.describe EventPresenter do
   let_it_be(:project_event) { create(:event, :created, project: project, target: target) }
 
   describe '#resource_parent_name' do
+    subject { event.present.resource_parent_name }
+
     context 'with group event' do
-      subject { group_event.present.resource_parent_name }
+      let(:event) { group_event }
 
       it { is_expected.to eq(group.full_name) }
     end
 
     context 'with project label' do
-      subject { project_event.present.resource_parent_name }
+      let(:event) { project_event }
 
       it { is_expected.to eq(project.full_name) }
     end
   end
 
   describe '#target_link_options' do
+    subject { event.present.target_link_options }
+
     context 'with group event' do
-      subject { group_event.present.target_link_options }
+      let(:event) { group_event }
 
       it { is_expected.to eq([group, target]) }
     end
 
     context 'with project label' do
-      subject { project_event.present.target_link_options }
+      let(:event) { project_event }
 
       it { is_expected.to eq([project, target]) }
     end

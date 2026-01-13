@@ -63,10 +63,6 @@ module Gitlab
         update_redis_values(event_name, additional_properties, kwargs)
         trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
         send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
-
-        return unless Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
-
-        create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
       end
 
       def update_redis_values(event_name, additional_properties, kwargs)
@@ -183,15 +179,6 @@ module Gitlab
         tracked_attributes = { project_id: kwargs[:project]&.id, namespace_id: kwargs[:namespace]&.id }
         tracked_attributes[:additional_properties] = additional_properties unless additional_properties.empty?
         gitlab_sdk_client.track(event_name, tracked_attributes)
-      end
-
-      def create_early_access_program_event(event_name, category, event_label, kwargs)
-        user, namespace = kwargs.values_at(:user, :namespace)
-        return if user.nil? || !namespace&.namespace_settings&.early_access_program_participant?
-
-        ::EarlyAccessProgram::TrackingEvent.create(
-          user: user, event_name: event_name.to_s, event_label: event_label, category: category
-        )
       end
 
       def gitlab_sdk_client; end

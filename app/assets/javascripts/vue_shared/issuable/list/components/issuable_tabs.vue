@@ -28,6 +28,11 @@ export default {
       required: false,
       default: false,
     },
+    maxCount: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   methods: {
     isTabActive(tabName) {
@@ -37,6 +42,10 @@ export default {
       return Number.isInteger(this.tabCounts[tab.name]);
     },
     formatNumber(count) {
+      if (this.maxCount) {
+        return count > this.maxCount ? `${this.maxCount}+` : count;
+      }
+
       return this.truncateCounts ? numberToMetricPrefix(count) : formatNumber(count);
     },
   },

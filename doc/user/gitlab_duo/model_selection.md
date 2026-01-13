@@ -75,37 +75,11 @@ To select a model for a feature:
 
 ### Assign a default GitLab Duo namespace
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/569140) `ai_user_default_duo_namespace` feature flag in GitLab 18.7.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
 
-You must do this because GitLab Duo might not be able to automatically detect the namespace you are working from, and therefore the models you want to use. For example, when:
+When GitLab Duo can't automatically detect the namespace you are working in, it uses the default namespace to determine what models to use.
 
-- Using GitLab Duo in the CLI.
-- A new project has not been initialized with Git, so the IDE cannot identify an associated namespace.
-
-If this happens, GitLab Duo uses the models you have selected in your default namespace.
-
-To select a default namespace:
-
-1. In GitLab.com, in the upper-right corner, select your avatar.
-1. Select **Preferences**.
-1. Go to the **Behavior** section.
-1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
-1. Select **Save changes**.
+Learn how to [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Troubleshooting
 
@@ -135,4 +109,4 @@ When using a GitLab Duo feature with a selected model, you might get an error th
 
 This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
 
-To resolve this, [assign a default GitLab Duo namespace](#assign-a-default-gitlab-duo-namespace).
+To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).

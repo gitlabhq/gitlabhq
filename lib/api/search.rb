@@ -208,7 +208,7 @@ module API
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_instance,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get do
         verify_search_scope!
 
@@ -237,7 +237,7 @@ module API
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_group,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do
         verify_search_scope!(group_id: user_group.id)
         set_headers
@@ -266,7 +266,7 @@ module API
         use :pagination
       end
       route_setting :mcp, tool_name: :gitlab_search_in_project,
-        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::GitlabSearchService]
+        params: Helpers::SearchHelpers.gitlab_search_mcp_params, aggregators: [::Mcp::Tools::SearchService]
       get ':id/(-/)search' do
         set_headers
 

@@ -39,7 +39,7 @@ but have several advantages:
 Instead of creating your own components, you can also search for published components
 that have the functionality you need in the [CI/CD Catalog](#cicd-catalog).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an introduction and hands-on examples, see [Efficient DevSecOps workflows with reusable CI/CD components](https://www.youtube.com/watch?v=-yvfSFKAgbA).
 <!-- Video published on 2024-01-22. DRI: Developer Relations, https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/399 -->
 
@@ -101,11 +101,8 @@ The repository must contain:
     using the component. Other files in these directories are not released with the component,
     but can be used for things like tests or building container images.
 
-{{< alert type="note" >}}
-
-Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
-
-{{< /alert >}}
+> [!note]
+> Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
 
 You should also:
 
@@ -405,11 +402,8 @@ create-release:
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
 
-{{< alert type="note" >}}
-
-Authentication is necessary if the project is private.
-
-{{< /alert >}}
+> [!note]
+> Authentication is necessary if the project is private.
 
 #### Test a component against sample files
 

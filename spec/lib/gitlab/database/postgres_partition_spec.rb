@@ -192,4 +192,24 @@ RSpec.describe Gitlab::Database::PostgresPartition, type: :model, feature_catego
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#list_partition_ids' do
+    it 'extracts partitions ids for single value' do
+      partition = described_class.new(condition: "FOR VALUES IN ('100')")
+
+      expect(partition.list_partition_ids).to eq([100])
+    end
+
+    it 'extracts partitions ids for multiple values' do
+      partition = described_class.new(condition: "FOR VALUES IN ('100', '101', '102')")
+
+      expect(partition.list_partition_ids).to match_array([100, 101, 102])
+    end
+
+    it 'returns empty array when condition is blank' do
+      partition = described_class.new(condition: nil)
+
+      expect(partition.list_partition_ids).to eq([])
+    end
+  end
 end

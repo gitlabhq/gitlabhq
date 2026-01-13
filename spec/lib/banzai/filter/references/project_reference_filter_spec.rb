@@ -59,6 +59,17 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
     expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project has-tooltip'
   end
 
+  it 'adds data-original for the redactor, preserving the input' do
+    entered = reference.upcase
+    expect(entered).not_to eq(reference)
+
+    doc = reference_filter("Hey #{entered}")
+    a = doc.css('a').first
+
+    expect(a.content).to eq(reference) # Text content is canonicalised (when visible) ...
+    expect(a.attr('data-original')).to eq_html(entered) # ... but original input is preserved for redaction.
+  end
+
   context 'in group context' do
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
@@ -83,8 +94,10 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
 
   describe '#projects_hash' do
     it 'returns a Hash containing all Projects' do
-      document = Nokogiri::HTML.fragment("<p>#{get_reference(project)}</p>")
-      filter = described_class.new(document, project: project)
+      frag = Nokogiri::HTML.fragment("<p></p>")
+      frag.css('p').first.content = get_reference(project)
+
+      filter = described_class.new(frag, project: project)
 
       expect(filter.send(:projects_hash)).to eq({ project.full_path => project })
     end
@@ -92,10 +105,36 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
 
   describe '#projects' do
     it 'returns the projects mentioned in a document' do
-      document = Nokogiri::HTML.fragment("<p>#{get_reference(project)}</p>")
-      filter = described_class.new(document, project: project)
+      frag = Nokogiri::HTML.fragment("<p></p>")
+      frag.css('p').first.content = get_reference(project)
+
+      filter = described_class.new(frag, project: project)
 
       expect(filter.send(:projects)).to eq([project.full_path])
+    end
+
+    it 'correctly locates project mentions in hrefs' do
+      frag = Nokogiri::HTML.fragment("<p></p>")
+
+      a = frag.document.create_element('a')
+      frag.css('p').first.add_child(a)
+      a['href'] = get_reference(project)
+
+      filter = described_class.new(frag, project: project)
+
+      expect(filter.send(:projects)).to eq([project.full_path])
+    end
+
+    it 'does not locate project mentions where it ought not look' do
+      frag = Nokogiri::HTML.fragment("<p></p>")
+
+      a = frag.document.create_element('a')
+      frag.css('p').first.add_child(a)
+      a['data-elsewhere'] = get_reference(project)
+
+      filter = described_class.new(frag, project: project)
+
+      expect(filter.send(:projects)).to eq([])
     end
   end
 

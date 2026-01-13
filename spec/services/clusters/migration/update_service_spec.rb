@@ -13,7 +13,7 @@ RSpec.describe Clusters::Migration::UpdateService, feature_category: :deployment
     let_it_be(:issue) { create(:issue, project: issue_project) }
     let_it_be(:cluster_name) { '-Legacy cluster with invalid name #123-' }
     let_it_be(:agent_name) { 'new-agent' }
-    let_it_be(:issue_url) { project_issue_url(issue_project, issue) }
+    let_it_be(:issue_url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
     let(:service) do
       described_class.new(

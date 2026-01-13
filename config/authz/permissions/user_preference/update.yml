@@ -1,0 +1,5 @@
+---
+name: update_user_preference
+description: Grants the ability to update user preferences
+boundaries:
+  - user

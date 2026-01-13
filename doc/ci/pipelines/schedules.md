@@ -19,6 +19,8 @@ Unlike pipelines triggered by commits or merge requests, scheduled pipelines run
 This makes them suitable for tasks that need to happen regardless of development activity,
 such as keeping deployments current or running periodic maintenance.
 
+Scheduled pipelines stop running when a project or group is marked for deletion.
+
 ## Create a pipeline schedule
 
 {{< history >}}
@@ -67,7 +69,7 @@ Prerequisites:
 - You must have at least the Developer role for the project.
 - For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
   you must have merge permissions for the target branch.
-- For schedules that run on [protected tags](../../user/project/protected_tags.md#configuring-protected-tags),
+- For schedules that run on [protected tags](../../user/project/protected_tags.md#configure-protected-tags),
   you must be allowed to create protected tags.
 
 To edit a pipeline schedule:
@@ -149,11 +151,15 @@ review and distribute your pipeline schedules:
    sudo gitlab-psql --command "
     COPY (SELECT
         ci_pipeline_schedules.cron,
+        ci_pipeline_schedules.cron_timezone,
+        namespaces.path AS group,
         projects.path   AS project,
         users.email
     FROM ci_pipeline_schedules
     JOIN projects ON projects.id = ci_pipeline_schedules.project_id
+    JOIN namespaces ON namespaces.id = projects.namespace_id
     JOIN users    ON users.id    = ci_pipeline_schedules.owner_id
+    WHERE ci_pipeline_schedules.active = 't'
     ) TO '$outfile' CSV HEADER DELIMITER E'\t' ;"
    sort  "$outfile" | uniq -c | sort -n
    ```

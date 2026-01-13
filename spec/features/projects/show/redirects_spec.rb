@@ -44,6 +44,10 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
   end
 
   it 'redirects to private project page after sign in' do
+    # Feature specs for when sign_in_form_vue is enabled will be added in
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+    stub_feature_flags(sign_in_form_vue: false)
+
     visit project_path(private_project)
 
     owner = private_project.first_owner

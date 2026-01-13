@@ -13,6 +13,7 @@ import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -20,6 +21,10 @@ import {
 } from '~/lib/utils/http_status';
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import { generateMRPipelinesResponse } from '../mock_data';
+import {
+  mockPipelineUpdateResponseEmpty,
+  mockPipelineUpdateResponse,
+} from '../../pipelines_page/mock_data';
 
 Vue.use(VueApollo);
 
@@ -33,6 +38,7 @@ let wrapper;
 let mergeRequestPipelinesRequest;
 let cancelPipelineMutationRequest;
 let retryPipelineMutationRequest;
+let ciPipelineStatusSubscriptionHandler;
 let apolloMock;
 const showMock = jest.fn();
 
@@ -62,11 +68,12 @@ const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
   return response;
 };
 
-const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
+const createComponent = ({ mountFn = shallowMountExtended, props = {}, glFeatures = {} } = {}) => {
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
+    [ciPipelineStatusesUpdatedSubscription, ciPipelineStatusSubscriptionHandler],
   ];
 
   apolloMock = createMockApollo(handlers);
@@ -76,6 +83,10 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) =>
     provide: {
       ...defaultProvide,
       manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
+      glFeatures: {
+        ciPipelineStatusesUpdatedSubscription: true,
+        ...glFeatures,
+      },
     },
     propsData: {
       ...defaultProps,
@@ -116,6 +127,10 @@ beforeEach(() => {
 
   retryPipelineMutationRequest = jest.fn();
   retryPipelineMutationRequest.mockResolvedValue({ data: { pipelineRetry: { errors: [] } } });
+
+  ciPipelineStatusSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(mockPipelineUpdateResponseEmpty);
 });
 
 afterEach(() => {
@@ -514,6 +529,32 @@ describe('PipelinesTableWrapper component', () => {
           mergeRequestIid: '1',
         });
       });
+    });
+  });
+
+  describe('subscription', () => {
+    it('calls subscription with correct variables', async () => {
+      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      await createComponent();
+
+      expect(ciPipelineStatusSubscriptionHandler).toHaveBeenCalledWith({
+        projectId: 'gid://gitlab/Project/5',
+      });
+    });
+
+    it('skips subscription when feature flag is disabled', async () => {
+      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      await createComponent({ glFeatures: { ciPipelineStatusesUpdatedSubscription: false } });
+
+      expect(ciPipelineStatusSubscriptionHandler).not.toHaveBeenCalled();
+    });
+
+    it('skips subscription when there are no pipelines', async () => {
+      mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 0 }));
+      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      await createComponent();
+
+      expect(ciPipelineStatusSubscriptionHandler).not.toHaveBeenCalled();
     });
   });
 });

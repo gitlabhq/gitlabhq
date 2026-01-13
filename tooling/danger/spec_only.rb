@@ -4,21 +4,33 @@ module Tooling
   module Danger
     module SpecOnly
       SPEC_ONLY_LABEL = 'pipeline:spec-only'
-      SPEC_FILE_REGEX = %r{_spec\.rb\z}
+      SPEC_FILE_REGEX = %r{\A(ee/|jh/)?spec/}
+      DOC_FILE_REGEX = %r{
+        \Adoc/|
+        \.(yml|yaml|md)\z|
+        \Alocale/.*gitlab\.po\z|
+        \Afixtures/emojis/
+      }x
 
       def add_or_remove_label
-        if only_spec_files? && !has_label?
+        if spec_only_eligible? && !has_label?
           helper.labels_to_add << SPEC_ONLY_LABEL
-        elsif !only_spec_files? && has_label?
+        elsif !spec_only_eligible? && has_label?
           remove_label
         end
       end
 
       private
 
-      def only_spec_files?
+      def spec_only_eligible?
         changed_files = helper.all_changed_files
-        changed_files.any? && changed_files.all? { |file| file.match?(SPEC_FILE_REGEX) }
+        return false if changed_files.empty?
+
+        has_spec_files = changed_files.any? { |file| file.match?(SPEC_FILE_REGEX) }
+        return false unless has_spec_files
+
+        non_spec_files = changed_files.reject { |file| file.match?(SPEC_FILE_REGEX) }
+        non_spec_files.all? { |file| file.match?(DOC_FILE_REGEX) }
       end
 
       def has_label?

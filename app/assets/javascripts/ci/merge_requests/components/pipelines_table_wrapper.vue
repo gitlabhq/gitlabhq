@@ -17,10 +17,13 @@ import { s__, __ } from '~/locale';
 import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
+import { TYPENAME_CI_PIPELINE, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
+import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
+import { updatePipelineNodes } from '~/ci/pipelines_page/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
 
 export default {
@@ -35,6 +38,7 @@ export default {
     GlSprintf,
     PipelinesTable,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
     errorStateSvgPath: {
@@ -113,9 +117,54 @@ export default {
       error() {
         this.hasError = true;
       },
+      subscribeToMore: {
+        document: ciPipelineStatusesUpdatedSubscription,
+        variables() {
+          return {
+            projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
+          };
+        },
+        skip() {
+          return !this.isPipelineStatusSubscriptionEnabled || !this.projectId || !this.hasPipelines;
+        },
+        updateQuery(
+          previousData,
+          {
+            subscriptionData: {
+              data: { ciPipelineStatusesUpdated },
+            },
+          },
+        ) {
+          const previousPipelines = previousData?.project?.mergeRequest?.pipelines?.nodes || [];
+
+          if (previousPipelines.length && ciPipelineStatusesUpdated) {
+            const updatedPipeline = ciPipelineStatusesUpdated;
+
+            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
+
+            return {
+              ...previousData,
+              project: {
+                ...previousData.project,
+                mergeRequest: {
+                  ...previousData.project.mergeRequest,
+                  pipelines: {
+                    ...previousData.project.mergeRequest.pipelines,
+                    nodes: updatedNodes,
+                  },
+                },
+              },
+            };
+          }
+          return previousData;
+        },
+      },
     },
   },
   computed: {
+    isPipelineStatusSubscriptionEnabled() {
+      return this.glFeatures.ciPipelineStatusesUpdatedSubscription;
+    },
     hasPipelines() {
       return this.pipelines.length > 0;
     },

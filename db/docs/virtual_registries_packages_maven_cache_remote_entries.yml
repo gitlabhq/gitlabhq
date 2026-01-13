@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_packages_maven_cache_remote_entries
+classes:
+  - VirtualRegistries::Packages::Maven::Cache::Remote::Entry
+feature_categories:
+  - virtual_registry
+description: Remote cache entry for the Maven virtual packages registry.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216172
+milestone: '18.8'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

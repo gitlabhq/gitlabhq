@@ -39,7 +39,7 @@ RSpec.describe BackfillCodeSuggestionEventsDailyNew, :click_house, feature_categ
 
       expect(results).to contain_exactly(
         hash_including(
-          'date' => '2023-01-15',
+          'date' => Date.parse('2023-01-15'),
           'user_id' => 1,
           'event' => 1,
           'language' => 'ruby',
@@ -48,7 +48,7 @@ RSpec.describe BackfillCodeSuggestionEventsDailyNew, :click_house, feature_categ
           'occurrences' => 2
         ),
         hash_including(
-          'date' => '2023-01-15',
+          'date' => Date.parse('2023-01-15'),
           'user_id' => 1,
           'event' => 2,
           'language' => 'go',
@@ -57,7 +57,7 @@ RSpec.describe BackfillCodeSuggestionEventsDailyNew, :click_house, feature_categ
           'occurrences' => 1
         ),
         hash_including(
-          'date' => '2024-01-16',
+          'date' => Date.parse('2024-01-16'),
           'user_id' => 1,
           'event' => 2,
           'language' => 'python',
@@ -66,7 +66,7 @@ RSpec.describe BackfillCodeSuggestionEventsDailyNew, :click_house, feature_categ
           'occurrences' => 2
         ),
         hash_including(
-          'date' => '2025-01-31',
+          'date' => Date.parse('2025-01-31'),
           'user_id' => 1,
           'event' => 2,
           'language' => 'rust',

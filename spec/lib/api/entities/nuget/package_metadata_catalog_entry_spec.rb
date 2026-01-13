@@ -25,18 +25,18 @@ RSpec.describe API::Entities::Nuget::PackageMetadataCatalogEntry, feature_catego
   let(:expected) do
     {
       '@id': 'http://sandbox.com/json/package',
-      'id': 'PackageTest',
-      'version': '1.2.3',
-      'authors': 'Authors',
-      'dependencyGroups': [],
-      'tags': 'tag1 tag2 tag3',
-      'packageContent': 'http://sandbox.com/archive/package',
-      'description': 'Summary',
-      'summary': 'Summary',
-      'projectUrl': 'http://sandbox.com/project',
-      'licenseUrl': 'http://sandbox.com/license',
-      'iconUrl': 'http://sandbox.com/icon',
-      'published': '2022-10-05T18:40:32.43+00:00'
+      id: 'PackageTest',
+      version: '1.2.3',
+      authors: 'Authors',
+      dependencyGroups: [],
+      tags: 'tag1 tag2 tag3',
+      packageContent: 'http://sandbox.com/archive/package',
+      description: 'Summary',
+      summary: 'Summary',
+      projectUrl: 'http://sandbox.com/project',
+      licenseUrl: 'http://sandbox.com/license',
+      iconUrl: 'http://sandbox.com/icon',
+      published: '2022-10-05T18:40:32.43+00:00'
     }
   end
 

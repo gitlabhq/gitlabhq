@@ -11,7 +11,7 @@ RSpec.describe Gitlab::SlashCommands::Presenters::IssueNew do
   it { is_expected.to be_a(Hash) }
 
   it 'shows the issue' do
-    expected_text = "I created an issue on <#{url_for(issue.author)}|#{issue.author.to_reference}>'s behalf: *<#{project_issue_url(issue.project, issue)}|#{issue.to_reference}>* in <#{project.web_url}|#{project.full_name}>"
+    expected_text = "I created an issue on <#{url_for(issue.author)}|#{issue.author.to_reference}>'s behalf: *<#{::Gitlab::UrlBuilder.instance.issue_url(issue)}|#{issue.to_reference}>* in <#{project.web_url}|#{project.full_name}>"
 
     expect(subject).to eq(
       response_type: :in_channel,

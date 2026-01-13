@@ -184,21 +184,20 @@ The eligible Code Owners are:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203298) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `check_inherited_groups_for_codeowners`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/566627) in GitLab 18.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/579541) in GitLab 18.8. Feature flag `check_inherited_groups_for_codeowners` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+To make members of a group eligible as Code Owners for projects they don't
+directly belong to, you can
+[invite the group](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
+to a parent group of the project. When you invite a group, its direct members
+become eligible as Code Owners for all projects in the parent group's hierarchy.
 
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-When this feature is disabled, only groups directly invited to a project are
-eligible as Code Owners. Groups shared with the project's parent groups are not
-eligible.
+Prerequisites:
 
-{{< /alert >}}
-
-You can share a group with a parent group of a project. Members of the shared
-group become eligible as Code Owners for projects in the parent group.
+- You must have the Owner role for the group you are inviting the other group to.
+- When inviting the group, you must assign at least the Developer role.
 
 For example, in this hierarchy:
 
@@ -209,13 +208,12 @@ group-x
     └── project-a
 ```
 
-If you share `engineering-group` with `product-group`, members of
+If you invite `engineering-group` to `product-group`, members of
 `engineering-group` become eligible as Code Owners for `project-a`.
 You don't need to directly invite `engineering-group` to `project-a`.
 
-The shared group must have at least the Developer role in the parent group.
-Only direct members of the shared group are eligible as Code Owners.
-Members who inherit membership in the shared group are not eligible as Code Owners.
+Only direct members of the invited group are eligible as Code Owners.
+Members who inherit membership in the invited group are not eligible.
 
 ## Error handling
 

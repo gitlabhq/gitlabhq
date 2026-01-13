@@ -921,10 +921,34 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it_behaves_like 'ancestor aware archived scope'
     end
 
+    describe '.self_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.self_archived }
+
+      it 'returns archived groups' do
+        is_expected.to include(archived)
+        is_expected.not_to include(non_archived)
+      end
+    end
+
     describe '.non_archived' do
       subject { described_class.non_archived }
 
       it_behaves_like 'ancestor aware unarchived scope'
+    end
+
+    describe '.self_non_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.self_non_archived }
+
+      it 'returns non archived groups' do
+        is_expected.to include(non_archived)
+        is_expected.not_to include(archived)
+      end
     end
 
     describe '.self_or_ancestors_archived' do
@@ -1008,6 +1032,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:description=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:description_html).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:state_metadata).to(:namespace_details) }
+    it { is_expected.to delegate_method(:state_metadata=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_ancestor?).to(:namespace_settings) }
@@ -2234,6 +2260,37 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         it 'skips delayed deletion project' do
           expect(user_namespace.all_projects_except_soft_deleted.to_a).to match_array([project])
         end
+      end
+    end
+  end
+
+  describe '#all_active_project_ids' do
+    let_it_be(:namespace) { create(:group) }
+    let_it_be(:child) { create(:group, parent: namespace) }
+    let_it_be(:active_project1) { create(:project, namespace: namespace) }
+    let_it_be(:active_project2) { create(:project, namespace: child) }
+    let_it_be(:archived_project) { create(:project, :archived, namespace: namespace) }
+    let_it_be(:pending_deletion_project) { create(:project, namespace: child, marked_for_deletion_at: Date.current) }
+
+    before do
+      reload_models(namespace, child)
+    end
+
+    it 'returns only active project IDs excluding archived and pending deletion' do
+      expect(namespace.all_active_project_ids.pluck(:id)).to match_array([active_project1.id, active_project2.id])
+    end
+
+    it 'excludes archived projects' do
+      expect(namespace.all_active_project_ids.pluck(:id)).not_to include(archived_project.id)
+    end
+
+    it 'excludes projects pending deletion' do
+      expect(namespace.all_active_project_ids.pluck(:id)).not_to include(pending_deletion_project.id)
+    end
+
+    context 'for child namespace' do
+      it 'returns only active projects in that namespace' do
+        expect(child.all_active_project_ids.pluck(:id)).to match_array([active_project2.id])
       end
     end
   end

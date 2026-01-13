@@ -204,6 +204,91 @@ When working with regular expressions in Python, use `re2` when possible or alwa
 - [The impact of regular expression denial of service (ReDoS) in practice: an empirical study at the ecosystem scale](https://davisjam.github.io/files/publications/DavisCoghlanServantLee-EcosystemREDOS-ESECFSE18.pdf). This research paper discusses approaches to automatically detect ReDoS vulnerabilities.
 - [Freezing the web: A study of ReDoS vulnerabilities in JavaScript-based web servers](https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-staicu.pdf). Another research paper about detecting ReDoS vulnerabilities.
 
+## JSON Parsing
+
+**Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input.** When in doubt, prefer `safe_parse`.
+
+### Description
+
+Parsing untrusted JSON input without size or depth limits can lead to denial of service (DoS) vulnerabilities. Malicious payloads with deeply nested structures, extremely large arrays, or oversized documents can exhaust server memory or CPU resources.
+
+### Impact
+
+- **Memory exhaustion**: Large arrays or hashes can consume excessive memory, potentially crashing the application.
+- **Stack exhaustion**: Deeply nested structures can cause stack overflow errors.
+- **CPU exhaustion**: Processing extremely large JSON documents ties up server resources.
+- **Denial of service**: Attackers can exploit these weaknesses to make the application unavailable.
+
+### When to consider
+
+When parsing JSON from any untrusted source, including:
+
+- HTTP request bodies
+- User-supplied parameters
+- Webhook payloads
+- External API responses
+- User-uploaded files
+- Data from message queues
+
+### Mitigation
+
+Use `Gitlab::Json.safe_parse` instead of `Gitlab::Json.parse` when handling untrusted input. The `safe_parse` method enforces limits on:
+
+| Limit | Default | Description |
+|-------|---------|-------------|
+| `max_depth` | 32 | Maximum nesting depth |
+| `max_array_size` | 50,000 | Maximum elements per array |
+| `max_hash_size` | 50,000 | Maximum key-value pairs per hash |
+| `max_total_elements` | 100,000 | Maximum total elements across all arrays and hashes |
+| `max_json_size_bytes` | 20 MB | Maximum size of the JSON input |
+
+#### Examples
+
+```ruby
+# Bad - no protection against malicious payloads
+data = Gitlab::Json.parse(request.body.read)
+
+# Good - enforces default safety limits
+data = Gitlab::Json.safe_parse(request.body.read)
+
+# Good - with custom limits for specific use cases
+data = Gitlab::Json.safe_parse(
+  request.body.read,
+  parse_limits: { max_depth: 10, max_json_size_bytes: 1.megabyte }
+)
+```
+
+#### Handling parse errors
+
+`safe_parse` raises `JSON::ParserError` for both malformed JSON and limit violations. The error messages are user-safe and do not expose internal details. An internal facing error (`Gitlab::Json::StreamValidator::LimitExceededError`) will be logged for inspection.
+
+```ruby
+begin
+  data = Gitlab::Json.safe_parse(user_input)
+rescue JSON::ParserError => e
+  # Error messages are safe to display:
+  # - "Parameters nested too deeply"
+  # - "Array parameter too large"
+  # - "Hash parameter too large"
+  # - "Too many total parameters"
+  # - "JSON body too large"
+  render json: { error: e.message }, status: :bad_request
+end
+```
+
+### When to use `Gitlab::Json.parse`
+
+Use the standard `parse` method only when you have full control over the input source and trust its contents, such as:
+
+- Reading from internal configuration files
+- Parsing data from trusted internal services with established contracts
+- Processing data that has already been validated
+
+### Resources
+
+- [GitLab JSON development guidelines](../json.md)
+- [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html)
+
 ## JSON Web Tokens (JWT)
 
 ### Description
@@ -429,9 +514,9 @@ XSS issues are commonly classified in three categories, by their delivery method
 
 The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would typically be able to do through a browser. The attacker would also have the ability to:
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
 - launch a network scan from the victim's browser
-- potentially <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
+- potentially <i class="fa-youtube-play" aria-hidden="true"></i> [obtain the victim's session tokens](https://youtu.be/2VFavqfDS6w?t=739)
 - perform actions that lead to data loss/theft or account takeover
 
 Much of the impact is contingent upon the function of the application and the capabilities of the victim's session. For further impact possibilities, check out [the beef project](https://beefproject.com/).
@@ -463,14 +548,14 @@ For more information, see ([issue 463408](https://gitlab.com/gitlab-org/gitlab/-
 
 ##### Setting expectations
 
-For any and all input fields, ensure to define expectations on the type/format of input, the contents, <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [size limits](https://youtu.be/2VFavqfDS6w?t=7582), the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
+For any and all input fields, ensure to define expectations on the type/format of input, the contents, <i class="fa-youtube-play" aria-hidden="true"></i> [size limits](https://youtu.be/2VFavqfDS6w?t=7582), the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
 
 ##### Validate input
 
 - Treat all user input as untrusted.
 - Based on the expectations you [defined above](#setting-expectations):
-  - Validate the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
-  - Validate the input using an <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
+  - Validate the <i class="fa-youtube-play" aria-hidden="true"></i> [input size limits](https://youtu.be/2VFavqfDS6w?t=7582).
+  - Validate the input using an <i class="fa-youtube-play" aria-hidden="true"></i> [allowlist approach](https://youtu.be/2VFavqfDS6w?t=7816) to only allow characters through which you are expecting to receive for the field.
     - Input which fails validation should be **rejected**, and not sanitized.
 - When adding redirects or links to a user-controlled URL, ensure that the scheme is HTTP or HTTPS. Allowing other schemes like `javascript://` can lead to XSS and other security issues.
 
@@ -482,8 +567,8 @@ After you've [determined when and where](#setting-expectations) the user submitt
 
 - Content placed inside HTML elements need to be [HTML entity encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-1---html-escape-before-inserting-untrusted-data-into-html-element-content).
 - Content placed into a JSON response needs to be [JSON encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-31---html-escape-json-values-in-an-html-context-and-read-the-data-with-jsonparse).
-- Content placed inside <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HTML URL GET parameters](https://youtu.be/2VFavqfDS6w?t=3494) need to be [URL-encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-5---url-escape-before-inserting-untrusted-data-into-html-url-parameter-values)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Additional contexts may require context-specific encoding](https://youtu.be/2VFavqfDS6w?t=2341).
+- Content placed inside <i class="fa-youtube-play" aria-hidden="true"></i> [HTML URL GET parameters](https://youtu.be/2VFavqfDS6w?t=3494) need to be [URL-encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-5---url-escape-before-inserting-untrusted-data-into-html-url-parameter-values)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Additional contexts may require context-specific encoding](https://youtu.be/2VFavqfDS6w?t=2341).
 
 ### Additional information
 
@@ -506,7 +591,7 @@ After you've [determined when and where](#setting-expectations) the user submitt
 
 #### Content Security Policy
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
 - [Use nonce-based Content Security Policy for inline JavaScript](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65330)
 
 #### Free form input field
@@ -520,26 +605,26 @@ After you've [determined when and where](#setting-expectations) the user submitt
 
 ### Internal Developer Training
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Introduction to XSS](https://www.youtube.com/watch?v=PXR8PTojHmc&t=7785s)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Reflected XSS](https://youtu.be/2VFavqfDS6w?t=603s)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Persistent XSS](https://youtu.be/2VFavqfDS6w?t=643)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [DOM XSS](https://youtu.be/2VFavqfDS6w?t=5871)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS in depth](https://www.youtube.com/watch?v=2VFavqfDS6w&t=111s)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense](https://youtu.be/2VFavqfDS6w?t=1685)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [JavaScript URLs](https://youtu.be/2VFavqfDS6w?t=3274)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [URL encoding context](https://youtu.be/2VFavqfDS6w?t=3494)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HTML Sanitization](https://youtu.be/2VFavqfDS6w?t=5075)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [DOMPurify](https://youtu.be/2VFavqfDS6w?t=5381)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Safe Client-side JSON Handling](https://youtu.be/2VFavqfDS6w?t=6334)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [iframe sandboxing](https://youtu.be/2VFavqfDS6w?t=7043)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Introduction to XSS](https://www.youtube.com/watch?v=PXR8PTojHmc&t=7785s)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Reflected XSS](https://youtu.be/2VFavqfDS6w?t=603s)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Persistent XSS](https://youtu.be/2VFavqfDS6w?t=643)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [DOM XSS](https://youtu.be/2VFavqfDS6w?t=5871)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [XSS in depth](https://www.youtube.com/watch?v=2VFavqfDS6w&t=111s)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [XSS Defense](https://youtu.be/2VFavqfDS6w?t=1685)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [XSS Defense in Rails](https://youtu.be/2VFavqfDS6w?t=2442)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [XSS Defense with HAML](https://youtu.be/2VFavqfDS6w?t=2796)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [JavaScript URLs](https://youtu.be/2VFavqfDS6w?t=3274)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [URL encoding context](https://youtu.be/2VFavqfDS6w?t=3494)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Validating Untrusted URLs in Ruby](https://youtu.be/2VFavqfDS6w?t=3936)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [HTML Sanitization](https://youtu.be/2VFavqfDS6w?t=5075)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [DOMPurify](https://youtu.be/2VFavqfDS6w?t=5381)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Safe Client-side JSON Handling](https://youtu.be/2VFavqfDS6w?t=6334)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [iframe sandboxing](https://youtu.be/2VFavqfDS6w?t=7043)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Validate size limits](https://youtu.be/2VFavqfDS6w?t=7582)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [RoR model validators](https://youtu.be/2VFavqfDS6w?t=7636)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Allowlist input validation](https://youtu.be/2VFavqfDS6w?t=7816)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Content Security Policy](https://www.youtube.com/watch?v=2VFavqfDS6w&t=12991s)
 
 ## Path Traversal guidelines
 
@@ -805,7 +890,7 @@ No other tokens should have configurable token prefixes.
 Add the new prefix to:
 
 - [`gitlab/app/assets/javascripts/lib/utils/secret_detection.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/secret_detection.js)
-- The [GitLab Secret Detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
+- The [GitLab secret detection rules](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
 - [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
 - [Token Overview](../../security/tokens/_index.md) documentation

@@ -49,6 +49,7 @@ module API
           desc: 'Commit message. If no message is provided a default one will be set.',
           documentation: { example: 'Commit message' }
       end
+      route_setting :authorization, permissions: :update_repository_submodule, boundary_type: :project
       put ":id/repository/submodules/:submodule", requirements: SUBMODULE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 

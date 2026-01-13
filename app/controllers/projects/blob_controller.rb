@@ -28,12 +28,13 @@ class Projects::BlobController < Projects::ApplicationController
   # validate access to a specific ref.
   before_action :assign_blob_vars, except: [:show]
   before_action :assign_ref_vars, only: [:show]
+  before_action :set_is_ambiguous_ref, only: [:show]
+  before_action :check_for_ambiguous_ref, only: [:show],
+    if: -> { Feature.disabled?(:verified_ref_extractor, @project) }
 
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
   before_action :require_commit, except: [:new, :create]
-  before_action :set_is_ambiguous_ref, only: [:show]
-  before_action :check_for_ambiguous_ref, only: [:show]
   before_action :require_blob, except: [:new, :create]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
@@ -49,7 +50,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
     push_frontend_feature_flag(:blob_edit_refactor, @project)
   end

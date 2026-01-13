@@ -131,10 +131,11 @@ Example response:
 ]
 ```
 
-## Create a commit with multiple files and actions
+## Create a commit
 
 {{< history >}}
 
+- `allow_empty` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211520) in GitLab 18.8.
 - Request size and rate limits introduced in GitLab 18.7.
 
 {{< /history >}}
@@ -145,18 +146,16 @@ Create a commit by posting a JSON payload
 POST /projects/:id/repository/commits
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
-| `actions[]`      | array          | Yes      | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `branch`         | string         | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
 | `commit_message` | string         | Yes      | Commit message. |
 | `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `actions[]`      | array          | No       | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `allow_empty`    | boolean        | No       | When `true`, creates an empty commit. Default is `false`. |
 | `author_email`   | string         | No       | Specify the commit author's email address. |
 | `author_name`    | string         | No       | Specify the commit author's name. |
 | `force`          | boolean        | No       | If `true`, overwrites the target branch with a new commit based on the `start_branch` or `start_sha`. |
@@ -165,11 +164,8 @@ This endpoint is subject to [request size and rate limits](../administration/ins
 | `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
 | `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
 
-{{< alert type="note" >}}
-
-Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
-
-{{< /alert >}}
+> [!note]
+> Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|

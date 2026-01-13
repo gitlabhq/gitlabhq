@@ -1,7 +1,7 @@
 <script>
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
-import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
+import { clearDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
@@ -38,6 +38,16 @@ export default {
       type: Function,
       required: true,
     },
+    timelineLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isLastDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -53,6 +63,9 @@ export default {
     },
     saveButtonTitle() {
       return this.discussion.internal ? __('Reply internally') : __('Reply');
+    },
+    canReply() {
+      return !this.discussion.notes[0]?.system && !this.discussion.individual_note;
     },
   },
   methods: {
@@ -97,22 +110,15 @@ export default {
 
       const postData = {
         in_reply_to_discussion_id: this.discussion.reply_id,
-        // TODO: should be implied on the endpoint level
-        // target_type: this.getNoteableData.targetType,
         note: { note: noteText },
       };
 
-      // TODO: should be implied on the endpoint level
-      // if (this.discussion.for_commit) {
-      //   postData.note_project_id = this.discussion.project_id;
-      // }
-
       try {
-        // TODO: fix after we support adding discussions
         const {
-          data: { note },
-        } = await axios.post(this.endpoints.createNote, postData);
-        this.$emit('replyAdded', note);
+          data: { discussion },
+        } = await axios.post(this.endpoints.discussions, postData);
+        clearDraft(this.autosaveKey);
+        this.$emit('discussionUpdated', discussion);
       } catch (error) {
         if (error.response) {
           const errorMessage = createNoteErrorMessages(
@@ -141,7 +147,10 @@ export default {
   >
     <discussion-notes
       :notes="discussion.notes"
+      :timeline-layout="timelineLayout"
       :expanded="discussion.repliesExpanded"
+      :individual="discussion.individual_note"
+      :is-last-discussion="isLastDiscussion"
       @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
       @startReplying="showReplyForm"
       @noteUpdated="$emit('noteUpdated', $event)"
@@ -156,6 +165,7 @@ export default {
       </template>
       <template #footer="{ hasReplies }">
         <li
+          v-if="canReply"
           data-testid="reply-wrapper"
           class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
           :class="{ 'gl-border-t': !hasReplies, 'gl-pt-0': hasReplies }"

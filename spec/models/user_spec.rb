@@ -166,9 +166,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:new_ui_enabled).to(:user_preference) }
-    it { is_expected.to delegate_method(:new_ui_enabled=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
 
@@ -291,7 +288,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
-    it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
     it { is_expected.to have_many(:protected_tag_create_access_levels).class_name('ProtectedTag::CreateAccessLevel').dependent(:delete_all) }
     it { is_expected.to have_many(:lfs_file_locks).dependent(:delete_all) }
     it { is_expected.to have_many(:ml_candidates).class_name('Ml::Candidate').with_foreign_key(:user_id).inverse_of(:user).dependent(:nullify) }
@@ -1907,6 +1903,56 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       context 'maximum value' do
         it 'is determined by the current value of `Devise.password_length.max`' do
           expect(password_length.max).to eq(Devise.password_length.max)
+        end
+      end
+    end
+
+    describe '.reset_password_by_token' do
+      let_it_be(:user) { create(:user) }
+
+      let(:reset_password_token) { user.send_reset_password_instructions }
+      let(:new_password) { Devise.friendly_token(25) }
+      let(:organization) { user.organization }
+      let(:attributes) do
+        {
+          reset_password_token: reset_password_token,
+          password: new_password,
+          password_confirmation: new_password
+        }
+      end
+
+      subject(:reset_password_by_token) { described_class.reset_password_by_token(attributes) }
+
+      before do
+        stub_current_organization(organization)
+      end
+
+      it 'changes the password using the token' do
+        expect { reset_password_by_token }.to change { user.reload.encrypted_password }
+      end
+
+      context 'when incorrect organization specified' do
+        let(:organization) { create(:organization) }
+
+        it 'returns new model with errors' do
+          expect { reset_password_by_token }.not_to change { user.reload.encrypted_password }
+
+          expect(reset_password_by_token).not_to be_persisted
+          expect(reset_password_by_token.errors).not_to be_empty
+        end
+      end
+
+      context 'when reset period is expired' do
+        before do
+          travel_to 100.days.ago do
+            reset_password_token
+          end
+        end
+
+        it 'returns model with errors' do
+          expect { reset_password_by_token }.not_to change { user.reload.encrypted_password }
+
+          expect(reset_password_by_token.errors[:reset_password_token]).not_to be_empty
         end
       end
     end
@@ -10097,7 +10143,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
 
     describe '#support_pin_expires_at' do
-      it 'returns the expiration time when it exists', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546655' do
+      it 'returns the expiration time when it exists', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16830' do
         allow(retrieve_service).to receive(:execute).and_return(pin_data)
 
         expect(user_with_pin.support_pin_expires_at).to eq(pin_data[:expires_at])
@@ -10210,6 +10256,33 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       it { is_expected.to be_allow_user_to_create_group_and_project }
+    end
+  end
+
+  describe '.unlock_access_by_token' do
+    let_it_be(:user) { create(:user) }
+
+    let!(:unlock_token) { user.lock_access! }
+
+    subject(:unlock_access_by_token) { described_class.unlock_access_by_token(unlock_token) }
+
+    it 'finds user by organization and unlock token' do
+      expect { unlock_access_by_token }.to change { user.reload.access_locked? }.from(true).to(false)
+    end
+
+    context 'with incorrect organization' do
+      let(:another_organization) { create(:organization) }
+
+      before do
+        stub_current_organization(another_organization)
+      end
+
+      it 'initializes model with errors' do
+        expect { unlock_access_by_token }.not_to change { user.reload.access_locked? }
+
+        expect(unlock_access_by_token).to be_a(described_class)
+        expect(unlock_access_by_token.errors[:organization_id]).not_to be_empty
+      end
     end
   end
 end

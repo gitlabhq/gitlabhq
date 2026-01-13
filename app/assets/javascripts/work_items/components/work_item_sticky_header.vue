@@ -141,6 +141,7 @@ export default {
             v-if="workItemType"
             class="gl-align-middle"
             :work-item-type="workItemType"
+            show-tooltip-on-hover
             icon-class="gl-fill-icon-subtle"
           />
           <span v-if="isDrawer" :class="$options.TITLE_CLASS">

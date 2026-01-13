@@ -177,7 +177,7 @@ export default {
         return !this.searchStarted && !this.allowedChildTypes?.length;
       },
       update(data) {
-        return data.workspace?.workItems?.nodes?.filter((wi) => this.workItemId !== wi.id) || [];
+        return data.namespace?.workItems?.nodes?.filter((wi) => this.workItemId !== wi.id) || [];
       },
       error() {
         this.$emit(

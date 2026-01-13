@@ -75,13 +75,10 @@ Status: Experiment
 
 {{</* /history */>}}
 
-{{</* alert type="flag" */>}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{</* /alert */>}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Use this new feature when you need to do this new thing.
 
@@ -106,9 +103,6 @@ When documenting a GitLab Duo experiment:
 - Document the feature near other similar features.
 - Make sure you add history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
-  in the `#developer-relations-early-access-program` Slack channel,
-  post a comment that mentions the feature and its status.
 
 ### Beta
 
@@ -118,9 +112,6 @@ When a GitLab Duo experiment moves to beta:
   update the row in the table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
-  in the `#developer-relations-early-access-program` Slack channel,
-  post a comment that mentions the feature and its status.
 
 ### Generally available
 
@@ -130,6 +121,3 @@ When a GitLab Duo feature becomes generally available:
   move the feature to the GA table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
-  in the `#developer-relations-early-access-program` Slack channel,
-  post a comment that mentions the feature and its status.

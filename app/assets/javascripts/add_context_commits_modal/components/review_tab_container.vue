@@ -50,7 +50,7 @@ export default {
         :is-selectable="true"
         :commit="commit"
         :checked="commit.isSelected"
-        @handleCheckboxChange="$emit('handleCommitSelect', [index, $event])"
+        @handle-checkbox-change="$emit('handle-commit-select', [index, $event])"
       />
     </ul>
   </div>

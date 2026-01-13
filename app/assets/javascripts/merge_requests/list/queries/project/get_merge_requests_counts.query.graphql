@@ -25,6 +25,7 @@ query getProjectMergeRequestsCount(
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
   $or: UnionedMergeRequestFilterInput
+  $maxCount: Int
 ) {
   namespace: project(fullPath: $fullPath) {
     id
@@ -56,7 +57,7 @@ query getProjectMergeRequestsCount(
       not: $not
       or: $or
     ) {
-      count
+      count(limit: $maxCount)
     }
     mergedMergeRequests: mergeRequests(
       state: merged
@@ -86,7 +87,7 @@ query getProjectMergeRequestsCount(
       not: $not
       or: $or
     ) {
-      count
+      count(limit: $maxCount)
     }
     closedMergeRequests: mergeRequests(
       state: closed
@@ -116,7 +117,7 @@ query getProjectMergeRequestsCount(
       not: $not
       or: $or
     ) {
-      count
+      count(limit: $maxCount)
     }
     allMergeRequests: mergeRequests(
       state: all
@@ -146,7 +147,7 @@ query getProjectMergeRequestsCount(
       not: $not
       or: $or
     ) {
-      count
+      count(limit: $maxCount)
     }
   }
 }

@@ -22,6 +22,8 @@ RSpec.describe 'help/instance_configuration', feature_category: :configuration d
       expect(rendered).to have_link(nil, href: '#package-registry')
       expect(rendered).to have_link(nil, href: '#rate-limits')
       expect(rendered).to have_link(nil, href: '#users-api-rate-limits')
+      expect(rendered).to have_link(nil, href: '#groups-api-rate-limits')
+      expect(rendered).to have_link(nil, href: '#projects-api-rate-limits')
       expect(rendered).to have_link(nil, href: '#ci-cd-limits')
     end
 
@@ -34,6 +36,8 @@ RSpec.describe 'help/instance_configuration', feature_category: :configuration d
       expect(rendered).to have_css('h2#package-registry')
       expect(rendered).to have_css('h2#rate-limits')
       expect(rendered).to have_css('h2#users-api-rate-limits')
+      expect(rendered).to have_css('h2#groups-api-rate-limits')
+      expect(rendered).to have_css('h2#projects-api-rate-limits')
       expect(rendered).to have_css('h2#ci-cd-limits')
     end
   end

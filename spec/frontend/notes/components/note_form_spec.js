@@ -379,4 +379,9 @@ describe('issue_note_form component', () => {
     wrapper.vm.append('foo');
     expect(spy).toHaveBeenCalledWith('foo');
   });
+
+  it('disables table of contents support in the markdown editor', () => {
+    createComponentWrapper();
+    expect(findMarkdownField().props('supportsTableOfContents')).toBe(false);
+  });
 });

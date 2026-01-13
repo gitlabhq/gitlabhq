@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
+  include Namespaces::StatefulHelpers
+
   let(:user) { create(:user) }
   let(:group) do
     create(:group_with_deletion_schedule,
@@ -88,6 +90,18 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
           end
         end
 
+        context 'when group state is deletion_scheduled' do
+          before do
+            set_state(group, :deletion_scheduled)
+          end
+
+          it 'changes the state of the group' do
+            expect { execute }.to change { group.state }
+              .from(Namespaces::Stateful::STATES[:deletion_scheduled])
+              .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+          end
+        end
+
         context 'when group renaming fails' do
           before do
             allow_next_instance_of(Groups::UpdateService) do |group_update_service|
@@ -107,14 +121,15 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when deletion schedule destroy fails' do
           before do
-            allow(group.deletion_schedule).to receive(:destroy).and_return(false)
+            allow(group).to receive(:cancel_deletion).and_return(false)
+            allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
           end
 
-          it 'returns error' do
+          it 'returns error with combined messages' do
             result = execute
 
             expect(result).to be_error
-            expect(result.message).to eq('Could not restore the group')
+            expect(result.message).to eq('resource error')
           end
         end
       end

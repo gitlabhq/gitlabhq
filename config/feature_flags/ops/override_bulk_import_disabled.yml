@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132431
 rollout_issue_url:
 milestone: '16.5'
 type: ops
-group: group::import and integrate
+group: group::import
 default_enabled: false

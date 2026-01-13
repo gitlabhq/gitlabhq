@@ -1,0 +1,10 @@
+---
+name: validate_pull_mirror_url
+description: Validate pull mirror URLs during configuration via UI
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/419644
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215056
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583793
+milestone: '18.8'
+group: group::source code
+type: beta
+default_enabled: false

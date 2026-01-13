@@ -277,7 +277,7 @@ module API
             coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
             desc: 'Comma-separated label names to remove from a merge request.',
             documentation: { is_array: true }
-          optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge reques to.'
+          optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge request to.'
           optional :remove_source_branch, type: Boolean, desc: 'Flag indicating if a merge request should remove the source branch when merging.'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
@@ -352,7 +352,7 @@ module API
           desc: 'The target project of the merge request defaults to the :id of the project.'
         use :optional_params
       end
-      route_setting :mcp, tool_name: :create_merge_request, params: [:id, :title, :source_branch, :target_branch, :target_project_id, :optional_params]
+      route_setting :mcp, tool_name: :create_merge_request, params: Helpers::MergeRequestsHelpers.create_merge_request_mcp_params
       post ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20770')
 

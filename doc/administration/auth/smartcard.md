@@ -156,11 +156,8 @@ For `issuer_and_serial_number`, the `<SR>` portion is in reverse-byte-order, wit
 The reverse issuer formats sort the issuer string from the smallest unit to the largest. Some
 Active Directory servers store certificates in this format.
 
-{{< alert type="note" >}}
-
-If no `smartcard_ad_cert_format` is specified, but an LDAP server is configured with `active_directory: true` and smart cards enabled, GitLab defaults to the behavior of 16.8 and earlier, and uses `certificateExactMatch` on the `userCertificate` attribute.
-
-{{< /alert >}}
+> [!note]
+> If no `smartcard_ad_cert_format` is specified, but an LDAP server is configured with `active_directory: true` and smart cards enabled, GitLab defaults to the behavior of 16.8 and earlier, and uses `certificateExactMatch` on the `userCertificate` attribute.
 
 ### Authentication against Entra ID Domain Services
 

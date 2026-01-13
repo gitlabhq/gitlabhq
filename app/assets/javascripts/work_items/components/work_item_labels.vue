@@ -180,10 +180,10 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItem || {};
+        return data.namespace?.workItem || {};
       },
       result({ data }) {
-        const labels = findLabelsWidget(data?.workspace?.workItem)?.labels?.nodes || [];
+        const labels = findLabelsWidget(data?.namespace?.workItem)?.labels?.nodes || [];
         this.labelsCache = unionBy(this.labelsCache, labels, 'id');
         this.selectedLabelsIds = labels.map(({ id }) => id);
       },
@@ -208,10 +208,10 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.labels?.nodes ?? [];
+        return data.namespace?.labels?.nodes ?? [];
       },
       result({ data }) {
-        const labels = data?.workspace?.labels?.nodes || [];
+        const labels = data?.namespace?.labels?.nodes || [];
         this.labelsCache = unionBy(this.labelsCache, labels, 'id');
       },
       error() {

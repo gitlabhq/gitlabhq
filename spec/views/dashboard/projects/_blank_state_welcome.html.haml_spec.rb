@@ -22,6 +22,12 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
 
         expect(rendered).to include(_('Create a project'))
       end
+
+      it 'links to starred explore projects' do
+        render
+
+        expect(rendered).to have_link(_('Explore public projects'), href: starred_explore_projects_path)
+      end
     end
 
     context 'with project creation disabled' do

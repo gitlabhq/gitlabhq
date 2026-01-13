@@ -340,7 +340,7 @@ module Gitlab
           return if state[:offset].to_i > stream.size
 
           STATE_PARAMS.each do |param|
-            send("#{param}=".to_sym, state[param]) # rubocop:disable GitlabSecurity/PublicSend
+            send(:"#{param}=", state[param]) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
 

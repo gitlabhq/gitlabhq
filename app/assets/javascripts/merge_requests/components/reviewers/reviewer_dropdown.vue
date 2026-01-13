@@ -1,7 +1,7 @@
 <script>
 import { debounce, difference } from 'lodash';
-import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlSprintf } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon, GlBadge, GlSprintf } from '@gitlab/ui';
+import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { uuids } from '~/lib/utils/uuids';
@@ -45,6 +45,7 @@ export default {
     GlButton,
     GlAvatar,
     GlIcon,
+    GlBadge,
     GlSprintf,
     InviteMembersTrigger,
   },
@@ -91,6 +92,7 @@ export default {
       fetchedUsers: [],
       currentSelectedReviewers: toUsernames(this.selectedReviewers),
       userPermissions: {},
+      cachedDisabledReviewers: [],
     };
   },
   computed: {
@@ -117,7 +119,18 @@ export default {
       }
       const filteredUsers = users
         .filter((u) => (this.search ? true : !this.selectedReviewers.find(({ id }) => u.id === id)))
-        .map((user) => this.mapUser(user));
+        .map((user) => {
+          const mapped = this.mapUser(user);
+          const isDisabled = Boolean(user?.status?.disabledForDuoUsage);
+          return {
+            ...mapped,
+            isDisabled,
+            ...(isDisabled && {
+              disabledReason:
+                user?.status?.disabledForDuoUsageReason || s__('WorkItem|Cannot be assigned'),
+            }),
+          };
+        });
 
       items.push({
         textSrOnly: true,
@@ -165,6 +178,10 @@ export default {
   watch: {
     selectedReviewers(newVal) {
       this.currentSelectedReviewers = toUsernames(newVal);
+      this.updateCachedDisabledReviewers();
+    },
+    usersForList() {
+      this.updateCachedDisabledReviewers();
     },
   },
   created() {
@@ -174,6 +191,14 @@ export default {
     );
   },
   methods: {
+    updateCachedDisabledReviewers() {
+      const selectedReviewerIds = this.selectedReviewers.map((r) => r.id);
+      this.cachedDisabledReviewers = (this.usersForList || [])
+        .filter(
+          (u) => Boolean(u?.status?.disabledForDuoUsage) && !selectedReviewerIds.includes(u.id),
+        )
+        .map((u) => u.username);
+    },
     mapUser(user) {
       return {
         value: user.username,
@@ -193,7 +218,7 @@ export default {
 
       const {
         data: {
-          workspace: { users = [] },
+          namespace: { users = [] },
         },
       } = await this.$apollo.query({
         query: userAutocompleteWithMRPermissionsQuery,
@@ -205,7 +230,9 @@ export default {
       });
 
       if (!search) {
-        const eligibleReviewers = toUsernames(users);
+        const eligibleReviewers = toUsernames(users).filter(
+          (username) => !this.cachedDisabledReviewers.includes(username),
+        );
         const unselectedEligibleReviewers = difference(
           eligibleReviewers,
           this.currentSelectedReviewers,
@@ -268,10 +295,19 @@ export default {
     async updateReviewers() {
       this.loading = true;
 
+      // Filter out disabled reviewers from the selection
+      const disabledUsernames = (this.usersForList || [])
+        .filter((u) => Boolean(u?.status?.disabledForDuoUsage))
+        .map((u) => u.username);
+
+      const filteredReviewers = this.currentSelectedReviewers.filter(
+        (username) => !disabledUsernames.includes(username),
+      );
+
       await this.$apollo.mutate({
         mutation: setReviewersMutation,
         variables: {
-          reviewerUsernames: this.currentSelectedReviewers,
+          reviewerUsernames: filteredReviewers,
           projectPath: this.projectPath,
           iid: this.issuableIid,
         },
@@ -345,9 +381,15 @@ export default {
       </gl-button>
     </template>
     <template #list-item="{ item }">
-      <span class="gl-flex gl-items-center">
+      <span
+        class="gl-flex gl-items-center"
+        :class="{ 'sidebar-reviewer-disabled': item.isDisabled }"
+        :aria-disabled="item.isDisabled"
+        :aria-describedby="item.isDisabled ? `disabled-reason-${item.value}` : null"
+        @click="item.isDisabled && $event.stopPropagation()"
+      >
         <div class="gl-relative gl-mr-3">
-          <gl-avatar :size="32" :src="item.avatarUrl" :entity-name="item.value" />
+          <gl-avatar :size="32" :src="item.avatarUrl" :entity-name="item.value" :alt="item.value" />
           <gl-icon
             v-if="item.mergeRequestInteraction && !item.mergeRequestInteraction.canMerge"
             name="warning-solid"
@@ -355,9 +397,24 @@ export default {
             class="reviewer-merge-icon"
           />
         </div>
-        <span class="gl-flex gl-flex-col gl-gap-1">
-          <span class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</span>
-          <span class="gl-text-subtle"> {{ item.secondaryText }}</span>
+        <span class="gl-flex gl-min-w-0 gl-flex-col gl-gap-1">
+          <span
+            class="gl-whitespace-nowrap gl-font-bold"
+            :class="{ 'gl-text-disabled': item.isDisabled }"
+            >{{ item.text }}</span
+          >
+          <span
+            :id="item.isDisabled ? `disabled-reason-${item.value}` : null"
+            class="gl-break-words"
+            :class="item.isDisabled ? 'gl-text-disabled' : 'gl-text-subtle'"
+          >
+            {{ item.isDisabled ? item.disabledReason : item.secondaryText }}
+          </span>
+          <div v-if="item.compositeIdentityEnforced" class="gl-mt-2">
+            <gl-badge variant="neutral" size="sm" data-testid="reviewer-agent-badge">
+              {{ __('AI') }}
+            </gl-badge>
+          </div>
           <span
             v-if="approvalRulesCount(item)"
             class="gl-flex gl-text-sm"

@@ -267,7 +267,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     subject(:report_type) { report.report_type }
 
     context 'when reported from an issue' do
-      let(:url) { project_issue_url(issue.project, issue) }
+      let(:url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
       it { is_expected.to eq :issue }
     end
@@ -326,7 +326,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     subject(:reported_content) { report.reported_content }
 
     context 'when reported from an issue' do
-      let(:url) { project_issue_url(issue.project, issue) }
+      let(:url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
       it { is_expected.to eq issue.description_html }
     end

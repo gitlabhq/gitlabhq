@@ -244,6 +244,7 @@ describe('List Selector spec', () => {
                 __typename: 'Group',
                 avatarUrl: null,
                 fullName: 'Flightjs',
+                fullPath: 'Flightjs',
                 id: 33,
                 name: 'Flightjs',
                 text: 'Flightjs',

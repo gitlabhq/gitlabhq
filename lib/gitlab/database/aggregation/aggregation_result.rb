@@ -6,10 +6,11 @@ module Gitlab
       class AggregationResult
         include Enumerable
 
-        def initialize(engine, plan, query)
+        def initialize(engine, plan, query, **options)
           @engine = engine
           @plan = plan
           @query = query
+          @options = options
         end
 
         # TODO: add interface for paginating
@@ -18,10 +19,10 @@ module Gitlab
 
         private
 
-        attr_reader :engine, :plan, :query
+        attr_reader :engine, :plan, :query, :options
 
         def loaded_results
-          @loaded_results ||= format_data(load_data)
+          @loaded_results ||= format_data(transform_keys(load_data))
         end
 
         def load_data
@@ -30,6 +31,16 @@ module Gitlab
 
         def format_data(raw_data)
           Formatter.new(engine, plan).format_data(raw_data)
+        end
+
+        def transform_keys(raw_data)
+          return raw_data unless options[:column_prefix]
+
+          raw_data.map do |row|
+            row.transform_keys do |key|
+              key.sub(options[:column_prefix], '')
+            end
+          end
         end
       end
     end

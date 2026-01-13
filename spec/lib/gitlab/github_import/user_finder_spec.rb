@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     )
   end
 
-  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:settings) { Gitlab::GithubImport::Settings.new }

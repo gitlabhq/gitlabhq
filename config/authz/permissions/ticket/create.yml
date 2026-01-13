@@ -1,0 +1,5 @@
+---
+name: create_ticket
+description: Grants the ability to create work items of type ticket
+boundaries:
+  - project

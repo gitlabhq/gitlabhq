@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/projects/_project.html.haml' do
+RSpec.describe 'shared/projects/_project.html.haml', feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project) }
 
   before do

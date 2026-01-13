@@ -7,7 +7,7 @@ module Mutations
         graphql_name 'PersonalAccessTokenCreate'
         description 'Creates a personal access token for the current user.'
 
-        field :token, Types::Authz::PersonalAccessTokens::PersonalAccessTokenType,
+        field :token, GraphQL::Types::String,
           null: true,
           description: 'Created personal access token.'
 
@@ -34,32 +34,22 @@ module Mutations
             raise_resource_not_available_error! '`granular_personal_access_tokens` feature flag is disabled.'
           end
 
-          build_granular_scopes(args.delete(:granular_scopes))
-
-          params = personal_access_token_params(args)
-          response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: params,
-            organization_id: Current.organization.id
+          granular_scopes = build_granular_scopes(args.delete(:granular_scopes))
+          response = ::Authn::PersonalAccessTokens::CreateGranularService.new(
+            current_user: current_user,
+            organization: Current.organization,
+            params: args,
+            granular_scopes: granular_scopes
           ).execute
 
           return { errors: Array(response.message) } if response.error?
 
-          token = response.payload[:personal_access_token]
+          token = response[:personal_access_token]
 
-          response = ::Authz::GranularScopeService.new(token).add_granular_scopes(
-            granular_scopes
-          )
-
-          return { errors: Array(response.message) } if response.error?
-
-          { token: token, errors: [] }
+          { token: token.token, errors: [] }
         end
 
         private
-
-        def personal_access_token_params(args)
-          args.merge(granular: true, scopes: [::Gitlab::Auth::GRANULAR_SCOPE])
-        end
 
         def build_granular_scopes(inputs)
           attrs = inputs.flat_map { |input| prepare_granular_scope_attrs(input) }
@@ -70,8 +60,8 @@ module Mutations
         def prepare_granular_scope_attrs(input)
           base_attrs = input.to_h.except(:resource_ids)
 
-          case input.access
-          when 'selected_memberships'
+          case input.access.to_sym
+          when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
             input.resource_ids.map do |gid|
               resource = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(gid))
 
@@ -79,7 +69,7 @@ module Mutations
 
               base_attrs.merge(namespace: boundary!(resource).namespace)
             end
-          when 'personal_projects'
+          when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
             base_attrs.merge(namespace: boundary!(current_user).namespace)
           else
             # namespace_id is nil for all_memberships, user, and instance access

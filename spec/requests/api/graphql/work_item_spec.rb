@@ -1729,6 +1729,30 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       end
     end
 
+    describe 'external author' do
+      let_it_be(:email) { 'user@example.com' }
+      let_it_be(:work_item) { create(:work_item, :ticket, project: project, service_desk_reply_to: email) }
+
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          externalAuthor
+        GRAPHQL
+      end
+
+      it 'contains the email' do
+        expect(work_item_data).to include('externalAuthor' => email)
+      end
+
+      context 'when user has the guest role' do
+        let(:current_user) { guest }
+
+        it 'contains the obfuscated email' do
+          expect(work_item_data).to include('externalAuthor' => 'us*****@e*****.c**')
+        end
+      end
+    end
+
     describe 'contacts widget' do
       let(:work_item_fields) do
         <<~GRAPHQL

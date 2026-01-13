@@ -1,0 +1,6 @@
+---
+name: read_approval_rule
+description: Grants the ability to read approval rules
+boundaries:
+  - group
+  - project

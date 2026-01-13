@@ -21,7 +21,6 @@ import {
   NAME_TO_TEXT_MAP,
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
-  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED,
   WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_EXPANDED,
 } from '../../constants';
@@ -45,7 +44,7 @@ export default {
   },
   provide() {
     return {
-      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
+      preventRouterNav: true,
     };
   },
   props: {
@@ -104,10 +103,10 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      update({ workspace }) {
-        if (!workspace?.workItem) return [];
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
 
-        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
+        return findLinkedItemsWidget(namespace.workItem).linkedItems?.nodes || [];
       },
       async result() {
         // When work items are switched in a modal, the data props are not getting reset.
@@ -303,7 +302,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  findLinkedItemsWidget(draftState.workspace.workItem).linkedItems?.nodes || [];
+                  findLinkedItemsWidget(draftState.namespace.workItem).linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {
                   return item.workItem.id === linkedItem.id;
                 });

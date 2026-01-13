@@ -317,6 +317,7 @@ class Project < ApplicationRecord
   has_many :relation_import_trackers, class_name: 'Projects::ImportExport::RelationImportTracker', inverse_of: :project
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
+  has_many :relation_export_uploads, class_name: 'Projects::ImportExport::RelationExportUpload', inverse_of: :project
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
@@ -543,10 +544,18 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
 
   with_options to: :project_namespace, allow_nil: true do
-    delegate :deletion_schedule
-    delegate :allowed_work_item_types
-    delegate :allowed_work_item_type?
-    delegate :supports_work_items?
+    delegate :allowed_work_item_types,
+      :allowed_work_item_type?,
+      :supports_work_items?,
+      :state,
+      :archive,
+      :unarchive,
+      :schedule_deletion,
+      :start_deletion!,
+      :reschedule_deletion!,
+      :cancel_deletion,
+      :cancel_deletion!,
+      :deletion_in_progress?
   end
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
@@ -558,7 +567,7 @@ class Project < ApplicationRecord
   with_options to: :team do
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?, :max_member_access_for_user
-    delegate :add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+    delegate :add_guest, :add_planner, :add_reporter, :add_security_manager, :add_developer, :add_maintainer, :add_owner, :add_role
     delegate :has_user?
   end
 
@@ -679,6 +688,8 @@ class Project < ApplicationRecord
   scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
 
   scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
+  scope :self_aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
+
   scope :self_or_ancestors_aimed_for_deletion, -> do
     left_joins(:group)
       .where.not(marked_for_deletion_at: nil)
@@ -687,6 +698,8 @@ class Project < ApplicationRecord
   end
 
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
+  scope :self_not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
+
   scope :self_and_ancestors_not_aimed_for_deletion, -> do
     left_joins(:group)
       .where(marked_for_deletion_at: nil)
@@ -694,7 +707,7 @@ class Project < ApplicationRecord
       .without_deleted
   end
 
-  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date) }
   scope :marked_for_deletion_on, ->(marked_for_deletion_on) do
     where(marked_for_deletion_at: marked_for_deletion_on)
   end
@@ -711,6 +724,19 @@ class Project < ApplicationRecord
   scope :with_unmigrated_storage, -> do
     where(arel_table[:storage_version].lt(LATEST_STORAGE_VERSION)
         .or(arel_table[:storage_version].eq(nil)))
+  end
+
+  scope :recently_contributed_by, ->(user, since: 1.month.ago) do
+    joins(:events)
+      .where(Event.arel_table[:author_id].eq(user.id))
+      .where(Event.arel_table[:created_at].gt(since))
+  end
+
+  # The `projects_visits` table is partitioned on `visited_at` by month
+  # Please avoid setting `since` to more than 3 months ago
+  scope :recently_visited_by, ->(user, since: 3.months.ago) do
+    joins("INNER JOIN #{Users::ProjectVisit.table_name} ON projects_visits.entity_id = projects.id")
+      .merge(Users::ProjectVisit.for_user(user).recently_visited(since: since))
   end
 
   scope :sorted_by_activity, -> { reorder(self.arel_table['last_activity_at'].desc) }
@@ -793,13 +819,17 @@ class Project < ApplicationRecord
     )
   end
 
-  scope :sorted_by_similarity_desc, ->(search, full_path_only: false) do
+  scope :sorted_by_similarity_desc, ->(search, full_path_only: false, exclude_description: false) do
+    path_sort_rule = { column: arel_table["path"], multiplier: 1 }
+    name_sort_rule = { column: arel_table["name"], multiplier: 0.7 }
     rules = if full_path_only
-              [{ column: arel_table["path"], multiplier: 1 }]
+              [path_sort_rule]
+            elsif exclude_description
+              [path_sort_rule, name_sort_rule]
             else
               [
-                { column: arel_table["path"], multiplier: 1 },
-                { column: arel_table["name"], multiplier: 0.7 },
+                path_sort_rule,
+                name_sort_rule,
                 { column: arel_table["description"], multiplier: 0.2 }
               ]
             end
@@ -836,6 +866,7 @@ class Project < ApplicationRecord
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
 
   scope :archived, -> { self_or_ancestors_archived }
+  scope :self_archived, -> { where(archived: true) }
   scope :self_or_ancestors_archived, -> do
     left_joins(:group)
       .where(archived: true)
@@ -843,13 +874,17 @@ class Project < ApplicationRecord
   end
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
+  scope :self_non_archived, -> { where(archived: false) }
   scope :self_and_ancestors_non_archived, -> do
     left_joins(:group)
       .where(archived: false)
       .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
   end
 
+  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
+
+  scope :self_inactive, -> { self_archived.or(self_aimed_for_deletion) }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
@@ -1077,6 +1112,21 @@ class Project < ApplicationRecord
     end
   end
 
+  # Returns a collection of projects that is either:
+  # - public and not forked
+  # - or visible to the logged in user
+  def self.public_non_forked_or_visible_to_user(user, min_access_level = nil)
+    min_access_level = nil if user.can_read_all_resources?
+
+    left_outer_joins(:fork_network_member)
+      .where(
+        'EXISTS (?) OR (projects.visibility_level IN (?) AND ?)',
+        user.authorizations_for_projects(min_access_level: min_access_level),
+        visibility_levels_for_user(user),
+        ForkNetworkMember.arel_table[:forked_from_project_id].eq(nil)
+      )
+  end
+
   # Auditors can :read_all_resources while admins can :read_all_resources and
   # read_admin_projects. In EE, a regular user can read_admin_projects through
   # custom admin roles.
@@ -1152,7 +1202,7 @@ class Project < ApplicationRecord
     Project.with(cte.to_arel).from(cte.alias_to(Project.arel_table))
   end
 
-  def self.inactive
+  def self.dormant
     project_statistics = ::ProjectStatistics.arel_table
     minimum_size_mb = ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes
     last_activity_cutoff = ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
@@ -1181,13 +1231,15 @@ class Project < ApplicationRecord
     # search.
     #
     # query - The search query as a String.
-    def search(query, include_namespace: false, use_minimum_char_limit: true)
+    def search(query, include_namespace: false, exclude_description: false, use_minimum_char_limit: true)
       if include_namespace
         joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description],
           use_minimum_char_limit: use_minimum_char_limit)
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
       else
-        fuzzy_search(query, [:path, :name, :description], use_minimum_char_limit: use_minimum_char_limit)
+        search_columns = [:path, :name]
+        search_columns << :description unless exclude_description
+        fuzzy_search(query, search_columns, use_minimum_char_limit: use_minimum_char_limit)
       end
     end
 
@@ -2114,7 +2166,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
-    Label.templates.for_organization(organization).each do |label|
+    Label.templates.in_organization(organization).each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
       params = label.attributes
                     .slice(*Label.column_names)
@@ -3567,13 +3619,21 @@ class Project < ApplicationRecord
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
+  def use_work_item_url?
+    return false if Feature.enabled?(:work_item_legacy_url, self, type: :gitlab_com_derisk)
+    return work_items_consolidated_list_enabled? if group.blank?
+
+    work_items_consolidated_list_enabled? &&
+      group.use_work_item_url?
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 
     Projects::RecordTargetPlatformsWorker.perform_async(id)
   end
 
-  def inactive?
+  def dormant?
     (statistics || build_statistics).storage_size > ::Gitlab::CurrentSettings.inactive_projects_min_size_mb.megabytes &&
       last_activity_at < ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
   end
@@ -3779,7 +3839,7 @@ class Project < ApplicationRecord
       self.topics.delete_all
       self.topics = @topic_list.map do |topic_name|
         Projects::Topic
-          .for_organization(organization_id)
+          .in_organization(organization_id)
           .where('lower(name) = ?', topic_name.downcase)
           .order(total_projects_count: :desc)
           .first_or_create(name: topic_name, title: topic_name, slug: Gitlab::Slug::Path.new(topic_name).generate)
@@ -3826,9 +3886,9 @@ class Project < ApplicationRecord
   def create_new_pool_repository
     pool = PoolRepository.safe_find_or_create_by!(
       shard: Shard.by_name(repository_storage),
-      source_project: self,
-      organization: organization
-    )
+      source_project: self) do |new_pool|
+        new_pool.organization = organization
+      end
 
     update!(pool_repository: pool)
 
@@ -4063,6 +4123,10 @@ class Project < ApplicationRecord
 
   def validate_unsafe_import_url?
     import_url.present? && import_url_changed?
+  end
+
+  def unique_attribute
+    :path
   end
 end
 

@@ -133,7 +133,7 @@ describe('WebAuthnAuthenticate', () => {
       it('displays an error message', () => {
         expect(submitSpy).not.toHaveBeenCalled();
         expect(findMessage().text()).toMatchInterpolatedText(
-          'There was a problem communicating with your device. (Error)',
+          'Failed to connect to your device. Try again. (Error)',
         );
       });
 

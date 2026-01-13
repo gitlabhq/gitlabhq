@@ -249,6 +249,8 @@
   - 1
 - - ci_slsa_publish_provenance
   - 1
+- - ci_track_pipeline_trigger_events
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs
@@ -555,6 +557,8 @@
   - 2
 - - import_load_placeholder_references
   - 1
+- - import_offline_configuration_purge
+  - 1
 - - import_reassign_placeholder_user_records
   - 1
 - - import_refresh_import_jid
@@ -729,6 +733,8 @@
   - 2
 - - new_note
   - 2
+- - notifications_targeted_messages_destroy
+  - 1
 - - object_pool
   - 1
 - - object_storage
@@ -752,6 +758,8 @@
 - - pages
   - 1
 - - pages_deactivate_mr_deployments
+  - 1
+- - pages_delete_group_pages_deployments
   - 1
 - - pages_delete_pages_deployment
   - 1
@@ -816,6 +824,8 @@
 - - projects_import_export_relation_export
   - 1
 - - projects_import_export_relation_import
+  - 1
+- - projects_import_export_remove_relation_export_upload
   - 1
 - - projects_import_export_wait_relation_exports
   - 1
@@ -965,8 +975,6 @@
   - 1
 - - secrets_management_deprovision_project_secrets_manager
   - 1
-- - secrets_management_deprovision_project_secrets_manager_by_path
-  - 1
 - - secrets_management_provision_group_secrets_manager
   - 1
 - - secrets_management_provision_project_secrets_manager
@@ -1055,6 +1063,8 @@
   - 1
 - - security_process_scan_result_policy
   - 1
+- - security_project_tracked_contexts_update_default_context
+  - 1
 - - security_recreate_orchestration_configuration
   - 1
 - - security_refresh_project_policies
@@ -1063,9 +1073,21 @@
   - 1
 - - security_scan_execution_policies_rule_schedule
   - 1
+- - security_scan_profiles_attach
+  - 1
+- - security_scan_profiles_clean_old_namespace_connections
+  - 1
+- - security_scan_profiles_delete_scan_profiles
+  - 1
+- - security_scan_profiles_process_group_transfer_events
+  - 1
 - - security_scan_profiles_process_project_transfer_events
   - 1
 - - security_scan_result_policies_add_approvers_to_rules
+  - 1
+- - security_scan_result_policies_audit_warn_mode_group_protected_branches_overrides
+  - 1
+- - security_scan_result_policies_audit_warn_mode_group_protected_branches_overrides_group
   - 1
 - - security_scan_result_policies_audit_warn_mode_merge_request_approval_settings
   - 1
@@ -1156,6 +1178,8 @@
 - - system_hook_push
   - 1
 - - terraform
+  - 1
+- - timed_out_builds
   - 1
 - - todos_destroyer
   - 1

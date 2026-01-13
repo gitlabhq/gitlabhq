@@ -179,5 +179,14 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     it { is_expected.to validate_presence_of(:alias) }
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.to validate_presence_of(:integration) }
+    it { is_expected.to validate_length_of(:bot_access_token).is_at_most(255) }
+
+    specify 'bot_access_token length validation does not invalidate existing records' do
+      slack_integration = create(:slack_integration)
+      slack_integration.bot_access_token = 'A' * 260
+      slack_integration.save!(validate: false)
+
+      expect(slack_integration.reload).to be_valid
+    end
   end
 end

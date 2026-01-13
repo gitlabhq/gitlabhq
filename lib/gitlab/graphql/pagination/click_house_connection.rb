@@ -49,59 +49,8 @@ module Gitlab
           limited_nodes.take(limit_value)
         end
 
-        def limited_nodes
-          if last
-            query = reverse_order(sliced_nodes).limit(limit_value + 1)
-            nodes = execute_query(query)
-            nodes = nodes.reverse unless before
-
-            @has_previous_page_cache = nodes.count > limit_value
-            @has_previous_page_cache ? nodes.last(limit_value) : nodes
-          else
-            # Loading LIMIT + 1 records so we can easily determine if there is next page.
-            query = sliced_nodes.limit(limit_value + 1)
-            nodes = execute_query(query)
-            nodes = nodes.reverse if before
-            nodes
-          end
-        end
-        strong_memoize_attr :limited_nodes
-
-        def sliced_nodes
-          query = @items
-          query = add_after_condition(query, after) if after
-          query = add_before_condition(query, before) if before
-          query
-        end
-
-        def add_after_condition(query, raw_cursor)
-          order_by_columns, column_values = *build_filter_list(raw_cursor)
-
-          grouping = Arel::Nodes::Grouping.new(order_by_columns).gt(
-            Arel::Nodes::Grouping.new(column_values)
-          )
-
-          query.where(grouping)
-        end
-
-        def add_before_condition(query, raw_cursor)
-          order_by_columns, column_values = *build_filter_list(raw_cursor)
-
-          new_query = reverse_order(query)
-
-          grouping = Arel::Nodes::Grouping.new(order_by_columns).lt(
-            Arel::Nodes::Grouping.new(column_values)
-          )
-
-          new_query.where(grouping)
-        end
-
-        def limit_value
-          @limit_value ||= [first, last, max_page_size || GitlabSchema.default_max_page_size].compact.min
-        end
-
         def cursor_for(item)
-          raw_cursor = orders.each_with_object({}) do |order, hash|
+          raw_cursor = @items.manager.ast.orders.each_with_object({}) do |order, hash|
             expression_name = order.expr.name
             value = item[expression_name]
             raise "Cursor value for '#{expression_name}' is missing" if value.nil?
@@ -131,27 +80,96 @@ module Gitlab
 
         private
 
-        def build_filter_list(raw_cursor)
-          cursor = decoded_cursor(raw_cursor)
+        def limited_nodes
+          if last
+            query = reverse_order(sliced_nodes).limit(limit_value + 1)
+            nodes = execute_query(query)
+            nodes = nodes.reverse
 
-          values = []
-          columns = orders.map do |order|
-            expression_name = order.expr.name
-            # Prevent SQL injection from a fabricated cursor value
-            values << Arel.sql(::ClickHouse::Client::Quoting.quote(cursor[expression_name]))
-            @items.table[expression_name]
+            @has_previous_page_cache = nodes.count > limit_value
+            @has_previous_page_cache ? nodes.last(limit_value) : nodes
+          else
+            # Loading LIMIT + 1 records so we can easily determine if there is next page.
+            query = sliced_nodes.limit(limit_value + 1)
+            execute_query(query)
           end
+        end
+        strong_memoize_attr :limited_nodes
 
-          [columns, values]
+        def sliced_nodes
+          query = @items
+          query = add_after_condition(query, after) if after
+          query = add_before_condition(query, before) if before
+          query
         end
 
-        def orders
-          @items.manager.ast.orders
+        def add_after_condition(query, raw_cursor)
+          full_cursor = build_cursor(raw_cursor)
+
+          conditions = build_pagination_conditions(full_cursor, :after)
+
+          query.where(conditions)
+        end
+
+        def add_before_condition(query, raw_cursor)
+          full_cursor = build_cursor(raw_cursor)
+
+          conditions = build_pagination_conditions(full_cursor, :before)
+
+          query.where(conditions)
+        end
+
+        def limit_value
+          @limit_value ||= [first, last, max_page_size || GitlabSchema.default_max_page_size].compact.min
+        end
+
+        # Build a condition that handles multiple sort columns with different directions
+        # For example:
+        # (col1 = val1 AND col2 = val2 AND col3 > val3) OR (col1 = val1 AND col2 < val2) OR (col1 > val1)
+        # for col1 ASC, col2 DESC, col3 ASC sorting and `after` as direction
+        def build_pagination_conditions(cursor, direction)
+          current_condition = build_current_cursor_condition(cursor, direction)
+          other_conditions = build_pagination_conditions(cursor[..-2], direction) if cursor.size > 1
+
+          other_conditions ? current_condition.or(other_conditions) : current_condition
+        end
+
+        # Builds (other_part1 = val1 AND other_part2 = val2 AND current_part > val3)
+        def build_current_cursor_condition(cursor, direction)
+          # everything but last is `=`
+          other_parts_eq_expressions = cursor[..-2].map do |ord, val|
+            @items[ord.expr.name].eq(val)
+          end
+
+          # last part is `>` or `<`
+          order, value = *cursor.last
+          ascending_order = order.is_a?(Arel::Nodes::Ascending)
+          use_gt = (direction == :after && ascending_order) || (direction != :after && !ascending_order)
+
+          current_condition = if use_gt
+                                @items[order.expr.name].gt(value)
+                              else
+                                @items[order.expr.name].lt(value)
+                              end
+
+          (other_parts_eq_expressions + [current_condition]).inject { |acc, expr| acc.and(expr) }
+        end
+
+        def build_cursor(raw_cursor)
+          cursor = decoded_cursor(raw_cursor)
+
+          @items.manager.ast.orders.map do |order|
+            # Prevent SQL injection from a fabricated cursor value
+            [order, @items.quote(cursor[order.expr.name])]
+          end
         end
 
         def reverse_order(query)
+          # TODO: Migrate to `query.reverse_order` when
+          # https://gitlab.com/gitlab-org/ruby/gems/clickhouse-client/-/work_items/19
+          # is implemented
           new_query = query.dup
-          new_query.manager.ast.orders = orders.map do |order|
+          new_query.manager.ast.orders = query.manager.ast.orders.map do |order|
             if order.is_a?(Arel::Nodes::Ascending)
               Arel::Nodes::Descending.new(order.expr)
             else

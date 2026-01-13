@@ -21,6 +21,11 @@ RSpec.describe API::Avatar, feature_category: :user_profile do
           expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar.local_url}")
           is_expected.to have_request_urgency(:medium)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_avatar do
+          let(:boundary_object) { :user }
+          let(:request) { get api('/avatar', personal_access_token: pat), params: { email: 'public@example.com' } }
+        end
       end
 
       context 'no user with matching public email address' do

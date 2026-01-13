@@ -1,0 +1,5 @@
+---
+name: create_project
+description: Grants the ability to create projects
+boundaries:
+  - instance

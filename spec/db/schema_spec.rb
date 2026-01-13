@@ -51,7 +51,6 @@ RSpec.describe 'Database schema',
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       audit_events: %w[author_id entity_id target_id],
-      authentication_event_archived_records: %w[user_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
@@ -103,7 +102,6 @@ RSpec.describe 'Database schema',
       dep_ci_build_trace_sections: %w[build_id],
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
-      deployment_merge_requests: %w[project_id],
       draft_notes: %w[discussion_id commit_id],
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
@@ -135,9 +133,11 @@ RSpec.describe 'Database schema',
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
       award_emoji_archived: %w[user_id awardable_id namespace_id organization_id], # temp table
+      slack_integrations_scopes_archived: %w[
+        slack_api_scope_id slack_integration_id project_id group_id organization_id
+      ], # Temp table
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
-      oauth_access_grant_archived_records: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
       oauth_access_token_archived_records: %w[resource_owner_id application_id],
       oauth_applications: %w[owner_id],
@@ -159,7 +159,6 @@ RSpec.describe 'Database schema',
       p_ci_pipeline_variables: %w[project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_stages: %w[project_id],
-      pool_repositories: %w[organization_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
       project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
       project_data_transfers: %w[project_id namespace_id],
@@ -170,6 +169,7 @@ RSpec.describe 'Database schema',
       repository_languages: %w[programming_language_id],
       routes: %w[source_id],
       security_findings: %w[project_id],
+      security_finding_enrichments: %w[project_id cve_enrichment_id],
       sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added to partitioned table
       p_sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
@@ -247,7 +247,7 @@ RSpec.describe 'Database schema',
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
-      web_hook_logs_daily: %w[web_hook_id],
+      web_hook_logs_daily: %w[web_hook_id organization_id group_id project_id],
       ml_candidates: %w[internal_id],
       value_stream_dashboard_counts: %w[namespace_id],
       vulnerability_export_parts: %w[start_id end_id],
@@ -291,14 +291,14 @@ RSpec.describe 'Database schema',
       issues: 35,
       members: 21, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/work_items/520189
       merge_requests: 29,
-      namespaces: 26,
+      namespaces: 27,
       notes: 16,
       p_ci_builds: 26,
       p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
       project_type_ci_runners: 16,
-      projects: 55,
+      projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
       vulnerability_reads: 23
@@ -550,7 +550,7 @@ RSpec.describe 'Database schema',
     end
 
     it 'uses json schema validator', :eager_load, :aggregate_failures,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9460' do
       columns_name_with_jsonb.each do |jsonb_column|
         column_name = jsonb_column["column_name"]
         models = models_by_table_name[jsonb_column["table_name"]] || []

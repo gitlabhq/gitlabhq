@@ -195,6 +195,7 @@ export const createTrackedRef = (overrides = {}) => ({
   isProtected: false,
   vulnerabilitiesCount: 0,
   commit: {
+    id: 'gid://gitlab/Commit/1',
     sha: 'df210850abc123',
     shortId: 'df21085',
     title: 'Commit message',

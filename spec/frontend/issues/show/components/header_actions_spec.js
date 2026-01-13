@@ -20,6 +20,7 @@ import {
   STATUS_OPEN,
   TYPE_INCIDENT,
   TYPE_ISSUE,
+  TYPE_TICKET,
   TYPE_TEST_CASE,
   TYPE_ALERT,
   TYPE_MERGE_REQUEST,
@@ -110,7 +111,7 @@ describe('HeaderActions component', () => {
 
   const mockIssueReferenceData = {
     data: {
-      workspace: {
+      namespace: {
         id: 'gid://gitlab/Project/7',
         issuable: {
           id: 'gid://gitlab/Issue/511',
@@ -136,7 +137,7 @@ describe('HeaderActions component', () => {
   const findDesktopDropdownTooltip = () => getBinding(findDesktopDropdown().element, 'gl-tooltip');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
-  const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
+  const findCopyReferenceDropdownItem = () => wrapper.findByTestId('copy-reference');
   const findCopyEmailItem = () => wrapper.findByTestId('copy-email');
   const findPromoteToEpicButton = () => wrapper.findByTestId('promote-button');
   const findLockIssueToggle = () => wrapper.findByTestId('lock-issue-toggle');
@@ -211,6 +212,7 @@ describe('HeaderActions component', () => {
   describe.each`
     issueType
     ${TYPE_ISSUE}
+    ${TYPE_TICKET}
     ${TYPE_INCIDENT}
   `('when issue type is $issueType', ({ issueType }) => {
     describe('close/reopen button', () => {
@@ -260,19 +262,19 @@ describe('HeaderActions component', () => {
       ${'desktop dropdown'} | ${findDesktopDropdownItems}
     `('$description', ({ findDropdownItems }) => {
       describe.each`
-        description                               | itemText                      | isItemVisible | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
-        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}       | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}       | ${false}      | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user can create ${issueType}`}    | ${`New related ${issueType}`} | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot create ${issueType}`} | ${`New related ${issueType}`} | ${false}      | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can promote to epic'}        | ${'Promote to epic'}          | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot promote to epic'}     | ${'Promote to epic'}          | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
-        ${'when user can report abuse'}           | ${'Report abuse'}             | ${true}       | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
-        ${'when user cannot report abuse'}        | ${'Report abuse'}             | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user can submit as spam'}         | ${'Submit as spam'}           | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${'when user cannot submit as spam'}      | ${'Submit as spam'}           | ${false}      | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
-        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`}      | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
-        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`}      | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
+        description                               | itemText                 | isItemVisible | canUpdateIssue | canCreateIssue | isIssueAuthor | canReportSpam | canPromoteToEpic | canDestroyIssue
+        ${`when user can update ${issueType}`}    | ${`Close ${issueType}`}  | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot update ${issueType}`} | ${`Close ${issueType}`}  | ${false}      | ${false}       | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user can create ${issueType}`}    | ${`New related item`}    | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot create ${issueType}`} | ${`New related item`}    | ${false}      | ${true}        | ${false}       | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can promote to epic'}        | ${'Promote to epic'}     | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot promote to epic'}     | ${'Promote to epic'}     | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${false}         | ${true}
+        ${'when user can report abuse'}           | ${'Report abuse'}        | ${true}       | ${true}        | ${true}        | ${false}      | ${true}       | ${true}          | ${true}
+        ${'when user cannot report abuse'}        | ${'Report abuse'}        | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user can submit as spam'}         | ${'Submit as spam'}      | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${'when user cannot submit as spam'}      | ${'Submit as spam'}      | ${false}      | ${true}        | ${true}        | ${true}       | ${false}      | ${true}          | ${true}
+        ${`when user can delete ${issueType}`}    | ${`Delete ${issueType}`} | ${true}       | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${true}
+        ${`when user cannot delete ${issueType}`} | ${`Delete ${issueType}`} | ${false}      | ${true}        | ${true}        | ${true}       | ${true}       | ${true}          | ${false}
       `(
         '$description',
         ({
@@ -345,11 +347,13 @@ describe('HeaderActions component', () => {
 
   describe('Locking discussion', () => {
     it.each`
-      description                                                                                    | canUpdateIssue | issueType        | isLoggedIn | isExpected
-      ${'shows lock issue toggle when type is issue, user is signed in, and canUpdateIssue is true'} | ${true}        | ${TYPE_ISSUE}    | ${true}    | ${true}
-      ${'does not show lock issue toggle if canUpdateIssue is false'}                                | ${false}       | ${TYPE_ISSUE}    | ${true}    | ${false}
-      ${'does not show lock issue toggle if type is not issue'}                                      | ${true}        | ${TYPE_INCIDENT} | ${true}    | ${false}
-      ${'does not show lock issue toggle if user is not signed in'}                                  | ${true}        | ${TYPE_ISSUE}    | ${false}   | ${false}
+      description                                                                                     | canUpdateIssue | issueType        | isLoggedIn | isExpected
+      ${'shows lock issue toggle when type is issue, user is signed in, and canUpdateIssue is true'}  | ${true}        | ${TYPE_ISSUE}    | ${true}    | ${true}
+      ${'does not show lock issue toggle if canUpdateIssue is false'}                                 | ${false}       | ${TYPE_ISSUE}    | ${true}    | ${false}
+      ${'shows lock issue toggle when type is ticket, user is signed in, and canUpdateIssue is true'} | ${true}        | ${TYPE_TICKET}   | ${true}    | ${true}
+      ${'does not show lock issue toggle if canUpdateIssue is false and type is ticket'}              | ${false}       | ${TYPE_TICKET}   | ${true}    | ${false}
+      ${'does not show lock issue toggle if type is incident'}                                        | ${true}        | ${TYPE_INCIDENT} | ${true}    | ${false}
+      ${'does not show lock issue toggle if user is not signed in'}                                   | ${true}        | ${TYPE_ISSUE}    | ${false}   | ${false}
     `('$description', ({ canUpdateIssue, issueType, isLoggedIn, isExpected }) => {
       wrapper = mountComponent({
         isLoggedIn,
@@ -581,34 +585,42 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('copy reference option', () => {
+  describe.each`
+    issueType
+    ${TYPE_ISSUE}
+    ${TYPE_TICKET}
+  `('copy reference option for $issueType', ({ issueType }) => {
     describe('clicking when visible', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           props: {
-            issueType: TYPE_ISSUE,
+            issueType,
           },
         });
       });
 
       it('shows toast message', () => {
-        findCopyRefenceDropdownItem().vm.$emit('action');
+        findCopyReferenceDropdownItem().vm.$emit('action');
 
         expect(toast).toHaveBeenCalledWith('Reference copied');
       });
 
       it('contains copy reference class', () => {
-        expect(findCopyRefenceDropdownItem().classes()).toContain('js-copy-reference');
+        expect(findCopyReferenceDropdownItem().classes()).toContain('js-copy-reference');
       });
     });
   });
 
-  describe('copy email option', () => {
+  describe.each`
+    issueType
+    ${TYPE_ISSUE}
+    ${TYPE_TICKET}
+  `('copy email option for $issueType', ({ issueType }) => {
     describe('clicking when visible', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           props: {
-            issueType: TYPE_ISSUE,
+            issueType,
             issuableEmailAddress: 'mock-email-address',
           },
         });
@@ -626,8 +638,10 @@ describe('HeaderActions component', () => {
     it.each`
       issueType            | canUpdateIssue | isVisible | showHide
       ${TYPE_ISSUE}        | ${true}        | ${true}   | ${'shows'}
+      ${TYPE_TICKET}       | ${true}        | ${true}   | ${'shows'}
       ${TYPE_INCIDENT}     | ${true}        | ${true}   | ${'shows'}
       ${TYPE_ISSUE}        | ${false}       | ${false}  | ${'hides'}
+      ${TYPE_TICKET}       | ${false}       | ${false}  | ${'hides'}
       ${TYPE_INCIDENT}     | ${false}       | ${false}  | ${'hides'}
       ${'some_other_type'} | ${true}        | ${false}  | ${'hides'}
     `(
@@ -649,6 +663,7 @@ describe('HeaderActions component', () => {
     it.each`
       issueType             | expectedText
       ${TYPE_ISSUE}         | ${'issue'}
+      ${TYPE_TICKET}        | ${'ticket'}
       ${TYPE_INCIDENT}      | ${'incident'}
       ${TYPE_MERGE_REQUEST} | ${'merge request'}
       ${TYPE_ALERT}         | ${'alert'}
@@ -663,9 +678,7 @@ describe('HeaderActions component', () => {
         `${capitalizeFirstCharacter(expectedText)} actions`,
       );
       expect(findDropdownBy('copy-email').text()).toBe(`Copy ${expectedText} email address`);
-      expect(findDesktopDropdownItems().at(1).props('item').text).toBe(
-        `New related ${expectedText}`,
-      );
+      expect(findDesktopDropdownItems().at(1).props('item').text).toBe(`New related item`);
     });
   });
 });

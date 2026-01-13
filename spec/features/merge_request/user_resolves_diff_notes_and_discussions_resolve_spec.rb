@@ -124,7 +124,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
             expect(page).not_to have_selector('.diffs .diff-file .notes_holder')
           end
 
-          it 'shows resolved thread when toggled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/327439' do
+          it 'shows resolved thread when toggled', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9344' do
             find('.diff-comment-avatar-holders').click
 
             expect(find('.diffs .diff-file .notes_holder')).to be_visible
@@ -209,7 +209,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         end
       end
 
-      it 'allows user to quickly scroll to next unresolved thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410109' do
+      it 'allows user to quickly scroll to next unresolved thread', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9492' do
         page.within(first('.discussions-counter')) do
           click_button _('Next open thread')
         end
@@ -334,11 +334,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           page.find('.discussion-next-btn').click
         end
 
-        if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-          expect(page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")).to be > 0
-        else
-          expect(page.evaluate_script("window.pageYOffset")).to be > 0
-        end
+        expect(page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop")).to be > 0
       end
 
       it 'updates updated text after resolving note' do

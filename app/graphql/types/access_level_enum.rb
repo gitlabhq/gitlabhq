@@ -10,6 +10,14 @@ module Types
     value 'GUEST', value: Gitlab::Access::GUEST, description: 'Guest access.'
     value 'PLANNER', value: Gitlab::Access::PLANNER, description: 'Planner access.'
     value 'REPORTER', value: Gitlab::Access::REPORTER, description: 'Reporter access.'
+    value 'SECURITY_MANAGER',
+      value: Gitlab::Access::SECURITY_MANAGER,
+      description: 'Security manager access.' do
+      def visible?(_context)
+        Gitlab::Security::SecurityManagerConfig.enabled?
+      end
+    end
+
     value 'DEVELOPER', value: Gitlab::Access::DEVELOPER, description: 'Developer access.'
     value 'MAINTAINER', value: Gitlab::Access::MAINTAINER, description: 'Maintainer access.'
     value 'OWNER', value: Gitlab::Access::OWNER, description: 'Owner access.'

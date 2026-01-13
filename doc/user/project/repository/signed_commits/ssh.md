@@ -17,6 +17,18 @@ When you sign commits with SSH keys, GitLab uses the SSH public keys associated
 with your GitLab account to cryptographically verify the commit signature.
 If successful, GitLab displays a **Verified** label on the commit.
 
+For GitLab to consider a commit verified:
+
+- You must add the SSH key used to sign the commit to your GitLab account
+  with a [usage type](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account)
+  of **Authentication & Signing** or **Signing**.
+- The committer email address in your Git configuration must match a
+  [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+  associated with your GitLab account.
+
+If the signature is valid but the committer email does not match a verified
+email on your account, the commit is marked **Unverified**.
+
 You may use the same SSH keys for `git+ssh` authentication to GitLab
 and signing commit signatures as long as their usage type is **Authentication & Signing**.
 It can be verified on the page for [adding an SSH key to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account).
@@ -69,6 +81,8 @@ Prerequisites:
 - You've [created an SSH key](../../../ssh.md#generate-an-ssh-key-pair).
 - You've [added the key](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account) to your GitLab account.
 - You've [configured Git to sign commits](#configure-git-to-sign-commits-with-your-ssh-key) with your SSH key.
+- Your Git `user.email` matches a [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+  associated with your GitLab account.
 
 To sign a commit:
 

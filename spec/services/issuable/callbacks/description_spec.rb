@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::Callbacks::Description, feature_category: :portfolio_management do
+RSpec.describe Issuable::Callbacks::Description, :request_store, feature_category: :portfolio_management do
   let_it_be(:random_user) { create(:user) }
   let_it_be(:author) { create(:user) }
   let_it_be(:guest) { create(:user) }
@@ -145,6 +145,25 @@ RSpec.describe Issuable::Callbacks::Description, feature_category: :portfolio_ma
 
         expect(work_item.last_edited_by).to eq(random_user)
         expect(work_item.last_edited_at).to eq(Date.yesterday)
+      end
+    end
+
+    context 'when a service account with composite identity is in use' do
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+
+      # Use a separate let_it_be to prevent interference with other specs
+      let_it_be(:author) { create(:user) }
+
+      before do
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, author)
+      end
+
+      it 'attributes the change to the service account' do
+        work_item.description = 'new description'
+
+        before_update_callback
+
+        expect(work_item.last_edited_by).to eq(service_account)
       end
     end
   end

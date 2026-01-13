@@ -27,3 +27,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Admin::Menus::MessagesMenu.prepend_mod_with('Sidebars::Admin::Menus::MessagesMenu')

@@ -1,0 +1,16 @@
+diff --git a/node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js b/node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js
+index d3974f4..f8dab43 100644
+--- a/node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js
++++ b/node_modules/@gitlab/vuedraggable-vue3/src/vuedraggable.js
+@@ -92,9 +92,9 @@ const draggableComponent = defineComponent({
+   render() {
+     try {
+       this.error = false;
+-      const { $slots, $attrs, tag, componentData, realList, getKey } = this;
++      const { $slots, $scopedSlots, $attrs, tag, componentData, realList, getKey } = this;
+       const componentStructure = computeComponentStructure({
+-        $slots,
++        $slots: $scopedSlots || $slots,
+         tag,
+         realList,
+         getKey

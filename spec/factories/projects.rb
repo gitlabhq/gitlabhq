@@ -96,6 +96,7 @@ FactoryBot.define do
       guests {}
       planners {}
       reporters {}
+      security_managers {}
       developers {}
       maintainers {}
       owners {}
@@ -194,6 +195,7 @@ FactoryBot.define do
       project.add_members(Array.wrap(evaluator.guests), :guest)
       project.add_members(Array.wrap(evaluator.planners), :planner)
       project.add_members(Array.wrap(evaluator.reporters), :reporter)
+      project.add_members(Array.wrap(evaluator.security_managers), :security_manager)
       project.add_members(Array.wrap(evaluator.developers), :developer)
       project.add_members(Array.wrap(evaluator.maintainers), :maintainer)
       project.add_members(Array.wrap(evaluator.owners), :owner)
@@ -535,6 +537,16 @@ FactoryBot.define do
         stub_feature_flags(main_branch_over_master: false)
 
         raise 'Failed to create wiki repository!' unless project.create_wiki
+      end
+    end
+
+    trait :wiki_repo_with_page do
+      after(:create) do |project|
+        stub_feature_flags(main_branch_over_master: false)
+
+        raise 'Failed to create wiki repository!' unless project.create_wiki
+
+        project.wiki.create_page('Home', 'This is the home page')
       end
     end
 

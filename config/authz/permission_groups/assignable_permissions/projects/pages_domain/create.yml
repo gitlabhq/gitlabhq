@@ -1,7 +1,6 @@
 ---
 name: create_pages_domain
 description: Grants the ability to create pages domains
-feature_category: pages
 boundaries:
   - project
 permissions:

@@ -40,7 +40,8 @@ RSpec.describe 'projects/attestations/index.html.haml', feature_category: :artif
 
       expect(rendered).to have_selector('[data-testid="attestations-table"]')
       within("[data-testid='attestations-#{attestation.iid}']") do
-        expect(rendered).to have_content(attestation.file.filename)
+        expect(rendered).to have_link(attestation.file.filename,
+          href: project_attestation_path(project, attestation.iid))
         expect(rendered).to have_link(attestation.build.iid, href: project_job_path(project, build))
         expect(rendered).to have_content(attestation.predicate_type)
         expect(rendered).to have_content(attestation.predicate_type)

@@ -57,7 +57,7 @@ module Gitlab
 
           def value
             @config[:reports] = reports_value if @config.key?(:reports)
-            @config
+            @config.compact
           end
 
           def expose_as_present?

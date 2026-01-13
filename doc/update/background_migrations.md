@@ -587,11 +587,8 @@ Failed background migrations prevent further application upgrades.
 
 When the background migration is determined to be "safe" to skip, the migration can be manually marked finished:
 
-{{< alert type="warning" >}}
-
-Make sure you create a backup before proceeding.
-
-{{< /alert >}}
+> [!warning]
+> Make sure you create a backup before proceeding.
 
 ```ruby
 # Start the rails console

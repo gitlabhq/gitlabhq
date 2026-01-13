@@ -1,7 +1,6 @@
 ---
 name: read_wiki
 description: Grants the ability to read wikis
-feature_category: wiki
 boundaries:
   - group
   - project

@@ -154,7 +154,48 @@ RSpec.describe SentNotification, :request_store, feature_category: :notification
     describe 'detach_partition_if' do
       subject { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
 
-      it { is_expected.to be_falsey }
+      context 'when the partition is empty' do
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the partition has records' do
+        before do
+          create(:sent_notification, project: project)
+          create(:sent_notification, project: project)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when partition has records older than retention period, but newest record is within retention period' do
+        before do
+          create(:sent_notification,
+            project: project,
+            created_at: (described_class::RETENTION_PERIOD + 2.days).ago
+          )
+          create(:sent_notification,
+            project: project,
+            created_at: (described_class::RETENTION_PERIOD - 1.day).ago
+          )
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when the newest record of the partition is older than RETENTION_PERIOD' do
+        before do
+          create(:sent_notification,
+            project: project,
+            created_at: (described_class::RETENTION_PERIOD + 2.days).ago
+          )
+          create(:sent_notification,
+            project: project,
+            created_at: (described_class::RETENTION_PERIOD + 1.day).ago
+          )
+        end
+
+        it { is_expected.to be(true) }
+      end
     end
   end
 

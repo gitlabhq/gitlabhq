@@ -148,11 +148,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is shown as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is shown as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ### Scope: `merge_requests`
 
@@ -365,11 +362,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `commits`
 
@@ -457,11 +451,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `notes`
 
@@ -626,11 +617,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is now a single-sized `assignees` array.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 ### Scope: `merge_requests`
 
@@ -802,11 +790,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `commits`
 
@@ -892,11 +877,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `notes`
 
@@ -1027,11 +1009,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-The `assignee` column is deprecated. It is now a single-sized `assignees` array.
-
-{{< /alert >}}
+> [!note]
+> The `assignee` column is deprecated. It is now a single-sized `assignees` array.
 
 ### Scope: `merge_requests`
 
@@ -1203,11 +1182,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `commits`
 
@@ -1283,11 +1259,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-`filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
-
-{{< /alert >}}
+> [!note]
+> `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
 ### Scope: `notes`
 

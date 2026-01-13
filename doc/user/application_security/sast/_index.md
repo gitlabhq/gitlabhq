@@ -72,22 +72,23 @@ after each security scan and provides confidence scores with explanations for ea
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                  | In Free & Premium | In Ultimate |
-|:-----------------------------------------------------------------------------------------|:------------------|:------------|
-| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | {{< yes >}}       | {{< yes >}} |
-| Downloadable [SAST JSON report](#download-a-sast-report)                                 | {{< yes >}}       | {{< yes >}} |
-| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | {{< no >}}        | {{< yes >}} |
-| New findings in [merge request widget](#merge-request-widget)                            | {{< no >}}        | {{< yes >}} |
-| New findings in [merge request changes view](#merge-request-changes-view)                | {{< no >}}        | {{< yes >}} |
-| [Vulnerability Management](../vulnerabilities/_index.md)                                 | {{< no >}}        | {{< yes >}} |
+| Feature                                                                                                            | In Free & Premium | In Ultimate |
+|:-------------------------------------------------------------------------------------------------------------------|:------------------|:------------|
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)                                   | {{< yes >}}       | {{< yes >}} |
+| Downloadable [SAST JSON report](#download-a-sast-report)                                                           | {{< yes >}}       | {{< yes >}} |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md)                           | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request widget](#merge-request-widget)                                                      | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request changes view](#merge-request-changes-view)                                          | {{< no >}}        | {{< yes >}} |
+| [Vulnerability Management](../vulnerabilities/_index.md)                                                           | {{< no >}}        | {{< yes >}} |
 | [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on) | {{< no >}}        | {{< yes >}} |
-| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | {{< no >}}        | {{< yes >}} |
-| [Ruleset customization](customize_rulesets.md)                                           | {{< no >}}        | {{< yes >}} |
-| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | {{< no >}}        | {{< yes >}} |
+| [UI-based scanner configuration](#enable-sast-by-using-the-ui)                                                     | {{< no >}}        | {{< yes >}} |
+| [Ruleset customization](customize_rulesets.md)                                                                     | {{< no >}}        | {{< yes >}} |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                                                | {{< no >}}        | {{< yes >}} |
 
 ## Getting started
 
-If you are new to SAST, the following steps show how to enable SAST for your project.
+Enable SAST in your project by using either the UI or editing your project's GitLab CI/CD
+configuration file.
 
 Prerequisites:
 
@@ -98,44 +99,132 @@ Prerequisites:
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by
   default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
-To enable SAST:
+> [!note]
+> By default, SAST runs only in branch pipelines. To run SAST in merge request pipelines, see
+> [use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
-1. On the top bar, select **Search or go to** and find your project.
-1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
-1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
+### Enable SAST by using the UI
 
-Using a template:
+You can enable and configure SAST by using the UI, either with the default settings or with
+customizations. The method you can use depends on your GitLab license tier.
 
-```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-```
+#### Enable SAST with customizations
 
-Or using a CI component:
+{{< details >}}
 
-```yaml
-include:
-  - component: gitlab.com/components/sast/sast@main
-```
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-At this point, SAST is enabled in your pipeline.
-If supported source code is present, the appropriate analyzers and default rules automatically scan for vulnerabilities when a pipeline runs.
-The corresponding jobs will appear under the `test` stage in your pipeline.
+{{< /details >}}
+
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
+
+{{< /history >}}
 
 {{< alert type="note" >}}
+
+The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
+have a complex configuration, the tool might fail to parse it. In that case,
+[edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
+
+{{< /alert >}}
+
+To enable and configure SAST with customizations:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Secure** > **Security configuration**.
+1. If the latest pipeline for the default branch of the project has completed and produced valid
+   SAST artifacts, select **Configure SAST**, otherwise select **Enable SAST** in the static
+   application security testing (SAST) row.
+1. Enter the custom SAST values.
+
+   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
+   configuration page, their values are inherited from the GitLab SAST template.
+1. Select **Create merge request**.
+1. Review and merge the merge request.
+
+Pipelines now include a SAST job. If supported source code is present, the appropriate analyzers and
+default rules automatically scan for vulnerabilities when a pipeline runs. The corresponding jobs
+appear under the `test` stage in the project's pipeline.
+
+#### Enable SAST with default settings only
+
+{{< alert type="note" >}}
+
+The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
+have a complex configuration, the tool might fail to parse it. In that case,
+[edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
+
+{{< /alert >}}
+
+To enable and configure SAST with default settings:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Secure** > **Security configuration**.
+1. In the SAST section, select **Configure with a merge request**.
+
+   The merge request page opens.
+1. Complete the fields.
+1. Select **Create merge request**.
+1. Review and merge the merge request to enable SAST.
+
+Pipelines now include a SAST job. If supported source code is present, the appropriate analyzers and
+default rules automatically scan for vulnerabilities when a pipeline runs. The corresponding jobs
+appear under the `test` stage in the project's pipeline.
+
+### Enable SAST by editing the CI/CD file
+
+To enable SAST in your project:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Go to **Build** > **Pipeline** editor.
+1. Add either the SAST CI/CD template or component.
+
+   To use the template, add the following lines:
+
+   ```yaml
+   include:
+     - template: Jobs/SAST.gitlab-ci.yml
+   ```
+
+   To use the CI/CD component, add the following lines:
+
+   ```yaml
+   include:
+     - component: gitlab.com/components/sast/sast@main
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+
+   The message **Simulation completed successfully** confirms the file is valid.
+1. Select the **Edit** tab.
+1. Complete the fields:
+   - Commit message.
+   - Branch. For example, `add-sast`.
+1. Select the **Start a new merge request with these changes** checkbox, then select
+   **Commit changes**.
+
+   The merge request page opens.
+1. Complete the fields according to your standard workflow, then select **Create
+   merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
+
+Pipelines now include a SAST job. If supported source code is present, the appropriate analyzers and
+default rules automatically scan for vulnerabilities when a pipeline runs. The corresponding jobs
+appear under the `test` stage in the project's pipeline.
 
 You can see a working example in
 [SAST example project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/semgrep/sast-getting-started).
 
-{{< /alert >}}
+### Next steps
 
-After completing these steps, you can:
+After enabling SAST, you can:
 
 - Learn more about how to [understand the results](#understanding-the-results).
 - Review [optimization tips](#optimization).
 - Plan a [rollout to more projects](#roll-out).
-
-For details on other configuration methods, see [Configuration](#configuration).
 
 ## Understanding the results
 
@@ -165,11 +254,8 @@ In Ultimate, you can also download the security scan results:
 
 For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
-{{< alert type="note" >}}
-
-Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
-
-{{< /alert >}}
+> [!note]
+> Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
 
 Additional ways to see SAST results:
 
@@ -436,11 +522,8 @@ include:
 
 A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgrep-based analyzer.
 
-{{< alert type="warning" >}}
-
-To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
-
-{{< /alert >}}
+> [!warning]
+> To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
 
 ## Download a SAST report
 
@@ -454,119 +537,16 @@ For more information, see:
 
 ## Configuration
 
-SAST scanning runs in your CI/CD pipeline. When you add the GitLab-managed CI/CD template to your
-pipeline, the right SAST analyzers automatically scan your code and save results as SAST report
-artifacts.
-
-To configure SAST for a project you can:
-
-- Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
-  [Auto DevOps](../../../topics/autodevops/_index.md).
-- Configure SAST in your CI/CD YAML.
-- Configure SAST by using the UI.
-
-You can enable SAST across many projects by [enforcing scan execution](../detect/security_configuration.md#create-a-shared-configuration).
-
-To configure GitLab Advanced SAST (available in GitLab Ultimate only), see [GitLab Advanced SAST](gitlab_advanced_sast.md#configuration).
-
-You can [change configuration variables](#available-cicd-variables) or [customize detection rules](customize_rulesets.md) if needed, but GitLab SAST is designed to be used in its default configuration.
-
-### Configure SAST in your CI/CD YAML
-
-To enable SAST, you [include](../../../ci/yaml/_index.md#includetemplate)
-the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
-The template is provided as a part of your GitLab installation.
-
-Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
-already exists, add only the `template` line below it.
-
-```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-```
-
-The included template creates SAST jobs in your CI/CD pipeline and scans
-your project's source code for possible vulnerabilities.
-
-The results are saved as a
-[SAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)
-that you can later download and analyze.
-When downloading, you always receive the most recent SAST artifact available.
+GitLab SAST is designed to be used in its default configuration. However, you can [change configuration variables](#available-cicd-variables) or [customize detection rules](customize_rulesets.md) to suit your needs.
 
 ### Stable vs latest SAST templates
 
-SAST provides two templates for incorporating security testing into your CI/CD pipelines:
-
-- [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) (recommended)
-
-  The stable template offers a reliable and consistent SAST experience. You should use the stable template for most users and projects that require stability and predictable behavior in their CI/CD pipelines.
-
-- [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
-
-  This template is for those who want to access and test cutting-edge features. It is not considered stable and may include breaking changes that are planned for the next major release. This template allows you to try new features and updates before they become part of the stable release, making it ideal for those comfortable with potential instability and eager to provide feedback on new functionality.
-
-### Configure SAST by using the UI
-
-You can enable and configure SAST by using the UI, either with the default settings or with customizations.
-The method you can use depends on your GitLab license tier.
-
-#### Configure SAST with customizations
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
-
-{{< /history >}}
-
-{{< alert type="note" >}}
-
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it might not be parsed
-successfully, and an error might occur.
-
-{{< /alert >}}
-
-To enable and configure SAST with customizations:
-
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
-1. If the latest pipeline for the default branch of the project has completed
-   and produced valid `SAST` artifacts, select **Configure SAST**, otherwise
-   select **Enable SAST** in the Static Application Security Testing (SAST) row.
-1. Enter the custom SAST values.
-
-   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
-   Configuration page, their values are inherited from the GitLab SAST template.
-1. Select **Create Merge Request**.
-1. Review and merge the merge request.
-
-Pipelines now include a SAST job.
-
-#### Configure SAST with default settings only
-
-{{< alert type="note" >}}
-
-The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
-configuration file. If you have a complex GitLab configuration file it might not be parsed
-successfully, and an error might occur.
-
-{{< /alert >}}
-
-To enable and configure SAST with default settings:
-
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Secure** > **Security configuration**.
-1. In the SAST section, select **Configure with a merge request**.
-1. Review and merge the merge request to enable SAST.
-
-Pipelines now include a SAST job.
+SAST offers a
+[`stable`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
+template, used by default for production use, and a
+[`latest`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
+template for testing cutting-edge features. For details on the differences and when to use each, see
+[template editions](../detect/security_configuration.md#template-editions).
 
 ### Overriding SAST jobs
 
@@ -787,10 +767,6 @@ spotbugs-sast:
     COMPILE: "false"
     SECURE_LOG_LEVEL: debug
 ```
-
-### Running jobs in merge request pipelines
-
-See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Available CI/CD variables
 
@@ -1155,11 +1131,8 @@ When using the Semgrep-based analyzer, the following options are also available:
 
 - Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there. GitLab Semgrep analyzer automatically merges your custom `.semgrepignore` file with [GitLab built-in ignore patterns](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/abcea7419961320f9718a2f24fe438cc1a7f8e08/semgrepignore).
 
-{{< alert type="note" >}}
-
-The Semgrep analyzer does not respect `.gitignore` files. Files listed in `.gitignore` are analyzed unless explicitly excluded by using `.semgrepignore` or `SAST_EXCLUDED_PATHS`.
-
-{{< /alert >}}
+> [!note]
+> The Semgrep analyzer does not respect `.gitignore` files. Files listed in `.gitignore` are analyzed unless explicitly excluded by using `.semgrepignore` or `SAST_EXCLUDED_PATHS`.
 
 For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-files-folders-code).
 

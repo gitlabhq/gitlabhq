@@ -14,6 +14,12 @@ module Issues
       duplicate_issue.update(duplicated_to: canonical_issue)
       close_service.new(container: container, current_user: current_user).execute(duplicate_issue)
 
+      Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: duplicate_issue,
+        current_user: current_user,
+        event: Gitlab::WorkItems::Instrumentation::EventActions::MARKED_AS_DUPLICATE
+      ).execute
+
       relate_two_issues(duplicate_issue, canonical_issue)
     end
 

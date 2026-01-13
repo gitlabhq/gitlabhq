@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Deploy', feature_category: :environment_management do
     describe 'AutoDevOps Templates', only: { pipeline: %i[staging staging-canary] },
       quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432409',
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24029',
         type: :test_environment
       } do
       using RSpec::Parameterized::TableSyntax

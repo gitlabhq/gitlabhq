@@ -193,15 +193,6 @@ GitLab documentation uses the following shortcodes:
   - Yes
   - No
 
-If a page has shortcodes and HTML tags on adjacent lines, there must be a newline between them.
-For example, in the [deprecations page](../../../update/deprecations.md):
-
-```markdown
-</div>
-
-{{</* alert type="note" */>}}
-```
-
 ## Language
 
 GitLab documentation should be clear and easy to understand.
@@ -665,16 +656,16 @@ Use lists to present information in a format that is easier to scan.
 - Start all items with a capital letter.
 - Give all items the same punctuation.
 - Do not use a period if the item is not a complete sentence.
-- Use a period after every complete sentence.
+- Use a period after every complete sentence, or where the list item forms a complete sentence when combined with the introductory phrase.
   Do not use semicolons or commas.
 - Add a colon (`:`) after the introductory phrase.
   For example:
 
   ```markdown
-  To complete a task:
+  The basket contains these fruits:
 
-  - Do this thing.
-  - Do this other thing.
+  - Bananas
+  - Apples
   ```
 
 - Do not use [bold](#bold) formatting to define keywords or concepts in a list. Use bold for UI element labels only. For example:
@@ -684,6 +675,26 @@ Use lists to present information in a format that is easier to scan.
 
   For keywords and concepts, consider a [reference topic](../topic_types/reference.md) or
   [description list](#description-lists-in-markdown) for alternative formatting.
+
+- Avoid using list items to complete an introductory phrase. This format can be difficult to localize
+  into languages that use different sentence structures.
+  For example, use:
+
+  ```markdown
+  You can get the license key in the following ways:
+
+  - Copy the license key from the email.
+  - Download the file.
+  ```
+
+  Instead of:
+
+  ```markdown
+  You can get the license key by:
+
+  - Copying it from the email.
+  - Downloading the file.
+  ```
 
 ### Choose between an ordered or unordered list
 
@@ -796,11 +807,8 @@ To create a guide, follow this example:
 
    This is an item with an alert.
 
-   {{</* alert type="note" */>}}
-
-   This is a note.
-
-   {{</* /alert */>}}
+   > [!note]
+   > This is a note.
 
 {{</* /guide */>}}
 ```
@@ -817,11 +825,8 @@ This code renders on the GitLab documentation site as:
 
    An item with an alert.
 
-   {{< alert type="note" >}}
-
-   This is a note.
-
-   {{< /alert >}}
+   > [!note]
+   > This is a note.
 
 {{< /guide >}}
 
@@ -1090,11 +1095,8 @@ To link to another documentation (`.md`) file in the same repository:
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/_index.md)`.
 - Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
-{{< alert type="note" >}}
-
-In the GitLab repository, do not link to the `/development` directory from any other directory.
-
-{{< /alert >}}
+> [!note]
+> In the GitLab repository, do not link to the `/development` directory from any other directory.
 
 To link to a file outside of the documentation files, for example to link from development
 documentation to a specific code file:
@@ -2088,11 +2090,9 @@ you should avoid them.
 
 On the documentation site, you can format text to display as tabs.
 
-{{< alert type="warning" >}}
-
-Do not put version history bullets, topic headings, HTML, or tabs in tabs. Only use paragraphs, lists, alert boxes, and code blocks. Other styles might not render properly. When in doubt, keep things simple.
-
-{{< /alert >}}
+> [!warning]
+> Do not put version history bullets, topic headings, HTML, or tabs in tabs. Only use paragraphs, lists,
+> alert boxes, and code blocks. Other styles might not render properly. When in doubt, keep things simple.
 
 To create a set of tabs, follow this example:
 

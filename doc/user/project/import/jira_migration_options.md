@@ -33,7 +33,7 @@ GitLab has a built-in tool to import your Jira issue data. To use the GitLab Jir
 1. [Configure the GitLab Jira issues integration in your target project](../../../integration/jira/configure.md#configure-the-integration)
 1. [Import your Jira project issues to GitLab](jira.md)
 
-Alternatively, you can watch a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Import Jira project issues to GitLab](https://www.youtube.com/watch?v=OTJdJWmODFA)
+Alternatively, you can watch a complete demo of the process: <i class="fa-youtube-play" aria-hidden="true"></i> [Import Jira project issues to GitLab](https://www.youtube.com/watch?v=OTJdJWmODFA)
 <!-- Video published on 2023-07-27 -->
 
 ## Import a CSV file
@@ -81,7 +81,7 @@ You can use one of the available open-source migration scripts to help you migra
 
 Many of our customers have had success using [`jira2gitlab`](https://github.com/swingbit/jira2gitlab).
 
-View a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Migrating from Jira to GitLab with Jira2GitLab](https://www.youtube.com/watch?v=aJfnTZrS4t4)
+View a complete demo of the process: <i class="fa-youtube-play" aria-hidden="true"></i> [Migrating from Jira to GitLab with Jira2GitLab](https://www.youtube.com/watch?v=aJfnTZrS4t4)
 <!-- Video published on 2024-01-09 -->
 
 ## Use a first-party script

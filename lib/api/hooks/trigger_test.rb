@@ -19,6 +19,7 @@ module API
           { code: 422, message: 'Unprocessable entity' },
           { code: 429, message: 'Too many requests' }
         ]
+        tags ['webhooks']
       end
       params do
         requires :hook_id, type: Integer, desc: 'The ID of the hook'

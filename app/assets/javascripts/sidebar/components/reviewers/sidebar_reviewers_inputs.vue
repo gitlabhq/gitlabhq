@@ -1,10 +1,10 @@
 <script>
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { state } from './sidebar_reviewers.vue';
+import { sidebarState } from '~/sidebar/sidebar_state';
 
 export default {
   data() {
-    return state;
+    return sidebarState;
   },
   computed: {
     reviewers() {

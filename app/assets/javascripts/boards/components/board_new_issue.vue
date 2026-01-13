@@ -45,7 +45,7 @@ export default {
         };
       },
       update(data) {
-        const { board } = data.workspace;
+        const { board } = data.namespace;
         return {
           ...board,
           labels: board.labels?.nodes,

@@ -15,9 +15,7 @@ class Groups::ApplicationController < ApplicationController
   before_action :set_sorting
   requires_cross_project_access
 
-  before_action do
-    push_namespace_setting(:math_rendering_limits_enabled, @group)
-  end
+  before_action :set_group_markdown_flags
 
   private
 
@@ -109,6 +107,12 @@ class Groups::ApplicationController < ApplicationController
     # Use @group instance variable instead of calling group method
     # to avoid triggering find_routable! when the :group before_action was skipped
     enforce_step_up_auth_for(@group)
+  end
+
+  def set_group_markdown_flags
+    push_namespace_setting(:math_rendering_limits_enabled, @group)
+    push_force_frontend_feature_flag(:allow_iframes_in_markdown,
+      @group&.allow_iframes_in_markdown_feature_flag_enabled? == true)
   end
 end
 

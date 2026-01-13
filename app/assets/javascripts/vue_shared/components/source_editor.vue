@@ -1,8 +1,8 @@
 <script>
 import { debounce, isEmpty } from 'lodash';
+import { markRaw } from 'vue';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import DynamicHeight from '~/vue_shared/directives/dynamic_height';
 
 function initSourceEditor({ el, ...args }) {

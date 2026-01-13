@@ -357,7 +357,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/helpers/keyset_helper_spec.rb'
     - 'spec/helpers/sorting_helper_spec.rb'
     - 'spec/initializers/mail_encoding_patch_spec.rb'
-    - 'spec/lib/constraints/admin_constrainer_spec.rb'
     - 'spec/lib/gitlab/analytics/date_filler_spec.rb'
     - 'spec/lib/gitlab/class_attributes_spec.rb'
     - 'spec/lib/gitlab/cleanup/remote_uploads_spec.rb'

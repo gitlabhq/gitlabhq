@@ -5,7 +5,7 @@ module API
     class ResourceAccessToken < Entities::PersonalAccessToken
       expose :access_level,
         documentation: {
-          type: 'integer',
+          type: 'Integer',
           example: 40,
           description: 'Access level. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer) \
       , 40 (Maintainer), and 50 (Owner). Defaults to 40.',
@@ -16,7 +16,7 @@ module API
 
       expose :resource_type,
         documentation: {
-          type: 'string',
+          type: 'String',
           example: 'project',
           description: 'Whether a token belongs to a project or group',
           values: %w[project group]
@@ -26,7 +26,7 @@ module API
 
       expose :resource_id,
         documentation: {
-          type: 'integer',
+          type: 'Integer',
           example: 1234,
           description: 'The ID of the project or group'
         } do |token, _options|

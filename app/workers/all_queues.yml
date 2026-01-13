@@ -3066,6 +3066,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :terraform
+- :name: timed_out_builds:ci_timed_out_builds_drop_running
+  :worker_name: Ci::TimedOutBuilds::DropRunningWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :timed_out_builds
 - :name: todos_destroyer:todos_delete_all_done
   :worker_name: Todos::DeleteAllDoneWorker
   :feature_category: :notifications
@@ -3770,6 +3780,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_track_pipeline_trigger_events
+  :worker_name: Ci::TrackPipelineTriggerEventsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts
@@ -4243,6 +4263,16 @@
   :queue_namespace:
 - :name: import_load_placeholder_references
   :worker_name: Import::LoadPlaceholderReferencesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: import_offline_configuration_purge
+  :worker_name: Import::Offline::ConfigurationPurgeWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -4774,6 +4804,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: pages_delete_group_pages_deployments
+  :worker_name: Pages::DeleteGroupPagesDeploymentsWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: pages_delete_pages_deployment
   :worker_name: Pages::DeletePagesDeploymentWorker
   :feature_category: :pages
@@ -4975,6 +5015,16 @@
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: projects_import_export_remove_relation_export_upload
+  :worker_name: Projects::ImportExport::RemoveRelationExportUploadWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
   :tags: []

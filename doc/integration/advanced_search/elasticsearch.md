@@ -371,11 +371,8 @@ sudo yum install libicu-devel
 
 ##### macOS
 
-{{< alert type="note" >}}
-
-You must first [install Homebrew](https://brew.sh/).
-
-{{< /alert >}}
+> [!note]
+> You must first [install Homebrew](https://brew.sh/).
 
 To install on macOS, run:
 
@@ -553,6 +550,19 @@ To enable search with advanced search in GitLab:
 1. Select the **Search with advanced search** checkbox.
 1. Select **Save changes**.
 
+### Enable code search with advanced search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To enable code search with advanced search in GitLab:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Select the **Code search with advanced search** checkbox.
+1. Select **Save changes**.
+
 ### Advanced search configuration
 
 The following Elasticsearch settings are available:
@@ -562,6 +572,7 @@ The following Elasticsearch settings are available:
 | **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | **Pause indexing for advanced search**                      | Pauses advanced search indexing. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the index until resumed. |
 | **Search with advanced search**                             | Turns on or turns off the advanced search capabilities in search and [advanced vulnerability management](../../user/application_security/vulnerability_report/_index.md#advanced-vulnerability-management). |
+| **Code search with advanced search**                        | Turns on or turns off code search with advanced search. When this setting is turned off, all code is deleted from your Elasticsearch instance. To turn this setting back on, fully reindex your code. If exact code search is enabled, you should turn off this setting to save resources. |
 | **Requeue indexing workers**                                | Turns on automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. Requeuing indexing workers is not recommended for smaller instances or instances with few Sidekiq processes. |
 | **URL**                                                     | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. If you use [OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html), only connections over ports `80` and `443` are accepted. |
 | **Username**                                                | The `username` of your Elasticsearch instance. |
@@ -720,6 +731,19 @@ To disable search with advanced search in GitLab:
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Clear the **Search with advanced search** checkbox.
+1. Select **Save changes**.
+
+### Disable code search with advanced search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To disable code search with advanced search in GitLab:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Clear the **Code search with advanced search** checkbox.
 1. Select **Save changes**.
 
 ## Pause indexing
@@ -1152,6 +1176,12 @@ Make sure to prepare for this task by having a
 [scalable setup](../../administration/reference_architectures/_index.md) or by creating
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
+Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
+However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
+
+For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
+on the primary site's Sidekiq nodes.
+
 {{< /alert >}}
 
 If [enabling advanced search](#enable-advanced-search) causes problems
@@ -1377,11 +1407,8 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
-{{< alert type="note" >}}
-
-Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
-
-{{< /alert >}}
+> [!note]
+> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
 
 {{< alert type="warning" >}}
 

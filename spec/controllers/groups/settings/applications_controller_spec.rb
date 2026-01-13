@@ -198,7 +198,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
         expect(application).to have_attributes(create_params.except(:uid, :owner_type))
       end
 
-      it 'sets organization_id from Current.organization', :with_current_organization do
+      it 'sets organization_id from Current.organization' do
         create_params = attributes_for(:application, trusted: false, confidential: false, scopes: ['api'])
 
         post :create, params: { group_id: group, authn_oauth_application: create_params }

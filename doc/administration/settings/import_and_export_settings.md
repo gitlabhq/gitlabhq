@@ -275,7 +275,7 @@ You can specify the maximum number of import jobs that are executed simultaneous
 
 - [GitHub importer](../../user/project/import/github.md)
 - [Bitbucket Cloud importer](../../user/import/bitbucket_cloud.md)
-- [Bitbucket Server importer](../../user/project/import/bitbucket_server.md)
+- [Bitbucket Server importer](../../user/import/bitbucket_server.md)
 
 The job limit is not applied when importing merge requests because there is a hard-coded limit for merge requests to
 avoid overloading servers.

@@ -25,13 +25,10 @@ description: Configure granular permissions with specific abilities for fine-gra
 
 You can create a [custom role](_index.md) by adding one or more custom permissions to a base role.
 
-{{< alert type="note" >}}
-
-Some permissions depend on other permissions.
-For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
-Any dependencies are noted in the `Description` column for each permission.
-
-{{< /alert >}}
+> [!note]
+> Some permissions depend on other permissions.
+> For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
+> Any dependencies are noted in the `Description` column for each permission.
 
 ## Admin
 

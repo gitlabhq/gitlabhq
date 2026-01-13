@@ -1231,6 +1231,19 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Authentication
+#
+Settings['authn'] ||= {}
+
+#
+# IAM Service
+#
+Settings.authn['iam_service'] ||= {}
+Settings.authn.iam_service['enabled'] ||= false
+Settings.authn.iam_service['url'] ||= 'http://localhost:8084'
+Settings.authn.iam_service['audience'] ||= 'gitlab-rails'
+
+#
 # Gitlab Secrets Manager Openbao Integration
 #
 Settings['openbao'] ||= {}

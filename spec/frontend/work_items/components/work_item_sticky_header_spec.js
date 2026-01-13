@@ -250,10 +250,11 @@ describe('WorkItemStickyHeader', () => {
       expect(findWorkItemTypeIcon().exists()).toBe(true);
     });
 
-    it('passes correct work item type to the icon component', () => {
+    it('passes correct work item type and showTooltipOnHover props to the icon component', () => {
       createComponent({ workItemType: issueType });
 
       expect(findWorkItemTypeIcon().props('workItemType')).toBe('Issue');
+      expect(findWorkItemTypeIcon().props('showTooltipOnHover')).toBe(true);
     });
   });
 

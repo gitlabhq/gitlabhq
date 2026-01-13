@@ -1,17 +1,18 @@
 import { __ } from '~/locale';
 import { WEBAUTHN_AUTHENTICATE, WEBAUTHN_REGISTER } from './constants';
-import { isHTTPS } from './util';
+import { isSecureContext } from './util';
 
 export default class WebAuthnError {
   constructor(error, flowType) {
     this.error = error;
     this.errorName = error.name || 'UnknownError';
     this.message = this.message.bind(this);
-    this.httpsDisabled = !isHTTPS();
+    this.httpsDisabled = !isSecureContext();
     this.flowType = flowType;
   }
 
   message() {
+    // Browser side errors due to calling navigator.credentials.create
     if (this.errorName === 'NotSupportedError') {
       return __('Your device is not compatible with GitLab. Please try another device');
     }
@@ -27,6 +28,6 @@ export default class WebAuthnError {
       );
     }
 
-    return __('There was a problem communicating with your device.');
+    return __('Failed to connect to your device. Try again.');
   }
 }

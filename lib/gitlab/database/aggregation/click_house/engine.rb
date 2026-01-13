@@ -8,13 +8,15 @@ module Gitlab
           extend ::Gitlab::Utils::Override
 
           INNER_QUERY_NAME = 'ch_aggregation_inner_query'
+          COLUMN_PREFIX = 'aeq_'
 
           class << self
             attr_accessor :table_name, :table_primary_key
 
             def dimensions_mapping
               {
-                column: Column
+                column: Column,
+                date_bucket: DateBucketDimension
               }
             end
 
@@ -24,6 +26,13 @@ module Gitlab
                 mean: Mean,
                 rate: Rate,
                 quantile: Quantile
+              }
+            end
+
+            def filters_mapping
+              {
+                exact_match: ExactMatchFilter,
+                range: RangeFilter
               }
             end
           end
@@ -55,12 +64,14 @@ module Gitlab
 
             query = context[:scope].select(*inner_projections).group(Arel.sql("ALL"))
 
+            plan.filters.each { |filter| query = filter.definition.apply_inner(query, filter.configuration) }
+
             query = ::ClickHouse::Client::QueryBuilder.new(query, INNER_QUERY_NAME)
               .select(*outer_projections).group(Arel.sql("ALL"))
 
-            plan.order.each { |order| query = query.order(Arel.sql(order.instance_key), order.direction) }
+            plan.order.each { |order| query = query.order(Arel.sql(column_alias(order)), order.direction) }
 
-            AggregationResult.new(self, plan, query)
+            AggregationResult.new(self, plan, query, column_prefix: COLUMN_PREFIX)
           end
 
           def build_select_list_and_aliases(plan)
@@ -86,7 +97,7 @@ module Gitlab
           end
 
           def build_part_selections(part)
-            alias_name = part.instance_key.to_s
+            alias_name = column_alias(part)
             inner_context = context.merge(part.name => part.configuration)
             inner_arel = part.definition.to_inner_arel(inner_context)
             inner_projection = inner_arel&.as(alias_name)
@@ -100,6 +111,10 @@ module Gitlab
             outer_projection = part.definition.to_outer_arel(outer_context).as(alias_name)
 
             [[inner_projection, secondary_projection], [outer_projection]]
+          end
+
+          def column_alias(plan_part)
+            "#{COLUMN_PREFIX}#{plan_part.instance_key}"
           end
         end
       end

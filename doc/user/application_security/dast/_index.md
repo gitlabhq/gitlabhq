@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Dynamic Application Security Testing (DAST)
+title: Dynamic application security testing
 description: Automated penetration testing, vulnerability detection, web application scanning, security assessment, and CI/CD integration.
 ---
 
@@ -25,7 +25,7 @@ how to migrate from the DAST version 4 browser-based analyzer to DAST version 5,
 
 {{< /alert >}}
 
-Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
+Dynamic application security testing (DAST) runs automated penetration tests to find vulnerabilities
 in your web applications and APIs as they are running. DAST automates a hacker's approach and
 simulates real-world attacks for critical threats such as cross-site scripting (XSS), SQL injection
 (SQLi), and cross-site request forgery (CSRF) to uncover vulnerabilities and misconfigurations that
@@ -38,8 +38,8 @@ deployment in production. DAST is a foundational component of software security 
 together with the other GitLab security tools to provide a comprehensive security assessment of your
 applications.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Dynamic Application Security Testing (DAST) - Advanced Security Testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
 ## GitLab DAST
 

@@ -16,7 +16,7 @@ Vue.use(VueApollo);
 
 function createComponent(propsData = {}) {
   const apolloProvider = createMockApollo([
-    [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { workspace: null } })],
+    [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { namespace: null } })],
     [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
   ]);
 

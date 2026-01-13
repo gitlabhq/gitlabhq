@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlForm, GlModal } from '@gitlab/ui';
+import { GlForm, GlModal, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
@@ -13,6 +13,7 @@ import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.g
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
+import RefSelector from '~/ref/components/ref_selector.vue';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -79,6 +80,9 @@ describe('CreateBranchMergeRequestModal', () => {
           show: showToast,
         },
       },
+      stubs: {
+        RefSelector,
+      },
     });
   };
 
@@ -87,7 +91,9 @@ describe('CreateBranchMergeRequestModal', () => {
   const firePrimaryEvent = () => findGlModal().vm.$emit('primary', { preventDefault: jest.fn() });
   const findPrimaryButton = () => findGlModal().props('actionPrimary');
   const findPrivateForksSelector = () => wrapper.findComponent(ProjectFormGroup);
-  const findSourceBranch = () => wrapper.find('[data-testid="source-name"]');
+  const findRefSelector = () => wrapper.findComponent(RefSelector);
+  const findRefSelectorListBox = () =>
+    wrapper.findComponent(RefSelector).findComponent(GlCollapsibleListbox);
   const findTargetBranch = () => wrapper.find('[data-testid="target-name"]');
   const findCopyToClipboardButton = () => wrapper.findComponent(SimpleCopyButton);
 
@@ -106,8 +112,46 @@ describe('CreateBranchMergeRequestModal', () => {
     });
 
     describe('on initialise', () => {
+      beforeEach(() => {
+        const branchesMock = [{ name: 'branch1' }, { name: 'branch2' }];
+        const tagsMock = [{ name: 'tag1' }, { name: 'tag2' }];
+        gon.api_version = 'v4';
+        mock = new MockAdapter(axios);
+
+        mock.onGet('/fullPath/-/issues/1/can_create_branch').reply(HTTP_STATUS_OK, {
+          can_create_branch: true,
+          suggested_branch_name: 'suggested_branch_name#with_hash',
+        });
+        mock
+          .onGet(`/api/v4/projects/2/repository/branches`)
+          .reply(HTTP_STATUS_OK, branchesMock, { 'x-total': 1 });
+        mock
+          .onGet(`/api/v4/projects/2/repository/tags`)
+          .reply(HTTP_STATUS_OK, tagsMock, { 'x-total': 1 });
+      });
+
       it('shows the form', () => {
         expect(findForm().exists()).toBe(true);
+      });
+
+      it('ref selector dropdown only shows branches for create merge request flow', async () => {
+        createWrapper({ showBranchFlow: false });
+
+        await waitForPromises();
+        const dropdownItems = findRefSelectorListBox().props('items');
+
+        expect(dropdownItems.find((item) => item.text === 'Branches').options).toHaveLength(2);
+        expect(dropdownItems.find((item) => item.text === 'Tags')).toBeUndefined();
+      });
+
+      it('ref selector dropdown shows tags and branches for create branch flow', async () => {
+        createWrapper({ showBranchFlow: true });
+
+        await waitForPromises();
+        const dropdownItems = findRefSelectorListBox().props('items');
+
+        expect(dropdownItems.find((item) => item.text === 'Branches').options).toHaveLength(2);
+        expect(dropdownItems.find((item) => item.text === 'Tags').options).toHaveLength(2);
       });
     });
 
@@ -142,7 +186,7 @@ describe('CreateBranchMergeRequestModal', () => {
           .onPost('/fullPath/-/branches')
           .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
-        findSourceBranch().vm.$emit('input', 'source');
+        findRefSelector().vm.$emit('input', 'source');
         findTargetBranch().vm.$emit('input', 'target');
         firePrimaryEvent();
 
@@ -217,7 +261,7 @@ describe('CreateBranchMergeRequestModal', () => {
           .onPost('/fullPath/-/branches')
           .reply(HTTP_STATUS_OK, { data: { url: 'http://test.com/branch' } });
 
-        findSourceBranch().vm.$emit('input', 'source_mr');
+        findRefSelector().vm.$emit('input', 'source_mr');
         findTargetBranch().vm.$emit('input', 'target_mr');
         firePrimaryEvent();
 

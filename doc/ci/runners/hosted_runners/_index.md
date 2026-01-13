@@ -43,11 +43,8 @@ When you use hosted runners:
   This means that the available free disk space for your jobs to use is reduced.
 - [Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
-{{< alert type="note" >}}
-
-Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.
-
-{{< /alert >}}
+> [!note]
+> Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.
 
 ### Security of hosted runners for GitLab.com
 
@@ -74,7 +71,7 @@ For more information on how runners are authenticating and executing the job pay
 In addition to isolating runners on the network, each ephemeral runner VM only serves a single job and is deleted straight after the job execution.
 In the following example, three jobs are executed in a project's pipeline. Each of these jobs runs in a dedicated ephemeral VM.
 
-![Job isolation](img/build_isolation_v17_9.png)
+![CI/CD pipeline stages running on separate isolated VMs: build, test, deploy.](img/build_isolation_v17_9.png)
 
 The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858` and deploy job on `runner-tmand5m-project-43717858`.
 

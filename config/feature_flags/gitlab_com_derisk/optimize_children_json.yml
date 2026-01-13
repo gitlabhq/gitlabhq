@@ -1,0 +1,10 @@
+---
+name: optimize_children_json
+description: Performance optimizations for the group's children.json endpoint
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331494
+introduced_by_url:
+rollout_issue_url:
+milestone: '18.7'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

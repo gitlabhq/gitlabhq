@@ -4,6 +4,6 @@ feature_issue_url:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066
 rollout_issue_url:
 milestone: '17.0'
-group: group::import and integrate
+group: group::import
 type: ops
 default_enabled: true

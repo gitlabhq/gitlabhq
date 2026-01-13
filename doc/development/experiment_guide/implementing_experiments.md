@@ -62,6 +62,16 @@ include Gitlab::Experiment::Dsl
 Feature.enable(:pill_color, experiment(:pill_color, actor: User.first))
 ```
 
+GitLab implements a [custom rollout mechanism](https://gitlab.com/gitlab-org/gitlab/-/blob/13be37aa2cf7123950ac5d9f51e442e19856eaf3/config/initializers/gitlab_experiment.rb#L16-16)
+by extending the `gitlab-experiment` gem's [percent rollout strategy](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/blob/master/lib/gitlab/experiment/rollout/percent.rb).
+
+If the feature flag is disabled, the experiment isn't running at all. Users follow
+the default code path without any variant assignment or tracking.
+
+If the feature flag is enabled, the configured percentage is distributed among non-control
+variants, with control receiving the remaining percentage. Users are actively
+assigned to variants and tracked as experiment participants.
+
 To roll out your experiment feature flag on an environment, run
 the following command using ChatOps (which is covered in more depth in the
 [Feature flags in development of GitLab](../feature_flags/_index.md) documentation).

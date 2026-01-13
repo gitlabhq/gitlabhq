@@ -23,7 +23,7 @@ import {
   NORMAL_FILTER,
   WILDCARD_FILTER,
   URL_PARAM,
-} from '~/issues/list/constants';
+} from '~/work_items/list/constants';
 
 export const SERVICE_DESK_BOT_USERNAME = 'support-bot';
 export const ISSUE_REFERENCE = /^#\d+$/;

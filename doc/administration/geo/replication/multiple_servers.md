@@ -37,11 +37,8 @@ network topology of your deployment.
 The only external way to access the two Geo sites is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the previous example.
 
-{{< alert type="note" >}}
-
-The **primary** and **secondary** Geo sites must be able to communicate to each other over HTTPS.
-
-{{< /alert >}}
+> [!note]
+> The **primary** and **secondary** Geo sites must be able to communicate to each other over HTTPS.
 
 ## Redis and PostgreSQL for multiple nodes
 
@@ -53,11 +50,8 @@ For more information on setting up a multi-node PostgreSQL cluster and Redis clu
 - [Geo multi-node database replication](../setup/database.md#multi-node-database-replication)
 - [Redis multi-node documentation](../../redis/replication_and_failover.md)
 
-{{< alert type="note" >}}
-
-It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
-
-{{< /alert >}}
+> [!note]
+> It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
 
 ## Prerequisites: Two independently working GitLab multi-node sites
 
@@ -78,11 +72,8 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
 
 ### Step 1: Configure the **primary** frontend nodes
 
-{{< alert type="note" >}}
-
-Do not use [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
-
-{{< /alert >}}
+> [!note]
+> Do not use [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
@@ -217,11 +208,8 @@ After enabling streaming replication, `gitlab-rake db:migrate:status:geo` fails 
 
 ### Step 4: Configure the frontend application nodes on the Geo **secondary** site
 
-{{< alert type="note" >}}
-
-Do not use [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
-
-{{< /alert >}}
+> [!note]
+> Do not use [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
 
 In the minimal [architecture diagram](#architecture-overview), there are two
 machines running the GitLab application services. These services are enabled

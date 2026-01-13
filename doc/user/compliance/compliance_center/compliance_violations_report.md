@@ -16,24 +16,38 @@ title: Compliance violations report
 
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
 - Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
-- New dynamic compliance violations report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12774) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `compliance_violations_report` and `enable_project_compliance_violations`. Disabled by default.
-- Feature flags `compliance_violations_report` and `enable_project_compliance_violations` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.3.
-- Feature flags `compliance_violations_report` and `enable_project_compliance_violations` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.5.
+- Dynamic compliance violations report
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12774) in GitLab 18.2 [with feature flags](../../../administration/feature_flags/_index.md) named `compliance_violations_report` and `enable_project_compliance_violations`. Disabled by default.
+  - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.3.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201027) in GitLab 18.5. Feature flags `compliance_violations_report` and `enable_project_compliance_violations` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use. For production use, continue to use the
-[static compliance violations report](#static-compliance-violations-report).
-
-{{< /alert >}}
 
 Use the compliance violations report to see a comprehensive view of compliance violations across all projects in
 your group. The report provides detailed information about violated controls, associated audit events, and allows you
 to manage violation statuses.
+
+## Enable compliance violations report
+
+Before violations appear in the compliance violations report, you must:
+
+1. [Create a compliance framework with controls](../compliance_frameworks/_index.md).
+1. [Apply the framework to your projects](../compliance_frameworks/_index.md#apply-a-compliance-framework-to-a-project).
+
+When you've completed these steps, violations appear in the compliance violations report as they are detected.
+
+Violations are automatically detected when audit events violate the controls defined in your framework. The system continuously monitors audit events and compares them against your framework's control definitions to identify non-compliance.
+
+### Supported controls
+
+The following compliance controls are supported for violation detection:
+
+- `minimum_approvals_required_1`
+- `minimum_approvals_required_2`
+- `merge_request_prevent_author_approval`
+- `merge_request_prevent_committers_approval`
+
+For more information about compliance controls, see [Compliance frameworks](../compliance_frameworks/_index.md).
 
 ## View the compliance violations report
 

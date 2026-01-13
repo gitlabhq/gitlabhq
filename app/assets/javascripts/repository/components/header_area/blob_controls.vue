@@ -30,6 +30,7 @@ import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import BlobOverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
+import { NO_MODIFY_PERMISSION_MESSAGE } from './constants';
 
 export default {
   i18n: {
@@ -37,6 +38,7 @@ export default {
     blame: __('Blame'),
     errorMessage: __('An error occurred while loading file controls. Refresh the page.'),
     archivedProjectTooltip: __('You cannot edit files in archived projects'),
+    noPermissionTooltip: NO_MODIFY_PERMISSION_MESSAGE,
     lfsFileTooltip: __('You cannot edit files stored in LFS'),
   },
   buttonClassList: '@sm/panel:gl-w-auto gl-w-full @sm/panel:gl-mt-0 gl-mt-3',
@@ -99,7 +101,7 @@ export default {
       },
     },
   },
-  inject: ['currentRef'],
+  inject: ['currentRef', 'showWebIdeButton', 'showPipelineEditorButton'],
   provide() {
     return {
       blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
@@ -223,6 +225,10 @@ export default {
           condition: () => this.isUsingLfs,
           message: this.$options.i18n.lfsFileTooltip,
         },
+        fileModifyPermission: {
+          condition: () => !this.showWebIdeButton,
+          message: this.$options.i18n.noPermissionTooltip,
+        },
       };
     },
   },
@@ -299,11 +305,12 @@ export default {
     <web-ide-link
       class="!gl-m-0"
       :show-edit-button="!isBinaryFileType"
+      :show-web-ide-button="showWebIdeButton"
       :edit-url="blobInfo.editBlobPath"
       :web-ide-url="blobInfo.ideEditPath"
       :needs-to-fork="shouldShowSingleFileEditorForkSuggestion"
       :needs-to-fork-with-web-ide="shouldShowWebIdeForkSuggestion"
-      :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
+      :show-pipeline-editor-button="showPipelineEditorButton"
       :pipeline-editor-url="blobInfo.pipelineEditorPath"
       :gitpod-url="blobInfo.gitpodBlobUrl"
       :is-gitpod-enabled-for-instance="gitpodEnabled"

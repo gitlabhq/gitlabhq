@@ -94,6 +94,10 @@ module RuboCop
       )
     end
 
+    def in_ee?(node)
+      file_path_for_node(node).start_with?(ee_directory)
+    end
+
     # Returns `true` if the given AST node resides in the given directory,
     # relative to app and/or ee/app.
     def in_app_directory?(node, directory)
@@ -165,6 +169,10 @@ module RuboCop
 
         add_offense(send_node, message: message)
       end
+    end
+
+    def ee_directory
+      File.join(rails_root, 'ee')
     end
 
     def ce_app_directory

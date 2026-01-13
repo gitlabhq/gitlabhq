@@ -39,6 +39,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_template, boundary_type: :project
       get ':id/templates/:type' do
         authorize_template_permissions!
 
@@ -69,6 +70,7 @@ module API
           documentation: { example: 'GitLab B.V.' }
       end
 
+      route_setting :authorization, permissions: :read_template, boundary_type: :project
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do
         authorize_template_permissions!
 

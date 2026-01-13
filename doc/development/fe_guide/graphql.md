@@ -18,13 +18,13 @@ title: GraphQL
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Unfiltered GraphQL playlist](https://www.youtube.com/watch?v=wHPKZBDMfxE&list=PL05JrBw4t0KpcjeHjaRMB7IGB2oDWyJzv)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GraphQL at GitLab: Deep Dive](../api_graphql_styleguide.md#deep-dive) (video) by Nick Thomas
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Unfiltered GraphQL playlist](https://www.youtube.com/watch?v=wHPKZBDMfxE&list=PL05JrBw4t0KpcjeHjaRMB7IGB2oDWyJzv)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GraphQL at GitLab: Deep Dive](../api_graphql_styleguide.md#deep-dive) (video) by Nick Thomas
   - An overview of the history of GraphQL at GitLab (not frontend-specific)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Feature Walkthrough with GraphQL and Vue Apollo](https://www.youtube.com/watch?v=6yYp2zB7FrM) (video) by Natalia Tepluhina
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Feature Walkthrough with GraphQL and Vue Apollo](https://www.youtube.com/watch?v=6yYp2zB7FrM) (video) by Natalia Tepluhina
   - A real-life example of implementing a frontend feature in GitLab using GraphQL
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [History of client-side GraphQL at GitLab](https://www.youtube.com/watch?v=mCKRJxvMnf0) (video) Illya Klymov and Natalia Tepluhina
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [From Vuex to Apollo](https://www.youtube.com/watch?v=9knwu87IfU8) (video) by Natalia Tepluhina
+- <i class="fa-youtube-play" aria-hidden="true"></i> [History of client-side GraphQL at GitLab](https://www.youtube.com/watch?v=mCKRJxvMnf0) (video) Illya Klymov and Natalia Tepluhina
+- <i class="fa-youtube-play" aria-hidden="true"></i> [From Vuex to Apollo](https://www.youtube.com/watch?v=9knwu87IfU8) (video) by Natalia Tepluhina
   - An overview of when Apollo might be a better choice than Vuex, and how one could go about the transition
 - [🛠 Vuex -> Apollo Migration: a proof-of-concept project](https://gitlab.com/ntepluhina/vuex-to-apollo/blob/master/README.md)
   - A collection of examples that show the possible approaches for state management with Vue+GraphQL+(Vuex or Apollo) apps
@@ -122,6 +122,18 @@ To distinguish queries from mutations and fragments, the following naming conven
 - `basic_user.fragment.graphql` for fragments.
 
 If you are using queries for the [CustomersDot GraphQL endpoint](https://gitlab.com/gitlab-org/gitlab/-/blob/be78ccd832fd40315c5e63bb48ee1596ae146f56/app/controllers/customers_dot/proxy_controller.rb), end the filename with `.customer.query.graphql`, `.customer.mutation.graphql`, or `.customer.fragment.graphql`.
+
+### Feature category requirement
+
+All GraphQL query, mutation, and subscription files **must** include a comment that specifies their feature category. This requirement is enforced by the `local-rules/graphql-require-feature-category` ESLint rule.
+
+Add a comment at the top of your `.graphql` file in the following format:
+
+```graphql
+# @feature_category: <category>
+```
+
+The category must be one of the valid categories defined in [`config/feature_categories.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml).
 
 ### Fragments
 

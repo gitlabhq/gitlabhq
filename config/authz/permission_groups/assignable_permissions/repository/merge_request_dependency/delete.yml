@@ -1,0 +1,7 @@
+---
+name: delete_merge_request_dependency
+description: Grants the ability to delete merge request dependencies
+permissions:
+  - delete_merge_request_dependency
+boundaries:
+  - project

@@ -14,11 +14,17 @@ GitLab editor extensions can execute agents locally on your developer workstatio
 
 ### File system access
 
-Agents can perform file operations (read, write, edit, search, and list) on files that are:
+Agents have different file access levels depending on the operation type.
 
-- Located within a Git repository in your workspace.
-- Not excluded by `.gitignore` rules.
-- Valid or resolvable symlinks, including those that point outside the Git repository.
+#### File operations
+
+Agents can perform file operations (read, write, edit, search, and list) on:
+
+- Files located in the Git repository of your GitLab project.
+- Files not excluded by `.gitignore` rules.
+- Valid or resolvable symlinks that point to files inside the Git repository.
+
+#### Shell operations on files 
 
 Shell commands executed by agents can access all files, including those outside of Git repositories and those that match `.gitignore` patterns.
 
@@ -72,7 +78,7 @@ To use Model Context Protocol (MCP) servers securely with GitLab Duo:
 
 ### Use development containers for isolation
 
-Use development containers to mitigate local execution risks. 
+Use development containers to mitigate local execution risks.
 
 Development containers provide:
 
@@ -80,3 +86,6 @@ Development containers provide:
 - Limited file system access: Configure containers to restrict access to only necessary files.
 - Credential isolation: Manage credentials separately and inject them into the container as needed.
 - Network isolation: Restrict container networking to limit external access.
+
+The GitLab Workflow extension for VS Code is compatible with VS Code Dev Containers. For more
+information, see [use the extension in a Visual Studio Code Dev Container](visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container).

@@ -33,13 +33,25 @@ module Resolvers
         required: false,
         description: 'Filter personal access tokens by their revoked status.'
 
+      argument :expires_before, Types::DateType,
+        required: false,
+        description: 'Filter personal access tokens that expire before the specified date.'
+
       argument :expires_after, Types::DateType,
         required: false,
-        description: 'Filter personal access tokens that expire after the timestamp.'
+        description: 'Filter personal access tokens that expire after the specified date.'
+
+      argument :created_before, Types::TimeType,
+        required: false,
+        description: 'Filter personal access tokens created before the timestamp.'
 
       argument :created_after, Types::TimeType,
         required: false,
         description: 'Filter personal access tokens created after the timestamp.'
+
+      argument :last_used_before, Types::TimeType,
+        required: false,
+        description: 'Filter personal access tokens last used before the timestamp.'
 
       argument :last_used_after, Types::TimeType,
         required: false,
@@ -70,8 +82,11 @@ module Resolvers
           search: args[:search],
           state: args[:state],
           sort: args[:sort],
+          expires_before: args[:expires_before],
           expires_after: args[:expires_after],
+          created_before: args[:created_before],
           created_after: args[:created_after],
+          last_used_before: args[:last_used_before],
           last_used_after: args[:last_used_after]
         }.tap do |params|
           params[:revoked] = args[:revoked] unless args[:revoked].nil?

@@ -3,10 +3,10 @@
 module API
   module Entities
     class ProjectImportStatus < ProjectIdentity
-      expose :import_status, documentation: { type: 'string', example: 'scheduled' }
-      expose :import_type, documentation: { type: 'string', example: 'gitlab_project' }
+      expose :import_status, documentation: { type: 'String', example: 'scheduled' }
+      expose :import_type, documentation: { type: 'String', example: 'gitlab_project' }
       expose :correlation_id, documentation: {
-        type: 'string', example: 'dfcf583058ed4508e4c7c617bd7f0edd'
+        type: 'String', example: 'dfcf583058ed4508e4c7c617bd7f0edd'
       } do |project, _options|
         project.import_state&.correlation_id
       end
@@ -17,7 +17,7 @@ module API
         project.import_state&.relation_hard_failures(limit: 100) || []
       end
 
-      expose :import_error, documentation: { type: 'string', example: 'Error message' } do |project, options|
+      expose :import_error, documentation: { type: 'String', example: 'Error message' } do |project, options|
         next unless options[:current_user]
         next unless project.import_state&.last_error
 

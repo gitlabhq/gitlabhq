@@ -23,6 +23,7 @@ CrystalballEnv.start!
 
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
+ENV["GITLAB_SECURITY_MANAGER_ROLE"] = 'true'
 
 require_relative '../config/environment'
 
@@ -39,10 +40,9 @@ require 'axe-rspec'
 
 require 'gitlab/rspec_flaky'
 
-rspec_profiling_is_configured = ENV['RSPEC_PROFILING_POSTGRES_URL'].present? || ENV['RSPEC_PROFILING']
 branch_can_be_profiled = ENV['CI_COMMIT_REF_NAME'] == 'master' || ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile')
 
-require 'rspec_profiling/rspec' if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
+require 'rspec_profiling/rspec' if ENV['RSPEC_PROFILING'] && (!ENV.key?('CI') || branch_can_be_profiled)
 
 Rainbow.enabled = false
 
@@ -90,38 +90,6 @@ RSpec.configure do |config|
       ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :after_failure, example: example.description)
     else
       ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :after_example, example: example.description)
-    end
-  end
-
-  config.after do |example|
-    # We fail early if we detect a PG::QueryCanceled error
-    #
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/402915
-    exception = example.exception
-    if exception && exception.message.include?('PG::QueryCanceled')
-      ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] = 'true'
-
-      warn
-      warn "********************************************************************************************"
-      warn "********************************************************************************************"
-      warn "********************************************************************************************"
-      warn "*                                                                                          *"
-      warn "* We have detected a PG::QueryCanceled error in the specs, so we're failing early.         *"
-      warn "* Please retry this job.                                                                   *"
-      warn "*                                                                                          *"
-      warn "* See https://gitlab.com/gitlab-org/gitlab/-/issues/402915 for more info.                  *"
-      warn "*                                                                                          *"
-      warn "********************************************************************************************"
-      warn "********************************************************************************************"
-      warn "********************************************************************************************"
-      warn
-      warn exception.message
-      warn Gitlab::ExceptionLogFormatter.find_sql(exception)
-      warn
-      warn exception.backtrace.join("\n")
-      warn
-
-      exit 3
     end
   end
 
@@ -404,6 +372,8 @@ RSpec.configure do |config|
 
       # This feature has global impact and most tests aren't ready for it yet
       stub_feature_flags(cells_unique_claims: false)
+
+      stub_feature_flags(work_item_legacy_url: false)
     else
       unstub_all_feature_flags
     end
@@ -440,6 +410,12 @@ RSpec.configure do |config|
       allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
         current_user_mode.send(:user)&.can_access_admin_area?
       end
+    end
+
+    # Security manager is enabled by default via ENV var
+    # Tests can opt out with :disable_security_manager tag
+    if example.metadata[:disable_security_manager]
+      stub_env('GITLAB_SECURITY_MANAGER_ROLE', 'false')
     end
 
     # Make sure specs test by default admin mode setting on, unless forced to the opposite

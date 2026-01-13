@@ -10,7 +10,6 @@ title: Troubleshooting the GitLab Duo Agent Platform
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -32,6 +31,10 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags are enabled for the flow you're trying to use.
    For the latest flag information, check the documentation history for the feature.
+1. If it still does not work:
+   1. Disable the affected flow in the top-level group and save the configuration.
+   1. Enable the affected flow in the top-level group and save the configuration.
+   1. Wait a few minutes for the setting to propagate across your groups.
 
 ## Session is stuck in created state
 
@@ -42,7 +45,7 @@ If a session for your flow does not start:
 
 ### Allow members to be added to projects
 
-Flows that use a [composite identity](security.md) need to add the `@duo-developer`
+Flows that use a [composite identity](composite_identity.md) must add the `@duo-developer`
 service account to your project. If your group is restricted, you cannot add users directly to projects,
 and your flows will not run.
 
@@ -61,26 +64,26 @@ In the GitLab UI, foundational flows use a service account that:
 To configure push rules for a project:
 
 1. Find the email address associated with the service account:
-   1. On the left sidebar, at the bottom, select **Admin**.
+   1. In the upper-right corner, select **Admin**.
    1. Select **Overview** > **Users** and search for `duo-developer`.
    1. Locate the `duo-developer` user and copy the email address.
 
 1. Allow the email address to push to the project:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. On the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Repository**.
    1. Expand **Push rules**.
    1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
    1. Select **Save push rules**.
 
-1. Allow the `workloads/` branch prefix:
+1. Allow the `workloads/` and `duo/feature/` branch prefixes:
    1. In the **Push rules** section, find **Branch name**.
-   1. Add a regular expression that allows branches starting with `workloads/`.
-      For example: `^workloads/.*$`
+   1. Add a regular expression that allows branches starting with `workloads/` and `duo/feature/`.
+      For example: `^(workloads|duo/feature)/.*$`
    1. Select **Save push rules**.
 
 If you are an administrator, you can create push rules for the instance:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.
 1. Follow the previous steps to allow **Commit author's email** and **Branch name**.
 1. Select **Save push rules**.

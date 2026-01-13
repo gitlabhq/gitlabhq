@@ -83,7 +83,7 @@ For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the G
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions** > **GitLab Workflow**.
-1. Select **Settings** ({{< icon name="settings" >}}), and then select **Extension Settings**.
+1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
 1. In **GitLab** > **Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 

@@ -446,8 +446,7 @@
         "default": {
           "markdownDescription": "Default value for this input."
         }
-      },
-      "additionalProperties": false
+      }
     },
     "configInputs": {
       "type": "object",

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Users::SnippetsResolver do
+RSpec.describe Resolvers::Users::SnippetsResolver, :with_current_organization, feature_category: :source_code_management do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -18,6 +18,8 @@ RSpec.describe Resolvers::Users::SnippetsResolver do
 
     before do
       project.add_developer(current_user)
+      # Since this doesn't go through a request flow, we need to manually set Current.organization
+      Current.organization = current_organization
     end
 
     it 'calls SnippetsFinder' do

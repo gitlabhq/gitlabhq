@@ -105,11 +105,8 @@ We provide two debugging scripts to help administrators verify their self-hosted
 
 After troubleshooting is complete, stop and restart the AI Gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
 
-{{< alert type="warning" >}}
-
-You must not bypass authentication in production.
-
-{{< /alert >}}
+> [!warning]
+> You must not bypass authentication in production.
 
 Verify the output of the commands, and fix accordingly.
 
@@ -118,7 +115,7 @@ raise an issue on the issue tracker.
 
 ## GitLab Duo health check is not working
 
-When you [run a health check for GitLab Duo](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
+When you [run a health check for GitLab Duo](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
 
 To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to GitLab Duo Chat.
 
@@ -369,7 +366,7 @@ If you are experiencing issues accessing Code Suggestions after setup, try the f
 1. Check if the necessary features are enabled and available:
 
    ```shell
-   ::Ai::FeatureSetting.code_suggestions_self_hosted? # Should be true
+   ::Ai::FeatureSetting.exists?(feature: [:code_generations, :code_completions], provider: :self_hosted) # Should be true
    ```
 
 ## Error A1000

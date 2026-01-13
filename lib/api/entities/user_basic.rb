@@ -3,26 +3,26 @@
 module API
   module Entities
     class UserBasic < UserSafe
-      expose :state, documentation: { type: 'string', example: 'active' }
-      expose :access_locked?, as: :locked, documentation: { type: 'boolean' }
+      expose :state, documentation: { type: 'String', example: 'active' }
+      expose :access_locked?, as: :locked, documentation: { type: 'Boolean' }
 
-      expose :avatar_url, documentation: { type: 'string', example: 'https://gravatar.com/avatar/1' } do |user, options|
+      expose :avatar_url, documentation: { type: 'String', example: 'https://gravatar.com/avatar/1' } do |user, options|
         user.avatar_url(only_path: false)
       end
 
       expose(
         :avatar_path,
         documentation: {
-          type: 'string',
+          type: 'String',
           example: '/user/avatar/28/The-Big-Lebowski-400-400.png'
         },
         if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
       )
 
-      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes,
+      expose :custom_attributes, using: ::API::Entities::CustomAttribute, if: :with_custom_attributes,
         documentation: { is_array: true }
 
-      expose :web_url, documentation: { type: 'string', example: 'https://gitlab.example.com/root' } do |user, options|
+      expose :web_url, documentation: { type: 'String', example: 'https://gitlab.example.com/root' } do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
       end
     end

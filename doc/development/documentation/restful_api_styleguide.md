@@ -298,13 +298,10 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 The following sections include a set of [cURL](https://curl.se/) examples
 you can use in the API documentation.
 
-{{< alert type="warning" >}}
-
-Do not use information for real users, URLs, or tokens. For documentation, refer to our
-relevant style guide sections on [fake user information](styleguide/_index.md#fake-user-information),
-[fake URLs](styleguide/_index.md#fake-urls), and [fake tokens](styleguide/_index.md#fake-tokens).
-
-{{< /alert >}}
+> [!warning]
+> Do not use information for real users, URLs, or tokens. For documentation, refer to our
+> relevant style guide sections on [fake user information](styleguide/_index.md#fake-user-information),
+> [fake URLs](styleguide/_index.md#fake-urls), and [fake tokens](styleguide/_index.md#fake-tokens).
 
 ### Simple cURL command
 

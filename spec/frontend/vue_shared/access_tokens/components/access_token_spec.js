@@ -43,7 +43,7 @@ describe('AccessToken', () => {
       readonly: true,
       showCopyButton: true,
       showToggleVisibilityButton: true,
-      size: 'lg',
+      size: 'xl',
       value: token,
     });
   });

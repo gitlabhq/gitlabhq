@@ -62,11 +62,8 @@ have to [reindex](../../advanced_search/elasticsearch.md#zero-downtime-reindexin
 
 ## No search results after indexing all repositories
 
-{{< alert type="note" >}}
-
-Don't use these instructions for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
-
-{{< /alert >}}
+> [!note]
+> Don't use these instructions for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
 
 Make sure you [indexed all the database data](../../advanced_search/elasticsearch.md#enable-advanced-search).
 
@@ -236,6 +233,76 @@ sudo -u git -H bundle exec rake gitlab:elastic:index
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Dead queue
+
+Items end up in the dead queue when they fail after being retried once.
+Dead queue items require manual investigation and are not automatically retried.
+
+### Check the status
+
+To check the size and details of the dead queue:
+
+1. Start the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Check the number of failed items:
+
+   ```ruby
+   Search::Elastic::DeadQueue.queue_size
+   ```
+
+1. Inspect the details of failed items:
+
+   ```ruby
+   Search::Elastic::DeadQueue.queued_items
+   ```
+
+   This command returns a hash where each key is a shard number
+   and each value is an array of `[spec, score]` pairs.
+   The spec contains information about the failed item.
+
+### Retry items
+
+Enqueue the items you want to retry.
+If these items fail again, they are moved back to the dead queue.
+
+To retry items in the dead queue:
+
+1. Start the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Move items from the dead queue to the retry queue:
+
+   ```ruby
+   specs = Search::Elastic::DeadQueue.queued_items.flat_map { |_, items| items.map { |spec, _| spec } }
+
+   Search::Elastic::DeadQueue.clear_tracking!
+   Search::Elastic::RetryQueue.track!(*specs)
+   ```
+
+1. Optional. [Check indexing status](../../advanced_search/elasticsearch.md#check-indexing-status).
+
+To discard items in the dead queue without retrying them, run the following command:
+
+```ruby
+Search::Elastic::DeadQueue.clear_tracking!
+```
+
+### Contact GitLab Support
+
+If you need help with dead queue items, share the following information with GitLab Support:
+
+- The output of `Search::Elastic::DeadQueue.queue_size`
+- Your Elasticsearch and GitLab versions
+- When the indexing failures started
+- Relevant application logs or error messages
 
 ## Improve Elasticsearch performance
 

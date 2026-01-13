@@ -21,15 +21,14 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-
 import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useCodeReview } from '~/diffs/stores/code_review';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import diffsEventHub from '../event_hub';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
-import { reviewable } from '../utils/file_reviews';
 import DiffStats from './diff_stats.vue';
 
 const createHotkeyHtml = (key) => `<kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`;
@@ -191,7 +190,7 @@ export default {
       );
     },
     isReviewable() {
-      return reviewable(this.diffFile);
+      return Boolean(this.diffFile.code_review_id) && Boolean(this.diffFile.file_identifier_hash);
     },
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
@@ -263,7 +262,6 @@ export default {
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
       'setCurrentFileHash',
-      'reviewFile',
       'setFileCollapsedByUser',
       'setFileForcedOpen',
       'toggleFileCommentForm',
@@ -311,7 +309,11 @@ export default {
       const closed = !open;
       const reviewed = newReviewedStatus;
 
-      this.reviewFile({ file: this.diffFile, reviewed });
+      // diffFile.id is generated on the frontend, code_review_id is generated on the backend
+      // we need to leave only code_review_id as our single source of truth
+      // this is done to prevent legacy id from persisting in the local storage
+      useCodeReview().removeId(this.diffFile.id);
+      useCodeReview().setReviewed(this.diffFile.code_review_id, reviewed);
 
       if (reviewed && autoCollapsed) {
         this.setFileCollapsedByUser({

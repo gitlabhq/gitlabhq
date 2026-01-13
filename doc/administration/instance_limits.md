@@ -270,6 +270,13 @@ issues and merge requests.
 When a branch with a large number of commits is pushed, only the last 100 commits
 are processed.
 
+### Size during rebase operations
+
+When you rebase commits, commit messages that exceed the size limit are truncated.
+This limit is separate from the size limits for commit titles and descriptions.
+
+- **Limit**: 10,240 bytes (10 KB).
+
 ## Number of issues in the milestone overview
 
 The maximum number of issues loaded on the milestone overview page is 500.
@@ -834,6 +841,13 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#cicd).
 
 ### Number of pipeline schedules
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 The total number of pipeline schedules can be limited per project. This limit is
 checked each time a new pipeline schedule is created. If a new pipeline schedule
 would cause the total number of pipeline schedules to exceed the limit, the
@@ -843,12 +857,14 @@ On GitLab.com, the limit is
 [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
 and this limit affects all projects with that tier.
 
-On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
-this limit is defined under a `default` plan that affects all
-projects. By default, there is a limit of `10` pipeline schedules.
+On GitLab Self-Managed and GitLab Dedicated, this limit is defined
+under a `default` plan that affects all projects.
+By default, there is a limit of `10` pipeline schedules.
 
-To set this limit for a GitLab Self-Managed instance, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+To set this limit, use the [Plan Limits API](../api/plan_limits.md).
+
+For GitLab Self-Managed, you can also use the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+For example, to set the limit to 100:
 
 ```ruby
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
@@ -1576,14 +1592,14 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-file) enforces 
 
 - Each top-level group can have a maximum of 5 Amazon S3 streaming destinations.
 
-## Dependency Scanning using SBOM limits
+## Dependency scanning using SBOM limits
 
 The [dependency scanning using SBOM feature](../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md) uses an internal API with the following limits:
 
 - Maximum number of upload requests per project per hour: 400
 - Maximum number of download requests per project per hour: 6000
 
-You can configure these limits for GitLab Self-Managed instances using [the Dependency Scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
+You can configure these limits for GitLab Self-Managed instances using the [dependency scanning settings](settings/security_and_compliance.md#sbom-scan-api-limits).
 
 ## Commits and Files API limits
 
@@ -1595,7 +1611,7 @@ You can configure these limits for GitLab Self-Managed instances using [the Depe
 
 The Commits and Files APIs enforce maximum size and rate limits on the following endpoints:
 
-- `POST /projects/:id/repository/commits` - [Create a commit with multiple files and actions](../api/commits.md#create-a-commit-with-multiple-files-and-actions)
+- `POST /projects/:id/repository/commits` - [Create a commit](../api/commits.md#create-a-commit)
 - `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../api/repository_files.md#create-new-file-in-repository)
 - `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../api/repository_files.md#update-existing-file-in-repository)
 

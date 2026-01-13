@@ -2,14 +2,14 @@ import {
   OPERATOR_OR,
   TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { isAssigneeIdParam, isNotEmptySearchToken } from '~/issues/list/utils';
+import { isAssigneeIdParam, isNotEmptySearchToken } from '~/work_items/list/utils';
 import {
   ALTERNATIVE_FILTER,
   NORMAL_FILTER,
   URL_PARAM,
   WILDCARD_FILTER,
   wildcardFilterValues,
-} from '~/issues/list/constants';
+} from '~/work_items/list/constants';
 import { filtersMap } from './constants';
 
 const getFilterType = ({ type, value: { data, operator } }) => {

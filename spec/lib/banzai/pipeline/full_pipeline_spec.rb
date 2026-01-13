@@ -31,7 +31,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     end
 
     it 'prevents xss by not replacing the same reference in one anchor multiple times' do
-      reference_link = ::Gitlab::Routing.url_helpers.project_issue_url(project, issue)
+      reference_link = ::Gitlab::UrlBuilder.instance.issue_url(issue)
       markdown = <<~TEXT
         <div>
         <a href="#{reference_link}<i>

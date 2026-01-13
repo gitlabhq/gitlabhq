@@ -109,11 +109,8 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
 
 ## Reset the Patroni state in Consul
 
-{{< alert type="warning" >}}
-
-Resetting the Patroni state in Consul is a potentially destructive process. Make sure that you have a healthy database backup first.
-
-{{< /alert >}}
+> [!warning]
+> Resetting the Patroni state in Consul is a potentially destructive process. Make sure that you have a healthy database backup first.
 
 As a last resort you can reset the Patroni state in Consul completely.
 

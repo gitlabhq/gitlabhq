@@ -2,6 +2,7 @@
 
 module ResolvesPipelines
   extend ActiveSupport::Concern
+  MAX_PIPELINE_IDS = 20
 
   REF_TYPE_SCOPE_MAP = {
     'heads' => 'branches',
@@ -35,6 +36,9 @@ module ResolvesPipelines
       GraphQL::Types::String,
       required: false,
       description: "Filter pipelines by their source."
+    argument :ids, [GraphQL::Types::ID],
+      required: false,
+      description: "Filter pipelines by their Global IDs. Maximum 20 IDs per request."
 
     argument :updated_after, Types::TimeType,
       required: false,
@@ -60,6 +64,14 @@ module ResolvesPipelines
   end
 
   def resolve_pipelines(project, params = {})
+    if params[:ids].present?
+      if params[:ids].length > MAX_PIPELINE_IDS
+        raise GraphQL::ExecutionError, "Cannot query more than #{MAX_PIPELINE_IDS} pipelines by ID at once."
+      end
+
+      params[:ids] = parse_pipeline_ids(params[:ids])
+    end
+
     extract_scope_from_params!(params)
 
     pipelines = Ci::PipelinesFinder.new(project, context[:current_user], params).execute
@@ -77,5 +89,13 @@ module ResolvesPipelines
 
   def extract_scope_from_params!(params)
     params[:scope] ||= REF_TYPE_SCOPE_MAP[params[:ref_type]]
+  end
+
+  def parse_pipeline_ids(ids)
+    ids.map do |gid|
+      GitlabSchema.parse_gid(gid, expected_type: ::Ci::Pipeline).model_id
+    rescue Gitlab::Graphql::Errors::ArgumentError
+      nil
+    end
   end
 end

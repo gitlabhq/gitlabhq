@@ -59,7 +59,7 @@ RSpec.describe WorkItems::Widgets::Description do
           work_item.update!(last_edited_by: nil)
         end
 
-        it { is_expected.to eq(Users::Internal.for_organization(work_item.namespace.organization).ghost) }
+        it { is_expected.to eq(Users::Internal.in_organization(work_item.namespace.organization).ghost) }
       end
     end
 

@@ -5,9 +5,20 @@ module Gitlab
     module Presenters
       class IssueComment < Presenters::Base
         include Presenters::NoteBase
+        include ActionView::RecordIdentifier
 
         def present
           ephemeral_response(response_message)
+        end
+
+        def resource_url
+          url_for(
+            [
+              resource.project,
+              resource.noteable,
+              { anchor: dom_id(resource) }
+            ]
+          )
         end
 
         private

@@ -7,7 +7,6 @@ import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 Vue.use(PiniaVuePlugin);
 
@@ -26,7 +25,6 @@ describe('FileBrowser', () => {
     useDiffsList();
     useDiffsView();
     useFileBrowser();
-    useLegacyDiffs();
   });
 
   it('passes down props', () => {
@@ -68,6 +66,6 @@ describe('FileBrowser', () => {
     const path = 'foo';
     createComponent();
     await wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', path);
-    expect(useLegacyDiffs().toggleTreeOpen).toHaveBeenCalledWith(path);
+    expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(path);
   });
 });

@@ -86,4 +86,28 @@ RSpec.describe Packages::Protection::DeleteRuleService, '#execute', feature_cate
 
     it { expect { service_execute }.to raise_error(ArgumentError) }
   end
+
+  context 'when tracking internal events' do
+    it 'tracks the delete_package_protection_rule event' do
+      expect { service_execute }
+        .to trigger_internal_events('delete_package_protection_rule')
+        .with(
+          project: project,
+          namespace: project.namespace,
+          user: current_user,
+          additional_properties: { package_type: package_protection_rule.package_type }
+        )
+        .once
+    end
+
+    context 'when deletion fails' do
+      before do
+        allow(package_protection_rule).to receive(:destroy!).and_raise(StandardError.new('Some error'))
+      end
+
+      it 'does not track the event' do
+        expect { service_execute }.not_to trigger_internal_events('delete_package_protection_rule')
+      end
+    end
+  end
 end

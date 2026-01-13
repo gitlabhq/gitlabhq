@@ -176,7 +176,7 @@ module Gitlab
       end
 
       def supports_children?
-        ::WorkItems::SystemDefined::HierarchyRestriction
+        ::WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
           .with_parent_type_id(quick_action_target.work_item_type_id)
           .present?
       end
@@ -267,7 +267,7 @@ module Gitlab
       end
 
       def hierarchy_relationship_allowed?(parent, child_work_item)
-        ::WorkItems::SystemDefined::HierarchyRestriction.hierarchy_relationship_allowed?(
+        ::WorkItems::TypesFramework::SystemDefined::HierarchyRestriction.hierarchy_relationship_allowed?(
           parent_type_id: parent.work_item_type_id,
           child_type_id: child_work_item.work_item_type_id
         )

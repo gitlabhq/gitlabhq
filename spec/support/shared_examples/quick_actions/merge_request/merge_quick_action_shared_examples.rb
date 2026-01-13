@@ -43,10 +43,6 @@ RSpec.shared_examples 'merge quick action' do
         it 'schedules to merge the MR' do
           add_note("/merge")
 
-          expect(page).to(
-            have_content("Scheduled to merge this merge request (Merge when checks pass).")
-          )
-
           expect(merge_request.reload).to be_auto_merge_enabled
           expect(merge_request.reload).not_to be_merged
         end

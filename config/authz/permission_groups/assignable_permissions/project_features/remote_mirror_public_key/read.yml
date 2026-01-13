@@ -1,0 +1,7 @@
+---
+name: read_remote_mirror_public_key
+description: Grants the ability to read remote mirror public keys
+boundaries:
+  - project
+permissions:
+  - read_remote_mirror_public_key

@@ -72,6 +72,14 @@ RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
       expect(subject.header["X-GitLab-#{model.class.name}-State"]).to eq nil
     end
   end
+
+  it 'has X-GitLab-*-Type header if model is a work item' do
+    if model.is_a?(WorkItem) && model.respond_to?(:work_item_type)
+      is_expected.to have_header "X-GitLab-#{model.class.name}-Type", model.work_item_type.name
+    else
+      expect(subject.header["X-GitLab-#{model.class.name}-Type"]).to eq nil
+    end
+  end
 end
 
 RSpec.shared_examples 'an email with X-GitLab headers containing project details' do

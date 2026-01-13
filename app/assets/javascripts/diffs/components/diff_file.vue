@@ -470,7 +470,7 @@ export default {
   <div
     :id="file.file_hash"
     :class="{
-      'gl-border-red-500': file.conflict_type,
+      'gl-border-feedback-danger': file.conflict_type,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
@@ -535,7 +535,7 @@ export default {
       :class="[
         hasBodyClasses.header,
         {
-          '!gl-rounded-none !gl-bg-red-200': file.conflict_type,
+          '!gl-rounded-none !gl-bg-feedback-danger': file.conflict_type,
           '!gl-rounded-tl-none !gl-rounded-tr-none': file.conflict_type && isCollapsed,
           '!gl-border-0': file.conflict_type || isCollapsed,
         },

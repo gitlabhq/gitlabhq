@@ -1,14 +1,16 @@
 import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
+import mockPipelineNeedsResponse from 'test_fixtures/pipelines/pipeline_needs.json';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
 import getPipelinePermissions from '~/ci/pipeline_details/graph/graphql/queries/get_pipeline_permissions.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import axios from '~/lib/utils/axios_utils';
@@ -56,6 +58,7 @@ describe('Pipeline graph wrapper', () => {
   let wrapper;
   let requestHandlers;
   let pipelineDetailsHandler;
+  let pipelineNeedsHandler;
 
   const findAlert = () => wrapper.findByTestId('error-alert');
   const findJobCountWarning = () => wrapper.findByTestId('job-count-warning');
@@ -101,12 +104,14 @@ describe('Pipeline graph wrapper', () => {
       getUserCalloutsHandler: jest.fn().mockResolvedValue(mockCalloutsResponse(callouts)),
       getPipelineHeaderDataHandler: jest.fn().mockResolvedValue(mockRunningPipelineHeaderData),
       getPipelineDetailsHandler: pipelineDetailsHandler,
+      getPipelineNeedsHandler: pipelineNeedsHandler,
       getPipelinePermissionsHandler: jest.fn().mockResolvedValue(mockPipelinePermissions),
     };
 
     const handlers = [
       [getPipelineHeaderData, requestHandlers.getPipelineHeaderDataHandler],
       [getPipelineDetails, requestHandlers.getPipelineDetailsHandler],
+      [getPipelineNeeds, requestHandlers.getPipelineNeedsHandler],
       [getUserCallouts, requestHandlers.getUserCalloutsHandler],
       [getPipelinePermissions, requestHandlers.getPipelinePermissionsHandler],
     ];
@@ -118,6 +123,7 @@ describe('Pipeline graph wrapper', () => {
   beforeEach(() => {
     pipelineDetailsHandler = jest.fn();
     pipelineDetailsHandler.mockResolvedValue(mockPipelineResponse);
+    pipelineNeedsHandler = jest.fn().mockResolvedValue(mockPipelineNeedsResponse);
   });
 
   describe('when data is loading', () => {
@@ -333,6 +339,42 @@ describe('Pipeline graph wrapper', () => {
   });
 
   describe('view dropdown', () => {
+    describe('when needs query fails', () => {
+      beforeEach(async () => {
+        pipelineNeedsHandler.mockRejectedValue(new Error('Needs query failed'));
+        createComponentWithApollo();
+
+        await waitForPromises();
+      });
+
+      it('shows error alert when switching to layer view', async () => {
+        expect(findAlert().exists()).toBe(false);
+
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await waitForPromises();
+
+        expect(findAlert().text()).toBe('Currently unable to fetch data for this pipeline.');
+      });
+    });
+
+    describe('when needs data is loading', () => {
+      beforeEach(() => {
+        createComponentWithApollo();
+      });
+
+      it('shows loading icon while fetching needs data', async () => {
+        await waitForPromises();
+        expect(findLoadingIcon().exists()).toBe(false);
+
+        findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await nextTick();
+
+        expect(findLoadingIcon().exists()).toBe(true);
+        await waitForPromises();
+        expect(findLoadingIcon().exists()).toBe(false);
+      });
+    });
+
     describe('default', () => {
       let layersFn;
       beforeEach(async () => {
@@ -364,11 +406,54 @@ describe('Pipeline graph wrapper', () => {
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
         await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await waitForPromises();
+
         expect(layersFn).toHaveBeenCalledTimes(1);
         await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
         await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
         await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
         expect(layersFn).toHaveBeenCalledTimes(1);
+      });
+
+      it('requests needs data only for the layers view', async () => {
+        expect(pipelineNeedsHandler).not.toHaveBeenCalled();
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await waitForPromises();
+
+        expect(pipelineNeedsHandler).toHaveBeenCalledWith({
+          iid: defaultProvide.pipelineIid,
+          projectPath: defaultProvide.pipelineProjectPath,
+        });
+      });
+
+      it('provides the pipeline with needs to the layer view', async () => {
+        // In stage view, needs and previousStageJobsUnionNeeds should be empty for all jobs
+        const stageViewPipeline = findGraph().props('pipeline');
+        const stageViewJobs = stageViewPipeline.stages.flatMap((stage) =>
+          stage.groups.flatMap((group) => group.jobs),
+        );
+
+        stageViewJobs.forEach((job) => {
+          expect(job.needs).toEqual([]);
+          expect(job.previousStageJobsUnionNeeds).toEqual([]);
+        });
+
+        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await waitForPromises();
+
+        // In layer view, at least some jobs should have populated needs/previousStageJobsUnionNeeds
+        const layerViewPipeline = findGraph().props('pipeline');
+        const layerViewJobs = layerViewPipeline.stages.flatMap((stage) =>
+          stage.groups.flatMap((group) => group.jobs),
+        );
+
+        const jobsWithNeeds = layerViewJobs.filter((job) => job.needs.length > 0);
+        const jobsWithPreviousStageJobs = layerViewJobs.filter(
+          (job) => job.previousStageJobsUnionNeeds.length > 0,
+        );
+
+        expect(jobsWithNeeds.length).toBeGreaterThan(0);
+        expect(jobsWithPreviousStageJobs.length).toBeGreaterThan(0);
       });
     });
 
@@ -381,7 +466,6 @@ describe('Pipeline graph wrapper', () => {
           mountFn: mountExtended,
         });
 
-        jest.runOnlyPendingTimers();
         await waitForPromises();
       });
 
@@ -428,7 +512,6 @@ describe('Pipeline graph wrapper', () => {
           calloutsList: ['pipeline_needs_hover_tip'.toUpperCase()],
         });
 
-        jest.runOnlyPendingTimers();
         await waitForPromises();
       });
 
@@ -438,7 +521,7 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when feature flag is on and local storage is set', () => {
+    describe('when local storage is set', () => {
       beforeEach(async () => {
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
 
@@ -466,9 +549,9 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when feature flag is on and local storage is set, but the graph does not use needs', () => {
+    describe('when local storage is set, but the graph does not use needs', () => {
       beforeEach(async () => {
-        const nonNeedsResponse = { ...mockPipelineResponse };
+        const nonNeedsResponse = JSON.parse(JSON.stringify(mockPipelineResponse));
         nonNeedsResponse.data.project.pipeline.usesNeeds = false;
 
         localStorage.setItem(VIEW_TYPE_KEY, LAYER_VIEW);
@@ -490,9 +573,9 @@ describe('Pipeline graph wrapper', () => {
       });
     });
 
-    describe('when feature flag is on but pipeline does not use needs', () => {
+    describe('when pipeline does not use needs', () => {
       beforeEach(async () => {
-        const nonNeedsResponse = { ...mockPipelineResponse };
+        const nonNeedsResponse = JSON.parse(JSON.stringify(mockPipelineResponse));
         nonNeedsResponse.data.project.pipeline.usesNeeds = false;
 
         pipelineDetailsHandler.mockResolvedValue(nonNeedsResponse);
@@ -500,12 +583,15 @@ describe('Pipeline graph wrapper', () => {
           mountFn: mountExtended,
         });
 
-        jest.runOnlyPendingTimers();
         await waitForPromises();
       });
 
       it('does not appear when pipeline does not use needs', () => {
         expect(findViewSelector().exists()).toBe(false);
+      });
+
+      it('does not request needs data', () => {
+        expect(pipelineNeedsHandler).not.toHaveBeenCalled();
       });
     });
   });
@@ -559,15 +645,12 @@ describe('Pipeline graph wrapper', () => {
           createComponentWithApollo({
             provide: {
               metricsPath,
-              glFeatures: {
-                pipelineGraphLayersView: true,
-              },
-            },
-            data: {
-              currentViewType: LAYER_VIEW,
             },
           });
 
+          await waitForPromises();
+
+          await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
           await waitForPromises();
         });
 
@@ -591,10 +674,10 @@ describe('Pipeline graph wrapper', () => {
             provide: {
               metricsPath,
             },
-            data: {
-              currentViewType: LAYER_VIEW,
-            },
           });
+          await waitForPromises();
+
+          await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
           await waitForPromises();
         });
 

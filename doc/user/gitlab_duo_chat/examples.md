@@ -107,13 +107,10 @@ You can ask about a specific GitLab issue. For example:
 - When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
 - `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
+> [!note]
+> If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
-If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
 <!-- Video published on 2024-04-17 -->
 
@@ -148,11 +145,8 @@ You can ask about a specific GitLab epic. For example:
 - When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
 - `What are the unique use cases raised by commenters in <link to your epic>?`
 
-{{< alert type="note" >}}
-
-If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
+> [!note]
+> If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ## Ask about a specific merge request
 
@@ -272,11 +266,8 @@ You can ask about a specific GitLab work item. For example:
 - When you are viewing an work item in GitLab, you can ask `Generate a concise summary of the current work item.`
 - `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
-
-If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
-
-{{< /alert >}}
+> [!note]
+> If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ## Explain selected code
 
@@ -325,7 +316,7 @@ You can also add additional instructions to be considered. For example:
 
 For more information, see:
 
-- [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+- [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
   <!-- Video published on 2025-03-18 -->
 
@@ -485,11 +476,8 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 - `How does checkout_flow.js interact with cart_service.py? Generate a sequence diagram using Mermaid.`
 - `Can you extend the checkout process by showing products related to the ones in the user's cart? I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
-{{< alert type="note" >}}
-
-You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
-
-{{< /alert >}}
+> [!note]
+> You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
 
 ## Refactor code in the IDE
 
@@ -538,7 +526,7 @@ For more information, see:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
   <!-- Video published on 2025-03-18 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
 
 ## Fix code in the IDE
 
@@ -622,9 +610,9 @@ You can include additional instructions to be considered. For example:
 
 `/tests` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
 
-For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 
 ## Ask about CI/CD
 
@@ -700,7 +688,7 @@ It analyzes the last 100,000 characters of the job log to determine the cause of
 
 You can access this feature either from the **Pipelines** tab in merge requests or directly from the job log.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Root Cause Analysis does not support:
 
@@ -747,7 +735,7 @@ To troubleshoot a failed CI/CD job from the job log:
 {{< collapsible title="Editor and model information" >}}
 
 - Editors: GitLab UI
-- Default LLM: Anthropic [Claude Sonnet 3.7](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- Default LLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -830,11 +818,8 @@ Use the commands to quickly accomplish specific tasks.
 | /reset  | [Clear the chat window and reset the conversation](#delete-or-start-a-new-conversation)                                       |
 | /help   | Learn more about how GitLab Duo Chat works                                                                                           |
 
-{{< alert type="note" >}}
-
-On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
 
 ### GitLab UI
 

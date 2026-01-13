@@ -2,7 +2,7 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: SAST False Positive Detection
+title: SAST false positive detection
 description: Automatic detection and filtering of false positives in SAST findings.
 ---
 
@@ -21,7 +21,7 @@ description: Automatic detection and filtering of false positives in SAST findin
 
 {{< /history >}}
 
-When a SAST (Static Application Security Testing) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
+When a static application security testing (SAST) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
 
 The GitLab Duo assessment includes:
 
@@ -47,7 +47,7 @@ The analysis happens in the background and results appear in the vulnerability r
 
 You can manually trigger false positive detection for existing vulnerabilities:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
@@ -60,10 +60,47 @@ To use false positive detection, you must have:
 
 - A GitLab Duo add-on subscription (GitLab Duo Core, Pro, or Enterprise).
 - [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
-- **Use Duo SAST False Positive Detection** enabled for your project in **Settings** > **General** > **GitLab Duo**.
 - GitLab 18.7 or later.
 
-No additional configuration is required. The feature works automatically with your existing SAST scanners.
+### Enable false positive detection
+
+False positive detection is turned off by default. You can enable it for an instance, group, or project. When you enable the setting for an instance or group, the setting applies to all of its descendant groups and projects.
+
+Recommended: You should enable the settings for the group to apply the setting to all projects in that group.
+
+#### Enable for a group (recommended)
+
+To enable false positive detection for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Select the **Turn on SAST false positive detection** checkbox.
+1. Select **Save changes**.
+
+This setting applies to all descendant projects in the group. Individual projects can override this setting if they need to disable it.
+
+#### Enable for a project
+
+To enable false positive detection for a specific project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Turn on the **Turn on SAST false positive detection** toggle.
+1. Select **Save changes**.
+
+#### Enable for an instance
+
+GitLab administrators can enable false positive detection for the entire instance:
+
+1. On the left sidebar, select **Admin Area**.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo**.
+1. Select the **Turn on SAST false positive detection** checkbox.
+1. Select **Save changes**.
+
+False positive detection works automatically with your existing SAST scanners when enabled for an instance, group, or project.
 
 ## Confidence scores
 

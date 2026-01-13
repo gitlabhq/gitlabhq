@@ -175,7 +175,41 @@ class PartitionAuditEvents < Gitlab::Database::Migration[2.1]
 end
 ```
 
-After this has executed, any inserts, updates, or deletes in the
+Next, register the temporary partitioned table in
+`config/initializers/postgres_partitioning.rb`. This registration ensures the
+partition manager creates new partitions as the trigger syncs data. For example:
+
+```ruby
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[main],
+      table_name: 'audit_events_partitioned_table_name',
+      partitioned_column: :created_at, strategy: :monthly
+    }
+  ]
+)
+```
+
+The example includes the following:
+
+- `table_name`: The name of your temporary partitioned table
+  (for example, `audit_events_b8088ecbd2`).
+- `partitioned_column`: The column used for partitioning.
+- `strategy`: Either `:daily` or `:monthly`.
+
+{{< alert type="warning" >}}
+
+Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
+During the backfill, the partition manager might detach old partitions if `retain_for` is set,
+causing the backfill to fail when it tries to copy data into detached partitions.
+Add `retain_for` to your model only after the table swap is complete (Step 4).
+
+{{< /alert >}}
+
+After the table swap is complete (Step 4), you can remove this registration.
+
+After the migration has executed, any inserts, updates, or deletes in the
 original table are also duplicated in the new table. For updates and
 deletes, the operation only has an effect if the corresponding row
 exists in the partitioned table.
@@ -195,15 +229,24 @@ class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
+  MIGRATION = 'BackfillPartitionedAuditEvents'
 
   def up
-    enqueue_partitioning_data_migration :audit_events
+    enqueue_partitioning_data_migration :audit_events, MIGRATION
   end
 
   def down
-    cleanup_partitioning_data_migration :audit_events
+    cleanup_partitioning_data_migration :audit_events, MIGRATION
   end
 end
+```
+
+Batched background migrations are tracked under `db/docs/batched_background_migrations/`
+and require unique names. Create a subclass of `BackfillPartitionedTable` in
+`lib/gitlab/background_migration/` and reference it in your migration:
+
+```ruby
+class BackfillPartitionedAuditEvents < BackfillPartitionedTable; end
 ```
 
 This step [queues a batched background migration](../batched_background_migrations.md#enqueue-a-batched-background-migration) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](../batched_background_migrations.md) for more details.
@@ -282,3 +325,18 @@ After this migration completes:
 - The sync trigger created earlier is dropped.
 
 The partitioned table is now ready for use by the application.
+
+If you registered the temporary partitioned table in `config/initializers/postgres_partitioning.rb`
+(as described in Step 1), remove that registration now because the temporary table no longer exists after swap.
+
+To retain your data for a specific period only, add `retain_for` to your model:
+
+```ruby
+class ProjectDailyStatistic < ApplicationRecord
+  include PartitionedTable
+
+  partitioned_by :date, strategy: :monthly, retain_for: 3.months
+end
+```
+
+This ensures old partitions are automatically dropped by the partition manager.

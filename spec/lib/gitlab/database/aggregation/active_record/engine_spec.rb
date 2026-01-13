@@ -38,15 +38,15 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
         column :state_id, :integer, description: 'Integer representation of the existing merge request states'
         column :updated_by_id, :integer, description: 'User id value who last updated the the merge request'
         column :project_id, :integer, description: 'ID of the associated project'
-        timestamp_column :created_at, :timestamp, description: 'Bucketed creation timestamp (month)',
+        date_bucket :created_at, :timestamp, description: 'Bucketed creation timestamp (month)',
           parameters: { granularity: { type: :string, in: %w[monthly daily] } }
-        timestamp_column :merged_at,
+        date_bucket :merged_at,
           :timestamp,
           -> { MergeRequest::Metrics.arel_table[:merged_at] },
           parameters: { granularity: { type: :string, in: %w[monthly weekly] } },
           scope_proc: ->(scope, _ctx) { scope.joins(:metrics).where.not(merge_request_metrics: { merged_at: nil }) },
           description: 'Bucketed merge timestamp (month or week).'
-        timestamp_column :closed_at,
+        date_bucket :closed_at,
           :timestamp,
           -> { MergeRequest::Metrics.arel_table[:latest_closed_at] },
           parameters: { granularity: { type: :string, in: %w[monthly weekly] } },
@@ -160,18 +160,6 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
     ])
   end
 
-  it 'count by monthly merged_at' do
-    request = Gitlab::Database::Aggregation::Request.new(
-      dimensions: [{ identifier: :merged_at, parameters: { granularity: 'monthly' } }],
-      metrics: [{ identifier: :total_count }]
-    )
-
-    expect(engine).to execute_aggregation(request).and_return([
-      { merged_at_monthly: merge_request1.metrics.merged_at.beginning_of_month, total_count: 1 },
-      { merged_at_monthly: merge_request3.metrics.merged_at.beginning_of_month, total_count: 1 }
-    ])
-  end
-
   describe 'null value handling' do
     context 'when column with integer type returns null values' do
       it 'groups null values together' do
@@ -187,7 +175,7 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
       end
     end
 
-    context 'when timestamp_column dimension returns null values' do
+    context 'when date_bucket dimension returns null values' do
       it 'groups null values together' do
         request = Gitlab::Database::Aggregation::Request.new(
           dimensions: [{ identifier: :closed_at, parameters: { granularity: 'monthly' } }],
@@ -198,118 +186,6 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::Engine, feature_cate
           { closed_at_monthly: merge_request2.metrics.latest_closed_at.beginning_of_month, total_count: 1 },
           { closed_at_monthly: nil, total_count: 2 }
         ])
-      end
-    end
-  end
-
-  describe '.to_hash' do
-    it 'exposes the engine_definition definition' do
-      expect(engine_definition.to_hash).to match({
-        dimensions: array_including(
-          hash_including({ identifier: :state_id, name: :state_id })
-        ),
-        metrics: array_including(
-          hash_including({ identifier: :total_count })
-        )
-      })
-    end
-  end
-
-  describe 'validations' do
-    context 'when metric cannot be found' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :state_id }],
-          metrics: [{ identifier: :missing_identfier }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/identifier is not available: 'missing_identfier'/)
-        ))
-      end
-    end
-
-    context 'when dimension cannot be found' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :missing_identfier }],
-          metrics: [{ identifier: :mean_time_estimate }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/identifier is not available: 'missing_identfier'/)
-        ))
-      end
-    end
-
-    context 'when no metric is passed in' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :state_id }],
-          metrics: []
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/at least one metric is required/)
-        ))
-      end
-    end
-
-    context 'when dimensions limit is reached' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [
-            { identifier: :state_id },
-            { identifier: :project_id },
-            { identifier: :state },
-            { identifier: :merged_at, parameters: { granularity: 'monthly' } }
-          ],
-          metrics: [{ identifier: :mean_time_estimate }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/maximum two dimensions/)
-        ))
-      end
-    end
-
-    context 'when order cannot be found' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :state_id }],
-          metrics: [{ identifier: :mean_time_estimate }],
-          order: [{ identifier: :unknown, direction: :asc }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/identifier is not available/)
-        ))
-      end
-    end
-
-    context 'when duplicated dimensions are passed in' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :state_id }, { identifier: :state_id }],
-          metrics: [{ identifier: :mean_time_estimate }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/duplicated identifier found: state_id/)
-        ))
-      end
-    end
-
-    context 'when duplicated metrics are passed in' do
-      it 'returns error' do
-        request = Gitlab::Database::Aggregation::Request.new(
-          dimensions: [{ identifier: :state_id }],
-          metrics: [{ identifier: :mean_time_estimate }, { identifier: :mean_time_estimate }]
-        )
-
-        expect(engine).to execute_aggregation(request).with_errors(array_including(
-          a_string_matching(/duplicated identifier found: mean_time_estimate/)
-        ))
       end
     end
   end

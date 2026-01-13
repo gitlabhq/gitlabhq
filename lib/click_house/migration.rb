@@ -53,6 +53,18 @@ module ClickHouse
       end
     end
 
+    def create_dictionary(definition, source_tables:)
+      unless definition.include?('CLICKHOUSE(') # We only support ClickHouse-based dictionaries
+        raise "Unsupported dictionary source (only CLICKHOUSE source is supported): #{definition}"
+      end
+
+      source_tables.each do |table|
+        definition = definition.gsub(table.to_s, "#{connection.database_name}.#{table}")
+      end
+      create_statement = definition.gsub('CLICKHOUSE(', "CLICKHOUSE(#{dictionary_credentials}")
+      execute(create_statement)
+    end
+
     private
 
     attr_reader :connection
@@ -90,6 +102,17 @@ module ClickHouse
 
       row = connection.select(query).first
       row['default_expression'] != ''
+    end
+
+    def dictionary_credentials
+      config = connection.database_config
+
+      secure = config.instance_variable_get(:@url).start_with?('https')
+      <<~TEXT
+      USER '#{config.instance_variable_get(:@username)}'
+      PASSWORD '#{config.instance_variable_get(:@password).to_s.gsub("'", "''")}'
+      SECURE '#{secure ? '1' : '0'}'
+      TEXT
     end
   end
 end

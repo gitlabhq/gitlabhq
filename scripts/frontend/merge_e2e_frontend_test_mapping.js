@@ -217,21 +217,35 @@ function main() {
   console.log('=== E2E Frontend Test Mapping Merger ===');
 
   const e2eTestToSources = loadE2EMappings();
+  const jestMapping = loadJestMapping();
 
-  if (Object.keys(e2eTestToSources).length === 0) {
-    console.log('No E2E mappings to merge, skipping...');
+  const hasE2EMappings = Object.keys(e2eTestToSources).length > 0;
+  const hasJestMapping = jestMapping !== null;
+
+  if (!hasE2EMappings && !hasJestMapping) {
+    console.error('ERROR: Both E2E and Jest mappings are missing, cannot produce merged mapping');
+    process.exit(1);
+  }
+
+  let e2eCrystalballFormat = {};
+  if (hasE2EMappings) {
+    const e2eSourceToTests = invertMapping(e2eTestToSources);
+    console.log(`Inverted E2E mapping: ${Object.keys(e2eSourceToTests).length} source files`);
+    e2eCrystalballFormat = convertToCrystalballFormat(e2eSourceToTests);
+  } else {
+    console.log('No E2E mappings found, will use Jest mapping only');
+  }
+
+  if (!hasJestMapping) {
+    console.log('No Jest mapping found, saving E2E mapping only');
+    saveMergedMapping(e2eCrystalballFormat);
+    console.log('=== Merge complete ===');
     return;
   }
 
-  const e2eSourceToTests = invertMapping(e2eTestToSources);
-  console.log(`Inverted E2E mapping: ${Object.keys(e2eSourceToTests).length} source files`);
-
-  const e2eCrystalballFormat = convertToCrystalballFormat(e2eSourceToTests);
-  const jestMapping = loadJestMapping();
-
-  if (!jestMapping) {
-    console.log('No Jest mapping found, saving E2E mapping only');
-    saveMergedMapping(e2eCrystalballFormat);
+  if (!hasE2EMappings) {
+    console.log('No E2E mappings found, saving Jest mapping only');
+    saveMergedMapping(jestMapping);
     console.log('=== Merge complete ===');
     return;
   }

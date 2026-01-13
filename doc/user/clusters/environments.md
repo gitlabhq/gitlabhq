@@ -14,21 +14,13 @@ title: Cluster Environments (deprecated)
 
 {{< history >}}
 
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
-
-{{< /alert >}}
+> [!flag]
+> This feature is not available by default on GitLab Self-Managed. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 Cluster environments provide a consolidated view of which CI [environments](../../ci/environments/_index.md) are
 deployed to the Kubernetes cluster and it:

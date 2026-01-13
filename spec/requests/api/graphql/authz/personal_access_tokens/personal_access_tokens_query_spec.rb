@@ -15,9 +15,11 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
 
   let_it_be(:legacy_token_revoked) { create(:personal_access_token, :revoked, user: user, name: 'Revoked token') }
   let_it_be(:legacy_token_expired) { create(:personal_access_token, :expired, :with_last_used_ips, user:) }
+  let_it_be(:legacy_token_expiring_soon) { create(:personal_access_token, user: user, expires_at: 1.week.from_now) }
+  let_it_be(:boundary) { ::Authz::Boundary.for(group) }
   let_it_be(:granular_token) do
-    create(:granular_pat, name: 'Special token', last_used_at: 1.day.ago, permissions: ['read_member_role'],
-      user: user, namespace: group)
+    create(:granular_pat, name: 'Special token', last_used_at: 2.days.ago, permissions: ['read_member_role'],
+      user: user, boundary: boundary)
   end
 
   let(:fields) do
@@ -94,7 +96,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'granular' => true,
           'revoked' => false,
           'scopes' => [{
-            'access' => 'PERSONAL_PROJECTS',
+            'access' => 'SELECTED_MEMBERSHIPS',
             'namespace' => { 'id' => group.to_gid.to_s },
             'permissions' => [{ 'name' => 'read_member_role' }]
           }],
@@ -110,6 +112,10 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
           'active' => false
         }),
         a_hash_including({
+          'name' => legacy_token_expiring_soon.name,
+          'active' => true
+        }),
+        a_hash_including({
           'name' => legacy_token_expired.name,
           'active' => false,
           'lastUsedIps' => legacy_token_expired.last_used_ips.map(&:ip_address)
@@ -117,12 +123,23 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
       )
     end
 
+    describe 'count field' do
+      let(:fields) { 'count' }
+
+      it 'returns the count of PersonalAccessTokens' do
+        send_query
+
+        expect(graphql_data_at(*%i[user personalAccessTokens count])).to eq 5
+      end
+    end
+
     it 'avoids N+1 queries' do
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
 
-      create_list(:granular_pat, 10, permissions: ['read_member_role'], user: user, namespace: create(:group))
+      boundary = ::Authz::Boundary.for(create(:group))
+      create_list(:granular_pat, 10, permissions: ['read_member_role'], user: user, boundary: boundary)
 
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(control)
     end
@@ -195,12 +212,30 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         end
       end
 
+      context 'with { expires_before: <date> }' do
+        let(:args) { { expires_before: 2.weeks.from_now.to_date } }
+
+        it 'returns only personal access tokens that expire before the given date' do
+          expires_at_dates = personal_access_tokens_data.pluck('expiresAt').map(&:to_date)
+          expect(expires_at_dates).to all(be <= args[:expires_before])
+        end
+      end
+
       context 'with { expires_after: <date> }' do
         let(:args) { { expires_after: 50.days.from_now.to_date } }
 
         it 'returns only personal access tokens that expire after the given date' do
           expires_at_dates = personal_access_tokens_data.pluck('expiresAt').map(&:to_date)
           expect(expires_at_dates).to all(be >= args[:expires_after])
+        end
+      end
+
+      context 'with { created_before: <timestamp> }' do
+        let(:args) { { created_before: 4.days.ago } }
+
+        it 'returns only personal access tokens that were created before the given timestamp' do
+          created_at_times = personal_access_tokens_data.pluck('createdAt').map(&:in_time_zone)
+          expect(created_at_times).to be_present.and all(be <= args[:created_before])
         end
       end
 
@@ -213,8 +248,17 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         end
       end
 
+      context 'with { last_used_before: <timestamp> }' do
+        let(:args) { { last_used_before: 1.day.ago } }
+
+        it 'returns only personal access tokens that were last used before the given timestamp' do
+          last_used_at_times = personal_access_tokens_data.pluck('lastUsedAt').map(&:in_time_zone)
+          expect(last_used_at_times).to be_present.and all(be <= args[:last_used_before])
+        end
+      end
+
       context 'with { last_used_after: <date> }' do
-        let(:args) { { last_used_after: 2.days.ago } }
+        let(:args) { { last_used_after: 3.days.ago } }
 
         it 'returns only personal access tokens that were last used after the given date' do
           last_used_at_times = personal_access_tokens_data.pluck('lastUsedAt').map(&:in_time_zone)

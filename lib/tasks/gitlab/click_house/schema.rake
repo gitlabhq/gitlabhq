@@ -63,11 +63,15 @@ namespace :gitlab do
       schema_sql = File.read(schema_dump_path)
 
       ClickHouse::Client.configuration.databases.each_key do |db|
+        database_config = ClickHouse::Client.configuration.databases[:main]
         connection = ::ClickHouse::Connection.new(db)
 
         # CH doesn't support multiple statements by default
         schema_sql.split(';').each do |statement|
           next if statement.strip.empty?
+
+          statement = ClickHouse::DictionaryCredentialsHandler
+            .replace_variables_with_credentials(database_config, statement)
 
           if connection.replicated_engine?
             statement = ClickHouse::ReplicatedTableEnginePatcher.patch_replicated(statement)
@@ -93,15 +97,16 @@ namespace :gitlab do
         FROM
           (
             SELECT
-              replaceRegexpAll (formatQuery (create_table_query), {database_pattern:String}, '') AS formatted_statement
+              formatQuery(create_table_query) AS formatted_statement
             FROM
               system.tables
             WHERE
               database = {database:String}
             ORDER BY
               CASE
-                WHEN engine LIKE '%View%' THEN 1
-                ELSE 0
+                WHEN engine = 'Dictionary' THEN 1
+                WHEN engine LIKE '%View%' THEN 3
+                ELSE 2
               END,
               name
           );
@@ -110,13 +115,15 @@ namespace :gitlab do
       query = ClickHouse::Client::Query.new(
         raw_query: tables_query,
         placeholders: {
-          database: database_name,
-          database_pattern: "#{database_name}\\."
+          database: database_name
         }
       )
 
       result = connection.select(query).dig(0, 'all_statements')
       result = result.to_s.gsub(/[ \t]+$/, '') # remove trailing spaces
+
+      result = ClickHouse::DictionaryCredentialsHandler.replace_credentials_with_variables(database_name, result)
+      result = result.gsub(/#{database_name}\./, '')
 
       path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
       if File.writable?(path_to_sql)

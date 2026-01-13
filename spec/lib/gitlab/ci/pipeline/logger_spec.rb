@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_integration do
-  let_it_be(:project) { build_stubbed(:project) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
   subject(:logger) { described_class.new(project: project) }
@@ -149,6 +149,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
   describe '#commit' do
     subject(:commit) { logger.commit(pipeline: pipeline, caller: 'source') }
 
+    let(:expected_builds_tags_count) { 0 }
+    let(:expected_distinct_builds_tags_count) { 0 }
+
     before do
       freeze_time do
         stub_feature_flags(ci_pipeline_creation_logger: flag)
@@ -180,7 +183,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
           },
           'pipeline_creation_duration_s' => {
             'sum' => 40, 'count' => 2, 'max' => 30
-          }
+          },
+          'pipeline_builds_tags_count' => expected_builds_tags_count,
+          'pipeline_builds_distinct_tags_count' => expected_distinct_builds_tags_count
         }
       end
 
@@ -191,6 +196,29 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_int
           .and_call_original
 
         expect(commit).to be_truthy
+      end
+
+      context 'when pipeline has builds with tags' do
+        let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
+        let_it_be(:stage1) { create(:ci_stage, project: project, pipeline: pipeline, name: 'first', position: 1) }
+        let_it_be(:stage2) { create(:ci_stage, project: project, pipeline: pipeline, name: 'second', position: 2) }
+
+        let(:expected_builds_tags_count) { 4 }
+        let(:expected_distinct_builds_tags_count) { 3 }
+
+        before do
+          create(:ci_build, pipeline: pipeline, ci_stage: stage1, tag_list: %w[a b])
+          create(:ci_build, pipeline: pipeline, ci_stage: stage2, tag_list: %w[b c])
+        end
+
+        it 'logs to application.json with correct tag count' do
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including(expected_data))
+            .and_call_original
+
+          expect(commit).to be_truthy
+        end
       end
 
       context 'with log conditions' do

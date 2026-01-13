@@ -75,11 +75,8 @@ The process also updates the following user information:
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
 
-{{< alert type="note" >}}
-
-If your LDAP server has a rate limit, that limit might be reached during the user sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
-
-{{< /alert >}}
+> [!note]
+> If your LDAP server has a rate limit, that limit might be reached during the user sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
 
 ### Synchronize LDAP user's profile name
 
@@ -227,11 +224,8 @@ be available to GitLab. For example, `group_base` could be
 `ou=groups,dc=example,dc=com`. In the configuration file, it looks like the
 following.
 
-{{< alert type="note" >}}
-
-If your LDAP server has a rate limit, that limit might be reached during the group sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
-
-{{< /alert >}}
+> [!note]
+> If your LDAP server has a rate limit, that limit might be reached during the group sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
 
 {{< tabs >}}
 
@@ -814,11 +808,8 @@ You can change the time and interval when LDAP synchronizes users, groups, and G
 By default, GitLab runs a worker once per day at 01:30 AM server time to
 check and update GitLab users against LDAP.
 
-{{< alert type="warning" >}}
-
-Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](_index.md#security).
-
-{{< /alert >}}
+> [!warning]
+> Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](_index.md#security).
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can
@@ -922,11 +913,8 @@ By default, GitLab runs a group sync process every hour, on the hour.
 The values shown are in cron format. If needed, you can use a
 [crontab generator](https://it-tools.tech/crontab-generator).
 
-{{< alert type="warning" >}}
-
-Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
-
-{{< /alert >}}
+> [!warning]
+> Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
 
 You can manually configure LDAP group sync times by setting the
 following configuration values. The example below shows how to set group
@@ -1027,11 +1015,8 @@ sync to run once every two hours at the top of the hour.
 By default, GitLab runs a GitLab Duo add-on seat sync process once per day at 02:00 AM server time to
 check LDAP group membership and assign or remove GitLab Duo add-on seats accordingly.
 
-{{< alert type="warning" >}}
-
-Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
-
-{{< /alert >}}
+> [!warning]
+> Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
 
 You can manually configure LDAP GitLab Duo add-on seat sync times by setting configuration values. The following example shows how to set the sync to run once every four hours.
 

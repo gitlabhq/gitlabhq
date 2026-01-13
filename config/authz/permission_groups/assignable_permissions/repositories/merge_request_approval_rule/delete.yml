@@ -1,0 +1,7 @@
+---
+name: delete_merge_request_approval_rule
+description: Grants the ability to delete merge request approval rules
+permissions:
+  - delete_merge_request_approval_rule
+boundaries:
+  - project

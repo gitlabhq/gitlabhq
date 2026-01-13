@@ -42,15 +42,15 @@ This failure often happens if your working branch is behind the target branch.
 A real scenario:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+    accTitle: Schema dump comparison fails after rollback
+    accDescr: Diagram showing how schema dump comparison failures occur if a working branch is behind the target branch 
+
     Main((main<br>commit A)) ===> |remove constraint<br>fk_rails_dbebdaa8fe| MainB((main<br>commit B))
     Main((main<br>commit A)) --> |checkout<br>dev| DevA((dev<br>commit A)):::dev
     DevA((dev<br>commit A)) --> |add column<br>dependency_proxy_size| DevC((dev<br>commit C)):::dev
     DevC -.-> |CI pipeline<br>executes| JOB-FAILED((JOB FAILED!)):::error
-
-    classDef main fill:#f4f0ff,stroke:#7b58cf
-    classDef dev fill:#e9f3fc,stroke:#1f75cb
-    classDef error fill:#f15146,stroke:#d4121a
 ```
 
 1. You check out the `dev` working branch from the `main` target branch. At this point,

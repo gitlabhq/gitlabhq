@@ -116,11 +116,8 @@ Example response:
 
 ## Create a broadcast message
 
-{{< alert type="warning" >}}
-
-Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
-
-{{< /alert >}}
+> [!warning]
+> Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
 
 Create a new broadcast message.
 
@@ -193,11 +190,8 @@ Example response:
 
 ## Update a broadcast message
 
-{{< alert type="warning" >}}
-
-Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
-
-{{< /alert >}}
+> [!warning]
+> Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
 
 Update an existing broadcast message.
 

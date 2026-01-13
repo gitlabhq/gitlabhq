@@ -71,9 +71,16 @@ export const acceptedMimes = {
 const extractAttachmentLinkUrl = (html) => {
   const parser = new DOMParser();
   const { body } = parser.parseFromString(html, 'text/html');
-  const link = body.querySelector('a');
-  const src = link.getAttribute('href');
-  const { canonicalSrc } = link.dataset;
+
+  // Try to find a link first (for attachments)
+  const element =
+    body.querySelector('a') ||
+    body.querySelector('img') ||
+    body.querySelector('video') ||
+    body.querySelector('audio');
+
+  const src = element?.getAttribute('href') || element?.getAttribute('src');
+  const { canonicalSrc } = element?.dataset || {};
 
   return { src, canonicalSrc };
 };
@@ -182,7 +189,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
     .tap((progress) => {
       chain(editor).setMeta('uploadProgress', { uploading: fileId, progress }).run();
     })
-    .then(({ canonicalSrc }) => {
+    .then(({ canonicalSrc, src }) => {
       // the position might have changed while uploading, so we need to find it again
       ({ node, position } = findUploadedFilePosition(editor, fileId));
 
@@ -192,7 +199,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
         editor.state.tr.setMeta('preventAutolink', true).setNodeMarkup(position, undefined, {
           ...node.attrs,
           uploading: false,
-          src: objectUrl,
+          src,
           alt: file.name,
           canonicalSrc,
         }),

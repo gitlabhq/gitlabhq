@@ -70,7 +70,7 @@ export default {
     :tooltip-text="milestoneDate"
     tooltip-placement="top"
     icon-name="milestone"
-    icon-size="12"
+    :icon-size="12"
     :is-link="true"
     :href="milestoneLink"
   />

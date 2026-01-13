@@ -63,11 +63,8 @@ Use these variables to customize and deploy your build.
 
 ## Database variables
 
-{{< alert type="warning" >}}
-
-From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
-
-{{< /alert >}}
+> [!warning]
+> From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
 
 Use these variables to integrate CI/CD with PostgreSQL databases.
 

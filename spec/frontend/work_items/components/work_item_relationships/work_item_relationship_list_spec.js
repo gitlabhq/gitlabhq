@@ -1,15 +1,14 @@
-import DraggableList from 'vuedraggable';
-
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
+import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 
-import { mockBlockingLinkedItem } from '../../mock_data';
+import { mockBlockingLinkedItem, incidentType, issueType, ticketType } from '../../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -52,7 +51,6 @@ describe('WorkItemRelationshipList', () => {
     });
   };
 
-  const findHeading = () => wrapper.findByTestId('work-items-list-heading');
   const findDraggableWorkItemsList = () => wrapper.findComponent(DraggableList);
   const findWorkItemLinkChildContents = () => wrapper.findComponent(WorkItemLinkChildContents);
 
@@ -69,12 +67,6 @@ describe('WorkItemRelationshipList', () => {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
   };
-
-  it('renders linked item list', () => {
-    createComponent({ linkedItems: mockLinkedItems });
-    expect(findHeading().text()).toBe('Blocking');
-    expect(wrapper.html()).toMatchSnapshot();
-  });
 
   it('renders work item list with drag and drop ability when canUpdate is true', () => {
     createComponent({ linkedItems: mockLinkedItems });
@@ -108,26 +100,41 @@ describe('WorkItemRelationshipList', () => {
     ]);
   });
 
-  it('redirects to the url of the linked item on click when the item is an incident', () => {
-    const mockLinkedItemsWithIncident = [
+  describe('redirects to URL on click', () => {
+    const createMockLinkedItemWithType = (workItemType, additionalProps = {}) => [
       {
         ...mockLinkedItems[0],
         workItem: {
           ...mockLinkedItems[0].workItem,
-          workItemType: {
-            id: 'gid://gitlab/WorkItems::Type/5',
-            name: 'Incident',
-            iconName: 'work-item-incident',
-            __typename: 'WorkItemType',
-          },
+          workItemType,
+          ...additionalProps,
         },
       },
     ];
 
-    createComponent({ linkedItems: mockLinkedItemsWithIncident });
-    findWorkItemLinkChildContents().vm.$emit('click');
+    it.each([
+      {
+        description: 'when the item is an incident',
+        linkedItems: createMockLinkedItemWithType(incidentType),
+      },
+      {
+        description: 'when the item is a Service Desk issue',
+        linkedItems: createMockLinkedItemWithType(issueType, {
+          author: { username: 'support-bot' },
+        }),
+      },
+      {
+        description: 'when the item is a ticket',
+        linkedItems: createMockLinkedItemWithType(ticketType, {
+          author: { username: 'support-bot' },
+        }),
+      },
+    ])('$description', ({ linkedItems }) => {
+      createComponent({ linkedItems });
+      findWorkItemLinkChildContents().vm.$emit('click');
 
-    expect(visitUrl).toHaveBeenCalledWith(mockLinkedItemsWithIncident[0].workItem.webUrl);
+      expect(visitUrl).toHaveBeenCalledWith(linkedItems[0].workItem.webUrl);
+    });
   });
 
   describe('drag start', () => {
@@ -166,7 +173,7 @@ describe('WorkItemRelationshipList', () => {
       createComponent({ linkedItems: mockLinkedItems });
       // We're manually calling `move` function here as VueDraggable doesn't expose it as an event
       // even when Sortable.js has already defined it https://github.com/SortableJS/Sortable?tab=readme-ov-file#options
-      findDraggableWorkItemsList().vm.move({
+      findDraggableWorkItemsList().vm.$attrs.move({
         from: mockFrom,
         to: mockTo,
         dragged: document.createElement('ul'),
@@ -179,7 +186,7 @@ describe('WorkItemRelationshipList', () => {
 
     it('prevents insertion if relationship type did not change', () => {
       expect(
-        findDraggableWorkItemsList().vm.move({
+        findDraggableWorkItemsList().vm.$attrs.move({
           from: mockFrom,
           to: mockFrom,
           dragged: findDraggableWorkItemsList().vm.element,

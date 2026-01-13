@@ -32,7 +32,7 @@ you should:
 - [Ensure only one deployment job runs at a time](#ensure-only-one-deployment-job-runs-at-a-time).
 - [Prevent outdated deployment jobs](#prevent-outdated-deployment-jobs).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [How to secure your CD pipelines/workflow](https://www.youtube.com/watch?v=Mq3C1KveDc0).
 
 ## Restrict write access to a critical environment

@@ -618,16 +618,6 @@ module Ci
         .count
     end
 
-    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
-    def self.legacy_jobs_count_in_alive_pipelines
-      created_after(24.hours.ago).alive.joins(:statuses).count
-    end
-
-    # Remove when `ci_refactor_jobs_count_in_alive_pipelines` is removed.
-    def self.legacy_builds_count_in_alive_pipelines
-      created_after(24.hours.ago).alive.joins(:builds).count
-    end
-
     # Returns a Hash containing the latest pipeline for every given
     # commit.
     #
@@ -738,14 +728,6 @@ module Ci
 
     def total_size
       statuses.count(:id)
-    end
-
-    def tags_count
-      Ci::BuildTag.in_partition(self).where(build: builds).count
-    end
-
-    def distinct_tags_count
-      Ci::BuildTag.in_partition(self).where(build: builds).count('distinct(tag_id)')
     end
 
     def stages_names

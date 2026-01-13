@@ -118,7 +118,7 @@ export default {
             v-if="isSelectable"
             :checked="checked"
             class="gl-mt-3"
-            @change="$emit('handleCheckboxChange', !checked)"
+            @change="$emit('handle-checkbox-change', !checked)"
           />
           <user-avatar-link
             :link-href="authorUrl"

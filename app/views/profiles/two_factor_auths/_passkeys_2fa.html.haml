@@ -7,8 +7,9 @@
   options: { class: 'gl-mt-5' }) do |c|
   - c.with_actions do
     - tooltip = s_('ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA.')
-    = render Pajamas::ButtonComponent.new(size: :small, disabled: true, button_options: { title: tooltip, class: 'has-tooltip'}) do
-      = s_('ProfilesAuthentication|Use passkey as 2FA')
+    .has-tooltip{ tabindex: 0, title: tooltip }
+      = render Pajamas::ButtonComponent.new(size: :small, disabled: true) do
+        = s_('ProfilesAuthentication|Use passkey as 2FA')
   - c.with_body do
     = s_('ProfilesAuthentication|Use your passkey as a 2FA method after entering your password. Note that passkeys can’t be used as your only 2FA method.')
 

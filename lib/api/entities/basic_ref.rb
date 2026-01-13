@@ -3,8 +3,8 @@
 module API
   module Entities
     class BasicRef < Grape::Entity
-      expose :type,  documentation: { type: 'string', example: 'tag' }
-      expose :name,  documentation: { type: 'string', example: 'v1.1.0' }
+      expose :type,  documentation: { type: 'String', example: 'tag' }
+      expose :name,  documentation: { type: 'String', example: 'v1.1.0' }
     end
   end
 end

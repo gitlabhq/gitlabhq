@@ -62,11 +62,6 @@ module Types
       null: false,
       description: 'Display settings for the work item lists.'
 
-    field :new_ui_enabled, GraphQL::Types::Boolean,
-      description: 'Whether the new UI is enabled for the user.',
-      experiment: { milestone: '18.6' },
-      null: true
-
     def issues_sort
       user_preference.issues_sort&.to_sym
     end

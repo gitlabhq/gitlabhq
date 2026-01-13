@@ -43,7 +43,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
       end
     end
 
-    let_it_be(:admin_bot) { ::Users::Internal.for_organization(new_blank_project.organization).admin_bot }
+    let_it_be(:admin_bot) { ::Users::Internal.in_organization(new_blank_project.organization).admin_bot }
 
     let_it_be(:inactive_blank_project) do
       create_project_with_statistics.tap do |project|

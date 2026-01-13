@@ -64,7 +64,7 @@ describe('Sidebar Participants Widget', () => {
 
     it('passes participants to child component', () => {
       expect(findParticipants().props('participants')).toEqual(
-        epicParticipantsResponse().data.workspace.issuable.participants.nodes,
+        epicParticipantsResponse().data.namespace.issuable.participants.nodes,
       );
     });
   });

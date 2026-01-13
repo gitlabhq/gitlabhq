@@ -43,7 +43,8 @@ module Enums
           ip_restriction_failure: 1_010,
           reached_max_pipeline_hierarchy_size: 1_011,
           reached_downstream_pipeline_trigger_rate_limit: 1_012,
-          duo_workflow_not_allowed: 1_013
+          duo_workflow_not_allowed: 1_013,
+          job_router_failure: 1_014
         }
       end
     end

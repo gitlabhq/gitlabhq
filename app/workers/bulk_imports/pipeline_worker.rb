@@ -174,7 +174,7 @@ module BulkImports
     def export_started?
       return false unless file_extraction_pipeline?
 
-      export_status.started?
+      export_status.in_progress?
     end
 
     def export_empty?

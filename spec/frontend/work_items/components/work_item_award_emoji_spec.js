@@ -37,7 +37,7 @@ describe('WorkItemAwardEmoji component', () => {
   const newCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
 
   const workItemQueryResponse = workItemByIidResponseFactory({ newCustomEmojiPath });
-  const mockWorkItem = workItemQueryResponse.data.workspace.workItem;
+  const mockWorkItem = workItemQueryResponse.data.namespace.workItem;
 
   const awardEmojiQuerySuccessHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const awardEmojiQueryEmptyHandler = jest.fn().mockResolvedValue(

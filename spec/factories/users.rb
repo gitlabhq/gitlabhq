@@ -225,6 +225,7 @@ FactoryBot.define do
       guest_of {}
       planner_of {}
       reporter_of {}
+      security_manager_of {}
       developer_of {}
       maintainer_of {}
       owner_of {}
@@ -235,6 +236,7 @@ FactoryBot.define do
       Array.wrap(evaluator.guest_of).each { |target| target.add_guest(user) }
       Array.wrap(evaluator.planner_of).each { |target| target.add_planner(user) }
       Array.wrap(evaluator.reporter_of).each { |target| target.add_reporter(user) }
+      Array.wrap(evaluator.security_manager_of).each { |target| target.add_security_manager(user) }
       Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
       Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }
       Array.wrap(evaluator.owner_of).each { |target| target.add_owner(user) }

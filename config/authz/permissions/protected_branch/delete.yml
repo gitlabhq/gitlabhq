@@ -1,0 +1,6 @@
+---
+name: delete_protected_branch
+description: Grants the ability to delete protected branches
+boundaries:
+  - project
+  - group

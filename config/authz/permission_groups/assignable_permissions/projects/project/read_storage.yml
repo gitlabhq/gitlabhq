@@ -1,0 +1,7 @@
+---
+name: read_storage_project
+description: Grants the ability to view projects storage
+permissions:
+  - read_storage_project
+boundaries:
+  - project

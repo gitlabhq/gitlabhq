@@ -560,7 +560,11 @@ To access these settings:
 
 Require all projects to control job token access using an allowlist.
 
-When enforced, CI/CD job tokens can only access projects when the token's source project is added to the project's allowlist.
+When this setting is enabled:
+
+- CI/CD job tokens can only access projects when the token's source project is added to the allowlist.
+- The [CI/CD job token scope API](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) returns an error if a user attempts to disable the allowlist.
+
 For more information, see [control job token access to your project](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project).
 
 To enforce job token allowlists:
@@ -616,7 +620,7 @@ To turn on incremental logging for all projects:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/582044) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -647,7 +651,7 @@ You can define entries in the allowlist with:
 
 To configure the CI/CD Catalog publishing allowlist:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Catalog**.
 1. In the **CI/CD Catalog publishing allowlist** text area, enter one path pattern per line.

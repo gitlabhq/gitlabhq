@@ -9,6 +9,7 @@ module Gitlab
         def initialize(result_dir:, observer_classes: ::Gitlab::Database::Migrations::Observers.all_observers)
           @observer_classes = observer_classes
           @result_dir = result_dir
+          FileUtils.mkdir_p(@result_dir)
         end
 
         def observe(version:, name:, connection:, meta: {}, &block)
@@ -40,6 +41,11 @@ module Gitlab
           on_each_observer(observers) { |observer| observer.record }
 
           record_observation(observation, destination_dir: per_migration_result_dir)
+        end
+
+        def observe_no_batches_processed(connection:)
+          marker_file = File.join(@result_dir, '.no_batches_processed')
+          FileUtils.touch(marker_file)
         end
 
         private

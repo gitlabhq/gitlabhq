@@ -42,7 +42,7 @@ export default normalizeRender({
         return !this.fullPath || this.skipQuery;
       },
       update(data) {
-        return data.workspace?.workItem ?? {};
+        return data.namespace?.workItem ?? {};
       },
     },
   },

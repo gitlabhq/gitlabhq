@@ -3,7 +3,7 @@
 module API
   module Entities
     class Markdown < Grape::Entity
-      expose :html, documentation: { type: 'string', example: '<p dir=\"auto\">Hello world!</p>"' }
+      expose :html, documentation: { type: 'String', example: '<p dir=\"auto\">Hello world!</p>"' }
     end
   end
 end

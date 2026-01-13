@@ -1,10 +1,8 @@
 import { GlDisclosureDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { nextTick, markRaw } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import {
@@ -357,6 +355,27 @@ describe('FilteredSearchBarRoot', () => {
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
       });
     });
+
+    describe.each(['token-destroy', 'token-complete'])(
+      'when signals fom GLFiltered search are emitted',
+      (emittedSignal) => {
+        const mockFilters = [tokenValueAuthor];
+
+        beforeEach(async () => {
+          createComponent({ propsData: { initialFilterValue: mockFilters } });
+          await nextTick();
+        });
+
+        it(`the same signal ${emittedSignal} is emitted`, async () => {
+          findGlFilteredSearch().vm.$emit(emittedSignal, mockFilters);
+
+          await nextTick();
+
+          const inputs = wrapper.emitted(emittedSignal);
+          expect(inputs[inputs.length - 1][0]).toEqual(mockFilters);
+        });
+      },
+    );
   });
 
   describe('template', () => {

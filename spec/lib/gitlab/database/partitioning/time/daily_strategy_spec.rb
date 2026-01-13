@@ -1,8 +1,36 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'support/shared_examples/database/partitioning/shared_model_connection_enforcement'
+require 'support/shared_examples/database/partitioning/shared_model_no_connection_enforcement'
 
 RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_category: :database do
+  shared_context 'with shared model setup' do
+    let(:shared_model) do
+      Class.new(Gitlab::Database::SharedModel) do
+        include PartitionedTable
+        self.table_name = '_test_partitioned_shared_model'
+        partitioned_by :created_at, strategy: :daily
+      end
+    end
+
+    before do
+      # Create the parent table
+      connection.execute(<<~SQL)
+        CREATE TABLE #{shared_model.table_name}
+          (id serial not null, created_at timestamptz not null, PRIMARY KEY (id, created_at))
+          PARTITION BY RANGE (created_at)
+      SQL
+
+      # Use PartitionManager to create initial partitions
+      Gitlab::Database::Partitioning::PartitionManager.new(shared_model, connection: connection).sync_partitions
+    end
+
+    after do
+      connection.execute("DROP TABLE IF EXISTS #{shared_model.table_name} CASCADE")
+    end
+  end
+
   let(:connection) { ApplicationRecord.connection }
   let(:daily_strategy) do
     described_class.new(model, partitioning_key, retain_for: retention_period, retain_non_empty_partitions: retain_data)
@@ -44,6 +72,14 @@ RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_cate
           time_partition(table_name, nil, '2020-05-01', "#{model.table_name}_00000000"),
           time_partition(table_name, '2020-05-01', '2020-05-02', "#{model.table_name}_20200501")
         ])
+    end
+
+    context 'with shared model' do
+      include_context 'with shared model setup'
+
+      subject { shared_model.partitioning_strategy.current_partitions }
+
+      include_examples 'shared model connection enforcement'
     end
   end
 
@@ -193,6 +229,14 @@ RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_cate
         )
       end
     end
+
+    context 'with shared model' do
+      include_context 'with shared model setup'
+
+      subject { shared_model.partitioning_strategy.missing_partitions }
+
+      include_examples 'shared model connection enforcement'
+    end
   end
 
   describe '#extra_partitions', time_travel_to: '2020-05-04' do
@@ -308,6 +352,14 @@ RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_cate
         end
       end
     end
+
+    context 'with shared model' do
+      include_context 'with shared model setup'
+
+      subject { shared_model.partitioning_strategy.extra_partitions }
+
+      include_examples 'shared model connection enforcement'
+    end
   end
 
   describe '#partition_name' do
@@ -330,6 +382,14 @@ RSpec.describe Gitlab::Database::Partitioning::Time::DailyStrategy, feature_cate
       it 'uses 00000000 as suffix for first partition' do
         expect(partition_name).to end_with("_00000000")
       end
+    end
+
+    context 'with shared model' do
+      include_context 'with shared model setup'
+
+      subject { shared_model.partitioning_strategy.partition_name(from) }
+
+      include_examples 'shared model without connection enforcement'
     end
   end
 

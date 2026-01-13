@@ -27,6 +27,7 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { createCustomGetters, createTestPiniaAction } from 'helpers/pinia_helpers';
 import { useBatchComments } from '~/batch_comments/store';
 import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
 import {
   discussionMock,
   notesDataMock,
@@ -62,10 +63,12 @@ describe('Actions Notes Store', () => {
           legacyNotes: getters,
           batchComments: {},
           legacyDiffs: {},
+          fileBrowser: {},
         })),
         globalAccessorPlugin,
       ],
     });
+    useFileBrowser();
     useLegacyDiffs();
     store = useNotes();
     testAction = createTestPiniaAction(store);

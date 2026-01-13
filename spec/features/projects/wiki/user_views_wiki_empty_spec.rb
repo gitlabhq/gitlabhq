@@ -7,6 +7,10 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
 
   let(:wiki) { create(:project_wiki, project: project) }
 
+  before do
+    stub_feature_flags(wiki_immersive_editor: false)
+  end
+
   it_behaves_like 'User views empty wiki' do
     context 'when project is public' do
       let(:project) { create(:project, :public) }

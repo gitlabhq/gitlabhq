@@ -4,23 +4,9 @@ class QueueBackfillSecurityProjectTrackedContextsDefaultBranch < Gitlab::Databas
   milestone '18.7'
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
-  MIGRATION = "BackfillSecurityProjectTrackedContextsDefaultBranch"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 1000
-  SUB_BATCH_SIZE = 100
-
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :projects,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # This migration is removed by migration 20251217173006 because it is very slow.
   end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :projects, :id, [])
-  end
+  def down; end
 end

@@ -1,8 +1,40 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'support/shared_examples/database/partitioning/shared_model_connection_enforcement'
 
 RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_category: :database do
+  shared_context 'with shared model setup' do
+    let(:shared_model) do
+      Class.new(Gitlab::Database::SharedModel) do
+        include PartitionedTable
+        self.table_name = '_test_partitioned_shared_model'
+        self.ignored_columns = [:partition]
+        partitioned_by :partition, strategy: :sliding_list, next_partition_if: proc {
+          false
+        }, detach_partition_if: proc {
+          false
+        }
+      end
+    end
+
+    before do
+      # Create the parent table
+      connection.execute(<<~SQL)
+        CREATE TABLE #{shared_model.table_name}
+          (id serial not null, partition bigint not null default 1, PRIMARY KEY (id, partition))
+          PARTITION BY LIST (partition)
+      SQL
+
+      # Use PartitionManager to create initial partitions
+      Gitlab::Database::Partitioning::PartitionManager.new(shared_model, connection: connection).sync_partitions
+    end
+
+    after do
+      connection.execute("DROP TABLE IF EXISTS #{shared_model.table_name} CASCADE")
+    end
+  end
+
   include Gitlab::Database::DynamicModelHelpers
 
   let(:connection) { ActiveRecord::Base.connection }
@@ -357,5 +389,13 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
         analyze_interval: analyze_interval
       })
     end
+  end
+
+  describe 'with shared model' do
+    include_context 'with shared model setup'
+
+    subject { shared_model.partitioning_strategy.current_partitions }
+
+    include_examples 'shared model connection enforcement'
   end
 end

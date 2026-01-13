@@ -190,6 +190,7 @@ these parameters:
 - `dependency_scanning_sbom_scan_api_upload_limit`
 - `disable_personal_access_tokens`
 - `duo_features_enabled`
+- `elasticsearch_index_settings`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
@@ -211,6 +212,13 @@ these parameters:
   "default_project_deletion_protection": false,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
+  "elasticsearch_index_settings": [
+    {
+      "alias_name": "gitlab-production",
+      "number_of_shards": 5,
+      "number_of_replicas": 1
+    }
+  ],
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "group_owners_can_manage_default_branch_protection": true,
@@ -568,11 +576,13 @@ to configure other related settings. These requirements are
 | `elasticsearch_namespace_ids`              | array of integers | no                                | The namespaces to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. Premium and Ultimate only. |
 | `elasticsearch_project_ids`                | array of integers | no                                | The projects to index via Elasticsearch if `elasticsearch_limit_indexing` is enabled. Premium and Ultimate only. |
 | `elasticsearch_search`                     | boolean        | no                                   | Enable Elasticsearch search. Premium and Ultimate only. |
-| `elasticsearch_url`                        | string         | no                                   | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (for example, `http://localhost:9200, http://localhost:9201"`). Premium and Ultimate only. |
+| `elasticsearch_url`                        | string or array of strings | no                       | The URL to use for connecting to Elasticsearch. Use a comma-separated list or an array to support cluster (for example, `http://localhost:9200, http://localhost:9201` or `["http://localhost:9200", "http://localhost:9201"]`). Premium and Ultimate only. |
 | `elasticsearch_username`                   | string         | no                                   | The `username` of your Elasticsearch instance. Premium and Ultimate only. |
 | `elasticsearch_password`                   | string         | no                                   | The password of your Elasticsearch instance. Premium and Ultimate only. |
 | `elasticsearch_prefix`                     | string         | no                                   | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. Premium and Ultimate only. |
 | `elasticsearch_retry_on_failure`           | integer        | no                                   | Maximum number of possible retries for Elasticsearch search requests. Premium and Ultimate only. |
+| `elasticsearch_shards`                     | integer or object | Yes, if `elasticsearch_replicas` is defined as an object | Number of shards for Elasticsearch indices. Use an integer to set all indices to the same value. Use an object to set per-index values. For example: `{"gitlab-production": 5, "gitlab-production-notes": 3}`. <br>When using an object, you must provide both `elasticsearch_shards` and `elasticsearch_replicas` for each index. If either value is missing for an index, that index is skipped. Premium and Ultimate only. |
+| `elasticsearch_replicas`                   | integer or object | Yes, if `elasticsearch_shards` is defined as an object | Number of replicas for Elasticsearch indices. Use an integer to set all indices to the same value. Use an object to set per-index values. For example: `{"gitlab-production": 1, "gitlab-production-notes": 2}`. <br>When using an object, you must provide both `elasticsearch_shards` and `elasticsearch_replicas` for each index. If either value is missing for an index, that index is skipped. Premium and Ultimate only. |
 | `email_additional_text`                    | string         | no                                   | Additional text added to the bottom of every email for legal/auditing/compliance reasons. Premium and Ultimate only. |
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `email_confirmation_setting`             | string           | no                                   | Specifies whether users must confirm their email before sign in. Possible values are `off`, `soft`, and `hard`. |

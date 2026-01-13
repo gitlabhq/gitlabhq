@@ -93,6 +93,11 @@ export default {
       required: false,
       default: false,
     },
+    supportsTableOfContents: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     autosaveKey: {
       type: String,
       required: false,
@@ -280,7 +285,10 @@ export default {
     },
     renderMarkdown(markdown) {
       const url = setUrlParams(
-        { render_quick_actions: this.supportsQuickActions },
+        {
+          render_quick_actions: this.supportsQuickActions,
+          no_header_anchors: !this.supportsTableOfContents,
+        },
         { url: joinPaths(window.location.origin, this.renderMarkdownPath) },
       );
       return axios
@@ -379,7 +387,10 @@ export default {
 };
 </script>
 <template>
-  <div class="js-editor md-area-wrapper gl-relative gl-rounded-lg !gl-px-0">
+  <div
+    class="js-editor md-area-wrapper gl-rounded-lg !gl-px-0"
+    :class="{ 'gl-relative': !immersive }"
+  >
     <local-storage-sync
       v-if="!isDefaultEditorEnabled"
       :value="editingMode"
@@ -419,6 +430,7 @@ export default {
       :autocomplete-data-sources="autocompleteDataSources"
       :markdown-docs-path="markdownDocsPath"
       :supports-quick-actions="supportsQuickActions"
+      :supports-table-of-contents="supportsTableOfContents"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
@@ -462,6 +474,7 @@ export default {
         :uploads-path="uploadsPath"
         :markdown="markdown"
         :supports-quick-actions="supportsQuickActions"
+        :supports-table-of-contents="supportsTableOfContents"
         :autofocus="contentEditorAutofocused"
         :placeholder="formFieldProps.placeholder"
         :drawio-enabled="drawioEnabled"
@@ -479,6 +492,7 @@ export default {
         @focus="$emit('focus')"
         @blur="$emit('blur')"
       >
+        <template #header><slot name="header"></slot></template>
         <template #header-buttons><slot name="header-buttons"></slot></template>
         <template #toolbar><slot name="toolbar"></slot></template>
       </content-editor>

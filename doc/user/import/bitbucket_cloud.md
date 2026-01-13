@@ -25,11 +25,7 @@ description: "Import projects from Bitbucket Cloud to GitLab."
 
 Import your projects from Bitbucket Cloud to GitLab.
 
-When Bitbucket Cloud items are imported:
-
-- References to pull requests and issues are preserved.
-- Repository public access is retained. If a repository is private in Bitbucket Cloud, it's created as private in GitLab.
-- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
+The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 
 | Bitbucket Cloud item              | Imported |
 |:----------------------------------|:---------|
@@ -45,7 +41,13 @@ When Bitbucket Cloud items are imported:
 | Pull request approvals            | {{< no >}} |
 | Approval rules                    | {{< no >}} |
 
-## The importer workflow
+## Importer workflow
+
+When Bitbucket Cloud items are imported:
+
+- References to pull requests and issues are preserved.
+- Repository public access is retained. If a repository is private in Bitbucket Cloud, it's created as private in GitLab.
+- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
 
 When importing issues, pull requests, and comments, the Bitbucket Cloud importer:
 
@@ -110,7 +112,7 @@ To generate a Bitbucket Cloud app password:
 
 1. Select **Create**.
 
-## Import your Bitbucket repositories
+## Import your Bitbucket Cloud repositories
 
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
@@ -133,8 +135,8 @@ Be sure to sign in to the correct account. If you've accidentally started the im
 follow these steps:
 
 1. Revoke GitLab access to your Bitbucket account, essentially reversing the process when you
-   [imported your Bitbucket repositories](#import-your-bitbucket-repositories).
-1. Sign out of the Bitbucket account and [import your Bitbucket repositories](#import-your-bitbucket-repositories) again.
+   [imported your Bitbucket Cloud repositories](#import-your-bitbucket-cloud-repositories).
+1. Sign out of the Bitbucket account and [import your Bitbucket Cloud repositories](#import-your-bitbucket-cloud-repositories) again.
 
 ### User mapping fails despite matching names
 
@@ -159,7 +161,7 @@ and import again.
 
 ## Related topics
 
-- [Migrate from Bitbucket Server](../project/import/bitbucket_server.md)
+- [Migrate from Bitbucket Server](bitbucket_server.md)
 - [Import API](../../api/import.md)
 - [Import and export settings](../../administration/settings/import_and_export_settings.md).
 - [Sidekiq configuration for imports](../../administration/sidekiq/configuration_for_imports.md).

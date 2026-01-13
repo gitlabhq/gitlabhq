@@ -19,27 +19,16 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
         expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
         find_by_testid('super-sidebar-collapse-button').click
 
-        if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-          expect(find_by_testid('super-sidebar')[:class]).to include('super-sidebar-is-icon-only')
-        else
-          expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
-        end
+        expect(find_by_testid('super-sidebar')[:class]).to include('super-sidebar-is-icon-only')
       end
     end
 
     shared_examples 'has a collapsed nav sidebar' do
       it 'has a collapsed nav sidebar on load that can be expanded' do
-        if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-          expect(page).not_to have_selector('[data-testid="super-sidebar-collapse-button"]')
+        expect(page).not_to have_selector('[data-testid="super-sidebar-collapse-button"]')
 
-          find_by_testid('super-sidebar-toggle-button').click
-          expect(page).to have_selector('[data-testid="nav-container"]', visible: :visible)
-        else
-          expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :hidden)
-
-          page.find('.js-super-sidebar-toggle-expand').click
-          expect(page).to have_selector('[data-testid="super-sidebar-collapse-button"]', visible: :visible)
-        end
+        find_by_testid('super-sidebar-toggle-button').click
+        expect(page).to have_selector('[data-testid="nav-container"]', visible: :visible)
       end
     end
 

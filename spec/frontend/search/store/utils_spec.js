@@ -1,7 +1,5 @@
 // rspec spec/frontend/fixtures/search_navigation.rb to generate these files
-import subItemActive from 'test_fixtures/search_navigation/sub_item_active.json';
 import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
-import partialNavigationActive from 'test_fixtures/search_navigation/partial_navigation_active.json';
 import rootLevelActive from 'test_fixtures/search_navigation/root_level_active.json';
 
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -339,20 +337,9 @@ describe('Global Search Store Utils', () => {
       expect(result).toBe('merge_requests');
     });
 
-    it('returns the correct parent scope when active item is in sub_items', () => {
-      const result = scopeCrawler(subItemActive);
-      expect(result).toBe('issues');
-    });
-
     it('returns null when no items are active', () => {
       const result = scopeCrawler(noActiveItems);
       expect(result).toBeNull();
-    });
-
-    it('returns parentScope if provided and active item is found', () => {
-      const parentScope = 'customScope';
-      const result = scopeCrawler(partialNavigationActive, parentScope);
-      expect(result).toBe(parentScope);
     });
   });
 

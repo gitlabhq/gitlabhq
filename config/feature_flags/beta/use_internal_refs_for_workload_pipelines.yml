@@ -1,0 +1,10 @@
+---
+name: use_internal_refs_for_workload_pipelines
+description: Feature flag to use internal git refs instead of branches for ci workloads
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577239
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215525
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583179
+milestone: '18.7'
+group: group::agent foundations
+type: beta
+default_enabled: true

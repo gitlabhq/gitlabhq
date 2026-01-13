@@ -49,6 +49,7 @@
 - :elastic_clean
 - :elastic_delete_by_query
 - :elastic_helpers
+- :elasticsearch_adapter
 - :elasticsearch_settings_enabled
 - :enable_admin_mode
 - :event_store_publisher
@@ -98,6 +99,7 @@
 - :no_common_ancestor
 - :no_traveling
 - :numeric
+- :opensearch_adapter
 - :orphan_final_artifacts_cleanup
 - :path
 - :pending
@@ -172,8 +174,10 @@
 - :with_organization_url_helpers
 - :with_sidekiq_context
 - :with_trial_types
+- :without_current_organization
 - :without_license
 - :yaml_processor_feature_flag_corectness
 - :zoekt
 - :zoekt_cache_disabled
 - :zoekt_settings_enabled
+- :disable_security_manager

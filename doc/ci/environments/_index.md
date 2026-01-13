@@ -219,7 +219,7 @@ final result is `https://example.com`.
 
 The assigned URL for the `review/your-branch-name` environment is visible in the UI.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
 
 In the following example a review app creates a new environment for each merge request:
@@ -265,11 +265,8 @@ Note the following:
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/_index.md#ref-specs-for-runners).
 
-{{< alert type="note" >}}
-
-For Windows runners, you should use the PowerShell `Add-Content` command to write to `.env` files.
-
-{{< /alert >}}
+> [!note]
+> For Windows runners, you should use the PowerShell `Add-Content` command to write to `.env` files.
 
 ```powershell
 Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL"
@@ -514,11 +511,8 @@ stop_review:
       when: manual
 ```
 
-{{< alert type="note" >}}
-
-When using this functionality together with merge trains, the `stop` job triggers only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
-
-{{< /alert >}}
+> [!note]
+> When using this functionality together with merge trains, the `stop` job triggers only if [duplicate pipelines are avoided](../jobs/job_rules.md#avoid-duplicate-pipelines).
 
 ### Stop an environment after a certain time period
 
@@ -908,11 +902,8 @@ See [Deployment-only access to protected environments](protected_environments.md
 
 ## Web terminals (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 If you deploy to your environments with the help of a deployment service (for example,
 the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open
@@ -933,7 +924,7 @@ In the UI, to view the Web terminal, either:
 
   ![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
-- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal">}}).
+- On the page for a specific environment, on the right, select **Terminal** ({{< icon name="terminal" >}}).
 
 Select the button to establish the terminal session.
 It works like any other terminal. You're in the container created

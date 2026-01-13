@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
   let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:source_user) { generate_source_user(project, 999) }
-  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 
   let(:submitted_at) { Time.new(2017, 1, 1, 12).utc }
   let(:client_double) do

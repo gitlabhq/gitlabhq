@@ -10,7 +10,7 @@ RSpec.describe MergeRequests::Mergeability::CheckBaseService, feature_category: 
 
   describe '.identifier' do
     it 'sets the identifier' do
-      described_class.identifier("test")
+      described_class.set_identifier("test")
 
       expect(described_class.identifier).to eq("test")
     end
@@ -18,7 +18,7 @@ RSpec.describe MergeRequests::Mergeability::CheckBaseService, feature_category: 
 
   describe '.description' do
     it 'sets the description' do
-      described_class.description("test")
+      described_class.set_description("test")
 
       expect(described_class.description).to eq("test")
     end

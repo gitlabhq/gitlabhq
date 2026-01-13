@@ -20,7 +20,6 @@ class Projects::TreeController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
   end
 
@@ -37,7 +36,7 @@ class Projects::TreeController < Projects::ApplicationController
       })
     end
 
-    @ref_type = ref_type
+    @ref_type = ref_type if Feature.disabled?(:verified_ref_extractor, @project)
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)

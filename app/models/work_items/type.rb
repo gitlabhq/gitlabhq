@@ -114,7 +114,7 @@ module WorkItems
     end
 
     def allowed_child_types_by_name
-      child_type_ids = WorkItems::SystemDefined::HierarchyRestriction
+      child_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
         .where(parent_type_id: id)
         .map(&:child_type_id)
 
@@ -122,7 +122,7 @@ module WorkItems
     end
 
     def allowed_parent_types_by_name
-      parent_type_ids = WorkItems::SystemDefined::HierarchyRestriction
+      parent_type_ids = WorkItems::TypesFramework::SystemDefined::HierarchyRestriction
         .where(child_type_id: id)
         .map(&:parent_type_id)
       WorkItems::Type.where(id: parent_type_ids).order_by_name_asc
@@ -169,9 +169,74 @@ module WorkItems
         break if next_level_child_types.empty?
       end
 
-      descendant_types
+      descendant_types.uniq
     end
     strong_memoize_attr :descendant_types
+
+    # Temporary method for adding configuration thought the API
+    def supports_roadmap_view?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def use_legacy_view?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def can_promote_to_objective?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def show_project_selector?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def supports_move_action?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def service_desk?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def incident_management?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def configurable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def creatable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def visible_in_settings?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def archived?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def filterable?
+      nil
+    end
+
+    # Temporary method for adding configuration thought the API
+    def only_for_group?
+      nil
+    end
 
     private
 

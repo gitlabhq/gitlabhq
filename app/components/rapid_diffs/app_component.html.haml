@@ -52,3 +52,4 @@
                   })
         .rd-app-diffs-loading{ data: { list_loading: true }, hidden: !diffs_stream_url }
           = render Pajamas::SpinnerComponent.new(size: :lg)
+        = after_diffs_list

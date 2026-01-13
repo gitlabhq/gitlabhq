@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: SAST False Positive Detection
+title: SAST false positive detection
 ---
 
 {{< details >}}
@@ -42,7 +42,7 @@ The flow runs automatically when:
 
 You can also manually trigger analysis for existing vulnerabilities:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive**.

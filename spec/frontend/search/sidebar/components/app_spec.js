@@ -3,7 +3,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { MOCK_QUERY } from 'jest/search/mock_data';
-import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
 import MergeRequestsFilters from '~/search/sidebar/components/merge_requests_filters.vue';
@@ -16,7 +15,6 @@ import WikiBlobsFilters from '~/search/sidebar/components/wiki_blobs_filters.vue
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import AllScopesStartFilters from '~/search/sidebar/components/all_scopes_start_filters.vue';
-import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
 
@@ -55,7 +53,6 @@ describe('GlobalSearchSidebar', () => {
   const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
   const findDomElementListener = () => wrapper.findComponent(DomElementListener);
   const findAllScopesStartFilters = () => wrapper.findComponent(AllScopesStartFilters);
-  const findSidebarPortal = () => wrapper.findComponent(SidebarPortal);
   const findFiltersContainer = () => wrapper.findByTestId('search-filters');
 
   beforeEach(() => {
@@ -147,70 +144,23 @@ describe('GlobalSearchSidebar', () => {
     });
   });
 
-  it('toggles super sidebar when button is clicked', () => {
-    createComponent();
-    const elListener = findDomElementListener();
-
-    expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
-
-    elListener.vm.$emit('click');
-
-    expect(toggleSuperSidebarCollapsed).toHaveBeenCalledTimes(1);
-    expect(elListener.props('selector')).toBe('#js-open-mobile-filters');
-  });
-
-  describe('Project Studio mode', () => {
-    beforeEach(() => {
-      window.gon = { features: { projectStudioEnabled: true } };
-    });
-
-    describe('filters', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('renders filters container', () => {
-        expect(findFiltersContainer().exists()).toBe(true);
-      });
-
-      it('does not render sidebar portal', () => {
-        expect(findSidebarPortal().exists()).toBe(false);
-      });
-    });
-
-    describe('toggleFilters method', () => {
-      it('toggles gl-hidden class on filters container', () => {
-        createComponent();
-        const elListener = findDomElementListener();
-
-        expect(findFiltersContainer().classes()).toContain('gl-hidden');
-        elListener.vm.$emit('click');
-        expect(findFiltersContainer().classes()).not.toContain('gl-hidden');
-        elListener.vm.$emit('click');
-        expect(findFiltersContainer().classes()).toContain('gl-hidden');
-
-        expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
-      });
+  describe('filters', () => {
+    it('renders filters container', () => {
+      createComponent();
+      expect(findFiltersContainer().exists()).toBe(true);
     });
   });
 
-  describe('Legacy mode (Project Studio disabled)', () => {
-    beforeEach(() => {
-      window.gon = { features: { projectStudioEnabled: false } };
-    });
+  describe('toggleFilters method', () => {
+    it('toggles gl-hidden class on filters container', () => {
+      createComponent();
+      const elListener = findDomElementListener();
 
-    describe('sidebar portal', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('renders sidebar portal when Project Studio is disabled', () => {
-        expect(findSidebarPortal().exists()).toBe(true);
-      });
-
-      it('does not render mobile filters container when Project Studio is disabled', () => {
-        expect(findFiltersContainer().exists()).toBe(false);
-      });
+      expect(findFiltersContainer().classes()).toContain('gl-hidden');
+      elListener.vm.$emit('click');
+      expect(findFiltersContainer().classes()).not.toContain('gl-hidden');
+      elListener.vm.$emit('click');
+      expect(findFiltersContainer().classes()).toContain('gl-hidden');
     });
   });
 });

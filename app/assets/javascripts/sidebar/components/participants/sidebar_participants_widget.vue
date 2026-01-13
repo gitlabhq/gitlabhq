@@ -41,7 +41,7 @@ export default {
         };
       },
       update(data) {
-        const issuableData = data.workspace?.issuable;
+        const issuableData = data.namespace?.issuable;
         return issuableData?.participants || {};
       },
       skip() {

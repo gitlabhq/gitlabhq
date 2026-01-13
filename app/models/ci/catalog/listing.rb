@@ -10,9 +10,9 @@ module Ci
         @current_user = current_user
       end
 
-      def resources(sort: nil, search: nil, scope: :all, verification_level: nil, topics: nil)
+      def resources(sort: nil, search: nil, scope: :all, verification_level: nil, topics: nil, min_access_level: nil)
         relation = Ci::Catalog::Resource.published.includes(:project)
-        relation = by_scope(relation, scope)
+        relation = by_scope(relation, scope, min_access_level)
         relation = by_search(relation, search)
         relation = by_verification_level(relation, verification_level)
         relation = by_topics(relation, topics)
@@ -53,9 +53,9 @@ module Ci
         relation.search(search)
       end
 
-      def by_scope(relation, scope)
+      def by_scope(relation, scope, min_access_level)
         if scope == :namespaces
-          relation.visible_to_user(current_user)
+          relation.visible_to_user_with_access_level(current_user, min_access_level)
         else
           relation.public_or_visible_to_user(current_user)
         end

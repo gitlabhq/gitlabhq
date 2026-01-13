@@ -208,7 +208,13 @@ export default {
     ),
     handleSaveNote(note, parentElement, errorCallback) {
       return this.saveDiffDiscussion({ note, formData: this.formData })
-        .then(() => this.handleCancelCommentForm())
+        .then((result) => {
+          if (result?.cancelled) {
+            this.$refs.noteForm.isSubmitting = false;
+            return;
+          }
+          this.handleCancelCommentForm();
+        })
         .catch((e) => {
           const reason = e.response?.data?.errors;
           const errorMessage = reason

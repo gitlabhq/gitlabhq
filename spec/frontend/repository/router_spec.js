@@ -74,4 +74,23 @@ describe('Repository router spec', () => {
       expect(setTitle).toHaveBeenCalledWith(expectedPathParam, branch, projectName);
     });
   });
+
+  describe('Branch names with special characters', () => {
+    it.each`
+      path                                | branch           | component   | componentName
+      ${'/-/tree/issues/%23101'}          | ${'issues/#101'} | ${TreePage} | ${'TreePage'}
+      ${'/-/blob/issues/%23101/file.txt'} | ${'issues/#101'} | ${BlobPage} | ${'BlobPage'}
+      ${'/-/tree/feat%23test'}            | ${'feat#test'}   | ${TreePage} | ${'TreePage'}
+      ${'/-/blob/feat%23test/README.md'}  | ${'feat#test'}   | ${BlobPage} | ${'BlobPage'}
+    `(
+      'encodes special characters in branch "$branch" and matches path "$path" to $componentName',
+      ({ path, component, branch }) => {
+        const router = createRouter('', branch);
+
+        const componentsForRoute = getMatchedComponents(router, path);
+
+        expect(componentsForRoute).toEqual([component]);
+      },
+    );
+  });
 });

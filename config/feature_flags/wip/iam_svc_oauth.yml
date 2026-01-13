@@ -1,0 +1,10 @@
+---
+name: iam_svc_oauth
+description: Enable OAuth integration with the centralized IAM Service for Protocells. Controls all OAuth/OIDC functionality delegated to the IAM Service including JWT token validation, authorization flows, device authorization, and OIDC discovery endpoints.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580758
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215247
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582963
+milestone: '18.8'
+group: group::authentication
+type: wip
+default_enabled: false

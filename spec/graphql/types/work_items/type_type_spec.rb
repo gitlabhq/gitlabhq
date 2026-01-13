@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Types::WorkItems::TypeType, feature_category: :team_planning do
   let(:fields) do
-    %i[id icon_name name widget_definitions supported_conversion_types unavailable_widgets_on_conversion]
+    %i[id icon_name name widget_definitions supported_conversion_types unavailable_widgets_on_conversion
+      supports_roadmap_view use_issue_view can_promote_to_objective show_project_selector supports_move_action
+      is_service_desk is_incident_management is_configurable can_user_create_items visible_in_settings
+      archived is_filterable is_group_work_item_type]
   end
 
   specify { expect(described_class.graphql_name).to eq('WorkItemType') }

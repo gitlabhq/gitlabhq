@@ -611,6 +611,24 @@ first time.
   review. If you do not have the ability to request a review, `@`
   mention the reviewer instead.
 
+### Responding to GitLab Duo review comments
+
+When GitLab Duo provides automated code review comments on your merge request,
+address all comments before requesting a review from human reviewers.
+
+Your response can take any form, as long as it clearly indicates that you have
+considered the comment:
+
+- If you made changes based on the suggestion, explain what you changed.
+- If the issue is already addressed in another way, mention how it was resolved.
+- If the comment is not relevant or incorrect, explain why you are not acting on it.
+  A "thumbs down" can be adequate if the comment is clearly irrelevant, but
+  an explanation is preferable if there might be any confusion.
+
+Leave GitLab Duo discussion threads unresolved so that reviewers and
+maintainers can easily see your responses and verify that all automated feedback
+has been appropriately addressed.
+
 ### Requesting a review
 
 When you are ready to have your merge request reviewed,

@@ -106,7 +106,8 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
           model.create!(external_id: 15)
         end
 
-        it 'returns missing partitions', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444872' do
+        it 'returns missing partitions',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18752' do
           expect(missing_partitions.size).to eq(7)
 
           expect(missing_partitions).to include(
@@ -253,6 +254,26 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
     end
   end
 
+  describe '#after_adding_partitions' do
+    let(:partitioning_key) { double }
+
+    subject(:strategy) { described_class.new(model, partitioning_key, partition_size: 10) }
+
+    it 'is a no-op and does not raise an error' do
+      expect { strategy.after_adding_partitions }.not_to raise_error
+    end
+  end
+
+  describe '#validate_and_fix' do
+    let(:partitioning_key) { double }
+
+    subject(:strategy) { described_class.new(model, partitioning_key, partition_size: 10) }
+
+    it 'is a no-op and does not raise an error' do
+      expect { strategy.validate_and_fix }.not_to raise_error
+    end
+  end
+
   describe 'simulates the merge_request_diff_commits partition creation' do
     let(:table_name) { '_test_partitioned_test' }
     let(:model) do
@@ -286,7 +307,7 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
     end
 
     it 'redirects to the new partition', :aggregate_failures,
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444881' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16818' do
       expect_range_partitions_for(table_name, {
         '1' => %w[1 3],
         '3' => %w[3 5]

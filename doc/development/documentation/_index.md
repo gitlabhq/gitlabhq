@@ -16,7 +16,8 @@ The following instructions are for community contributors.
 
 Prerequisites:
 
-- [Request access to the GitLab community fork](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
+- [Start your contributor onboarding](https://contributors.gitlab.com/start) to get access
+  to the community forks.
   The community fork is a shared copy of the main GitLab repository.
   When you make the request, you'll be asked to answer a few questions. Let them know
   that you're interested in contributing to the GitLab documentation.

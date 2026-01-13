@@ -3,7 +3,7 @@
 module API
   module Entities
     class CommitSignature < Grape::Entity
-      expose :signature_type, documentation: { type: 'string', example: 'PGP' }
+      expose :signature_type, documentation: { type: 'String', example: 'PGP' }
 
       expose :signature, merge: true do |commit, options|
         case commit.signature
@@ -16,7 +16,7 @@ module API
         end
       end
 
-      expose :commit_source, documentation: { type: 'string', example: 'gitaly' } do |_commit, _|
+      expose :commit_source, documentation: { type: 'String', example: 'gitaly' } do |_commit, _|
         "gitaly"
       end
 

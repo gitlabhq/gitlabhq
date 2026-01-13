@@ -37,11 +37,8 @@ Prerequisites:
 - You must install [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md).
 - Optional. Install [`git-sizer`](https://github.com/github/git-sizer#getting-started).
 
-{{< alert type="warning" >}}
-
-Purging files is a destructive operation. Before proceeding, ensure you have a backup of the repository.
-
-{{< /alert >}}
+> [!warning]
+> Purging files is a destructive operation. Before proceeding, ensure you have a backup of the repository.
 
 To purge files from a GitLab repository:
 

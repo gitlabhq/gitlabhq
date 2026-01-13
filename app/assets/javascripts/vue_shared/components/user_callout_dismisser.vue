@@ -1,6 +1,8 @@
 <script>
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { logError } from '~/lib/logger';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
@@ -82,6 +84,8 @@ export default normalizeRender({
         this.$emit('queryResult', { ...data, ...this.slotProps });
       },
       error(err) {
+        logError(err);
+        Sentry.captureException(err);
         this.queryError = err;
       },
       skip() {
@@ -136,7 +140,19 @@ export default normalizeRender({
         mutationOptions.refetchQueries = [{ query: getUserCalloutsQuery }];
       }
 
-      await this.$apollo.mutate(mutationOptions);
+      try {
+        const { data } = await this.$apollo.mutate(mutationOptions);
+
+        const errors = data?.userCalloutCreate?.errors;
+        if (errors?.length > 0) {
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          const errorMessage = `User callout dismissal failed: ${errors.join(', ')}`;
+          Sentry.captureException(new Error(errorMessage));
+        }
+      } catch (err) {
+        logError(err);
+        Sentry.captureException(err);
+      }
     },
   },
   render() {

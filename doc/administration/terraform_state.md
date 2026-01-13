@@ -279,7 +279,7 @@ The following database table helps trace the S3 path back to specific projects:
 
 The state files are stored in a specific directory structure, where:
 
-- The first three segments of the path are derived from the SHA-2 hash value of the project ID.
+- The first three segments of the path are derived from the SHA-256 hash value of the project ID.
 - Each state has a UUID stored on the `terraform_states` database table that forms part of the path.
 
 For example, for a project where the:
@@ -287,7 +287,7 @@ For example, for a project where the:
 - Project ID is `12345`
 - State UUID is `example-uuid`
 
-If the SHA-2 hash value of `12345` is `5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5`, the folder structure would be:
+If the SHA-256 hash value of `12345` is `5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5`, the folder structure would be:
 
 ```plaintext
 terraform/                                                                 <- configured Terraform storage directory

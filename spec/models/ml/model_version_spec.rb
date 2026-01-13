@@ -135,38 +135,6 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     end
   end
 
-  describe '#find_or_create!' do
-    let_it_be(:existing_model_version) { create(:ml_model_versions, model: model1, version: '1.0.0') }
-
-    let(:version) { existing_model_version.version }
-    let(:package) { nil }
-    let(:description) { 'Some description' }
-
-    subject(:find_or_create) { described_class.find_or_create!(model1, version, package, description) }
-
-    context 'if model version exists' do
-      it 'returns the model version', :aggregate_failures do
-        expect { find_or_create }.not_to change { Ml::ModelVersion.count }
-        is_expected.to eq(existing_model_version)
-      end
-    end
-
-    context 'if model version does not exist' do
-      let(:version) { '2.0.0' }
-      let(:package) { create(:ml_model_package, project: model1.project, name: model1.name, version: version) }
-
-      it 'creates another model version', :aggregate_failures do
-        expect { find_or_create }.to change { Ml::ModelVersion.count }.by(1)
-        model_version = find_or_create
-
-        expect(model_version.version).to eq(version)
-        expect(model_version.model).to eq(model1)
-        expect(model_version.description).to eq(description)
-        expect(model_version.package).to eq(package)
-      end
-    end
-  end
-
   describe '#by_project_id_and_id' do
     let(:id) { model_version1.id }
     let(:project_id) { model_version1.project.id }

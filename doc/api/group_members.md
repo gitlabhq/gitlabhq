@@ -556,11 +556,8 @@ The user does not need to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group, you can
 still use this API endpoint to remove them.
 
-{{< alert type="note" >}}
-
-Member removal is handled asynchronously, so the changes complete in a few minutes.
-
-{{< /alert >}}
+> [!note]
+> Member removal is handled asynchronously, so the changes complete in a few minutes.
 
 ```plaintext
 DELETE /groups/:id/billable_members/:user_id
@@ -656,11 +653,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
-
-{{< /alert >}}
+> [!note]
+> If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To enable **Manage Non-Billable Promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -746,11 +740,8 @@ Example response:
 }
 ```
 
-{{< alert type="note" >}}
-
-If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
-
-{{< /alert >}}
+> [!note]
+> If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -825,7 +816,7 @@ DELETE /groups/:id/members/:user_id/override
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/override"
 ```
 

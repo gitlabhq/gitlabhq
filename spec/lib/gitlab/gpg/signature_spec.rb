@@ -109,7 +109,21 @@ RSpec.describe Gitlab::Gpg::Signature, feature_category: :source_code_management
   end
 
   describe '#gpg_key' do
-    subject { gpg_signature.gpg_key }
+    subject(:get_gpg_key) { gpg_signature.gpg_key }
+
+    context 'when initialized with a preloaded key' do
+      let(:gpg_signature) do
+        described_class.new(signature, signed_text, signer, committer_email, preloaded_gpg_key: gpg_key)
+      end
+
+      it { is_expected.to eq(gpg_key) }
+
+      it 'does not need to query for a gpg key' do
+        recorder = ActiveRecord::QueryRecorder.new { get_gpg_key }
+
+        expect(recorder.count).to eq(0)
+      end
+    end
 
     context 'when a valid key signed using recent version of Gnupg' do
       before do

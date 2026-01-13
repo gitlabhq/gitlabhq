@@ -12,11 +12,8 @@ title: Conan v1 API
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For Conan v2 operations, see [Conan v2 API](conan_v2.md).
-
-{{< /alert >}}
+> [!note]
+> For Conan v2 operations, see [Conan v2 API](conan_v2.md).
 
 Use this API to interact with the [Conan v1 package manager](../../user/packages/conan_1_repository/_index.md). These endpoints work for both
 projects and instances.

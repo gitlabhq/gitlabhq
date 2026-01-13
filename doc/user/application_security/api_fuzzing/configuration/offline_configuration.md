@@ -27,10 +27,7 @@ For example, the below line sets a registry for the image `registry.gitlab.com/s
 
 `SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"`
 
-{{< alert type="note" >}}
-
-Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab secure templates.
-
-{{< /alert >}}
+> [!note]
+> Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab secure templates.
 
 For more information, see [Offline environments](../../offline_deployments/_index.md).

@@ -132,7 +132,7 @@ module ApplicationHelper
   end
 
   def project_studio_enabled?
-    Users::ProjectStudio.new(current_user).enabled?
+    true
   end
 
   def body_data
@@ -232,6 +232,10 @@ module ApplicationHelper
   # This needs to be used outside of Rails
   def self.community_forum
     'https://forum.gitlab.com'
+  end
+
+  def university_url
+    'https://university.gitlab.com'
   end
 
   # Convenient method for Rails helper

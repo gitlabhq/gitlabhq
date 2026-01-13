@@ -54,5 +54,41 @@ RSpec.describe Sidebars::Projects::Menus::CiCdMenu, feature_category: :navigatio
         is_expected.not_to be_nil
       end
     end
+
+    describe 'Attestations' do
+      let(:item_id) { :attestations }
+
+      context 'when user cannot read attestations' do
+        let(:user) { nil }
+
+        before do
+          stub_feature_flags(slsa_provenance_statement: true)
+        end
+
+        it 'does not include attestations menu item' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when slsa_provenance_statement feature flag is disabled' do
+        before do
+          stub_feature_flags(slsa_provenance_statement: false)
+        end
+
+        it 'does not include attestations menu item' do
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when user can read attestations and slsa_provenance_statement feature flag is enabled' do
+        before do
+          stub_feature_flags(slsa_provenance_statement: true)
+        end
+
+        it 'includes attestations menu item' do
+          is_expected.not_to be_nil
+        end
+      end
+    end
   end
 end

@@ -3,7 +3,7 @@ import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelinesStats from '~/projects/pipelines/charts/components/pipelines_stats.vue';
 
-const failedPipelinesLink = '/pipelines?status=failed';
+const mockFailedPipelinesPath = '/pipelines?status=failed';
 
 describe('PipelinesStats', () => {
   let wrapper;
@@ -18,9 +18,6 @@ describe('PipelinesStats', () => {
     wrapper = shallowMount(PipelinesStats, {
       propsData: {
         ...props,
-      },
-      provide: {
-        failedPipelinesLink,
       },
     });
   };
@@ -71,7 +68,12 @@ describe('PipelinesStats', () => {
     };
 
     beforeEach(() => {
-      createWrapper({ props: { aggregate: mockAggregate } });
+      createWrapper({
+        props: {
+          aggregate: mockAggregate,
+          failedPipelinesPath: mockFailedPipelinesPath,
+        },
+      });
     });
 
     it('renders stats correctly', () => {
@@ -92,7 +94,7 @@ describe('PipelinesStats', () => {
 
     it('renders the failed pipelines link when failed count is greater than zero', () => {
       expect(findFailedPipelinesLink().attributes()).toMatchObject({
-        href: failedPipelinesLink,
+        href: mockFailedPipelinesPath,
         'data-event-tracking': 'click_view_all_link_in_pipeline_analytics',
       });
     });

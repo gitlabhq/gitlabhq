@@ -28,7 +28,7 @@ class Label < ApplicationRecord
   after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
 
   validate :ensure_lock_on_merge_allowed
-  validates_with ExactlyOnePresentValidator, fields: [:group, :project, :organization], error_key: :parent
+  validates_with ExactlyOnePresentValidator, fields: [:project, :organization], associations: [:group], error_key: :parent
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
@@ -38,7 +38,7 @@ class Label < ApplicationRecord
   default_scope { order(title: :asc) } # rubocop:disable Cop/DefaultScope
 
   scope :templates, -> { where(template: true, type: [Label.name, nil]) }
-  scope :for_organization, ->(organization) { where(organization: organization) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :with_lock_on_merge, -> { where(lock_on_merge: true) }

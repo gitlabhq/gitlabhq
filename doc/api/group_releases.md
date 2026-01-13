@@ -21,11 +21,8 @@ title: Group release API
 
 Use this API to interact with [projects releases](../user/project/releases/_index.md) in groups.
 
-{{< alert type="note" >}}
-
-To interact with project releases directly, see the [project release API](releases/_index.md).
-
-{{< /alert >}}
+> [!note]
+> To interact with project releases directly, see the [project release API](releases/_index.md).
 
 ## List all releases in a group
 

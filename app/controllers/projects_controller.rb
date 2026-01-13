@@ -42,6 +42,8 @@ class ProjectsController < Projects::ApplicationController
   skip_before_action :enforce_step_up_auth_for_namespace, only: [:create]
   before_action :enforce_step_up_auth_for_namespace_on_create, only: [:create]
 
+  before_action :set_project_markdown_flags
+
   # Project Export Rate Limit
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
@@ -53,7 +55,6 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
     push_frontend_feature_flag(:repository_file_tree_browser, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
@@ -296,7 +297,7 @@ class ProjectsController < Projects::ApplicationController
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       notice: _("Project export started. A download link will be sent by email and made available on this page.")
     )
-  rescue Project::ExportLimitExceeded => e
+  rescue Project::ExportLimitExceeded, Project::ExportAlreadyInProgress => e
     redirect_to(
       edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: e.to_s

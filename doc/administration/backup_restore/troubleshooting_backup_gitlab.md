@@ -53,11 +53,8 @@ You can determine if your database contains values that can't be decrypted by us
 
 You must directly modify GitLab data to work around your lost secrets file.
 
-{{< alert type="warning" >}}
-
-Be sure to create a full database backup before attempting any changes.
-
-{{< /alert >}}
+> [!warning]
+> Be sure to create a full database backup before attempting any changes.
 
 ### Disable user two-factor authentication (2FA)
 

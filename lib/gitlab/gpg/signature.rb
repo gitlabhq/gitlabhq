@@ -6,11 +6,12 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include SignatureType
 
-      def initialize(signature_text, signed_text, signer, email)
+      def initialize(signature_text, signed_text, signer, email, preloaded_gpg_key: nil)
         @signature_text = signature_text
         @signed_text = signed_text
         @signer = signer
         @email = email
+        @preloaded_gpg_key = preloaded_gpg_key
       end
 
       attr_reader :signature_text, :signed_text, :email, :signer
@@ -46,6 +47,7 @@ module Gitlab
       end
 
       def gpg_key
+        return @preloaded_gpg_key if @preloaded_gpg_key
         return unless fingerprint
 
         find_gpg_key(fingerprint)

@@ -22,9 +22,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   let(:user) { create(:user) }
 
   before do
-    # -- temporary Project Studio rollout
-    skip 'Test not applicable in classic UI' unless Users::ProjectStudio.enabled_for_user?(user)
-
     project.add_maintainer(user)
     sign_in(user)
 
@@ -451,10 +448,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   end
 
   def find_in_page_or_panel_by_scrolling(selector, **options)
-    if Users::ProjectStudio.enabled_for_user?(user)
-      find_in_panel_by_scrolling(selector, **options)
-    else
-      find_by_scrolling(selector, **options)
-    end
+    find_in_panel_by_scrolling(selector, **options)
   end
 end

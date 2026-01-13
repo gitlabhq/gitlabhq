@@ -12,7 +12,7 @@ module QA
       end
 
       shared_examples 'upload a file' do
-        it "verifies it successfully uploads and commits to a MR" do
+        it "verifies it successfully uploads and commits to a MR", :smoke do
           original_windows_count = page.driver.browser.window_handles.length
 
           Page::Project::WebIDE::VSCode.perform do |ide|

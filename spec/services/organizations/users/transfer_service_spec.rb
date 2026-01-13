@@ -324,7 +324,7 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
     context 'with todos authored by bots' do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
-      let_it_be_with_refind(:support_bot_old) { Users::Internal.for_organization(old_organization).support_bot }
+      let_it_be_with_refind(:support_bot_old) { Users::Internal.in_organization(old_organization).support_bot }
       let_it_be_with_refind(:human_author) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:project) { create(:project, namespace: group, organization: old_organization) }
       let_it_be_with_refind(:issue) { create(:issue, project: project) }
@@ -340,12 +340,12 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
 
       it 'updates all bot-authored todos to use new organization bots' do
         # Create todos for all bot types
-        ghost_old = Users::Internal.for_organization(old_organization).ghost
-        alert_bot_old = Users::Internal.for_organization(old_organization).alert_bot
-        security_bot_old = Users::Internal.for_organization(old_organization).security_bot
-        automation_bot_old = Users::Internal.for_organization(old_organization).automation_bot
-        admin_bot_old = Users::Internal.for_organization(old_organization).admin_bot
-        duo_code_review_bot_old = Users::Internal.for_organization(old_organization).duo_code_review_bot
+        ghost_old = Users::Internal.in_organization(old_organization).ghost
+        alert_bot_old = Users::Internal.in_organization(old_organization).alert_bot
+        security_bot_old = Users::Internal.in_organization(old_organization).security_bot
+        automation_bot_old = Users::Internal.in_organization(old_organization).automation_bot
+        admin_bot_old = Users::Internal.in_organization(old_organization).admin_bot
+        duo_code_review_bot_old = Users::Internal.in_organization(old_organization).duo_code_review_bot
 
         ghost_todo = create(:todo, user: user1, author: ghost_old, target: issue, project: project)
         support_bot_todo = create(:todo, user: user1, author: support_bot_old, target: issue, project: project)
@@ -360,13 +360,13 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
         service.prepare_bots
 
         # Get references to the new bots that were just created
-        ghost_new = Users::Internal.for_organization(new_organization).ghost
-        support_bot_new = Users::Internal.for_organization(new_organization).support_bot
-        alert_bot_new = Users::Internal.for_organization(new_organization).alert_bot
-        security_bot_new = Users::Internal.for_organization(new_organization).security_bot
-        automation_bot_new = Users::Internal.for_organization(new_organization).automation_bot
-        admin_bot_new = Users::Internal.for_organization(new_organization).admin_bot
-        duo_code_review_bot_new = Users::Internal.for_organization(new_organization).duo_code_review_bot
+        ghost_new = Users::Internal.in_organization(new_organization).ghost
+        support_bot_new = Users::Internal.in_organization(new_organization).support_bot
+        alert_bot_new = Users::Internal.in_organization(new_organization).alert_bot
+        security_bot_new = Users::Internal.in_organization(new_organization).security_bot
+        automation_bot_new = Users::Internal.in_organization(new_organization).automation_bot
+        admin_bot_new = Users::Internal.in_organization(new_organization).admin_bot
+        duo_code_review_bot_new = Users::Internal.in_organization(new_organization).duo_code_review_bot
 
         service.execute
 

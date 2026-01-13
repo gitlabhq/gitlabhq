@@ -9,8 +9,10 @@ module Import
         # @param current_user [User] current user object
         # @param source_hostname [String] source hostname or alias hostname
         # @param portable_params [Array<Hash>] list of portables to export.
-        #   Each portable hash must have at least its type and full path. E.g.:
-        #   { type: 'project', full_path: 'gitlab-org/gitlab' }
+        #   Each portable hash must have at least its full path. More export options for each portable may
+        #   be added later. See https://gitlab.com/gitlab-org/gitlab/-/issues/583383 and
+        #   https://gitlab.com/gitlab-org/gitlab/-/issues/583385. E.g.:
+        #   { full_path: 'gitlab-org/gitlab' }
         # @param storage_config [Hash] contains object storage configuation settings:
         #   provider [Symbol], bucket [String], and credentials [Hash (content varies by provider)]. E.g.:
         #   {
@@ -23,11 +25,12 @@ module Import
         #       path_style: false
         #     }
         #   }
-        def initialize(current_user, source_hostname, portable_params, storage_config)
+        def initialize(current_user, source_hostname, portable_params, storage_config, organization_id)
           @current_user = current_user
           @source_hostname = source_hostname
           @portable_params = portable_params
           @storage_config = storage_config
+          @organization_id = organization_id
         end
 
         def execute
@@ -39,28 +42,31 @@ module Import
 
           offline_export = Import::Offline::Export.create!(
             user: current_user,
-            organization_id: current_user.organization_id,
+            organization_id: organization_id,
             source_hostname: source_hostname,
             configuration: configuration
           )
 
           ServiceResponse.success(payload: offline_export)
-        rescue Excon::Error
-          # Excon errors may be long and contain sensitive information depending on provider implementation
-          service_error(s_('OfflineTransfer|Unable to access object storage bucket.'))
         rescue ActiveRecord::RecordInvalid => e
           service_error(e.message)
+        rescue Excon::Error, StandardError => e
+          # Providing a nonexistent AWS S3 bucket results in a NoMethodError caused by an excon error.
+          # Check if error's cause is an excon error for a more useful error to the user
+          raise e unless e.is_a?(Excon::Error) || e.cause.is_a?(Excon::Error)
+
+          # Excon errors may be long and contain sensitive information depending on provider implementation
+          service_error(s_('OfflineTransfer|Unable to access object storage bucket.'))
         end
 
         private
 
-        attr_reader :current_user, :source_hostname, :portable_params, :storage_config, :invalid_paths
+        attr_reader :current_user, :source_hostname, :portable_params, :storage_config, :invalid_paths, :organization_id
 
         def user_can_export_all_portables?
-          full_path_params = portable_full_paths
           found_full_paths = groups.map(&:full_path) + projects.map(&:full_path)
 
-          @invalid_paths = full_path_params - found_full_paths
+          @invalid_paths = portable_full_paths - found_full_paths
 
           @invalid_paths += [groups, projects].flatten.filter_map do |portable|
             portable.full_path unless user_can_admin_portable?(portable)
@@ -71,7 +77,7 @@ module Import
 
         def portable_params_valid?
           return false if portable_params.blank?
-          return false if portable_params.any? { |h| !h.is_a?(Hash) || h[:type].blank? || h[:full_path].blank? }
+          return false if portable_params.any? { |h| !h.is_a?(Hash) || h[:full_path].blank? }
 
           true
         end
@@ -87,7 +93,7 @@ module Import
             provider: storage_config[:provider],
             bucket: storage_config[:bucket],
             object_storage_credentials: storage_config[:credentials],
-            organization_id: current_user.organization_id
+            organization_id: organization_id
           )
         end
         strong_memoize_attr :configuration
@@ -127,7 +133,7 @@ module Import
         end
 
         def invalid_params_error
-          service_error(s_('OfflineTransfer|Export failed. Entity types and full paths must be provided.'))
+          service_error(s_('OfflineTransfer|Export failed. Entity full paths must be provided.'))
         end
 
         def insufficient_permissions_error

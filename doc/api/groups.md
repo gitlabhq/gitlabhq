@@ -521,6 +521,7 @@ Parameters:
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
 | `id`                          | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `active`                      | boolean        | no       | Limit by project status. When `true`, returns active projects. When `false`, returns projects that are archived or marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218053) in GitLab 18.8. |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at`. |
@@ -589,11 +590,8 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
-
-{{< /alert >}}
+> [!note]
+> To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
 
 ### List shared projects
 
@@ -1416,11 +1414,8 @@ Parameters:
 
 The response is `202 Accepted` if the user has authorization.
 
-{{< alert type="note" >}}
-
-You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
-
-{{< /alert >}}
+> [!note]
+> You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
 
 #### Restore a group marked for deletion
 
@@ -1716,11 +1711,8 @@ Example response:
 
 Transfers a project to another group namespace. Alternatively, use the [transfer a project to a new namespace](projects.md#transfer-a-project-to-a-new-namespace) endpoint instead.
 
-{{< alert type="note" >}}
-
-The transfer process may fail if tagged packages exist in the project's repository.
-
-{{< /alert >}}
+> [!note]
+> The transfer process may fail if tagged packages exist in the project's repository.
 
 Prerequisites:
 
@@ -1787,6 +1779,8 @@ Returns `204` and no content on success.
 
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 - `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
+- `allow_personal_snippets` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+
 {{< /history >}}
 
 {{< alert type="flag" >}}
@@ -1857,6 +1851,7 @@ PUT /groups/:id
 | `only_allow_merge_if_pipeline_succeeds`             | boolean           | no       | Only allow merging merge requests if the pipeline succeeds. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
 | `allow_merge_on_skipped_pipeline`                   | boolean           | no       | Allow merging merge requests when the pipeline is skipped. Only applies when `only_allow_merge_if_pipeline_succeeds` is `true`. Premium and Ultimate only. |
 | `only_allow_merge_if_all_discussions_are_resolved`  | boolean           | no       | Only allow merging merge requests when all discussions are resolved. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
+| `allow_personal_snippets`                           | boolean           | no       | Allow enterprise users in this group to create personal snippets. When disabled, enterprise users are restricted from creating snippets in their personal namespace. |
 
 {{< alert type="note" >}}
 
@@ -1896,6 +1891,7 @@ Example response:
   "only_allow_merge_if_pipeline_succeeds": false,
   "allow_merge_on_skipped_pipeline": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "allow_personal_snippets": true,
   "projects": [ // Deprecated and will be removed in API v5
     {
       "id": 9,

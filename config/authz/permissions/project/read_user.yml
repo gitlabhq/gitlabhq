@@ -1,0 +1,5 @@
+---
+name: read_user_project
+description: Grants the ability to read project users
+boundaries:
+  - project

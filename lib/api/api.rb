@@ -14,6 +14,7 @@ module API
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
+    LOG_FILTER_EXCEPTIONS = %w[controller action format Content-Type].freeze
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
     LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
 
@@ -34,7 +35,7 @@ module API
       logger: LOGGER,
       formatter: LOG_FORMATTER,
       include: [
-        Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
+        Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS, nil, LOG_FILTER_EXCEPTIONS),
         Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
         Gitlab::GrapeLogging::Loggers::JsonMetadataLogger.new,
         Gitlab::GrapeLogging::Loggers::RouteLogger.new,

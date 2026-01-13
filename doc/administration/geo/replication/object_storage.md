@@ -64,11 +64,8 @@ When the `geo_object_storage_verification` feature flag is disabled:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
-
-{{< /alert >}}
+> [!warning]
+> In case of issues, avoid manually deleting individual files as that can lead to [data inconsistencies](#inconsistencies-after-the-migration).
 
 **Secondary** sites can replicate files stored by the **primary** site regardless of
 whether they are stored on the local file system or in object storage.

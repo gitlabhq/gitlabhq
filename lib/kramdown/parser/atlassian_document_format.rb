@@ -17,58 +17,58 @@ module Kramdown
     class AtlassianDocumentFormat < Kramdown::Parser::Base
       unless defined?(TOP_LEVEL_BLOCK_NODES)
         TOP_LEVEL_BLOCK_NODES = %w[blockquote
-                                   bulletList
-                                   codeBlock
-                                   heading
-                                   mediaGroup
-                                   mediaSingle
-                                   orderedList
-                                   panel
-                                   paragraph
-                                   rule
-                                   table].freeze
+          bulletList
+          codeBlock
+          heading
+          mediaGroup
+          mediaSingle
+          orderedList
+          panel
+          paragraph
+          rule
+          table].freeze
 
         CHILD_BLOCK_NODES =     %w[listItem
-                                   media
-                                   table_cell
-                                   table_header
-                                   table_row].freeze
+          media
+          table_cell
+          table_header
+          table_row].freeze
 
         INLINE_NODES =          %w[emoji
-                                   hardBreak
-                                   inlineCard
-                                   mention
-                                   text].freeze
+          hardBreak
+          inlineCard
+          mention
+          text].freeze
 
         MARKS =                 %w[code
-                                   em
-                                   link
-                                   strike
-                                   strong
-                                   subsup
-                                   textColor
-                                   underline].freeze
+          em
+          link
+          strike
+          strong
+          subsup
+          textColor
+          underline].freeze
 
         TABLE_CELL_NODES =      %w[blockquote
-                                   bulletList
-                                   codeBlock
-                                   heading
-                                   mediaGroup
-                                   orderedList
-                                   panel
-                                   paragraph
-                                   rule].freeze
+          bulletList
+          codeBlock
+          heading
+          mediaGroup
+          orderedList
+          panel
+          paragraph
+          rule].freeze
 
         LIST_ITEM_NODES =       %w[bulletList
-                                   codeBlock
-                                   mediaSingle
-                                   orderedList
-                                   paragraph].freeze
+          codeBlock
+          mediaSingle
+          orderedList
+          paragraph].freeze
 
         PANEL_NODES =           %w[bulletList
-                                   heading
-                                   orderedList
-                                   paragraph].freeze
+          heading
+          orderedList
+          paragraph].freeze
 
         PANEL_EMOJIS =          { info: ':information_source:',
                                   note: ':notepad_spiral:',

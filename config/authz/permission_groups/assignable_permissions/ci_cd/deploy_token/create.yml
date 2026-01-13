@@ -1,0 +1,8 @@
+---
+name: create_deploy_token
+description: Grants the ability to create deploy tokens
+boundaries:
+  - group
+  - project
+permissions:
+  - create_deploy_token

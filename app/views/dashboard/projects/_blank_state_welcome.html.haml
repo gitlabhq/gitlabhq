@@ -11,7 +11,7 @@
   = render Onboarding::ActionCardComponent.new(title: _('Explore public projects'),
     description: _('Public projects are an easy way to allow everyone to have read-only access.'),
     icon: 'earth',
-    href: trending_explore_projects_path)
+    href: starred_explore_projects_path)
 
   - if current_user.can_create_group?
     = render Onboarding::ActionCardComponent.new(title: _('Create a group'),

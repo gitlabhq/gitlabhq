@@ -20,6 +20,14 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
     let(:route) { "/projects/#{project.id}/protected_branches" }
     let(:expected_branch_names) { project.protected_branches.map { |x| x['name'] } }
 
+    it_behaves_like 'authorizing granular token permissions', :read_protected_branch do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
+
     shared_examples_for 'protected branches' do
       it 'returns the protected branches' do
         get api(route, user), params: params.merge(per_page: 100)
@@ -65,6 +73,14 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
 
   describe "GET /projects/:id/protected_branches/:branch" do
     let(:route) { "/projects/#{project.id}/protected_branches/#{branch_name}" }
+
+    it_behaves_like 'authorizing granular token permissions', :read_protected_branch do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
 
     shared_examples_for 'protected branch' do
       it 'returns the protected branch' do
@@ -153,6 +169,15 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
   end
 
   describe 'POST /projects/:id/protected_branches' do
+    it_behaves_like 'authorizing granular token permissions', :create_protected_branch do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{project.id}/protected_branches", personal_access_token: pat),
+          params: { name: 'new_branch' }
+      end
+    end
+
     let(:branch_name) { 'new_branch' }
     let(:post_endpoint) { api("/projects/#{project.id}/protected_branches", user) }
 
@@ -305,6 +330,15 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
   describe 'PATCH /projects/:id/protected_branches/:name' do
     let(:route) { "/projects/#{project.id}/protected_branches/#{branch_name}" }
 
+    it_behaves_like 'authorizing granular token permissions', :update_protected_branch do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        patch api(route, personal_access_token: pat),
+          params: { allow_force_push: true }
+      end
+    end
+
     context 'when authenticated as a maintainer' do
       let(:user) { maintainer }
 
@@ -365,6 +399,14 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
   end
 
   describe "DELETE /projects/:id/protected_branches/unprotect/:branch" do
+    it_behaves_like 'authorizing granular token permissions', :delete_protected_branch do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{project.id}/protected_branches/#{branch_name}", personal_access_token: pat)
+      end
+    end
+
     let(:delete_endpoint) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
 
     context "when authenticated as a maintainer" do

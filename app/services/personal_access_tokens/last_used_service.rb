@@ -43,8 +43,6 @@ module PersonalAccessTokens
     end
 
     def lease_release?
-      return super unless Feature.enabled?(:stop_release_lease_for_pat_last_used_service, Feature.current_request)
-
       false
     end
 

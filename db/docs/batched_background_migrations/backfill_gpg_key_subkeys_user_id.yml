@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillGpgKeySubkeysUserId
+description: Backfills user_id for gpg_key_subkeys from the parent gpg_keys table
+feature_category: source_code_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214434
+milestone: '18.8'
+queued_migration_version: 20251201100500

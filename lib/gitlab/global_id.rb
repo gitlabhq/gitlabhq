@@ -27,5 +27,31 @@ module Gitlab
         raise CoerceError, "Invalid ID. Cannot coerce instances of #{value.class}"
       end
     end
+
+    # Safely locates a record by its Global ID.
+    #
+    # @param gid [GlobalID, String, nil] the Global ID to locate
+    # @param on_error [Proc, nil] optional error handler called with the exception
+    # @param options [Hash] additional options passed to GlobalID::Locator.locate
+    # @return [Object, nil] the located record, or nil if not found or on error
+    #
+    # @example Silent failure
+    #   safe_locate(gid)
+    #
+    # @example With error tracking
+    #   safe_locate(gid, on_error: ->(e) { Gitlab::ErrorTracking.track_exception(e) })
+    #
+    # @example With options
+    #   safe_locate(gid, options: { only: User })
+    #
+    def self.safe_locate(gid, on_error: nil, options: {})
+      return unless gid
+
+      GlobalID::Locator.locate(gid, options)
+    rescue StandardError => err
+      on_error&.call(err)
+
+      nil
+    end
   end
 end

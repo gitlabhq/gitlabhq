@@ -684,10 +684,6 @@ p_ci_workloads:
   - table: projects
     column: project_id
     on_delete: async_delete
-p_knowledge_graph_replicas:
-  - table: p_knowledge_graph_enabled_namespaces
-    column: knowledge_graph_enabled_namespace_id
-    on_delete: async_nullify
 p_sent_notifications:
   - table: namespaces
     column: namespace_id
@@ -841,6 +837,10 @@ security_categories:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+security_finding_enrichments:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 security_finding_token_statuses:
   - table: projects
     column: project_id
@@ -921,6 +921,18 @@ virtual_registries_container_cache_entries:
     target_value: 2
 virtual_registries_packages_maven_cache_entries:
   - table: virtual_registries_packages_maven_upstreams
+    column: upstream_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
+virtual_registries_packages_maven_cache_remote_entries:
+  - table: virtual_registries_packages_maven_upstreams
+    column: upstream_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
+virtual_registries_packages_npm_cache_remote_entries:
+  - table: virtual_registries_packages_npm_upstreams
     column: upstream_id
     on_delete: update_column_to
     target_column: status

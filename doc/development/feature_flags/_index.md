@@ -13,7 +13,7 @@ A [complete list of feature flags](../../administration/feature_flags/list.md) i
 
 {{< alert type="warning" >}}
 
-All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
+All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle).
 
 {{< /alert >}}
 

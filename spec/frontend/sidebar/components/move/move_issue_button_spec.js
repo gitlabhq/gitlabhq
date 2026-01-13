@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import ProjectSelect from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import MoveIssueButton from '~/sidebar/components/move/move_issue_button.vue';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
+import { TYPE_ISSUE, TYPE_TICKET } from '~/issues/constants';
 
 Vue.use(VueApollo);
 
@@ -58,7 +59,7 @@ describe('MoveIssueButton', () => {
   const emitProjectSelectEvent = () => {
     findProjectSelect().vm.$emit('move-issuable', mockDestinationProject);
   };
-  const createComponent = (mutationResolverMock = rejectedMutationMock) => {
+  const createComponent = ({ provide = {}, mutationResolverMock = rejectedMutationMock } = {}) => {
     fakeApollo = createMockApollo([[moveIssueMutation, mutationResolverMock]]);
 
     wrapper = shallowMount(MoveIssueButton, {
@@ -66,6 +67,8 @@ describe('MoveIssueButton', () => {
         projectFullPath,
         projectsAutocompleteEndpoint,
         issueIid,
+        issueType: TYPE_ISSUE,
+        ...provide,
       },
       apolloProvider: fakeApollo,
     });
@@ -78,6 +81,18 @@ describe('MoveIssueButton', () => {
       projectsFetchPath: projectsAutocompleteEndpoint,
       dropdownButtonTitle: MoveIssueButton.i18n.title,
       moveInProgress: false,
+    });
+  });
+
+  describe('move button text', () => {
+    it.each`
+      issueType      | buttonText
+      ${TYPE_ISSUE}  | ${'Move issue'}
+      ${TYPE_TICKET} | ${'Move ticket'}
+    `('renders $buttonText', ({ issueType, buttonText }) => {
+      createComponent({ provide: { issueType } });
+
+      expect(findProjectSelect().props('dropdownButtonTitle')).toBe(buttonText);
     });
   });
 
@@ -99,11 +114,11 @@ describe('MoveIssueButton', () => {
     });
 
     it.each`
-      condition                      | mutation
+      condition                      | mutationResolverMock
       ${'a mutation returns errors'} | ${resolvedMutationWithErrorsMock}
       ${'a mutation is rejected'}    | ${rejectedMutationMock}
-    `('sets loading state to false when $condition', async ({ mutation }) => {
-      createComponent(mutation);
+    `('sets loading state to false when $condition', async ({ mutationResolverMock }) => {
+      createComponent({ mutationResolverMock });
       emitProjectSelectEvent();
 
       await nextTick();
@@ -114,7 +129,7 @@ describe('MoveIssueButton', () => {
     });
 
     it('creates an alert and logs errors when a mutation returns errors', async () => {
-      createComponent(resolvedMutationWithErrorsMock);
+      createComponent({ mutationResolverMock: resolvedMutationWithErrorsMock });
       emitProjectSelectEvent();
 
       await waitForPromises();
@@ -127,7 +142,7 @@ describe('MoveIssueButton', () => {
     });
 
     it('calls a mutation for the selected issue', async () => {
-      createComponent(resolvedMutationWithoutErrorsMock);
+      createComponent({ mutationResolverMock: resolvedMutationWithoutErrorsMock });
       emitProjectSelectEvent();
 
       await waitForPromises();
@@ -142,7 +157,7 @@ describe('MoveIssueButton', () => {
     });
 
     it('redirects to the correct page when the mutation succeeds', async () => {
-      createComponent(resolvedMutationWithoutErrorsMock);
+      createComponent({ mutationResolverMock: resolvedMutationWithoutErrorsMock });
       emitProjectSelectEvent();
       await waitForPromises();
 

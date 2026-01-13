@@ -42,11 +42,8 @@ Code Suggestions and GitLab Duo Chat (Agentic).
 For more information on how to turn off prompt caching, see
 [prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching).
 
-{{< alert type="note" >}}
-
-For OpenAI models, you cannot turn off prompt caching. Ensure that you use a model that is suitable for your data retention requirements.
-
-{{< /alert >}}
+> [!note]
+> For OpenAI models, you cannot turn off prompt caching. Ensure that you use a model that is suitable for your data retention requirements.
 
 All GitLab AI model Sub-Processors are restricted from using model input and
 output to train models and are under data protection agreements with GitLab that

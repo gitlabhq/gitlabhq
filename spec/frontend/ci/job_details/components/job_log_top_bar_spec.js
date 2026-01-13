@@ -1,9 +1,11 @@
 import { GlLink, GlSearchBoxByClick } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mockJobLog } from 'jest/ci/jobs_mock_data';
+import * as scrollUtils from '~/lib/utils/scroll_utils';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -31,7 +33,7 @@ describe('JobLogTopBar', () => {
     jobLog: mockJobLog,
   };
 
-  const createWrapper = (props) => {
+  const createWrapper = (props = {}) => {
     wrapper = mount(JobLogTopBar, {
       propsData: {
         ...defaultProps,
@@ -57,6 +59,9 @@ describe('JobLogTopBar', () => {
   const findScrollBottom = () => wrapper.find('[data-testid="job-top-bar-scroll-bottom"]');
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
   const findScrollFailure = () => wrapper.find('[data-testid="job-top-bar-scroll-to-failure"]');
+  const findJobLogSearchPreviousButton = () =>
+    wrapper.find('[data-testid="job-scroll-to-prev-btn"]');
+  const findJobLogSearchNextButton = () => wrapper.find('[data-testid="job-scroll-to-next-btn"]');
   const findShowFullScreenButton = () =>
     wrapper.find('[data-testid="job-top-bar-enter-fullscreen"]');
   const findExitFullScreenButton = () =>
@@ -277,8 +282,100 @@ describe('JobLogTopBar', () => {
   });
 
   describe('Job log search', () => {
+    const mockResultElement = {
+      getAttribute: jest.fn(() => 'mocked-value'),
+      className: 'js-log-line #L5',
+    };
+
     beforeEach(() => {
       createWrapper();
+      document.querySelector = jest.fn(() => mockResultElement);
+      jest.spyOn(scrollUtils, 'scrollToElement');
+    });
+
+    it('prev button scrolls to the line correctly', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      findJobLogSearchNextButton().vm.$emit('click');
+      findJobLogSearchPreviousButton().vm.$emit('click');
+
+      expect(document.querySelector).toHaveBeenCalledWith('.js-log-line #L5');
+      expect(scrollUtils.scrollToElement).toHaveBeenCalledWith(mockResultElement, { offset: -0 });
+    });
+
+    it('next button scrolls to the line correctly', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      await findJobLogSearchNextButton().vm.$emit('click');
+
+      expect(document.querySelector).toHaveBeenCalledWith('.js-log-line #L5');
+      expect(scrollUtils.scrollToElement).toHaveBeenCalledWith(mockResultElement, { offset: -0 });
+    });
+
+    it('prev and next buttons are disabled initially', () => {
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('prev and next buttons are disabled when search has exactly one result', async () => {
+      findJobLogSearch().vm.$emit('input', 'secrets');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('prev button is enabled after next button is clicked when search has multiple results', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+
+      findJobLogSearchNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it('next button is enabled when search has multiple results', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      expect(findJobLogSearchNextButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it('prev button is disabled when already at the first result', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      findJobLogSearchNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBeUndefined();
+
+      findJobLogSearchPreviousButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+    });
+
+    it('next button is disabled when already at the last result', async () => {
+      findJobLogSearch().vm.$emit('input', 'with');
+      findJobLogSearch().vm.$emit('submit');
+      await nextTick();
+
+      [...Array(4)].forEach(() => findJobLogSearchNextButton().vm.$emit('click'));
+      await nextTick();
+
+      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
     });
 
     it('displays job log search', () => {

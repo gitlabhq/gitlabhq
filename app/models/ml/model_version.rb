@@ -53,11 +53,6 @@ module Ml
     end
 
     class << self
-      def find_or_create!(model, version, package, description)
-        create_with(package: package, description: description)
-          .find_or_create_by!(project: model.project, model: model, version: version)
-      end
-
       def by_project_id_and_id(project_id, id)
         find_by(project_id: project_id, id: id)
       end

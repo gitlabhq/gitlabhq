@@ -28,7 +28,7 @@ class Upload < ApplicationRecord
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
   after_destroy :delete_file!,
-    if: -> { uploader_class <= FileUploader || uploader_class == BulkImports::ExportUploader }
+    if: -> { uploader_class <= FileUploader || uploader_class == BulkImports::ExportUploader || uploader_class == ImportExportUploader }
   after_commit :schedule_checksum, if: :needs_checksum?
 
   after_commit :update_project_statistics, on: [:create, :destroy], if: :project?

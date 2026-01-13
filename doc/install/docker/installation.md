@@ -283,11 +283,8 @@ Alternatively, you can install GitLab using Docker Engine.
    sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
    ```
 
-{{< alert type="note" >}}
-
-The password file is automatically deleted in the first container restart after 24 hours.
-
-{{< /alert >}}
+> [!note]
+> The password file is automatically deleted in the first container restart after 24 hours.
 
 ### Install GitLab by using Docker Swarm mode
 

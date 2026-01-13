@@ -1,0 +1,10 @@
+---
+name: ci_stop_populating_p_ci_build_tags
+description: Stop populating p_ci_build_tags table
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580301
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215235
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583505
+milestone: '18.8'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

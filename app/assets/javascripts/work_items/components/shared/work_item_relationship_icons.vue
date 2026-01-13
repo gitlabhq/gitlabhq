@@ -66,10 +66,10 @@ export default {
           iid: this.workItemIid,
         };
       },
-      update({ workspace }) {
-        if (!workspace?.workItem) return [];
+      update({ namespace }) {
+        if (!namespace?.workItem) return [];
 
-        return findLinkedItemsWidget(workspace.workItem).linkedItems?.nodes || [];
+        return findLinkedItemsWidget(namespace.workItem).linkedItems?.nodes || [];
       },
     },
   },

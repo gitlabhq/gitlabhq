@@ -51,7 +51,7 @@ module QA
         end
 
         def set_scope(scope)
-          click_element "#{scope}-label".to_sym
+          click_element :"#{scope}-label"
         end
 
         def save_application

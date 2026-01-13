@@ -11,7 +11,7 @@ module Users
         :security_bot, :automation_bot,
         :duo_code_review_bot, :admin_bot
 
-      def for_organization(organization)
+      def in_organization(organization)
         new(organization: organization)
       end
 

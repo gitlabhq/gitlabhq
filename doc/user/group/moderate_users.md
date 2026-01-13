@@ -41,7 +41,7 @@ A banned user:
 
 ### Ban a user
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo on banning a user at the group level, see [Namespace level ban - Banning a user](https://youtu.be/1rbi1uEJmOI).
 
 Prerequisites:
@@ -60,7 +60,7 @@ To manually ban a user:
 
 To unban a user with the GraphQL API, see [`Mutation.namespaceBanDestroy`](../../api/graphql/reference/_index.md#mutationnamespacebandestroy).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo on unbanning a user at the group level, see [Namespace level ban - Unbanning a user](https://www.youtube.com/watch?v=mTQVbP3MQrs).
 
 Prerequisites:

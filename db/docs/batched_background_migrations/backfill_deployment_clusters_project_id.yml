@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillDeploymentClustersProjectId
+description: Backfills sharding key `deployment_clusters.project_id` from `deployments`.
+feature_category: deployment_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216932
+milestone: '18.8'
+queued_migration_version: 20251218000005
+finalized_by:

@@ -1,0 +1,7 @@
+---
+name: read_language_project
+description: Grants the ability to read project languages
+permissions:
+  - read_language_project
+boundaries:
+  - project

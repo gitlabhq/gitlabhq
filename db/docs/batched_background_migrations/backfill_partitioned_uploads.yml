@@ -4,5 +4,5 @@ description: Back-fill partitoned uploads_9ba88c4165 table and populate sharding
 feature_category: database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181349
 milestone: '18.2'
-queued_migration_version: 20250609164216
-finalized_by: 20250717035404
+queued_migration_version: 20251201121648
+finalized_by:

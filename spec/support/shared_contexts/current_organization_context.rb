@@ -9,7 +9,9 @@ RSpec.shared_context 'with current_organization setting' do
     let_it_be(:current_organization, reload: true) { create(:common_organization) }
   end
 
-  before do
+  before do |example|
+    next if example.metadata[:without_current_organization]
+
     stub_current_organization(current_organization)
   end
 end
@@ -26,10 +28,14 @@ RSpec.shared_context 'with Organization URL helpers' do
       current_organization ||= nil
 
       unless current_organization
+        rack_env = (last_request_headers.presence || {}).transform_keys do |key|
+          ActionDispatch::Http::Headers.new(nil).send(:env_name, key)
+        end
+
         context = {
           user: try(:warden)&.user,
           params: last_request_params,
-          headers: last_request_headers || {}
+          rack_env: rack_env
         }
 
         current_organization = Gitlab::Current::Organization.new(**context).organization
@@ -41,6 +47,12 @@ RSpec.shared_context 'with Organization URL helpers' do
 end
 
 RSpec.configure do |rspec|
+  # Automatically include organization context for all controller specs.
+  # This ensures Current.organization is always set, preventing issues where
+  # controllers or services rely on organization context.
+  rspec.include_context 'with current_organization setting', type: :controller
+
+  # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true
   rspec.include_context 'with Organization URL helpers', with_organization_url_helpers: true
 end

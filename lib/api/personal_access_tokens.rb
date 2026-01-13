@@ -41,6 +41,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
+        tags %w[personal_access_tokens]
       end
       get ':id' do
         token = PersonalAccessToken.find_by_id(params[:id])
@@ -58,6 +59,7 @@ module API
       desc 'Rotate personal access token' do
         detail 'Rotates a personal access token.'
         success Entities::PersonalAccessTokenWithToken
+        tags %w[personal_access_tokens]
       end
       params do
         optional :expires_at,
@@ -84,6 +86,7 @@ module API
         failure [
           { code: 400, message: 'Bad Request' }
         ]
+        tags %w[personal_access_tokens]
       end
       delete ':id' do
         token = find_token(params[:id])

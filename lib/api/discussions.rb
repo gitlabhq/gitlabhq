@@ -3,9 +3,14 @@
 module API
   class Discussions < ::API::Base
     include PaginationParams
+    include APIGuard
 
     helpers ::API::Helpers::NotesHelpers
     helpers ::RendersNotes
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.get? || request.head? || request.post?
+    end
 
     before { authenticate! }
 
@@ -33,6 +38,7 @@ module API
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Get a list of #{notable_name} discussions" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -50,6 +56,7 @@ module API
 
         desc "Get a single #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
@@ -70,6 +77,7 @@ module API
 
         desc "Create a new #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -133,6 +141,7 @@ module API
         end
         desc "Get comments in a single #{notable_name} discussion" do
           success Entities::Discussion
+          tags ['discussions']
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
@@ -151,6 +160,7 @@ module API
 
         desc "Add a comment to a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -162,6 +172,7 @@ module API
           noteable = find_noteable(noteable_type, params[:noteable_id])
           notes = readable_discussion_notes(noteable, params[:discussion_id])
           first_note = notes.first
+          validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
 
           break not_found!("Discussion") if notes.empty?
 
@@ -173,9 +184,14 @@ module API
             note: params[:body],
             type: 'DiscussionNote',
             in_reply_to_discussion_id: params[:discussion_id],
-            created_at: params[:created_at]
+            created_at: params[:created_at],
+            scope_validator: validator
           }
-          note = create_note(noteable, opts)
+          begin
+            note = create_note(noteable, opts)
+          rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+            forbidden!(error.message)
+          end
 
           process_note_creation_result(note) do
             present note, with: Entities::Note
@@ -184,6 +200,7 @@ module API
 
         desc "Get a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -198,6 +215,7 @@ module API
 
         desc "Edit a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -219,6 +237,7 @@ module API
 
         desc "Delete a comment in a #{notable_name} discussion" do
           success Entities::Note
+          tags ['discussions']
         end
         params do
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
@@ -234,6 +253,7 @@ module API
         if Noteable.resolvable_types.include?(noteable_type.to_s)
           desc "Resolve/unresolve an existing #{notable_name} discussion" do
             success Entities::Discussion
+            tags ['discussions']
           end
           params do
             requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"

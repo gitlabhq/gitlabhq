@@ -70,5 +70,44 @@ RSpec.describe 'Creation of a new commit', feature_category: :source_code_manage
 
       it_behaves_like 'a commit is successful'
     end
+
+    context 'when allow_empty is true' do
+      let(:allow_empty) { true }
+
+      context 'when actions argument is missing' do
+        let(:input) { { project_path: project.full_path, branch: branch, message: message, allow_empty: allow_empty } }
+
+        it_behaves_like 'a commit is successful'
+      end
+
+      context 'when actions is null' do
+        let(:input) { { project_path: project.full_path, branch: branch, message: message, allow_empty: allow_empty, actions: nil } }
+
+        it_behaves_like 'a commit is successful'
+      end
+    end
+
+    context 'when actions argument is missing' do
+      context 'when allow_empty is missing' do
+        let(:input) { { project_path: project.full_path, branch: branch, message: message } }
+
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: ['Provide at least one action, or set allowEmpty to true.']
+      end
+
+      context 'when allow_empty is null' do
+        let(:input) { { project_path: project.full_path, branch: branch, message: message, allow_empty: nil } }
+
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: ['Provide at least one action, or set allowEmpty to true.']
+      end
+    end
+
+    context 'when actions is null and allow_empty is null' do
+      let(:input) { { project_path: project.full_path, branch: branch, message: message } }
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: ['Provide at least one action, or set allowEmpty to true.']
+    end
   end
 end

@@ -59,4 +59,15 @@ describe('content_editor/services/create_content_editor', () => {
       assetResolver: expect.any(AssetResolver),
     });
   });
+
+  it('defaults to not supporting table of contents', () => {
+    expect(editor.supportsTableOfContents).toBe(false);
+  });
+
+  it('allows configuring table of contents support', () => {
+    expect(
+      createContentEditor({ renderMarkdown, uploadsPath, supportsTableOfContents: true })
+        .supportsTableOfContents,
+    ).toBe(true);
+  });
 });

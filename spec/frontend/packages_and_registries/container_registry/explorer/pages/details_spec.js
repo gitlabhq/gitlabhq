@@ -223,9 +223,6 @@ describe('Details Page', () => {
   });
 
   describe('Delete Alert', () => {
-    const config = {
-      isAdmin: true,
-    };
     const deleteAlertType = 'success_tag';
 
     it('exists', async () => {
@@ -236,6 +233,9 @@ describe('Details Page', () => {
     });
 
     it('has the correct props', async () => {
+      const config = {
+        isAdmin: true,
+      };
       mountComponent({
         options: {
           data: () => ({
@@ -248,11 +248,39 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
 
       expect(findDeleteAlert().props()).toEqual({
-        ...config,
+        isAdmin: true,
         deleteAlertType,
         garbageCollectionHelpPagePath: helpPagePath('administration/packages/container_registry', {
           anchor: 'container-registry-garbage-collection',
         }),
+        showAdminTip: true,
+      });
+    });
+
+    it('when metadata database is enabled `showAdminTip` prop is to false', async () => {
+      const config = {
+        isAdmin: true,
+        isMetadataDatabaseEnabled: true,
+      };
+
+      mountComponent({
+        options: {
+          data: () => ({
+            deleteAlertType,
+          }),
+        },
+        config,
+      });
+
+      await waitForApolloRequestRender();
+
+      expect(findDeleteAlert().props()).toEqual({
+        isAdmin: true,
+        deleteAlertType,
+        garbageCollectionHelpPagePath: helpPagePath('administration/packages/container_registry', {
+          anchor: 'container-registry-garbage-collection',
+        }),
+        showAdminTip: false,
       });
     });
   });

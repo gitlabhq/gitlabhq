@@ -88,8 +88,4 @@ module IdeHelper
       'extension-host-domain-changed' => WebIde::ExtensionMarketplace.extension_host_domain_changed?.to_s
     }.merge(ide_code_suggestions_data).merge(ide_oauth_data)
   end
-
-  def has_dismissed_ide_environments_callout?
-    current_user.dismissed_callout?(feature_name: 'web_ide_ci_environments_guidance')
-  end
 end

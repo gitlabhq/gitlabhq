@@ -1,7 +1,5 @@
 <script>
-import { mapState } from 'pinia';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
-import { useBatchComments } from '~/batch_comments/store';
 
 export default {
   name: 'FileBrowserHeight',
@@ -18,19 +16,7 @@ export default {
       minHeight: 0,
       bottomPadding: 0,
       stickyTopOffset: 0,
-      reviewBarCachedHeight: 0,
     };
-  },
-  computed: {
-    ...mapState(useBatchComments, ['draftsCount']),
-    reviewBarEnabled() {
-      return this.draftsCount > 0;
-    },
-    stickyBottomOffset() {
-      return this.reviewBarEnabled
-        ? this.bottomPadding + this.reviewBarCachedHeight
-        : this.bottomPadding;
-    },
   },
   mounted() {
     const styles = getComputedStyle(this.$el);
@@ -47,7 +33,7 @@ export default {
     ref="root"
     :min-height="minHeight"
     :sticky-top-offset="stickyTopOffset"
-    :sticky-bottom-offset="stickyBottomOffset"
+    :sticky-bottom-offset="bottomPadding"
   >
     <slot></slot>
   </sticky-viewport-filler-height>

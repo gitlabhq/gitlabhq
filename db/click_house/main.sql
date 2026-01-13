@@ -1,3 +1,33 @@
+CREATE DICTIONARY namespace_traversal_paths_dict
+(
+    `id` UInt64,
+    `traversal_path` String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY '\n        SELECT id, traversal_path FROM (\n          SELECT id, traversal_path\n          FROM (\n            SELECT\n              id,\n              argMax(traversal_path, version) AS traversal_path,\n              argMax(deleted, version) AS deleted\n              FROM $DICTIONARY_DATABASE.namespace_traversal_paths\n            GROUP BY id\n          )\n          WHERE deleted = false\n        )\n      '))
+LIFETIME(MIN 60 MAX 300)
+LAYOUT(CACHE(SIZE_IN_CELLS 3000000));
+
+CREATE DICTIONARY organization_traversal_paths_dict
+(
+    `id` UInt64,
+    `traversal_path` String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY '\n        SELECT id, traversal_path FROM (\n          SELECT id, traversal_path\n          FROM (\n            SELECT\n              id,\n              concat(toString(id), \'/\') AS traversal_path,\n              argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted\n              FROM siphon_organizations\n            GROUP BY id\n          )\n          WHERE _siphon_deleted = false\n        )\n      '))
+LIFETIME(MIN 60 MAX 300)
+LAYOUT(CACHE(SIZE_IN_CELLS 100000));
+
+CREATE DICTIONARY project_traversal_paths_dict
+(
+    `id` UInt64,
+    `traversal_path` String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(USER '$DICTIONARY_USER' PASSWORD '$DICTIONARY_PASSWORD' SECURE '$DICTIONARY_SECURE' QUERY '\n        SELECT id, traversal_path FROM (\n          SELECT id, traversal_path\n          FROM (\n            SELECT\n              id,\n              argMax(traversal_path, version) AS traversal_path,\n              argMax(deleted, version) AS deleted\n              FROM $DICTIONARY_DATABASE.project_namespace_traversal_paths\n            GROUP BY id\n          )\n          WHERE deleted = false\n        )\n      '))
+LIFETIME(MIN 60 MAX 300)
+LAYOUT(CACHE(SIZE_IN_CELLS 5000000));
+
 CREATE TABLE agent_platform_sessions
 (
     `user_id` UInt64,
@@ -70,13 +100,16 @@ CREATE TABLE ci_finished_builds
     `date` Date32 MATERIALIZED toStartOfMonth(finished_at),
     `runner_owner_namespace_id` UInt64 DEFAULT 0,
     `stage_id` UInt64 DEFAULT 0,
-    PROJECTION build_stats_by_project_pipeline_name_stage
+    `stage_name` String DEFAULT '',
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false,
+    PROJECTION build_stats_by_project_pipeline_name_stage_name
     (
         SELECT
             project_id,
             pipeline_id,
             name,
-            stage_id,
+            stage_name,
             countIf(status = 'success') AS success_count,
             countIf(status = 'failed') AS failed_count,
             countIf(status = 'canceled') AS canceled_count,
@@ -89,7 +122,7 @@ CREATE TABLE ci_finished_builds
             project_id,
             pipeline_id,
             name,
-            stage_id
+            stage_name
     )
 )
 ENGINE = ReplacingMergeTree
@@ -735,8 +768,8 @@ CREATE TABLE siphon_issues
     `sprint_id` Nullable(Int64),
     `blocking_issues_count` Int64 DEFAULT 0,
     `upvotes_count` Int64 DEFAULT 0,
-    `work_item_type_id` Int64,
-    `namespace_id` Int64,
+    `work_item_type_id` Int64 DEFAULT 0,
+    `namespace_id` Int64 DEFAULT 0,
     `start_date` Nullable(Date32),
     `tmp_epic_id` Nullable(Int64),
     `imported_from` Int8 DEFAULT 0,
@@ -757,6 +790,20 @@ CREATE TABLE siphon_issues
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_knowledge_graph_enabled_namespaces
+(
+    `id` Int64,
+    `root_namespace_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (root_namespace_id, id)
+ORDER BY (root_namespace_id, id)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE siphon_label_links
@@ -974,7 +1021,7 @@ CREATE TABLE siphon_namespaces
     `shared_runners_enabled` Bool DEFAULT true,
     `allow_descendants_override_disabled_shared_runners` Bool DEFAULT false,
     `traversal_ids` Array(Int64) DEFAULT [],
-    `organization_id` Int64,
+    `organization_id` Int64 DEFAULT 0,
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_deleted` Bool DEFAULT false,
     `state` Int8
@@ -1024,6 +1071,22 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_organizations
+(
+    `id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `name` String DEFAULT '',
+    `path` String DEFAULT '',
+    `visibility_level` Int8 DEFAULT 0,
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY id
+ORDER BY id
+SETTINGS index_granularity = 512;
 
 CREATE TABLE siphon_projects
 (

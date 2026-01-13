@@ -5,10 +5,10 @@ class ReplaceIndexSshSignaturesOnCommitSha < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
-    # No-op
+    # No-op due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20989
   end
 
   def down
-    # No-op
+    # No-op due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20989
   end
 end

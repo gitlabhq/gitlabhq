@@ -65,6 +65,11 @@ describe('HelpCenter component', () => {
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
+      text: HelpCenter.i18n.university,
+      href: customSidebarData.university_path,
+      extraAttrs: trackingAttrs('gitlab_university'),
+    },
+    {
       text: HelpCenter.i18n.plans,
       href: customSidebarData.compare_plans_url,
       extraAttrs: trackingAttrs('compare_gitlab_plans'),

@@ -364,6 +364,22 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+.work-item-list-container {
+  .row-content-block {
+    @apply gl-bg-transparent;
+    @apply gl-border-b-0;
+    @apply gl-p-0;
+  }
+
+  .sticky-filter {
+    @apply gl-bg-default;
+    @apply gl-left-0;
+    @apply gl-border-b;
+    @apply gl-py-3;
+    @apply gl-px-5;
+  }
+}
+
 .work-item-sidebar-container {
   container-type: inline-size;
   container-name: work-item-sidebar;
@@ -469,9 +485,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 ul.content-list {
   .issue-clickable {
-    a, span {
+    a, span, button {
       @apply gl-relative;
       @apply gl-z-2;
+      cursor: pointer !important;
     }
   }
 }
@@ -486,4 +503,19 @@ ul.content-list {
 
 .work-item-drawer [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
   top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
+}
+
+/* stylelint-disable-next-line gitlab/no-gl-class */
+.gl-new-dropdown-item:has(.sidebar-participant-disabled),
+/* stylelint-disable-next-line gitlab/no-gl-class */
+.gl-dropdown-item:has(.sidebar-participant-disabled) {
+  cursor: not-allowed;
+}
+
+.sidebar-participant-disabled {
+  /* stylelint-disable-next-line gitlab/no-gl-class */
+  .gl-avatar-labeled-label,
+  .gl-avatar-labeled-sublabel {
+    color: var(--gl-text-color-disabled);
+  }
 }

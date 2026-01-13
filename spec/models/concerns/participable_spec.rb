@@ -3,11 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Participable, feature_category: :team_planning do
+  let_it_be(:user1) { create(:user) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be_with_refind(:private_project) { create(:project, :private) }
+
   let(:model) do
     Class.new do
       include Participable
     end
   end
+
+  let(:instance) { model.new }
 
   describe '.participant' do
     it 'adds the participant attributes to the existing list' do
@@ -23,12 +32,6 @@ RSpec.describe Participable, feature_category: :team_planning do
       model.participant(:foo)
       model.participant(:bar)
 
-      user1 = build(:user)
-      user2 = build(:user)
-      user3 = build(:user)
-      project = build(:project, :public)
-      instance = model.new
-
       expect(instance).to receive(:foo).and_return(user2)
       expect(instance).to receive(:bar).and_return(user3)
       expect(instance).to receive(:project).exactly(4).and_return(project)
@@ -40,9 +43,6 @@ RSpec.describe Participable, feature_category: :team_planning do
     end
 
     it 'caches the list of filtered participants' do
-      instance = model.new
-      user1 = build(:user)
-
       expect(instance).to receive(:all_participants_hash).once.and_return({})
       expect(instance).to receive(:filter_by_ability).once
 
@@ -58,11 +58,7 @@ RSpec.describe Participable, feature_category: :team_planning do
       other_model.participant(:bar)
       model.participant(:foo)
 
-      instance = model.new
       other = other_model.new
-      user1 = build(:user)
-      user2 = build(:user)
-      project = build(:project, :public)
 
       expect(instance).to receive(:foo).and_return(other)
       expect(other).to receive(:bar).and_return(user2)
@@ -73,9 +69,6 @@ RSpec.describe Participable, feature_category: :team_planning do
 
     context 'when using a Proc as an attribute' do
       it 'calls the supplied Proc' do
-        user1 = build(:user)
-        project = build(:project, :public)
-
         user_arg = nil
         ext_arg = nil
 
@@ -83,8 +76,6 @@ RSpec.describe Participable, feature_category: :team_planning do
           user_arg = user
           ext_arg = ext
         end
-
-        instance = model.new
 
         expect(instance).to receive(:project).exactly(4).and_return(project)
 
@@ -99,10 +90,6 @@ RSpec.describe Participable, feature_category: :team_planning do
       let(:model) { PersonalSnippet }
       let(:instance) { model.new(author: user1) }
 
-      let(:user1) { build(:user) }
-      let(:user2) { build(:user) }
-      let(:user3) { build(:user) }
-
       before do
         allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
       end
@@ -116,16 +103,50 @@ RSpec.describe Participable, feature_category: :team_planning do
       end
     end
 
+    context 'when participable is confidential' do
+      before_all do
+        private_project.add_guest(user1)
+        private_project.add_developer(user2)
+      end
+
+      context 'when participable is Issue' do
+        let(:model) { Issue }
+        let(:instance) { model.new(author: user1, project: private_project, confidential: true) }
+
+        it 'filters participants based on confidential issue access' do
+          model.participant(:foo)
+          model.participant(:bar)
+
+          allow(instance).to receive(:foo).and_return(user1)
+          allow(instance).to receive(:bar).and_return(user2)
+
+          expect(instance.visible_participants(user2)).to contain_exactly(user2)
+        end
+      end
+
+      context 'when participable is non-Issue' do
+        it 'filters participants based on regular project/group access instead of confidential issue access' do
+          model.participant(:foo)
+          model.participant(:bar)
+
+          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+          allow(instance).to receive(:confidential?).and_return(true)
+          allow(instance).to receive(:resource_parent).and_return(private_project)
+          allow(instance).to receive(:foo).and_return(user1)
+          allow(instance).to receive(:bar).and_return(user2)
+          expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+          expect(instance.visible_participants(user2)).to contain_exactly(user1, user2)
+        end
+      end
+    end
+
     context 'when participable is a group level object' do
       it 'returns the list of participants' do
         model.participant(:foo)
         model.participant(:bar)
 
-        user1 = build(:user)
-        user2 = build(:user)
-        user3 = build(:user)
         group = build(:group, :public)
-        instance = model.new
 
         expect(instance).to receive(:foo).and_return(user2)
         expect(instance).to receive(:bar).and_return(user3)
@@ -145,7 +166,6 @@ RSpec.describe Participable, feature_category: :team_planning do
         model.participant(:foo)
 
         user = build(:user)
-        instance = model.new
 
         expect(instance).to receive(:foo).and_return(user)
         expect(instance).to receive(:project).exactly(3).and_return(nil)
@@ -158,22 +178,9 @@ RSpec.describe Participable, feature_category: :team_planning do
   end
 
   describe '#visible_participants' do
-    before do
-      allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(anything, :read_class, anything) { readable }
-    end
-
-    let(:readable) { true }
-    let(:project) { build(:project, :public) }
-
     it 'returns the list of participants' do
       model.participant(:foo)
       model.participant(:bar)
-
-      user1 = build(:user)
-      user2 = build(:user)
-      user3 = build(:user)
-      instance = model.new
 
       allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
       expect(instance).to receive(:foo).and_return(user2)
@@ -186,21 +193,128 @@ RSpec.describe Participable, feature_category: :team_planning do
       expect(participants).to include(user3)
     end
 
-    context 'when Participable is not readable by the user' do
-      let(:readable) { false }
+    context 'when Participable is not readable by the current user' do
+      before_all do
+        private_project.add_developer(user2)
+      end
 
-      it 'does not return unavailable participants' do
+      it 'returns participants with project/group access' do
         model.participant(:bar)
-
-        instance = model.new
-        user1 = build(:user)
-        user2 = build(:user)
 
         allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
         allow(instance).to receive(:bar).and_return(user2)
-        expect(instance).to receive(:project).exactly(4).and_return(project)
+        expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+        expect(instance.visible_participants(user1)).to contain_exactly(user2)
+      end
+
+      context 'with remove_per_source_permission_from_participants feature flag disabled' do
+        before do
+          stub_feature_flags(remove_per_source_permission_from_participants: false)
+        end
+
+        context 'when source is visible to user' do
+          before do
+            allow(instance).to receive(:source_visible_to_user?).and_return(true)
+          end
+
+          it 'returns participants with project/group access' do
+            model.participant(:bar)
+
+            allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+            allow(instance).to receive(:bar).and_return(user2)
+            expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+            expect(instance.visible_participants(user1)).to contain_exactly(user2)
+          end
+        end
+
+        context 'when source is not visible to user' do
+          before do
+            allow(instance).to receive(:source_visible_to_user?).and_return(false)
+          end
+
+          it 'does not return participants with project/group access' do
+            model.participant(:bar)
+
+            allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+            allow(instance).to receive(:bar).and_return(user2)
+            expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+            expect(instance.visible_participants(user1)).to be_empty
+          end
+        end
+      end
+    end
+
+    context 'when Participable is not readable by a participant' do
+      before_all do
+        private_project.add_developer(user1)
+      end
+
+      it 'does not return participants without project/group access' do
+        model.participant(:bar)
+
+        allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+        allow(instance).to receive(:bar).and_return(user2)
+        expect(instance).to receive(:project).exactly(4).and_return(private_project)
 
         expect(instance.visible_participants(user1)).to be_empty
+      end
+
+      context 'with remove_per_source_permission_from_participants feature flag disabled' do
+        before do
+          stub_feature_flags(remove_per_source_permission_from_participants: false)
+          allow(instance).to receive(:source_visible_to_user?).and_return(true)
+        end
+
+        it 'does not return participants without project/group access' do
+          model.participant(:bar)
+
+          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+          allow(instance).to receive(:bar).and_return(user2)
+          expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+          expect(instance.visible_participants(user1)).to be_empty
+        end
+      end
+    end
+
+    context 'when participable is confidential' do
+      before_all do
+        private_project.add_guest(user1)
+        private_project.add_developer(user2)
+      end
+
+      context 'when participable is Issue' do
+        let(:model) { Issue }
+        let(:instance) { model.new(author: user1, project: private_project, confidential: true) }
+
+        it 'filters participants based on confidential issue access' do
+          model.participant(:foo)
+          model.participant(:bar)
+
+          allow(instance).to receive(:foo).and_return(user1)
+          allow(instance).to receive(:bar).and_return(user2)
+
+          expect(instance.visible_participants(user2)).to contain_exactly(user2)
+        end
+      end
+
+      context 'when participable is non-Issue' do
+        it 'filters participants based on regular project/group access instead of confidential issue access' do
+          model.participant(:foo)
+          model.participant(:bar)
+
+          allow(instance).to receive_message_chain(:model_name, :element) { 'class' }
+          allow(instance).to receive(:confidential?).and_return(true)
+          allow(instance).to receive(:resource_parent).and_return(private_project)
+          allow(instance).to receive(:foo).and_return(user1)
+          allow(instance).to receive(:bar).and_return(user2)
+          expect(instance).to receive(:project).exactly(4).and_return(private_project)
+
+          expect(instance.visible_participants(user2)).to contain_exactly(user1, user2)
+        end
       end
     end
 
@@ -210,11 +324,6 @@ RSpec.describe Participable, feature_category: :team_planning do
       it 'returns the list of participants' do
         model.participant(:foo)
         model.participant(:bar)
-
-        user1 = create(:user)
-        user2 = create(:user)
-        user3 = create(:user)
-        instance = model.new
 
         group.add_reporter(user1)
         group.add_reporter(user3)
@@ -240,7 +349,6 @@ RSpec.describe Participable, feature_category: :team_planning do
         model.participant(:foo)
 
         user = create(:user)
-        instance = model.new
 
         group.add_reporter(user)
 
@@ -256,13 +364,9 @@ RSpec.describe Participable, feature_category: :team_planning do
     end
 
     context 'with multiple system notes from the same author and mentioned_users' do
-      let!(:user1) { create(:user) }
-      let!(:user2) { create(:user) }
-
       it 'skips expensive checks if the author is already in participants list' do
         model.participant(:notes)
 
-        instance = model.new
         note1 = create(:system_note, author: user1)
         note2 = create(:system_note, author: user1) # only skip system notes with no mentioned users
         note3 = create(:system_note, author: user1, note: "assigned to #{user2.to_reference}")
@@ -283,13 +387,6 @@ RSpec.describe Participable, feature_category: :team_planning do
   end
 
   describe '#participant?' do
-    let(:instance) { model.new }
-
-    let(:user1) { build(:user) }
-    let(:user2) { build(:user) }
-    let(:user3) { build(:user) }
-    let(:project) { build(:project, :public) }
-
     before do
       allow(model).to receive(:participant_attrs).and_return([:foo, :bar])
     end
@@ -330,11 +427,6 @@ RSpec.describe Participable, feature_category: :team_planning do
       let(:group) { create(:group, :private) }
 
       before do
-        # we need users to be created to add them as members to the group
-        user1.save!
-        user2.save!
-        user3.save!
-
         group.add_reporter(user1)
         group.add_reporter(user2)
       end

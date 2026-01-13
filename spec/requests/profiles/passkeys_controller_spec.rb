@@ -9,13 +9,30 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
   before do
     sign_in(user)
 
-    allow(described_class).to receive(:current_user).and_return(user)
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:current_user).and_return(user)
+    end
   end
 
   shared_examples 'user must enter a valid current password' do
     it "validates password attempts" do
       expect { bad }.to change { user.failed_attempts }.from(0).to(1)
       expect { go }.not_to change { user.failed_attempts }
+    end
+
+    context 'when the user is on their last sign in attempt' do
+      it 'locks the user`s account' do
+        User.maximum_attempts.pred.times { bad }
+
+        expect(user.reload.failed_attempts).to eq(User.maximum_attempts.pred)
+
+        bad
+
+        user.reload
+
+        expect(user.failed_attempts).to eq(User.maximum_attempts)
+        expect(user).to be_access_locked
+      end
     end
 
     context 'when user authenticates with an external service' do
@@ -246,9 +263,27 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
 
             expect(user.passkeys.count).to be(count + 1)
             expect(response).to redirect_to(profile_two_factor_auth_path)
-            expect(flash[:notice]).to match(
-              /Passkey added successfully! Next time you sign in, select the sign-in with passkey option./
+            expect(flash[:success]).to match(
+              # rubocop:disable Layout/LineLength -- A regex rule spanning multiple lines not practicle
+              /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. For additional account security, enable two-factor authentication below./
+              # rubocop:enable Layout/LineLength
             )
+          end
+
+          context 'when the user has two_factor_enabled' do
+            before do
+              allow(user).to receive(:two_factor_enabled?).and_return(true)
+            end
+
+            it "shows passkey as 2FA method message" do
+              go
+
+              expect(flash[:success]).to match(
+                # rubocop:disable Layout/LineLength -- A regex rule spanning multiple lines not practicle
+                /Passkey added successfully! Next time you sign in, select the sign-in with passkey option. Passkey is now your default 2FA method./
+                # rubocop:enable Layout/LineLength
+              )
+            end
           end
 
           context 'with an interval event' do
@@ -270,11 +305,11 @@ RSpec.describe Profiles::PasskeysController, feature_category: :system_access do
               Base64.strict_encode64(SecureRandom.random_bytes(16)) # Throws a challenge error
             end
 
-            it "redirects back to the 2FA profile page with an alert" do
+            it "renders an alert" do
               go
 
               expect { response }.not_to change { user.passkeys.count }
-              expect(response).to redirect_to(profile_two_factor_auth_path)
+              expect(response).to render_template(:new)
               expect(flash[:alert]).to be_present
             end
           end

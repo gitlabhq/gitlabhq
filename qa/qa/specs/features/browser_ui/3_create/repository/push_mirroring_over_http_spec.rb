@@ -34,7 +34,7 @@ module QA
             mirror_settings.mirror_direction = 'Push'
             mirror_settings.authentication_method = 'Password'
             mirror_settings.username = user.username
-            mirror_settings.password = user.password
+            mirror_settings.password = user.git_repo_credential
             mirror_settings.mirror_repository
             mirror_settings.update_uri(target_project_uri)
             mirror_settings.verify_update(target_project_uri)

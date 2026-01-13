@@ -14,12 +14,7 @@ import {
   LANGUAGE_FILTER_PARAM,
 } from '~/search/sidebar/constants';
 
-import {
-  GROUPS_LOCAL_STORAGE_KEY,
-  PROJECTS_LOCAL_STORAGE_KEY,
-  ICON_MAP,
-  SUBITEMS_FILTER,
-} from './constants';
+import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[LABEL_FILTER_PARAM] || [];
 const urlQueryLabelFilters = (state) => state?.urlQuery?.[LABEL_FILTER_PARAM] || [];
@@ -122,20 +117,6 @@ export const navigationItems = (state) =>
       is_active: Boolean(item?.active),
       pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
     };
-
-    if (item?.sub_items) {
-      navigation.items = Object.keys(item.sub_items)
-        .filter((subItem) => Boolean(SUBITEMS_FILTER[subItem]))
-        .sort((a, b) => SUBITEMS_FILTER[a].order - SUBITEMS_FILTER[b].order)
-        .map((subItem, subIndex) => {
-          return {
-            id: `menu-${subItem}-${subIndex}`,
-            title: SUBITEMS_FILTER[subItem].label,
-            link: item.sub_items[subItem].link,
-            is_active: Boolean(item.sub_items[subItem]?.active),
-          };
-        });
-    }
 
     return navigation;
   });

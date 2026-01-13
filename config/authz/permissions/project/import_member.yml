@@ -1,0 +1,5 @@
+---
+name: import_member_project
+description: Grants the ability to import members to project
+boundaries:
+  - project

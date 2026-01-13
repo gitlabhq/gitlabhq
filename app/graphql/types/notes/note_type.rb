@@ -51,6 +51,7 @@ module Types
 
       field :discussion, Types::Notes::DiscussionType,
         null: true,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Discussion the note is a part of.'
       field :position, Types::Notes::DiffPositionType,
         null: true,

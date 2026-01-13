@@ -21,8 +21,8 @@ You should use fuzz testing in addition to the other security scanners in [GitLa
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
 you can run fuzz tests as part your CI/CD workflow.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [WebAPI Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [Web API fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
 
 ## Getting started
 
@@ -84,11 +84,8 @@ You can also download the security scan results:
 
 For more details, see the [pipeline security report](../detect/security_scanning_results.md).
 
-{{< alert type="note" >}}
-
-Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
-
-{{< /alert >}}
+> [!note]
+> Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
 
 ## Optimization
 
@@ -116,7 +113,7 @@ the API fuzzing template.
 
 #### Review apps
 
-Review apps are the most involved method of deploying your API Fuzzing target application. To assist in the process,
+Review apps are the most involved method of deploying your API fuzzing target application. To assist in the process,
 GitLab created a review app deployment using Google Kubernetes Engine (GKE). This example can be found in the
 [Review apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, plus detailed
 instructions to configure review apps in DAST.
@@ -220,11 +217,8 @@ When experiencing a behavior not working as expected, consider providing context
 - Full job console output.
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
-{{< alert type="warning" >}}
-
-Do not include sensitive information when you submit an issue. Remove credentials like passwords, tokens, and keys.
-
-{{< /alert >}}
+> [!warning]
+> Do not include sensitive information when you submit an issue. Remove credentials like passwords, tokens, and keys.
 
 ## Glossary
 

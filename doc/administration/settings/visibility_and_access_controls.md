@@ -429,3 +429,39 @@ To prevent invitations:
 1. Expand **Visibility and access controls**.
 1. Select the **Prevent group member invitations** checkbox.
 1. Select **Save changes**.
+
+## Display GitLab Credits user data
+
+{{< history >}}
+
+- Instance setting to allow the display of user data
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
+  [with a flag](../feature_flags/_index.md) named `usage_billing_dev`.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn on the display of user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Visibility and access controls**.
+1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
+1. Select **Save changes**.

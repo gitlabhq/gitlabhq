@@ -31,7 +31,7 @@ module BulkImports
       portable = portable(portable_id, portable_type)
       user = User.find(user_id)
 
-      export = portable.bulk_import_exports.for_user_and_relation(user, relation)
+      export = portable.bulk_import_exports.for_user_and_relation(user, relation).for_offline_export(nil)
 
       Gitlab::ErrorTracking.track_exception(exception, portable_id: portable_id, portable_type: portable.class.name)
 

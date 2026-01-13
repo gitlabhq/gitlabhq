@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Core do
+RSpec.describe Gitlab::Ci::Status::Core, feature_category: :continuous_integration do
   let(:subj) { double('subject', cache_key: 'foo') }
 
   subject(:status) do

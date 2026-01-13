@@ -28,7 +28,7 @@ module QA
       ].freeze
 
       EVENT_TRIGGERS.each do |trigger|
-        attribute "#{trigger}_events".to_sym do
+        attribute :"#{trigger}_events" do
           false
         end
       end

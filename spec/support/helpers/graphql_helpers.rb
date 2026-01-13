@@ -423,6 +423,10 @@ module GraphqlHelpers
     field + wrap_fields(fields || all_graphql_fields_for(type)).to_s
   end
 
+  def aliased_graphql_field(alias_name, actual_field, attributes = {})
+    "#{GraphqlHelpers.fieldnamerize(alias_name)}: #{field_with_params(actual_field, attributes)}"
+  end
+
   def page_info_selection
     "pageInfo { hasNextPage hasPreviousPage endCursor startCursor }"
   end

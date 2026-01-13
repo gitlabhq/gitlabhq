@@ -118,7 +118,7 @@ describe('WorkItemCreatedUpdated component', () => {
     await createComponent();
 
     const {
-      data: { workspace: { workItem } = {} },
+      data: { namespace: { workItem } = {} },
     } = workItemByIidResponseFactory();
 
     expect(findWorkItemTypeIcon().props()).toMatchObject({

@@ -266,7 +266,7 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[namespace project].each do |field_name|
+    %w[namespace note project].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

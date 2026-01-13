@@ -1,0 +1,5 @@
+---
+name: read_user_gpg_key
+description: Grants the ability to read user GPG keys
+boundaries:
+  - user

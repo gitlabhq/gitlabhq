@@ -40,7 +40,7 @@ To add a group README:
 ## Change the Owner of a group
 
 You can change the Owner of a group. Each group must always have at least one
-member with the Owner role.
+human member with the Owner role. Internal users ("bots") and service accounts cannot be the only Owner of a group.
 
 - As an administrator:
   1. On the top bar, select **Search or go to** and find your group.
@@ -330,6 +330,41 @@ To disable group mentions:
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
+1. Select **Save changes**.
+
+## Restrict personal snippets for enterprise users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200575) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `allow_personal_snippets_setting`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+You can prevent [enterprise users](../enterprise_user/_index.md) in your group from creating
+[snippets](../snippets.md) in their personal namespace. When disabled, enterprise users
+can still create project snippets.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To restrict personal snippets for enterprise users:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand the **Permissions and group features** section.
+1. Clear the **Allow personal snippets** checkbox.
 1. Select **Save changes**.
 
 ## Prevent invitations to a group
@@ -722,3 +757,40 @@ You can view the most recent actions taken in a group, either in your browser or
 
 To view the activity feed in Atom format, select the
 **RSS** ({{< icon name="rss" >}}) icon.
+
+## Display GitLab Credits user data
+
+{{< history >}}
+
+- Namespace setting to allow the display of user data
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
+  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+Prerequisites:
+
+- You must be a group Owner.
+- The group you are viewing data for must be a top-level group.
+
+To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand the **Permissions and group features** section.
+1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.
+1. Select **Save changes**.

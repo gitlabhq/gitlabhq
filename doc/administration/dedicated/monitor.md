@@ -2,8 +2,8 @@
 stage: GitLab Dedicated
 group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Access application logs and S3 bucket data to monitor your GitLab Dedicated instance.
-title: Monitor your GitLab Dedicated instance
+description: Manage access to application logs for your GitLab Dedicated instance.
+title: Access application logs for GitLab Dedicated
 ---
 
 {{< details >}}
@@ -13,60 +13,48 @@ title: Monitor your GitLab Dedicated instance
 
 {{< /details >}}
 
-GitLab delivers [application logs](../logs/_index.md) to an Amazon S3 bucket in the GitLab
-tenant account, which can be shared with you.
-To access these logs, you must provide AWS Identity and Access Management (IAM) Amazon Resource
-Names (ARNs) that uniquely identify your AWS users or roles.
+GitLab Dedicated automatically delivers your instance's application logs to a private Amazon S3 bucket.
+These logs contain both infrastructure and application data for monitoring, troubleshooting, and compliance purposes.
 
-Logs stored in the S3 bucket are retained indefinitely.
+The S3 bucket contains logs that are:
 
-GitLab team members can view more information about the proposed retention policy in
-this confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483`.
+- Stored indefinitely and encrypted using AWS KMS keys managed by GitLab.
+- Organized by date in `YYYY/MM/DD/HH` format.
+- Streamed in real-time using [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
 
-## Request access to application logs
+If you use [BYOK](encryption.md#bring-your-own-key-byok), application logs use GitLab-managed keys, not your provided key.
 
-To gain read-only access to the S3 bucket with your application logs:
+## Manage access to application logs
 
-1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
-   with the title `Customer Log Access`.
-1. In the body of the ticket, include a list of IAM ARNs for the users or roles that require
-   access to the logs. Specify the full ARN path without wildcards (`*`). For example:
+You can add, edit, or remove AWS IAM users and roles that have read-only access to your application logs.
 
-   - User: `arn:aws:iam::123456789012:user/username`
-   - Role: `arn:aws:iam::123456789012:role/rolename`
+Prerequisites:
 
-{{< alert type="note" >}}
+- You must have the full ARN path for each AWS user or role that needs access.
 
-Only IAM user and role ARNs are supported.
-Security Token Service (STS) ARNs (`arn:aws:sts::...`) cannot be used.
+> [!note]
+> You can only use IAM user and role ARNs. Security Token Service (STS) ARNs and wildcards are not supported.
 
-{{< /alert >}}
-
-GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket.
-To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
-
-GitLab team members can view more information about the proposed feature to add wildcard support in this
-confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010`.
-
-## Find your S3 bucket name
-
-To find your S3 bucket name:
+To manage log access:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Resource access**.
-1. Under **Application logs**, locate the **Logs S3 bucket name** field.
+1. Under **Application logs**, in the **Log access ARNs** section:
 
-For information about how to access S3 buckets after you have the name, see the [AWS documentation about accessing S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html).
+   - To add access: Select **Add ARN**, enter the full ARN path, then select **Save**. For example:
+     - User: `arn:aws:iam::123456789012:user/username`
+     - Role: `arn:aws:iam::123456789012:role/rolename`
+   - To edit access: Next to an ARN, select the pencil icon ({{< icon name="pencil" >}}),
+     update the ARN, then select **Save**.
+   - To remove access: Next to an ARN, select the trash icon ({{< icon name="remove" >}}),
+     then select **Delete**.
 
-## S3 bucket contents and structure
+1. Copy the **Logs S3 bucket name**. Your authorized users or roles use this bucket name to access the logs.
 
-The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../logs/_index.md).
+After you configure ARN permissions and provide the bucket name to your users,
+they can access all objects in the S3 bucket.
+To verify access, use the [AWS CLI](https://aws.amazon.com/cli/).
 
-The logs in the bucket are encrypted using an AWS KMS key managed by GitLab. If you choose to enable [BYOK](encryption.md#bring-your-own-key-byok), the application logs are not encrypted with the key you provide.
-
-<!-- vale gitlab_base.Spelling = NO -->
-
-The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, a directory named `2023/10/12/13` contains logs from October 12, 2023 at 13:00 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
-
-<!-- vale gitlab_base.Spelling = YES -->
+For information about how to access S3 buckets in AWS,
+see [Accessing an Amazon S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html).

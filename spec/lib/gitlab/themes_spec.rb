@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Themes, :lib do
+RSpec.describe Gitlab::Themes, :lib, feature_category: :design_system do
   describe '.body_classes' do
     it 'returns a space-separated list of class names' do
       css = described_class.body_classes

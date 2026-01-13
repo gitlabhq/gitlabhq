@@ -91,11 +91,8 @@ POST /groups/:id/-/virtual_registries/container/registries
 | `name` | string | Yes | The name of the virtual registry. |
 | `description` | string | No | The description of the virtual registry. |
 
-{{< alert type="note" >}}
-
-You can create a maximum of 5 virtual registries per group.
-
-{{< /alert >}}
+> [!note]
+> You can create a maximum of 5 virtual registries per group.
 
 Example request:
 
@@ -177,11 +174,8 @@ PATCH /virtual_registries/container/registries/:id
 | `description` | string | No | The description of the virtual registry. |
 | `name` | string | No | The name of the virtual registry. |
 
-{{< alert type="note" >}}
-
-You must provide at least one of the optional parameters (`name` or `description`) in your request.
-
-{{< /alert >}}
+> [!note]
+> You must provide at least one of the optional parameters (`name` or `description`) in your request.
 
 Example request:
 
@@ -197,11 +191,8 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 ### Delete a virtual registry
 
-{{< alert type="warning" >}}
-
-When you delete a virtual registry, you also delete all associated upstream registries that are not shared with other virtual registries, along with their cached container images and manifests.
-
-{{< /alert >}}
+> [!warning]
+> When you delete a virtual registry, you also delete all associated upstream registries that are not shared with other virtual registries, along with their cached container images and manifests.
 
 Deletes a specific container virtual registry.
 
@@ -372,11 +363,8 @@ You cannot add two upstreams with the same URL and credentials (`username` and `
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-You can add a maximum of 5 upstream registries to each virtual registry.
-
-{{< /alert >}}
+> [!note]
+> You can add a maximum of 5 upstream registries to each virtual registry.
 
 Example request:
 
@@ -549,11 +537,8 @@ POST /virtual_registries/container/registry_upstreams
 | `registry_id` | integer | Yes | The ID of the container virtual registry. |
 | `upstream_id` | integer | Yes | The ID of the container upstream registry. |
 
-{{< alert type="note" >}}
-
-You can associate a maximum of 5 upstream registries with each virtual registry.
-
-{{< /alert >}}
+> [!note]
+> You can associate a maximum of 5 upstream registries with each virtual registry.
 
 Example request:
 

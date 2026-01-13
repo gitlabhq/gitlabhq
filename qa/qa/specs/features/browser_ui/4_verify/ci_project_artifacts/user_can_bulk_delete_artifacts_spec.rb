@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', feature_category: :continuous_integration do
+  RSpec.describe 'Verify', feature_category: :continuous_integration, quarantine: {
+    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/19593',
+    type: :investigating
+  } do
     describe 'Project artifacts' do
       context 'when user tries bulk deletion' do
         let(:total_jobs_count) { 20 }

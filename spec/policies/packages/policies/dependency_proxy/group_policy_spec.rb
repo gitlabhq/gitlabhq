@@ -88,19 +88,24 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
       end
 
       context 'with all other user types' do
-        excluded_types = %i[human project_bot security_policy_bot admin_bot placeholder]
+        # import_user and placeholder have `prevent_all` in BasePolicy, so they're excluded
+        excluded_types = %i[human project_bot security_policy_bot admin_bot placeholder import_user]
 
         User::USER_TYPES.except(*excluded_types).each_value do |user_type|
           context "with user_type #{user_type}" do
-            let_it_be(:auth_token) { create(:personal_access_token, user: non_group_member) }
-
-            before do
-              non_group_member.update!(user_type: user_type)
-            end
+            # We use `let` instead of referencing the top-level `let_it_be(:non_group_member)`
+            # because multiple contexts modify the user (via update! and group.add_guest).
+            # With `let_it_be`, the group membership created by `add_guest` persists in the
+            # database across examples (since `let_it_be` fixtures exist outside the per-example
+            # transaction). This causes test pollution where after the "has sufficient access"
+            # context adds the user to the group, subsequent iterations incorrectly see the user
+            # as a group member in the "does not have sufficient access" context.
+            let(:user_for_user_type) { create(:user, user_type: user_type) }
+            let(:auth_token) { create(:personal_access_token, user: user_for_user_type) }
 
             context 'when the user has sufficient access' do
               before do
-                group.add_guest(non_group_member)
+                group.add_guest(user_for_user_type)
               end
 
               it_behaves_like 'allows dependency proxy read access'

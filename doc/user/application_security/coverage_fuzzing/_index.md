@@ -33,7 +33,7 @@ You should use fuzz testing in addition to the other security scanners in [GitLa
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Coverage-guided Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=bbIenVVcjW0).
 
 ### Confirm status of coverage-guided fuzz testing
@@ -299,7 +299,7 @@ After you're comfortable using coverage-guided fuzz testing in a single project,
 
 You can use the following fuzzing engines to test the specified languages.
 
-| Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
+| Language                                    | Fuzzing engine                                                                                       | Example                                                                                                                         |
 |---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
 | Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |

@@ -22,15 +22,17 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import {
-  STATE_OPEN,
+  METADATA_KEYS,
   STATE_CLOSED,
+  STATE_OPEN,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  METADATA_KEYS,
+  WORK_ITEM_TYPE_ENUM_TICKET,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -146,11 +148,14 @@ export default {
       );
     },
     isServiceDeskIssue() {
-      return (
+      const isServiceDeskIssue =
         (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
           this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE) &&
-        this.issuable?.author?.username === SUPPORT_BOT_USERNAME
-      );
+        this.issuable?.author?.username === SUPPORT_BOT_USERNAME;
+      const isTicket =
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_TICKET ||
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TICKET;
+      return isServiceDeskIssue || isTicket;
     },
     isTestCase() {
       return (

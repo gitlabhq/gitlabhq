@@ -10,14 +10,6 @@ module Gitlab
           end
 
           def initialize(_record = nil); end
-
-          def polymorphic_taggings?
-            true
-          end
-
-          def monomorphic_taggings?(_taggable)
-            false
-          end
         end
       end
     end

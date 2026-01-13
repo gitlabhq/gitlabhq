@@ -14,6 +14,7 @@ module API
       desc 'Create a new application' do
         detail 'This feature was introduced in GitLab 10.5'
         success code: 200, model: Entities::ApplicationWithSecret
+        tags ['applications']
       end
       params do
         requires :name, type: String, desc: 'Name of the application.', documentation: { example: 'MyApplication' }
@@ -44,6 +45,7 @@ module API
         detail 'List all registered applications'
         success Entities::Application
         is_array true
+        tags ['applications']
       end
       get do
         applications = ApplicationsFinder.new.execute
@@ -53,6 +55,7 @@ module API
       desc 'Delete an application' do
         detail 'Delete a specific application'
         success code: 204
+        tags ['applications']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
@@ -69,6 +72,7 @@ module API
       desc 'Renew an application secret' do
         detail 'Renew the secret of a specific application'
         success code: 200, model: Entities::ApplicationWithSecret
+        tags ['applications']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'

@@ -105,26 +105,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
       let_it_be(:mr_in_archived_project) { create(:merge_request, source_project: archived_project, target_project: archived_project) }
       let_it_be(:mr_in_non_archived_project) { create(:merge_request, source_project: non_archived_project, target_project: non_archived_project) }
 
-      context 'when optimize_issuable_non_archived_scope feature flag is enabled' do
-        before do
-          stub_feature_flags(optimize_issuable_non_archived_scope: true)
-        end
-
-        it 'excludes merge requests from archived projects' do
-          expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
-          expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
-        end
-      end
-
-      context 'when optimize_issuable_non_archived_scope feature flag is disabled' do
-        before do
-          stub_feature_flags(optimize_issuable_non_archived_scope: false)
-        end
-
-        it 'excludes merge requests from archived projects' do
-          expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
-          expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
-        end
+      it 'excludes merge requests from archived projects' do
+        expect(MergeRequest.non_archived).to include(mr_in_non_archived_project)
+        expect(MergeRequest.non_archived).not_to include(mr_in_archived_project)
       end
     end
 
@@ -202,6 +185,22 @@ RSpec.describe Issuable, feature_category: :team_planning do
     context 'for custom sorting' do
       it 'returns an issuable with at least one label' do
         expect(issuable_class.any_label('created_at')).to eq([issue_with_label, issue_with_multiple_labels])
+      end
+    end
+  end
+
+  describe '.participant_includes' do
+    it 'returns participant associations' do
+      expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji] })
+    end
+
+    context 'with remove_per_source_permission_from_participants disabled' do
+      before do
+        stub_feature_flags(remove_per_source_permission_from_participants: false)
+      end
+
+      it 'includes system_note_metadata association' do
+        expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] })
       end
     end
   end
@@ -583,7 +582,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::DataBuilder::Issuable#build', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450843' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16826' do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
@@ -1022,6 +1021,44 @@ RSpec.describe Issuable, feature_category: :team_planning do
               end.to raise_error(ActiveRecord::RecordInvalid)
             end.not_to change { issue.updated_at }
           end
+        end
+      end
+    end
+  end
+
+  describe '#notes_with_associations' do
+    let!(:note) { create(:note, noteable: issue, project: issue.project) }
+
+    it 'returns notes with associations' do
+      expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji)
+    end
+
+    context 'with remove_per_source_permission_from_participants disabled' do
+      before do
+        stub_feature_flags(remove_per_source_permission_from_participants: false)
+      end
+
+      it 'includes project and system_note_metadata associations' do
+        expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :project, :system_note_metadata)
+      end
+
+      context 'when notes already have projects loaded' do
+        before do
+          allow(issue.notes).to receive(:projects_loaded?).and_return(true)
+        end
+
+        it 'does not include project in includes' do
+          expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :system_note_metadata)
+        end
+      end
+
+      context 'when notes already have system_note_metadata loaded' do
+        before do
+          allow(issue.notes).to receive(:system_note_metadata_loaded?).and_return(true)
+        end
+
+        it 'does not include system_note_metadata in includes' do
+          expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :project)
         end
       end
     end

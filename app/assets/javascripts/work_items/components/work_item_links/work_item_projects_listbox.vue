@@ -96,7 +96,7 @@ export default {
         return this.selectedProject.name || this.selectedProject.namespace;
       }
       return this.selectedProjectFullPath && this.currentProjectName
-        ? this.currentProjectName
+        ? this.currentProjectName.split('/').at(-1).trim()
         : s__('WorkItem|Select a project');
     },
     listItems() {

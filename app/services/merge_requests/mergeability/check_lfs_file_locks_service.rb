@@ -5,8 +5,8 @@ module MergeRequests
     class CheckLfsFileLocksService < CheckBaseService
       include ::Gitlab::Utils::StrongMemoize
 
-      identifier :locked_lfs_files
-      description <<~DESC.chomp
+      set_identifier :locked_lfs_files
+      set_description <<~DESC.chomp
         Checks whether the merge request contains locked LFS files that are locked by users other than the merge request author
       DESC
 

@@ -355,8 +355,6 @@ describe('ActivityWidget', () => {
     });
 
     it('tracks event when clicking on a link with "Your projects" filter', async () => {
-      mockAxios.reset();
-
       mockAxios
         .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
         .reply(200, {
@@ -419,8 +417,6 @@ describe('ActivityWidget', () => {
     });
 
     it('tracks event when clicking on a link with "Followed users" filter', async () => {
-      mockAxios.reset();
-
       mockAxios
         .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
         .reply(200, {

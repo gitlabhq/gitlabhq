@@ -37,12 +37,10 @@ Before starting this tutorial, you must have:
 For this tutorial, the following hierarchy is used:
 
 ```mermaid
-%%{init: { "theme": "neutral", "fontFamily": "GitLab Sans" }}%%
+%%{init: {  "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Hierarchy structure for GitLab workspaces
     accDescr: Workspace projects inherit agent access through the group hierarchy with agents connected to separate agent projects.
-
-    classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
 
     topGroup[Top-level group]
     subGroup[Subgroup]

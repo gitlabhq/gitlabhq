@@ -22,6 +22,7 @@ module API
       before { authenticate! }
 
       desc "Get a commit's statuses" do
+        tags ['commit_statuses']
         success code: 200, model: Entities::CommitStatus
         failure [
           { code: 401, message: 'Unauthorized' },
@@ -69,6 +70,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Post status to a commit' do
+        tags ['commit_statuses']
         success code: 200, model: Entities::CommitStatus
         failure [
           { code: 400, message: 'Bad request' },

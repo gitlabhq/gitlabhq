@@ -1,0 +1,8 @@
+---
+name: read_protected_branch
+description: Grants the ability to read protected branches
+boundaries:
+  - project
+  - group
+permissions:
+  - read_protected_branch

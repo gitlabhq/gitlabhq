@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         def self.build_completed_report_type_counter(report_type)
-          name = "artifact_report_#{report_type}_builds_completed_total".to_sym
+          name = :"artifact_report_#{report_type}_builds_completed_total"
           comment = "Number of completed builds with #{report_type} report artifacts"
 
           ::Gitlab::Metrics.counter(name, comment)

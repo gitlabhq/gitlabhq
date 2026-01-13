@@ -67,6 +67,7 @@ describe('WorkItemTree', () => {
   const createComponent = async ({
     workItemType = 'Objective',
     workItemIid = '2',
+    allowedChildTypes = [],
     parentWorkItemType = 'Objective',
     confidential = false,
     canUpdate = true,
@@ -82,6 +83,7 @@ describe('WorkItemTree', () => {
         fullPath: 'test/project',
         workItemType,
         workItemIid,
+        allowedChildTypes,
         parentWorkItemType,
         workItemId: 'gid://gitlab/WorkItem/2',
         confidential,
@@ -109,10 +111,27 @@ describe('WorkItemTree', () => {
     utils.saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, true);
   });
 
-  it('displays Add button', () => {
-    createComponent();
+  it('displays Add button, with options excluding "Add ticket"', () => {
+    createComponent({
+      allowedChildTypes: [
+        { __typename: 'WorkItemType', id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic' },
+        { __typename: 'WorkItemType', id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
+        { __typename: 'WorkItemType', id: 'gid://gitlab/WorkItems::Type/9', name: 'Ticket' },
+      ],
+    });
+    const actions = findToggleFormSplitButton()
+      .props('actions')
+      .flatMap((action) => action.items)
+      .map((action) => action.text);
 
-    expect(findToggleFormSplitButton().exists()).toBe(true);
+    expect(actions).not.toContain('New ticket');
+    expect(actions).toEqual([
+      'New issue',
+      'Existing issue',
+      'New epic',
+      'Existing epic',
+      'Existing ticket',
+    ]);
   });
 
   it('displays empty state if there are no children', async () => {

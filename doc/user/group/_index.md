@@ -227,7 +227,7 @@ To create a group:
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
 
 ## Edit group name, description, and avatar
@@ -301,6 +301,8 @@ You can also delete a group from the groups dashboard:
 
 This action adds a background job to mark a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
 you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
+
+When a group is marked for deletion, scheduled CI/CD pipelines stop running.
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job instead restores the group, and the group is no longer scheduled for deletion.

@@ -40,7 +40,7 @@ module Users
 
     def admin_bot_for_organization_id(organization_id)
       @admin_bots ||= {}
-      @admin_bots[organization_id] ||= Users::Internal.for_organization(organization_id).admin_bot
+      @admin_bots[organization_id] ||= Users::Internal.in_organization(organization_id).admin_bot
     end
   end
 end

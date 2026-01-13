@@ -344,6 +344,176 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
+### Prometheus metrics
+
+Prometheus provides metrics that you can use to monitor and troubleshoot performance issues in your container registry.
+
+The following sections:
+
+- Show you how to enable Prometheus metrics
+- Catalog all Prometheus metrics exported by the container registry, organized by component
+
+#### Enable Prometheus metrics
+
+Prerequisites:
+
+- You must [enable the registry debug server](#enable-the-registry-debug-server).
+
+To enable Prometheus metrics, add the following configuration in `gitlab.rb`:
+
+```ruby
+# Enable Prometheus metrics
+registry['debug'] = {
+  'prometheus' => {
+    'enabled' => true,
+    'path' => '/metrics'
+  }
+}
+```
+
+To apply the change, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+Use curl to request metrics from the debug server:
+
+```shell
+curl "localhost:5001/metrics"
+```
+
+#### Notifications Metrics
+
+#### Counters
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_notifications_events_total` | The total number of events. | `type`, `action`, `artifact`, `endpoint` | `type`: `Successes`, `Failures`, `Events`, `Dropped` |
+| `registry_notifications_status_total` | The number of HTTP responses per status code received from the notifications endpoint. | `code`, `endpoint` | `code`: HTTP status codes (for example, `200 OK` or `404 Not Found`) |
+| `registry_notifications_errors_total` | The number of events that errored during sending. Sending requests might be retried. | `endpoint` | string: `'...'` |
+| `registry_notifications_delivery_total` | The number of events delivered or lost. An event is lost once the number of retries is exhausted. | `endpoint`, `delivery_type` | `delivery_type`: `delivered`, `lost` |
+
+#### Gauges
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_notifications_pending` | The gauge of pending events in queue, represented by queue length. | `endpoint` | string: `'...'` |
+
+#### Histograms
+
+| Metric name | Description | Labels | Buckets |
+|-------------|-------------|--------|---------|
+| `registry_notifications_retries_count` | The histogram of cumulative delivery retries. | `endpoint` | `[0, 1, 2, 3, 5, 10, 15, 20, 30, 50]` |
+| `registry_notifications_http_latency_seconds` | The histogram of HTTP delivery latency. | `endpoint` | `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 25, 50, 100]` (seconds) |
+| `registry_notifications_total_latency_seconds` | The histogram of total delivery latency. | `endpoint` | `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10, 25, 50, 100]` (seconds) |
+
+#### Batched background migration (BBM) metrics
+
+##### Counters
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_bbm_runs_total` | A counter for batched migration worker runs. | None | None |
+| `registry_bbm_migrated_tuples_total` | A counter for total batched migration records migrated. | `migration_name`, `migration_id` | string: `'...'` |
+
+##### Gauges
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_bbm_job_batch_size` | A gauge for the batch size of a batched migration job. | `migration_name`, `migration_id` | string: `'...'` |
+| `registry_database_bbm_progress_percent` | Background migration progress percentage (0-100). | `migration_id`, `migration_name`, `status` | string: `'...'` |
+
+##### Histograms
+
+| Metric name | Description | Labels | Buckets |
+|-------------|-------------|--------|---------|
+| `registry_bbm_run_duration_seconds` | A histogram of latencies for batched migration worker runs. | None | `[0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600]` (0.5s to 1h) |
+| `registry_bbm_job_duration_seconds` | A histogram of latencies for a batched migration job. | `migration_name`, `migration_id` | `[0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600]` (0.5s to 1h) |
+| `registry_bbm_query_duration_seconds` | A histogram of latencies for batched migration database queries. | `migration_name`, `migration_id` | `[0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600]` (0.5s to 1h) |
+| `registry_bbm_sleep_duration_seconds` | A histogram of sleep durations between BBM worker runs. | `worker` | `[0.5, 1, 5, 15, 30, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400]` (500ms to 24h) |
+
+#### Database metrics
+
+##### Counters
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_database_queries_total` | A counter for database queries. | `name` | string: `'...'` |
+| `registry_database_lb_lsn_cache_hits_total` | A counter for database load balancing LSN cache hits and misses. | `result` | `result`: `hit`, `miss` |
+| `registry_database_lb_pool_events_total` | A counter of replicas added or removed from the database load balancer pool. | `event`, `reason` | `event`: `replica_added`, `replica_removed`, `replica_quarantined`, `replica_reintegrated`<br>`reason`: `replication_lag`, `connectivity`, `removed_from_dns`, `discovered` |
+| `registry_database_lb_targets_total` | A counter for primary and replica target elections during database load balancing. | `target_type`, `fallback`, `reason` | `target_type`: `primary`, `replica`<br>`fallback`: `true`, `false`<br>`reason`: `selected`, `no_cache`, `no_replica`, `error`, `not_up_to_date`, `all_quarantined` |
+
+##### Gauges
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_database_lb_pool_size` | A gauge for the current number of replicas in the load balancer pool. | None | None |
+| `registry_database_lb_pool_status` | A gauge for the current status of each replica in the load balancer pool. | `replica`, `status` | `status`: `online`, `quarantined` |
+| `registry_database_lb_lag_bytes` | A gauge for the replication lag in bytes for each replica. | `replica` | string: `'...'` |
+| `registry_database_migrations_total` | A gauge for the total number of database migrations (applied + pending) | `migration_type` | `migration_type`: `pre_deployment`, `post_deployment` |
+| `registry_database_rows` | A gauge for the number of rows in database tables defined by the `query_name` label. | `query_name` | `query_name`: `gc_blob_review_queue`, `gc_manifest_review_queue`, `gc_blob_review_queue_overdue`, `gc_manifest_review_queue_overdue`, `applied_pre_migrations`, `applied_post_migrations` |
+
+##### Histograms
+
+| Metric name | Description | Labels | Buckets |
+|-------------|-------------|--------|---------|
+| `registry_database_query_duration_seconds` | A histogram of latencies for database queries. | `name` | Prometheus default buckets. <sup>1</sup> |
+| `registry_database_lb_lsn_cache_operation_duration_seconds` | A histogram of latencies for database load balancing LSN cache operations. | `operation`, `error` | `operation`: `set`, `get`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
+| `registry_database_lb_lookup_seconds` | A histogram of latencies for database load balancing DNS lookups. | `lookup_type`, `error` | `lookup_type`: `srv`, `host`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup>  |
+| `registry_database_lb_lag_seconds` | A histogram of replication lag in seconds for each replica. | `replica` | `[0.001, 0.01, 0.1, 0.5, 1, 5, 10, 20, 30, 60]` (1ms to 60s) |
+| `registry_database_row_count_collection_duration_seconds` | A histogram of total duration for collecting all database row count queries in a single run. | None | `[0.1, 0.5, 1, 2, 5, 10, 30, 60]` (100ms to 60s) |
+
+**Footnotes**:
+
+1. Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
+
+#### Garbage collection (GC) metrics
+
+##### Counters
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_gc_runs_total` | A counter for online GC worker runs. | `worker`, `noop`, `error`, `dangling`, `event` | `noop`: `true`, `false`<br>`error`: `true`, `false`<br>`dangling`: `true`, `false` |
+| `registry_gc_deletes_total` | A counter of artifacts deleted during online GC. | `backend`, `artifact` | `backend`: `storage`, `database`<br>`artifact`: `blob`, `manifest` |
+| `registry_gc_storage_deleted_bytes_total` | A counter for bytes deleted from storage during online GC. | `media_type` | string: `'...'` |
+| `registry_gc_postpones_total` | A counter for online GC review postpones. | `worker` | string: `'...'` |
+
+##### Histograms
+
+| Metric name | Description | Labels | Buckets |
+|-------------|-------------|--------|---------|
+| `registry_gc_run_duration_seconds` | A histogram of latencies for online GC worker runs. | `worker`, `noop`, `error`, `dangling`, `event` | `noop`: `true`, `false`<br>`error`: `true`, `false`<br>`dangling`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
+| `registry_gc_delete_duration_seconds` | A histogram of latencies for artifact deletions during online GC. | `backend`, `artifact`, `error` | `backend`: `storage`, `database`<br>`artifact`: `blob`, `manifest`<br>`error`: `true`, `false`<br>Prometheus default buckets. <sup>1</sup> |
+| `registry_gc_sleep_duration_seconds` | A histogram of sleep durations between online GC worker runs. | `worker` | `[0.5, 1, 5, 15, 30, 60, 300, 600, 900, 1800, 3600, 7200, 10800, 21600, 43200, 86400]` (500ms to 24h) |
+
+**Footnotes**:
+
+1. Prometheus default buckets values: `[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]` (seconds)
+
+#### Storage metrics
+
+##### Counters
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_storage_cdn_redirects_total` | A counter of CDN redirections for blob downloads. | `backend`, `bypass`, `bypass_reason` | `bypass`: `true`, `false` |
+| `registry_storage_rate_limit_total` | A counter of requests to the storage driver that hit a rate limit. | None | None |
+| `registry_storage_storage_backend_retries_total` | A counter of retires made while communicating with storage backend. | `retry_type` | `retry_type`: `native`, `custom` |
+| `registry_storage_urlcache_requests_total` | A counter of the URL cache middleware requests. | `result`, `reason` | `result`: `hit`, `miss` |
+| `registry_storage_access_tracker_dropped_events` | A counter of dropped events in the access tracker due to timeout. | None | None |
+
+##### Gauges
+
+| Metric name | Description | Labels | Label values |
+|-------------|-------------|--------|--------------|
+| `registry_storage_object_accesses_topn` | Total accesses for top N most frequently accessed objects. | `top_n` | `top_n`: `1`, `10`, `100`, `1000`, `10000`, `all` |
+
+##### Histograms
+
+| Metric name | Description | Labels | Buckets |
+|-------------|-------------|--------|---------|
+| `registry_storage_blob_download_bytes` | A histogram of blob download sizes for the storage backend. | `redirect` | `redirect`: `true`, `false`<br>`[524288, 1048576, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648, 3221225472, 4294967296, 5368709120, 6442450944, 7516192768, 8589934592, 9663676416, 10737418240, 21474836480, 32212254720, 42949672960, 53687091200]` (512KiB to 50GiB) |
+| `registry_storage_blob_upload_bytes` | A histogram of new blob upload bytes for the storage backend. | None | `[524288, 1048576, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648, 3221225472, 4294967296, 5368709120, 6442450944, 7516192768, 8589934592, 9663676416, 10737418240, 21474836480, 32212254720, 42949672960, 53687091200]` (512KiB to 50GiB) |
+| `registry_storage_urlcache_object_size` | A histogram of object sizes in the URL cache. | None | `[100, 250, 500, 750, 1000, 1500, 2048, 3072, 5120, 10240]` (100 bytes to 10KiB) |
+| `registry_storage_object_accesses_distribution` | Distribution of access counts across all objects. | None | Exponential buckets: `[10, 20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240]` |
+
 ## Enable registry debug logs
 
 You can enable debug logs to help troubleshoot issues with the container registry.

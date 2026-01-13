@@ -20,7 +20,8 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys_2fa.html.haml', feature_cate
 
       tooltip =
         s_('ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA.')
-      expect(rendered).to have_css(".gl-button[disabled][title='#{tooltip}']",
+      expect(rendered).to have_css(".has-tooltip[title='#{tooltip}'][tabindex=0]")
+      expect(rendered).to have_css(".gl-button[disabled]",
         text: s_('ProfilesAuthentication|Use passkey as 2FA'))
       expect(rendered).to include(
         s_('ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA.'))

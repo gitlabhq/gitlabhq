@@ -10,7 +10,8 @@
       - if can_invite_members_for_project?(@project)
         = project_member_header_subtext(@project)
         - if current_appearance&.member_guidelines?
-          = brand_member_guidelines
+          .md
+            = brand_member_guidelines
       - elsif project_can_be_shared?
         - if can?(current_user, :admin_project_member, @project)
           = project_member_header_subtext(@project)

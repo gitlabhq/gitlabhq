@@ -379,6 +379,16 @@ RSpec.describe API::GroupExport, feature_category: :importers do
           end
         end
       end
+
+      context 'when export is from an offline transfer export' do
+        let_it_be(:export) { create(:bulk_import_export, :offline, group: group, relation: 'labels', user: user) }
+
+        it 'returns 404' do
+          get api(download_path, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     describe 'GET /groups/:id/export_relations/status' do
@@ -465,6 +475,26 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_empty
+        end
+      end
+
+      context 'when exports exist from offline transfer exports' do
+        let_it_be(:offline_self_export) do
+          create(:bulk_import_export, :pending, :offline, group: group, relation: 'self', user: user)
+        end
+
+        it 'returns not_found when a relation not yet exported by direct transfer was specified' do
+          get api(status_path, user), params: { relation: 'self' }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not return offline transfer relation ExportService in the list of all statuses' do
+          get api(status_path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('relation')).not_to include('self')
+          expect(json_response.pluck('status')).not_to include(-2)
         end
       end
     end

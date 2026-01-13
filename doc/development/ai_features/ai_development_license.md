@@ -55,12 +55,12 @@ To connect to the staging AI Gateway:
 
 If you're having issues with your GitLab Duo license setup:
 
-- Run the [GitLab Duo health check](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have GitLab Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
+- Run the [GitLab Duo health check](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have GitLab Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
 - Verify your license is active by checking the Admin Area
 - Ensure your user has a GitLab Duo seat assigned. The GDK setup scripts assign a GitLab Duo
   seat to the `root` user only. If you want to test with other users, make sure
   to [assign them a seat](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-- To more deeply debug why the root user cannot access a feature like GitLab Duo Chat, you can run `GlobalPolicy.new(User.first, User.first).debug(:access_duo_chat)`. This [Declarative Policy debug output](../policies.md#scores-order-performance) will help you dive into the specific access logic for more granular debugging.
+- To more deeply debug why the root user cannot access a feature like GitLab Duo Chat, you can run `GlobalPolicy.new(User.first, User.first).debug(:access_duo_classic_chat)`. This [Declarative Policy debug output](../policies.md#scores-order-performance) will help you dive into the specific access logic for more granular debugging.
 - Make sure there is only ever one License under `admin/subscriptions` and that it is an online license or open the rails console by running `rails c` in the GitLab project, then run `License.current`.
 - If you have several licenses, then open the rails console. Get all of the ids of other licenses and run `License.find(:id).destroy` where the ID is of the unwanted license. Legacy licenses are known to have caused problems with feature access.
 - Check logs for any authentication or license validation errors

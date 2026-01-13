@@ -24,11 +24,8 @@ that are inherited by all projects in a group.
 Group protected branches only support [valid access levels](#valid-access-levels). Individual users
 and groups cannot be specified.
 
-{{< alert type="warning" >}}
-
-Protected branch settings for groups are restricted to top-level groups only.
-
-{{< /alert >}}
+> [!warning]
+> Protected branch settings for groups are restricted to top-level groups only.
 
 ## Valid access levels
 

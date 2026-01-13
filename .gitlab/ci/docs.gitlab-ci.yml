@@ -39,11 +39,10 @@ review-docs-cleanup:
 
 docs-lint markdown:
   extends:
-    - .default-retry
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
   script:
     - |
       cat << EOF >> .markdownlint-cli2.yaml
@@ -65,12 +64,11 @@ docs-lint markdown:
 
 docs-lint mermaid:
   extends:
-    - .default-retry
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
     - .yarn-cache
+    - .lint-base
   stage: lint
-  needs: []
   script:
     - source ./scripts/utils.sh
     - yarn_install_script
@@ -80,9 +78,8 @@ docs code_quality:
   extends:
     - .reports:rules:docs_code_quality
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
-  dependencies: []
   allow_failure: true
   script:
     - vale --output=doc/.vale/vale-json.tmpl --minAlertLevel warning doc > gl-code-quality-report-docs.json || exit_code=$?
@@ -97,11 +94,9 @@ docs code_quality:
 docs hugo_build:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.150.1
   extends:
-    - .default-retry
     - .docs:rules:docs-all-lint
+    - .lint-base
   stage: lint
-  needs: []
-  dependencies: []
   variables:
     DOCS_BRANCH: "main"
   before_script:
@@ -150,8 +145,8 @@ docs-lint links:
   extends:
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
   before_script:
     - source scripts/utils.sh
   script:
@@ -161,12 +156,13 @@ docs-lint deprecations-and-removals:
   variables:
     SETUP_DB: "false"
   extends:
-    - .default-retry
     - .ruby-cache
     - .default-before_script
     - .docs:rules:deprecations-and-removals
+    - .lint-base
   stage: lint
   needs:
+    - !reference [.lint-base, needs]
     - job: cache:ruby-gems
       optional: true
   script:
@@ -177,20 +173,18 @@ docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
   stage: lint
   extends:
-    - .default-retry
     - .docs:rules:redirect-check
-  needs: []
+    - .lint-base
   before_script:
     - source scripts/utils.sh
   script: ./scripts/lint-docs-redirects.rb
 
 docs-i18n-lint markdown:
   extends:
-    - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
@@ -198,11 +192,10 @@ docs-i18n-lint markdown:
 
 docs-i18n-lint links:
   extends:
-    - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
   when: manual
   allow_failure: true
   before_script:
@@ -213,11 +206,10 @@ docs-i18n-lint links:
 # Japanese-specific Vale linting with language-specific rules
 docs-i18n-lint japanese-vale:
   extends:
-    - .default-retry
     - .docs:rules:docs-i18n-lint-japanese
     - .docs-markdown-lint-image
+    - .lint-base
   stage: lint
-  needs: []
   variables:
     LANGUAGE_CODE: "ja-jp"
     LANGUAGE_NAME: "Japanese"
@@ -229,12 +221,11 @@ docs-i18n-lint japanese-vale:
 # Verify localized documentation files have corresponding English versions
 docs-i18n-lint paths:
   extends:
-    - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
+    - .lint-base
   allow_failure: true
   stage: lint
-  needs: []
   script:
     - source ./scripts/utils.sh
     - install_gitlab_gem

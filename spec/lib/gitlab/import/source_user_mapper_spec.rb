@@ -538,6 +538,6 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       ).ghost_user
     end
 
-    it { is_expected.to eq(Users::Internal.for_organization(namespace.organization).ghost) }
+    it { is_expected.to eq(Users::Internal.in_organization(namespace.organization).ghost) }
   end
 end

@@ -1,0 +1,23 @@
+query getUserGroupsAndProjects($id: UserID, $search: String) {
+  projects(membership: true, search: $search) {
+    nodes {
+      id
+      name
+      nameWithNamespace
+      fullPath
+    }
+  }
+
+  user(id: $id) {
+    id
+    groups(search: $search) {
+      nodes {
+        id
+        name
+        fullPath
+        projectsCount
+        descendantGroupsCount
+      }
+    }
+  }
+}

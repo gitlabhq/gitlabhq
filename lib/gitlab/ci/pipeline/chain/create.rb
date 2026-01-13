@@ -18,7 +18,10 @@ module Gitlab
                 ::Ci::BulkInsertableTags.with_bulk_insert_tags do
                   pipeline.transaction do
                     pipeline.save!
-                    Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(taggable_statuses)
+
+                    if Feature.disabled?(:ci_stop_populating_p_ci_build_tags, project)
+                      Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(taggable_statuses)
+                    end
                   end
                 end
               end

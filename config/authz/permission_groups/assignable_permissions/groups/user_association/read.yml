@@ -1,0 +1,7 @@
+---
+name: read_user_association
+description: Grants the ability to read user association information
+boundaries:
+  - user
+permissions:
+  - read_user_association

@@ -1,0 +1,10 @@
+---
+name: feature_access_rules_updated
+description: GitLab Duo feature access rules were updated
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/584380
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217749
+feature_category: agent_foundations
+milestone: '18.8'
+saved_to_database: true
+scope: [Instance]
+streamed: true

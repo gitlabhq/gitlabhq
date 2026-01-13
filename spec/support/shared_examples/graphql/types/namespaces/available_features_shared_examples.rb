@@ -23,6 +23,7 @@ RSpec.shared_examples "expose all available feature fields for the namespace" do
       has_scoped_labels_feature
       has_subepics_feature
       has_work_item_planning_view_feature
+      has_work_items_saved_views_feature
       has_work_item_status_feature
     ]
 

@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'User explores projects', feature_category: :user_profile do
+  before do
+    # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
+    stub_feature_flags(explore_projects_vue: false)
+  end
+
   shared_examples 'an "Explore > Projects" page with sidebar and breadcrumbs' do |page_path, params|
     before do
       visit send(page_path, params)
@@ -29,6 +34,31 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
           expect(find('li:first-of-type')).to have_link('Explore', href: explore_root_path)
         end
       end
+    end
+  end
+
+  it 'renders all expected tabs', :aggregate_failures do
+    visit(explore_projects_path)
+
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Most starred')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Active')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'Inactive')
+    expect(page).to have_selector('.gl-tab-nav-item', text: 'All')
+  end
+
+  context 'when `retire_trending_projects` flag is disabled' do
+    before do
+      stub_feature_flags(retire_trending_projects: false)
+    end
+
+    it 'renders all expected tabs', :aggregate_failures do
+      visit(explore_projects_path)
+
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Most starred')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Trending')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Active')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'Inactive')
+      expect(page).to have_selector('.gl-tab-nav-item', text: 'All')
     end
   end
 
@@ -123,13 +153,23 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
           [archived_project, public_project].each { |project| create(:note_on_issue, project: project) }
 
           TrendingProject.refresh!
-
-          visit(trending_explore_projects_path)
         end
 
-        include_examples 'shows public projects'
-        include_examples 'empty search results'
-        include_examples 'minimum search length'
+        it 'redirects to most starred projects page' do
+          visit trending_explore_projects_path
+          expect(page).to have_current_path(starred_explore_projects_path)
+        end
+
+        context 'when `retire_trending_projects` flag is disabled' do
+          before do
+            stub_feature_flags(retire_trending_projects: false)
+            visit(trending_explore_projects_path)
+          end
+
+          include_examples 'shows public projects'
+          include_examples 'empty search results'
+          include_examples 'minimum search length'
+        end
       end
     end
   end

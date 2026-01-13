@@ -30,6 +30,7 @@ import {
   WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_NAME_TICKET,
+  WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -77,7 +78,7 @@ describe('Create work item component', () => {
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypes =
-    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+    namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
   const mockRelatedItem = {
     id: 'gid://gitlab/WorkItem/22',
     type: 'Issue',
@@ -121,7 +122,7 @@ describe('Create work item component', () => {
     fullPath = 'full-path',
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
-    namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
+    namespaceResponseCopy.data.namespace.id = 'gid://gitlab/Group/33';
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
     namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
@@ -430,11 +431,12 @@ describe('Create work item component', () => {
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('displays a list of work item types including "Select type" option when preselectedWorkItemType is not provided', async () => {
+    it('displays a list of work item types, excluding "Ticket" and including "Select type" options, when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
-      // +1 for the "Select type" option
-      const expectedOptions = namespaceWorkItemTypes.length + 1;
+      const expectedOptions = namespaceWorkItemTypes
+        .filter((type) => type.name !== 'Ticket')
+        .concat({ name: 'Select type' }).length;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
@@ -466,10 +468,11 @@ describe('Create work item component', () => {
         },
       });
       await waitForPromises();
+      const expectedOptions = namespaceWorkItemTypes.filter(
+        (type) => type.name !== 'Ticket',
+      ).length;
 
-      expect(findSelect().attributes('options').split(',')).toHaveLength(
-        namespaceWorkItemTypes.length,
-      );
+      expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
     it('selects a work item type on click', async () => {
@@ -715,6 +718,72 @@ describe('Create work item component', () => {
       await submitCreateForm();
 
       expect(findAlert().text()).toBe('an error');
+    });
+
+    it('includes createSource when prop is provided', async () => {
+      createComponent({
+        props: {
+          createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
+        },
+      });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
+        }),
+      });
+    });
+
+    it('uses VULNERABILITY source when vulnerability_id param exists', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent();
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.VULNERABILITY,
+        }),
+      });
+    });
+
+    it('does not include createSource when neither prop nor vulnerability_id exists', async () => {
+      createComponent();
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.not.objectContaining({
+          createSource: expect.anything(),
+        }),
+      });
+    });
+
+    it('prioritizes createSource prop over vulnerability_id', async () => {
+      setWindowLocation('?vulnerability_id=123');
+      createComponent({
+        props: {
+          createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV,
+        },
+      });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV, // Uses prop, not VULNERABILITY
+        }),
+      });
     });
   });
 
@@ -1039,8 +1108,8 @@ describe('Create work item component', () => {
   it('does not show work item widgets when userPermissions.setNewWorkItemMetadata is false', async () => {
     const namespaceQueryResponse = {
       data: {
-        workspace: {
-          ...namespaceWorkItemTypesQueryResponse.data.workspace,
+        namespace: {
+          ...namespaceWorkItemTypesQueryResponse.data.namespace,
           userPermissions: {
             setNewWorkItemMetadata: false,
           },

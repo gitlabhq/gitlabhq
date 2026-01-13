@@ -5,11 +5,11 @@ module API
     module Ci
       class JobArtifact < Grape::Entity
         expose :file_type,
-          documentation: { type: 'string', values: ::Ci::JobArtifact.file_types.keys, example: 'archive' }
-        expose :size, documentation: { type: 'integer', example: 1000 }
-        expose :filename, documentation: { type: 'string', example: 'artifacts.zip' }
+          documentation: { type: 'String', values: ::Ci::JobArtifact.file_types.keys, example: 'archive' }
+        expose :size, documentation: { type: 'Integer', example: 1000 }
+        expose :filename, documentation: { type: 'String', example: 'artifacts.zip' }
         expose :file_format,
-          documentation: { type: 'string', values: ::Ci::JobArtifact.file_formats.keys, example: 'zip' }
+          documentation: { type: 'String', values: ::Ci::JobArtifact.file_formats.keys, example: 'zip' }
       end
     end
   end

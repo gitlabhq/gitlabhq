@@ -1,0 +1,5 @@
+---
+name: update_container_registry_protection_rule
+description: Grants the ability to update container registry protection rules
+boundaries:
+  - project

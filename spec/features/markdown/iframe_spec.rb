@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:project) { create(:project, :public, :repository, group: subgroup) }
 
   # No registration of .example domains is possible:
   # https://en.wikipedia.org/wiki/.example
@@ -22,9 +24,8 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
      img[src="https://iframe.example/some-video"]'
   end
 
-  context 'when feature is enabled and configured' do
+  shared_examples_for 'an iframe renderer' do
     before do
-      stub_feature_flags(allow_iframes_in_markdown: true)
       stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
     end
 
@@ -74,6 +75,7 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
     end
 
     context 'in a project home page' do
+      let(:project) { create(:project, :public, group: subgroup) }
       let!(:wiki) { create(:project_wiki, project: project) }
       let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: markdown) }
 
@@ -91,18 +93,50 @@ RSpec.describe 'iframe rendering', :js, feature_category: :markdown do
         end
       end
     end
+  end
+
+  shared_examples_for 'an iframe renderer in a group' do
+    before do
+      stub_application_setting(iframe_rendering_enabled: true, iframe_rendering_allowlist: ['iframe.example'])
+    end
 
     context 'in a group milestone' do
-      let(:group_milestone) { create(:group_milestone, description: markdown) }
+      let(:group_milestone) { create(:group_milestone, group: subgroup, description: markdown) }
 
       it 'includes iframe correctly' do
-        visit(group_milestone_path(group_milestone.group, group_milestone))
+        visit(group_milestone_path(subgroup, group_milestone))
 
         wait_for_requests
 
         expect(page).to have_css(expected_selector)
       end
     end
+  end
+
+  context 'when feature is configured and enabled for the project' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: project)
+    end
+
+    it_behaves_like 'an iframe renderer'
+  end
+
+  context 'when feature is configured and enabled for the immediate group' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: subgroup)
+    end
+
+    it_behaves_like 'an iframe renderer'
+    it_behaves_like 'an iframe renderer in a group'
+  end
+
+  context 'when feature is configured and enabled for an ancestor group' do
+    before do
+      stub_feature_flags(allow_iframes_in_markdown: group)
+    end
+
+    it_behaves_like 'an iframe renderer'
+    it_behaves_like 'an iframe renderer in a group'
   end
 
   context 'when feature is enabled but not configured' do

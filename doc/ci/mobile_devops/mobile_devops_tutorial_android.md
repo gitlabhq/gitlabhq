@@ -169,7 +169,7 @@ beta:
     - fastlane beta
 ```
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Google Play integration demo](https://youtu.be/Fxaj3hna4uk).
 
 Congratulations! Your app is now set up for automated building, signing, and distribution. Try creating

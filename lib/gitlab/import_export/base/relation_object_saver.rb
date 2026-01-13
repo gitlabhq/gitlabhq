@@ -100,9 +100,6 @@ module Gitlab
 
           relation_object.save
         rescue ActiveRecord::QueryCanceled => e # rubocop:disable Database/RescueQueryCanceled -- retry with smaller batches
-          # Feature flag is disabled, don't rescue, re-raise the exception
-          raise e unless Feature.enabled?(:import_rescue_query_canceled, importable)
-
           # Check if we've exceeded the maximum number of exceptions to rescue for this relation_object (Ex. Issue)
           raise e if @exceptions_rescued >= MAX_EXCEPTION_RESCUE_COUNT
 

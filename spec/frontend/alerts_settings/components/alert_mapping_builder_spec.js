@@ -82,11 +82,11 @@ describe('AlertMappingBuilder', () => {
     });
   });
 
-  it('emits event with selected mapping', () => {
+  it('emits "on-mapping-update" event with selected mapping', () => {
     const mappingToSave = { fieldName: 'TITLE', mapping: 'PARSED_TITLE' };
     jest.spyOn(transformationUtils, 'transformForSave').mockReturnValue(mappingToSave);
     const listbox = findColumnInRow(1, 2).findComponent(GlCollapsibleListbox);
     listbox.vm.$emit('select', 'Dashboard Id');
-    expect(wrapper.emitted('onMappingUpdate')[0]).toEqual([mappingToSave]);
+    expect(wrapper.emitted('on-mapping-update')[0]).toEqual([mappingToSave]);
   });
 });

@@ -47,7 +47,7 @@ const ACTION_EDIT_CONFIRM_FORK = {
 };
 const ACTION_WEB_IDE = {
   secondaryText: i18n.webIdeText,
-  text: 'Web IDE',
+  text: 'Open in Web IDE',
   attrs: {
     'data-testid': 'webide-menu-item',
   },
@@ -67,7 +67,7 @@ const ACTION_GITPOD = {
   href: undefined,
   handle: expect.any(Function),
   secondaryText: 'Launch a ready-to-code development environment for your project.',
-  text: 'Ona',
+  text: 'Open in Ona',
   attrs: {
     'data-testid': 'gitpod-menu-item',
   },
@@ -96,10 +96,7 @@ describe('vue_shared/components/web_ide_link', () => {
   let wrapper;
   let trackingSpy;
 
-  function createComponent(
-    props,
-    { mountFn = shallowMountExtended, slots = {}, featureFlagValue = false } = {},
-  ) {
+  function createComponent(props, { mountFn = shallowMountExtended, slots = {} } = {}) {
     const fakeApollo = createMockApollo([
       [getWritableForksQuery, jest.fn().mockResolvedValue(getWritableForksResponse)],
     ]);
@@ -125,11 +122,6 @@ describe('vue_shared/components/web_ide_link', () => {
         GlDisclosureDropdownItem,
       },
       apolloProvider: fakeApollo,
-      provide: {
-        glFeatures: {
-          directoryCodeDropdownUpdates: featureFlagValue,
-        },
-      },
     });
 
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
@@ -158,23 +150,23 @@ describe('vue_shared/components/web_ide_link', () => {
 
   describe.each([
     {
-      props: {},
+      props: { isBlob: true },
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
     },
     {
-      props: { showPipelineEditorButton: true },
+      props: { showPipelineEditorButton: true, isBlob: true },
       expectedActions: [ACTION_PIPELINE_EDITOR, ACTION_WEB_IDE, ACTION_EDIT],
     },
     {
-      props: { webIdeText: 'Test Web IDE' },
+      props: { webIdeText: 'Test Web IDE', isBlob: true },
       expectedActions: [{ ...ACTION_WEB_IDE_EDIT_FORK, text: 'Test Web IDE' }, ACTION_EDIT],
     },
     {
-      props: { isFork: true },
+      props: { isFork: true, isBlob: true },
       expectedActions: [ACTION_WEB_IDE_EDIT_FORK, ACTION_EDIT],
     },
     {
-      props: { needsToFork: true, needsToForkWithWebIde: true },
+      props: { needsToFork: true, needsToForkWithWebIde: true, isBlob: true },
       expectedActions: [ACTION_WEB_IDE_CONFIRM_FORK, ACTION_EDIT_CONFIRM_FORK],
     },
     {
@@ -182,6 +174,7 @@ describe('vue_shared/components/web_ide_link', () => {
         showWebIdeButton: false,
         isGitpodEnabledForInstance: true,
         isGitpodEnabledForUser: true,
+        isBlob: true,
       },
       expectedActions: [ACTION_EDIT, ACTION_GITPOD],
     },
@@ -197,6 +190,7 @@ describe('vue_shared/components/web_ide_link', () => {
       props: {
         isGitpodEnabledForInstance: true,
         isGitpodEnabledForUser: false,
+        isBlob: true,
       },
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
     },
@@ -206,11 +200,12 @@ describe('vue_shared/components/web_ide_link', () => {
         isGitpodEnabledForInstance: true,
         isGitpodEnabledForUser: true,
         gitpodText: 'Test Ona',
+        isBlob: true,
       },
       expectedActions: [ACTION_WEB_IDE, { ...ACTION_GITPOD, text: 'Test Ona' }],
     },
     {
-      props: { showEditButton: false },
+      props: { showEditButton: false, isBlob: true },
       expectedActions: [ACTION_WEB_IDE],
     },
     {
@@ -220,12 +215,7 @@ describe('vue_shared/components/web_ide_link', () => {
         isGitpodEnabledForUser: true,
         isBlob: true,
       },
-      expectedActions: [
-        { ...ACTION_WEB_IDE, text: 'Open in Web IDE' },
-        ACTION_EDIT,
-        { ...ACTION_GITPOD, text: 'Open in Ona' },
-      ],
-      featureFlagValue: true,
+      expectedActions: [ACTION_WEB_IDE, ACTION_EDIT, ACTION_GITPOD],
     },
     {
       props: {
@@ -235,14 +225,13 @@ describe('vue_shared/components/web_ide_link', () => {
         isBlob: false,
       },
       expectedActions: [ACTION_EDIT],
-      featureFlagValue: true,
     },
-  ])('for a set of props', ({ props, expectedActions, featureFlagValue }) => {
+  ])('for a set of props', ({ props, expectedActions }) => {
     beforeEach(() => {
-      createComponent(props, { featureFlagValue });
+      createComponent(props);
     });
 
-    it('renders the appropiate actions', () => {
+    it('renders the appropriate actions', () => {
       // omit tracking property because it is not included in the dropdown item
       expect(getDropdownItemsAsData()).toEqual(omitTrackingParams(expectedActions));
     });
@@ -289,6 +278,7 @@ describe('vue_shared/components/web_ide_link', () => {
         isGitpodEnabledForInstance: true,
         showPipelineEditorButton: true,
         isGitpodEnabledForUser: true,
+        isBlob: true,
       });
     });
 
@@ -319,6 +309,7 @@ describe('vue_shared/components/web_ide_link', () => {
         showPipelineEditorButton: false,
         isGitpodEnabledForUser: true,
         gitpodUrl: GITPOD_URL,
+        isBlob: true,
       });
     });
 
@@ -336,6 +327,7 @@ describe('vue_shared/components/web_ide_link', () => {
           showWebIdeButton: true,
           showEditButton: false,
           showPipelineEditorButton: false,
+          isBlob: true,
           forkPath,
           forkModalId: 'edit-modal',
         },

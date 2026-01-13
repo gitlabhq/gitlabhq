@@ -13,7 +13,7 @@ module Gitlab
           :chat_data, :mirror_update, :bridge, :content, :dry_run, :linting, :logger, :pipeline_policy_context,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
-          :pipeline_config, :partition_id, :inputs, :gitaly_context,
+          :pipeline_config, :partition_id, :inputs, :gitaly_context, :pipeline_creation_forced_to_continue,
           keyword_init: true
         ) do
           include Gitlab::Utils::StrongMemoize
@@ -141,24 +141,14 @@ module Gitlab
           end
 
           def observe_jobs_count_in_alive_pipelines
-            if ci_refactor_jobs_count_in_alive_pipelines_enabled?
-              metrics.active_jobs_histogram
-                .observe({ plan: project.actual_plan_name }, jobs_count_in_alive_pipelines + current_pipeline_size)
-            else
-              metrics.active_jobs_histogram
-                .observe({ plan: project.actual_plan_name }, project.all_pipelines.legacy_jobs_count_in_alive_pipelines)
-            end
+            metrics.active_jobs_histogram
+              .observe({ plan: project.actual_plan_name }, jobs_count_in_alive_pipelines + current_pipeline_size)
           end
 
           def increment_pipeline_failure_reason_counter(reason)
             metrics.pipeline_failure_reason_counter
               .increment(reason: (reason || :unknown_failure).to_s)
           end
-
-          def ci_refactor_jobs_count_in_alive_pipelines_enabled?
-            ::Feature.enabled?(:ci_refactor_jobs_count_in_alive_pipelines, project)
-          end
-          strong_memoize_attr :ci_refactor_jobs_count_in_alive_pipelines_enabled?
 
           private
 

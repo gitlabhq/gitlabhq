@@ -154,3 +154,19 @@
 .saved-views-selectors .nav {
   margin-top: 4px;
 }
+
+.saved-view-item {
+  background-color: transparent;
+
+  &:hover, &:focus {
+    .added-saved-view {
+      display: none;
+    }
+
+    .added-saved-view-arrow, .add-saved-view {
+      display: flex;
+      align-self: center;
+    }
+  }
+}
+

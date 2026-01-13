@@ -3,6 +3,8 @@ import axios from '~/lib/utils/axios_utils';
 import {
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
+  SUPPORTED_HELM_RELEASES,
+  SUPPORTED_KUSTOMIZATIONS,
 } from '~/environments/constants';
 import { subscribeToSocket } from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
 import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
@@ -11,8 +13,8 @@ import { buildKubernetesErrors } from '~/environments/helpers/k8s_integration_he
 import fluxKustomizationQuery from '../queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseQuery from '../queries/flux_helm_release.query.graphql';
 
-const helmReleasesApiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
-const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1';
+const helmReleasesDiscoverUrl = 'helm.toolkit.fluxcd.io';
+const kustomizationsDiscoverUrl = 'kustomize.toolkit.fluxcd.io';
 
 const helmReleaseField = 'fluxHelmRelease';
 const kustomizationField = 'fluxKustomization';
@@ -204,6 +206,35 @@ const getFluxResources = (configuration, url) => {
     });
 };
 
+const findBestSupportedVersion = (availableVersions, supportedGroupVersions) => {
+  for (const gv of supportedGroupVersions) {
+    const match = availableVersions.find((item) => item.groupVersion === gv);
+    if (match) return match;
+  }
+  return null;
+};
+
+const discoverFluxVersions = (configuration, url, supportedVersions) => {
+  const { headers } = configuration;
+  const withCredentials = true;
+
+  return axios
+    .get(url, { withCredentials, headers })
+    .then((res) => {
+      const { preferredVersion, versions } = res.data;
+      const bestMatch = findBestSupportedVersion(versions, supportedVersions);
+
+      return {
+        preferredVersion: preferredVersion?.groupVersion || '',
+        supportedVersion: bestMatch?.groupVersion || '',
+      };
+    })
+    .catch((err) => {
+      const error = err?.response?.data?.reason || err;
+      throw new Error(error);
+    });
+};
+
 export const fluxMutations = {
   updateFluxResource(_, { configuration, fluxResourcePath, data }) {
     const headers = {
@@ -244,20 +275,28 @@ export const fluxQueries = {
       client,
     });
   },
-  fluxKustomizations(_, { configuration, namespace }) {
+  discoverFluxKustomizations(_, { configuration }) {
+    const discoverUrl = `${configuration.basePath}/apis/${kustomizationsDiscoverUrl}`;
+    return discoverFluxVersions(configuration, discoverUrl, SUPPORTED_KUSTOMIZATIONS);
+  },
+  discoverFluxHelmReleases(_, { configuration }) {
+    const discoverUrl = `${configuration.basePath}/apis/${helmReleasesDiscoverUrl}`;
+    return discoverFluxVersions(configuration, discoverUrl, SUPPORTED_HELM_RELEASES);
+  },
+  fluxKustomizations(_, { configuration, namespace, version }) {
     const url = buildFluxResourceUrl({
       basePath: configuration.basePath,
       resourceType: KUSTOMIZATIONS_RESOURCE_TYPE,
-      apiVersion: kustomizationsApiVersion,
+      apiVersion: version,
       namespace,
     });
     return getFluxResources(configuration, url);
   },
-  fluxHelmReleases(_, { configuration, namespace }) {
+  fluxHelmReleases(_, { configuration, namespace, version }) {
     const url = buildFluxResourceUrl({
       basePath: configuration.basePath,
       resourceType: HELM_RELEASES_RESOURCE_TYPE,
-      apiVersion: helmReleasesApiVersion,
+      apiVersion: version,
       namespace,
     });
     return getFluxResources(configuration, url);

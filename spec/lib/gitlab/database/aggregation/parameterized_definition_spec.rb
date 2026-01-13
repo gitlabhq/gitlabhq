@@ -37,12 +37,6 @@ RSpec.describe Gitlab::Database::Aggregation::ParameterizedDefinition, feature_c
     end
   end
 
-  describe '#to_hash' do
-    it 'adds parameters definition to hash' do
-      expect(definition.to_hash).to include(parameters: { bar: { type: :string } })
-    end
-  end
-
   describe '#instance_key' do
     it 'returns simple value for non-parameterized definition' do
       expect(definition_without_params.instance_key({})).to eq('foo')

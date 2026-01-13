@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFileHelper do
     end
 
     context 'text contains image' do
-      it { is_expected.to eq("<img src=\"#{img}\">") }
+      it { is_expected.to eq(" <img src=\"#{img}\">") }
     end
 
     context 'text contains image that has malicious html' do

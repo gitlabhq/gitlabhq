@@ -3,7 +3,7 @@
 #import "ee_else_ce/sidebar/queries/reviewer_applicable_approval_rules.fragment.graphql"
 
 query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
       id

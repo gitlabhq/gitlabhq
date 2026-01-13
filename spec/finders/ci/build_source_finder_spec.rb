@@ -56,12 +56,29 @@ RSpec.describe Ci::BuildSourceFinder, feature_category: :continuous_integration 
       end
     end
 
-    describe 'argument errors' do
-      context 'when relation is not Ci::Build' do
-        let(:main_relation) { Ci::Bridge.all }
+    context 'when relation is Ci::Bridge' do
+      let_it_be(:bridge_without_source) { create(:ci_bridge, pipeline: pipeline, name: "bridge1") }
+      let_it_be(:trigger_bridge) { create(:ci_bridge, pipeline: pipeline, name: "bridge2") }
+      let_it_be(:push_bridge) { create(:ci_bridge, pipeline: pipeline, name: "bridge4") }
+      let_it_be(:scan_execution_policy_bridge) { create(:ci_bridge, pipeline: pipeline, name: "bridge5") }
 
-        it 'raises argument error for relation' do
-          expect { build_source_finder.execute }.to raise_error(ArgumentError, 'Only Ci::Builds are source searchable')
+      let_it_be(:trigger_source) { create(:ci_build_source, job: trigger_bridge, source: :trigger) }
+      let_it_be(:push_source) { create(:ci_build_source, job: push_bridge, source: :push) }
+      let_it_be(:scan_execution_policy_source) do
+        create(:ci_build_source, job: scan_execution_policy_bridge, source: :scan_execution_policy)
+      end
+
+      let(:main_relation) { Ci::Bridge.all }
+
+      it 'returns bridges from any of the given sources' do
+        expect(build_source_finder).to eq([scan_execution_policy_bridge])
+      end
+
+      context 'with multiple source query' do
+        let(:sources) { %w[scan_execution_policy push] }
+
+        it 'returns bridges from any of the given sources' do
+          expect(build_source_finder).to match_array([scan_execution_policy_bridge, push_bridge])
         end
       end
     end

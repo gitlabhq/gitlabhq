@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Verify', feature_category: :continuous_integration,
     quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422863',
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24022',
       type: :flaky
     } do
     describe 'Unlocking job artifacts across parent-child pipelines' do

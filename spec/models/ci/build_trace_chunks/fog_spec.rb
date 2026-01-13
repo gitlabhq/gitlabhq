@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceChunks::Fog do
+RSpec.describe Ci::BuildTraceChunks::Fog, feature_category: :continuous_integration do
   let(:data_store) { described_class.new }
   let(:bucket) { 'artifacts' }
   let(:connection_params) { Gitlab.config.artifacts.object_store.connection.symbolize_keys }

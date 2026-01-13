@@ -3,7 +3,7 @@
 require "fast_spec_helper"
 require_relative '../../../../support/matchers/result_matchers'
 
-RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: :shared do
+RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: :workspaces do
   include ResultMatchers
 
   let(:default_setting_value) { 42 }

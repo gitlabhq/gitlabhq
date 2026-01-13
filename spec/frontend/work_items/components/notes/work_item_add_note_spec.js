@@ -85,7 +85,7 @@ describe('Work item add note', () => {
       ]),
       propsData: {
         fullPath: 'test-project-path',
-        workItemId: workItemResponse.data.workspace.workItem.id,
+        workItemId: workItemResponse.data.namespace.workItem.id,
         workItemIid,
         workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',

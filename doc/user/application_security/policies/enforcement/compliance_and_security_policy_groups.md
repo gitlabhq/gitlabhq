@@ -21,14 +21,6 @@ title: Compliance and security policy groups
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is subject to change and may not ready for production use.
-
-{{< /alert >}}
-
 Centralized security policy management allows instance administrators to designate a compliance and security policy group to apply security policies across multiple groups and projects from a single, centralized location.
 
 When you create or edit a security policy in the compliance and security policy group, you can scope the group to enforce the policy on:

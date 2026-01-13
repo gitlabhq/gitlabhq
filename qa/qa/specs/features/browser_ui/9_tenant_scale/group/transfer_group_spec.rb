@@ -18,7 +18,7 @@ module QA
 
       it 'transfers a subgroup to another group',
         quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471699',
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24031',
           type: :investigating
         },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347692' do

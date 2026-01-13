@@ -1,0 +1,10 @@
+---
+name: work_item_legacy_url
+description: Temporary control to use `issues/:id` instead of `work_items/:id` for Work Items
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582284
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217359
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/584791
+milestone: '18.8'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

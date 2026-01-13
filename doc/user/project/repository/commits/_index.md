@@ -36,7 +36,7 @@ To view your repository's commit history:
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Code** > **Commits**.
 
-To view a commit's summary, select the **Toggle commit description** icon ({{< icon name="ellipsis_h">}}).
+To view a commit's summary, select the **Toggle commit description** icon ({{< icon name="ellipsis_h" >}}).
 This summary does not display file changes or statistics.
 
 ## View commit details

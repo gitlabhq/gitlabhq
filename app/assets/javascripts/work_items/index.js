@@ -27,28 +27,23 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
 
   const {
     fullPath,
-    groupId,
     issuesListPath,
     epicsListPath,
     defaultBranch,
-    initialSort,
-    isSignedIn,
-    showNewWorkItem,
-    duoRemoteFlowsAvailability,
-    projectNamespaceFullPath,
-    timeTrackingLimitToHours,
-    workItemPlanningViewEnabled,
-    canReadCrmOrganization,
-    canReadCrmContact,
-    maxAttachmentSize,
     isGroupIssuesList,
-    isIssueRepositioningDisabled,
-    hasProjects,
+    workItemPlanningViewEnabled,
     workItemsSavedViewsEnabled,
+    // service desk list
+    isServiceDeskEnabled,
+    isServiceDeskSupported,
+    serviceDeskCalloutSvgPath,
+    serviceDeskEmailAddress,
+    serviceDeskHelpPath,
+    serviceDeskSettingsPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
-  const router = createRouter({ fullPath, workspaceType, defaultBranch });
+  const router = createRouter({ fullPath, workspaceType, defaultBranch, workItemType });
 
   const breadcrumbParams = { workItemType };
 
@@ -77,26 +72,20 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     router,
     apolloProvider,
     provide: {
-      duoRemoteFlowsAvailability: parseBoolean(duoRemoteFlowsAvailability),
       fullPath,
       isGroup,
       isProject: !isGroup,
       isGroupIssuesList: parseBoolean(isGroupIssuesList),
-      groupId,
-      initialSort,
-      isSignedIn: parseBoolean(isSignedIn),
       workItemType,
-      showNewWorkItem: parseBoolean(showNewWorkItem),
-      projectNamespaceFullPath,
-      timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
-      canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
-      canReadCrmContact: parseBoolean(canReadCrmContact),
-      maxAttachmentSize,
-      showNewIssueLink: parseBoolean(showNewWorkItem),
-      isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
-      hasProjects: parseBoolean(hasProjects),
       workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
+      // service desk list
+      isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
+      isServiceDeskSupported: parseBoolean(isServiceDeskSupported),
+      serviceDeskCalloutSvgPath,
+      serviceDeskEmailAddress,
+      serviceDeskHelpPath,
+      serviceDeskSettingsPath,
     },
     mounted() {
       performanceMarkAndMeasure({

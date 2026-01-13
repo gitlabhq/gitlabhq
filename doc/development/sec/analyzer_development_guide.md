@@ -55,7 +55,7 @@ Here's how to create a Docker image named `analyzer`:
 docker build -t analyzer .
 ```
 
-For example, to test Secret Detection run the following:
+For example, to test secret detection run the following:
 
 ```shell
 wget https://gitlab.com/gitlab-org/security-products/ci-templates/-/raw/master/scripts/compare_reports.sh
@@ -88,7 +88,7 @@ The secure stage is responsible for maintaining the following CI/CD Templates an
     - [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
     - [`Container-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.latest.gitlab-ci.yml)
   - CI/CD Components
-    - [Dependency Scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
+    - [Dependency scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
     - [Container scanning](https://gitlab.com/components/container-scanning/-/blob/main/templates/container-scanning.yml)
 - [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
   - CI/CD Templates
@@ -98,12 +98,12 @@ The secure stage is responsible for maintaining the following CI/CD Templates an
     - [`SAST-IaC.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml#L1-1)
   - CI/CD Components
     - [SAST](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml)
-- [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
+- [Secret detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
   - CI/CD Templates
     - [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
     - [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml)
   - CI/CD Components
-    - [Secret Detection](https://gitlab.com/components/secret-detection/-/blob/main/templates/secret-detection.yml)
+    - [Secret detection](https://gitlab.com/components/secret-detection/-/blob/main/templates/secret-detection.yml)
 
 Changes must always be made to both the CI/CD template and component for your group, and you must also determine if the changes need to be applied to the latest CI/CD template.
 
@@ -111,7 +111,7 @@ Analyzers are also referenced in the [`Secure-Binaries.gitlab-ci.yml`](https://g
 
 ### Execution criteria
 
-[Enabling SAST](../../user/application_security/sast/_index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
+[Enabling SAST](../../user/application_security/sast/_index.md#enable-sast-by-editing-the-cicd-file) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
 
 The following independent criteria determine which analyzer needs to be run on a project:
 
@@ -123,7 +123,7 @@ Step 1 helps prevent wastage of compute quota that would be spent running analyz
 
 ## How to test the analyzers
 
-Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
+Video walkthrough of how dependency scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 [How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://www.youtube.com/watch?v=KauRBlfUbDE)
@@ -298,7 +298,7 @@ After the above steps have been completed, the automatic release process execute
 Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
 variable permissions should be announced in the section's Slack channel.
 
-{{< /alert>}}
+{{< /alert >}}
 
 ### Token rotation for service account
 
@@ -367,7 +367,7 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 This process applies to the following groups:
 
 - [Composition Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis)
-- [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
+- [Static Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
 - [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
 
 Other groups are responsible for documenting their own major version release process.
@@ -505,9 +505,9 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 
 - [Container scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
 - [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
-- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [Dependency scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
 - [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
-- [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
+- [Secret detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 
 #### Compatibility with report schema
 
@@ -817,7 +817,7 @@ This issue will guide you through the whole release process. In general, you hav
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
 
   - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-  - [Dependency Scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+  - [Dependency scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
   - [Container scanning CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
 
   If needed, go to the pipeline corresponding to the last Git tag,
@@ -828,7 +828,7 @@ This issue will guide you through the whole release process. In general, you hav
 Dependencies and upstream scanners (if any) used in analyzer source code are updated using different approaches depending on the analyzer type:
 
 - SAST analyzers receive automatic dependency updates through the [Renovate GitLab Bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot) as soon as updates become available. See [SAST Automated Dependency Updates with Renovate](#sast-automated-dependency-updates-with-renovate).
-- Secret Detection analyzers receive dependency updates on a monthly cadence through [SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation). See [Secret Detection Automated Dependency Updates with SastBot](#secret-detection-automated-dependency-updates-with-sastbot).
+- Secret detection analyzers receive dependency updates on a monthly cadence through [SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation). See [secret detection automated dependency updates with SastBot](#secret-detection-automated-dependency-updates-with-sastbot).
 
 ##### SAST automated dependency updates with Renovate
 
@@ -857,9 +857,9 @@ Changelog entries in merge requests with dependency updates are automatically ge
 
    The `update changelog mrid` job creates a commit to replace the `{{MERGE_REQUEST_ID}}` placeholder text with the actual merge request ID.
 
-##### Secret Detection Automated Dependency Updates with SastBot
+##### Secret detection automated dependency updates with SastBot
 
-The Secret Detection team uses an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of Pipeline-based Secret Detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
+The Secret Detection team uses an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of pipeline-based secret detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [dependency update automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
 
 SastBot requires different access tokens for each job. It uses the `DEP_GITLAB_TOKEN` environment variable to retrieve the token when running scheduled pipeline jobs.
 

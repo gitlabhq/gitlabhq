@@ -228,11 +228,8 @@ To view your site:
 - Make sure **Use unique domain** is off.
 - Under **Access pages**, select the link. The URL format should be similar to: `https://<my-username>.gitlab.io/<project-name>`. For more information, see [GitLab Pages default domain names](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names).
 
-{{< alert type="note" >}}
-
-If you need to [use unique domains](../../user/project/pages/_index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
-
-{{< /alert >}}
+> [!note]
+> If you need to [use unique domains](../../user/project/pages/_index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
 
 ## Add test jobs
 

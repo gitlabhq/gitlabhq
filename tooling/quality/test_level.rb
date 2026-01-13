@@ -21,6 +21,7 @@ module Quality
         channels
         components
         config
+        constraints
         contracts
         db
         dependencies

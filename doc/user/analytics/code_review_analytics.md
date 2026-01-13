@@ -1,5 +1,5 @@
 ---
-stage: Plan
+stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how long your open merge requests have spent in code review, and what distinguishes the longest-running.
@@ -33,7 +33,7 @@ and improve your code review process.
   - Opportunities to accelerate your development cycle.
 - Few comments and approvers may indicate a lack of available team members.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video explanation, see [Code review analytics: Faster code review](https://www.youtube.com/watch?v=849o0XD991M).
 
 ## View code review analytics

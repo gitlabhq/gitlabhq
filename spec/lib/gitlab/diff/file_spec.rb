@@ -1259,6 +1259,10 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     it { expect(diff_file.viewer_hunks).to all(be_instance_of(Gitlab::Diff::ViewerHunk)) }
   end
 
+  describe '#rendered?' do
+    it { expect(diff_file.rendered?).to be_falsy }
+  end
+
   describe '#no_preview?' do
     subject(:no_preview?) { diff_file.no_preview? }
 
@@ -1270,6 +1274,23 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     it 'returns true for unmodified file' do
       allow(diff_file).to receive(:modified_file?).and_return(false)
       expect(no_preview?).to eq(true)
+    end
+
+    it 'returns false for submodule' do
+      allow(diff_file).to receive(:submodule?).and_return(true)
+      expect(no_preview?).to eq(false)
+    end
+
+    context 'with empty files' do
+      it 'returns true for empty file without content change' do
+        allow(diff_file).to receive_messages(empty?: true, content_changed?: false)
+        expect(no_preview?).to eq(true)
+      end
+
+      it 'returns false for empty file with content change' do
+        allow(diff_file).to receive_messages(empty?: true, content_changed?: true)
+        expect(no_preview?).to eq(false)
+      end
     end
   end
 

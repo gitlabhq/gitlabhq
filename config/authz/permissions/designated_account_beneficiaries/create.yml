@@ -1,4 +1,3 @@
 ---
 name: create_designated_account_beneficiaries
 description: Grants the ability to manage designated account beneficiaries
-feature_category: user_profile

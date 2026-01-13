@@ -54,7 +54,7 @@ RSpec.describe PreviewMarkdownService, feature_category: :markdown do
 
       let(:suggestion_params) do
         {
-          preview_suggestions: true,
+          preview_suggestions: 'true',
           file_path: path,
           line: line,
           base_sha: diff_refs.base_sha,
@@ -92,14 +92,16 @@ RSpec.describe PreviewMarkdownService, feature_category: :markdown do
       end
     end
 
-    context 'when preview markdown param is not present' do
+    context 'when preview markdown param is false' do
       let(:suggestion_params) do
         {
-          preview_suggestions: false
+          preview_suggestions: 'false'
         }
       end
 
       it 'returns suggestions referenced in text' do
+        expect(Gitlab::Diff::SuggestionsParser).not_to receive(:parse)
+
         result = service.execute
 
         expect(result[:suggestions]).to eq([])
@@ -117,26 +119,34 @@ RSpec.describe PreviewMarkdownService, feature_category: :markdown do
       }
     end
 
-    it 'removes quick actions from text' do
-      result = service.execute
+    subject(:result) { service.execute }
 
+    it 'removes quick actions from text' do
       expect(result[:text]).to eq 'Please do it'
     end
 
-    context 'when render_quick_actions' do
+    it 'explains quick actions effect' do
+      expect(result[:commands]).to eq "Assigns #{user.to_reference}."
+    end
+
+    context 'when render_quick_actions is true' do
+      before do
+        params[:render_quick_actions] = 'true'
+      end
+
       it 'keeps quick actions' do
-        params[:render_quick_actions] = true
-
-        result = service.execute
-
         expect(result[:text]).to eq "Please do it\n<p>/assign #{user.to_reference}</p>"
       end
     end
 
-    it 'explains quick actions effect' do
-      result = service.execute
+    context 'when render_quick_actions is false' do
+      before do
+        params[:render_quick_actions] = 'false'
+      end
 
-      expect(result[:commands]).to eq "Assigns #{user.to_reference}."
+      it 'removes quick actions from text' do
+        expect(result[:text]).to eq 'Please do it'
+      end
     end
   end
 

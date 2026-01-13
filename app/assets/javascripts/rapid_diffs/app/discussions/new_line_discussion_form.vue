@@ -69,8 +69,10 @@ export default {
         const {
           data: { discussion },
         } = await axios.post(this.endpoints.discussions, {
-          position: this.discussion.position,
-          note_text: noteBody,
+          note: {
+            position: this.discussion.position,
+            note: noteBody,
+          },
         });
         clearDraft(this.autosaveKey);
         this.replaceDiscussion(this.discussion, discussion);
@@ -87,7 +89,11 @@ export default {
 </script>
 
 <template>
-  <div ref="root" class="gl-bg-subtle gl-px-5 gl-py-4" :data-discussion-id="discussion.id">
+  <div
+    ref="root"
+    class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-5 gl-py-4"
+    :data-discussion-id="discussion.id"
+  >
     <note-form
       :autosave-key="autosaveKey"
       :autofocus="discussion.shouldFocus"

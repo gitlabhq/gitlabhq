@@ -17,7 +17,7 @@ module Peek
       end
 
       def detail_store
-        ::Gitlab::SafeRequestStore["#{key}_call_details".to_sym] ||= []
+        ::Gitlab::SafeRequestStore[:"#{key}_call_details"] ||= []
       end
 
       private

@@ -259,6 +259,11 @@ domains:
     feature_categories:
       - pages
 
+  Activation:
+    description: User and namespace activation features and metrics tracking
+    feature_categories:
+      - onboarding
+
   DeployTokens:
     description: Managing deploy tokens
     feature_categories:

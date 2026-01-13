@@ -1,0 +1,6 @@
+---
+name: read_iteration
+description: Grants the ability to read iterations
+boundaries:
+  - group
+  - project

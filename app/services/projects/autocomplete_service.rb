@@ -47,7 +47,7 @@ module Projects
 
       wiki
         .list_pages(limit: 5000, load_content: true, size_limit: 512)
-        .reject { |page| page.slug.start_with?('templates/') }
+        .reject { |page| page.slug.start_with?('templates/', 'uploads/') }
         .map { |page| { path: wiki_page_path(page.wiki, page), slug: page.slug, title: page.human_title } }
     end
 

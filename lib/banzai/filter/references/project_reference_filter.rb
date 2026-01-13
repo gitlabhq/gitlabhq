@@ -44,9 +44,9 @@ module Banzai
         # if no replacements were made. All links have `gfm` and `gfm-project` class names attached for styling.
         def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
           references_in(text) do |match_text, project_path|
-            cached_call(:banzai_url_for_object, match_text, path: [Project, project_path.downcase]) do
+            cached_call(:banzai_url_for_object, match_text, path: [Project, project_path]) do
               if project = projects_hash[project_path.downcase]
-                link_to_project(project, link_content_html: link_content_html)
+                link_to_project(project, match_text:, link_content_html:)
               end
             end
           end
@@ -69,9 +69,16 @@ module Banzai
         def projects
           refs = Set.new
 
+          ref_pattern = Project.markdown_reference_pattern
+          ref_pattern_anchor = /\A#{ref_pattern}\z/
+
           nodes.each do |node|
-            node.to_html.scan(Project.markdown_reference_pattern) do
+            node.content.scan(ref_pattern) do
               refs << "#{$~[:namespace]}/#{$~[:project]}"
+            end
+
+            yield_valid_link(node) do |link|
+              refs << "#{$~[:namespace]}/#{$~[:project]}" if link.match(ref_pattern_anchor)
             end
           end
 
@@ -86,9 +93,10 @@ module Banzai
           reference_class(:project)
         end
 
-        def link_to_project(project, link_content_html: nil)
+        def link_to_project(project, match_text:, link_content_html:)
           url = urls.project_url(project, only_path: context[:only_path])
-          data = data_attribute(project: project.id)
+          data_attributes = data_attributes_for(match_text, link_content_html, project: project.id)
+          data = data_attribute(data_attributes)
           content = link_content_html || CGI.escapeHTML(project.to_reference)
 
           write_opening_tag("a", {

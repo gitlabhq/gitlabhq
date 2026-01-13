@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feature_category: :system_access do
+RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access do
   let(:user) { create(:user, organizations: [current_organization]) }
   let(:application_scopes) { 'api read_user' }
   let(:confidential) { true }

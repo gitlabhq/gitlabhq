@@ -1,0 +1,6 @@
+query discoverFluxKustomizationsQuery($configuration: LocalConfiguration) {
+  discoverFluxKustomizations(configuration: $configuration) @client {
+    supportedVersion
+    preferredVersion
+  }
+}

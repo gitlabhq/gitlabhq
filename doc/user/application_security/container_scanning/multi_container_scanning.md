@@ -10,7 +10,7 @@ description: Image vulnerability scanning, configuration, customization, and rep
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

@@ -31,7 +31,8 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
           allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
         end
 
-        context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524300' do
+        context 'with quarantine',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9443' do
           it_behaves_like 'Blocked URL'
         end
 

@@ -1,8 +1,13 @@
 import { GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, historyPushState } from '~/lib/utils/common_utils';
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  historyPushState: jest.fn(),
+}));
 
 describe('Settings Block', () => {
   let wrapper;
@@ -70,7 +75,7 @@ describe('Settings Block', () => {
 
   describe('when collapse is closed', () => {
     beforeEach(() => {
-      mountComponent();
+      mountComponent({ id: 'js-mock-settings' });
     });
 
     it('renders button with `Expand` text', () => {
@@ -86,6 +91,7 @@ describe('Settings Block', () => {
 
     describe('when `Expand` button is clicked', () => {
       beforeEach(async () => {
+        setWindowLocation('https://gitlab.test/groups/my-group/-/edit');
         await findToggleButton().trigger('click');
       });
 
@@ -95,6 +101,11 @@ describe('Settings Block', () => {
 
       it('emits `toggle-expand` event', () => {
         expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
+      });
+
+      it('updates the url hash', async () => {
+        await nextTick();
+        expect(historyPushState).toHaveBeenCalledWith('/groups/my-group/-/edit#js-mock-settings');
       });
     });
 
@@ -142,6 +153,11 @@ describe('Settings Block', () => {
 
       it('closes the collapse', () => {
         expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(false);
+      });
+
+      it('removes the hash from the url', () => {
+        expect(historyPushState).toHaveBeenCalledTimes(1);
+        expect(historyPushState).toHaveBeenCalledWith('/');
       });
     });
 

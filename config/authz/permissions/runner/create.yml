@@ -1,6 +1,5 @@
 ---
 name: create_runner
 description: Grants the ability to create runners
-feature_category: runner_core
 boundaries:
   - project

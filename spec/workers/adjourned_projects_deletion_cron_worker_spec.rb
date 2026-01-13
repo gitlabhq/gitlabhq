@@ -31,9 +31,22 @@ RSpec.describe AdjournedProjectsDeletionCronWorker, feature_category: :complianc
         create(:project, marked_for_deletion_at: marked_for_deletion_at, deleting_user: user)
       end
 
-      it 'schedules the second job 10 seconds after the first' do
-        expect(AdjournedProjectDeletionWorker).to receive(:perform_in).with(10, project_marked_for_deletion.id)
+      it 'schedules the second job 3 seconds after the first' do
+        expect(AdjournedProjectDeletionWorker).to receive(:perform_in).with(3, project_marked_for_deletion.id)
         expect(AdjournedProjectDeletionWorker).to receive(:perform_in).with(0, project_marked_for_deletion_two.id)
+
+        worker.perform
+      end
+    end
+
+    context 'with pending_delete project' do
+      before do
+        project_marked_for_deletion.update!(pending_delete: true)
+      end
+
+      it 'scheduled the project for deletion' do
+        expect(AdjournedProjectDeletionWorker).to receive(:perform_in)
+                                                    .with(anything, project_marked_for_deletion.id)
 
         worker.perform
       end

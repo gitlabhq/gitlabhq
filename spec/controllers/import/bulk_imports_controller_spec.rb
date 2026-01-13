@@ -402,10 +402,10 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
              "source_full_path" => "full_path",
              "destination_slug" => "destination_name",
              "destination_namespace" => "root" },
-           { "source_type" => "group_entity",
-             "source_full_path" => "full_path",
-             "destination_slug" => "destination_name",
-             "destination_namespace" => "invalid-namespace" }]
+            { "source_type" => "group_entity",
+              "source_full_path" => "full_path",
+              "destination_slug" => "destination_name",
+              "destination_namespace" => "invalid-namespace" }]
         end
 
         before do
@@ -434,7 +434,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq([{ "success" => true, "id" => bulk_import.id, "message" => nil },
-                                       { "success" => false, "id" => nil, "message" => "Record invalid" }])
+            { "success" => false, "id" => nil, "message" => "Record invalid" }])
         end
 
         context 'when entity destination_name is specified' do

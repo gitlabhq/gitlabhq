@@ -77,9 +77,9 @@ export const getNewCustomEmojiPath = ({ cache, fullPath, workItemIid }) => {
 
   const sourceData = cache.readQuery(query);
 
-  if (!sourceData?.workspace?.workItem) {
+  if (!sourceData?.namespace?.workItem) {
     return '';
   }
 
-  return findAwardEmojiWidget(sourceData.workspace.workItem)?.newCustomEmojiPath || '';
+  return findAwardEmojiWidget(sourceData.namespace.workItem)?.newCustomEmojiPath || '';
 };

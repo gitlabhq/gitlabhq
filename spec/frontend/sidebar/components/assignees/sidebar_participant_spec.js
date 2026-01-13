@@ -16,7 +16,7 @@ describe('Sidebar participant component', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findBusyBadge = () => wrapper.find('[data-testid="busy-badge"]');
-  const findAgentBadge = () => wrapper.find('[data-testid="agent-badge"]');
+  const findAgentBadge = () => wrapper.find('[data-testid="sidebar-participant-agent-badge"]');
 
   const createComponent = ({
     status = null,
@@ -62,6 +62,7 @@ describe('Sidebar participant component', () => {
       createComponent({ status: { availability: 'BUSY' } });
 
       expect(findBusyBadge().exists()).toBe(true);
+      expect(findBusyBadge().text()).toBe('Busy');
       expect(findAgentBadge().exists()).toBe(false);
     });
   });
@@ -71,7 +72,34 @@ describe('Sidebar participant component', () => {
       createComponent({ compositeIdentityEnforced: true });
 
       expect(findAgentBadge().exists()).toBe(true);
+      expect(findAgentBadge().text()).toBe('AI');
       expect(findBusyBadge().exists()).toBe(false);
+    });
+
+    describe('and not disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          compositeIdentityEnforced: true,
+          status: { ...user.status, disabledForDuoUsage: false },
+        });
+      });
+
+      it('does not render the disabled class', () => {
+        expect(findAvatar().classes()).not.toContain('sidebar-participant-disabled');
+      });
+    });
+
+    describe('and disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          compositeIdentityEnforced: true,
+          status: { ...user.status, disabledForDuoUsage: true },
+        });
+      });
+
+      it('adds the sidebar-participant-disabled class', () => {
+        expect(findAvatar().classes()).toContain('sidebar-participant-disabled');
+      });
     });
   });
 

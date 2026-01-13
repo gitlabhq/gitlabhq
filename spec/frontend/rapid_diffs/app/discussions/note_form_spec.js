@@ -1,8 +1,8 @@
 import { merge } from 'lodash';
-import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -25,7 +25,7 @@ describe('NoteForm', () => {
   };
 
   const createComponent = (props = {}, provide = {}, stubs = {}) => {
-    wrapper = shallowMount(NoteForm, {
+    wrapper = shallowMountExtended(NoteForm, {
       pinia,
       propsData: {
         ...defaultProps,
@@ -42,11 +42,7 @@ describe('NoteForm', () => {
       .findAllComponents(GlButton)
       .filter((buttonWrapper) => buttonWrapper.text() === 'Save comment')
       .at(0);
-  const findCancelButton = () =>
-    wrapper
-      .findAllComponents(GlButton)
-      .filter((buttonWrapper) => buttonWrapper.text() === 'Cancel')
-      .at(0);
+  const findCancelButton = () => wrapper.findByTestId('cancel');
 
   beforeEach(() => {
     defaultProps = {
@@ -216,6 +212,11 @@ describe('NoteForm', () => {
       });
       findCancelButton().vm.$emit('click');
       expect(wrapper.emitted('cancel')).toBe(undefined);
+    });
+
+    it('hides cancel button when canCancel is false', () => {
+      createComponent({ canCancel: false });
+      expect(findCancelButton().exists()).toBe(false);
     });
   });
 

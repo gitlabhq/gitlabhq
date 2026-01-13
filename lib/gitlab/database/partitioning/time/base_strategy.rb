@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Partitioning
       module Time
-        class BaseStrategy
+        class BaseStrategy < Gitlab::Database::Partitioning::BaseStrategy
           attr_reader :model, :partitioning_key, :retain_for, :retain_non_empty_partitions, :analyze_interval
 
           delegate :table_name, to: :model

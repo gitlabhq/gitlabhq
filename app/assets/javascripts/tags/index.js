@@ -3,7 +3,7 @@ import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/i
 import SortDropdown from './components/sort_dropdown.vue';
 
 const mountDropdownApp = (el) => {
-  const { sortOptions, filterTagsPath } = el.dataset;
+  const { filterTagsPath } = el.dataset;
 
   return new Vue({
     el,
@@ -12,7 +12,6 @@ const mountDropdownApp = (el) => {
       SortDropdown,
     },
     provide: {
-      sortOptions: JSON.parse(sortOptions),
       filterTagsPath,
     },
     render: (createElement) => createElement(SortDropdown),

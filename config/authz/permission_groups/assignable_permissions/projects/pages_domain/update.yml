@@ -1,7 +1,6 @@
 ---
 name: update_pages_domain
 description: Grants the ability to update pages domains
-feature_category: pages
 boundaries:
   - project
 permissions:

@@ -18,9 +18,9 @@ Container scanning detects these risks early, before they reach production envir
 vulnerabilities appear in your base images or operating system's packages, container scanning
 identifies them and provides a remediation path for those that it can.
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+- <i class="fa-youtube-play" aria-hidden="true"></i>
   For an overview, see [Container scanning - Advanced Security Testing](https://www.youtube.com/watch?v=C0jn2eN5MAs).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
+- <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [How to set up container scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
 - For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/_index.md).
 
 Container scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
@@ -216,11 +216,8 @@ versions of the container-scanning images. You can therefore replace standard im
 images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
 standard tag plus the `-fips` extension.
 
-{{< alert type="note" >}}
-
-The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
-
-{{< /alert >}}
+> [!note]
+> The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
 
 Container scanning of images in authenticated registries is not supported when FIPS mode
 is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
@@ -364,11 +361,8 @@ container_scanning:
 If the external registry requires authentication, provide credentials using the `CS_REGISTRY_USER`
 and `CS_REGISTRY_PASSWORD` CI/CD variables.
 
-{{< alert type="note" >}}
-
-Scanning images in an external private registry is not supported when FIPS mode is enabled.
-
-{{< /alert >}}
+> [!note]
+> Scanning images in an external private registry is not supported when FIPS mode is enabled.
 
 For example, to scan an image in Google Container Registry:
 
@@ -588,11 +582,8 @@ This example excludes from `gl-container-scanning-report.json`:
   - as full image name with registry hostname (such as `your.private.registry:5000/centos`).
   - as full image name with registry hostname and sha256 label (such as `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256`).
 
-{{< alert type="note" >}}
-
-The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has **no impact** on the handling of vulnerabilities. You can include comments to describe the vulnerability.
-
-{{< /alert >}}
+> [!note]
+> The string after CVE ID (`cups` and `libxml2` in the previous example) is an optional comment format. It has **no impact** on the handling of vulnerabilities. You can include comments to describe the vulnerability.
 
 ##### Container scanning job log format
 
@@ -951,15 +942,12 @@ Unlike regular container scanning, the scan results do not include a security re
 
 When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
-{{< alert type="note" >}}
-
-Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
-
-{{< /alert >}}
+> [!note]
+> Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
 {{< alert type="warning" >}}
 
-Vulnerabilities detected by Container Scanning for Registry cannot be automatically marked as
+Vulnerabilities detected by container scanning for registry cannot be automatically marked as
 resolved when you update or remove vulnerable components. These vulnerabilities remain visible
 indefinitely because this feature only generates SBOMs, not the security reports required for
 vulnerability resolution.

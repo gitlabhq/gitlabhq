@@ -495,7 +495,7 @@ A displayed error can identify the problem and point to a solution. For example,
 
 ```ruby
 irb(main):018:0> group.members.map(&:errors).map(&:full_messages)
-=> [["The member's email address is not allowed for this group. Go to the group's &#39;Settings &gt; General&#39; page, and check &#39;Restrict membership by email domain&#39;."]]
+=> [["The member's email address is not allowed for this group. Go to the group's 'Settings > General' page, and check 'Restrict membership by email domain'."]]
 ```
 
 This error showed that an Administrator chose to [restrict group membership by email domain](../../../user/group/access_and_permissions.md#restrict-group-access-by-domain),
@@ -774,11 +774,8 @@ You can solve this error in two ways.
 This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server.
 For example, if a load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
 
-{{< alert type="note" >}}
-
-If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
-
-{{< /alert >}}
+> [!note]
+> If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
 
 To [rename references to the LDAP server](../../raketasks/ldap.md#other-options) that is no longer configured, run:
 

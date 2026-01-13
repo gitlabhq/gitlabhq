@@ -23,7 +23,7 @@ For more information, see:
 
 - [Turn on GitLab Duo](../gitlab_duo/turn_on_off.md).
 - [GitLab Duo Agent Platform prerequisites](../duo_agent_platform/_index.md#prerequisites).
-- [Health check details](../../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
+- [Health check details](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI
 

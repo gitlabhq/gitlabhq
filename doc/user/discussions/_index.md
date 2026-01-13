@@ -59,6 +59,8 @@ Users can change this setting for themselves in the [notification settings](../p
 You can quickly see which comments involve you, because GitLab highlights
 mentions for yourself (the current, authenticated user) in a different color.
 
+When you mention someone, in a work item or merge request, they become a [participant](../participants.md).
+
 ### Mentioning all members
 
 {{< history >}}
@@ -382,8 +384,7 @@ such as:
 
 {{< collapsible title="Model information" >}}
 
-- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for GitLab.com, GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 4.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -401,7 +402,7 @@ such as:
 
 Generate a summary of discussions on an issue.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
 <!-- Video published on 2024-03-28 -->
 
 Prerequisites:

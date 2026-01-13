@@ -178,6 +178,41 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       end
     end
 
+    context 'when tag has an SSH signature' do
+      let(:tag_name) { 'v1.0.0' }
+      let(:tag_message_with_signature) do
+        <<~MESSAGE
+        Version 1.0.0
+        -----BEGIN SSH SIGNATURE-----
+
+        iQEzB...
+        -----END SSH SIGNATURE-----
+        MESSAGE
+      end
+
+      let(:pipeline) { build(:ci_empty_pipeline, :created, project: project, ref: tag_name, tag: true) }
+
+      before do
+        allow(project.repository).to receive(:find_tag).with(tag_name).and_return(
+          instance_double(Gitlab::Git::Tag, message: tag_message_with_signature)
+        )
+      end
+
+      it 'sanitizes SSH signature from CI_COMMIT_TAG_MESSAGE' do
+        expect(subject.to_hash['CI_COMMIT_TAG_MESSAGE']).to eq("Version 1.0.0\n\n")
+      end
+
+      context 'when "strip_signature_from_ci_commit_tag_message" FF is disabled' do
+        before do
+          stub_feature_flags(strip_signature_from_ci_commit_tag_message: false)
+        end
+
+        it 'returns signature in the message' do
+          expect(subject.to_hash['CI_COMMIT_TAG_MESSAGE']).to eq(tag_message_with_signature)
+        end
+      end
+    end
+
     context 'when merge request is present' do
       let_it_be(:assignees) { create_list(:user, 2) }
       let_it_be(:milestone) { create(:milestone, project: project) }

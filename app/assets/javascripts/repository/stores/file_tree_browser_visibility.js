@@ -9,7 +9,6 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
   state: () => ({
     fileTreeBrowserIsExpanded: false,
     fileTreeBrowserIsPeekOn: false,
-    wasVisibleBeforeCompact: false,
     shouldRestoreFocusToToggle: false,
   }),
   getters: {
@@ -42,7 +41,11 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       try {
         const storedValue = localStorage.getItem(FILE_TREE_BROWSER_VISIBILITY);
         if (storedValue !== null) {
+          // User has interacted with the browser before, use their preference
           this.setFileTreeBrowserIsExpanded(parseBoolean(storedValue));
+        } else {
+          // First-time user, show the file tree browser by default
+          this.setFileTreeBrowserIsExpanded(true);
         }
       } catch (error) {
         logError(error);
@@ -52,7 +55,7 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       // Mark that focus should be restored after toggle
       this.shouldRestoreFocusToToggle = true;
 
-      if (useMainContainer().isIntermediate) {
+      if (useMainContainer().isCompact) {
         this.toggleFileTreeBrowserIsPeek();
       } else {
         this.toggleFileTreeBrowserIsExpanded();
@@ -62,8 +65,8 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       this.shouldRestoreFocusToToggle = false;
     },
     initializeFileTreeBrowser() {
-      // Only load expanded state on wide screens
-      if (useMainContainer().isWide) {
+      // Only load expanded state on intermediate and wide screens
+      if (!useMainContainer().isCompact) {
         this.loadFileTreeBrowserExpandedFromLocalStorage();
       }
       this.setupMainContainerWatcher();
@@ -74,20 +77,15 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       watch(
         () => ({
           isCompact: mainContainer.isCompact,
-          isIntermediate: mainContainer.isIntermediate,
         }),
-        ({ isCompact, isIntermediate }, oldValue) => {
+        ({ isCompact }, oldValue) => {
           if (!oldValue) return;
 
           const isVisible = this.fileTreeBrowserIsExpanded || this.fileTreeBrowserIsPeekOn;
 
-          if (isCompact) {
-            if (isVisible) this.wasVisibleBeforeCompact = true;
-            this.resetFileTreeBrowserAllStates();
-          } else if (isVisible || this.wasVisibleBeforeCompact) {
-            this.fileTreeBrowserIsPeekOn = isIntermediate;
-            this.fileTreeBrowserIsExpanded = !isIntermediate;
-            this.wasVisibleBeforeCompact = false;
+          if (isVisible) {
+            this.fileTreeBrowserIsPeekOn = isCompact;
+            this.fileTreeBrowserIsExpanded = !isCompact;
           }
         },
       );

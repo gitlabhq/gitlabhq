@@ -4,8 +4,6 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Passkeys
 description: Passwordless authentication and 2FA using passkeys
-ignore_in_report: true
-noindex: true
 ---
 
 {{< details >}}
@@ -109,11 +107,8 @@ To use a passkey as a 2FA method:
 1. When prompted, authenticate with your passkey.
 1. Follow the prompts on your device to authenticate using your fingerprint, face recognition, or device PIN.
 
-{{< alert type="note" >}}
-
-If your passkey is unavailable on the current device, use your backup 2FA method instead.
-
-{{< /alert >}}
+> [!note]
+> If your passkey is unavailable on the current device, use your backup 2FA method instead.
 
 ## Delete a passkey
 
@@ -133,11 +128,8 @@ To delete a passkey:
    - If you have multiple passkeys, select **Delete passkey**.
    - If you have a single passkey, select **Disable passkey sign-in**.
 
-{{< alert type="warning" >}}
-
-Deleted passkeys cannot be recovered. You must add a new passkey if you want to authenticate with the device again.
-
-{{< /alert >}}
+> [!warning]
+> Deleted passkeys cannot be recovered. You must add a new passkey if you want to authenticate with the device again.
 
 ## Troubleshooting
 

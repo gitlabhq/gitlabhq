@@ -28,6 +28,10 @@ module Namespaces
         )
       end
 
+      def descendant_ids(skope: self.class)
+        self_and_descendant_ids(skope:).id_not_in(id)
+      end
+
       override :all_project_ids
       def all_project_ids
         scope_with_cached_ids(

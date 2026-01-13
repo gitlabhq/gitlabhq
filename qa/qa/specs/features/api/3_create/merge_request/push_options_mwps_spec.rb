@@ -64,7 +64,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842',
         quarantine: {
           type: :flaky,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/346425"
+          issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24013"
         }
       ) do
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [

@@ -346,6 +346,12 @@ export default {
     onInput(tokens) {
       this.$emit('onInput', this.removeQuotesEnclosure(uniqueTokens(tokens)));
     },
+    onTokenComplete(token) {
+      this.$emit('token-complete', token);
+    },
+    onTokenDestroy(token) {
+      this.$emit('token-destroy', token);
+    },
   },
 };
 </script>
@@ -385,6 +391,8 @@ export default {
         @clear-history="handleClearHistory"
         @submit="handleFilterSubmit"
         @input="onInput"
+        @token-complete="onTokenComplete"
+        @token-destroy="onTokenDestroy"
       >
         <template #history-item="{ historyItem }">
           <template v-for="(token, index) in historyItem">

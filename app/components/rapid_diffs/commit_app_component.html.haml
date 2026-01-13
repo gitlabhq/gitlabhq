@@ -3,3 +3,5 @@
     - c.with_before_diffs_list do
       %button.rd-new-discussion-toggle{ 'aria-label': s_('RapidDiffs|Add comment'), data: { new_discussion_toggle: true, click: 'newDiscussion' }, hidden: 'true' }
         = helpers.sprite_icon('comment', size: 12)
+  - c.with_after_diffs_list do
+    %div{ data: { commit_timeline: true } }

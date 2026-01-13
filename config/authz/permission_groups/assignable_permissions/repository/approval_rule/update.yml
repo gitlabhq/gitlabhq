@@ -1,0 +1,8 @@
+---
+name: update_approval_rule
+description: Grants the ability to update approval rules
+boundaries:
+  - group
+  - project
+permissions:
+  - update_approval_rule

@@ -75,7 +75,7 @@ when GitLab hosts and connects to those models through the cloud-based [AI Gatew
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.9 and later   | Generally available |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                             | GitLab 18.3 and later   | Generally available |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code)                             | GitLab 18.3 and later   | Generally available |
 | [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.10 and later  | Beta                |
 | [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#vulnerability-explanation)                       | GitLab 18.1.2 and later | Beta                |
 | [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | GitLab 18.1.2 and later | Beta                |
@@ -106,11 +106,8 @@ Use one of the following options to implement AI-native features:
 
 In a fully self-hosted configuration, you deploy your own AI Gateway and use only [supported LLMs](supported_models_and_hardware_requirements.md) in your infrastructure, without using GitLab infrastructure or AI vendor models. This gives you full control over your data and security.
 
-{{< alert type="note" >}}
-
-This configuration only includes models configured through your self-hosted AI Gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features will connect to the GitLab-hosted AI Gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
-
-{{< /alert >}}
+> [!note]
+> This configuration only includes models configured through your self-hosted AI Gateway. If you use [GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model) for any features, those features connect to the GitLab-hosted AI Gateway instead of your self-hosted gateway, making it a hybrid configuration rather than fully self-hosted.
 
 While you deploy your own AI Gateway, you can still use cloud-based LLM services like [AWS Bedrock](https://aws.amazon.com/bedrock/) or [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) as your model backend and they will continue to connect through your self-hosted AI Gateway.
 
@@ -206,7 +203,7 @@ offering a ready-to-use AI solution without the need for on-premise infrastructu
 
 For more information, see the [GitLab.com AI Gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
-To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/setup.md).
+To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md).
 
 ## Set up a GitLab Duo Self-Hosted infrastructure
 

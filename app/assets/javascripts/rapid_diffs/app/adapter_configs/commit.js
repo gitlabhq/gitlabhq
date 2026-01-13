@@ -7,6 +7,7 @@ import { optionsMenuAdapter } from '~/rapid_diffs/adapters/options_menu';
 import { commitDiffsOptionsMenuAdapter } from '~/rapid_diffs/adapters/commit_diffs_options_menu';
 
 export const adapters = {
+  ...VIEWER_ADAPTERS,
   text_inline: [
     ...VIEWER_ADAPTERS.text_inline.filter((a) => a !== optionsMenuAdapter),
     commitDiffsOptionsMenuAdapter,

@@ -289,7 +289,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       end
     end
   end
+end
 
+RSpec.shared_examples 'Debian Distribution key generation error' do
   context 'when the distribution key cannot be generated' do
     it 'raises the error' do
       allow(::Packages::Debian::GenerateDistributionKeyService).to receive(:new).and_wrap_original do |m, _|

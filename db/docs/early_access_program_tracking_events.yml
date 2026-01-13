@@ -1,7 +1,5 @@
 ---
 table_name: early_access_program_tracking_events
-classes:
-- EarlyAccessProgram::TrackingEvent
 feature_categories:
 - user_profile
 description: Identifiable product usage data analytics from Early access program participants.

@@ -7,7 +7,7 @@ require_relative '../../../metrics_server/metrics_server'
 
 # End-to-end tests for the metrics server process we use to serve metrics
 # from forking applications (Sidekiq, Puma) to the Prometheus scraper.
-RSpec.describe 'GitLab metrics server', :aggregate_failures do
+RSpec.describe 'GitLab metrics server', :aggregate_failures, feature_category: :durability_metrics do
   let(:config_file) { Tempfile.new('gitlab.yml') }
   let(:address) { '127.0.0.1' }
   let(:port) { 3807 }
@@ -93,7 +93,7 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
     end
   end
 
-  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455277' do
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9473' do
     it_behaves_like 'spawns a server', 'puma'
   end
 

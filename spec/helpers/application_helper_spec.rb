@@ -512,22 +512,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe '#project_studio_enabled?' do
-    let(:user) { build(:user) }
-
-    before do
-      allow(helper).to receive_messages(current_user: user, cookies: { studio: 'true' })
-    end
-
-    it 'calls ProjectStudio#enabled?' do
-      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
-        expect(studio).to receive(:enabled?)
-      end
-
-      helper.project_studio_enabled?
-    end
-  end
-
   describe '#body_data' do
     context 'when @project is not set' do
       it 'does not include project data in the body data elements' do

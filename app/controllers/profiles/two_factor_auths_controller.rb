@@ -8,7 +8,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     if: :current_password_required?
   before_action :update_current_user_otp!, only: [:show]
 
-  helper_method :current_password_required?
+  helper_method :current_password_required?, :passkey_via_2fa_enabled?
 
   feature_category :system_access
 

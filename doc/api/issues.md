@@ -471,11 +471,8 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -701,11 +698,8 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -1048,11 +1042,8 @@ property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -1163,6 +1154,15 @@ Example response:
 }
 ```
 
+If the target project has **Issues** [turned off](../user/project/settings/_index.md#toggle-project-features),
+you get the `403` response, along with the message:
+
+```json
+{
+   "message": "403 Forbidden"
+}
+```
+
 Issues created by users on GitLab Premium or Ultimate include the `weight` property:
 
 ```json
@@ -1205,11 +1205,8 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -1602,11 +1599,8 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -1876,11 +1870,8 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 {{< alert type="warning" >}}
 
@@ -2089,11 +2080,8 @@ Example response:
 }
 ```
 
-{{< alert type="warning" >}}
-
-The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< /alert >}}
+> [!warning]
+> The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Promote an issue to an epic
 

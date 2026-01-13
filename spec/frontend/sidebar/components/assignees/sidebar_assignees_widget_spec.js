@@ -152,6 +152,7 @@ describe('Sidebar assignees widget', () => {
         username: 'francina.skiles',
         webPath: '/franc',
         webUrl: '/franc',
+        compositeIdentityEnforced: false,
       };
 
       createComponent();
@@ -226,6 +227,7 @@ describe('Sidebar assignees widget', () => {
                 webPath: '/root',
                 status: null,
                 type: 'HUMAN',
+                compositeIdentityEnforced: false,
               },
             ],
             id: 'gid://gitlab/Issue/1',
@@ -505,7 +507,7 @@ describe('Sidebar assignees widget', () => {
       });
 
       await waitForPromises();
-      expect(findUserSelect().props('issuableAuthor')).toEqual({});
+      expect(findUserSelect().props('issuableAuthor')).toEqual(null);
     });
   });
 });

@@ -52,6 +52,12 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_access_request do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) { get api("/#{source_type.pluralize}/#{source.id}/access_requests", personal_access_token: pat) }
+        end
       end
     end
   end
@@ -163,6 +169,12 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
           expect(json_response['access_level']).to eq(Member::MAINTAINER)
         end
 
+        it_behaves_like 'authorizing granular token permissions', :approve_access_request do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) { put api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}/approve", personal_access_token: pat) }
+        end
+
         context 'user_id does not match an existing access requester' do
           it 'returns 404' do
             expect do
@@ -212,6 +224,12 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { source.requesters.count }.by(-1)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :delete_access_request do
+          let(:user) { maintainer }
+          let(:boundary_object) { source }
+          let(:request) { delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", personal_access_token: pat) }
         end
 
         context 'user_id matches a member, not an access requester' do

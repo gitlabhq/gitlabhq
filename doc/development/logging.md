@@ -333,7 +333,7 @@ When adding new attributes, make sure they're exposed within the context of the 
 - Change `Gitlab::ApplicationContext` to accept these new values
 - Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/context.rb)
 
-See our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
+See our <i class="fa-youtube-play" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.
 
 The fields of the context are currently only logged for Sidekiq jobs triggered

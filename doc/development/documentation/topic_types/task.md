@@ -42,7 +42,7 @@ Create an issue when you want to track bugs or future work.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- The Developer, Maintainer, or Owner role for the project.
 
 To create an issue:
 
@@ -104,7 +104,7 @@ If the name is set for the instance, you can override it for a group.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the instance.
+- Administrator access.
 
 To change the default branch name for an instance:
 
@@ -115,7 +115,7 @@ To change the default branch name for an instance:
 
 Prerequisites:
 
-- You must have at least the Developer role for the group.
+- The Developer, Maintainer, or Owner role for the group.
 
 To change the default branch name for a group:
 
@@ -165,32 +165,32 @@ topic with the title `Prerequisites`.
 
 ### Writing prerequisite statements
 
-Use clear, consistent language when writing prerequisites. Follow these patterns.
+As much as possible, follow these patterns when writing prerequisites.
 
-- Assume `you must` and use it as the start of each phrase.
-- Avoid `need to`, `should`, or `ensure that`.
-- Use the active voice.
-- List items in order of importance, if necessary.
+- Use a list of nouns, assuming an unspoken `You must have:` as the introduction.
+- Use a list of verbs, assuming an unspoken `You must:` as the introduction.
 
-For example:
+For example, for a list of nouns:
 
 ```markdown
 Prerequisites:
 
-- Be a member of a group that has GitLab Duo turned on.
-- Have at least the Developer role for the project.
-- Have the GitLab Workflow extension for VS Code installed.
-- Have your SSH keys configured.
+- A valid GitLab account.
+- Docker installed locally.
+- The Maintainer or Owner role for the project.
 ```
 
-Instead of:
+For a list of verbs:
 
 ```markdown
-- Access to the project is required.
-- Ensure you are an administrator.
-- GitLab Duo must be turned on for your group.
-- The VS Code extension must be installed.
+Prerequisites:
+
+- Enable Cloud Logging API on your Google Cloud project.
+- Configure dependency scanning on your target projects.
+- Create a service account with appropriate permissions.
 ```
+
+Try to avoid phrases like `Ensure that` or `You must have`.
 
 ## Related topics
 

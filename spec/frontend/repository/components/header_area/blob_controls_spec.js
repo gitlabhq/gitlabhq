@@ -23,6 +23,8 @@ import applicationInfoQuery from '~/repository/queries/application_info.query.gr
 import createRouter from '~/repository/router';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
+import { NO_MODIFY_PERMISSION_MESSAGE } from '~/repository/components/header_area/constants';
+
 import {
   blobControlsDataMock,
   refMock,
@@ -89,6 +91,7 @@ describe('Blob controls component', () => {
     blobControlsResolver = blobControlsSuccessResolver,
     currentUserResolver = currentUserSuccessResolver,
     applicationInfoResolver = applicationInfoSuccessResolver,
+    provide = {},
   } = {}) => {
     const projectPath = 'some/project';
     router = createRouter(projectPath, refMock);
@@ -111,6 +114,9 @@ describe('Blob controls component', () => {
       apolloProvider: fakeApollo,
       provide: {
         currentRef: refMock,
+        showWebIdeButton: true,
+        showPipelineEditorButton: true,
+        ...provide,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -269,6 +275,13 @@ describe('Blob controls component', () => {
         disabled: false,
         customTooltipText: '',
       });
+    });
+
+    it('passes disabled and customTooltipText prop when user has no permission to modify the file', async () => {
+      await createComponent({ provide: { showWebIdeButton: false } });
+
+      expect(findWebIdeLink().props('disabled')).toBe(true);
+      expect(findWebIdeLink().props('customTooltipText')).toBe(NO_MODIFY_PERMISSION_MESSAGE);
     });
 
     describe('when project query has errors', () => {

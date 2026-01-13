@@ -1,25 +1,31 @@
 #import "../fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/user_disabled_for_duo_usage.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/user_autocomplete_status.fragment.graphql"
 
 query workspaceAutocompleteUsersSearch(
   $search: String!
   $fullPath: ID!
   $isProject: Boolean = true
 ) {
-  groupWorkspace: group(fullPath: $fullPath) @skip(if: $isProject) {
+  groupNamespace: group(fullPath: $fullPath) @skip(if: $isProject) {
     id
     users: autocompleteUsers(search: $search) {
       compositeIdentityEnforced @gl_introduced(version: "18.7.0")
       ...User
       ...UserAvailability
+      ...UserDisabledForDuoUsage
+      ...AutocompleteUserStatus
     }
   }
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     users: autocompleteUsers(search: $search) {
       compositeIdentityEnforced @gl_introduced(version: "18.7.0")
       ...User
       ...UserAvailability
+      ...UserDisabledForDuoUsage
+      ...AutocompleteUserStatus
     }
   }
 }

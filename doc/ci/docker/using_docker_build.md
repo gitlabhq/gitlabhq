@@ -877,11 +877,8 @@ of this file. You can do this with a command like:
 kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
 ```
 
-{{< alert type="note" >}}
-
-You must use the namespace that the Kubernetes executor for GitLab Runner uses to create job pods.
-
-{{< /alert >}}
+> [!note]
+> You must use the namespace that the Kubernetes executor for GitLab Runner uses to create job pods.
 
 After the ConfigMap is created, you can update the `config.toml`
 file to mount the file to `/etc/docker/daemon.json`. This update
@@ -911,11 +908,8 @@ When using Docker-in-Docker, Docker downloads all layers of your image every tim
 
 ## Use the OverlayFS driver
 
-{{< alert type="note" >}}
-
-The instance runners on GitLab.com use the `overlay2` driver by default.
-
-{{< /alert >}}
+> [!note]
+> The instance runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver, which
 copies the file system on every run. You can avoid this disk-intensive operation by using a different driver, for example `overlay2`.

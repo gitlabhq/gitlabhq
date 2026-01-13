@@ -152,7 +152,7 @@ describe('PasskeyAuthentication', () => {
 
       it('shows an alert', () => {
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'There was a problem communicating with your device.',
+          message: 'Failed to connect to your device. Try again.',
           variant: 'danger',
         });
       });

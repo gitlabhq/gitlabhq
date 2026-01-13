@@ -247,11 +247,8 @@ To configure file locks for a specific file type:
 
 1. Push the `.gitattributes` file to the remote repository for the changes to take effect.
 
-{{< alert type="note" >}}
-
-After a file type is registered as lockable, it is automatically marked as read-only.
-
-{{< /alert >}}
+> [!note]
+> After a file type is registered as lockable, it is automatically marked as read-only.
 
 #### Configure file locks without LFS
 
@@ -326,11 +323,8 @@ In the GitLab UI:
 - The repository file tree displays an LFS badge for files tracked by Git LFS.
 - Exclusively-locked files show a padlock icon.
 
-{{< alert type="note" >}}
-
-When you rename an exclusively-locked file, the lock is lost. You must lock it again to keep it locked.
-
-{{< /alert >}}
+> [!note]
+> When you rename an exclusively-locked file, the lock is lost. You must lock it again to keep it locked.
 
 ### Lock and edit a file
 

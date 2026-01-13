@@ -38,7 +38,7 @@ Organize your environment by configuring your groups and projects.
 - [Groups](../user/group/_index.md): Organize a collection of users or projects. Use these groups to quickly assign people and projects.
 - [Roles](../user/permissions.md): Define user access and visibility for your projects and groups.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m41At6s).
 
 Get started:
@@ -70,7 +70,7 @@ You might have to import projects from external sources like GitHub, Bitbucket, 
 ### Popular project imports
 
 - [GitHub Enterprise to GitLab Self-Managed](../integration/github.md)
-- [Bitbucket Server](../user/project/import/bitbucket_server.md)
+- [Bitbucket Server](../user/import/bitbucket_server.md)
 
 For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
 

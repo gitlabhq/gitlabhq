@@ -116,7 +116,7 @@ Follow these [best practices](best_practices.md) to implement accessible web app
 Enhance your accessibility knowledge with these resources:
 
 - [Introduction to digital accessibility](https://levelup.edcast.com/insights/ECL-1a014b4a-f92b-4da3-98fc-833be512257b) course
-- Accessible Web Development course (coming in Q3 FY26)
+- [Accessible Web Development](https://levelup.edcast.com/insights/accessible-web-development-this-is) course
 
 ## Other resources
 

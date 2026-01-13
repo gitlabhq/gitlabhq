@@ -50,11 +50,8 @@ For more information, see the [guidelines](feature_flags.md).
 
 The author of this MR, either a frontend or backend developer, should write the documentation.
 
-{{< alert type="note" >}}
-
-Community Contributors can ask for additional help from GitLab team members.
-
-{{< /alert >}}
+> [!note]
+> Community Contributors can ask for additional help from GitLab team members.
 
 #### Authoring
 

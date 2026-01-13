@@ -58,7 +58,7 @@ describe('Work Item State toggle button component', () => {
     findBlockedByModal().findAllComponents(GlLink).at(index);
   const findOpenChildrenModal = () => wrapper.findByTestId('open-children-warning-modal');
 
-  const { id, iid } = workItemQueryResponse.data.workspace.workItem;
+  const { id, iid } = workItemQueryResponse.data.namespace.workItem;
 
   const createComponent = ({
     mutationHandler = mutationSuccessHandler,

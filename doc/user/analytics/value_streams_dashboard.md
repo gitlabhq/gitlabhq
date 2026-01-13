@@ -1,5 +1,5 @@
 ---
-stage: Plan
+stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: View DevSecOps metrics (such as DORA and vulnerabilities) across your organization on a customizable dashboard.
@@ -413,11 +413,8 @@ Filters for the `usage_overview` visualization.
 
 #### Additional panel filters (deprecated)
 
-{{< alert type="warning" >}}
-
-The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
-
-{{< /alert >}}
+> [!warning]
+> The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
 
 Filters for the `dora_chart` visualization.
 

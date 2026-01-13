@@ -15,7 +15,7 @@ module QA
           'has service ping checked (but disabled)',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348335',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues/621',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/621',
             type: :investigating
           }
         ) do

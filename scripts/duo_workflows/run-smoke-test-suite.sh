@@ -1,4 +1,39 @@
 #!/usr/bin/env bash
+#
+# Run the Duo Workflows smoke test suite.
+#
+# Usage: [ENV_VARS] ./scripts/duo_workflows/run-smoke-test-suite.sh [--help|-h]
+#
+# Environment variables:
+#   ONLY_RUBOCOP=1  Run only rubocop
+#   ONLY_RSPEC=1    Run only rspec specs
+#   ONLY_JEST=1     Run only jest specs
+#
+#   SKIP_RUBOCOP=1  Skip rubocop
+#   SKIP_RSPEC=1    Skip rspec specs
+#   SKIP_JEST=1     Skip jest specs
+#
+# Examples:
+#   ONLY_RSPEC=1 ./scripts/duo_workflows/run-smoke-test-suite.sh
+#   SKIP_JEST=1 ./scripts/duo_workflows/run-smoke-test-suite.sh
+#
+# Note on Rubocop:
+#   By default, rubocop runs with REVEAL_RUBOCOP_TODO=1 and will fail even for violations
+#   ignored via '.rubocop_todo/...'. This encourages proactive resolution of newly introduced
+#   rubocop rule violations. To temporarily ignore TODOs, set REVEAL_RUBOCOP_TODO=0.
+#
+# Why is this script written in bash and has its logic duplicated across multiple features?
+#
+#   1. Bash handles interleaved STDOUT/STDERR streams correctly, preserving proper sequencing
+#      and color output from nested subprocesses. This is difficult to achieve in Ruby.
+#   2. We intentionally keep these scripts simple, linear, and minimal. Abstracting or DRYing
+#      them up would lead to complexity creep: rewriting in Ruby, adding tests, creating gems,
+#      and eventually building a whole framework. We avoid that path.
+#   3. Each feature area can customize their script independently without coordination.
+#
+#   See: https://gitlab.com/gitlab-org/gitlab/-/issues/560531#note_2681672640
+#        https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202481#note_2706447700
+#
 
 # shellcheck disable=SC2059
 
@@ -71,8 +106,28 @@ function print_success_message {
   printf "\n✅✅✅ ${BGreen}All executed linters/specs passed successfully!${Color_Off} ✅✅✅\n"
 }
 
+function print_usage {
+  awk 'NR==1{next} /^$/{exit} /^#/{gsub(/^# ?/,""); print}' "${BASH_SOURCE[0]}"
+  exit 0
+}
+
+function should_run {
+  local section=$1
+  local only_var="ONLY_${section}"
+  local skip_var="SKIP_${section}"
+
+  # If any ONLY_* var is set, run only those sections; otherwise use SKIP_* behavior
+  if [ -n "${ONLY_RUBOCOP}${ONLY_RSPEC}${ONLY_JEST}" ]; then
+    [ -n "${!only_var}" ]
+  else
+    [ -z "${!skip_var}" ]
+  fi
+}
+
 function main {
   trap onexit_err ERR
+
+  case "${1:-}" in --help|-h) print_usage ;; esac
 
   # Ensure we were not invoked via a non-bash shell which overrode the /bin/bash shebang
   [ -n "${BASH_VERSION:-}" ] || { printf "\n❌❌❌ ${BRed}Please run with bash${Color_Off} ❌❌❌\n" >&2; exit 1; }
@@ -87,14 +142,11 @@ function main {
   print_start_message
 
   # Run linting before tests
-  [ -z "${SKIP_RUBOCOP}" ] && run_rubocop
+  should_run RUBOCOP && run_rubocop
 
   # Test sections are sorted roughly in increasing order of execution time, in order to get the fastest feedback on failures.
-  [ -z "${SKIP_RSPEC}" ] && run_rspec
-  [ -z "${SKIP_JEST}" ] && run_jest
-
-  # Convenience ENV vars to run focused sections, copy and paste as a prefix to script command, and remove the one(s) you want to run focused
-  # SKIP_RUBOCOP=1 SKIP_RSPEC=1 SKIP_JEST=1
+  should_run RSPEC && run_rspec
+  should_run JEST && run_jest
 
   print_success_message
 }

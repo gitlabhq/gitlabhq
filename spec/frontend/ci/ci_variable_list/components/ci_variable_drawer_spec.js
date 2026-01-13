@@ -118,6 +118,7 @@ describe('CI Variable Drawer', () => {
     wrapper.findByTestId('environments-popover-container');
   const findEnvironmentsLabelHelpPopover = () =>
     findEnvironmentsLabelHelpContainer().findComponent(GlPopover);
+  const findFullScreenToggleButton = () => wrapper.findByTestId('ci-variable-fullscreen-toggle');
 
   describe('template', () => {
     beforeEach(() => {
@@ -746,6 +747,47 @@ describe('CI Variable Drawer', () => {
 
         expect(findValueField().exists()).toBe(false);
         expect(findHiddenVariableTip().text()).toBe('The value is masked and hidden permanently.');
+      });
+
+      describe('full-screen toggle', () => {
+        beforeEach(() => {
+          createComponent();
+        });
+
+        it('renders the full-screen toggle button with correct initial state', () => {
+          const button = findFullScreenToggleButton();
+
+          expect(button.props('icon')).toBe('maximize');
+          expect(button.attributes('aria-label')).toBe('Go full screen');
+          expect(button.attributes('title')).toBe('Go full screen');
+        });
+
+        it('toggles icon, aria-label, and title when button is clicked', async () => {
+          const button = findFullScreenToggleButton();
+
+          await button.vm.$emit('click');
+
+          expect(button.props('icon')).toBe('minimize');
+          expect(button.attributes('aria-label')).toBe('Exit full screen');
+          expect(button.attributes('title')).toBe('Exit full screen');
+
+          await button.vm.$emit('click');
+
+          expect(button.props('icon')).toBe('maximize');
+          expect(button.attributes('aria-label')).toBe('Go full screen');
+          expect(button.attributes('title')).toBe('Go full screen');
+        });
+
+        it('does not show full-screen button when editing a hidden variable', () => {
+          createComponent({
+            props: {
+              mode: EDIT_VARIABLE_ACTION,
+              selectedVariable: { ...mockProjectVariable, hidden: true },
+            },
+          });
+
+          expect(findFullScreenToggleButton().exists()).toBe(false);
+        });
       });
     });
   });

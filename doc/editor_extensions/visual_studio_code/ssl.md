@@ -42,11 +42,8 @@ Prerequisites:
 
 ### Windows
 
-{{< alert type="note" >}}
-
-These instructions were tested on Windows 10 and VS Code 1.60.0.
-
-{{< /alert >}}
+> [!note]
+> These instructions were tested on Windows 10 and VS Code 1.60.0.
 
 Make sure you can see your self-signed CA in your certificate store:
 
@@ -56,11 +53,8 @@ Make sure you can see your self-signed CA in your certificate store:
 
 ### Linux
 
-{{< alert type="note" >}}
-
-These instructions were tested on Arch Linux `5.14.3-arch1-1` and VS Code 1.60.0.
-
-{{< /alert >}}
+> [!note]
+> These instructions were tested on Arch Linux `5.14.3-arch1-1` and VS Code 1.60.0.
 
 1. Use your operating system's tools to confirm you can add our self-signed CA to your system:
    - `update-ca-trust` (Fedora, RHEL, CentOS)
@@ -71,11 +65,8 @@ These instructions were tested on Arch Linux `5.14.3-arch1-1` and VS Code 1.60.0
 
 ### MacOS
 
-{{< alert type="note" >}}
-
-These instructions were tested on macOS Tahoe 26, VS Code 1.101.2, and GitLab Workflow 6.51.1.
-
-{{< /alert >}}
+> [!note]
+> These instructions were tested on macOS Tahoe 26, VS Code 1.101.2, and GitLab Workflow 6.51.1.
 
 Make sure you see the self-signed CA in your keychain:
 

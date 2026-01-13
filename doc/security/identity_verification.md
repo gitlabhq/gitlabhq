@@ -40,11 +40,8 @@ See [Make new users confirm email](user_email_confirmation.md).
 In addition to email verification, you might also be asked to provide a valid phone number and
 verify a one-time password (OTP) code.
 
-{{< alert type="note" >}}
-
-You cannot verify an account with a phone number associated with a banned user.
-
-{{< /alert >}}
+> [!note]
+> You cannot verify an account with a phone number associated with a banned user.
 
 ### Country support
 

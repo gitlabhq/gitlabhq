@@ -127,7 +127,7 @@ export default {
         };
       },
       update(data) {
-        return getWorkItemTypeAllowedStatusMap(data.workspace?.workItemTypes?.nodes);
+        return getWorkItemTypeAllowedStatusMap(data.namespace?.workItemTypes?.nodes);
       },
       skip() {
         return this.isEpicBoard;

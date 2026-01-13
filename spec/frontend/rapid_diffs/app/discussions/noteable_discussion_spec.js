@@ -15,11 +15,13 @@ import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue'
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { clearDraft } from '~/lib/utils/autosave';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/secret_detection');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/autosave');
 
 describe('NoteableDiscussion', () => {
   let wrapper;
@@ -83,6 +85,11 @@ describe('NoteableDiscussion', () => {
     createComponent();
     expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
     expect(wrapper.findComponent(NoteForm).exists()).toBe(false);
+  });
+
+  it('hides reply wrapper for individual notes', () => {
+    createComponent({ props: { discussion: createDiscussion({ individual_note: true }) } });
+    expect(wrapper.find('[data-testid="reply-wrapper"]').exists()).toBe(false);
   });
 
   it('starts replying', async () => {
@@ -170,22 +177,47 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
   });
 
+  describe('timelineLayout prop', () => {
+    it('passes timelineLayout to DiscussionNotes', () => {
+      createComponent({ props: { timelineLayout: true } });
+      expect(wrapper.findComponent(DiscussionNotes).props('timelineLayout')).toBe(true);
+    });
+
+    it('defaults timelineLayout to false', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiscussionNotes).props('timelineLayout')).toBe(false);
+    });
+  });
+
+  describe('isLastDiscussion prop', () => {
+    it('passes isLastDiscussion to DiscussionNotes', () => {
+      createComponent({ props: { isLastDiscussion: true } });
+      expect(wrapper.findComponent(DiscussionNotes).props('isLastDiscussion')).toBe(true);
+    });
+
+    it('defaults isLastDiscussion to false', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiscussionNotes).props('isLastDiscussion')).toBe(false);
+    });
+  });
+
   describe('when saving reply', () => {
     beforeEach(() => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);
     });
 
     it('adds reply', async () => {
-      const note = {};
-      axiosMock.onPost(defaultProvide.endpoints.createNote).reply(HTTP_STATUS_OK, { note });
+      const discussion = {};
+      axiosMock.onPost(defaultProvide.endpoints.discussions).reply(HTTP_STATUS_OK, { discussion });
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(wrapper.emitted('replyAdded')).toStrictEqual([[note]]);
+      expect(clearDraft).toHaveBeenCalled();
+      expect(wrapper.emitted('discussionUpdated')).toStrictEqual([[discussion]]);
     });
 
     it('hides note form after successful save', async () => {
-      const note = {};
-      axiosMock.onPost(defaultProvide.endpoints.createNote).reply(HTTP_STATUS_OK, { note });
+      const discussion = {};
+      axiosMock.onPost(defaultProvide.endpoints.discussions).reply(HTTP_STATUS_OK, { discussion });
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       await nextTick();
@@ -196,12 +228,12 @@ describe('NoteableDiscussion', () => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(false);
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(wrapper.emitted('replyAdded')).toBe(undefined);
+      expect(wrapper.emitted('discussionUpdated')).toBe(undefined);
     });
 
     it('shows alert when save fails', async () => {
       axiosMock
-        .onPost(defaultProvide.endpoints.createNote)
+        .onPost(defaultProvide.endpoints.discussions)
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       try {
@@ -210,7 +242,7 @@ describe('NoteableDiscussion', () => {
         expect(error).toBeInstanceOf(Error);
       }
       expect(createAlert).toHaveBeenCalled();
-      expect(wrapper.emitted('replyAdded')).toBe(undefined);
+      expect(wrapper.emitted('discussionUpdated')).toBe(undefined);
     });
   });
 

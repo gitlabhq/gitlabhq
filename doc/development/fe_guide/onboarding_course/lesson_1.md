@@ -62,10 +62,11 @@ For the latest installation instructions, refer to the [GitLab Development Kit d
 Here's a step-by-step summary:
 
 1. Prerequisites:
-   - 16 GB RAM. If you have less, consider [using Gitpod](#using-gitpod-instead-of-running-the-gdk-locally)
+   - 16 GB RAM.
    - Ensure that Git is installed on your machine.
    - Install a code editor, such as Visual Studio Code.
-   - [Create an account](https://gitlab.com/users/sign_up) or [sign in](https://gitlab.com/users/sign_in) on GitLab.com and join the [community members group](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks).
+   - [Create an account](https://gitlab.com/users/sign_up) or [sign in](https://gitlab.com/users/sign_in) on GitLab.com and start your
+     [contributor onboarding](https://contributors.gitlab.com/start).
 1. Installation:
    - Choose a directory to install the GitLab Development Kit (GDK).
    - Open your terminal and go to the chosen directory.
@@ -89,39 +90,6 @@ Here's a step-by-step summary:
    - You can explore available commands and options by running `gdk help` in the terminal.
 
 Remember to consult the documentation or seek community support if you have any further questions or issues.
-
-## Using Gitpod instead of running the GDK locally
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=RI2kM5_oii4">Using Gitpod with GitLab</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/RI2kM5_oii4" frameborder="0" allowfullscreen> </iframe>
-</figure>
-
-Gitpod is a service that allows you to run a virtual machine, specifically the GitLab Development Kit (GDK), on the Gitpod server instead of running it on your own machine.
-It provides a web-based Integrated Development Environment (IDE) where you can edit code and see the GDK in action.
-Gitpod is useful for quickly getting a GDK environment up and running, for making small merge requests without installing the GDK locally, or for running GDK on a machine that may not have enough resources.
-
-To use Gitpod:
-
-1. [Request access to the GitLab community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
-   Alternatively, you can create your own public fork, but will miss out on [the benefits of the community forks](https://gitlab.com/gitlab-community/meta#why).
-1. Go to the [GitLab community fork website](https://gitlab.com/gitlab-community/gitlab), select **Edit**, then select **Gitpod**.
-1. Configure your settings, such as the editor (VS Code desktop or browser) and the context (usually the `main` or `master` branch).
-1. Select **Open** to create your Gitpod workspace. This process may take up to 20 minutes. The GitLab Development Kit (GDK) will be installed in the Gitpod workspace. This installation is faster than downloading and installing the full GDK locally.
-
-After the workspace is created, you'll find your chosen IDE running in your browser. You can also connect it to your desktop IDE if preferred.
-Treat Gitpod just like you would use VS Code locally. Create branches, make code changes, commit them, and push them back to the community fork.
-
-Other tips:
-
-- Remember to push your code regularly to avoid the workspace timing out. Idle workspaces are eventually destroyed.
-- Customize your Gitpod workspace settings if needed, such as making your instance of GitLab frontend publicly available.
-- If you run out of minutes, contact the support team on the Discord server.
-- Troubleshoot issues by using commands like `gdk start` and `gdk status` in the Gitpod workspace as you would if it was running locally.
-
-By following these steps, you can leverage Gitpod to efficiently develop with the GitLab Development Kit without the need for local installation.
 
 ## Navigating the GitLab codebase
 

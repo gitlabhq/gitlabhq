@@ -58,13 +58,13 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    allure-rspec (2.27.0)
-      allure-ruby-commons (= 2.27.0)
+    allure-rspec (2.28.0)
+      allure-ruby-commons (= 2.28.0)
       rspec-core (>= 3.8, < 4)
-    allure-ruby-commons (2.27.0)
+    allure-ruby-commons (2.28.0)
       mime-types (>= 3.3, < 4)
       require_all (>= 2, < 4)
-      rspec-expectations (~> 3.12)
+      rspec-expectations (~> 3.13)
     amatch (0.4.1)
       mize
       tins (~> 1.0)
@@ -112,7 +112,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
-    faraday-retry (2.3.2)
+    faraday-retry (2.4.0)
       faraday (~> 2.0)
     ffi (1.17.0)
     ffi-compiler (1.0.1)
@@ -156,7 +156,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (3.2.1)
+    gitlab_quality-test_tooling (3.3.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -389,26 +389,26 @@ GEM
     wisper (2.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.3)
+    zeitwerk (2.7.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activesupport (~> 7.2.3)
-  allure-rspec (~> 2.27.0)
+  allure-rspec (~> 2.28.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.3.0)
   factory_bot (~> 6.5.1)
   faker (~> 3.5, >= 3.5.3)
-  faraday-retry (~> 2.3, >= 2.3.2)
+  faraday-retry (~> 2.4)
   fog-google (~> 1.26)
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.7.0)
   gitlab-rspec!
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 3.2.1)
+  gitlab_quality-test_tooling (~> 3.3.0)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
   nokogiri (~> 1.18, >= 1.18.9)
@@ -428,7 +428,7 @@ DEPENDENCIES
   slack-notifier (~> 2.4)
   terminal-table (~> 4.0.0)
   warning (~> 1.5)
-  zeitwerk (~> 2.7, >= 2.7.3)
+  zeitwerk (~> 2.7, >= 2.7.4)
 
 BUNDLED WITH
    2.7.1

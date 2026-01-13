@@ -2,6 +2,9 @@
 
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
+  include AuthenticatesWithTwoFactor
+
+  helper_method :passkey_via_2fa_enabled?
 
   feature_category :system_access
   urgency :low, [:show]

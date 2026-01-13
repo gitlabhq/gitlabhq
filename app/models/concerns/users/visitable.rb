@@ -16,8 +16,8 @@ module Users
 
       scope :for_user, ->(user_id) { where(user_id: user_id) }
 
-      scope :recently_visited, -> do
-        where('visited_at > ?', 3.months.ago)
+      scope :recently_visited, ->(since: 3.months.ago) do
+        where('visited_at > ?', since)
           .where('visited_at <= ?', Time.current)
       end
 

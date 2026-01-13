@@ -1,0 +1,13 @@
+---
+table_name: security_finding_enrichments
+classes:
+- Security::FindingEnrichment
+feature_categories:
+- security_policy_management
+description: Links security findings to CVE enrichment data through a foreign key relationship.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216984
+milestone: '18.8'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
+table_size: small

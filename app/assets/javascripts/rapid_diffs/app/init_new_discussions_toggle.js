@@ -12,6 +12,7 @@ export function initNewDiscussionToggle(appElement) {
   function isValidTarget(element) {
     return (
       element.closest('[data-hunk-lines]') &&
+      element.closest('[data-hunk-lines]').querySelector('[data-line-number]') &&
       !element.closest('[data-change="meta"], [data-expanded]')
     );
   }

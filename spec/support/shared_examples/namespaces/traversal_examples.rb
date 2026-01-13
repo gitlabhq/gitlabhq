@@ -384,4 +384,17 @@ RSpec.shared_examples 'namespace traversal' do
       end
     end
   end
+
+  describe '#descendant_ids' do
+    subject { group.descendant_ids.pluck(:id) }
+
+    it { is_expected.to contain_exactly(nested_group.id, deep_nested_group.id, very_deep_nested_group.id) }
+
+    it 'includes project namespaces when when scope is Namespace' do
+      expect(group.descendant_ids(skope: Namespace).pluck(:id))
+        .to contain_exactly(
+          nested_group.id, deep_nested_group.id, very_deep_nested_group.id, project_namespace.id
+        )
+    end
+  end
 end

@@ -22,11 +22,8 @@ Detected spam is rejected, and an entry is added in the **Spam log** section of 
 
 Privacy note: GitLab submits the user's IP and user agent to Akismet.
 
-{{< alert type="note" >}}
-
-GitLab submits all issues to Akismet.
-
-{{< /alert >}}
+> [!note]
+> GitLab submits all issues to Akismet.
 
 Akismet configuration is available to users on GitLab Self-Managed. Akismet is already enabled on
 GitLab SaaS (GitLab.com), where its configuration and management are handled by GitLab Inc.

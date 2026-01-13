@@ -40,6 +40,8 @@ module Issues
 
       type_id = find_work_item_type_id(params[:issue_type])
 
+      # For custom types we need to use the abstraction layer so pass the work item type object
+      # See https://gitlab.com/groups/gitlab-org/-/work_items/20291
       issue.work_item_type_id = type_id
     end
 

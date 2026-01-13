@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class UserPreference < ApplicationRecord
+  include IgnorableColumns
   include SafelyChangeColumnDefault
+
+  ignore_column :new_ui_enabled, remove_after: '2026-01-09', remove_with: '18.9'
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
@@ -12,6 +15,9 @@ class UserPreference < ApplicationRecord
   belongs_to :user
 
   columns_changing_default :text_editor_type
+
+  ignore_columns :early_access_program_participant, :early_access_program_tracking,
+    remove_with: '18.10', remove_after: '2026-03-13'
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
@@ -35,7 +41,6 @@ class UserPreference < ApplicationRecord
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
-  validates :new_ui_enabled, allow_nil: true, inclusion: { in: [true, false] }
   validates :early_access_studio_participant, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true

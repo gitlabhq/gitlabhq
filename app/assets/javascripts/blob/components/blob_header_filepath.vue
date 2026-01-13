@@ -1,18 +1,14 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     FileIcon,
-    ClipboardButton,
     GlBadge,
     GlLink,
   },
-  mixins: [featureFlagMixin()],
   props: {
     blob: {
       type: Object,
@@ -37,9 +33,6 @@ export default {
   computed: {
     blobSize() {
       return numberToHumanSize(this.blob.size);
-    },
-    gfmCopyText() {
-      return `\`${this.blob.path}\``;
     },
     showLfsBadge() {
       return this.blob.storedExternally && this.blob.externalStorage === 'lfs';
@@ -72,16 +65,6 @@ export default {
         >{{ fileName }}</component
       >
     </template>
-
-    <clipboard-button
-      v-if="!glFeatures.directoryCodeDropdownUpdates"
-      :text="blob.path"
-      :gfm="gfmCopyText"
-      :title="__('Copy file path')"
-      size="small"
-      category="tertiary"
-      css-class="gl-ml-3"
-    />
 
     <small v-if="showBlobSize" class="gl-mx-3 gl-text-subtle">{{ blobSize }}</small>
 

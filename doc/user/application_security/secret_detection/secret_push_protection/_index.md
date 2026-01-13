@@ -25,7 +25,7 @@ title: Secret push protection
 
 Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see the playlist [Get Started with Secret Push Protection](https://www.youtube.com/playlist?list=PL05JrBw4t0KoADm-g2vxfyR0m6QLphTv-).
 
 Use pipeline secret detection with secret push protection to further strengthen your security.

@@ -737,5 +737,35 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         end
       end
     end
+
+    context 'with instrumentation service integration', :clean_gitlab_redis_shared_state do
+      context 'when update is successful' do
+        let(:opts) { { title: 'New Title' } }
+
+        it 'calls instrumentation service after successful update' do
+          instrumentation_double = instance_double(Gitlab::WorkItems::Instrumentation::TrackingService)
+
+          expect(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).with(
+            work_item: work_item,
+            current_user: current_user,
+            old_associations: hash_including(:assignees, :labels, :milestone)
+          ).and_return(instrumentation_double)
+
+          expect(instrumentation_double).to receive(:execute)
+
+          update_work_item
+        end
+      end
+
+      context 'when update fails' do
+        let(:opts) { { title: '' } }
+
+        it 'does not call instrumentation service' do
+          expect(Gitlab::WorkItems::Instrumentation::TrackingService).not_to receive(:new)
+
+          update_work_item
+        end
+      end
+    end
   end
 end

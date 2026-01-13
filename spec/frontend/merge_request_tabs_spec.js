@@ -10,7 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
+import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 
 jest.mock('~/lib/utils/webpack', () => ({
   resetServiceWorkersPublicPath: jest.fn(),

@@ -53,7 +53,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     SCAN_PROFILE_TRIGGER_TYPES = {
       default_branch_pipeline: 0,
-      merge_request_pipeline: 1
+      merge_request_pipeline: 1,
+      git_push_event: 2
     }.freeze
 
     DEFAULT_CONFIGURATION_SOURCE = :sbom

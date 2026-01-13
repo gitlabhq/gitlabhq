@@ -713,6 +713,28 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.security_managers' do
+      let_it_be(:security_manager) { create(:project_member, :security_manager, project: project) }
+      let_it_be(:security_manager_invited) { create(:project_member, :invited, :security_manager, project: project) }
+      let_it_be(:developer) { create(:project_member, :developer, project: project) }
+      let_it_be(:blocked_security_manager) do
+        create(:project_member, :security_manager, project: project).tap { |m| m.user.block! }
+      end
+
+      subject { described_class.security_managers }
+
+      context 'when security manager role is enabled' do
+        it { is_expected.to include security_manager }
+        it { is_expected.to include security_manager_invited }
+        it { is_expected.not_to include developer }
+        it { is_expected.not_to include blocked_security_manager }
+      end
+
+      context 'when security manager role is disabled', :disable_security_manager do
+        it { is_expected.to be_empty }
+      end
+    end
+
     describe '.developers' do
       subject { described_class.developers.to_a }
 

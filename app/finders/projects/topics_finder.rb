@@ -13,7 +13,7 @@ module Projects
     end
 
     def execute
-      topics = Projects::Topic.for_organization(organization_id).order_by_non_private_projects_count
+      topics = Projects::Topic.in_organization(organization_id).order_by_non_private_projects_count
       topics = by_without_projects(topics)
       by_search(topics)
     end

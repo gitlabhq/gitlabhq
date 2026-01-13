@@ -11,7 +11,7 @@ module Projects
       before_action :authorize_read_issue!, only: [:issue, :production]
       before_action :authorize_read_merge_request!, only: [:code, :review]
 
-      feature_category :team_planning
+      feature_category :value_stream_management
       urgency :low
 
       def issue

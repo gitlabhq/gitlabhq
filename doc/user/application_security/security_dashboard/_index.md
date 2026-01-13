@@ -15,16 +15,11 @@ description: Security dashboards, vulnerability trends, project ratings, and met
 
 {{< history >}}
 
-- New dashboard with Elasticsearch integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
-- New dashboard with Elasticsearch integration [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard with advanced search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
+- New dashboard with advanced search [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard with advanced search [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 18.8. Feature flags `project_security_dashboard_new` and `group_security_dashboard_new` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 GitLab 18.6 introduced an improved version of the security dashboards that use [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management). For details, see [new security dashboards](#new-security-dashboards).
 
@@ -49,7 +44,7 @@ you with a collection of metrics, ratings, and charts for the vulnerabilities de
 
 The data provided by the security dashboards can be used to supply insight on what decisions can be made to improve your security posture. For example, using the 365 day trend view, you can see on which days a significant number of vulnerabilities were introduced. Then you can examine the code changes performed on those particular days in order perform a root-cause analysis to create better policies for preventing the introduction of vulnerabilities in the future.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Security Dashboard - Advanced Security Testing](https://www.youtube.com/watch?v=Uo-pDns1OpQ).
 
 ## Prerequisites
@@ -140,15 +135,9 @@ To view group security dashboard:
 
 - New dashboard that uses [advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/570504) in GitLab 18.6 [with flags](../../../administration/feature_flags/_index.md) named `project_security_dashboard_new` and `group_security_dashboard_new`. The flags are disabled by default.
 - New dashboard [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215574) in GitLab 18.7.
+- New dashboard [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 18.8. Feature flags `project_security_dashboard_new` and `group_security_dashboard_new` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Use security dashboards to assess the security posture of your applications. GitLab provides
 you with a collection of metrics, ratings, and charts for the vulnerabilities detected by the [security scanners](../detect/_index.md) run on your project. The security dashboard provides data such as:
@@ -193,7 +182,7 @@ Both dashboards include:
 
 To view a security dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 
 ### Project security dashboard
@@ -233,15 +222,12 @@ To view details:
 1. Drag the range handles ({{< icon name="scroll-handle" >}}) to zoom in on a specific period.
 1. Use the dropdowns to filter the chart by:
    - **Severity** (for example: Critical, High, Medium)
-   - **Report type** (SAST, DAST, Dependency Scanning, and others)
+   - **Report type** (SAST, DAST, dependency scanning, and others)
 1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
 1. Vulnerabilities that are no longer detected are not automatically counted as closed. Use [vulnerability management policies](../policies/_index.md) to automatically close them if needed.
 
-{{< alert type="note" >}}
-
-Starting in GitLab 18.8 (available January 2026), the Vulnerabilities over time chart excludes no longer detected vulnerabilities to more accurately reflect the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.8 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
-
-{{< /alert >}}
+> [!note]
+> Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
@@ -267,7 +253,7 @@ You can filter results at two levels:
 
 Available dashboard filters include:
 
-- **Report type:** Filter by scanner, including SAST, DAST, Dependency Scanning, and others.
+- **Report type:** Filter by scanner, including SAST, DAST, dependency scanning, and others.
 - **Project:** Limit results to specific projects. Available only for group security dashboards.
 
 Dashboard filter behavior:

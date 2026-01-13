@@ -17,11 +17,8 @@ Read them carefully to understand how each one works.
 
 ## Auto Build
 
-{{< alert type="note" >}}
-
-Auto Build is not supported if Docker in Docker is not available for your GitLab Runners, like in OpenShift clusters. The OpenShift support in GitLab is tracked [in a dedicated epic](https://gitlab.com/groups/gitlab-org/-/epics/2068).
-
-{{< /alert >}}
+> [!note]
+> Auto Build is not supported if Docker in Docker is not available for your GitLab Runners, like in OpenShift clusters. The OpenShift support in GitLab is tracked [in a dedicated epic](https://gitlab.com/groups/gitlab-org/-/epics/2068).
 
 Auto Build creates a build of the application using an existing `Dockerfile` or
 Heroku buildpacks. The resulting Docker image is pushed to the
@@ -198,18 +195,18 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see [SAST](../../user/application_security/sast/_index.md).
 
-## Auto Secret Detection
+## Auto secret detection
 
-Secret Detection uses the
-[Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets.
+Secret detection uses the
+[secret detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to scan the current code and check for leaked secrets.
 
 After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-For more information, see [Secret Detection](../../user/application_security/secret_detection/_index.md).
+For more information, see [secret detection](../../user/application_security/secret_detection/_index.md).
 
-## Auto Dependency Scanning
+## Auto dependency scanning
 
 {{< details >}}
 
@@ -218,15 +215,15 @@ For more information, see [Secret Detection](../../user/application_security/sec
 
 {{< /details >}}
 
-Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
-The Auto Dependency Scanning stage is skipped on licenses other than
+Dependency scanning analyzes the project's dependencies and checks for potential security issues.
+The Auto dependency scanning stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
 check out. The merge request widget displays any security warnings detected,
 
 For more information, see
-[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md).
+[dependency scanning](../../user/application_security/dependency_scanning/_index.md).
 
 ## Auto container scanning
 
@@ -289,7 +286,7 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 {{< /details >}}
 
-Dynamic Application Security Testing (DAST) uses the popular open source tool
+Dynamic application security testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
 and check for potential security issues. The Auto DAST stage is skipped on
 licenses other than [Ultimate](https://about.gitlab.com/pricing/).
@@ -304,7 +301,7 @@ on the [Security Dashboard](../../user/application_security/security_dashboard/_
 and the merge request widget.
 
 For more information, see
-[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/_index.md).
+[DAST](../../user/application_security/dast/_index.md).
 
 ### Overriding the DAST target
 

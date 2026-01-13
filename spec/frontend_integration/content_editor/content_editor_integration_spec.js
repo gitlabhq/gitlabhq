@@ -20,6 +20,7 @@ describe('content_editor', () => {
         renderMarkdown,
         uploadsPath: '/',
         markdown,
+        supportsTableOfContents: true,
       },
       listeners: {
         ...listeners,

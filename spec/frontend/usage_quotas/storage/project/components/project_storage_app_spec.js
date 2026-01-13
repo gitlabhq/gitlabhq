@@ -103,6 +103,10 @@ describe('ProjectStorageApp', () => {
       expect(findProjectDetailsTable().props('storageTypes')).toStrictEqual(expectedValue);
     });
 
+    it('passes project data to project details table', () => {
+      expect(findProjectDetailsTable().props('project')).toStrictEqual(mockProjectData);
+    });
+
     it('passes namespace storage entities to namespace details table', () => {
       const expectedValue = getStorageTypesFromProjectStatistics(
         NAMESPACE_STORAGE_TYPES,
@@ -168,6 +172,10 @@ describe('ProjectStorageApp', () => {
 
     it('passes empty array to project details table', () => {
       expect(findProjectDetailsTable().props('storageTypes')).toStrictEqual([]);
+    });
+
+    it('passes null for project data to project details table', () => {
+      expect(findProjectDetailsTable().props('project')).toBeNull();
     });
 
     it('passes empty array to namespace details table', () => {

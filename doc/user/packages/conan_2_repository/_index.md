@@ -278,9 +278,14 @@ To search by full or partial package name, or by exact recipe, run the
 The scope of your search depends on your Conan remote configuration. Your search includes all
 packages in the target project, as long as you have permission to access it.
 
+The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
+
 {{< alert type="note" >}}
 
-The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
+When searching for packages, the Conan v2 CLI displays only package details
+for packages uploaded with Conan v2. Packages uploaded with Conan v1 appear in search results,
+but their details are not shown. This is because Conan v2 expects package references without the
+`recipe_hash` field, which is present in packages uploaded with Conan v1.
 
 {{< /alert >}}
 

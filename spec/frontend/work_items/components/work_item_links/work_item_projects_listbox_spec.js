@@ -46,6 +46,7 @@ describe('WorkItemProjectsListbox', () => {
     fullPath = 'group-a',
     selectedProjectFullPath = null,
     projectNamespaceFullPath = '',
+    currentProjectName = null,
   } = {}) => {
     wrapper = mountExtended(WorkItemProjectsListbox, {
       apolloProvider: createMockApollo([
@@ -56,6 +57,7 @@ describe('WorkItemProjectsListbox', () => {
         isGroup,
         selectedProjectFullPath,
         projectNamespaceFullPath,
+        currentProjectName,
       },
     });
 
@@ -283,5 +285,20 @@ describe('WorkItemProjectsListbox', () => {
     expect(findAllDropdownItemsFor(namespaceProjectsData[1].fullPath)).toHaveLength(1);
     // only in query results
     expect(findAllDropdownItemsFor(namespaceProjectsData[2].fullPath)).toHaveLength(1);
+  });
+
+  it('shows project name as toggle text and not the full namespace', async () => {
+    createComponent({
+      selectedProjectFullPath: 'group-a/example-project-a',
+      currentProjectName: 'Group A / Example project A',
+    });
+
+    await nextTick();
+
+    expect(findDropdownToggle().text()).toBe('Example project A');
+
+    await waitForPromises();
+
+    expect(findDropdownToggle().text()).toBe('Example project A');
   });
 });

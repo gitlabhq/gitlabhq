@@ -73,6 +73,12 @@ set up for GitLab Duo.
 
 Individual features include specific prompt instructions to help limit exposure. The prompt instructions adhere to the following principles.
 
+### GitLab Duo Agent Platform
+
+Isolates untrusted content to help prevent prompt injection.
+
+On the AI Gateway, [detects prompt injection attempts](../duo_agent_platform/security_threats.md#detect-prompt-injection-attempts) and logs or blocks them.
+
 ### GitLab Duo Chat
 
 Responses should remain on-topic, constructive, and non-abusive.

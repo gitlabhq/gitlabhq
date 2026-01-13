@@ -99,7 +99,7 @@ export default {
         };
       },
       update(data) {
-        return findAwardEmojiWidget(data.workspace?.workItem).awardEmoji || {};
+        return findAwardEmojiWidget(data.namespace?.workItem).awardEmoji || {};
       },
       skip() {
         return !this.workItemIid;
@@ -110,10 +110,10 @@ export default {
         } else {
           this.isLoading = false;
         }
-        if (data?.workspace) {
+        if (data?.namespace) {
           this.newCustomEmojiPath =
-            findAwardEmojiWidget(data.workspace?.workItem)?.newCustomEmojiPath || '';
-          this.$emit('emoji-updated', data.workspace?.workItem);
+            findAwardEmojiWidget(data.namespace?.workItem)?.newCustomEmojiPath || '';
+          this.$emit('emoji-updated', data.namespace?.workItem);
         }
       },
       error() {
@@ -198,7 +198,7 @@ export default {
       const sourceData = cache.readQuery(query);
 
       const newData = produce(sourceData, (draftState) => {
-        const widgetAwardEmoji = findAwardEmojiWidget(draftState.workspace?.workItem);
+        const widgetAwardEmoji = findAwardEmojiWidget(draftState.namespace?.workItem);
         if (widgetAwardEmoji && widgetAwardEmoji.awardEmoji) {
           widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
         }

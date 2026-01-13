@@ -10,4 +10,3 @@ Metrics/PerceivedComplexity:
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
     - 'lib/gitlab/utils/merge_hash.rb'
     - 'qa/qa/support/repeater.rb'
-    - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'

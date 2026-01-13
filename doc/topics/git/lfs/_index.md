@@ -145,11 +145,8 @@ To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-f
 To completely expunge all history of a file, past and present,
 see [Handle sensitive information](../undo.md#handle-sensitive-information).
 
-{{< alert type="warning" >}}
-
-Expunging file history requires rewriting Git history. This action is destructive and irreversible.
-
-{{< /alert >}}
+> [!warning]
+> Expunging file history requires rewriting Git history. This action is destructive and irreversible.
 
 ## Reduce repository size after removing large files
 

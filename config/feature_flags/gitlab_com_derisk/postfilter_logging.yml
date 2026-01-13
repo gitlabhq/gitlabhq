@@ -1,0 +1,10 @@
+---
+name: postfilter_logging
+description: Log performance of postfiltering
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/581753
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216229
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583834
+milestone: '18.8'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

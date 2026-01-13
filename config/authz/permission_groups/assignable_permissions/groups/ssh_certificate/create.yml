@@ -1,0 +1,7 @@
+---
+name: create_ssh_certificate
+description: Grants the ability to create SSH certificates
+boundaries:
+  - group
+permissions:
+  - create_ssh_certificate

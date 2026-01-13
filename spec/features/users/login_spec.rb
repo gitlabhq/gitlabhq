@@ -175,7 +175,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
   end
 
   describe 'with the ghost user' do
-    let_it_be_with_reload(:ghost_user) { Users::Internal.for_organization(current_organization).ghost }
+    let_it_be_with_reload(:ghost_user) { Users::Internal.in_organization(current_organization).ghost }
 
     it 'disallows login' do
       expect(authentication_metrics)

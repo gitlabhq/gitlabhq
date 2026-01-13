@@ -1,0 +1,17 @@
+query getUserPersonalAccessTokenStatistics($id: UserID, $expiresBefore: Date) {
+  user(id: $id) {
+    id
+    active: personalAccessTokens(state: ACTIVE) {
+      count
+    }
+    expiringSoon: personalAccessTokens(state: ACTIVE, expiresBefore: $expiresBefore) {
+      count
+    }
+    revoked: personalAccessTokens(revoked: true) {
+      count
+    }
+    expired: personalAccessTokens(state: INACTIVE, revoked: false) {
+      count
+    }
+  }
+}

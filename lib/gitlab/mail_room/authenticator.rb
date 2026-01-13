@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def secret(mailbox_type)
-          strong_memoize("jwt_secret_#{mailbox_type}".to_sym) do
+          strong_memoize(:"jwt_secret_#{mailbox_type}") do
             secret_path = enabled_configs[mailbox_type][:secret_file]
             raise SecretConfigurationError, "#{mailbox_type}'s secret_file configuration is missing" if secret_path.blank?
 

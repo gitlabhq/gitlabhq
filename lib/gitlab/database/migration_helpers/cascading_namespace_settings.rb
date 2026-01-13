@@ -25,7 +25,7 @@ module Gitlab
         # `null` and `default` options will only be applied to the `application_settings`
         # column. In most cases, a non-null default value should be specified.
         def add_cascading_namespace_setting(setting_name, type, **options)
-          lock_column_name = "lock_#{setting_name}".to_sym
+          lock_column_name = :"lock_#{setting_name}"
 
           check_cascading_namespace_setting_consistency(setting_name, lock_column_name)
 
@@ -39,7 +39,7 @@ module Gitlab
         end
 
         def remove_cascading_namespace_setting(setting_name)
-          lock_column_name = "lock_#{setting_name}".to_sym
+          lock_column_name = :"lock_#{setting_name}"
 
           remove_column(:namespace_settings, setting_name) if column_exists?(:namespace_settings, setting_name)
           remove_column(:namespace_settings, lock_column_name) if column_exists?(:namespace_settings, lock_column_name)

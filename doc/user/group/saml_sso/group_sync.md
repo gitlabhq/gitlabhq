@@ -360,7 +360,7 @@ Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-
 
 {{< /alert >}}
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo of group sync using Microsoft Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
 Azure AD sends up to 150 groups in the `groups` claim.

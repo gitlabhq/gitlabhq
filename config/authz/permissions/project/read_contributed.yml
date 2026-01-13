@@ -1,0 +1,5 @@
+---
+name: read_contributed_project
+description: Grants the ability to view projects user has contributed to
+boundaries:
+  - user

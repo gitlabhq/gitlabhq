@@ -17,12 +17,12 @@ module API
       end
 
       expose :commit_path,
-        documentation: { type: 'string', example: '/root/app/commit/588440f66559714280628a4f9799f0c4eb880a4a' },
+        documentation: { type: 'String', example: '/root/app/commit/588440f66559714280628a4f9799f0c4eb880a4a' },
         expose_nil: false
-      expose :tag_path, documentation: { type: 'string', example: '/root/app/-/tags/v1.0' }, expose_nil: false
+      expose :tag_path, documentation: { type: 'String', example: '/root/app/-/tags/v1.0' }, expose_nil: false
 
       expose :assets do
-        expose :assets_count, documentation: { type: 'integer', example: 2 }, as: :count
+        expose :assets_count, documentation: { type: 'Integer', example: 2 }, as: :count
         expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_read_code? }
         expose :sorted_links, as: :links, using: Entities::Releases::Link
       end

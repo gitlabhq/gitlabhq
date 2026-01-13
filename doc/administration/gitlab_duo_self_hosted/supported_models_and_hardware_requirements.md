@@ -47,7 +47,7 @@ depending on the specific model and feature combination.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat | GitLab Duo Agent Platform |
+| Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat (Classic) | GitLab Duo Agent Platform |
 |-------------|-------|---------------------|-----------------|-----------------|-----------------|-----------------|
 | General | [Gemini 2.5 Flash](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash) | [Vertex](https://cloud.google.com/vertex-ai) | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |  {{< icon name="check-circle-dashed" >}} Partial functionality |
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |  Limited functionality |

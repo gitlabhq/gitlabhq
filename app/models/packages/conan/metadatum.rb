@@ -12,7 +12,7 @@ class Packages::Conan::Metadatum < ApplicationRecord
     presence: true,
     format: { with: Gitlab::Regex.conan_recipe_user_channel_regex }
 
-  validate :username_channel_none_values
+  validate :ensure_username_with_channel
 
   def recipe
     "#{package.name}/#{package.version}@#{package_username}/#{package_channel}"
@@ -31,19 +31,16 @@ class Packages::Conan::Metadatum < ApplicationRecord
   end
 
   def self.validate_username_and_channel(username, channel)
-    return if (username != NONE_VALUE && channel != NONE_VALUE) ||
-      (username == NONE_VALUE && channel == NONE_VALUE)
+    return if channel == NONE_VALUE || username != NONE_VALUE
 
-    none_field = username == NONE_VALUE ? :username : :channel
-
-    yield(none_field)
+    yield if block_given?
   end
 
   private
 
-  def username_channel_none_values
-    self.class.validate_username_and_channel(package_username, package_channel) do |none_field|
-      errors.add(:"package_#{none_field}", _("can't be solely blank"))
+  def ensure_username_with_channel
+    self.class.validate_username_and_channel(package_username, package_channel) do
+      errors.add(:package_username, _('must be specified when channel is provided'))
     end
   end
 end

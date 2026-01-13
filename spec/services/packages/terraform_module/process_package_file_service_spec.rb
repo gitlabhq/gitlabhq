@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_category: :package_registry do
-  let_it_be(:package) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
-  let_it_be(:package_file) { create(:package_file, :terraform_module, package:) }
+  # Use `let` instead of `let_it_be` because the "0 byte package file" context
+  # mocks `package_file.file`. With `let_it_be`, the same uploader instance is
+  # reused across examples, causing the mock to leak to other tests.
+  let(:package) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
+  let(:package_file) { create(:package_file, :terraform_module, package:) }
 
   subject(:service) { described_class.new(package_file) }
 
@@ -51,7 +54,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
       end
 
       context 'with a zip archive' do
-        let_it_be(:package_file) { create(:package_file, :terraform_module, zip: true, package: package) }
+        let(:package_file) { create(:package_file, :terraform_module, zip: true, package: package) }
 
         it_behaves_like 'extracting metadata', Zip::File
 
@@ -72,18 +75,24 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileService, feature_cat
     end
 
     context 'when linked to a non terraform module package' do
-      before do
-        package_file.package.maven!
-      end
+      # Use `let` instead of `let_it_be` to avoid modifying the shared package fixture.
+      # The `maven!` call changes the package type, which would persist across tests
+      # when using `let_it_be`, causing flaky test failures.
+      let(:package) { create(:maven_package) }
+      let(:package_file) { create(:package_file, :terraform_module, package:) }
 
       it_behaves_like 'raises an error', 'invalid package file'
     end
 
     context 'with a 0 byte package file' do
+      # Use `let` to create package/package_file AFTER the mock is set up.
+      # With `let_it_be`, the uploader instance exists before the `before` block runs,
+      # so `allow_next_instance_of` doesn't intercept it.
+      let(:package) { create(:terraform_module_package, :with_metadatum, without_package_files: true) }
+      let(:package_file) { create(:package_file, :terraform_module, package:) }
+
       before do
-        allow_next_instance_of(Packages::PackageFileUploader) do |instance|
-          allow(instance).to receive(:size).and_return(0)
-        end
+        allow(package_file.file).to receive(:size).and_return(0)
       end
 
       it_behaves_like 'raises an error', 'invalid package file'

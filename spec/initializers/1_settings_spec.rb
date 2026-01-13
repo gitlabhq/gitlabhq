@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe '1_settings', feature_category: :settings do
   include_context 'when loading 1_settings initializer'
 
-  it 'settings do not change after reload', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/501317' do
+  it 'settings do not change after reload',
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16813' do
     original_settings = Settings.to_h
 
     load_settings
@@ -199,6 +200,37 @@ RSpec.describe '1_settings', feature_category: :settings do
       load_settings
 
       expect(Settings.openbao.authentication_token_secret_file_path).to eq('/custom/path')
+    end
+  end
+
+  describe 'IAM Service configuration' do
+    let(:config) do
+      {
+        url: 'http://iam-service-host:9000',
+        audience: 'custom-audience'
+      }
+    end
+
+    context 'with default configuration' do
+      before do
+        stub_config(authn: { iam_service: {} })
+        load_settings
+      end
+
+      it { expect(Settings.authn.iam_service.enabled).to be(false) }
+      it { expect(Settings.authn.iam_service.url).to eq('http://localhost:8084') }
+      it { expect(Settings.authn.iam_service.audience).to eq('gitlab-rails') }
+    end
+
+    context 'with custom configuration' do
+      before do
+        stub_config(authn: { iam_service: { enabled: true }.merge(config) })
+        load_settings
+      end
+
+      it { expect(Settings.authn.iam_service.enabled).to be(true) }
+      it { expect(Settings.authn.iam_service.url).to eq(config[:url]) }
+      it { expect(Settings.authn.iam_service.audience).to eq(config[:audience]) }
     end
   end
 

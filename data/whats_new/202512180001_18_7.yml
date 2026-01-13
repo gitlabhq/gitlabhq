@@ -1,0 +1,39 @@
+- name: "Improved GitLab Duo and SDLC trends dashboard"
+  description: |
+    The GitLab Duo and SDLC trends dashboard delivers improved analytics capabilities to measure the impact of GitLab Duo on software delivery.
+    The dashboard now provides 6-month trend analysis across GitLab Duo feature adoption, pipeline performance, and common development metrics such as deployment frequency and mean time to merge.
+  stage: Analytics
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/analytics/duo_and_sdlc_trends/
+  image_url: https://about.gitlab.com/images/18_7/DAP_flow_metrics_dashboard.png
+  published_at: 2025-12-18
+  release: 18.7
+
+- name: "Separate model selection for Agentic Chat and agents"
+  description: |
+    Separate models can now be selected for Agentic Chat and for all other agents for top-level groups or instances.
+    This provides more options for model selection for GitLab Duo Agent Platform.
+  stage: AI-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/#select-a-model-for-a-feature
+  image_url: https://about.gitlab.com/images/18_7/SelectionChat.png
+  published_at: 2025-12-18
+  release: 18.7
+
+- name: "Dynamic input options in CI/CD pipelines"
+  description: |
+    You can set up your CI/CD pipelines to make use of dynamic input selection when creating new pipelines through the intuitive web interface.
+    Now, with dynamic input options, you can configure your pipelines so that input selection options update dynamically based on previous selections.
+    For example, when you select an input in one dropdown list, it automatically populates a list of related input options in a second dropdown list.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/inputs/#define-conditional-input-options-with-specinputsrules
+  image_url: https://img.youtube.com/vi/vkHDGa65XcY/hqdefault.jpg
+  published_at: 2025-12-18
+  release: 18.7

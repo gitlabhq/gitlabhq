@@ -271,6 +271,12 @@
     "MavenRegistry",
     "MavenRegistryDetails"
   ],
+  "RegistryUpstreamInterface": [
+    "ContainerRegistryUpstreamWithRegistry",
+    "ContainerRegistryUpstreamWithUpstream",
+    "MavenRegistryUpstreamWithRegistry",
+    "MavenRegistryUpstreamWithUpstream"
+  ],
   "ResolvableInterface": [
     "Discussion",
     "Note"
@@ -323,6 +329,12 @@
     "Vulnerability",
     "WikiPage",
     "WorkItem"
+  ],
+  "UpstreamInterface": [
+    "ContainerUpstream",
+    "ContainerUpstreamDetails",
+    "MavenUpstream",
+    "MavenUpstreamDetails"
   ],
   "User": [
     "AddOnUser",
@@ -409,6 +421,8 @@
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
+    "WorkItemWidgetDefinitionProgress",
+    "WorkItemWidgetDefinitionStartAndDueDate",
     "WorkItemWidgetDefinitionStatus",
     "WorkItemWidgetDefinitionWeight"
   ]

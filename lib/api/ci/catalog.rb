@@ -19,6 +19,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 422, message: 'Unprocessable entity' }
           ]
+          tags ['ci_catalog']
         end
         params do
           requires :version, type: String, desc: 'The version of the catalog resource / tag of the release to publish'

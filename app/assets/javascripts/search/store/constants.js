@@ -39,7 +39,7 @@ export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: '
 
 export const ICON_MAP = {
   blobs: 'code',
-  issues: window.gon?.features?.workItemScopeFrontend ? 'work' : 'issues',
+  issues: 'issues',
   epics: 'epic',
   merge_requests: 'merge-request',
   commits: 'commit',
@@ -51,19 +51,9 @@ export const ICON_MAP = {
   snippet_titles: 'snippet',
 };
 
-export const SUBITEMS_FILTER = {
-  issue: { order: 1, icon: 'work-item-issue', label: s__('GlobalSearch|Issues') },
-  epic: { order: 2, icon: 'work-item-epic', label: s__('GlobalSearch|Epics') },
-  task: { order: 3, icon: 'work-item-task', label: s__('GlobalSearch|Tasks') },
-  objective: { order: 4, icon: 'work-item-objective', label: s__('GlobalSearch|Objectives') },
-  key_result: { order: 5, icon: 'work-item-keyresult', label: s__('GlobalSearch|Key results') },
-};
-
 export const SCOPE_NAVIGATION_MAP = {
   blobs: s__('GlobalSearch|Code'),
-  issues: window.gon?.features?.workItemScopeFrontend
-    ? s__('GlobalSearch|Work items')
-    : s__('GlobalSearch|Issues'),
+  issues: s__('GlobalSearch|Issues'),
   epics: s__('GlobalSearch|Epics'),
   merge_requests: s__('GlobalSearch|Merge request'),
   commits: s__('GlobalSearch|Commits'),

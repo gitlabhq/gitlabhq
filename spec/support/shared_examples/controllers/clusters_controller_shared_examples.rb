@@ -60,7 +60,7 @@ end
 
 RSpec.shared_examples 'cluster update migration' do |_resource_type, user_type|
   let(:issue) { create(:issue) }
-  let(:issue_url) { project_issue_url(issue.project, issue) }
+  let(:issue_url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
   let(:current_user) { send(user_type) }
 
   let(:params) do

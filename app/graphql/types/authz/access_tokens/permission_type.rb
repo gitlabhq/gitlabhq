@@ -29,6 +29,16 @@ module Types
           null: false,
           description: 'Resource of the permission.'
 
+        field :resource_name,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Display name of the resource.'
+
+        field :resource_description, # rubocop: disable GraphQL/ExtractType -- no value for now
+          GraphQL::Types::String,
+          null: true,
+          description: 'Description of the resource.'
+
         field :category,
           GraphQL::Types::String,
           null: false,

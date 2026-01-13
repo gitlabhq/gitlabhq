@@ -13,23 +13,12 @@ module Packages
       ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
       ERROR_REASON_PACKAGE_EXISTS = :package_already_exists
       ERROR_REASON_PACKAGE_LEASE_TAKEN = :package_lease_taken
-      ERROR_REASON_PACKAGE_PROTECTED = :package_protected
-      ERROR_REASON_UNAUTHORIZED = :unauthorized
 
       def execute
-        # TODO: Remove with the rollout of the FF packages_npm_temp_package
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
-        return error('Unauthorized', ERROR_REASON_UNAUTHORIZED) unless can_create_package?
-
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
         return error('Name is empty.', ERROR_REASON_INVALID_PARAMETER) if name.blank?
         return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
         return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?
-
-        # TODO: Remove with the rollout of the FF packages_npm_temp_package
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
-        return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if package_protected?
-
         return error('File is too large.', ERROR_REASON_INVALID_PARAMETER) if file_size_exceeded?
 
         package, package_file = try_obtain_lease do
@@ -52,10 +41,11 @@ module Packages
       end
 
       def create_npm_package!
-        # TODO: The flow with temporary package will become a single flow
-        # and temporary package will be a required attribute
-        # with the rollout of the FF packages_npm_temp_package
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/579369
+        # TODO: The flow with temporary package is a single use case
+        # and temporary package is always required after the rollout of
+        # the FF `packages_npm_temp_package`.
+        # Hence we could refactor the service.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/583459
         if use_temp_package?
           package, package_file = update_temp_package
         else
@@ -88,10 +78,6 @@ module Packages
                                 .with_version(version)
                                 .not_pending_destruction
                                 .exists?
-      end
-
-      def package_protected?
-        super(package_name: name, package_type: :npm)
       end
 
       def name

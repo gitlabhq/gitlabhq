@@ -157,9 +157,9 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       let(:namespace) { build_stubbed(:group) }
 
       specify do
-        expect(message).to eq "This action will place this group, " \
-          "including its subgroups and projects, in a pending deletion state for #{deletion_adjourned_period} days, " \
-          "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
+        expect(message).to eq "This action will permanently delete this group, including its subgroups and projects, " \
+          "on <strong>#{helper.permanent_deletion_date_formatted}</strong>. " \
+          "Scheduled pipelines will not run during deletion."
       end
     end
 
@@ -168,9 +168,9 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
         let(:namespace) { build_stubbed(entity) }
 
         specify do
-          expect(message).to eq "This action will place this project, " \
-            "including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, " \
-            "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
+          expect(message).to eq "This action will permanently delete this project, including all its resources, " \
+            "on <strong>#{helper.permanent_deletion_date_formatted}</strong>. " \
+            "Scheduled pipelines will not run during deletion."
         end
       end
     end
@@ -214,9 +214,11 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     it_behaves_like 'raise error with unsupported namespace type'
   end
 
-  describe '#group_confirm_modal_data' do
+  describe '#group_confirm_modal_data', time_travel_to: '2025-12-10' do
     using RSpec::Parameterized::TableSyntax
-    let_it_be(:group) { build_stubbed(:group, path: "foo") }
+    let_it_be(:group) { create(:group, path: "foo") } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
+    let_it_be(:subgroup) { create(:group, parent: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
+    let_it_be(:project) { create(:project, group: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- needed for projects and subgroups count
 
     fake_form_id = "fake_form_id"
     where(:prevent_delete_response, :is_button_disabled, :form_value_id,
@@ -239,7 +241,14 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
           phrase: group.full_path,
           button_testid: "remove-group-button",
           disabled: is_button_disabled,
-          html_confirmation_message: 'true'
+          html_confirmation_message: 'true',
+          form_path: "/#{group.full_path}",
+          confirm_phrase: group.full_path,
+          full_name: group.full_name,
+          subgroups_count: 1,
+          projects_count: 1,
+          marked_for_deletion: 'false',
+          permanent_deletion_date: '2026-01-09'
         })
       end
     end
@@ -250,6 +259,8 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:delayed_deletion_message) do
       "The contents of this group, its subgroups and projects will be permanently deleted after"
     end
+
+    let(:scheduled_pipelines_message) { "Scheduled pipelines will not run during deletion." }
 
     let(:permanent_deletion_message) do
       [
@@ -272,7 +283,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
 
     shared_examples 'delayed deletion message' do
       it 'returns the message related to delayed deletion' do
-        expect(message).to include(delayed_deletion_message)
+        expect(message).to include(scheduled_pipelines_message)
         expect(message).not_to include(*permanent_deletion_message)
       end
     end

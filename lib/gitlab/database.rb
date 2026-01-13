@@ -13,9 +13,7 @@ module Gitlab
     # TABLES_TO_BE_RENAMED = {
     #   'old_name' => 'new_name'
     # }.freeze
-    TABLES_TO_BE_RENAMED = {
-      'virtual_registries_packages_maven_cache_entries' => 'virtual_registries_packages_maven_cache_remote_entries'
-    }.freeze
+    TABLES_TO_BE_RENAMED = {}.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements

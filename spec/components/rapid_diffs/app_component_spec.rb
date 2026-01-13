@@ -160,6 +160,15 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(result).to have_text('custom_list')
   end
 
+  it "renders after_diffs_list slot" do
+    result = render_component do |c|
+      c.with_after_diffs_list do
+        'custom_after_content'
+      end
+    end
+    expect(result).to have_text('custom_after_content')
+  end
+
   it "renders diffs list" do
     render_component
     expect(page).to have_css('[data-diffs-list]')

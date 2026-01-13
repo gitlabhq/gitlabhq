@@ -90,4 +90,85 @@ RSpec.describe ImportExportUploader do
       expect(described_class.workhorse_local_upload_path).to end_with('/uploads/tmp/uploads')
     end
   end
+
+  describe '#store_dirs', feature_category: :importers do
+    let_it_be(:project) { create(:project) }
+    let!(:export_job) { create(:project_export_job, project: project) }
+    let!(:relation_export) { create(:project_relation_export, project_export_job: export_job) }
+    let!(:relation_export_upload) do
+      create(:relation_export_upload, relation_export: relation_export, project: project)
+    end
+
+    let!(:upload) { create(:upload, :import_export_uploader, model: relation_export_upload) }
+
+    subject(:uploader) { upload.retrieve_uploader }
+
+    context 'when RelationExportUpload and Upload are present' do
+      it 'pulls the path details from the RelationExportUpload record' do
+        expect(uploader.store_dirs).to eq({
+          1 => "uploads/-/system/projects/import_export/relation_export_upload/export_file/#{upload.model.id}",
+          2 => "projects/import_export/relation_export_upload/export_file/#{upload.model.id}"
+        })
+      end
+    end
+
+    context 'when RelationExportUpload is absent' do
+      before do
+        upload.model.delete
+        upload.reload
+      end
+
+      it 'pulls the path details from the Upload record' do
+        expect(uploader.model).to be_nil
+        expect(uploader.store_dirs).to eq({
+          1 => "uploads/-/system/projects/import_export/relation_export_upload/export_file/#{upload.model_id}",
+          2 => "projects/import_export/relation_export_upload/export_file/#{upload.model_id}"
+        })
+      end
+
+      context 'when Upload is missing mount point' do
+        before do
+          upload.update_column(:mount_point, nil)
+          upload.reload
+        end
+
+        it 'raises an exception' do
+          expect { upload.retrieve_uploader.store_dirs }
+            .to raise_exception(StandardError, "Missing required upload attributes for path reconstruction")
+        end
+      end
+    end
+  end
+
+  describe '#mounted_as', feature_category: :importers do
+    let_it_be(:project) { create(:project) }
+    let!(:export_job) { create(:project_export_job, project: project) }
+    let!(:relation_export) { create(:project_relation_export, project_export_job: export_job) }
+    let!(:relation_export_upload) do
+      create(:relation_export_upload, relation_export: relation_export, project: project)
+    end
+
+    let!(:upload) { create(:upload, :import_export_uploader, model: relation_export_upload) }
+
+    subject(:uploader) { upload.retrieve_uploader }
+
+    context 'when RelationExportUpload and Upload are present' do
+      it 'pulls the path details from the RelationExportUpload record' do
+        expect(uploader.mounted_as).to eq(:export_file)
+      end
+    end
+
+    context 'when RelationExportUpload is absent' do
+      before do
+        upload.model.delete
+        upload.update_column :mount_point, 'other_mount_point'
+        upload.reload
+      end
+
+      it 'pulls the path details from the Upload record' do
+        expect(uploader.model).to be_nil
+        expect(uploader.mounted_as).to eq(:other_mount_point)
+      end
+    end
+  end
 end

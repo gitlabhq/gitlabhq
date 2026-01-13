@@ -74,8 +74,8 @@ export default {
       },
       update(data) {
         return [
-          ...this.filterItems(data.workspace?.workItemsByIid?.nodes || []),
-          ...this.filterItems(data.workspace?.workItems?.nodes || []),
+          ...this.filterItems(data.namespace?.workItemsByIid?.nodes || []),
+          ...this.filterItems(data.namespace?.workItems?.nodes || []),
         ];
       },
       error() {
@@ -249,8 +249,8 @@ export default {
       :text-input-attrs="textInputAttrs"
       @text-input="debouncedSearchKeyUpdate"
       @focus="handleFocus"
-      @mouseover.native="handleMouseOver"
-      @mouseout.native="handleMouseOut"
+      @mouseover="handleMouseOver"
+      @mouseout="handleMouseOut"
       @token-add="focusInputText"
       @token-remove="focusInputText"
       @blur="handleBlur"

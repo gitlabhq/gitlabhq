@@ -30,7 +30,7 @@ module QA
         Page::MergeRequest::Show.perform do |mr_page|
           unless Runtime::Feature.enabled?(:rebase_on_merge_automatic)
             expect(mr_page).to have_content('Merge blocked: 1 check failed', wait: 20)
-            expect(mr_page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
+            expect(mr_page).to have_content('Fast forward merge is not possible. Please rebase or use merge train.')
             expect(mr_page).not_to have_merge_button
             expect(merge_request.project.commits.size).to eq(2), "Expected 2 commits, got: #{merge_request.project.commits.size}"
 

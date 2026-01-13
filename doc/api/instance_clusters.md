@@ -12,11 +12,8 @@ title: Instance clusters API (certificate-based) (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 With [instance-level Kubernetes clusters](../user/instance/clusters/_index.md),
 you can connect a Kubernetes cluster to the GitLab instance and use the same cluster across all of

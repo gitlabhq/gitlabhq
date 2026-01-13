@@ -38,9 +38,9 @@ gem 'bootsnap', '~> 1.18.6', require: false, feature_category: :shared # rubocop
 # Avoid the precompiled native gems because Omnibus needs to build this to ensure
 # LD_LIBRARY_PATH is correct: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7730
 if RUBY_PLATFORM.include?('darwin')
-  gem 'ffi', '~> 1.17.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'ffi', '~> 1.17.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 else
-  gem 'ffi', '~> 1.17.2', force_ruby_platform: true, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'ffi', '~> 1.17.3', force_ruby_platform: true, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 end
 
 gem 'openssl', '~> 3.3.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -141,7 +141,7 @@ gem 'acme-client', '~> 2.0.19', feature_category: :pages
 gem 'browser', '~> 5.3.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # OS detection for usage ping
-gem 'ohai', '~> 18.1', feature_category: :product_analytics
+gem 'ohai', '~> 19.1.16', feature_category: :product_analytics
 
 # GPG
 gem 'gpgme', '~> 2.0.24', feature_category: :source_code_management
@@ -264,7 +264,7 @@ gem 'asciidoctor', '~> 2.0.18', feature_category: :markdown
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false, feature_category: :markdown
 gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
 gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
-gem 'rouge', '~> 4.6.1', feature_category: :markdown
+gem 'rouge', '~> 4.7.0', feature_category: :markdown
 gem 'truncato', '~> 0.7.13', feature_category: :team_planning
 gem 'nokogiri', '~> 1.18', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'gitlab-glfm-markdown', '~> 0.0.39', feature_category: :markdown
@@ -293,7 +293,7 @@ gem 'state_machines-activerecord', '~> 0.100.0', feature_category: :shared # rub
 
 # Background jobs
 gem 'sidekiq', path: 'vendor/gems/sidekiq', require: 'sidekiq', feature_category: :scalability
-gem 'sidekiq-cron', '~> 1.12.0', feature_category: :scalability
+gem 'sidekiq-cron', '~> 2.3.0', feature_category: :scalability
 gem 'gitlab-sidekiq-fetcher',
   path: 'vendor/gems/sidekiq-reliable-fetch',
   require: 'sidekiq-reliable-fetch',
@@ -377,7 +377,7 @@ gem 'rack-proxy', '~> 0.7.7', feature_category: :shared # rubocop:todo Gemfile/M
 gem 'cssbundling-rails', '1.4.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'terser', '1.0.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'click_house-client', '0.8.4', feature_category: :database
+gem 'click_house-client', '0.8.6', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'gon', '~> 6.5.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'request_store', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -598,7 +598,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-  gem 'gitlab_quality-test_tooling', '~> 3.1.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 3.3.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers
@@ -643,14 +643,14 @@ gem 'grpc', '~> 1.76.0', feature_category: :shared # rubocop:todo Gemfile/Missin
 
 gem 'google-protobuf', '>= 3.25', '< 5.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'toml-rb', '~> 2.2.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'toml-rb', '~> 4.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Feature toggles
 gem 'flipper', '~> 0.28.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_record', '~> 0.28.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_support_cache_store', '~> 0.28.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'unleash', '~> 3.2.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'gitlab-experiment', '~> 1.1.0', feature_category: :acquisition
+gem 'gitlab-experiment', '~> 1.2.0', feature_category: :acquisition
 
 # Structured logging
 gem 'lograge', '~> 0.5', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -665,7 +665,7 @@ gem 'countries', '~> 4.0.0', feature_category: :shared # rubocop:todo Gemfile/Mi
 gem 'retriable', '~> 3.1.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # LRU cache
-gem 'lru_redux', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'lru_redux', feature_category: :importers
 
 # Locked as long as quoted-printable encoding issues are not resolved
 # Monkey-patched in `config/initializers/mail_encoding_patch.rb`
@@ -747,7 +747,7 @@ gem 'paper_trail', '~> 16.0', feature_category: :workspaces
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.35", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.40", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

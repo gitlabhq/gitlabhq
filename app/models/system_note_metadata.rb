@@ -2,7 +2,6 @@
 
 class SystemNoteMetadata < ApplicationRecord
   include Importable
-  include IgnorableColumns
 
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found
@@ -47,8 +46,6 @@ class SystemNoteMetadata < ApplicationRecord
     duo_agent_completed
     duo_agent_failed
   ].freeze
-
-  ignore_column :organization_id, remove_after: '2025-12-18', remove_with: '18.8'
 
   validates :note, presence: true, unless: :importing?
   validates :action, inclusion: { in: :icon_types }, allow_nil: true

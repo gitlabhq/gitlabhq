@@ -9,6 +9,7 @@ module API
       desc 'Return the user specific counts' do
         detail 'Assigned open issues, assigned MRs and pending todos count'
         success Entities::UserCounts
+        tags ['users']
       end
       get do
         unauthorized! unless current_user

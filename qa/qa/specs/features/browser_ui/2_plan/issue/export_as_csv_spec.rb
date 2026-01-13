@@ -16,7 +16,7 @@ module QA
 
       it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968',
         quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/16738',
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16738',
           type: :investigating,
           only: { subdomain: :staging }
         } do

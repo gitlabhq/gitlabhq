@@ -29,6 +29,13 @@ RSpec.describe API::Submodules, feature_category: :source_code_management do
   end
 
   describe "PUT /projects/:id/repository/submodule/:submodule" do
+    it_behaves_like 'authorizing granular token permissions', :update_repository_submodule do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api(route(submodule), personal_access_token: pat), params: params
+      end
+    end
+
     context 'when unauthenticated' do
       it 'returns 401' do
         put api(route(submodule)), params: params

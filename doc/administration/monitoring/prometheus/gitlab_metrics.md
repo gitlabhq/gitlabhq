@@ -580,7 +580,7 @@ Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
 | `gitlab_sli_lfs_validate_link_objects_total`       | Counter | 16.10 | Number of validated LFS linked objects in total |
 | `gitlab_sli_lfs_validate_link_objects_error_total` | Counter | 16.10 | Number of validated LFS linked object errors in total |
 
-## Secret Detection Partner Token verification metrics
+## Secret detection partner token verification metrics
 
 {{< details >}}
 
@@ -595,7 +595,7 @@ Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
 
 {{< /history >}}
 
-Metrics to track Secret Detection partner token verification with external partner APIs (AWS, GCP, Postman, etc.).
+Metrics to track secret detection partner token verification with external partner APIs (AWS, GCP, Postman, etc.).
 
 | Metric                                            | Type      | Since | Labels                                        | Description |
 |:--------------------------------------------------|:----------|:------|:----------------------------------------------|:------------|

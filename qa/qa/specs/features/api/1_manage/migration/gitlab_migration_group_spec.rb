@@ -32,7 +32,7 @@ module QA
         it(
           'successfully imports groups and labels',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/475036',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24286',
             type: :investigating
           },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'

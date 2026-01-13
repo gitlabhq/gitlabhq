@@ -20,6 +20,7 @@ module API
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Get a list of #{human_eventable_str} resource state events" do
           success Entities::ResourceStateEvent
+          tags ['resource_state_events']
         end
         params do
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"
@@ -36,6 +37,7 @@ module API
 
         desc "Get a single #{human_eventable_str} resource state event" do
           success Entities::ResourceStateEvent
+          tags ['resource_state_events']
         end
         params do
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"

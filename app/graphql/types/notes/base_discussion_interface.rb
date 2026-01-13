@@ -14,6 +14,7 @@ module Types
       field :id, DiscussionID, null: false,
         description: "ID of the discussion."
       field :reply_id, DiscussionID, null: false,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'ID used to reply to the discussion.'
 
       # DiscussionID.coerce_result is suitable here, but will always mark this

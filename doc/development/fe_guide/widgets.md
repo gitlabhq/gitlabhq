@@ -74,14 +74,14 @@ export const assigneesQueries = {
 
 To handle the same logic for query updates, we **alias** query fields. For example:
 
-- `group` or `project` become `workspace`
+- `group` or `project` become `namespace`
 - `issue`, `epic`, or `mergeRequest` become `issuable`
 
 Unfortunately, Apollo assigns aliased fields a `typename` of `undefined`, so we need to fetch `__typename` explicitly:
 
 ```plaintext
 query issueConfidential($fullPath: ID!, $iid: String) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     __typename
     issuable: issue(iid: $iid) {
       __typename

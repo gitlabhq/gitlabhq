@@ -1,0 +1,10 @@
+---
+name: email_based_mfa
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554382
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200749
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584355
+milestone: '18.4'
+group: group::authentication
+type: beta
+default_enabled: false

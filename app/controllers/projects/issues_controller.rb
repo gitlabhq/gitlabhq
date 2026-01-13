@@ -48,7 +48,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:preserve_markdown, project)
-    push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
@@ -461,7 +460,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
-      options[:author_id] = Users::Internal.for_organization(project.organization_id).support_bot
+      options[:author_id] = Users::Internal.in_organization(project.organization_id).support_bot
     end
 
     options

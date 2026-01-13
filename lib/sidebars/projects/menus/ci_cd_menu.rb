@@ -13,6 +13,7 @@ module Sidebars
           add_item(jobs_menu_item)
           add_item(artifacts_menu_item)
           add_item(pipeline_schedules_menu_item)
+          add_item(attestations_menu_item)
         end
 
         override :extra_container_html_options
@@ -111,6 +112,24 @@ module Sidebars
             active_routes: { controller: :pipeline_schedules },
             item_id: :pipeline_schedules
           )
+        end
+
+        def attestations_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :attestations) unless show_attestations_menu?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Attestations'),
+            link: project_attestations_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
+            container_html_options: { class: 'shortcuts-builds' },
+            active_routes: { controller: :attestations },
+            item_id: :attestations
+          )
+        end
+
+        def show_attestations_menu?
+          ::Feature.enabled?(:slsa_provenance_statement, context.project) &&
+            can?(context.current_user, :read_attestation, context.project)
         end
       end
     end

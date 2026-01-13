@@ -87,7 +87,7 @@ and complete an integration with the Secure stage.
    - Your report artifact must be in one of our supported formats.
      For more information, see the [documentation on reports](secure.md#report).
      - Documentation for [SAST output](../../user/application_security/sast/_index.md#download-a-sast-report).
-     - Documentation for [Dependency Scanning reports](../../user/application_security/dependency_scanning/_index.md#understanding-the-results).
+     - Documentation for [dependency scanning reports](../../user/application_security/dependency_scanning/_index.md#understanding-the-results).
      - Documentation for [container scanning reports](../../user/application_security/container_scanning/_index.md#reports-json-format).
      - See this [example secure job definition that also defines the artifact created](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml).
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
@@ -113,7 +113,7 @@ and complete an integration with the Secure stage.
      doing a [blog post](https://handbook.gitlab.com/handbook/marketing/blog/),
      doing a co-branded webinar, or producing a co-branded white paper.
 
-We have a <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
+We have a <i class="fa-youtube-play" aria-hidden="true"></i> [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)
 that may be helpful as part of this process. This covers various topics related to integrating your
 tool.
 

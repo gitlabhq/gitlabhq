@@ -17,7 +17,7 @@ GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
 creating a [CI/CD project](_index.md) to connect your GitHub repository to
 GitLab.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
 {{< alert type="note" >}}

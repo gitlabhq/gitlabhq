@@ -25,8 +25,15 @@ RSpec::Matchers.define :execute_aggregation do |request|
 
   failure_message do |engine|
     if @expected_data
-      "expected #{engine.class} to execute aggregation and return #{@expected_data.inspect}, " \
-        "but got #{@actual_data.inspect}"
+      message = "expected #{engine.class} to execute aggregation and return #{@expected_data.inspect}, "
+      if @actual_data
+        message << "but got #{@actual_data.inspect}"
+      else
+        message << 'but got no data'
+        message << " and errors #{@actual_errors.inspect}" if @actual_errors
+      end
+
+      message
     elsif @expected_errors
       "expected #{engine.class} to execute aggregation with errors #{@expected_errors.inspect}, " \
         "but got #{@actual_errors.inspect}"

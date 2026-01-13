@@ -141,6 +141,8 @@ export class DiffFile extends HTMLElement {
       diffElement: this.diffElement,
       sink: this.sink,
       data: this.data,
+      id: this.id,
+      selectFile: this.selectFile.bind(this),
       trigger: this.trigger.bind(this),
       replaceWith: this.selfReplace.bind(this),
     };

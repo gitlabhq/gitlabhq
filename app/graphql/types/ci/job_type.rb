@@ -161,7 +161,7 @@ module Types
       end
 
       def tags
-        object.tags.map(&:name) if object.is_a?(::Ci::Build)
+        object.tag_list if object.is_a?(::Ci::Build)
       end
 
       def artifacts

@@ -13,7 +13,7 @@ module QA
         'filters comments and activities in an issue', :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347948',
         quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/534698',
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24019',
           type: :flaky
         }
       ) do

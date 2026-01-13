@@ -19,6 +19,7 @@ module API
               { code: 403, message: '403 Forbidden' },
               { code: 404, message: '404 Not found' }
             ]
+            tags %w[database_dictionary]
           end
           params do
             requires :database_name,

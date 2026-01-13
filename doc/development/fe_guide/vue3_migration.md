@@ -10,6 +10,105 @@ The migration from Vue 2 to 3 is tracked in epic [&6252](https://gitlab.com/grou
 To ease migration to Vue 3.x, we have added [ESLint rules](https://gitlab.com/gitlab-org/frontend/eslint-plugin/-/merge_requests/50)
 that prevent us from using the following deprecated features in the codebase.
 
+## Setup GDK to use Vue3
+
+This guide walks you through configuring the GitLab Development Kit (GDK) to use Vite as the build tool with Vue 3.
+
+### Prerequisites
+
+- GDK installed and configured
+- Basic familiarity with Vue.js and Vite
+- Vite configured in your GDK environment (see [GDK Vite Settings](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md?ref_type=heads#vite-settings))
+
+### Initial Setup
+
+### Switching Between Vue Versions
+
+If you need to switch between Vue 2 and Vue 3, follow these steps carefully:
+
+1. **Stop GDK processes:**
+
+   ```shell
+   gdk kill
+   ```
+
+1. **Clear the Vite and Webpack caches:**
+
+   ```shell
+   yarn clean
+   ```
+
+1. **Set the desired Vue version:**
+
+   ```shell
+   gdk config set vite.vue_version 3  # or 2
+   ```
+
+1. **Reconfigure GDK:**
+
+   ```shell
+   gdk reconfigure
+   ```
+
+1. **Restart GDK:**
+
+   ```shell
+   gdk start
+   ```
+
+> **Important:** Always run `gdk kill` and clear caches with `yarn clean` when switching Vue versions. Failing to do so may cause build errors or unexpected behavior due to cached artifacts from the previous version.
+
+### Verifying Your Setup
+
+You can verify your Vite configuration by checking your `gdk.yml` file:
+
+```shell
+gdk config get vite
+```
+
+This should display your current Vite settings, including the enabled status and Vue version. Your GDK
+should also be up and running.
+
+### Troubleshooting
+
+#### General Debugging
+
+When encountering issues, start by checking the Vite logs:
+
+```shell
+gdk tail vite
+```
+
+This will show real-time Vite output and error messages that can help identify the problem.
+
+#### Build Errors After Switching Versions
+
+If you encounter build errors after switching Vue versions:
+
+1. Ensure you've cleared the Vite cache
+1. Try clearing `node_modules` and reinstalling dependencies:
+
+   ```shell
+   rm -rf node_modules
+   yarn install
+   ```
+
+1. Check `app/assets/javascripts/lib/utils/vue3compat/vue.js` - this compatibility layer can be a common source of issues when switching between Vue versions. If you're seeing import or module resolution errors, verify that this file is correctly configured for your target Vue version.
+
+#### Vite Not Starting
+
+If Vite fails to start:
+
+- Check that `vite.enabled` is set to `true`
+- Verify your Node.js version meets Vite's requirements
+- Review GDK logs for specific error messages
+
+### Additional Resources
+
+- [Vite Documentation](https://vitejs.dev/)
+- [Vue 3 Documentation](https://vuejs.org/)
+- [GDK Documentation](https://gitlab.com/gitlab-org/gitlab-development-kit)
+
 ## Vue filters
 
 **Why**?

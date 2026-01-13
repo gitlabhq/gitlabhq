@@ -1,0 +1,6 @@
+---
+name: create_push_rule
+description: Grants the ability to create push rules
+boundaries:
+  - group
+  - project

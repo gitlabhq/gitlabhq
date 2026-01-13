@@ -1,9 +1,12 @@
 <script>
 import { GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
-
-import { ALERT_MESSAGES, ADMIN_GARBAGE_COLLECTION_TIP } from '../../constants/index';
+import {
+  ALERT_MESSAGES,
+  ADMIN_GARBAGE_COLLECTION_TIP,
+} from '~/packages_and_registries/container_registry/explorer/constants/index';
 
 export default {
+  name: 'ContainerRegistryTagDeleteAlert',
   components: {
     GlSprintf,
     GlAlert,
@@ -28,7 +31,13 @@ export default {
       default: false,
       required: false,
     },
+    showAdminTip: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
+  emits: ['change'],
   computed: {
     deleteAlertConfig() {
       const config = {
@@ -41,12 +50,17 @@ export default {
 
         config.message = ALERT_MESSAGES[this.deleteAlertType];
 
-        if (this.isAdmin && config.type === 'success') {
+        if (this.showTip(config.type)) {
           config.title = config.message;
           config.message = ADMIN_GARBAGE_COLLECTION_TIP;
         }
       }
       return config;
+    },
+  },
+  methods: {
+    showTip(type) {
+      return this.isAdmin && type === 'success' && this.showAdminTip;
     },
   },
 };

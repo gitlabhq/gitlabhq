@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525566
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187083
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/534613
 milestone: '17.11'
-group: group::import and integrate
+group: group::import
 type: gitlab_com_derisk
 default_enabled: false

@@ -83,15 +83,19 @@ Merge request diffs can be stored:
 
 ## Using object storage
 
-{{< alert type="warning" >}}
+> [!warning]
+> Migrating to object storage is not reversible.
 
-Migrating to object storage is not reversible.
+Instead of storing the external diffs on disk, you should use an object
+store like AWS S3. This configuration relies on valid preconfigured AWS credentials.
 
-{{< /alert >}}
+> [!note]
+> Configuring object storage for external diffs in the
+> consolidated object storage settings
+> does not automatically enable external storage for merge request diffs.
+> You must explicitly set `external_diffs_enabled` to `true`.
 
-Instead of storing the external diffs on disk, we recommended the use of an object
-store like AWS S3 instead. This configuration relies on valid AWS credentials to
-be configured already.
+To configure object storage for external diffs:
 
 {{< tabs >}}
 
@@ -103,9 +107,9 @@ be configured already.
    gitlab_rails['external_diffs_enabled'] = true
    ```
 
-1. Set [object storage settings](#object-storage-settings).
+1. Configure the
+   [consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-   GitLab then migrates your existing merge request diffs to external storage.
 
 {{< /tab >}}
 
@@ -119,20 +123,18 @@ be configured already.
      enabled: true
    ```
 
-1. Set [object storage settings](#object-storage-settings).
+1. Configure the
+   [consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
-   GitLab then migrates your existing merge request diffs to external storage.
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-[Read more about using object storage with GitLab](object_storage.md).
+After you reconfigure or restart GitLab, your existing merge request diffs are
+migrated to external storage.
 
-### Object Storage Settings
-
-You should use the
-[consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+For more information, see [Object storage](object_storage.md).
 
 ## Alternative in-database storage
 

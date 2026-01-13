@@ -48,6 +48,12 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       subject { get api("/projects/#{url_encoded_path}/templates/dockerfiles") }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_template do
+      let(:user) { reporter }
+      let(:boundary_object) { private_project }
+      let(:request) { get api("/projects/#{private_project.id}/templates/dockerfiles", personal_access_token: pat) }
+    end
+
     it 'returns issue templates' do
       get api("/projects/#{private_project.id}/templates/issues", reporter)
 
@@ -244,6 +250,12 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
 
     it_behaves_like 'accepts project paths with dots' do
       subject { get api("/projects/#{url_encoded_path}/templates/gitlab_ci_ymls/Android") }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_template do
+      let(:user) { reporter }
+      let(:boundary_object) { private_project }
+      let(:request) { get api("/projects/#{private_project.id}/templates/dockerfiles/Binary", personal_access_token: pat) }
     end
 
     context 'when a guest has no permission to a template' do

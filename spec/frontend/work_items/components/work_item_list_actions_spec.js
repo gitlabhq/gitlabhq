@@ -15,9 +15,9 @@ describe('WorkItemsListActions component', () => {
   const rssPath = '/rss/path';
   const calendarPath = '/calendar/path';
   const fullPath = 'gitlab-org/gitlab-test';
+  const canExport = true;
 
   const workItemCount = 10;
-  const showImportExportButtons = true;
 
   function createComponent(injectedProperties = {}, props = {}) {
     glModalDirective = jest.fn();
@@ -42,7 +42,7 @@ describe('WorkItemsListActions component', () => {
       },
       propsData: {
         workItemCount,
-        showImportExportButtons,
+        canExport,
         fullPath,
         ...props,
       },
@@ -60,34 +60,36 @@ describe('WorkItemsListActions component', () => {
   const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
 
   describe('import/export options', () => {
-    describe('when projectImportJiraPath is provided and canEdit is true', () => {
-      beforeEach(() => {
-        wrapper = createComponent({ projectImportJiraPath, canEdit: true });
+    describe('when projectImportJiraPath is provided', () => {
+      describe('and canEdit is true', () => {
+        beforeEach(() => {
+          wrapper = createComponent({ projectImportJiraPath, canEdit: true });
+        });
+
+        it('renders the dropdown', () => {
+          expect(findDropdown().exists()).toBe(true);
+        });
+
+        it('renders the import from Jira dropdown item', () => {
+          expect(findImportFromJiraLink().exists()).toBe(true);
+          expect(findImportFromJiraLink().props('item').href).toBe(projectImportJiraPath);
+        });
       });
 
-      it('renders the dropdown', () => {
-        expect(findDropdown().exists()).toBe(true);
-      });
+      describe('and canEdit is false', () => {
+        beforeEach(() => {
+          wrapper = createComponent({ projectImportJiraPath, canEdit: false });
+        });
 
-      it('renders the import from Jira dropdown item', () => {
-        expect(findImportFromJiraLink().exists()).toBe(true);
-        expect(findImportFromJiraLink().props('item').href).toBe(projectImportJiraPath);
+        it('does not render the import from Jira dropdown item', () => {
+          expect(findImportFromJiraLink().exists()).toBe(false);
+        });
       });
     });
 
-    describe('when projectImportJiraPath is provided but canEdit is false', () => {
+    describe('when canExport is true', () => {
       beforeEach(() => {
-        wrapper = createComponent({ projectImportJiraPath, canEdit: false });
-      });
-
-      it('does not render the import from Jira dropdown item', () => {
-        expect(findImportFromJiraLink().exists()).toBe(false);
-      });
-    });
-
-    describe('when the showExportButton=true', () => {
-      beforeEach(() => {
-        wrapper = createComponent({ showExportButton: true });
+        wrapper = createComponent();
       });
 
       it('displays the export button and the dropdown', () => {
@@ -109,9 +111,9 @@ describe('WorkItemsListActions component', () => {
       });
     });
 
-    describe('when the showExportButton=false', () => {
+    describe('when canExport is false', () => {
       beforeEach(() => {
-        wrapper = createComponent({ showExportButton: false });
+        wrapper = createComponent({}, { canExport: false });
       });
 
       it('does not display the export button and modal', () => {
@@ -282,16 +284,6 @@ describe('WorkItemsListActions component', () => {
           'An error occurred updating the RSS link. Please refresh the page to try again.',
         ]);
       });
-    });
-  });
-
-  describe('when no options are provided', () => {
-    beforeEach(() => {
-      wrapper = createComponent();
-    });
-
-    it('does not render the dropdown', () => {
-      expect(findDropdown().exists()).toBe(false);
     });
   });
 

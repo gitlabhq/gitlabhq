@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
+RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline, feature_category: :value_stream_management do
   include_context 'Analytics fixtures shared context'
 
   let_it_be(:value_stream_id) { 'default' }

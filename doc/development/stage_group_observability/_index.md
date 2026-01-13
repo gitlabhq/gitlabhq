@@ -122,7 +122,7 @@ deeper in the logs.
 The panel on the right provides links to Kibana that should reveal
 which endpoints or Sidekiq jobs are causing the errors.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn how to use these panels and logs for
 determining which Rails endpoints are slow,
 see the [Error Budget Attribution for Purchase group](https://youtu.be/M9u6unON7bU) video.

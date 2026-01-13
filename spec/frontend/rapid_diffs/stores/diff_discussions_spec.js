@@ -1,9 +1,9 @@
-import { createPinia, setActivePinia } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 
 describe('diffDiscussions store', () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
+    createTestingPinia({ stubActions: false });
     window.gon.current_user_id = 1;
   });
 
@@ -15,6 +15,12 @@ describe('diffDiscussions store', () => {
       expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
       expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeNull();
       expect(useDiffDiscussions().discussions[0].hidden).toBe(false);
+    });
+
+    it('does not overwrite existing properties', () => {
+      const discussions = [{ id: 'abc', notes: [{ id: 'bcd' }], hidden: true }];
+      useDiffDiscussions().setInitialDiscussions(discussions);
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(true);
     });
   });
 
@@ -242,6 +248,36 @@ describe('diffDiscussions store', () => {
       expect(result).toBe(undefined);
     });
 
+    it('shows hidden discussions', () => {
+      const existingDiscussion = {
+        id: 'existing-id',
+        diff_discussion: true,
+        isForm: false,
+        repliesExpanded: false,
+        isReplying: false,
+        hidden: true,
+        position: {
+          old_path: defaultPosition.oldPath,
+          new_path: defaultPosition.newPath,
+          old_line: defaultPosition.oldLine,
+          new_line: defaultPosition.newLine,
+        },
+        notes: [],
+      };
+      useDiffDiscussions().setInitialDiscussions([existingDiscussion]);
+      useDiffDiscussions().addNewLineDiscussionForm(defaultPosition);
+      expect(useDiffDiscussions().discussions[0].hidden).toBe(false);
+    });
+  });
+
+  describe('replyToLineDiscussion', () => {
+    const defaultPosition = {
+      oldPath: 'old/file.js',
+      newPath: 'new/file.js',
+      oldLine: 10,
+      newLine: 20,
+    };
+
     it.each`
       oldLine                    | newLine
       ${null}                    | ${defaultPosition.newLine}
@@ -265,7 +301,7 @@ describe('diffDiscussions store', () => {
         };
         useDiffDiscussions().discussions = [existingDiscussion];
 
-        const result = useDiffDiscussions().addNewLineDiscussionForm(testPosition);
+        const result = useDiffDiscussions().replyToLineDiscussion(testPosition);
 
         expect(useDiffDiscussions().discussions[0].repliesExpanded).toBe(true);
         expect(useDiffDiscussions().discussions[0].isReplying).toBe(true);
@@ -273,13 +309,9 @@ describe('diffDiscussions store', () => {
       },
     );
 
-    it('calls setFileDiscussionsHidden to show discussions when adding a new form', () => {
-      useDiffDiscussions().discussions = [];
-      const spy = jest.spyOn(useDiffDiscussions(), 'setFileDiscussionsHidden');
-
-      useDiffDiscussions().addNewLineDiscussionForm(defaultPosition);
-
-      expect(spy).toHaveBeenCalledWith(defaultPosition.oldPath, defaultPosition.newPath, false);
+    it('adds new form if none exists', () => {
+      useDiffDiscussions().replyToLineDiscussion(defaultPosition);
+      expect(useDiffDiscussions().discussions[0].isForm).toBe(true);
     });
   });
 
@@ -483,7 +515,6 @@ describe('diffDiscussions store', () => {
       useDiffDiscussions().discussions = [
         matchingDiscussion,
         { ...matchingDiscussion, id: 'match2' },
-        { ...matchingDiscussion, isForm: true, id: 'notmatch1' },
         { ...matchingDiscussion, diff_discussion: false, id: 'notmatch2' },
         {
           ...matchingDiscussion,
@@ -505,13 +536,22 @@ describe('diffDiscussions store', () => {
 
     it('returns an empty array if no discussions match', () => {
       useDiffDiscussions().discussions = [
-        { ...matchingDiscussion, isForm: true, id: 'notmatch1' },
         { ...matchingDiscussion, diff_discussion: false, id: 'notmatch2' },
       ];
 
       const found = useDiffDiscussions().findDiscussionsForPosition(position);
 
       expect(found).toHaveLength(0);
+    });
+
+    it('includes form discussions in results', () => {
+      const formDiscussion = { ...matchingDiscussion, isForm: true, id: 'form1' };
+      useDiffDiscussions().discussions = [matchingDiscussion, formDiscussion];
+
+      const found = useDiffDiscussions().findDiscussionsForPosition(position);
+
+      expect(found).toHaveLength(2);
+      expect(found.map((d) => d.id)).toEqual(['match', 'form1']);
     });
   });
 

@@ -506,7 +506,7 @@ To change the group linked to a GitLab.com subscription:
 
 Only one namespace can be linked to a subscription.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
 
 ## Add or change subscription contacts

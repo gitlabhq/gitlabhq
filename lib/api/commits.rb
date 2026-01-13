@@ -23,7 +23,7 @@ module API
     end
 
     rescue_from Oj::ParseError do |e|
-      Gitlab::ErrorTracking.track_exception(e)
+      Gitlab::ErrorTracking.log_exception(e)
 
       message = 'Invalid json'
       render_structured_api_error!({ message: message, error: message }, 400)
@@ -73,7 +73,8 @@ module API
       def validate_commits_attrs!(attrs)
         bad_request!('branch is required') if attrs[:branch].blank?
         bad_request!('commit_message is required') if attrs[:commit_message].blank?
-        bad_request!('actions is required') if attrs[:actions].blank?
+        validate_actions_allow_empty!(attrs)
+        bad_request!('actions must be an array') unless attrs[:actions].is_a?(Array)
 
         if attrs.key?(:start_sha) && attrs.key?(:start_branch)
           bad_request!('start_branch, start_sha are mutually exclusive')
@@ -89,6 +90,20 @@ module API
         end
 
         filter_commits_attrs!(attrs)
+      end
+
+      def validate_actions_allow_empty!(attrs)
+        if !attrs.key?(:actions) || (attrs[:actions].is_a?(Array) && attrs[:actions].empty?)
+          if attrs.key?(:allow_empty) && [nil, true, false, "", "true", "false"].exclude?(attrs[:allow_empty])
+            bad_request!('allow_empty must be a boolean')
+          end
+
+          attrs[:allow_empty] = ActiveModel::Type::Boolean.new.cast(attrs[:allow_empty]) == true
+
+          bad_request!('Provide at least one action, or set allow_empty to true') unless attrs[:allow_empty]
+
+          attrs[:actions] = []
+        end
       end
 
       def validate_commit_action!(action, index)
@@ -197,7 +212,8 @@ module API
         limit = [per_page, Kaminari.config.max_per_page].min
         offset = (page - 1) * limit
 
-        path = params[:path]
+        path = params[:path].presence || ''
+        path = path.sub(%r{^/+}, '') # remove the leading slashes
         before = params[:until]
         after = params[:since]
         ref = params[:ref_name].presence || user_project.default_branch unless params[:all]
@@ -249,7 +265,7 @@ module API
         workhorse_authorize_commits_body_upload!
       end
 
-      desc 'Commit multiple file changes as one commit' do
+      desc 'Create a new commit' do
         success code: 200, model: Entities::CommitDetail
         tags %w[commits]
         failure [

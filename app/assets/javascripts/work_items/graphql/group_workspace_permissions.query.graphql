@@ -1,5 +1,5 @@
 query groupWorkspacePermissions($fullPath: ID!) {
-  workspace: group(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     userPermissions {
       adminWorkItemLifecycle

@@ -49,6 +49,16 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 Note: you can use the [CXL calculator](https://cxl.com/ab-test-calculator/) to determine if your experiment has reached significance. The calculator includes an estimate for how much longer an experiment must run for before reaching significance.
 
+### Analysis Dashboards
+
+The following Tableau dashboards are available for experiment analysis:
+- [Growth Experiment Event Validation Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DRAFTPDExperimentEventValidation/GrowthExperimentEventValidationDashboard) - for initial event validation
+- [GLEX Experiment Analysis Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/USETHISFINALGLEX/GLEXExperimentAnalysisDashboard) - for detailed experiment analysis
+- [General Snowplow Event Exploration Dashboard](https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D)
+provides additional event analysis capabilities, but for production only.
+
+**Note:** Events may take 24+ hours to appear in Tableau dashboards.
+
 ## Rollout plan
 <!-- Add an overview and method for modifying the feature flag -->
 

@@ -17,13 +17,19 @@ module Projects
     end
 
     def execute_deletion
-      ServiceResponse.from_legacy_hash(
-        ::Projects::UpdateService.new(
+      Project.transaction do
+        transition_success = resource.schedule_deletion(transition_user: current_user)
+        unless transition_success
+          next ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
+        end
+
+        update_service_response = ::Projects::UpdateService.new(
           resource,
           current_user,
           update_service_params
         ).execute
-      )
+        ServiceResponse.from_legacy_hash(update_service_response)
+      end
     end
 
     def update_service_params

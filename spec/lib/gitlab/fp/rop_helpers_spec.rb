@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Fp::RopHelpers, feature_category: :shared do
+RSpec.describe Gitlab::Fp::RopHelpers, feature_category: :workspaces do
   describe '.retrieve_single_public_singleton_method' do
     let(:extending_class) do
       Class.new do

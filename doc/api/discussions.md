@@ -219,11 +219,8 @@ curl --request POST \
 
 Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
 
-{{< alert type="warning" >}}
-
-Notes can be added to other items than comments, such as system notes, making them threads.
-
-{{< /alert >}}
+> [!warning]
+> Notes can be added to other items than comments, such as system notes, making them threads.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes

@@ -28,8 +28,13 @@ To create multiple similar jobs, but with different variable values, use [`paral
 YAML has a feature called 'anchors' that you can use to duplicate
 content across your document.
 
-Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](../jobs/_index.md#hide-a-job)
-to provide templates for your jobs. When there are duplicate keys, the latest included key wins, overriding the other keys.
+You can use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](../jobs/_index.md#hide-a-job)
+to provide templates for your jobs.
+
+The `&` character marks the anchor name, and the `*` character is the alias that references
+the anchor. You must define the anchor higher in the YAML file than any aliases that reference it.
+
+When there are duplicate keys, the latest included key wins and overrides the other keys.
 
 In certain cases (see [YAML anchors for scripts](#yaml-anchors-for-scripts)), you can use YAML anchors to build arrays with multiple components defined elsewhere. For example:
 

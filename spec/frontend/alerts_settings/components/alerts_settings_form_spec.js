@@ -168,7 +168,7 @@ describe('AlertsSettingsForm', () => {
         enableIntegration(0, integrationName);
 
         const sampleMapping = parsedMapping.payloadAttributeMappings;
-        findMappingBuilder().vm.$emit('onMappingUpdate', sampleMapping);
+        findMappingBuilder().vm.$emit('on-mapping-update', sampleMapping);
         findForm().trigger('submit');
 
         expect(wrapper.emitted('create-new-integration')[0][0]).toMatchObject({

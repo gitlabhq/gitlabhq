@@ -60,7 +60,7 @@ module Gitlab
         if using_signature_class?
           return unless gpg_signature.fingerprint
 
-          attributes = attributes(gpg_signature.gpg_key)
+          attributes = attributes(nil)
           return CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
 
           CommitSignatures::GpgSignature.safe_create!(attributes)
@@ -93,23 +93,26 @@ module Gitlab
       end
 
       def attributes(gpg_key)
-        user_infos = user_infos(gpg_key)
-        verification_status = verification_status(gpg_key)
-
         {
           commit_sha: @commit.sha,
-          project: project,
-          gpg_key: gpg_key,
-          gpg_key_user_name: user_infos[:name],
-          gpg_key_user_email: user_infos[:email]
+          project: project
         }.tap do |attrs|
           attrs[:committer_email] = committer_email if check_for_mailmapped_commit_emails?
           if using_signature_class?
-            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || gpg_signature.fingerprint
-            attrs[:verification_status] = gpg_signature.verification_status
+            sig = gpg_signature(gpg_key:)
+            gpg_key = sig.gpg_key
+            attrs[:gpg_key] = gpg_key
+            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || sig.fingerprint
+            attrs[:verification_status] = sig.verification_status
+            attrs[:gpg_key_user_name] = sig.user_infos[:name]
+            attrs[:gpg_key_user_email] = sig.user_infos[:email]
           else
+            attrs[:gpg_key] = gpg_key
+            user_infos = user_infos(gpg_key)
             attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || verified_signature&.fingerprint
-            attrs[:verification_status] = verification_status
+            attrs[:verification_status] = verification_status(gpg_key)
+            attrs[:gpg_key_user_name] = user_infos[:name]
+            attrs[:gpg_key_user_email] = user_infos[:email]
           end
         end
       end
@@ -151,10 +154,12 @@ module Gitlab
         end
       end
 
-      def gpg_signature
-        ::Gitlab::Gpg::Signature.new(signature_text, signed_text, signer, @commit.committer_email)
+      def gpg_signature(gpg_key: nil)
+        strong_memoize_with(:gpg_signature, gpg_key) do
+          ::Gitlab::Gpg::Signature.new(signature_text, signed_text, signer, @commit.committer_email,
+            preloaded_gpg_key: gpg_key)
+        end
       end
-      strong_memoize_attr :gpg_signature
 
       def using_signature_class?
         Feature.enabled?(:gpg_commit_delegate_to_signature, project)

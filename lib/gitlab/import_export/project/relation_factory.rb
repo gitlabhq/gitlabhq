@@ -220,7 +220,7 @@ module Gitlab
           # When author is not present for source release set the author as ghost user.
 
           if @relation_hash['author_id'].blank?
-            @relation_hash['author_id'] = Users::Internal.for_organization(@importable.organization_id).ghost.id
+            @relation_hash['author_id'] = Users::Internal.in_organization(@importable.organization_id).ghost.id
           end
         end
 
@@ -332,7 +332,7 @@ module Gitlab
           return object unless value
 
           references.each do |key|
-            attribute = "#{key.delete_suffix('_id')}=".to_sym
+            attribute = :"#{key.delete_suffix('_id')}="
             next unless object.respond_to?(key) && object.respond_to?(attribute)
 
             if object.read_attribute(key) == value&.id

@@ -282,7 +282,20 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             users_api_limit_ssh_keys: 1028,
             users_api_limit_ssh_key: 1029,
             users_api_limit_gpg_keys: 1030,
-            users_api_limit_gpg_key: 1031
+            users_api_limit_gpg_key: 1031,
+            groups_api_limit: 1032,
+            group_api_limit: 1033,
+            group_projects_api_limit: 1034,
+            group_shared_groups_api_limit: 1035,
+            group_invited_groups_api_limit: 1036,
+            group_archive_unarchive_api_limit: 1037,
+            projects_api_limit: 1038,
+            project_api_limit: 1039,
+            projects_api_rate_limit_unauthenticated: 1040,
+            user_projects_api_limit: 1041,
+            user_contributed_projects_api_limit: 1042,
+            user_starred_projects_api_limit: 1043,
+            project_members_api_limit: 1044
           )
         end
 
@@ -316,6 +329,19 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
           expect(rate_limits[:users_api_ssh_key]).to eq({ enabled: true, requests_per_period: 1029, period_in_seconds: 60 })
           expect(rate_limits[:users_api_gpg_keys]).to eq({ enabled: true, requests_per_period: 1030, period_in_seconds: 60 })
           expect(rate_limits[:users_api_gpg_key]).to eq({ enabled: true, requests_per_period: 1031, period_in_seconds: 60 })
+          expect(rate_limits[:groups_api]).to eq({ enabled: true, requests_per_period: 1032, period_in_seconds: 60 })
+          expect(rate_limits[:group_api]).to eq({ enabled: true, requests_per_period: 1033, period_in_seconds: 60 })
+          expect(rate_limits[:group_projects_api]).to eq({ enabled: true, requests_per_period: 1034, period_in_seconds: 60 })
+          expect(rate_limits[:group_shared_groups_api]).to eq({ enabled: true, requests_per_period: 1035, period_in_seconds: 60 })
+          expect(rate_limits[:group_invited_groups_api]).to eq({ enabled: true, requests_per_period: 1036, period_in_seconds: 60 })
+          expect(rate_limits[:group_archive_unarchive_api]).to eq({ enabled: true, requests_per_period: 1037, period_in_seconds: 60 })
+          expect(rate_limits[:projects_api]).to eq({ enabled: true, requests_per_period: 1038, period_in_seconds: 60 })
+          expect(rate_limits[:project_api]).to eq({ enabled: true, requests_per_period: 1039, period_in_seconds: 60 })
+          expect(rate_limits[:projects_api_unauthenticated]).to eq({ enabled: true, requests_per_period: 1040, period_in_seconds: 60 })
+          expect(rate_limits[:user_projects_api]).to eq({ enabled: true, requests_per_period: 1041, period_in_seconds: 60 })
+          expect(rate_limits[:user_contributed_projects_api]).to eq({ enabled: true, requests_per_period: 1042, period_in_seconds: 60 })
+          expect(rate_limits[:user_starred_projects_api]).to eq({ enabled: true, requests_per_period: 1043, period_in_seconds: 60 })
+          expect(rate_limits[:project_members_api]).to eq({ enabled: true, requests_per_period: 1044, period_in_seconds: 60 })
         end
       end
     end

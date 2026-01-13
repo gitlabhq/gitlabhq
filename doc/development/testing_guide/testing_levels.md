@@ -66,7 +66,11 @@ Unit tests are on the lowest abstraction level and typically test functionality
 that is not directly perceivable by a user.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph RL
+    accTitle: Frontend unit tests
+    accDescr: Diagram showing how frontend unit tests work and test functionality
+
     plain[Plain JavaScript];
     Vue[Vue Components];
     feature-flags[Feature flags];
@@ -90,9 +94,9 @@ graph RL
     class plain tested;
     class Vuex tested;
 
-    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef node stroke-width:2px
     classDef label stroke-width:0;
-    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    classDef tested stroke-width:2px,stroke-dasharray: 5, 5;
 
     subgraph " "
     tested;
@@ -150,7 +154,11 @@ graph RL
 Component tests cover the state of a single component that is perceivable by a user depending on external signals such as user input, events fired from other components, or application state.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph RL
+    accTitle: Frontend component tests
+    accDescr: Diagram showing how component tests work
+
     plain[Plain JavaScript];
     Vue[Vue Components];
     feature-flags[Feature flags];
@@ -173,9 +181,9 @@ graph RL
 
     class Vue tested;
 
-    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef node stroke-width:2px
     classDef label stroke-width:0;
-    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    classDef tested stroke-width:2px,stroke-dasharray: 5, 5;
 
     subgraph " "
     tested;
@@ -238,7 +246,11 @@ Integration tests cover the interaction between all components on a single page.
 Their abstraction level is comparable to how a user would interact with the UI.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph RL
+    accTitle: Frontend integration tests
+    accDescr: Diagram showing how integration tests work
+
     plain[Plain JavaScript];
     Vue[Vue Components];
     feature-flags[Feature flags];
@@ -264,11 +276,11 @@ graph RL
     class Vuex tested;
     class GraphQL tested;
     class browser tested;
-    linkStyle 0,1,2,3,4,5,6 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    linkStyle 0,1,2,3,4,5,6 stroke-width:2px,stroke-dasharray: 5, 5;
 
-    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef node stroke-width:2px
     classDef label stroke-width:0;
-    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    classDef tested stroke-width:2px,stroke-dasharray: 5, 5;
 
     subgraph " "
     tested;
@@ -366,7 +378,11 @@ See also:
 - System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph RL
+    accTitle: Frontend feature tests
+    accDescr: Diagram showing how feature tests work
+
     plain[Plain JavaScript];
     Vue[Vue Components];
     feature-flags[Feature flags];
@@ -393,11 +409,11 @@ graph RL
     class Vuex tested;
     class GraphQL tested;
     class browser tested;
-    linkStyle 0,1,2,3,4,5,6,7,8,9,10 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    linkStyle 0,1,2,3,4,5,6,7,8,9,10 stroke-width:2px,stroke-dasharray: 5, 5;
 
-    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef node stroke-width:2px
     classDef label stroke-width:0;
-    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+    classDef tested stroke-width:2px,stroke-dasharray: 5, 5;
 
     subgraph " "
     tested;

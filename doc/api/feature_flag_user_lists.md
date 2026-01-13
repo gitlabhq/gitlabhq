@@ -25,11 +25,8 @@ Prerequisites:
 
 - You must have at least the Developer role.
 
-{{< alert type="note" >}}
-
-To interact with feature flags for all users, see the [Feature flag API](feature_flags.md).
-
-{{< /alert >}}
+> [!note]
+> To interact with feature flags for all users, see the [Feature flag API](feature_flags.md).
 
 ## List all feature flag user lists for a project
 

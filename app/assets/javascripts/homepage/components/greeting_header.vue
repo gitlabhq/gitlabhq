@@ -32,7 +32,7 @@ export default {
       return gon.current_user_fullname?.trim() || gon.current_username;
     },
     greeting() {
-      return sprintf(__('Hi, %{name}'), { name: this.relevantName });
+      return sprintf(__('Hi, %{name}'), { name: this.relevantName }, false);
     },
     avatar() {
       return gon?.current_user_avatar_url;

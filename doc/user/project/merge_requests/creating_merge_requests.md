@@ -129,7 +129,7 @@ You can create a merge request when you create a branch.
 
 You can create a merge request from your fork to contribute back to the main project.
 
-1. On the left sidebar, select **Search or go to** and find your fork.
+1. On the top bar, select **Search or go to** and find your fork.
 1. Select **Code** > **Merge requests**, and select **New merge request**.
 1. For **Source branch**, select the branch in your fork that contains your changes.
 1. For **Target branch**:

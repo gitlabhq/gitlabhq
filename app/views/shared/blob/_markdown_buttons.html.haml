@@ -41,7 +41,7 @@
   .gl-border-l.gl-ml-2.gl-pl-3
 = markdown_toolbar_button({ icon: "table", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
 - if supports_file_upload
-  = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button haml-markdown-button gl-mr-2', data: { testid: 'button-attach-file', container: 'body' } })
+  = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button haml-markdown-button gl-mr-2', data: { testid: 'button-attach-file', container: 'body' }, title: _("Attach a file or image") })
 - if supports_quick_actions
   = markdown_toolbar_button({ icon: "quick-actions", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "/", "md-prepend" => true }, title: _("Add a quick action") })
 .gl-flex.gl-py-2.haml-markdown-button

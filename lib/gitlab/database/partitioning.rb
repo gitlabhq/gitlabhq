@@ -52,6 +52,7 @@ module Gitlab
 
           unless owner_db_only || only_on
             models_to_sync.each do |model|
+              # Skip because Gitlab::Database::EachDatabase already synced this to all dbs
               next if model < ::Gitlab::Database::SharedModel && !(model < TableWithoutModel)
 
               model_connection_name = model.connection_db_config.name

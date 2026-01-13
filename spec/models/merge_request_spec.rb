@@ -4480,7 +4480,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#mergeable?' do
-    subject { build_stubbed(:merge_request) }
+    let_it_be_with_refind(:mr) { create(:merge_request) }
+
+    subject { mr }
 
     it 'returns false if #mergeable_state? is false' do
       expect(subject).to receive(:mergeable_state?) { false }
@@ -5818,6 +5820,89 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .from(merge_status.to_s)
           .to(expected_merge_status)
         expect(subject.transitioning?).to be_falsey
+      end
+    end
+
+    describe 'auto merge on merge status change' do
+      describe 'after_transition to can_be_merged' do
+        let_it_be(:user) { create(:user) }
+
+        context 'when auto merge is enabled' do
+          it 'enqueues AutoMergeProcessWorker' do
+            merge_request = create(
+              :merge_request,
+              source_project: project,
+              target_project: project,
+              auto_merge_enabled: true,
+              merge_user: user,
+              merge_status: 'checking'
+            )
+
+            expect(AutoMergeProcessWorker).to receive(:perform_async)
+              .with({ 'merge_request_id' => merge_request.id })
+
+            merge_request.mark_as_mergeable
+          end
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(auto_merge_on_merge_status_change: false)
+            end
+
+            it 'does not enqueue AutoMergeProcessWorker' do
+              merge_request = create(
+                :merge_request,
+                source_project: project,
+                target_project: project,
+                auto_merge_enabled: true,
+                merge_user: user,
+                merge_status: 'checking'
+              )
+
+              expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+              merge_request.mark_as_mergeable
+            end
+          end
+        end
+
+        context 'when auto merge is not enabled' do
+          it 'does not enqueue AutoMergeProcessWorker' do
+            merge_request = create(
+              :merge_request,
+              source_project: project,
+              target_project: project,
+              auto_merge_enabled: false,
+              merge_status: 'checking'
+            )
+
+            expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+            merge_request.mark_as_mergeable
+          end
+        end
+
+        context 'when transitioning from different states' do
+          %w[unchecked cannot_be_merged_recheck checking cannot_be_merged_rechecking].each do |initial_state|
+            context "when transitioning from #{initial_state}" do
+              it 'enqueues AutoMergeProcessWorker' do
+                merge_request = create(
+                  :merge_request,
+                  source_project: project,
+                  target_project: project,
+                  auto_merge_enabled: true,
+                  merge_user: user,
+                  merge_status: initial_state
+                )
+
+                expect(AutoMergeProcessWorker).to receive(:perform_async)
+                  .with({ 'merge_request_id' => merge_request.id })
+
+                merge_request.mark_as_mergeable
+              end
+            end
+          end
+        end
       end
     end
 

@@ -5,9 +5,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Matrix expressions in GitLab CI/CD
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6. This feature is in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6.
 
 {{< /history >}}
 

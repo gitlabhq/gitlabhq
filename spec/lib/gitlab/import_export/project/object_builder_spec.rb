@@ -532,6 +532,29 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
           expect(commit.merge_request_commits_metadata).to be_nil
         end
       end
+
+      context 'when metadata is not found or created' do
+        before do
+          allow(MergeRequest::CommitsMetadata)
+            .to receive(:find_or_create)
+            .and_return(nil)
+        end
+
+        it 'logs an error for only the failed commits' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(MergeRequestDiffCommit::CouldNotCreateMetadataError),
+            hash_including(
+              message: 'Failed to create metadata during import',
+              project_id: project.id
+            )
+          )
+
+          described_class.build(
+            MergeRequestDiffCommit,
+            commit_attrs
+          )
+        end
+      end
     end
   end
 

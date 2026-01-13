@@ -6,7 +6,7 @@ module Ci
     # only use this method as a helper in factory definitions.
     def self.mutate_temp_job_definition(job, **new_config)
       # Deep merge is required because job config changes are meant to be cumulative within factories
-      updated_config = (job.temp_job_definition&.config || {}).deep_merge(new_config)
+      updated_config = (job.temp_job_definition&.job_attributes || {}).deep_merge(new_config)
 
       new_temp_job_definition = ::Ci::JobDefinition.fabricate(
         config: updated_config,

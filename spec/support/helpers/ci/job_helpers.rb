@@ -13,7 +13,7 @@ module Ci
       end
 
       # We use regular merge (not deep_merge) to completely overwrite existing attributes
-      updated_config = (job.job_definition&.config || job.temp_job_definition&.config || {}).merge(new_config)
+      updated_config = ((job.job_definition || job.temp_job_definition).try(:job_attributes) || {}).merge(new_config)
 
       new_job_definition = ::Ci::JobDefinition.fabricate(
         config: updated_config,

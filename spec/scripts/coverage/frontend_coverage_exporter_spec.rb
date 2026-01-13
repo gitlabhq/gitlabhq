@@ -1,0 +1,167 @@
+# frozen_string_literal: true
+
+require 'fast_spec_helper'
+require 'tempfile'
+require_relative '../../../scripts/coverage/frontend_coverage_exporter'
+
+RSpec.describe FrontendCoverageExporter, feature_category: :tooling do
+  let(:temp_dir) { Dir.mktmpdir }
+  let(:jest_reports_dir) { File.join(temp_dir, 'jest-reports') }
+  let(:env) do
+    {
+      'CLICKHOUSE_URL' => 'http://localhost:8123',
+      'CLICKHOUSE_DATABASE' => 'test_db',
+      'CLICKHOUSE_USERNAME' => 'test_user'
+    }
+  end
+
+  let(:exporter) { described_class.new(env: env) }
+
+  before do
+    allow(exporter).to receive(:puts)
+    FileUtils.mkdir_p(jest_reports_dir)
+
+    stub_const('FrontendCoverageExporter::COVERAGE_REPORT', File.join(temp_dir, 'lcov.info'))
+    stub_const('FrontendCoverageExporter::TEST_MAP', File.join(temp_dir, 'merged-source-to-test.json'))
+    stub_const('FrontendCoverageExporter::JEST_REPORTS_GLOB', File.join(jest_reports_dir, '**/*.json'))
+    stub_const('FrontendCoverageExporter::E2E_REPORTS_GLOB', File.join(temp_dir, 'e2e-*.json'))
+  end
+
+  after do
+    FileUtils.rm_rf(temp_dir)
+  end
+
+  def create_coverage_report
+    File.write(File.join(temp_dir, 'lcov.info'), 'SF:app/assets/javascripts/main.js')
+  end
+
+  def create_test_map
+    File.write(File.join(temp_dir, 'merged-source-to-test.json'), '{}')
+  end
+
+  def create_jest_report(name = 'jest-1.json')
+    File.write(File.join(jest_reports_dir, name), '{}')
+  end
+
+  def create_e2e_report(name = 'e2e-1.json')
+    File.write(File.join(temp_dir, name), '{}')
+  end
+
+  describe '#run' do
+    context 'when all artifacts are present' do
+      before do
+        create_coverage_report
+        create_test_map
+        create_jest_report
+      end
+
+      it 'exports to ClickHouse and returns true' do
+        allow(exporter).to receive(:system).and_return(true)
+
+        result = exporter.run
+
+        expect(result).to be true
+        expect(exporter).to have_received(:system).with(
+          'bundle', 'exec', 'test-coverage',
+          '--test-reports', anything,
+          '--coverage-report', anything,
+          '--test-map', anything,
+          '--clickhouse-url', 'http://localhost:8123',
+          '--clickhouse-database', 'test_db',
+          '--clickhouse-username', 'test_user',
+          '--responsibility-patterns', '.gitlab/coverage/responsibility_patterns.yml'
+        )
+      end
+    end
+
+    context 'when coverage report is missing' do
+      before do
+        create_test_map
+        create_jest_report
+      end
+
+      it 'skips export and returns true' do
+        result = exporter.run
+
+        expect(result).to be true
+        expect(exporter).to have_received(:puts).with('Skipping export: coverage report not found')
+      end
+    end
+
+    context 'when test reports are missing' do
+      before do
+        create_coverage_report
+        create_test_map
+      end
+
+      it 'skips export and returns true' do
+        result = exporter.run
+
+        expect(result).to be true
+        expect(exporter).to have_received(:puts).with('Skipping export: no test reports found')
+      end
+    end
+
+    context 'when test map is missing' do
+      before do
+        create_coverage_report
+        create_jest_report
+      end
+
+      it 'skips export and returns true' do
+        result = exporter.run
+
+        expect(result).to be true
+        expect(exporter).to have_received(:puts).with('Skipping export: test mapping not found')
+      end
+    end
+
+    context 'when only E2E reports exist (no Jest reports)' do
+      before do
+        create_coverage_report
+        create_test_map
+        create_e2e_report
+      end
+
+      it 'exports to ClickHouse' do
+        allow(exporter).to receive(:system).and_return(true)
+
+        result = exporter.run
+
+        expect(result).to be true
+        expect(exporter).to have_received(:system)
+      end
+    end
+  end
+
+  describe '#print_summary' do
+    context 'when all artifacts exist' do
+      before do
+        create_coverage_report
+        create_test_map
+        create_jest_report
+        create_jest_report('jest-2.json')
+        create_e2e_report
+      end
+
+      it 'prints status with checkmarks' do
+        allow(exporter).to receive(:system).and_return(true)
+        exporter.run
+
+        expect(exporter).to have_received(:puts).with(/\[✓\] Coverage report/)
+        expect(exporter).to have_received(:puts).with(/Jest test reports: 2 files/)
+        expect(exporter).to have_received(:puts).with(/E2E test reports: 1 files/)
+        expect(exporter).to have_received(:puts).with(/\[✓\] Test mapping/)
+      end
+    end
+
+    context 'when artifacts are missing' do
+      it 'prints status with X marks' do
+        exporter.run
+
+        expect(exporter).to have_received(:puts).with(/\[✗\] Coverage report: NOT FOUND/)
+        expect(exporter).to have_received(:puts).with(/\[✗\] Test mapping: NOT FOUND/)
+      end
+    end
+  end
+end

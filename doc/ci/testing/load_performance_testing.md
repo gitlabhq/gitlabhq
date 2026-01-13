@@ -128,11 +128,8 @@ An example configuration workflow:
 The previous example creates a `load_performance` job in your CI/CD pipeline that runs
 the k6 test.
 
-{{< alert type="note" >}}
-
-For Kubernetes setups a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
-
-{{< /alert >}}
+> [!note]
+> For Kubernetes setups, a different template should be used: [`Jobs/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Load-Performance-Testing.gitlab-ci.yml).
 
 k6 has [various options](https://k6.io/docs/using-k6/k6-options/reference/) to configure how it runs the tests, such as what throughput (RPS) to run with,
 how long the test should run, and so on. Almost all options can be configured in the test itself, but as

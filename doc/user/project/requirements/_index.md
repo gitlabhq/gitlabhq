@@ -23,11 +23,11 @@ If an industry standard requires that your application has a certain feature or 
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 <!-- Video published on 2020-04-09 -->
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthrough](https://youtu.be/VIiuTQYFVa0).
 <!-- Video published on 2020-02-12 -->
 

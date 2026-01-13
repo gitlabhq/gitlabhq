@@ -1,0 +1,7 @@
+---
+name: delete_project
+description: Grants the ability to delete or mark projects for deletion
+permissions:
+  - delete_project
+boundaries:
+  - project

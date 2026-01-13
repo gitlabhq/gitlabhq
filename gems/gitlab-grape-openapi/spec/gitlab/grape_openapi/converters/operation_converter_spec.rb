@@ -23,7 +23,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['Users Api'])
+          expect(operation.tags).to eq(['Users api'])
         end
 
         it 'extracts parameters' do
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
         end
 
         it 'extracts tags' do
-          expect(operation.tags).to eq(['Users Api'])
+          expect(operation.tags).to eq(['Users api'])
         end
 
         it 'extracts summary from description' do

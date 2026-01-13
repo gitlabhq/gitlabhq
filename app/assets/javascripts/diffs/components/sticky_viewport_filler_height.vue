@@ -1,7 +1,7 @@
 <script>
 import { throttle } from 'lodash';
 import { observeElementOnce } from '~/lib/utils/dom_utils';
-import { getScrollingElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 
 /*
  * This is a universal performant component to fill in all the available height in viewport for sticky elements.

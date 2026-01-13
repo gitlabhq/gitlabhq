@@ -54,10 +54,15 @@ an integrated GitLab workflow experience.
 
 ### GitLab Duo Chat
 
-Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI assistant directly in your development environment.
+Use [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) or [GitLab Duo Chat (Classic)](../user/gitlab_duo_chat/_index.md) to interact with an AI assistant directly in your development environment.
 
 - Ask about GitLab: Get answers about how GitLab works, concepts, and step-by-step instructions.
 - Code-related queries: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
+
+## Security considerations
+
+To learn about the security risks of running agents locally in editor extensions and how to protect
+your local development environment, see [security considerations for editor extensions](security_considerations.md).
 
 ## Editor extensions team runbook
 

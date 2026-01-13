@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Pipeline::Common do
+RSpec.describe Gitlab::Ci::Status::Pipeline::Common, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

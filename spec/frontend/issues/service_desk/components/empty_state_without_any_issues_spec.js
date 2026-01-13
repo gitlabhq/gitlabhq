@@ -1,3 +1,4 @@
+import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-service-desk-md.svg';
 import { GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyStateWithoutAnyIssues from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
@@ -11,10 +12,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
 
   const defaultProvide = {
-    emptyStateSvgPath: 'empty/state/svg/path',
     isSignedIn: true,
     signInPath: 'sign/in/path',
-    canAdminIssues: true,
+    canAdminIssue: true,
     isServiceDeskEnabled: true,
     serviceDeskEmailAddress: 'email@address.com',
     serviceDeskHelpPath: 'service/desk/help/path',
@@ -41,7 +41,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
         title: infoBannerTitle,
-        svgPath: defaultProvide.emptyStateSvgPath,
+        svgPath: emptyStateSvg,
       });
     });
 
@@ -54,7 +54,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     });
 
     it('does not render email address, when user can not admin issues', () => {
-      mountComponent({ provide: { canAdminIssues: false } });
+      mountComponent({ provide: { canAdminIssue: false } });
 
       expect(wrapper.text()).not.toContain(wrapper.vm.serviceDeskEmailAddress);
     });
@@ -74,7 +74,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
         title: infoBannerTitle,
-        svgPath: defaultProvide.emptyStateSvgPath,
+        svgPath: emptyStateSvg,
         primaryButtonText: noIssuesSignedOutButtonText,
         primaryButtonLink: defaultProvide.signInPath,
       });

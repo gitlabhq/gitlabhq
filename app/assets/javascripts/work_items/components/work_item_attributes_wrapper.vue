@@ -111,12 +111,12 @@ export default {
       skip() {
         return !this.workItem.iid;
       },
-      update({ workspace }) {
-        if (!workspace?.workItem) return {};
+      update({ namespace }) {
+        if (!namespace?.workItem) return {};
 
         const workItemParticipantData = this.isWidgetPresent(
           WIDGET_TYPE_PARTICIPANTS,
-          workspace.workItem,
+          namespace.workItem,
         );
 
         return workItemParticipantData?.participants || {};

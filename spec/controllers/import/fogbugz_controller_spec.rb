@@ -161,7 +161,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
     end
   end
 
-  describe 'POST create', :with_current_organization do
+  describe 'POST create' do
     let(:repo_id) { 'FOGBUGZ_REPO_ID' }
     let(:project) { create(:project) }
     let(:client) { instance_double(Gitlab::FogbugzImport::Client, user_map: {}) }

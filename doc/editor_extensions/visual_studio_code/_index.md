@@ -11,7 +11,8 @@ for Visual Studio Code integrates GitLab Duo and other GitLab features directly 
 GitLab Workflow panel to the VS Code sidebar where you can view issues, merge requests, and pipelines,
 and extend your view with [custom queries](custom_queries.md).
 
-To get started, [install and configure the extension](setup.md).
+To get started, [install and configure the extension](setup.md). For added security, you can set up
+the extension in a Visual Studio Code Dev Container.
 
 When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
@@ -27,9 +28,10 @@ When configured, this extension brings the GitLab features you use every day dir
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
-- [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-vs-code):
-  Interact with an AI assistant directly in VS Code.
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md#use-code-suggestions):
+- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md) and
+  [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): Interact with an AI assistant
+  directly in VS Code.
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md):
   Suggest completions to your current line of code, or write natural-language code comments to get
   more substantive suggestions.
 
@@ -39,6 +41,20 @@ When you view a GitLab project in VS Code, the extension shows you information a
 - A link to the merge request for this branch.
 - If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
   a link to the issue.
+
+## GitLab extension panels
+
+After you install and set up the extension, you can access the following features:
+
+- GitLab Workflow: On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+- GitLab Duo Chat (Agentic): On the left sidebar, select **GitLab Duo Agent Platform**
+  ({{< icon name="duo-agentic-chat" >}}).
+- GitLab Duo Chat (Classic): On the left sidebar, select **GitLab Duo Chat**
+  ({{< icon name="duo-chat" >}}).
+- GitLab Duo Code Suggestions: In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
+  The icon will change based on the [feature status](../../user/project/repository/code_suggestions/set_up.md#verify-that-code-suggestions-is-on).
+
+If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-do-not-appear) for guidance.
 
 ## Switch GitLab accounts in VS Code
 
@@ -55,9 +71,9 @@ What the extension shows in the status bar depends on your account setup:
 
 - If only one GitLab account exists, the status bar shows no information.
 - If multiple GitLab accounts exist, and the extension can determine which account to use,
-  the status bar shows the account name next to the tanuki ({{< icon name="tanuki">}}) icon.
+  the status bar shows the account name next to the tanuki ({{< icon name="tanuki" >}}) icon.
 - If multiple GitLab accounts exist, and the extension can't determine which account to use,
-  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o">}}).
+  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o" >}}).
 
 To select a GitLab account for the active VS Code window, select the status bar item, or:
 
@@ -293,7 +309,7 @@ default branch.
 When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
 SAST vulnerability rules. GitLab shows scan results in the primary side bar.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn about setting up SAST scanning, see
 [SAST scanning in VS Code](https://www.youtube.com/watch?v=s-qOSQO0i-8) on GitLab Unfiltered.
 <!-- Video published on 2025-02-10 -->
@@ -319,7 +335,7 @@ To perform SAST scanning of a file in VS Code:
         <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
-   1. Select GitLab Workflow ({{< icon name="tanuki">}}) to display the extension sidebar.
+   1. Select GitLab Workflow ({{< icon name="tanuki" >}}) to display the extension sidebar.
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a
@@ -412,11 +428,11 @@ To update your extension to the latest version:
 
 ## Check status
 
-1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki">}}).
+1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki" >}}).
 1. A menu opens under the VS Code search box, and the GitLab Workflow extension shows the status
    of the extension. Any errors are displayed next to **Status:**.
 
-You can also check the [status of GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
+For GitLab Duo Chat (Classic), you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
 
 ## Enable telemetry
 
@@ -433,38 +449,9 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
    - `off`: Disables all telemetry data in Visual Studio Code.
 1. Save your changes.
 
-## Use the extension in a Dev Container
-
-The GitLab Workflow extension is compatible with [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers). For added security, you should set up the extension and use GitLab Duo in a containerized development environment.
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) installed in VS Code
-
-### Install the extension in a Dev Container
-
-Add the GitLab Workflow extension to your Dev Container configuration file:
-
-```json
-// .devcontainer/devcontainer.json
-{
-  "name": "My Project",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "GitLab.gitlab-workflow"
-      ]
-    }
-  }
-}
-```
-
-When you open your project in a Dev Container, VS Code automatically installs the extension inside the container.
-
 ## Related topics
 
+- [Security considerations for editor extensions](../security_considerations.md)
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)
 - [Download the GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - Extension [source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)

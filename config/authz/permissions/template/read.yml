@@ -1,0 +1,5 @@
+---
+name: read_template
+description: Grants the ability to read templates
+boundaries:
+  - project

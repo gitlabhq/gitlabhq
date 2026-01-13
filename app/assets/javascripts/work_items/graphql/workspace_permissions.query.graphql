@@ -1,5 +1,5 @@
 query workspacePermissions($fullPath: ID!) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     userPermissions {
       createDesign

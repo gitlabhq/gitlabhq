@@ -77,3 +77,9 @@ and summarize [SOS logs](#sos-scripts).
 
 [GitLab Detective](https://gitlab.com/gitlab-com/support/toolbox/gitlab-detective) runs automated checks on a GitLab
 instance to identify and resolve common issues.
+
+## `soslab`
+
+[soslab](https://gitlab.com/gitlab-com/support/toolbox/soslab) is a log analyzer for troubleshooting GitLab SOS bundles across multi-node deployments.
+It provides pattern clustering, correlation tracing, system metrics dashboards, PowerSearch, automatic analysis, and built-in terminal access.
+Use soslab to identify issues across large GitLab infrastructures.

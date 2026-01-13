@@ -172,6 +172,11 @@ The IDs are generated from the content of the heading according to the following
 
 Example:
 
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the example link IDs.
+-->
+
 ```markdown
 # This heading has spaces in it
 ## This heading has a :thumbsup: in it
@@ -291,6 +296,11 @@ dealing with code and names that often appear with multiple underscores.
 GitLab Flavored Markdown ignores multiple underlines in words,
 to allow better rendering of Markdown documents discussing code:
 
+<!--
+Translation note: DO NOT TRANSLATE these examples or the rendered versions.
+The mid-word emphasis examples do not work in all languages and must stay in English to render correctly.
+-->
+
 ```markdown
 perform_complicated_task
 
@@ -331,6 +341,11 @@ With inline diff tags, you can display `{+ additions +}` or `[- deletions -]`.
 
 The wrapping tags can be either curly braces or square brackets:
 
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
+
 ```markdown
 - {+ addition 1 +}
 - [+ addition 2 +]
@@ -353,6 +368,11 @@ However, you cannot mix the wrapping tags:
 
 Diff highlighting doesn't work with `` `inline code` ``. If your text includes backticks (`` ` ``), [escape](#escape-characters)
 each backtick with a backslash ` \ `:
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
 - {+ Just regular text +}
@@ -620,6 +640,11 @@ Besides complete and incomplete, tasks can also be **inapplicable**. Selecting a
 in an issue, merge request, epic, or comment has no effect.
 
 To create a task list, follow the format of an ordered or unordered list:
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
 - [x] Completed task
@@ -1576,6 +1601,11 @@ is rendered inline with the text.
 Math written between double dollar signs (`$$...$$`) or in a [code block](#code-spans-and-blocks) with
 the language declared as `math` is rendered on a separate line:
 
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
+
 `````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
@@ -1640,6 +1670,11 @@ For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/
 
 {{< /alert >}}
 
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
+
 ```markdown
 This is an intro sentence to my wiki page.
 
@@ -1669,6 +1704,11 @@ uses the Markdown blockquote syntax followed by the type of alert.
 You can use alerts in any text box that supports Markdown.
 
 You can use the following types of alerts:
+
+<!--
+Translation note: DO NOT TRANSLATE any examples in this section. The examples must stay untranslated
+to stay in sync with the image.
+-->
 
 - Note: information that users should take into account, even when skimming:
 

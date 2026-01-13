@@ -302,14 +302,35 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     end
 
     describe '.regular_keys' do
-      let_it_be(:personal_key) { create(:personal_key) }
-      let_it_be(:key) { create(:key) }
+      let_it_be(:personal_key) { create(:personal_key, type: nil) }
+      let_it_be(:key) { create(:key, type: 'Key') }
       let_it_be(:deploy_key) { create(:deploy_key) }
 
-      it 'does not return keys of type DeployKey' do
-        expect(described_class.all).to match_array([personal_key, key, deploy_key])
-        expect(described_class.regular_keys).to match_array([personal_key, key])
+      it 'includes keys with nil type' do
+        expect(described_class.regular_keys).to include(personal_key)
       end
+
+      it "includes keys with 'Key' type" do
+        expect(described_class.regular_keys).to include(key)
+      end
+
+      it "does not include keys with 'DeployKey' type" do
+        expect(described_class.regular_keys).not_to include(deploy_key)
+      end
+    end
+  end
+
+  describe '.regular_key_types' do
+    it 'includes nil' do
+      expect(described_class.regular_key_types).to include(nil)
+    end
+
+    it "includes 'Key'" do
+      expect(described_class.regular_key_types).to include('Key')
+    end
+
+    it "does not include 'DeployKey'" do
+      expect(described_class.regular_key_types).not_to include('DeployKey')
     end
   end
 
@@ -549,6 +570,26 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
       expect(build(:key, usage_type: :signing)).to be_signing
       expect(build(:key, usage_type: :auth_and_signing)).to be_signing
       expect(build(:key, usage_type: :auth)).not_to be_signing
+    end
+  end
+
+  describe '#regular_key?' do
+    context 'when type is nil' do
+      it 'returns true' do
+        expect(build(:key, type: nil).regular_key?).to be(true)
+      end
+    end
+
+    context "when type is 'Key'" do
+      it 'returns true' do
+        expect(build(:key, type: 'Key').regular_key?).to be(true)
+      end
+    end
+
+    context "when type is 'DeployKey'" do
+      it 'returns false' do
+        expect(build(:deploy_key).regular_key?).to be(false)
+      end
     end
   end
 end

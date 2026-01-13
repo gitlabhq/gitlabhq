@@ -188,7 +188,7 @@ module Gitlab
 
     def visibility_level_attributes
       [visibility_level_field, visibility_level_field.to_s,
-       :visibility, 'visibility']
+        :visibility, 'visibility']
     end
   end
 end

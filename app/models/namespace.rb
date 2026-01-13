@@ -181,6 +181,7 @@ class Namespace < ApplicationRecord
     to: :package_settings
 
   delegate :add_creator, :deleted_at, :deleted_at=, :description, :description=, :description_html,
+    :state_metadata, :state_metadata=,
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do
@@ -240,9 +241,11 @@ class Namespace < ApplicationRecord
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { self_or_ancestors_archived }
+  scope :self_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :non_archived, -> { self_and_ancestors_non_archived }
+  scope :self_non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
   scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do
@@ -604,6 +607,10 @@ class Namespace < ApplicationRecord
     all_projects.not_aimed_for_deletion
   end
 
+  def all_active_project_ids
+    all_projects.not_aimed_for_deletion.non_archived.select(:id)
+  end
+
   def has_parent?
     parent_id.present? || parent.present?
   end
@@ -906,7 +913,7 @@ class Namespace < ApplicationRecord
   # route / path global uniqueness is handled by Routeable concern
   # here we are checking only for conflicts with per-organization username aliases
   def no_conflict_with_organization_user_details
-    return unless Organizations::OrganizationUserDetail.for_organization(organization).with_usernames(path).any?
+    return unless Organizations::OrganizationUserDetail.in_organization(organization).with_usernames(path).any?
 
     errors.add(:path, _('has already been taken'))
   end
@@ -1059,6 +1066,10 @@ class Namespace < ApplicationRecord
   def first_auto_devops_config_cache_key_for(group_id)
     # Use SHA2 of `traversal_ids` to account for moving a namespace within the same root ancestor hierarchy.
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
+  end
+
+  def unique_attribute
+    :path
   end
 end
 

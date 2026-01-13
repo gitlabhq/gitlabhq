@@ -43,7 +43,7 @@ import TablePagination from '~/vue_shared/components/pagination/table_pagination
 import {
   setIdTypePreferenceMutationResponse,
   setIdTypePreferenceMutationResponseWithErrors,
-} from 'jest/issues/list/mock_data';
+} from 'jest/work_items/list/mock_data';
 import { branches, mockSearch, users } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);

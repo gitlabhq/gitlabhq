@@ -148,4 +148,26 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
     it_behaves_like 'an erroneous service response with side effect',
       message: 'Unauthorized to create a package protection rule'
   end
+
+  context 'when tracking internal events' do
+    it 'tracks the create_package_protection_rule event' do
+      expect { service_execute }
+        .to trigger_internal_events('create_package_protection_rule')
+        .with(
+          project: project,
+          namespace: project.namespace,
+          user: current_user,
+          additional_properties: { package_type: params[:package_type].to_s }
+        )
+        .once
+    end
+
+    context 'when rule creation fails' do
+      let(:params) { super().merge(package_name_pattern: '') }
+
+      it 'does not track the event' do
+        expect { service_execute }.not_to trigger_internal_events('create_package_protection_rule')
+      end
+    end
+  end
 end

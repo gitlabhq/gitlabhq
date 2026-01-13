@@ -69,7 +69,7 @@ Do not confuse **ability** or **able** with [permissions](#permissions) or [role
 Use:
 
 - You cannot change this setting.
-- To change this setting, you must have at least the Developer role.
+- To change this setting, you must have the Developer, Maintainer, or Owner role.
 - Confirm you can sign in.
 - The external load balancer cannot connect.
 - Option to delete branches introduced in GitLab 17.1.
@@ -161,15 +161,16 @@ Use title case for **Admin Mode**. The UI uses title case.
 Use **administrator access** instead of **admin** when talking about a user's access level
 to instance-wide settings on GitLab Self-Managed or GitLab Dedicated.
 
-For GitLab.com, instead of **administrator** use [**Owner**](#owner) to refer to the highest permission level of a user for groups or projects.
+For GitLab.com, instead of **administrator**, use [**Owner**](#owner) to refer to the most powerful
+access level for groups or projects.
 
 An **administrator** is not a [role](#roles) or [permission](#permissions).
 
 On GitLab Self-Managed and GitLab Dedicated, users can be administrators and modify instance-wide settings.
 Use:
 
-- To do this thing, you must be an administrator.
-- To do this thing, you must have administrator access.
+- Administrator access.
+- You must have administrator access.
 
 Instead of:
 
@@ -809,16 +810,16 @@ See also: [ancestor](#ancestor), [child](#child), and [subgroup](#subgroup).
 
 ## Developer
 
-When writing about the Developer role:
+When writing about the Developer role, use a capital **D**.
 
-- Use a capital **D**.
-- Write it out.
-  - Use: if you are assigned the Developer role
-  - Instead of: if you are a Developer
+Write it out:
 
-- When the Developer role is the minimum required role:
-  - Use: at least the Developer role
-  - Instead of: the Developer role or higher
+- Use: if you are assigned the Developer role
+- Instead of: if you are a developer
+
+When the Developer role is the minimum required role, use:
+
+- the Developer, Maintainer, or Owner role
 
 Do not use bold.
 
@@ -1438,16 +1439,16 @@ Capitalize the first word when you refer to the UI.
 
 ## Guest
 
-When writing about the Guest role:
+When writing about the Guest role, use a capital **G**.
 
-- Use a capital **G**.
-- Write it out:
-  - Use: if you are assigned the Guest role
-  - Instead of: if you are a guest
+Write it out:
 
-- When the Guest role is the minimum required role:
-  - Use: at least the Guest role
-  - Instead of: the Guest role or higher
+- Use: if you are assigned the Guest role
+- Instead of: if you are a guest
+
+When the Guest role is the minimum required role, use:
+
+- the Guest, Planner, Reporter, Developer, Maintainer, or Owner role
 
 Do not use bold.
 
@@ -1761,16 +1762,16 @@ becoming inconsistent if we try to be more precise.
 
 ## Maintainer
 
-When writing about the Maintainer role:
+When writing about the Maintainer role, use a capital **M**.
 
-- Use a capital **M**.
-- Write it out.
-  - Use: if you are assigned the Maintainer role
-  - Instead of: if you are a maintainer
+Write it out:
 
-- When the Maintainer role is the minimum required role:
-  - Use: the Maintainer or Owner role
-  - Instead of: the Maintainer role or higher
+- Use: if you are assigned the Maintainer role
+- Instead of: if you are a maintainer
+
+When the Maintainer role is the minimum required role, use:
+
+- the Maintainer or Owner role
 
 Do not use bold.
 
@@ -2090,17 +2091,17 @@ For example, a log file might overwrite a log file of the same name.
 
 ## Owner
 
-When writing about the Owner role:
+When writing about the Owner role, use a capital **O**.
 
-- Use a capital **O**.
-- Write it out.
-  - Use: if you are assigned the Owner role
-  - Instead of: if you are an owner
+Write it out:
+
+- Use: if you are assigned the Owner role
+- Instead of: if you are an owner
 
 Do not use bold.
 
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
-An Owner is the highest role a user can have.
+An Owner is the most powerful role a user can have, other than an administrator.
 
 ## package registry
 
@@ -2167,7 +2168,7 @@ When comparing the permissions required for certain actions, use **more** or **f
 For example:
 
 - The Guest role has fewer permissions than the Developer role.
-- To get more permissions, you must have a higher role.
+- To get more permissions, you must have a different role.
 - The Owner role has the most permissions.
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
@@ -2182,16 +2183,16 @@ Capitalize the first word when you refer to the UI.
 
 ## Planner
 
-When writing about the Planner role:
+When writing about the Planner role, use a capital **P**.
 
-- Use a capital **P**.
-- Write it out.
-  - Use: if you are assigned the Planner role
-  - Instead of: if you are a Planner
+Write it out:
 
-- When the Planner role is the minimum required role:
-  - Use: at least the Planner role
-  - Instead of: the Planner role or higher
+- Use: if you are assigned the Planner role
+- Instead of: if you are a planner
+
+When the Planner role is the minimum required role, use:
+
+- the Planner, Reporter, Developer, Maintainer, or Owner role
 
 Do not use bold.
 
@@ -2303,16 +2304,16 @@ When an object is completely deleted, use [**delete**](#delete) instead.
 
 ## Reporter
 
-When writing about the Reporter role:
+When writing about the Reporter role, use a capital **R**.
 
-- Use a capital **R**.
-- Write it out.
-  - Use: if you are assigned the Reporter role
-  - Instead of: if you are a reporter
+Write it out:
 
-- When the Reporter role is the minimum required role:
-  - Use: at least the Reporter role
-  - Instead of: the Reporter role or higher
+- Use: if you are assigned the Reporter role
+- Instead of: if you are a reporter
+
+When the Reporter role is the minimum required role, use:
+
+- the Reporter, Developer, Maintainer, or Owner role
 
 Do not use bold.
 
@@ -2385,9 +2386,9 @@ Instead of:
 
 - You must have the Owner role of the group.
 
-When referring to the minimum role a user must have to perform an action, use **at least**:
+When referring to the role a user must have to perform an action, list all applicable roles, starting with the minimum:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 

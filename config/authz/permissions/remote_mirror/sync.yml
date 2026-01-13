@@ -1,0 +1,5 @@
+---
+name: sync_remote_mirror
+description: Grants the ability to trigger remote mirror synchronization
+boundaries:
+  - project

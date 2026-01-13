@@ -60,6 +60,13 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
       result
     end
 
+    it 'changes the state of the group' do
+      expect { result }.to change { group.state }
+        .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
+
+      result
+    end
+
     shared_examples 'handles failure gracefully' do
       it 'returns error' do
         expect(result).to be_error
@@ -92,9 +99,19 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
         allow(group_deletion_schedule).to receive(:save).and_return(false)
         allow(group_deletion_schedule).to receive_message_chain(:errors, :full_messages)
           .and_return(['error message'])
+        allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
       end
 
-      it_behaves_like 'handles failure gracefully'
+      it 'returns error with resource errors' do
+        expect(result).to be_error
+        expect(result.message).to eq('resource error')
+      end
+
+      it 'does not send notification' do
+        expect(NotificationService).not_to receive(:new)
+
+        result
+      end
     end
   end
 

@@ -417,11 +417,8 @@ Optionally:
 
 - `APISEC_PRE_SCRIPT`: Script to install runtimes or dependencies before the scan starts.
 
-{{< alert type="warning" >}}
-
-To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
-
-{{< /alert >}}
+> [!warning]
+> To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
 
 ```yaml
 stages:
@@ -610,11 +607,8 @@ The order in which the different headers are provided into the variable `APISEC_
 
 The `APISEC_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `APISEC_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `APISEC_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable), which has character set restrictions.
 
-{{< alert type="warning" >}}
-
-Base64 is used to support the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
-
-{{< /alert >}}
+> [!warning]
+> Base64 is used to support the [masked variable](../../../../ci/variables/_index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
 
 ### Example: Adding a list of headers on each request using plain text
 
@@ -953,11 +947,8 @@ In your job output you can check if any URLs matched any provided regular expres
 2021-05-27 21:51:08 [INF] API SECURITY: ------------------------------------------------
 ```
 
-{{< alert type="note" >}}
-
-Each value in `APISEC_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
-
-{{< /alert >}}
+> [!note]
+> Each value in `APISEC_EXCLUDE_URLS` is a regular expression. Characters such as `.` , `*` and `$` among many others have special meanings in [regular expressions](https://en.wikipedia.org/wiki/Regular_expression#Standards).
 
 #### Examples
 

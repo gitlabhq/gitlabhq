@@ -176,6 +176,7 @@ class User < ApplicationRecord
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify
   has_many :gpg_keys, dependent: :destroy
+  has_many :gpg_key_subkeys, dependent: :destroy
 
   has_many :emails, dependent: :destroy
   has_many :personal_access_tokens, dependent: :destroy
@@ -321,7 +322,6 @@ class User < ApplicationRecord
   has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify
   has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id
-  has_many :early_access_program_tracking_events, class_name: 'EarlyAccessProgram::TrackingEvent', inverse_of: :user
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
@@ -515,7 +515,6 @@ class User < ApplicationRecord
     :enabled_following, :enabled_following=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
-    :new_ui_enabled, :new_ui_enabled=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
@@ -879,6 +878,46 @@ class User < ApplicationRecord
     def random_password
       Devise.friendly_token(password_length.max)
     end
+
+    # extracted and modified from original Devise method in
+    # https://github.com/heartcombo/devise/blob/731074bf09c2a0cd498c1b8a2a01434e722f94d5/lib/devise/models/recoverable.rb#L134C1-L150C12
+    # rubocop:disable Gitlab/AvoidCurrentOrganization -- this is only called by Devise from PasswordsController
+    def reset_password_by_token(attributes = {})
+      original_token       = attributes[:reset_password_token]
+      reset_password_token = Devise.token_generator.digest(self, :reset_password_token, original_token)
+
+      recoverable = find_or_initialize_with_errors(
+        [:organization_id, :reset_password_token],
+        { organization_id: ::Current.organization.id, reset_password_token: reset_password_token }
+      )
+
+      if recoverable.persisted?
+        if recoverable.reset_password_period_valid?
+          recoverable.reset_password(attributes[:password], attributes[:password_confirmation])
+        else
+          recoverable.errors.add(:reset_password_token, :expired)
+        end
+      end
+
+      recoverable.reset_password_token = original_token if recoverable.reset_password_token.present?
+      recoverable
+    end
+
+    # override, from Devise in
+    # https://github.com/heartcombo/devise/blob/e9c534d363cc9d552662049b38582eead87bedd6/lib/devise/models/lockable.rb#L189-L197
+    def unlock_access_by_token(unlock_token)
+      original_token = unlock_token
+      unlock_token   = Devise.token_generator.digest(self, :unlock_token, unlock_token)
+
+      lockable = find_or_initialize_with_errors(
+        [:organization_id, :unlock_token],
+        { organization_id: ::Current.organization.id, unlock_token: unlock_token }
+      )
+      lockable.unlock_access! if lockable.persisted?
+      lockable.unlock_token = original_token
+      lockable
+    end
+    # rubocop:enable Gitlab/AvoidCurrentOrganization
 
     # Devise method overridden to allow sign in with email or username
     def find_for_database_authentication(warden_conditions)
@@ -3118,6 +3157,10 @@ class User < ApplicationRecord
     query = organization_users.where(organization_id: organization_id)
     query = query.try(scope) if scope
     query.exists?
+  end
+
+  def unique_attribute
+    :username
   end
 end
 

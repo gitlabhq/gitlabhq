@@ -1,5 +1,5 @@
 ---
-stage: Plan
+stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Retrieve project and group DORA metrics with the REST API.
@@ -110,8 +110,5 @@ parameter:
 | `lead_time_for_changes`    | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR commits for all MRs deployed during the time period. |
 | `time_to_restore_service`  | The median number of seconds an incident was open during the time period. Available only for production environment. |
 
-{{< alert type="note" >}}
-
-The API returns the `monthly` and `all` intervals by calculating the median of the daily median values. This can introduce a slight inaccuracy in the returned data.
-
-{{< /alert >}}
+> [!note]
+> The API returns the `monthly` and `all` intervals by calculating the median of the daily median values. This can introduce a slight inaccuracy in the returned data.

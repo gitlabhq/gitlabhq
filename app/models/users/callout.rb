@@ -121,7 +121,8 @@ module Users
       expired_trial_status_widget: 117, # EE-only
       work_item_consolidated_list_feedback: 118,
       ai_experiment_sast_fp_detection: 119, # EE-only
-      vulnerability_report_limited_experience: 120 # EE-only
+      vulnerability_report_limited_experience: 120, # EE-only
+      file_tree_browser_popover: 121
     }
 
     validates :feature_name,

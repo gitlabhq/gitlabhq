@@ -11,7 +11,6 @@ import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { keysFor, GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -37,7 +36,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   i18n,
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -156,15 +155,16 @@ export default {
     };
   },
   computed: {
-    hideIDEActionsInDirectoryView() {
-      return this.glFeatures.directoryCodeDropdownUpdates && !this.isBlob;
-    },
     actions() {
-      return this.hideIDEActionsInDirectoryView
-        ? [this.pipelineEditorAction, this.editAction].filter(Boolean)
-        : [this.pipelineEditorAction, this.webIdeAction, this.editAction, this.gitpodAction].filter(
-            Boolean,
-          );
+      if (!this.isBlob) {
+        return [this.pipelineEditorAction, this.editAction].filter(Boolean);
+      }
+      return [
+        this.pipelineEditorAction,
+        this.webIdeAction,
+        this.editAction,
+        this.gitpodAction,
+      ].filter(Boolean);
     },
     hasActions() {
       return this.actions.length > 0;
@@ -213,14 +213,11 @@ export default {
       if (this.webIdeText) {
         return this.webIdeText;
       }
-      if (this.isBlob) {
-        return __('Open in Web IDE');
-      }
       if (this.isFork) {
         return __('Edit fork in Web IDE');
       }
 
-      return __('Web IDE');
+      return __('Open in Web IDE');
     },
     webIdeAction() {
       if (!this.showWebIdeButton) return null;
@@ -256,10 +253,7 @@ export default {
       };
     },
     gitpodActionText() {
-      if (this.isBlob) {
-        return __('Open in Ona');
-      }
-      return this.gitpodText || __('Ona');
+      return this.gitpodText || __('Open in Ona');
     },
     computedShowGitpodButton() {
       return this.isGitpodEnabledForInstance && this.isGitpodEnabledForUser && this.gitpodUrl;

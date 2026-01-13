@@ -51,7 +51,13 @@ unique name and a sequential value:
   notifications are still shown to the user in other groups.
 
 - Project context: `app/models/users/project_callout.rb`. Callouts dismissed by a user in a given project. Related
-  notifications are still shown to the user in other projects.
+  notifications are still shown to the user in other projects.  
+
+After adding a new callout ID to any of the enum files above, you must update the GraphQL documentation by running:
+ 
+```shell
+bundle exec rake gitlab:graphql:compile_docs
+```
 
 **NOTE**: do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential
 number.
@@ -409,16 +415,16 @@ dismiss_options: { user: current_user, feature_id: 'my_callout' }
   = _('Banner content')
 ```
 
-### Vue
+## Vue
 
 This section describes using callouts when they are rendered on the client in `.vue` components.
 
-#### Dismissing the callouts on the client side
+### Dismissing the callouts on the client side
 
 For Vue components, we have dismisser wrapper components that integrate with GraphQL API to simplify
 dismissing and checking the dismissed state of callouts.
 
-##### User (global) callouts
+#### User (global) callouts
 
 For global user callouts that should be dismissed across the entire GitLab instance, use `<user-callout-dismisser>`. Use
 this component when the callout should be dismissed globally for the user across all groups and projects (e.g., feature
@@ -437,7 +443,7 @@ announcements, account security reminders).
 
 See `app/assets/javascripts/vue_shared/components/user_callout_dismisser.vue` for more details.
 
-##### Group callouts
+#### Group callouts
 
 For group-specific callouts that should only be dismissed within a particular group context, use
 `<user-group-callout-dismisser>`. Use this component when the callout is specific to a group context and should only be
@@ -462,7 +468,7 @@ component handles the conversion to GraphQL format internally, so you can pass e
 
 See `app/assets/javascripts/vue_shared/components/user_group_callout_dismisser.vue` for more details.
 
-##### Available slot props
+#### Available slot props
 
 Both components provide the same slot props:
 

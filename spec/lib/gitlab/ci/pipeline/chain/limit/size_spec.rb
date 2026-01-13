@@ -35,12 +35,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
           current_user: user,
           save_incompleted: true,
           pipeline_seed: pipeline_seed_double,
-          current_pipeline_size: pipeline_seed_double.size,
-          ci_refactor_jobs_count_in_alive_pipelines_enabled?: ci_refactor_jobs_count_in_alive_pipelines_enabled
+          current_pipeline_size: pipeline_seed_double.size
         )
       end
-
-      let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { true }
 
       it 'drops the pipeline' do
         perform_step
@@ -87,16 +84,6 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
 
         perform_step
       end
-
-      context 'when the FF ci_refactor_jobs_count_in_alive_pipelines is disabled' do
-        let(:ci_refactor_jobs_count_in_alive_pipelines_enabled) { false }
-
-        it 'drops the pipeline' do
-          perform_step
-
-          expect(pipeline.reload).to be_failed
-        end
-      end
     end
 
     context 'when not saving incomplete pipelines' do
@@ -109,8 +96,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
           save_incompleted: false,
           pipeline_seed: pipeline_seed_double,
           increment_pipeline_failure_reason_counter: true,
-          current_pipeline_size: pipeline_seed_double.size,
-          ci_refactor_jobs_count_in_alive_pipelines_enabled?: true
+          current_pipeline_size: pipeline_seed_double.size
         )
       end
 
@@ -173,8 +159,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::Size, feature_category: :pi
           project: project,
           current_user: user,
           pipeline_seed: pipeline_seed_double,
-          current_pipeline_size: pipeline_seed_double.size,
-          ci_refactor_jobs_count_in_alive_pipelines_enabled?: true
+          current_pipeline_size: pipeline_seed_double.size
         )
       end
 

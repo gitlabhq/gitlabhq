@@ -1,0 +1,8 @@
+---
+name: read_project
+description: Grants the ability to read projects
+permissions:
+  - read_project
+boundaries:
+  - user
+  - project

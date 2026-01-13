@@ -1,7 +1,6 @@
 ---
 name: update_wiki
 description: Grants the ability to update wikis
-feature_category: wiki
 boundaries:
   - group
   - project

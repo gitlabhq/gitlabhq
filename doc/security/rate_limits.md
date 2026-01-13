@@ -38,11 +38,8 @@ Most cases can be mitigated by limiting the rate of requests from a single IP ad
 Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
 
-{{< alert type="note" >}}
-
-The rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
-
-{{< /alert >}}
+> [!note]
+> The rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
 
 ## Configurable limits
 

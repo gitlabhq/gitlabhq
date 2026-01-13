@@ -1,0 +1,7 @@
+---
+name: update_project
+description: Grants the ability to update project settings and attributes
+permissions:
+  - update_project
+boundaries:
+  - project

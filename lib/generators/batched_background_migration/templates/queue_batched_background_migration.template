@@ -12,8 +12,9 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
   restrict_gitlab_migration # gitlab_schema: :gitlab_main_org / :gitlab_ci / ...
 
   MIGRATION = "<%= class_name %>"
-  # BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE %>
-  # SUB_BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE %>
+  # Choose the highest value while keeping update queries within the timing guidelines.
+  # https://docs.gitlab.com/development/database/query_performance/#timing-guidelines-for-queries
+  SUB_BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE %>
 
   def up
     # If you are requeueing an already executed migration, you need to delete the prior batched migration record
@@ -24,7 +25,6 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
       MIGRATION,
       :<%= table_name %>,
       :<%= column_name %>,
-      batch_size: BATCH_SIZE,
       sub_batch_size: SUB_BATCH_SIZE
     )
   end

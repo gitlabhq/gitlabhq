@@ -144,6 +144,8 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           context 'when CI passes' do
             before do
               pipeline.set_status('success')
+              wait_for_requests
+              page.refresh
             end
 
             it 'the MR gets merged' do
@@ -236,6 +238,8 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           context 'when CI passes' do
             before do
               pipeline.set_status('success')
+              wait_for_requests
+              page.refresh
             end
 
             it 'the MR gets merged' do

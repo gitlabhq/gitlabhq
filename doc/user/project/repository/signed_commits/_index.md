@@ -110,7 +110,7 @@ For more information about how this rule works and its limitations, see [Require
 The verification process for commits signed with GPG keys or X.509 certificates
 can fail for multiple reasons:
 
-| Value                       | Description | Possible Fixes |
+| Value                       | Description | Possible fixes |
 |-----------------------------|-------------|----------------|
 | `UNVERIFIED`                | The commit signature is not valid. | Sign the commit with a valid signature. |
 | `SAME_USER_DIFFERENT_EMAIL` | The GPG key used to sign the commit does not contain the committer email, but does contain a different valid email for the committer. | Amend the commit to use an email address that matches the GPG key, or update the GPG key [to include the email address](https://security.stackexchange.com/a/261468). |

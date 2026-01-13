@@ -16,7 +16,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { getScrollingElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { parseBoolean, handleLocationHash, getCookie } from '~/lib/utils/common_utils';
 import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -31,6 +31,8 @@ import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { useBatchComments } from '~/batch_comments/store';
 import { querySelectionClosest } from '~/lib/utils/selection';
+import { useCodeReview } from '~/diffs/stores/code_review';
+import * as types from '~/diffs/store/mutation_types';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -51,7 +53,6 @@ import {
 } from '../constants';
 import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
-import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
 import { updateChangesTabCount, extractFileHash } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
@@ -235,10 +236,8 @@ export default {
       'startVersion',
       'latestDiff',
       'currentDiffFileId',
-      'isTreeLoaded',
       'hasConflicts',
       'viewDiffsFileByFile',
-      'mrReviews',
       'renderTreeList',
       'showWhitespace',
       'addedLines',
@@ -248,12 +247,13 @@ export default {
       'isVirtualScrollingEnabled',
       'isBatchLoading',
       'isBatchLoadingError',
-      'flatBlobsList',
+      'linkedFile',
     ]),
     ...mapState(useLegacyDiffs, { diffFiles: 'diffFilesFiltered' }),
     ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
-    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible', 'isLoadingFileBrowser', 'flatBlobsList']),
     ...mapState(useFindingsDrawer, ['activeDrawer']),
+    ...mapState(useCodeReview, ['reviewedIds']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -306,9 +306,6 @@ export default {
       }
 
       return visible;
-    },
-    fileReviews() {
-      return reviewStatuses(this.diffFiles, this.mrReviews);
     },
     renderFileTree() {
       return this.renderDiffFiles && this.fileBrowserVisible;
@@ -469,11 +466,12 @@ export default {
       'setDiffViewType',
       'setShowWhitespace',
       'goToFile',
-      'reviewFile',
       'setFileCollapsedByUser',
-      'toggleTreeOpen',
     ]),
-    ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapActions(useLegacyDiffs, {
+      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
+    }),
+    ...mapActions(useFileBrowser, ['setFileBrowserVisibility', 'toggleTreeOpen']),
     ...mapActions(useFindingsDrawer, ['setDrawer']),
     closeDrawer() {
       this.setDrawer({});
@@ -488,9 +486,12 @@ export default {
       const activeFile = this.diffFiles.find((file) => file.file_hash === this.currentDiffFileId);
 
       if (activeFile) {
-        const reviewed = !this.fileReviews[activeFile.id];
-        this.reviewFile({ file: activeFile, reviewed });
-
+        const reviewed = !(
+          useCodeReview().reviewedIds[activeFile.code_review_id] ||
+          useCodeReview().reviewedIds[activeFile.id]
+        );
+        useCodeReview().removeId(activeFile.id);
+        useCodeReview().setReviewed(activeFile.code_review_id, reviewed);
         this.setFileCollapsedByUser({ filePath: activeFile.file_path, collapsed: reviewed });
       }
     },
@@ -762,13 +763,13 @@ export default {
       window.location.reload();
     },
     handleReviewTracking(event) {
-      const types = {
+      const trackingTypes = {
         noteFormStartReview: 'merge_request_click_start_review_on_changes_tab',
         noteFormAddToReview: 'merge_request_click_add_to_review_on_changes_tab',
       };
 
-      if (this.shouldShow && types[event.name]) {
-        this.trackEvent(types[event.name]);
+      if (this.shouldShow && trackingTypes[event.name]) {
+        this.trackEvent(trackingTypes[event.name]);
       }
     },
     isDiffViewActive(item) {
@@ -795,6 +796,10 @@ export default {
 
       el.dispatchEvent(new CustomEvent('quoteReply'));
     },
+    onFileTreeClick(file) {
+      this.setCurrentDiffFile(file.fileHash);
+      this.goToFile({ path: file.path });
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -805,7 +810,9 @@ export default {
 <template>
   <div v-show="shouldShow">
     <findings-drawer :project="activeProject" :drawer="activeDrawer" @close="closeDrawer" />
-    <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
+    <div v-if="isLoading || isLoadingFileBrowser" class="loading">
+      <gl-loading-icon size="lg" />
+    </div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <div class="gl-flex gl-flex-wrap">
         <compare-versions :toggle-file-tree-visible="hasChanges" />
@@ -838,7 +845,9 @@ export default {
           v-if="renderFileTree"
           class="gl-px-5"
           :total-files-count="numTotalFiles"
-          @clickFile="goToFile({ path: $event.path })"
+          :current-diff-file-id="currentDiffFileId"
+          :linked-file-path="linkedFile ? linkedFile.file_path : null"
+          @clickFile="onFileTreeClick"
           @toggleFolder="toggleTreeOpen"
         />
         <div class="gl-col-md-auto diff-files-holder gl-px-5">
@@ -886,7 +895,7 @@ export default {
                     :file="item"
                     :codequality-data="codequalityData"
                     :sast-data="sastData"
-                    :reviewed="fileReviews[item.id]"
+                    :reviewed="reviewedIds[item.code_review_id] || reviewedIds[item.id]"
                     :is-first-file="index === 0"
                     :is-last-file="index === diffFilesLength - 1"
                     :help-page-path="helpPagePath"
@@ -908,7 +917,7 @@ export default {
                 :file="file"
                 :codequality-data="codequalityData"
                 :sast-data="sastData"
-                :reviewed="fileReviews[file.id]"
+                :reviewed="reviewedIds[file.code_review_id] || reviewedIds[file.id]"
                 :is-first-file="index === 0"
                 :is-last-file="index === diffFilesLength - 1"
                 :help-page-path="helpPagePath"

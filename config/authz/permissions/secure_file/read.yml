@@ -1,0 +1,5 @@
+---
+name: read_secure_file
+description: Grants the ability to read secure files
+boundaries:
+  - project

@@ -13,12 +13,12 @@ import {
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
   WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HIERARCHY,
-  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED,
   WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -56,7 +56,7 @@ export default {
   inject: ['hasSubepicsFeature'],
   provide() {
     return {
-      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: !this.isDrawer,
+      preventRouterNav: !this.isDrawer,
     };
   },
   props: {
@@ -186,7 +186,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.namespace?.workItemTypes?.nodes;
       },
       skip() {
         return !this.canUpdate;
@@ -208,8 +208,7 @@ export default {
     },
     addItemsActions() {
       let childTypes = this.allowedChildTypes;
-      // To remove EPICS actions when subepics are not available
-      if (this.workItemType === WORK_ITEM_TYPE_NAME_EPIC && !this.hasSubepicsFeature) {
+      if (!this.hasSubepicsFeature) {
         childTypes = childTypes.filter((type) => type.name !== WORK_ITEM_TYPE_NAME_EPIC);
       }
 
@@ -317,10 +316,14 @@ export default {
     genericActionItems(workItemType) {
       const workItemName = NAME_TO_TEXT_LOWERCASE_MAP[workItemType];
       return [
-        {
-          title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
-          action: () => this.showAddForm(FORM_TYPES.create, workItemType),
-        },
+        ...(workItemType === WORK_ITEM_TYPE_NAME_TICKET
+          ? []
+          : [
+              {
+                title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
+                action: () => this.showAddForm(FORM_TYPES.create, workItemType),
+              },
+            ]),
         {
           title: sprintf(s__('WorkItem|Existing %{workItemName}'), { workItemName }),
           action: () => this.showAddForm(FORM_TYPES.add, workItemType),

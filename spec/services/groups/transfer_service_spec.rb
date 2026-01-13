@@ -59,14 +59,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
 
       it_behaves_like 'transfer allowed'
 
-      context 'with packages_projects_finder is disabled' do
-        before do
-          stub_feature_flags(packages_projects_finder: false)
-        end
-
-        it_behaves_like 'transfer allowed'
-      end
-
       context 'with a project within subgroup' do
         let_it_be(:root_group) { create(:group) }
         let_it_be_with_reload(:group) { create(:group, parent: root_group) }

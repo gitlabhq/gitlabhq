@@ -110,7 +110,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
   end
 
-  describe 'markdown cache invalidators', feature_category: :team_planning do
+  describe 'markdown cache invalidators', feature_category: :markdown do
     shared_examples 'invalidates markdown cache' do |attribute|
       let(:params) { attribute }
 

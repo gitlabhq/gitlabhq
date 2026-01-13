@@ -183,11 +183,11 @@ describe('diffs/components/commit_item', () => {
       expect(findCommitCheckbox().exists()).toBe(true);
     });
 
-    it('emits "handleCheckboxChange" event on change', () => {
-      expect(wrapper.emitted('handleCheckboxChange')).toBeUndefined();
+    it('emits "handle-checkbox-change" event on change', () => {
+      expect(wrapper.emitted('handle-checkbox-change')).toBeUndefined();
       findCommitCheckbox().vm.$emit('change');
 
-      expect(wrapper.emitted('handleCheckboxChange')[0]).toEqual([true]);
+      expect(wrapper.emitted('handle-checkbox-change')[0]).toEqual([true]);
     });
   });
 });

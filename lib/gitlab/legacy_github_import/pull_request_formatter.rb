@@ -94,6 +94,16 @@ module Gitlab
         }
       end
 
+      def target_branch_sha
+        # For merged PRs, Gitea returns base[:sha] as the merge commit SHA,
+        # not the target branch SHA before the merge. We need to use merge_base instead.
+        if raw_data[:merged] && raw_data[:merge_base].present?
+          raw_data[:merge_base]
+        else
+          target_branch.sha
+        end
+      end
+
       private
 
       def state

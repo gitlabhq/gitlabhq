@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService,
-  feature_category: :pipeline_composition do
+RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_composition do
   let_it_be(:group)          { create(:group, :private) }
   let_it_be(:group_variable) { create(:ci_group_variable, group: group, key: 'RUNNER_TAG', value: 'group') }
   let_it_be(:project)        { create(:project, :repository, group: group) }
@@ -35,7 +34,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     it 'uses the evaluated variable' do
       expect(pipeline).to be_created_successfully
-      expect(job.tags.pluck(:name)).to match_array(%w[docker kubernetes])
+      expect(job.tag_list).to match_array(%w[docker kubernetes])
     end
   end
 
@@ -58,7 +57,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     it 'uses the evaluated variables' do
       expect(pipeline).to be_created_successfully
-      expect(job.tags.pluck(:name)).to match_array(%w[docker aws-kubernetes-prod])
+      expect(job.tag_list).to match_array(%w[docker aws-kubernetes-prod])
     end
   end
 
@@ -76,7 +75,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     it 'uses the variable as a regular string' do
       expect(pipeline).to be_created_successfully
-      expect(job.tags.pluck(:name)).to match_array(%w[docker $KUBERNETES_RUNNER])
+      expect(job.tag_list).to match_array(%w[docker $KUBERNETES_RUNNER])
     end
   end
 
@@ -94,7 +93,7 @@ RSpec.describe Ci::CreatePipelineService,
 
     it 'uses the evaluated variables' do
       expect(pipeline).to be_created_successfully
-      expect(job.tags.pluck(:name)).to match_array(%w[docker group])
+      expect(job.tag_list).to match_array(%w[docker group])
     end
   end
 
@@ -116,12 +115,12 @@ RSpec.describe Ci::CreatePipelineService,
 
     it 'uses the project variable instead of group due to variable precedence' do
       expect(pipeline).to be_created_successfully
-      expect(job.tags.pluck(:name)).to match_array(%w[docker project])
+      expect(job.tag_list).to match_array(%w[docker project])
     end
   end
 
   context 'with parallel:matrix config' do
-    let(:tags) { pipeline.builds.flat_map(&:tags).pluck(:name) }
+    let(:tags) { pipeline.builds.flat_map(&:tag_list) }
 
     let(:config) do
       <<~EOS

@@ -8,7 +8,7 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       name: 'action_resource',
       description: 'Grants action on resource',
       feature_category: 'feature_category_name',
-      # include read_project twice to ensure uniqueness is handled
+      # include read_resource twice to ensure uniqueness is handled
       permissions: %w[read_resource write_resource read_resource]
     }
   end
@@ -27,7 +27,7 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       described_class.new({
         name: 'modify_resource',
         description: 'Grants action on other resource',
-        permissions: %w[delete_other_resource write_other_resource]
+        permissions: %w[write_resource delete_other_resource write_other_resource]
       }, 'path/to/other_resource/modify.yml')
     end
 
@@ -39,9 +39,9 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
     end
 
     describe '.all_permissions' do
-      it 'returns all permissions across all assignables' do
-        expect(described_class.all_permissions)
-          .to match_array([*assignable.permissions, *another_assignable.permissions])
+      it 'returns all unique permissions across all assignables' do
+        unique_permissions = %i[read_resource write_resource delete_other_resource write_other_resource]
+        expect(described_class.all_permissions).to match_array(unique_permissions)
       end
     end
 

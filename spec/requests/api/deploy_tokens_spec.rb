@@ -68,6 +68,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
             ])
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_deploy_token do
+        let(:boundary_object) { :instance }
+        let(:request) { get api('/deploy_tokens', personal_access_token: pat) }
+      end
     end
   end
 
@@ -131,6 +136,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
           expect(token_ids).to match_array([deploy_token.id])
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_deploy_token do
+        let(:boundary_object) { project }
+        let(:request) { get api("/projects/#{project.id}/deploy_tokens", personal_access_token: pat) }
+      end
     end
   end
 
@@ -181,6 +191,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_deploy_token do
+        let(:boundary_object) { project }
+        let(:request) { get api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", personal_access_token: pat) }
       end
     end
   end
@@ -242,6 +257,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
           expect(token_ids).to eql([group_deploy_token.id])
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_deploy_token do
+        let(:boundary_object) { group }
+        let(:request) { get api("/groups/#{group.id}/deploy_tokens", personal_access_token: pat) }
+      end
     end
   end
 
@@ -292,6 +312,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_deploy_token do
+        let(:boundary_object) { group }
+        let(:request) { get api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", personal_access_token: pat) }
       end
     end
   end
@@ -349,6 +374,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_deploy_token do
+        let(:boundary_object) { project }
+        let(:request) { delete api("/projects/#{project.id}/deploy_tokens/#{deploy_token.id}", personal_access_token: pat) }
       end
     end
   end
@@ -464,6 +494,19 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
       end
 
       it_behaves_like 'creating a deploy token', :project, :not_found, :maintainer
+
+      context 'when authenticated as maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        let(:params) { { name: 'test', scopes: ['read_repository'] } }
+
+        it_behaves_like 'authorizing granular token permissions', :create_deploy_token do
+          let(:boundary_object) { project }
+          let(:request) { post api("/projects/#{project.id}/deploy_tokens", personal_access_token: pat), params: params }
+        end
+      end
     end
 
     describe 'POST /groups/:id/deploy_tokens' do
@@ -482,6 +525,19 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
         let(:params) { { name: 'test', scopes: ['read_repository'] } }
 
         it { is_expected.to have_gitlab_http_status(:forbidden) }
+      end
+
+      context 'when authenticated as owner' do
+        before do
+          group.add_owner(user)
+        end
+
+        let(:params) { { name: 'test', scopes: ['read_repository'] } }
+
+        it_behaves_like 'authorizing granular token permissions', :create_deploy_token do
+          let(:boundary_object) { group }
+          let(:request) { post api("/groups/#{group.id}/deploy_tokens", personal_access_token: pat), params: params }
+        end
       end
     end
   end
@@ -545,6 +601,11 @@ RSpec.describe API::DeployTokens, :aggregate_failures, feature_category: :contin
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_deploy_token do
+        let(:boundary_object) { group }
+        let(:request) { delete api("/groups/#{group.id}/deploy_tokens/#{group_deploy_token.id}", personal_access_token: pat) }
       end
     end
   end

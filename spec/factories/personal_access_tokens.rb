@@ -59,24 +59,31 @@ FactoryBot.define do
 
   factory :granular_pat, parent: :personal_access_token do
     transient do
-      namespace { nil }
+      boundary { nil }
       permissions { nil }
+      granular_scope do
+        next unless permissions.present?
+
+        association(:granular_scope,
+          boundary: boundary,
+          permissions: Array(permissions),
+          organization: organization
+        )
+      end
     end
 
+    scopes { ['granular'] }
     granular { true }
 
-    after(:create) do |token, evaluator|
-      next unless evaluator.permissions.present?
+    personal_access_token_granular_scopes do
+      next [] unless granular_scope.present?
 
-      granular_scope = Authz::GranularScope.create!(
-        namespace: evaluator.namespace,
-        permissions: Array(evaluator.permissions),
-        organization_id: token.organization_id
-      )
-      token.personal_access_token_granular_scopes.create!(
-        granular_scope: granular_scope,
-        organization_id: token.organization_id
-      )
+      [
+        association(:personal_access_token_granular_scope,
+          granular_scope: granular_scope,
+          organization: organization
+        )
+      ]
     end
   end
 

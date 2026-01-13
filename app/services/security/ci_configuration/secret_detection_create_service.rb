@@ -8,8 +8,6 @@ module Security
       def initialize(project, current_user, params = {}, commit_on_default: false)
         super(project, current_user)
         @params = params
-        @sast_also_enabled = @params.delete(:sast_also_enabled)
-
         @commit_on_default = commit_on_default
         @branch_name = project.default_branch if @commit_on_default
       end
@@ -34,11 +32,7 @@ module Security
       end
 
       def message
-        if @sast_also_enabled
-          _('Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist')
-        else
-          _('Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist')
-        end
+        _('Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist')
       end
 
       def description

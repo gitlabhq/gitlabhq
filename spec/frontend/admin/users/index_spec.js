@@ -14,6 +14,7 @@ describe('initAdminUsersApp', () => {
     el = document.createElement('div');
     el.dataset.users = JSON.stringify(users);
     el.dataset.paths = JSON.stringify(paths);
+    document.body.appendChild(el);
 
     wrapper = createWrapper(initAdminUsersApp(el));
   });
@@ -40,6 +41,7 @@ describe('initAdminUserActions', () => {
     el = document.createElement('div');
     el.dataset.user = JSON.stringify(user);
     el.dataset.paths = JSON.stringify(paths);
+    document.body.appendChild(el);
 
     wrapper = createWrapper(initAdminUserActions(el));
   });

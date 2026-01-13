@@ -273,7 +273,10 @@ module Gitlab
             ServiceDesk.enabled?(quick_action_target.resource_parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.respond_to?(:from_service_desk?) &&
-            !quick_action_target.from_service_desk?
+            !quick_action_target.from_service_desk? &&
+            # Replace with configuration check
+            # See https://gitlab.com/groups/gitlab-org/-/work_items/19879
+            quick_action_target&.work_item_type&.base_type != 'ticket'
         end
         command :convert_to_ticket do |email = ""|
           response = ::Issues::ConvertToTicketService.new(

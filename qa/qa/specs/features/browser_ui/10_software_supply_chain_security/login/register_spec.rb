@@ -62,7 +62,7 @@ module QA
 
           it "allows to recreate deleted user with same credeintials",
             quarantine: {
-              issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500942',
+              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24016',
               type: :investigating
             },
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500257' do

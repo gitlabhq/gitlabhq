@@ -84,7 +84,7 @@ module Gitlab
 
           ::Notes::CreateService.new(
             project,
-            Users::Internal.for_organization(project.organization_id).support_bot,
+            Users::Internal.in_organization(project.organization_id).support_bot,
             noteable: noteable,
             note: build_reopen_message,
             confidential: true

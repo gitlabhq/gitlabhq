@@ -119,6 +119,12 @@ describe('ContentEditor', () => {
     expect(wrapper.findComponent(FormattingToolbar).props().hideAttachmentButton).toBe(true);
   });
 
+  it('shows the footer', () => {
+    createWrapper({ disableAttachments: true });
+
+    expect(wrapper.findByTestId('content-editor-footer').exists()).toBe(true);
+  });
+
   it('does not show the immersive class', () => {
     createWrapper();
 
@@ -338,9 +344,31 @@ describe('ContentEditor', () => {
     expect(commands.run).toHaveBeenCalled();
   });
 
-  it('does show the immersive class when immersive prop is true', () => {
-    createWrapper({ immersive: true });
+  describe('immersive mode', () => {
+    beforeEach(() => {
+      createWrapper({ immersive: true });
+    });
 
-    expect(wrapper.findByTestId('content-editor-container').classes()).toContain('immersive');
+    it('does show the immersive class when immersive prop is true', () => {
+      expect(wrapper.findByTestId('content-editor-container').classes()).toContain('immersive');
+    });
+
+    it('removes relative positioning, so it can be positioned by the parent', () => {
+      expect(wrapper.findByTestId('content-editor-container').classes()).not.toContain(
+        'gl-relative',
+      );
+    });
+
+    it('has a sticky header', () => {
+      expect(wrapper.findByTestId('content-editor-header').classes()).toContain('gl-sticky');
+    });
+
+    it('hides the footer', () => {
+      expect(wrapper.findByTestId('content-editor-footer').exists()).toBe(false);
+    });
+
+    it('renders an editor mode dropdown', () => {
+      expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
+    });
   });
 });

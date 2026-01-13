@@ -71,18 +71,18 @@ yourself to have the same sense of progress.
 
 GitLab plots it for you and presents it in a clear and beautiful chart.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, check the video demonstration on [Mapping work versus time with burndown charts](https://www.youtube.com/watch?v=zJU2MuRChzs).
 
 To view a project's burndown chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burndown chart:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
@@ -134,13 +134,13 @@ Burnup charts show the assigned and completed work for a milestone.
 
 To view a project's burnup chart:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burnup chart:
 
-1. On the left sidebar, select **Search or go to** and find your group. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone from the list.
 

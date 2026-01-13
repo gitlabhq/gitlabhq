@@ -4,7 +4,7 @@ class AdjustSiphonNamespaces < ClickHouse::Migration
   def up
     execute "ALTER TABLE siphon_namespaces DROP COLUMN IF EXISTS description_html"
 
-    execute "ALTER TABLE siphon_namespaces MODIFY COLUMN organization_id Int64"
+    execute "ALTER TABLE siphon_namespaces MODIFY COLUMN organization_id Int64 DEFAULT 0"
   end
 
   def down

@@ -14,31 +14,31 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }
   let(:abuse_reports) { table(:abuse_reports) }
-  let(:achievements) { table(:achievements) }
+  let(:achievements_achievements) { table(:achievements) }
   let(:ai_vectorizable_files) { table(:ai_vectorizable_files) }
   let(:alert_management_alerts) { table(:alert_management_alerts) }
-  let(:alert_management_alert_metric_images) { table(:alert_management_alert_metric_images) }
+  let(:alert_management_metric_images) { table(:alert_management_alert_metric_images) }
   let(:appearances) { table(:appearances) }
-  let(:dependency_list_exports) { table(:dependency_list_exports, database: :sec) }
+  let(:dependencies_dependency_list_exports) { table(:dependency_list_exports, database: :sec) }
   let(:import_export_uploads) { table(:import_export_uploads) }
   let(:issuable_metric_images) { table(:issuable_metric_images) }
-  let(:organization_details) { table(:organization_details) }
-  let(:topics) { table(:topics) }
+  let(:organizations_organization_details) { table(:organization_details) }
+  let(:projects_topics) { table(:topics) }
   let(:snippets) { table(:snippets) }
   let(:user_permission_export_uploads) { table(:user_permission_export_uploads) }
-  let(:dependency_list_export_parts) { table(:dependency_list_export_parts, database: :sec) }
-  let(:vulnerability_exports) { table(:vulnerability_exports, database: :sec) }
-  let(:vulnerability_export_parts) { table(:vulnerability_export_parts, database: :sec) }
-  let(:vulnerability_remediations) { table(:vulnerability_remediations, database: :sec) }
-  let(:vulnerability_archive_exports) { table(:vulnerability_archive_exports, database: :sec) }
+  let(:dependencies_dependency_list_export_parts) { table(:dependency_list_export_parts, database: :sec) }
+  let(:vulnerabilities_exports) { table(:vulnerability_exports, database: :sec) }
+  let(:vulnerabilities_export_parts) { table(:vulnerability_export_parts, database: :sec) }
+  let(:vulnerabilities_remediations) { table(:vulnerability_remediations, database: :sec) }
+  let(:vulnerabilities_archive_exports) { table(:vulnerability_archive_exports, database: :sec) }
   let(:project_export_jobs) { table(:project_export_jobs) }
   let(:project_relation_exports) { table(:project_relation_exports) }
-  let(:project_relation_export_uploads) { table(:project_relation_export_uploads) }
+  let(:projects_import_export_relation_export_uploads) { table(:project_relation_export_uploads) }
   let(:design_management_designs) { table(:design_management_designs) }
   let(:design_management_versions) { table(:design_management_versions) }
-  let(:design_management_designs_versions) { table(:design_management_designs_versions) }
+  let(:design_management_actions) { table(:design_management_designs_versions) }
   let(:bulk_import_exports) { table(:bulk_import_exports) }
-  let(:bulk_import_export_uploads) { table(:bulk_import_export_uploads) }
+  let(:bulk_imports_export_uploads) { table(:bulk_import_export_uploads) }
 
   let(:connection) { ApplicationRecord.connection }
 
@@ -289,132 +289,151 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
         ).perform
       end.not_to raise_error
 
-      expect(find_partitioned_upload(abuse_report_upload_to_be_synced.id)).to be_truthy
-      expect(find_partitioned_upload(abuse_report_upload_synced.id)).to be_truthy
+      verify_backfilled_values(abuse_report_upload_to_be_synced)
+      verify_backfilled_values(abuse_report_upload_synced)
       expect(find_partitioned_upload(abuse_report_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(appearance_upload_to_be_synced.id)).to be_truthy
-      expect(find_partitioned_upload(appearance_upload_synced.id)).to be_truthy
+      verify_backfilled_values(appearance_upload_to_be_synced)
+      verify_backfilled_values(appearance_upload_synced)
       expect(find_partitioned_upload(appearance_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(achievement_upload_to_be_synced.id).namespace_id)
-        .to eq(achievement_1.namespace_id)
-      expect(find_partitioned_upload(achievement_upload_synced.id).namespace_id)
-        .to eq(achievement_2.namespace_id)
+      verify_backfilled_values(achievement_upload_to_be_synced)
+      verify_backfilled_values(achievement_upload_synced)
       expect(find_partitioned_upload(achievement_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(ai_vectorizable_file_upload_to_be_synced.id).project_id)
-        .to eq(ai_vectorizable_file_1.project_id)
-      expect(find_partitioned_upload(ai_vectorizable_file_upload_synced.id).project_id)
-        .to eq(ai_vectorizable_file_2.project_id)
+      verify_backfilled_values(ai_vectorizable_file_upload_to_be_synced)
+      verify_backfilled_values(ai_vectorizable_file_upload_synced)
       expect(find_partitioned_upload(ai_vectorizable_file_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(alert_metric_image_upload_to_be_synced.id).project_id)
-        .to eq(alert_metric_image_1.project_id)
-      expect(find_partitioned_upload(alert_metric_image_upload_synced.id).project_id)
-        .to eq(alert_metric_image_2.project_id)
+      verify_backfilled_values(alert_metric_image_upload_to_be_synced)
+      verify_backfilled_values(alert_metric_image_upload_synced)
       expect(find_partitioned_upload(alert_metric_image_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(dependency_list_export_upload_to_be_synced.id).namespace_id)
-        .to eq(dependency_list_export_1.group_id)
-      expect(find_partitioned_upload(dependency_list_export_upload_synced.id).namespace_id)
-        .to eq(dependency_list_export_2.group_id)
+      verify_backfilled_values(dependency_list_export_upload_to_be_synced)
+      verify_backfilled_values(dependency_list_export_upload_synced)
       expect(find_partitioned_upload(dependency_list_export_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(dependency_list_export_part_upload_to_be_synced.id).organization_id)
-        .to eq(dependency_list_export_part_1.organization_id)
-      expect(find_partitioned_upload(dependency_list_export_part_upload_synced.id).organization_id)
-        .to eq(dependency_list_export_part_2.organization_id)
+      verify_backfilled_values(dependency_list_export_part_upload_to_be_synced)
+      verify_backfilled_values(dependency_list_export_part_upload_synced)
       expect(find_partitioned_upload(dependency_list_export_part_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(import_export_upload_upload_to_be_synced.id).namespace_id)
-        .to eq(import_export_upload_1.group_id)
-      expect(find_partitioned_upload(import_export_upload_upload_synced.id).namespace_id)
-        .to eq(import_export_upload_2.group_id)
+      verify_backfilled_values(import_export_upload_upload_to_be_synced)
+      verify_backfilled_values(import_export_upload_upload_synced)
       expect(find_partitioned_upload(import_export_upload_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(issuable_metric_image_upload_to_be_synced.id).namespace_id)
-        .to eq(issuable_metric_image_1.namespace_id)
-      expect(find_partitioned_upload(issuable_metric_image_upload_synced.id).namespace_id)
-        .to eq(issuable_metric_image_2.namespace_id)
+      verify_backfilled_values(issuable_metric_image_upload_to_be_synced)
+      verify_backfilled_values(issuable_metric_image_upload_synced)
       expect(find_partitioned_upload(issuable_metric_image_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(organization_detail_upload_to_be_synced.id).organization_id)
-        .to eq(organization_detail_1.organization_id)
-      expect(find_partitioned_upload(organization_detail_upload_synced.id).organization_id)
-        .to eq(organization_detail_2.organization_id)
+      verify_backfilled_values(organization_detail_upload_to_be_synced)
+      verify_backfilled_values(organization_detail_upload_synced)
       expect(find_partitioned_upload(organization_detail_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(topic_upload_to_be_synced.id).organization_id).to eq(topic_1.organization_id)
-      expect(find_partitioned_upload(topic_upload_synced.id).organization_id).to eq(topic_2.organization_id)
+      verify_backfilled_values(topic_upload_to_be_synced)
+      verify_backfilled_values(topic_upload_synced)
       expect(find_partitioned_upload(topic_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(snippet_upload_to_be_synced.id).organization_id).to eq(snippet_1.organization_id)
-      expect(find_partitioned_upload(snippet_upload_synced.id).organization_id).to eq(snippet_2.organization_id)
+      verify_backfilled_values(snippet_upload_to_be_synced)
+      verify_backfilled_values(snippet_upload_synced)
       expect(find_partitioned_upload(snippet_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(user_permission_export_upload_upload_to_be_synced.id)).to be_truthy
-      expect(find_partitioned_upload(user_permission_export_upload_upload_synced.id)).to be_truthy
+      verify_backfilled_values(user_permission_export_upload_upload_to_be_synced)
+      verify_backfilled_values(user_permission_export_upload_upload_synced)
       expect(find_partitioned_upload(user_permission_export_upload_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(user_upload_to_be_synced.id)).to be_truthy
-      expect(find_partitioned_upload(user_upload_synced.id)).to be_truthy
+      verify_backfilled_values(user_upload_to_be_synced)
+      verify_backfilled_values(user_upload_synced)
       expect(find_partitioned_upload(user_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(vulnerability_export_upload_to_be_synced.id).organization_id)
-        .to eq(vulnerability_export_1.organization_id)
-      expect(find_partitioned_upload(vulnerability_export_upload_synced.id).organization_id)
-        .to eq(vulnerability_export_2.organization_id)
+      verify_backfilled_values(vulnerability_export_upload_to_be_synced)
+      verify_backfilled_values(vulnerability_export_upload_synced)
       expect(find_partitioned_upload(vulnerability_export_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(vulnerability_export_part_upload_to_be_synced.id).organization_id)
-        .to eq(vulnerability_export_part_1.organization_id)
-      expect(find_partitioned_upload(vulnerability_export_part_upload_synced.id).organization_id)
-        .to eq(vulnerability_export_part_2.organization_id)
+      verify_backfilled_values(vulnerability_export_part_upload_to_be_synced)
+      verify_backfilled_values(vulnerability_export_part_upload_synced)
       expect(find_partitioned_upload(vulnerability_export_part_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(vulnerability_remediation_upload_to_be_synced.id).project_id)
-        .to eq(vulnerability_remediation_1.project_id)
-      expect(find_partitioned_upload(vulnerability_remediation_upload_synced.id).project_id)
-        .to eq(vulnerability_remediation_2.project_id)
+      verify_backfilled_values(vulnerability_remediation_upload_to_be_synced)
+      verify_backfilled_values(vulnerability_remediation_upload_synced)
       expect(find_partitioned_upload(vulnerability_remediation_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(vulnerability_archive_export_upload_to_be_synced.id).project_id)
-        .to eq(vulnerability_archive_export_1.project_id)
-      expect(find_partitioned_upload(vulnerability_archive_export_upload_synced.id).project_id)
-        .to eq(vulnerability_archive_export_2.project_id)
+      verify_backfilled_values(vulnerability_archive_export_upload_to_be_synced)
+      verify_backfilled_values(vulnerability_archive_export_upload_synced)
       expect(find_partitioned_upload(vulnerability_archive_export_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(project_upload_to_be_synced.id).project_id).to eq(project_1.id)
-      expect(find_partitioned_upload(project_upload_synced.id).project_id).to eq(project_2.id)
-      expect(find_partitioned_upload(project_upload_to_be_synced.id).namespace_id).to be_nil
-      expect(find_partitioned_upload(project_upload_synced.id).namespace_id).to be_nil
+      verify_backfilled_values_projects(project_upload_to_be_synced)
+      verify_backfilled_values_projects(project_upload_synced)
       expect(find_partitioned_upload(project_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(namespace_upload_to_be_synced.id).namespace_id).to eq(namespace_1.id)
-      expect(find_partitioned_upload(namespace_upload_synced.id).namespace_id).to eq(namespace_2.id)
-      expect(find_partitioned_upload(namespace_upload_to_be_synced.id).organization_id).to be_nil
-      expect(find_partitioned_upload(namespace_upload_synced.id).organization_id).to be_nil
+      verify_backfilled_values_namespaces(namespace_upload_to_be_synced)
+      verify_backfilled_values_namespaces(namespace_upload_synced)
       expect(find_partitioned_upload(namespace_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(project_relation_export_upload_upload_to_be_synced.id).project_id)
-        .to eq(project_relation_export_upload_1.project_id)
-      expect(find_partitioned_upload(project_relation_export_upload_upload_synced.id).project_id)
-        .to eq(project_relation_export_upload_2.project_id)
+      verify_backfilled_values(project_relation_export_upload_upload_to_be_synced)
+      verify_backfilled_values(project_relation_export_upload_upload_synced)
       expect(find_partitioned_upload(project_relation_export_upload_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(designs_version_upload_to_be_synced.id).namespace_id)
-        .to eq(designs_version_1.namespace_id)
-      expect(find_partitioned_upload(designs_version_upload_synced.id).namespace_id)
-        .to eq(designs_version_2.namespace_id)
+      verify_backfilled_values(designs_version_upload_to_be_synced)
+      verify_backfilled_values(designs_version_upload_synced)
       expect(find_partitioned_upload(designs_version_upload_to_be_removed.id)).not_to be_truthy
 
-      expect(find_partitioned_upload(bulk_import_export_upload_upload_to_be_synced.id).namespace_id)
-        .to eq(bulk_import_export_upload_1.group_id)
-      expect(find_partitioned_upload(bulk_import_export_upload_upload_synced.id).namespace_id)
-        .to eq(bulk_import_export_upload_2.group_id)
+      verify_backfilled_values(bulk_import_export_upload_upload_to_be_synced)
+      verify_backfilled_values(bulk_import_export_upload_upload_synced)
       expect(find_partitioned_upload(bulk_import_export_upload_upload_to_be_removed.id)).not_to be_truthy
     end
+  end
+
+  def verify_backfilled_values(original_record)
+    original_record.reload
+    backfilled_record = find_partitioned_upload(original_record.id)
+    expect(backfilled_record).to be_truthy
+
+    records_table = original_record.model_type.pluralize.underscore.tr("/", "_")
+    parent_record = begin
+      send(records_table).find_by_id(original_record.model_id)
+    rescue NoMethodError => _e
+      # NOTE: some tables don't use the column 'id' as a primary key
+      send(records_table).find(original_record.model_id)
+    end
+
+    if parent_record.respond_to?(:organization_id)
+      expect(backfilled_record.organization_id).to eq(parent_record.organization_id)
+    end
+
+    expect(backfilled_record.namespace_id).to eq(parent_record.namespace_id) if parent_record.respond_to?(:namespace_id)
+
+    expect(backfilled_record.namespace_id).to eq(parent_record.group_id) if parent_record.respond_to?(:group_id)
+
+    expect(backfilled_record.project_id).to eq(parent_record.project_id) if parent_record.respond_to?(:project_id)
+
+    expect(original_record.uploaded_by_user_id).not_to be_nil
+    expect(original_record.uploaded_by_user_id).to eq(backfilled_record.uploaded_by_user_id)
+  end
+
+  def verify_backfilled_values_projects(original_record)
+    original_record.reload
+    backfilled_record = find_partitioned_upload(original_record.id)
+    expect(backfilled_record).to be_truthy
+
+    project = projects.find_by_id(original_record.model_id)
+    expect(backfilled_record.organization_id).to be_nil
+    expect(backfilled_record.namespace_id).to be_nil
+    expect(backfilled_record.project_id).to eq(project.id)
+    expect(original_record.uploaded_by_user_id).not_to be_nil
+    expect(original_record.uploaded_by_user_id).to eq(backfilled_record.uploaded_by_user_id)
+  end
+
+  def verify_backfilled_values_namespaces(original_record)
+    original_record.reload
+    backfilled_record = find_partitioned_upload(original_record.id)
+    expect(backfilled_record).to be_truthy
+
+    namespace = namespaces.find_by_id(original_record.model_id)
+    expect(backfilled_record.organization_id).to be_nil
+    expect(backfilled_record.namespace_id).to eq(namespace.id)
+    expect(backfilled_record.project_id).to be_nil
+    expect(original_record.uploaded_by_user_id).not_to be_nil
+    expect(original_record.uploaded_by_user_id).to eq(backfilled_record.uploaded_by_user_id)
   end
 
   def find_partitioned_upload(id)
@@ -452,21 +471,28 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
       organization_id: organization_id)
   end
 
-  def create_upload(model_type, model, delete_model: false)
+  # NOTE: provide `uploads_sharding_key` when the uploads partition does not have a trigger to set
+  #       the sharding key column from the parent table (eg. when the parent table belongs to the
+  #       gitlab_sec schema but the uploads partition belongs in the gitlab_main_org schema)
+  def create_upload(model_type, model, delete_model: false, user_id: nil, uploads_sharding_key: {})
+    user_id ||= create_user(organization_id: create_organization.id).id
     model_id = Array.wrap(model.id).first
     uploads_table.create!(model_type: model_type, model_id: model_id, size: 42, path: '/some/path',
-      uploader: 'FileUploader', created_at: Time.current).tap do
+      uploader: 'FileUploader', created_at: Time.current, uploaded_by_user_id: user_id,
+      **uploads_sharding_key).tap do
       model.delete if delete_model
     end
   end
 
   def create_achievement
     namespace = create_namespace
-    achievements.create!(namespace_id: namespace.id, name: SecureRandom.base64)
+    achievements_achievements.create!(namespace_id: namespace.id, name: SecureRandom.base64)
   end
 
   def create_abuse_report_upload(delete_model: false)
-    model = abuse_reports.create!
+    organization = create_organization
+    reporter = create_user(organization_id: organization.id)
+    model = abuse_reports.create!(reporter_id: reporter.id)
     create_upload('AbuseReport', model, delete_model: delete_model)
   end
 
@@ -497,7 +523,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_alert_metric_image
     alert = create_alert
-    alert_management_alert_metric_images.create!(alert_id: alert.id, project_id: alert.project_id, file: 'alert file')
+    alert_management_metric_images.create!(alert_id: alert.id, project_id: alert.project_id, file: 'alert file')
   end
 
   def create_alert_metric_image_upload(model: nil, delete_model: false)
@@ -507,24 +533,26 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_dependency_list_export
     group = create_namespace
-    dependency_list_exports.create!(group_id: group.id)
+    dependencies_dependency_list_exports.create!(group_id: group.id)
   end
 
   def create_dependency_list_export_upload(model: nil, delete_model: false)
     model ||= create_dependency_list_export
-    create_upload('Dependencies::DependencyListExport', model, delete_model: delete_model)
+    create_upload('Dependencies::DependencyListExport', model, delete_model: delete_model,
+      uploads_sharding_key: { namespace_id: model.group_id })
   end
 
   def create_dependency_list_export_part
     organization = create_organization
     dependency_list_export = create_dependency_list_export
-    dependency_list_export_parts.create!(organization_id: organization.id,
+    dependencies_dependency_list_export_parts.create!(organization_id: organization.id,
       dependency_list_export_id: dependency_list_export.id, start_id: 1, end_id: 9)
   end
 
   def create_dependency_list_export_part_upload(model: nil, delete_model: false)
     model ||= create_dependency_list_export_part
-    create_upload('Dependencies::DependencyListExport::Part', model, delete_model: delete_model)
+    create_upload('Dependencies::DependencyListExport::Part', model, delete_model: delete_model,
+      uploads_sharding_key: { organization_id: model.organization_id })
   end
 
   def create_import_export_upload
@@ -549,13 +577,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   end
 
   def create_issuable_metric_image_upload(model: nil, delete_model: false)
-    model ||= create_import_export_upload
+    model ||= create_issuable_metric_image
     create_upload('IssuableMetricImage', model, delete_model: delete_model)
   end
 
   def create_organization_detail
     organization = create_organization
-    organization_details.create!(organization_id: organization.id)
+    organizations_organization_details.create!(organization_id: organization.id)
   end
 
   def create_organization_detail_upload(model: nil, delete_model: false)
@@ -565,7 +593,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_topic
     organization = create_organization
-    topics.create!(organization_id: organization.id, name: SecureRandom.base64)
+    projects_topics.create!(organization_id: organization.id, name: SecureRandom.base64)
   end
 
   def create_topic_upload(model: nil, delete_model: false)
@@ -586,13 +614,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_user_permission_export_upload
     organization = create_organization
-    user = create_user(organization_id: organization.id)
-    user_permission_export_uploads.create!(user_id: user.id)
+    user_id = create_user(organization_id: organization.id).id
+    user_permission_export_uploads.create!(user_id: user_id)
   end
 
   def create_user_permission_export_upload_upload(model: nil, delete_model: false)
     model ||= create_user_permission_export_upload
-    create_upload('UserPermissionExportUpload', model, delete_model: delete_model)
+    create_upload('UserPermissionExportUpload', model, delete_model: delete_model,
+      user_id: model.user_id)
   end
 
   def create_user_upload(model: nil, delete_model: false)
@@ -606,46 +635,50 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   def create_vulnerability_export
     organization = create_organization
     user = create_user(organization_id: organization.id)
-    vulnerability_exports.create!(organization_id: organization.id, author_id: user.id, status: 'open')
+    vulnerabilities_exports.create!(organization_id: organization.id, author_id: user.id, status: 'open')
   end
 
   def create_vulnerability_export_upload(model: nil, delete_model: false)
     model ||= create_vulnerability_export
-    create_upload('Vulnerabilities::Export', model, delete_model: delete_model)
+    create_upload('Vulnerabilities::Export', model, delete_model: delete_model,
+      uploads_sharding_key: { organization_id: model.organization_id })
   end
 
   def create_vulnerability_export_part
     organization = create_organization
     vulnerability_export = create_vulnerability_export
-    vulnerability_export_parts.create!(organization_id: organization.id,
+    vulnerabilities_export_parts.create!(organization_id: organization.id,
       vulnerability_export_id: vulnerability_export.id, start_id: 1, end_id: 100)
   end
 
   def create_vulnerability_export_part_upload(model: nil, delete_model: false)
     model ||= create_vulnerability_export_part
-    create_upload('Vulnerabilities::Export::Part', model, delete_model: delete_model)
+    create_upload('Vulnerabilities::Export::Part', model, delete_model: delete_model,
+      uploads_sharding_key: { organization_id: model.organization_id })
   end
 
   def create_vulnerability_remediation
     project = create_project
-    vulnerability_remediations.create!(project_id: project.id, summary: 'summary', file: 'some_file', checksum: '123')
+    vulnerabilities_remediations.create!(project_id: project.id, summary: 'summary', file: 'some_file', checksum: '123')
   end
 
   def create_vulnerability_remediation_upload(model: nil, delete_model: false)
     model ||= create_vulnerability_remediation
-    create_upload('Vulnerabilities::Remediation', model, delete_model: delete_model)
+    create_upload('Vulnerabilities::Remediation', model, delete_model: delete_model,
+      uploads_sharding_key: { project_id: model.project_id })
   end
 
   def create_vulnerability_archive_export
     project = create_project
     user = create_user(organization_id: project.organization_id)
-    vulnerability_archive_exports.create!(project_id: project.id, author_id: user.id,
+    vulnerabilities_archive_exports.create!(project_id: project.id, author_id: user.id,
       date_range: Time.current.yesterday..Time.current)
   end
 
   def create_vulnerability_archive_export_upload(model: nil, delete_model: false)
     model ||= create_vulnerability_archive_export
-    create_upload('Vulnerabilities::ArchiveExport', model, delete_model: delete_model)
+    create_upload('Vulnerabilities::ArchiveExport', model, delete_model: delete_model,
+      uploads_sharding_key: { project_id: model.project_id })
   end
 
   def create_project_upload(model: nil, delete_model: false)
@@ -667,7 +700,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
     project_export_job = project_export_jobs.create!(project_id: project.id, jid: SecureRandom.base64)
     project_relation_export = project_relation_exports.create!(project_id: project.id,
       project_export_job_id: project_export_job.id, relation: 'rel')
-    project_relation_export_uploads.create!(project_id: project.id,
+    projects_import_export_relation_export_uploads.create!(project_id: project.id,
       project_relation_export_id: project_relation_export.id, export_file: 'export.file')
   end
 
@@ -683,7 +716,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
       filename: 'file.name', iid: 1)
     version = design_management_versions.create!(namespace_id: namespace.id, sha: SecureRandom.base64)
 
-    design_management_designs_versions.create!(namespace_id: namespace.id, design_id: design.id, version_id: version.id)
+    design_management_actions.create!(namespace_id: namespace.id, design_id: design.id, version_id: version.id)
   end
 
   def create_designs_version_upload(model: nil, delete_model: false)
@@ -698,7 +731,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_bulk_import_export_upload
     export = create_bulk_import_export
-    bulk_import_export_uploads.create!(export_id: export.id, group_id: export.group_id)
+    bulk_imports_export_uploads.create!(export_id: export.id, group_id: export.group_id)
   end
 
   def create_bulk_import_export_upload_upload(model: nil, delete_model: false)

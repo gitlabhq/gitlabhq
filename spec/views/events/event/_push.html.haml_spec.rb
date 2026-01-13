@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'events/event/_push.html.haml' do
+RSpec.describe 'events/event/_push.html.haml', feature_category: :source_code_management do
   let(:event) { build_stubbed(:push_event) }
   let(:event_presenter) { event.present }
 

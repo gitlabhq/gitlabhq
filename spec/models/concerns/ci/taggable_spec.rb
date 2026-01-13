@@ -47,6 +47,10 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
       def attributes_map(record)
         { test_ci_taggable_id: record.id }
       end
+
+      def uses_taggings?
+        true
+      end
     end
   end
 

@@ -11,7 +11,7 @@ import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
-import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
+import { sidebarState } from '~/sidebar/sidebar_state';
 import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
 import {
@@ -69,7 +69,7 @@ const agentBadge = memoize(
           size: 'sm',
         },
       },
-      s__('UserProfile|Agent'),
+      s__('UserProfile|AI'),
     ).outerHTML,
 );
 
@@ -149,6 +149,7 @@ export function membersBeforeSave(members) {
       icon: avatarIcon,
       availability: member?.availability,
       compositeIdentityEnforced: member?.composite_identity_enforced,
+      disabled: member?.disabled,
     };
   });
 }
@@ -505,7 +506,15 @@ class GfmAutoComplete {
       maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
-        const { avatarTag, username, title, icon, availability, compositeIdentityEnforced } = value;
+        const {
+          avatarTag,
+          username,
+          title,
+          icon,
+          availability,
+          compositeIdentityEnforced,
+          disabled,
+        } = value;
         if (username != null) {
           tmpl = GfmAutoComplete.Members.templateFunction({
             avatarTag,
@@ -514,6 +523,7 @@ class GfmAutoComplete {
             icon,
             availabilityStatus: availability && isUserBusy(availability) ? busyBadge() : '',
             compositeIdentityEnforced,
+            disabled,
           });
         }
         return tmpl;
@@ -551,7 +561,7 @@ class GfmAutoComplete {
             assignees =
               SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
           }
-          reviewers = state.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
+          reviewers = sidebarState.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
@@ -561,27 +571,32 @@ class GfmAutoComplete {
             instance.previousQuery = query;
 
             fetchData(this.$inputor, this.at, query);
-            return data;
+            // Even while loading, we don't want to show any disabled items
+            return data.filter((member) => !member.disabled);
           }
+
+          const enabledMembers = data.filter((member) => {
+            return !member.disabled;
+          });
 
           if (command === MEMBER_COMMAND.ASSIGN) {
             // Only include members which are not assigned to Issuable currently
-            return data.filter((member) => !assignees.includes(member.search));
+            return enabledMembers.filter((member) => !assignees.includes(member.search));
           }
           if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
-            return data.filter((member) => assignees.includes(member.search));
+            return enabledMembers.filter((member) => assignees.includes(member.search));
           }
           if (command === MEMBER_COMMAND.ASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
-            return data.filter((member) => !reviewers.includes(member.search));
+            return enabledMembers.filter((member) => !reviewers.includes(member.search));
           }
           if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
-            return data.filter((member) => reviewers.includes(member.search));
+            return enabledMembers.filter((member) => reviewers.includes(member.search));
           }
 
-          return data;
+          return enabledMembers;
         },
         sorter(query, items) {
           // Disable auto-selecting the loading icon

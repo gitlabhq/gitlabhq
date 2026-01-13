@@ -22,7 +22,7 @@ own advantages. These methods can be mixed and matched if needed:
 - [Pipelines with the `needs` keyword](#pipelines-with-the-needs-keyword): Good for large, complex projects that need efficient execution.
 - [Parent-child pipelines](#parent-child-pipelines): Good for monorepos and projects with lots of independently defined components.
 
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  <i class="fa-youtube-play" aria-hidden="true"></i>
   For an overview, see the [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
 
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines): Good for larger products that require cross-project interdependencies,
@@ -33,7 +33,7 @@ own advantages. These methods can be mixed and matched if needed:
   has its own build, test, and deploy process. You can visualize the connected pipelines
   in one place, including all cross-project interdependencies.
 
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  <i class="fa-youtube-play" aria-hidden="true"></i>
   For an overview, see the [Multi-project pipelines demo](https://www.youtube.com/watch?v=g_PIwBM1J84).
 
 ## Basic pipelines

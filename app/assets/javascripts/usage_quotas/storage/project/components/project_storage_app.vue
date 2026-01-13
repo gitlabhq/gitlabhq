@@ -209,6 +209,7 @@ export default {
     </div>
     <project-storage-detail
       :storage-types="projectStorageTypes"
+      :project="project"
       data-testid="usage-quotas-project-usage-details"
     />
     <div class="gl-mt-7">

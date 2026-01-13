@@ -9,6 +9,7 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
       author {
         ...UserWithType
         ...UserAvailability
+        compositeIdentityEnforced @gl_introduced(version: "18.8.0")
         mergeRequestInteraction {
           canMerge
         }
@@ -17,6 +18,7 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
         nodes {
           ...UserWithType
           ...UserAvailability
+          compositeIdentityEnforced @gl_introduced(version: "18.8.0")
           mergeRequestInteraction {
             canMerge
           }

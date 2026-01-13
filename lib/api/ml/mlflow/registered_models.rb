@@ -20,6 +20,7 @@ module API
           desc 'Creates a Registered Model.' do
             success Entities::Ml::Mlflow::RegisteredModel
             detail 'MLFlow Registered Models map to GitLab Models. https://mlflow.org/docs/2.19.0/rest-api.html#create-registeredmodel'
+            tags ['mlops']
           end
           route_setting :api, write: true
           route_setting :model_registry, write: true
@@ -51,6 +52,7 @@ module API
           desc 'Fetch a Registered Model by Name' do
             success Entities::Ml::Mlflow::RegisteredModel
             detail 'https://www.mlflow.org/docs/2.19.0/rest-api.html#get-registeredmodel'
+            tags ['mlops']
           end
           params do
             # The name param is actually required, however it is listed as optional here
@@ -66,6 +68,7 @@ module API
           desc 'Update a Registered Model by Name' do
             success Entities::Ml::Mlflow::RegisteredModel
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#update-registeredmodel'
+            tags ['mlops']
           end
           route_setting :api, write: true
           route_setting :model_registry, write: true
@@ -87,6 +90,7 @@ module API
           desc 'Fetch the latest Model Version for the given Registered Model Name' do
             success Entities::Ml::Mlflow::ModelVersion
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#get-latest-modelversions'
+            tags ['mlops']
           end
           params do
             # The name param is actually required, however it is listed as optional here
@@ -104,6 +108,7 @@ module API
           desc 'Delete a Registered Model by Name' do
             success Entities::Ml::Mlflow::RegisteredModel
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#delete-registeredmodel'
+            tags ['mlops']
           end
           route_setting :api, write: true
           route_setting :model_registry, write: true
@@ -130,6 +135,7 @@ module API
           desc 'Search Registered Models within a project' do
             success Entities::Ml::Mlflow::RegisteredModel
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#search-registeredmodels'
+            tags ['mlops']
           end
           params do
             optional :filter,
@@ -178,6 +184,7 @@ module API
           end
           desc 'Gets a Model Version by alias' do
             detail 'https://mlflow.org/docs/2.19.0/rest-api.html#get-model-version-by-alias'
+            tags ['mlops']
           end
           get 'alias', urgency: :low do
             present find_model_version(user_project, params[:name], params[:alias]),

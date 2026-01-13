@@ -315,7 +315,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
             wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409990' do
+          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9337' do
             expect(delayed_job.reload).to be_pending
           end
         end
@@ -329,7 +329,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         create(:deployment, :failed, environment: environment, sha: project.commit.id)
       end
 
-      it 'does not show deployments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409990' do
+      it 'does not show deployments', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9337' do
         visit_environments(project)
 
         expect(page).to have_content(s_('Environments|There are no deployments for this environment yet. Learn more about setting up deployments.'))

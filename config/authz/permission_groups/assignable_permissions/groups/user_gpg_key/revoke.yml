@@ -1,0 +1,7 @@
+---
+name: revoke_user_gpg_key
+description: Grants the ability to revoke user GPG keys
+boundaries:
+  - user
+permissions:
+  - revoke_user_gpg_key

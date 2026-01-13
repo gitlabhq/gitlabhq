@@ -6,16 +6,51 @@ description: Use the GitLab Workflow extension for VS Code to handle common GitL
 title: Install and set up the GitLab Workflow extension for VS Code
 ---
 
-To install the GitLab Workflow extension for VS Code:
+To use the GitLab Workflow extension for VS Code, choose the installation method that meets your
+needs:
 
-- [Go to the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-  and install and enable the extension.
-- If you use an unofficial version of VS Code, install the
-  extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
+- For standard VS Code, install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- For unofficial VS Code versions, install from [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
+- For secure local development, install in a [Visual Studio Code Dev Container](#use-the-extension-in-a-visual-studio-code-dev-container).
+
+## Use the extension in a Visual Studio Code Dev Container
+
+For added security, set up the extension and use GitLab Duo in a containerized development
+environment using [VS Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
+
+Prerequisites:
+
+- [Docker](https://www.docker.com/products/docker-desktop/) is installed and running.
+- The Visual Studio Code [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  extension is installed in VS Code.
+
+To install the extension in a VS Code Dev Container:
+
+1. Run the **Dev Containers: Add Dev Container Configuration Files** command from the Command
+   Palette.
+1. Add the GitLab Workflow extension to the configuration file:
+
+   ```json
+   // .devcontainer/devcontainer.json
+   {
+   "name": "My Project",
+   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+   "customizations": {
+      "vscode": {
+         "extensions": [
+         "GitLab.gitlab-workflow"
+         ]
+      }
+   }
+   }
+   ```
+
+1. Run the **Dev Containers: Open Folder in Container** command to open your project in a VS Code
+   Dev Container. VS Code automatically installs the extension inside the container.
 
 ## Connect to GitLab
 
-After you download and install the extension, connect it to your GitLab account.
+After you install and enable the extension, connect it to your GitLab account.
 
 ### Authenticate with GitLab
 
@@ -76,9 +111,6 @@ The extension shows information in the VS Code status bar if both:
 To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
 Settings can be configured at the user or workspace level.
 
-By default, GitLab Duo Code Suggestions and GitLab Duo Chat are enabled, so if you have
-the GitLab Duo add-on and a seat assigned, you should have access.
-
 ### Authentication
 
 Authenticate using a personal access token or logging in through an OAuth application.
@@ -126,6 +158,19 @@ To configure OAuth application login:
 1. Under **OAuth Client IDs**, select **Add Item**.
 1. Select **Key** and enter the GitLab instance URL.
 1. Select **Value** and enter the client ID of the OAuth application.
+
+### Configure GitLab Duo
+
+GitLab Duo Chat and GitLab Duo Code Suggestions are enabled by default when you meet the
+prerequisites:
+
+- You have the GitLab Duo add-on and a seat assigned.
+- You open a project that is linked to a remote repository on GitLab, or you set a
+  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+- For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
+  prerequisites:
+  - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)
+  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 
 ### Code security
 

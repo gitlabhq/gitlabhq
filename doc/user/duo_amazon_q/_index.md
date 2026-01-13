@@ -21,11 +21,8 @@ title: GitLab Duo with Amazon Q
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
-
-{{< /alert >}}
+> [!note]
+> GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 At re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
@@ -154,7 +151,7 @@ Amazon Q updates the merge request with the suggested tests.
 - [Set up GitLab Duo with Amazon Q](setup.md)
 - [View the full list of GitLab Duo with Amazon Q features](../gitlab_duo/feature_summary.md).
 - [GitLab Duo authentication and authorization](../gitlab_duo/security.md)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Upgrade Java](https://www.youtube.com/watch?v=qGyzG9wTsEo) <!-- Video published on 2025-10-16 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Code review optimization](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_) <!-- Video published on 2025-05-20 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Make code changes based on feedback](https://youtu.be/31E9X9BrK5s?si=v232hBDmlGpv6fqC) <!-- Video published on 2025-05-30 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Upgrade Java](https://www.youtube.com/watch?v=qGyzG9wTsEo) <!-- Video published on 2025-10-16 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Code review optimization](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_) <!-- Video published on 2025-05-20 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Make code changes based on feedback](https://youtu.be/31E9X9BrK5s?si=v232hBDmlGpv6fqC) <!-- Video published on 2025-05-30 -->

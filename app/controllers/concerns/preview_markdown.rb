@@ -31,7 +31,7 @@ module PreviewMarkdown
   def projects_filter_params
     {
       issuable_reference_expansion_enabled: true,
-      suggestions_filter_enabled: params[:preview_suggestions].present?
+      suggestions_filter_enabled: Gitlab::Utils.to_boolean(params[:preview_suggestions])
     }
   end
 
@@ -73,7 +73,8 @@ module PreviewMarkdown
       ref: params[:ref],
       # Disable comments in markdown for IE browsers because comments in IE
       # could allow script execution.
-      allow_comments: !browser.ie?
+      allow_comments: !browser.ie?,
+      no_header_anchors: params[:target_type] == 'Commit' || Gitlab::Utils.to_boolean(params[:no_header_anchors])
     )
   end
 end

@@ -1696,6 +1696,30 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(json_response['body']).to include(expanded_path)
       end
     end
+
+    context 'when Markdown is previewed on commit' do
+      let(:preview_markdown_params) do
+        {
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          target_type: 'Commit',
+          text: <<~MARKDOWN
+            [[_TOC_]]
+
+            # Hello
+            ## Tere
+            ### よしよし
+          MARKDOWN
+        }
+      end
+
+      it 'does not render TOCs' do
+        post :preview_markdown, params: preview_markdown_params
+
+        expect(json_response['body']).to include('TOC')
+        expect(json_response['body']).not_to include('<h1 id')
+      end
+    end
   end
 
   describe '#ensure_canonical_path' do
@@ -1813,7 +1837,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
           allow(strategy)
             .to receive(:increment)
-            .and_return(Gitlab::ApplicationRateLimiter.rate_limits["project_#{action}".to_sym][:threshold].call + 1)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:"project_#{action}"][:threshold].call + 1)
         end
       end
 
@@ -1867,6 +1891,26 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
             expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
             expect(flash[:alert]).to be_nil
+          end
+        end
+
+        context 'when export is already in progress' do
+          it 'returns 302 with alert if export already queued' do
+            create(:project_export_job, :queued, project: project, user: user)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
+            expect(flash[:alert]).to include('An export is already running or queued for this project.')
+          end
+
+          it 'returns 302 with alert if export already started' do
+            create(:project_export_job, :started, project: project, user: user)
+
+            post action, params: { namespace_id: project.namespace, id: project }
+
+            expect(response).to redirect_to(edit_project_path(project, anchor: 'js-project-advanced-settings'))
+            expect(flash[:alert]).to include('An export is already running or queued for this project.')
           end
         end
       end

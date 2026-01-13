@@ -2,12 +2,13 @@ import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import {
   currentUserResponse,
   projectMembersAutocompleteResponseWithCurrentUser,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
 import { createAlert } from '~/alert';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
@@ -139,7 +140,7 @@ describe('WorkItemBulkEditAssignee component', () => {
         createComponent({
           searchQueryHandler: jest.fn().mockResolvedValue({
             data: {
-              workspace: {
+              namespace: {
                 id: 'gid://gitlab/Project/7',
                 __typename: 'Project',
                 users: [

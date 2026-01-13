@@ -10,7 +10,7 @@ module Types
     end
 
     Gitlab::Access.options_with_owner.each do |key, value|
-      value key.upcase, value: value, description: descriptions[value]
+      value key.upcase.tr(' ', '_'), value: value, description: descriptions[value]
     end
   end
 end

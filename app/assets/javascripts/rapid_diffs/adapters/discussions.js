@@ -2,12 +2,10 @@ import Vue from 'vue';
 import { MOUNTED } from '~/rapid_diffs/adapter_events';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { pinia } from '~/pinia/instance';
-import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
-import NewLineDiscussionForm from '~/rapid_diffs/app/discussions/new_line_discussion_form.vue';
+import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 
-function mountVueApp(el, id, appData) {
-  // eslint-disable-next-line no-new
-  new Vue({
+function mountVueApp({ el, position, appData, onEmpty }) {
+  const instance = new Vue({
     el,
     pinia,
     provide() {
@@ -24,22 +22,15 @@ function mountVueApp(el, id, appData) {
         noteableType: appData.noteableType,
       };
     },
-    computed: {
-      // this way we ensure reactivity continues to work without rerendering the whole component
-      discussion() {
-        return useDiffDiscussions().getDiscussionById(id);
-      },
-    },
     render(h) {
-      if (!this.discussion) return null;
-
-      if (this.discussion.hidden) return null;
-
-      if (this.discussion.isForm) {
-        return h(NewLineDiscussionForm, { props: { discussion: this.discussion } });
-      }
-
-      return h(DiffDiscussions, { props: { discussions: [this.discussion] } });
+      return h(DiffLineDiscussions, {
+        props: { position },
+        on: {
+          empty() {
+            if (onEmpty()) instance.$destroy();
+          },
+        },
+      });
     },
   });
 }
@@ -112,15 +103,29 @@ function addParallelCells(lineRow) {
 }
 
 function createDiscussionMount(createCell) {
-  return ({ diffElement, id, position, appData }) => {
-    if (document.querySelector(`[data-discussion-id="${id}"]`)) return;
-
+  return ({ diffElement, position, appData }) => {
     const cell = createCell(diffElement, position.old_line, position.new_line);
     if (cell.hasMountedApp) return;
     const mountTarget = document.createElement('div');
     cell.appendChild(mountTarget);
     cell.hasMountedApp = true;
-    mountVueApp(mountTarget, id, appData);
+    mountVueApp({
+      el: mountTarget,
+      position: {
+        oldLine: position.old_line,
+        newLine: position.new_line,
+        oldPath: position.old_path,
+        newPath: position.new_path,
+      },
+      appData,
+      onEmpty() {
+        const row = cell.parentElement;
+        // parallel view can have discussions on both sides, we should only remove the whole row if the last discussion was removed
+        if (Array.from(row.querySelectorAll('td:not(:empty)')).length > 1) return false;
+        row.remove();
+        return true;
+      },
+    });
   };
 }
 
@@ -177,7 +182,7 @@ export const parallelDiscussionsAdapter = {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getParallelPosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).addNewLineDiscussionForm({
+      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,
@@ -201,7 +206,7 @@ export const inlineDiscussionsAdapter = {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getInlinePosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).addNewLineDiscussionForm({
+      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,

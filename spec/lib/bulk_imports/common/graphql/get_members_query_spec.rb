@@ -9,7 +9,7 @@ RSpec.describe BulkImports::Common::Graphql::GetMembersQuery, feature_category: 
 
   subject(:query) { described_class.new(context: context) }
 
-  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461276' do
+  context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9470' do
     it_behaves_like 'a valid Direct Transfer GraphQL query'
   end
 

@@ -98,6 +98,10 @@ module Authn
         token_owner_record[@expires_at_field] = @options[:expires_at].to_proc.call(token_owner_record)
       end
 
+      def relation(unscoped)
+        unscoped ? @klass.unscoped : @klass.where(not_expired) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
+      end
+
       private
 
       # If a `format_with_prefix` option is provided, it applies and returns the formatted token.
@@ -149,10 +153,6 @@ module Authn
 
       def routing_condition_proc
         @options.dig(:routable_token, :if) || TRUE_PROC
-      end
-
-      def relation(unscoped)
-        unscoped ? @klass.unscoped : @klass.where(not_expired) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
       end
 
       def token_set?(token_owner_record)

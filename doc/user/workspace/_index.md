@@ -33,7 +33,7 @@ For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.
 
 {{< alert type="note" >}}
 
-A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run sudo commands, or
+A workspace runs on any `linux/amd64` Kubernetes cluster that supports the GitLab agent for Kubernetes (`agentk`). If you need to run `sudo` commands, or
 build and run containers in your workspace, there might be platform-specific requirements.
 
 For more information, see [Platform compatibility](configuration.md#platform-compatibility).
@@ -631,7 +631,7 @@ This process is transparent and doesn't affect your development workflow.
 - [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
 - [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
-- [GitLab Duo Chat](../gitlab_duo_chat/_index.md)
+- [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
 - [GraphQL API reference](../../api/graphql/reference/_index.md)
 - [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)
 - [OpenShift documentation on arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images)

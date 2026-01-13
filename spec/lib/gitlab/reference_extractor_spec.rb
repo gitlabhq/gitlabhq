@@ -263,7 +263,7 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
   describe '#all' do
     let(:issue) { create(:issue, project: project) }
     let(:issue2) { create(:issue, project: project) }
-    let(:issue2_url) { Rails.application.routes.url_helpers.project_issue_url(project, issue2) }
+    let(:issue2_url) { ::Gitlab::UrlBuilder.instance.issue_url(issue2) }
     let(:label) { create(:label, project: project) }
     let(:alert) { create(:alert_management_alert, project: project) }
     let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference} and #{alert.to_reference} and #{issue2_url}" }

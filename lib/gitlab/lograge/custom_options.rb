@@ -9,7 +9,7 @@ module Gitlab
       LIMITED_ARRAY_SENTINEL = { key: 'truncated', value: '...' }.freeze
       IGNORE_PARAMS = Set.new(%w[controller action format]).freeze
       KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :ua, :queue_duration_s,
-                              :etag_route, :request_urgency, :target_duration_s] + \
+        :etag_route, :request_urgency, :target_duration_s] + \
         CLOUDFLARE_CUSTOM_HEADERS.values + \
         JSON_METADATA_HEADERS
 

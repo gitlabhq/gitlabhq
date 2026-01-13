@@ -63,6 +63,18 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
       expect(json_response.last).to have_key('web_url')
     end
 
+    it 'passes organization_id to SnippetsFinder' do
+      project.add_developer(user)
+
+      expect(SnippetsFinder).to receive(:new)
+        .with(user, hash_including(organization_id: current_organization.id, project: project))
+        .and_call_original
+
+      get api("/projects/#{project.id}/snippets", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'hides private snippets from regular user' do
       create(:project_snippet, :private, project: project)
 

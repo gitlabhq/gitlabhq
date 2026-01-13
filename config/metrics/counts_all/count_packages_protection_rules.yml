@@ -1,0 +1,18 @@
+---
+key_path: counts.packages_protection_rules
+description: Total number of package protection rules
+product_group: package_registry
+product_categories:
+  - package_registry
+value_type: number
+status: active
+milestone: "18.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213707
+time_frame: all
+data_source: database
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate
+instrumentation_class: CountPackagesProtectionRulesMetric

@@ -131,3 +131,7 @@ config/helpers/tailwind/css_in_js.js
 
 # Rubocop cop documentation generation
 .yardoc
+
+# yalc for temporary testing
+.yalc
+yalc.lock

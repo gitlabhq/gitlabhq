@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SidebarReviewersInputs from '~/sidebar/components/reviewers/sidebar_reviewers_inputs.vue';
-import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
+import { sidebarState } from '~/sidebar/sidebar_state';
 
 let wrapper;
 
@@ -10,7 +10,7 @@ function factory() {
 
 describe('Sidebar reviewers inputs component', () => {
   it('renders hidden input', () => {
-    state.issuable.reviewers = {
+    sidebarState.issuable.reviewers = {
       nodes: [
         {
           id: 1,

@@ -29,7 +29,7 @@ export default {
       type: Boolean,
     },
     pipelineIid: {
-      type: Number,
+      type: String,
       required: true,
     },
     pipelinePath: {

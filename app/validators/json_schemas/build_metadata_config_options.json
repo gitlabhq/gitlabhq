@@ -355,6 +355,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "pipeline_execution_policy_job": {
+          "type": "boolean"
+        },
         "name": {
           "type": "string"
         },
@@ -564,12 +567,6 @@
         "$ref": "#/definitions/serviceDefinition"
       }
     },
-    "stringMap": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
     "triggerDefinition": {
       "oneOf": [
         {
@@ -602,9 +599,7 @@
                 }
               ]
             },
-            "inputs": {
-              "$ref": "#/definitions/stringMap"
-            },
+            "inputs": true,
             "project": true,
             "strategy": true
           }
@@ -621,14 +616,15 @@
           "additionalProperties": false,
           "properties": {
             "artifact": true,
+            "component": true,
             "file": true,
-            "inputs": {
-              "$ref": "#/definitions/stringMap"
-            },
+            "inputs": true,
             "job": true,
             "local": true,
             "project": true,
-            "ref": true
+            "ref": true,
+            "rules": true,
+            "template": true
           }
         }
       ]

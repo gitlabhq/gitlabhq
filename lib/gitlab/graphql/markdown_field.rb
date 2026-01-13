@@ -12,7 +12,7 @@ module Gitlab
           end
 
           method_name = kwargs.delete(:method) || name.to_s.sub(/_html$/, '')
-          resolver_method = "#{name}_resolver".to_sym
+          resolver_method = :"#{name}_resolver"
           kwargs[:resolver_method] = resolver_method
 
           kwargs[:description] ||= "GitLab Flavored Markdown rendering of `#{method_name}`"

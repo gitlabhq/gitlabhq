@@ -68,7 +68,7 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return this.isGroup ? data.groupWorkspace?.users : data.workspace?.users ?? [];
+        return this.isGroup ? data.groupNamespace?.users : data.namespace?.users ?? [];
       },
       error(error) {
         createAlert({

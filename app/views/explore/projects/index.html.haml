@@ -1,5 +1,8 @@
 - page_canonical_link explore_projects_url
 
 = render 'explore/projects/head'
-= render 'explore/projects/nav'
-= render 'projects', projects: @projects
+- if Feature.enabled?(:explore_projects_vue, current_user)
+  #js-explore-projects
+- else
+  = render 'explore/projects/nav'
+  = render 'projects', projects: @projects

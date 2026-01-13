@@ -56,12 +56,12 @@ const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.
 );
 
 const mockMoreNotesWidgetResponse =
-  mockMoreWorkItemNotesResponse.data.workspace.workItem.widgets.find(
+  mockMoreWorkItemNotesResponse.data.namespace.workItem.widgets.find(
     (widget) => widget.type === WIDGET_TYPE_NOTES,
   );
 
 const mockWorkItemNotesWidgetResponseWithComments =
-  mockWorkItemNotesResponseWithComments().data.workspace.workItem.widgets.find(
+  mockWorkItemNotesResponseWithComments().data.namespace.workItem.widgets.find(
     (widget) => widget.type === WIDGET_TYPE_NOTES,
   );
 
@@ -627,10 +627,10 @@ describe('WorkItemNotes component', () => {
     it('should pass the correct `autoCompleteDataSources` to group work item comment note', async () => {
       const groupWorkItemNotes = {
         data: {
-          workspace: {
+          namespace: {
             id: 'gid://gitlab/Group/24',
             workItem: {
-              ...mockWorkItemNotesResponseWithComments().data.workspace.workItem,
+              ...mockWorkItemNotesResponseWithComments().data.namespace.workItem,
               namespace: {
                 id: 'gid://gitlab/Group/24',
                 __typename: 'Namespace',

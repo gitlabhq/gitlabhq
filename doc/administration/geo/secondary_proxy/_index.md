@@ -35,7 +35,7 @@ This behavior enables use-cases including:
 - Putting all Geo sites behind a single URL, to deliver a consistent, seamless, and comprehensive experience whichever site the user lands on. Users don't need to juggle multiple GitLab URLs.
 - Geographically load-balancing traffic without worrying about write access.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Geo proxying for secondary sites](https://www.youtube.com/watch?v=TALLy7__Na8).
 <!-- Video published on 2022-01-26 -->
 
@@ -167,11 +167,8 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 
 You can use different external URLs per site. You can use this to offer a specific site to a specific set of users. Alternatively, you can give users control over which site they use, though they must understand the implications of their choice.
 
-{{< alert type="note" >}}
-
-GitLab does not support multiple external URLs, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319). An inherent problem is there are many cases where a site needs to produce an absolute URL outside of the context of an HTTP request, such as when sending emails that were not triggered by a request.
-
-{{< /alert >}}
+> [!note]
+> GitLab does not support multiple external URLs, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319). An inherent problem is there are many cases where a site needs to produce an absolute URL outside of the context of an HTTP request, such as when sending emails that were not triggered by a request.
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 

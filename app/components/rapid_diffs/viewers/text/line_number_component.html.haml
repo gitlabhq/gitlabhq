@@ -1,5 +1,9 @@
 - if visible?
   %td.rd-line-number{ data: { change: change_type, position: @position } }
-    = link_to '', "##{@line_id}", { class: 'rd-line-link', data: { line_number: line_number }, aria: { label: label } }
+    - if line_number > 0
+      = link_to '', "##{@line_id}", { class: 'rd-line-link', data: { line_number: line_number }, aria: { label: label } }
+    - else
+      -# preserve regular line number styling for empty generated Jupyter diff lines
+      %span
 - else
   %td.rd-line-number.rd-line-number-empty{ data: { change: change_type, position: @position } }

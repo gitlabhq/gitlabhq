@@ -2,6 +2,7 @@
 
 class UserDetail < ApplicationRecord
   extend ::Gitlab::Utils::Override
+  include Sanitizable
 
   belongs_to :user
   belongs_to :bot_namespace, class_name: 'Namespace', optional: true, inverse_of: :bot_user_details
@@ -71,7 +72,16 @@ class UserDetail < ApplicationRecord
   validates :onboarding_status, json_schema: { filename: 'user_detail_onboarding_status' }
   validates :github, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
 
-  before_validation :sanitize_attrs
+  # Use Sanitizable concern when feature flag is enabled
+  sanitizes! :bluesky, :discord, :linkedin, :mastodon, :orcid, :twitter, :website_url, :github,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
+
+  # New sanitization for location/organization (when feature flag is enabled)
+  before_validation :sanitize_location_and_organization, if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
+
+  # Legacy sanitization (when feature flag is disabled)
+  before_validation :sanitize_attrs, if: -> { Feature.disabled?(:validate_sanitizable_user_details, user) }
+
   before_save :prevent_nil_fields
 
   # Exclude the hashed email_otp attribute
@@ -93,6 +103,15 @@ class UserDetail < ApplicationRecord
     %i[location organization].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
+    end
+  end
+
+  def sanitize_location_and_organization
+    %i[location organization].each do |attr|
+      value = self[attr]
+      # Use Sanitize.fragment (modern) instead of deprecated Sanitize.clean
+      # Apply special &amp; to & replacement for these fields
+      self[attr] = Sanitize.fragment(value).gsub('&amp;', '&') if value.present?
     end
   end
 

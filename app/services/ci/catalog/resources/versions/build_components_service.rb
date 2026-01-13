@@ -71,7 +71,7 @@ module Ci
 
             {
               name: component_name,
-              spec: components_project.extract_spec(blob.data),
+              spec: components_project.extract_spec(blob.data, path: blob.path),
               component_type: 'template'
             }
           end

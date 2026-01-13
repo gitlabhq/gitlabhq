@@ -71,22 +71,23 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
   end
 
   describe '#extract_spec' do
+    let(:path) { 'templates/secret-detection.yml' }
+
     context 'with a valid spec' do
       it 'extracts the spec from a blob' do
         blob = "spec:\n inputs:\n  website:\n---\nimage: alpine_1"
 
-        expect(components_project.extract_spec(blob)).to eq({ inputs: { website: nil } })
+        expect(components_project.extract_spec(blob, path: path)).to eq({ inputs: { website: nil } })
       end
     end
 
     context 'with an invalid spec' do
-      it 'raises InvalidFormatError' do
+      it 'raises FormatError with filename in message' do
         blob = "spec:\n inputs:\n  website:\n---\nsome: invalid: string"
 
         expect do
-          components_project.extract_spec(blob)
-        end.to raise_error(::Gitlab::Config::Loader::FormatError,
-          /mapping values are not allowed in this context/)
+          components_project.extract_spec(blob, path: path)
+        end.to raise_error(::Gitlab::Config::Loader::FormatError, %r{templates/secret-detection\.yml})
       end
     end
   end
@@ -146,6 +147,67 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
 
       it 'returns nil' do
         expect(catalog_component).to be_nil
+      end
+    end
+  end
+
+  describe '#find_catalog_components' do
+    let_it_be(:version) do
+      release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)
+      create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release, semver: release.tag)
+    end
+
+    let_it_be(:dast_component) { create(:ci_catalog_resource_component, version: version, name: 'dast') }
+    let_it_be(:template_component) { create(:ci_catalog_resource_component, version: version, name: 'template') }
+
+    subject(:catalog_components) { components_project.find_catalog_components(component_names) }
+
+    context 'when component_names is empty' do
+      let(:component_names) { [] }
+
+      it 'returns an empty array' do
+        expect(catalog_components).to be_empty
+      end
+    end
+
+    context 'when the components exist in the CI catalog' do
+      let(:component_names) { %w[dast template] }
+
+      it 'returns the catalog resource components' do
+        expect(catalog_components).to match_array([dast_component, template_component])
+      end
+    end
+
+    context 'when some components do not exist in the CI catalog' do
+      let(:component_names) { %w[dast nonexistent] }
+
+      it 'returns only the existing components' do
+        expect(catalog_components).to match_array([dast_component])
+      end
+    end
+
+    context 'when there is more than one catalog resource version with the given sha' do
+      let(:component_names) { ['dast'] }
+
+      before_all do
+        old_release = create(:release, project: project, tag: '1.0.0', sha: project.commit.sha)
+        old_version = create(:ci_catalog_resource_version, catalog_resource: catalog_resource,
+          release: old_release, semver: old_release.tag)
+
+        create(:ci_catalog_resource_component, version: old_version, name: 'dast')
+      end
+
+      it 'returns the catalog resource components of the latest version' do
+        expect(catalog_components).to match_array([dast_component])
+      end
+    end
+
+    context 'when no version exists for the sha' do
+      let(:component_names) { ['dast'] }
+      let(:components_project) { described_class.new(project, 'nonexistent_sha') }
+
+      it 'returns an empty array' do
+        expect(catalog_components).to be_empty
       end
     end
   end

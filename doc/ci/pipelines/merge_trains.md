@@ -76,7 +76,7 @@ If `A` then completes successfully, it merges into the target branch, and `C` co
 to run. Any new merge requests added to the train include the `A` changes now in
 the target branch, and the `C` changes from the merge train.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch this video for a demonstration on [how parallel execution of merge trains can prevent commits from breaking the default branch](https://www.youtube.com/watch?v=D4qCqXgZkHQ).
 
 ### Automatic pipeline cancellation

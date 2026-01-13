@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User edits snippet', :js, feature_category: :source_code_management do
+RSpec.describe 'User edits snippet', :js, feature_category: :source_code_management, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/580358' do
   include DropzoneHelper
   include Features::SnippetSpecHelpers
 
@@ -21,7 +21,6 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
   end
 
   before do
-    skip 'Test skipped when Project Studio enabled as page load can timeout - https://gitlab.com/gitlab-org/gitlab/-/issues/580358' if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
     sign_in(user)
 
     visit edit_snippet_path(snippet)

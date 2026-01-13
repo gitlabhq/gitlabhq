@@ -8,6 +8,7 @@ module RapidDiffs
     expose :reply_id
     expose :confidential?, as: :confidential
     expose :diff_discussion?, as: :diff_discussion
+    expose :individual_note?, as: :individual_note
 
     expose :position, if: ->(d, _) { d.diff_discussion? && !d.legacy_diff_discussion? }
 

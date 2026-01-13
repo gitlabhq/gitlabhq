@@ -39,7 +39,8 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
         visit project_merge_requests_path(project, state: 'closed')
       end
 
-      it 'reopens merge request', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524140' do
+      it 'reopens merge request', :js,
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3870' do
         change_status('Open')
 
         expect(page).to have_selector('.merge-request', count: 0)

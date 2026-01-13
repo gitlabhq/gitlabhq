@@ -42,21 +42,6 @@ module Gitlab
         # # INNER JOIN "issue_metrics" ON "issue_metrics"."issue_id" = "issues"."id"
         # # WHERE "issues"."project_id" = 1
         class Column < PartDefinition
-          attr_reader :scope_proc
-
-          def initialize(*args, scope_proc: nil, **kwargs)
-            super
-            @scope_proc = scope_proc
-          end
-
-          def to_hash
-            super.merge(kind: :column)
-          end
-
-          def apply_scope(scope, context)
-            scope_proc ? scope_proc.call(scope, context) : scope
-          end
-
           # Returns an Arel node representing this column or metric in a SELECT statement.
           # Subclasses may wrap the expression (e.g., date_trunc, AVG, COUNT).
           def to_arel(context)

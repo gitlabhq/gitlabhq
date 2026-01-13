@@ -33,6 +33,10 @@ $no-preview-action-margin-top: $gl-spacing-scale-3;
   margin: 0 0 $no-preview-paragraph-margin-bottom;
 }
 
+.rd-no-preview-paragraph:only-child {
+  margin: 0;
+}
+
 .rd-no-preview-actions {
   display: flex;
 

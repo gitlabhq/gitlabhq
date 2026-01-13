@@ -14,8 +14,8 @@ module BulkImports
       @client = Clients::HTTP.new(url: @configuration.url, token: @configuration.access_token)
     end
 
-    def started?
-      !empty? && status['status'] == Export::STARTED
+    def in_progress?
+      !empty? && Export::IN_PROGRESS_STATUSES.include?(status['status'])
     end
 
     def failed?

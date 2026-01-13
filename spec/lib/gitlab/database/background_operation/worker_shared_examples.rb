@@ -17,7 +17,6 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     it { is_expected.to validate_numericality_of(:pause_ms).is_greater_than_or_equal_to(100) }
-    it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
   end
 
   describe 'scopes' do
@@ -67,6 +66,18 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         expect(described_class.executable).to match_array([queued_worker, active_worker, paused_without_hold])
       end
     end
+
+    describe '.for_gitlab_schema' do
+      let(:main_workers) { [queued_worker, active_worker, paused_worker, finished_worker] }
+      let_it_be(:ci_worker) { create(worker_factory, :queued, gitlab_schema: :gitlab_ci_org) }
+
+      it 'returns workers with the specified gitlab_schema' do
+        expect(described_class.for_gitlab_schema([:gitlab_main_org, :gitlab_ci_org]).to_a)
+          .to match_array(main_workers + [ci_worker])
+
+        expect(described_class.for_gitlab_schema(:gitlab_ci_org).to_a).to match_array([ci_worker])
+      end
+    end
   end
 
   describe 'state machine transitions', :freeze_time do
@@ -85,6 +96,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
   describe '.schedulable_workers' do
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
+    let(:connection) { ActiveRecord::Base.connection }
 
     it 'returns executable workers in asc order with the limit' do
       projects_worker_1 = create(worker_factory, :queued, table_name: 'projects')
@@ -127,7 +139,7 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         w.attributes['id']
       end
 
-      expect(described_class.schedulable_workers(4).pluck(:id))
+      expect(described_class.schedulable_workers(connection, 4).pluck(:id))
         .to match_array(expected_worker_ids)
     end
   end
@@ -136,7 +148,11 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     let(:partition_manager) { Gitlab::Database::Partitioning::PartitionManager.new(described_class) }
 
     describe 'next_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition }
+      let(:active_partition) do
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          described_class.partitioning_strategy.active_partition
+        end
+      end
 
       subject(:value) { described_class.partitioning_strategy.next_partition_if.call(active_partition) }
 
@@ -163,7 +179,11 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
     end
 
     describe 'detach_partition_if callback' do
-      let(:active_partition) { described_class.partitioning_strategy.active_partition }
+      let(:active_partition) do
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          described_class.partitioning_strategy.active_partition
+        end
+      end
 
       subject(:value) { described_class.partitioning_strategy.detach_partition_if.call(active_partition) }
 
@@ -193,38 +213,40 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
     describe 'the behavior of the strategy' do
       it 'moves records to new partitions as time passes', :freeze_time do
-        # We start with partition 1
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1])
+        Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+          # We start with partition 1
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1])
 
-        # it's not 14 days old yet so no new partitions are created
-        partition_manager.sync_partitions
+          # it's not 14 days old yet so no new partitions are created
+          partition_manager.sync_partitions
 
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1])
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1])
 
-        # add one record so the next partition will be created
-        create(worker_factory) # rubocop:disable Rails/SaveBang -- factory
+          # add one record so the next partition will be created
+          create(worker_factory) # rubocop:disable Rails/SaveBang -- factory
 
-        # after traveling forward past PARTITION_DURATION
-        travel(described_class::PARTITION_DURATION + 1.minute)
+          # after traveling forward past PARTITION_DURATION
+          travel(described_class::PARTITION_DURATION + 1.minute)
 
-        # a new partition is created
-        partition_manager.sync_partitions
+          # a new partition is created
+          partition_manager.sync_partitions
 
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1, 2])
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([1, 2])
 
-        # and we can insert to the new partition
-        expect { create(worker_factory) }.not_to raise_error # rubocop:disable Rails/SaveBang -- factory
+          # and we can insert to the new partition
+          expect { create(worker_factory) }.not_to raise_error # rubocop:disable Rails/SaveBang -- factory
 
-        # after marking old records as non-unfinished
-        described_class.for_partition(1).update_all(status: 3)
+          # after marking old records as non-unfinished
+          described_class.for_partition(1).update_all(status: 3)
 
-        partition_manager.sync_partitions
+          partition_manager.sync_partitions
 
-        # the old one is removed
-        expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([2])
+          # the old one is removed
+          expect(described_class.partitioning_strategy.current_partitions.map(&:value)).to match_array([2])
 
-        # and we only have the newly created partition left.
-        expect(described_class.count).to eq(1)
+          # and we only have the newly created partition left.
+          expect(described_class.count).to eq(1)
+        end
       end
     end
   end
@@ -412,6 +434,28 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
         expect(job.organization_id).to eq(worker.organization_id)
       end
+    end
+  end
+
+  describe 'finish event transition' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:initial_status) { %i[queued paused active] }
+
+    with_them do
+      it "transitions to finished" do
+        worker = create(worker_factory, initial_status)
+
+        expect { worker.finish! }
+          .to change { worker.reload.status }
+          .to(3)
+      end
+    end
+
+    it 'does not allow transition from failed to finished state' do
+      worker = create(worker_factory, :failed)
+
+      expect { worker.finish! }.to raise_error(StateMachines::InvalidTransition)
     end
   end
 end

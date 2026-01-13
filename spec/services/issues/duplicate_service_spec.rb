@@ -57,6 +57,10 @@ RSpec.describe Issues::DuplicateService, feature_category: :team_planning do
         duplicate_project.add_reporter(user)
       end
 
+      def execute_duplicate_service
+        subject.execute(duplicate_issue, canonical_issue)
+      end
+
       it 'closes the duplicate issue' do
         subject.execute(duplicate_issue, canonical_issue)
 
@@ -94,6 +98,12 @@ RSpec.describe Issues::DuplicateService, feature_category: :team_planning do
         expect(issue_link.source).to eq(duplicate_issue)
         expect(issue_link.target).to eq(canonical_issue)
       end
+
+      it_behaves_like 'tracks work item event',
+        :duplicate_issue,
+        :user,
+        Gitlab::WorkItems::Instrumentation::EventActions::MARKED_AS_DUPLICATE,
+        :execute_duplicate_service
     end
   end
 end

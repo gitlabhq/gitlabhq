@@ -181,10 +181,10 @@ Migrate from:
 
 Watch:
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;[First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s).
+- <i class="fa-youtube-play" aria-hidden="true"></i>&nbsp;[First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s).
   This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project,
   running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities
   and offers more exercises for asynchronous practice.
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;[Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).
+- <i class="fa-youtube-play" aria-hidden="true"></i>&nbsp;[Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s).
   This workshop uses the Web IDE to quickly get going with building source code using CI/CD,
   and run unit tests.

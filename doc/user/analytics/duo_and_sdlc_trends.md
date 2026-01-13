@@ -1,5 +1,5 @@
 ---
-stage: Plan
+stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Duo and SDLC trends
@@ -90,20 +90,8 @@ The **Metric trends** table displays metrics for the last six months, with month
   The baseline for the AI Usage trend is the total number of code contributors, not only users with GitLab Duo seats.
   This baseline gives a more accurate representation of AI usage by team members.
 
-  {{< alert type="note" >}}
-
-  Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
-
-  {{< /alert >}}
-
 - **Duo RCA usage**: Monthly user engagement with GitLab Duo Root Cause Analysis.
   Tracks the percentage of GitLab Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
-
-  {{< alert type="note" >}}
-
-  Usage rate for GitLab Duo RCA is calculated with data starting from GitLab 18.0.
-
-  {{< /alert >}}
 
 - **Duo features usage**: Number of contributors who used any GitLab Duo feature.
 
@@ -112,21 +100,9 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 - **Duo Code Review comments**: Number of comments posted by GitLab Duo Code Review on merge request diffs.
 
-  {{< alert type="note" >}}
-
-  Usage data for Duo Code Review requests and comments is calculated with data starting from GitLab 18.3.
-
-  {{< /alert >}}
-
 - **Duo Agent Platform chats**: Number of chat sessions initiated through GitLab Duo Agent Platform.
 
 - **Duo Agent Platform flows**: Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform.
-
-{{< alert type="note" >}}
-
-Usage data for Duo Agent Platform chats and flows is calculated with data starting from GitLab 18.7.
-
-{{< /alert >}}
 
 ### Development metrics
 
@@ -146,7 +122,7 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
 
-## Code Suggestions acceptance rate by language
+## GitLab Duo Code Suggestions acceptance by language
 
 {{< history >}}
 
@@ -154,9 +130,14 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 
 {{< /history >}}
 
-The **Code Suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
+The **GitLab Duo Code Suggestions acceptance by language** chart displays the number of Code Suggestions accepted by programming language for the last 30 days.
 
-The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
+Hover over a bar to view for each language:
+
+- **Suggestions accepted**: Number of suggestions accepted by users.
+- **Suggestions shown**: Number of suggestions shown to users.
+- **Acceptance rate**: Percentage of suggestions accepted.
+  Calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
 
 ## GitLab Duo Code Suggestions acceptance by IDE
 
@@ -203,6 +184,25 @@ The **GitLab Duo Code Review requests by role** chart displays the number of Git
 
 Higher author adoption indicates teams embracing automated review workflows.
 
+## GitLab Duo Code Review comments sentiment
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/574005) in GitLab 18.8.
+
+{{< /history >}}
+
+The **GitLab Duo Code Review comments sentiment** chart displays the sentiment of GitLab Duo Code Review comments over the last 180 days, measured by positive (👍) and negative (👎) reaction rates. The chart shows:
+
+- **Approval rate**: The percentage of GitLab Duo Code Review comments that received positive (👍) reactions.
+- **Disapproval rate**: The percentage of GitLab Duo Code Review comments that received negative (👎) reactions.
+
+When interpreting your analytics, keep in mind that:
+
+- Negativity bias is expected. Users tend to flag problems, but rarely acknowledge good suggestions, even when applying them.
+- Low reaction rates are common. Focus on whether code improves and reviews complete faster.
+- Rising disapproval (👎) rates signal issues. Stable or declining disapproval rates indicate healthy adoption of GitLab Duo Code Review.
+
 ## GitLab Duo metrics by user
 
 {{< history >}}
@@ -218,12 +218,6 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 - **GitLab Duo Root Cause Analysis usage by user**: Number of troubleshooting requests from GitLab Duo.
 - **GitLab Duo usage by user**: Number of Duo events made by the user.
 
-{{< alert type="note" >}}
-
-Usage data for Code Review requests is calculated with data starting from GitLab 18.3.
-
-{{< /alert >}}
-
 ## View GitLab Duo and SDLC trends
 
 Prerequisites:
@@ -236,3 +230,14 @@ Prerequisites:
 1. Select **GitLab Duo and SDLC trends**.
 
 To retrieve GitLab Duo and SDLC metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/duo_and_sdlc_trends.md).
+
+## Metric data availability
+
+The following table displays the GitLab versions when usage data calculation started for GitLab Duo metrics:
+
+| GitLab Duo metric | Data calculation start |
+|--------|------------------------------|
+| Code Suggestions usage rate | GitLab 16.11 |
+| Root Cause Analysis usage | GitLab 18.0 |
+| Code Review requests and comments | GitLab 18.3 |
+| Agent Platform chats and flows | GitLab 18.7 |

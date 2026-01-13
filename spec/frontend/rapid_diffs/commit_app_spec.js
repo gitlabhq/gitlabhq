@@ -11,6 +11,7 @@ import { createAlert } from '~/alert';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { initTimeline } from '~/rapid_diffs/app/init_timeline';
 
 jest.mock('~/alert');
 jest.mock('~/lib/graphql');
@@ -20,6 +21,7 @@ jest.mock('~/rapid_diffs/app/file_browser');
 jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
+jest.mock('~/rapid_diffs/app/init_timeline');
 
 describe('Commit Rapid Diffs app', () => {
   let axiosMock;
@@ -53,6 +55,7 @@ describe('Commit Rapid Diffs app', () => {
             <div data-file-browser-toggle></div>
             <div data-hidden-files-warning></div>
             <div data-stream-remaining-diffs></div>
+            <div data-commit-timeline></div>
           </div>
         </div>
       </main>
@@ -106,6 +109,17 @@ describe('Commit Rapid Diffs app', () => {
     useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
     expect(document.querySelector('.container-fluid').classList.contains('container-limited')).toBe(
       true,
+    );
+  });
+
+  it('initializes timeline', async () => {
+    axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+    createApp();
+    await app.init();
+    expect(initTimeline).toHaveBeenCalledWith(
+      expect.objectContaining({
+        discussionsEndpoint: appData.discussionsEndpoint,
+      }),
     );
   });
 });

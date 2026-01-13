@@ -6,7 +6,6 @@ import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
 export default {
@@ -48,7 +47,7 @@ export default {
       this.close();
     },
     toggleFolder(path) {
-      useLegacyDiffs().toggleTreeOpen(path);
+      useFileBrowser().toggleTreeOpen(path);
     },
     close() {
       useFileBrowser().setFileBrowserDrawerVisibility(false);

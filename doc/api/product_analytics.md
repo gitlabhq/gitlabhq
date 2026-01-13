@@ -34,11 +34,8 @@ This feature is not ready for production use.
 
 Use this API to track user behavior and application usage.
 
-{{< alert type="note" >}}
-
-Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).
-
-{{< /alert >}}
+> [!note]
+> Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).
 
 ## Send query request to Cube
 
@@ -58,11 +55,8 @@ POST /projects/:id/product_analytics/request/dry-run
 
 The body of the load request must be a valid Cube query.
 
-{{< alert type="note" >}}
-
-When measuring `TrackedEvents`, you must use `TrackedEvents.*` for `dimensions` and `timeDimensions`. The same rule applies when measuring `Sessions`.
-
-{{< /alert >}}
+> [!note]
+> When measuring `TrackedEvents`, you must use `TrackedEvents.*` for `dimensions` and `timeDimensions`. The same rule applies when measuring `Sessions`.
 
 #### Tracked events example
 

@@ -14,7 +14,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'authentication_event_archived_records' # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202447
+      'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
     ]
   end
 
@@ -23,12 +23,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
   let(:allowed_to_be_missing_sharding_key_issue_url) do
     %w[
-      cluster_providers_aws
-      cluster_providers_gcp
-      clusters_kubernetes_namespaces
-      deployment_clusters
-      deployment_merge_requests
-      gpg_key_subkeys
       merge_request_context_commit_diff_files
       merge_request_diff_commits
       merge_request_diff_files
@@ -43,7 +37,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *%w[
         bulk_import_batch_trackers.organization_id
         bulk_import_batch_trackers.namespace_id
@@ -51,7 +44,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'security_scans.project_id', # NOT NULL constraint NOT VALID
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
-      'oauth_applications.organization_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
+      'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
+      'group_secrets_managers.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
+      'project_secrets_managers.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
     ]
   end
 
@@ -257,6 +252,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
+      "web_hook_logs_daily" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/524820",
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",
@@ -300,8 +296,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "user_agent_details" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/574387",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
-      "member_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/567738",
       "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
+      "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
@@ -312,7 +308,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "diff_note_positions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550693",
       'award_emoji' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/514604',
       "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291",
-      "scim_oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553107",
       "slack_integrations_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/583011",
       "slack_api_scopes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/583701"
     }

@@ -73,13 +73,26 @@ class BackendCoverageMerger
       case line
       when /^SF:(.+)$/
         current_file = Regexp.last_match(1)
-        coverage[current_file] ||= {}
+        coverage[current_file] ||= { lines: {}, branches: [], branch_stats: { found: 0, hit: 0 } }
       when /^DA:(\d+),(\d+)/
         next unless current_file
 
         line_num = Regexp.last_match(1).to_i
         hits = Regexp.last_match(2).to_i
-        coverage[current_file][line_num] = (coverage[current_file][line_num] || 0) + hits
+        coverage[current_file][:lines][line_num] = (coverage[current_file][:lines][line_num] || 0) + hits
+      when /^BRDA:(\d+),(\d+),(\d+),(-|\d+)$/
+        next unless current_file
+
+        # BRDA:line,block,branch,taken
+        coverage[current_file][:branches] << line
+      when /^BRF:(\d+)$/
+        next unless current_file
+
+        coverage[current_file][:branch_stats][:found] = Regexp.last_match(1).to_i
+      when /^BRH:(\d+)$/
+        next unless current_file
+
+        coverage[current_file][:branch_stats][:hit] = Regexp.last_match(1).to_i
       when 'end_of_record'
         current_file = nil
       end
@@ -92,8 +105,8 @@ class BackendCoverageMerger
     data.each_value do |file_coverage|
       file_coverage.each do |filepath, line_data|
         normalized_path = filepath.sub(%r{^\./}, '')
-        coverage[normalized_path] ||= {}
-        merge_line_data(coverage[normalized_path], line_data)
+        coverage[normalized_path] ||= { lines: {}, branches: [], branch_stats: { found: 0, hit: 0 } }
+        merge_line_data(coverage[normalized_path][:lines], line_data)
       end
     end
   end
@@ -125,16 +138,27 @@ class BackendCoverageMerger
     begin
       temp_file.sync = true
 
-      coverage_data.each do |filepath, line_data|
+      coverage_data.each do |filepath, file_data|
         temp_file.puts "TN:"
         temp_file.puts "SF:#{filepath}"
 
-        line_data.keys.sort.each do |line_num|
-          temp_file.puts "DA:#{line_num},#{line_data[line_num]}"
+        # Write line coverage data
+        file_data[:lines].keys.sort.each do |line_num|
+          temp_file.puts "DA:#{line_num},#{file_data[:lines][line_num]}"
         end
 
-        temp_file.puts "LF:#{line_data.size}"
-        temp_file.puts "LH:#{line_data.values.count { |hits| hits > 0 }}"
+        temp_file.puts "LF:#{file_data[:lines].size}"
+        temp_file.puts "LH:#{file_data[:lines].values.count { |hits| hits > 0 }}"
+
+        # Write branch coverage data if present
+        if file_data[:branches].any?
+          file_data[:branches].each do |branch_line|
+            temp_file.puts branch_line
+          end
+          temp_file.puts "BRF:#{file_data[:branch_stats][:found]}"
+          temp_file.puts "BRH:#{file_data[:branch_stats][:hit]}"
+        end
+
         temp_file.puts "end_of_record"
       end
 
@@ -152,18 +176,24 @@ class BackendCoverageMerger
   def print_summary(coverage_data)
     total_lines = 0
     covered_lines = 0
+    total_branches = 0
+    covered_branches = 0
 
-    coverage_data.each_value do |line_data|
-      total_lines += line_data.size
-      covered_lines += line_data.values.count { |hits| hits > 0 }
+    coverage_data.each_value do |file_data|
+      total_lines += file_data[:lines].size
+      covered_lines += file_data[:lines].values.count { |hits| hits > 0 }
+      total_branches += file_data[:branch_stats][:found]
+      covered_branches += file_data[:branch_stats][:hit]
     end
 
-    coverage_pct = total_lines > 0 ? (covered_lines.to_f / total_lines * 100).round(2) : 0
+    line_pct = total_lines > 0 ? (covered_lines.to_f / total_lines * 100).round(2) : 0
+    branch_pct = total_branches > 0 ? (covered_branches.to_f / total_branches * 100).round(2) : 0
 
     puts ""
     puts "Coverage summary:"
     puts "  Files: #{coverage_data.size}"
-    puts "  Lines: #{covered_lines}/#{total_lines} (#{coverage_pct}%)"
+    puts "  Lines: #{covered_lines}/#{total_lines} (#{line_pct}%)"
+    puts "  Branches: #{covered_branches}/#{total_branches} (#{branch_pct}%)"
   end
 end
 

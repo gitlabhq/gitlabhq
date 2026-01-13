@@ -32,7 +32,7 @@ RSpec.describe JiraConnect::BranchesController, feature_category: :integrations 
         get :new, params: { issue_summary: 'My issue' }
 
         expect(response).to be_successful
-        expect(assigns(:new_branch_data)).to include('initial_branch_name': nil)
+        expect(assigns(:new_branch_data)).to include(initial_branch_name: nil)
       end
     end
 

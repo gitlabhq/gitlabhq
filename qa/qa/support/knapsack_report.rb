@@ -184,16 +184,24 @@ module QA
       # @param reports [Array<Pathname>]
       # @return [Hash<Number>]
       def example_runtimes(reports)
-        reports
-          .flat_map { |report| JSON.load_file(report, symbolize_names: true) }
-          .each_with_object({}) do |json, runtimes|
-            json[:examples].each do |ex|
-              next if ex[:ignore_runtime_data] || ex[:status] != "passed"
+        parsed_reports = reports.flat_map do |report|
+          JSON.load_file(report, symbolize_names: true)
+        rescue JSON::ParserError => e
+          logger.warn("Skipping invalid JSON file '#{report}': #{e.message}")
+          []
+        rescue Errno::ENOENT => e
+          logger.warn("File not found '#{report}': #{e.message}")
+          []
+        end.compact
 
-              # keep the longest running example
-              runtimes[ex[:id]] = ex[:run_time] unless (runtimes[:id] || 0) > ex[:run_time]
-            end
+        parsed_reports.each_with_object({}) do |json, runtimes|
+          json[:examples].each do |ex|
+            next if ex[:ignore_runtime_data] || ex[:status] != "passed"
+
+            # keep the longest running example
+            runtimes[ex[:id]] = ex[:run_time] unless (runtimes[ex[:id]] || 0) > ex[:run_time]
           end
+        end
       end
 
       # Knapsack report file name

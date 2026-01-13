@@ -11,6 +11,7 @@ module API
 
       resource :runners do
         desc 'Register a new runner' do
+          tags ['ci_runners']
           detail "Register a new runner for the instance"
           success Entities::Ci::RunnerRegistrationDetails
           failure [[400, 'Bad Request'], [403, 'Forbidden'], [410, 'Gone']]
@@ -75,6 +76,7 @@ module API
         desc 'Delete a registered runner' do
           summary "Delete a runner by authentication token"
           failure [[403, 'Forbidden']]
+          tags ['ci_runners']
         end
         params do
           requires :token, type: String, desc: "The runner's authentication token"
@@ -90,6 +92,7 @@ module API
         desc 'Delete a registered runner manager' do
           summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
           http_codes [[204, 'Runner manager was deleted'], [400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
+          tags ['ci_runners']
         end
         params do
           requires :token, type: String, desc: "The runner's authentication token"
@@ -114,6 +117,7 @@ module API
           summary "Verify authentication for a registered runner"
           success Entities::Ci::RunnerRegistrationDetails
           http_codes [[200, 'Credentials are valid'], [403, 'Forbidden'], [422, 'Runner is orphaned']]
+          tags ['ci_runners']
         end
         params do
           requires :token, type: String, desc: "The runner's authentication token"
@@ -129,6 +133,7 @@ module API
         desc 'Reset runner authentication token with current token' do
           success Entities::Ci::ResetTokenResult
           failure [[403, 'Forbidden']]
+          tags ['ci_runners']
         end
         params do
           requires :token, type: String, desc: 'The current authentication token of the runner'
@@ -154,6 +159,7 @@ module API
               { code: 403, message: '403 Forbidden' },
               { code: 501, message: '501 Not Implemented' }
             ]
+            tags ['ci_runners']
           end
           get '/discovery', urgency: :low, feature_category: :runner_core do
             unless Gitlab::Kas.enabled? && job_router_enabled?(current_runner_from_header)
@@ -180,6 +186,7 @@ module API
             [409, 'Conflict'],
             [422, 'Runner is orphaned'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :token, type: String, desc: "Runner's authentication token"
@@ -263,6 +270,7 @@ module API
             [403, 'Forbidden'],
             [409, 'Conflict'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :token, type: String, desc: "Job's authentication token"
@@ -301,6 +309,7 @@ module API
             [403, 'Forbidden'],
             [416, 'Range not satisfiable'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -342,6 +351,7 @@ module API
             [405, 'Artifacts support not enabled'],
             [413, 'File too large'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -383,6 +393,7 @@ module API
             [405, 'Artifacts support not enabled'],
             [413, 'File too large'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -426,6 +437,7 @@ module API
             [403, 'Forbidden'],
             [404, 'Artifact not found'],
             [429, 'Too Many Requests']]
+          tags ['jobs']
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"

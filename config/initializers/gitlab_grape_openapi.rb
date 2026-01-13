@@ -17,7 +17,7 @@ Gitlab::GrapeOpenapi.configure do |config|
 
   config.servers = [
     Gitlab::GrapeOpenapi::Models::Server.new(
-      url: Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "api/v4"),
+      url: Gitlab.config.gitlab.url,
       description: "GitLab REST API"
     )
   ]
@@ -44,15 +44,24 @@ Gitlab::GrapeOpenapi.configure do |config|
   ]
 
   config.tag_overrides = {
+    'Api' => 'API',
+    'bitbucket' => 'Bitbucket',
     'Ci' => 'CI',
-    'Oauth' => 'OAuth',
+    'Dora' => 'DORA',
+    'Github' => 'GitHub',
+    'Gpg' => 'GPG',
+    'Glql' => 'GLQL',
+    'google cloud' => 'Google Cloud',
     'Ldap' => 'LDAP',
     'Npm' => 'NPM',
-    'Dora' => 'DORA',
-    'Vscode' => 'VSCode',
-    'Api' => 'API',
+    'Oauth' => 'OAuth',
+    'Pypi' => 'PyPi',
     'Rpm' => 'RPM',
-    'Github' => 'GitHub',
-    'Saml' => 'SAML'
-  }
+    'Rubygem' => 'RubyGem',
+    'Saml' => 'SAML',
+    'Scim' => 'SCIM',
+    'Ssh' => 'SSH',
+    'Todos' => 'To-Dos',
+    'Vscode' => 'VSCode'
+  }.freeze
 end

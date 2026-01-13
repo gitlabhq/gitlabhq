@@ -13,10 +13,15 @@ export default {
       type: Array,
       required: true,
     },
+    timelineLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   methods: {
     ...mapActions(useDiffDiscussions, [
-      'addNote',
+      'replaceDiscussion',
       'updateNote',
       'deleteNote',
       'editNote',
@@ -33,12 +38,18 @@ export default {
 
 <template>
   <div class="gl-rounded-[var(--content-border-radius)] gl-bg-default gl-text-default">
-    <ul v-for="discussion in discussions" :key="discussion.id" class="gl-m-0 gl-list-none gl-p-0">
+    <ul
+      v-for="(discussion, index) in discussions"
+      :key="discussion.id"
+      class="gl-m-0 gl-list-none gl-p-0"
+    >
       <noteable-discussion
         :discussion="discussion"
         :request-last-note-editing="requestLastNoteEditing"
+        :timeline-layout="timelineLayout"
+        :is-last-discussion="index === discussions.length - 1"
         @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
-        @replyAdded="addNote"
+        @discussionUpdated="replaceDiscussion(discussion, $event)"
         @noteUpdated="updateNote"
         @noteDeleted="deleteNote"
         @noteEdited="editNote"

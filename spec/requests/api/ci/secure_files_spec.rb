@@ -30,6 +30,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_secure_file do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/secure_files", personal_access_token: pat)
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'returns project secure files' do
         get api("/projects/#{project.id}/secure_files", maintainer)
@@ -87,6 +95,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       let(:request) do
         get api("/projects/#{source_project.id}/secure_files/#{secure_file.id}"),
           params: { job_token: target_job.token }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_secure_file do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/secure_files/#{secure_file.id}", personal_access_token: pat)
       end
     end
 
@@ -162,6 +178,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :download_secure_file do
+      let(:boundary_object) { project }
+      let(:user) { developer }
+      let(:request) do
+        get api("/projects/#{project.id}/secure_files/#{secure_file.id}/download", personal_access_token: pat)
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'returns a secure file' do
         sample_file = fixture_file('ci_secure_files/upload-keystore.jks')
@@ -225,6 +249,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       let(:request) do
         post api("/projects/#{source_project.id}/secure_files"),
           params: file_params.merge(job_token: target_job.token)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_secure_file do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{project.id}/secure_files", personal_access_token: pat), params: file_params
       end
     end
 
@@ -383,6 +415,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       let(:request) do
         delete api("/projects/#{source_project.id}/secure_files/#{secure_file.id}"),
           params: { job_token: target_job.token }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_secure_file do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{project.id}/secure_files/#{secure_file.id}", personal_access_token: pat)
       end
     end
 

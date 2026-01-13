@@ -6,9 +6,9 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
   let_it_be(:jid) { 'jid' }
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:relation) { 'labels' }
 
   let(:batched) { false }
-  let(:relation) { 'labels' }
   let(:job_args) { [user.id, group.id, group.class.name, relation, batched] }
 
   describe '#perform' do
@@ -76,31 +76,34 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
     end
   end
 
-  describe '.sidekiq_retries_exhausted' do
+  describe '.perform_failure', :aggregate_failures do
     let(:job) { { 'args' => job_args } }
-    let!(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
-
-    it 'sets export status to failed and tracks the exception' do
-      expect(Gitlab::ErrorTracking)
-        .to receive(:track_exception)
-        .with(kind_of(StandardError), portable_id: group.id, portable_type: group.class.name)
-
-      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
-
-      expect(export.reload.failed?).to eq(true)
-      expect(export.error.size).to eq(255)
+    let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
+    let_it_be_with_reload(:offline_export) do
+      create(:bulk_import_export, :offline, group: group, relation: relation, user_id: user.id)
     end
-  end
 
-  describe '.sidekiq_interruptions_exhausted' do
-    let!(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
+    context 'when called by .sidekiq_retries_exhausted' do
+      it 'sets export status to failed and tracks the exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(kind_of(StandardError), portable_id: group.id, portable_type: group.class.name)
 
-    it 'sets export status to failed' do
-      job = { 'args' => job_args }
+        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
 
-      described_class.interruptions_exhausted_block.call(job)
-      expect(export.reload).to be_failed
-      expect(export.error).to eq('Export process reached the maximum number of interruptions')
+        expect(export.reload).to be_failed
+        expect(export.error.size).to eq(255)
+        expect(offline_export.reload).not_to be_failed
+      end
+    end
+
+    context 'when called by .sidekiq_interruptions_exhausted' do
+      it 'sets export status to failed' do
+        described_class.interruptions_exhausted_block.call(job)
+        expect(export.reload).to be_failed
+        expect(export.error).to eq('Export process reached the maximum number of interruptions')
+        expect(offline_export.reload).not_to be_failed
+      end
     end
   end
 end

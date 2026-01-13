@@ -59,7 +59,8 @@ RSpec.describe 'Clusters', :js, feature_category: :environment_management do
           end
         end
 
-        it 'updates the environment scope', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514163' do
+        it 'updates the environment scope',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9507' do
           expect(page.find_field('cluster[environment_scope]').value).to eq('production/*')
         end
       end

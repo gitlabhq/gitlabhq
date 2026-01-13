@@ -1,0 +1,5 @@
+---
+name: restore_project
+description: Grants the ability to restore projects marked for deletion
+boundaries:
+  - project

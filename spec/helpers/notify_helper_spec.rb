@@ -21,7 +21,7 @@ RSpec.describe NotifyHelper, feature_category: :shared do
     let(:issue) { create(:issue, project: project) }
 
     it 'returns link to issue with the text reference' do
-      url = "http://test.host/#{project.full_path}/-/issues/#{issue.iid}"
+      url = "http://test.host#{::Gitlab::UrlBuilder.instance.issue_path(issue)}"
 
       expect(issue_reference_link(issue)).to eq(reference_link(issue, url))
     end

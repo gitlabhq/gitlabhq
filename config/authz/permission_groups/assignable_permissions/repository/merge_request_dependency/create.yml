@@ -1,0 +1,7 @@
+---
+name: create_merge_request_dependency
+description: Grants the ability to create merge request dependencies
+permissions:
+  - create_merge_request_dependency
+boundaries:
+  - project

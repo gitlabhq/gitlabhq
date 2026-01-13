@@ -101,7 +101,7 @@ describe('WorkItemAssignees component', () => {
         iid: NEW_WORK_ITEM_IID,
       },
       data: {
-        workspace: {
+        namespace: {
           id: newWorkItemPath,
           ...workItemQueryResponse.data,
         },
@@ -204,35 +204,38 @@ describe('WorkItemAssignees component', () => {
       createComponent({ canUpdate: true });
     });
 
-    it('calls successSearchQueryHandler with variables when dropdown is opened', async () => {
-      showDropdown();
-
-      await waitForPromises();
-
-      expect(successSearchQueryHandler).toHaveBeenCalledWith({
-        isProject: true,
-        fullPath,
-        search: '',
+    describe('when dropdown is opened', () => {
+      beforeEach(() => {
+        showDropdown();
       });
-    });
 
-    it('shows the skeleton loader when the items are being fetched on click', async () => {
-      showDropdown();
+      it('calls successSearchQueryHandler with variables', () => {
+        expect(successSearchQueryHandler).toHaveBeenCalledWith({
+          isProject: true,
+          fullPath,
+          search: '',
+        });
+      });
 
-      await nextTick();
+      it('shows the loading state', () => {
+        expect(findSidebarDropdownWidget().props('loading')).toBe(true);
+      });
 
-      expect(findSidebarDropdownWidget().props('loading')).toBe(true);
-    });
+      describe('when items have loaded', () => {
+        beforeEach(async () => {
+          await waitForPromises();
+        });
 
-    it('shows the assignees in dropdown when the items have finished fetching', async () => {
-      showDropdown();
+        it('does not show the loading icon', () => {
+          expect(findSidebarDropdownWidget().props('loading')).toBe(false);
+        });
 
-      await waitForPromises();
-
-      expect(findSidebarDropdownWidget().props('loading')).toBe(false);
-      expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users.length,
-      );
+        it('shows the assignees in dropdown', () => {
+          expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
+            projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users.length,
+          );
+        });
+      });
     });
 
     it('shows the current user first if they are an assignee', async () => {
@@ -372,7 +375,7 @@ describe('WorkItemAssignees component', () => {
 
     it('sorts selected assignees first', async () => {
       const [unselected, selected] =
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users;
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users;
 
       createComponent({
         assignees: [selected],
@@ -390,7 +393,7 @@ describe('WorkItemAssignees component', () => {
 
     it('shows current user above other users', async () => {
       const [unselected, currentUser] = cloneDeep(
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users,
       );
 
       createComponent({
@@ -409,7 +412,7 @@ describe('WorkItemAssignees component', () => {
 
     it('does not move newly selected assignees to the top until dropdown is closed', async () => {
       const [unselected, currentUser] = cloneDeep(
-        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+        projectMembersAutocompleteResponseWithCurrentUser.data.namespace.users,
       );
 
       createComponent({

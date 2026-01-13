@@ -1,0 +1,10 @@
+---
+name: pipeline_execution_policy_empty_pipeline_behavior
+description: Enable configurable empty_pipeline_behavior option for Pipeline Execution Policies
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582196
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214258
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/583127
+milestone: "18.8"
+group: group::security policies
+type: beta
+default_enabled: true

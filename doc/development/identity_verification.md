@@ -87,7 +87,7 @@ To view logs associated with the [credit card stage](../security/identity_verifi
 
 ## Code walkthrough
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a walkthrough and high level explanation of the code, see [Identity Verification - Code walkthrough](https://www.youtube.com/watch?v=DIsnMiNzND8).
 
 ## QA Integration

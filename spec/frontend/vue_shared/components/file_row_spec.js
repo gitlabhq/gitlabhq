@@ -1,5 +1,6 @@
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { GlIcon, GlButton } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -7,19 +8,26 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
+import createRepositoryRouter from '~/repository/router';
+import { refMock } from 'jest/repository/mock_data';
+import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
+Vue.use(VueRouter);
+
 describe('File row component', () => {
   let wrapper;
 
-  function createComponent(propsData, $router = undefined) {
+  const createRouter = () => {
+    return createRepositoryRouter('some/project', refMock);
+  };
+
+  function createComponent(propsData, router) {
     wrapper = shallowMountExtended(FileRow, {
       propsData,
-      mocks: {
-        $router,
-      },
+      router,
     });
   }
 
@@ -92,11 +100,11 @@ describe('File row component', () => {
   });
 
   it('emits clickTree on tree click with correct options', () => {
-    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
     const fileName = 'folder';
     const filePath = 'path/to/folder';
     createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
+
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
     findFileButton().trigger('click');
 
@@ -109,8 +117,6 @@ describe('File row component', () => {
   });
 
   it('emits clickFile on blob click', () => {
-    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
     const fileName = 't3';
     const fileProp = {
       ...file(fileName),
@@ -120,6 +126,8 @@ describe('File row component', () => {
       file: fileProp,
       level: 1,
     });
+
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
     findFileButton().trigger('click');
 
@@ -150,9 +158,10 @@ describe('File row component', () => {
     });
   });
 
-  it('does not call scrollIntoView for Show more button', () => {
-    const path = '/project/test.js';
-    const router = { currentRoute: { path } };
+  it('does not call scrollIntoView for Show more button', async () => {
+    const router = createRouter();
+    const path = `/-/blob/${refMock}/.rubocop/internal_affairs.yml`;
+    await router.push(path);
     createComponent({ file: { path, isShowMore: true }, level: 0 }, router);
 
     expect(scrollIntoViewMock).not.toHaveBeenCalled();
@@ -171,18 +180,18 @@ describe('File row component', () => {
     expect(wrapper.findComponent(FileHeader).exists()).toBe(true);
   });
 
-  it('matches the current route against encoded file URL', () => {
+  it('matches the current route against encoded file URL', async () => {
     const fileName = 'with space';
+    const url = `/-/blob/${refMock}/${escapeFileUrl(fileName)}`;
+    const router = createRouter();
+    await router.push(url);
     createComponent(
       {
-        file: { ...file(fileName), url: `/${fileName}` },
+        file: file(fileName),
+        fileUrl: url,
         level: 0,
       },
-      {
-        currentRoute: {
-          path: `/project/${fileName}`,
-        },
-      },
+      router,
     );
 
     expect(wrapper.vm.hasUrlAtCurrentRoute()).toBe(true);
@@ -275,16 +284,19 @@ describe('File row component', () => {
     });
   });
 
-  it('emits clickSubmodule with webUrl and does not call router.push for submodules', () => {
-    const push = jest.fn();
+  it('emits clickSubmodule with webUrl and does not call router.push for submodules', async () => {
+    const router = createRouter();
+    await router.push(`/-/blob/${refMock}/different`);
     createComponent(
       { file: { ...file('sub'), submodule: true, webUrl: 'https://ext.com' }, level: 0 },
-      { push, currentRoute: { path: '/different' } },
+      router,
     );
+
+    const pushSpy = jest.spyOn(router, 'push');
     findFileButton().trigger('click');
 
     expect(wrapper.emitted('clickSubmodule')[0][0]).toBe('https://ext.com');
-    expect(push).not.toHaveBeenCalled();
+    expect(pushSpy).not.toHaveBeenCalled();
   });
 
   describe('Tree toggle chevron button', () => {

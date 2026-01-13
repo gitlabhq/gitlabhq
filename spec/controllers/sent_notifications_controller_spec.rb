@@ -302,7 +302,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
 
         it 'redirects to the issue page' do
           force_unsubscribe
-          expect(response).to redirect_to(project_issue_path(project, issue))
+          expect(response).to redirect_to(::Gitlab::UrlBuilder.instance.issue_path(issue))
         end
       end
 
@@ -382,7 +382,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           end
 
           it 'unsubscribes user and redirects to issue path' do
-            expect(response).to redirect_to(project_issue_path(private_project, issue))
+            expect(response).to redirect_to(::Gitlab::UrlBuilder.instance.issue_path(issue))
           end
 
           it 'does not delete the issue email participant for non-service-desk issue' do
@@ -431,7 +431,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
 
       it 'redirects to the issue page' do
         post_unsubscribe
-        expect(response).to redirect_to(project_issue_path(project, issue))
+        expect(response).to redirect_to(::Gitlab::UrlBuilder.instance.issue_path(issue))
       end
     end
   end

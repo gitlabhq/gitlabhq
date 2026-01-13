@@ -786,6 +786,22 @@ production: &base
   # 3. Auth settings
   # ==========================
 
+  ## Authentication settings
+  authn:
+    ## IAM Service settings
+    # The IAM Service handles OAuth flows with external providers and forwards
+    # authenticated user data to GitLab Rails.
+    iam_service:
+      # Enable OAuth access token authentication from IAM Service
+      # enabled: false
+
+      # IAM Service URL
+      # url: http://localhost:8084
+
+      # Expected JWT audience (must match 'aud' claim in tokens)
+      # Set to 'gitlab-rails' or your GitLab instance identifier
+      # audience: gitlab-rails
+
   ## LDAP settings
   # You can test connections and inspect a sample of the LDAP users with login
   # access by running:
@@ -1248,10 +1264,21 @@ production: &base
 
   # Gitaly settings
   gitaly:
+    # In some cases, when Gitaly returns an error GitLab can backoff 
+    # and retry the request, before giving up and returning an error 
+    # to the client.
+    # The 2 configuration below allows to tweak that retry configuration:
+    # `client_max_attempts`: the maximum number of retry attempt
+    # `client_max_backoff`: the maximum amount of time the client will
+    #                       retry, expressed as a string (ex: 2s, 1m, etc)
+    # client_max_attempts: 4
+    # client_max_backoff: '1.4s'
+
     # Default Gitaly authentication token. Can be overridden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.
     token:
+
 
   #
   # 4. Advanced settings

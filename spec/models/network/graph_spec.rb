@@ -72,6 +72,27 @@ RSpec.describe Network::Graph, feature_category: :source_code_management do
       graph
     end
 
+    it 'requests the position of the commit' do
+      expect(project.repository).to receive(:count_commits)
+                                      .with(all: true, after: project.repository.commit.date)
+                                      .once
+                                      .and_call_original
+
+      graph
+    end
+
+    context 'when optimize_network_graph_calculations FF is disabled' do
+      before do
+        stub_feature_flags(optimize_network_graph_calculations: false)
+      end
+
+      it 'does not request the position of the commit' do
+        expect(project.repository).not_to receive(:count_commits)
+
+        graph
+      end
+    end
+
     it_behaves_like 'a collection of commits'
   end
 end

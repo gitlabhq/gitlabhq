@@ -6,8 +6,8 @@ import { cloneDeep } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/dashboard/queries/get_issues_counts.query.graphql';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -18,12 +18,12 @@ import {
   locationSearch,
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
-} from 'jest/issues/list/mock_data';
+} from 'jest/work_items/list/mock_data';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
-import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
+import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
-import { getSortKey, getSortOptions } from '~/issues/list/utils';
+import { getSortKey, getSortOptions } from '~/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import {

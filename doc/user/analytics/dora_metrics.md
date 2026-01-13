@@ -1,5 +1,5 @@
 ---
-stage: Plan
+stage: Analytics
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Gain insights into DevOps performance and identify opportunities for workflow improvements.
@@ -35,7 +35,7 @@ The four DORA metrics measure two critical aspects of DevOps:
 
 The dual focus on velocity and stability metrics helps leaders find the optimal balance between speed and quality in their delivery workflows.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=jYQSH4EY6_U) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
 
 ## Deployment frequency

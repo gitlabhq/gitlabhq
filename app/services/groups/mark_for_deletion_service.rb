@@ -34,7 +34,8 @@ module Groups
         result = ServiceResponse.error(message: resource.errors.full_messages.to_sentence)
         raise ActiveRecord::Rollback
       rescue DeletionScheduleSavingFailedError
-        result = ServiceResponse.error(message: deletion_schedule.errors.full_messages.to_sentence)
+        message = (deletion_schedule.errors.full_messages + resource.errors.full_messages).to_sentence
+        result = ServiceResponse.error(message: message)
         raise ActiveRecord::Rollback
       end
 
@@ -66,7 +67,11 @@ module Groups
     end
 
     def save_deletion_schedule!(deletion_schedule)
-      return if deletion_schedule.save
+      deletion_schedule_saved = ApplicationRecord.transaction do
+        resource.schedule_deletion(transition_user: current_user) && deletion_schedule.save
+      end
+
+      return if deletion_schedule_saved
 
       raise DeletionScheduleSavingFailedError
     end

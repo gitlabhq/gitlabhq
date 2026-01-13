@@ -273,7 +273,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(event.action).not_to be_nil
           end
 
-          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446116' do
+          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9482' do
             expect(event.note.noteable.project).not_to be_nil
           end
         end
@@ -547,7 +547,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
               aggregate_failures do
                 expect(release.tag).to eq('release-1.0')
-                expect(release.author_id).to eq(Users::Internal.for_organization(@project.organization).ghost.id)
+                expect(release.author_id).to eq(Users::Internal.in_organization(@project.organization).ghost.id)
               end
             end
 
@@ -614,7 +614,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         context 'tokens are regenerated' do
           it 'has new CI trigger tokens' do
-            expect(Ci::Trigger.where(token: %w[cdbfasdf44a5958c83654733449e585 33a66349b5ad01fc00174af87804e40]))
+            expect(Ci::Trigger.with_token(%w[cdbfasdf44a5958c83654733449e585 33a66349b5ad01fc00174af87804e40]))
               .to be_empty
           end
 

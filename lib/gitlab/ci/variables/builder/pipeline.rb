@@ -6,6 +6,7 @@ module Gitlab
       class Builder
         class Pipeline
           include Gitlab::Utils::StrongMemoize
+          include GitHelper
 
           MAX_COMMIT_MESSAGE_SIZE_IN_BYTES = ENV.fetch('GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES', 100_000)
                                                 .to_i
@@ -83,7 +84,12 @@ module Gitlab
               next variables unless git_tag
 
               variables.append(key: 'CI_COMMIT_TAG', value: pipeline.ref)
-              variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
+
+              if Feature.enabled?(:strip_signature_from_ci_commit_tag_message, pipeline.project)
+                variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: strip_signature(git_tag.message))
+              else
+                variables.append(key: 'CI_COMMIT_TAG_MESSAGE', value: git_tag.message)
+              end
             end
           end
           strong_memoize_attr :predefined_commit_tag_variables

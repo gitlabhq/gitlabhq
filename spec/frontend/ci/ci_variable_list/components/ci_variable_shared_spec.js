@@ -170,6 +170,65 @@ describe('Ci Variable Shared Component', () => {
         });
       });
 
+      if (!isVariablePagesEnabled) {
+        describe('with too many paginated requests', () => {
+          beforeEach(async () => {
+            const mockVariablesWithPagination = {
+              data: {
+                group: {
+                  __typename: 'Group',
+                  id: 'gid://gitlab/Group/1',
+                  ciVariables: {
+                    __typename: 'CiGroupVariableConnection',
+                    limit: 200,
+                    pageInfo: {
+                      __typename: 'PageInfo',
+                      hasNextPage: true,
+                      hasPreviousPage: false,
+                      startCursor: 'start',
+                      endCursor: 'cursor',
+                    },
+                    nodes: mockGroupVariables.data.group.ciVariables.nodes,
+                  },
+                },
+              },
+            };
+
+            await createComponentWithApollo({
+              customHandlers: [
+                [getGroupVariables, jest.fn().mockResolvedValue(mockVariablesWithPagination)],
+              ],
+              props: createGroupProps(),
+              provide: createGroupProvide(),
+            });
+
+            // The component recursively calls fetchMore when hasNextPage is true,
+            // stopping after 20 iterations to prevent infinite loops.
+            // Apollo's mock doesn't trigger the result handler for fetchMore calls,
+            // so we manually set loadingCounter to simulate having reached the limit.
+            wrapper.vm.loadingCounter = 20;
+
+            wrapper.vm.$apollo.queries.ciVariables.refetch();
+            await waitForPromises();
+          });
+          it('shows an alert', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: 'Maximum number of variables loaded (2000)',
+            });
+          });
+
+          it('stops loading', () => {
+            expect(findCiSettings().props('isLoading')).toBe(false);
+          });
+
+          it('displays the variables that were loaded', () => {
+            expect(findCiSettings().props('variables')).toEqual(
+              mockGroupVariables.data.group.ciVariables.nodes,
+            );
+          });
+        });
+      }
+
       describe('with an error for variables', () => {
         beforeEach(async () => {
           mockEnvironments.mockResolvedValue(mockProjectEnvironments);

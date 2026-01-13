@@ -13,3 +13,4 @@ milestone: '15.9'
 gitlab_schema: gitlab_main
 table_size: small
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553479
+notes: static and deprecated table, to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/584338

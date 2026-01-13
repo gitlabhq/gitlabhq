@@ -279,6 +279,8 @@ module Types
     mount_mutation Mutations::Pages::Deployment::Restore, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Wikis::WikiPageSubscribe, experiment: { milestone: '18.1' }
     mount_mutation Mutations::Users::PersonalAccessTokens::Create, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::Users::PersonalAccessTokens::Rotate, experiment: { milestone: '18.7' }
+    mount_mutation Mutations::Users::PersonalAccessTokens::Revoke, experiment: { milestone: '18.8' }
   end
 end
 

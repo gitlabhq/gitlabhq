@@ -157,6 +157,7 @@ describe('WikiForm', () => {
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
         immersive: false,
+        supportsTableOfContents: true,
       }),
     );
 
@@ -677,6 +678,10 @@ describe('WikiForm', () => {
 
     it('enables immersive mode on markdown editor', () => {
       expect(findMarkdownEditor().props().immersive).toBe(true);
+    });
+
+    it('passes the form actions to the markdown editor #header slot', () => {
+      expect(findMarkdownEditor().find('[data-testid="wiki-form-actions"]').exists()).toBe(true);
     });
   });
 });

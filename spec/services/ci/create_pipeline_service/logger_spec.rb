@@ -47,8 +47,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
     end
 
     context 'when the duration is under the threshold' do
-      it 'does not create a log entry but it collects the data',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464035' do
+      it 'does not create a log entry but it collects the data' do
         # We do not exect logs for Gitlab::Ci::Pipeline::Logger
         # but we expect some logs from Gitlab::Ci::Pipeline::CommandLogger,
         expect(Gitlab::AppJsonLogger)

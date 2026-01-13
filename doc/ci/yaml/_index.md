@@ -348,7 +348,7 @@ include:
   - Using a specific SHA hash, which should be the most stable option. Use the
     full 40-character SHA hash to ensure the desired commit is referenced, because
     using a short SHA hash for the `ref` might be ambiguous.
-  - Applying both [protected branch](../../user/project/repository/branches/protected.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
+  - Applying both [protected branch](../../user/project/repository/branches/protected.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-branch-names) rules to
     the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 ---
@@ -382,7 +382,7 @@ include:
   when the other project's files change. From a security perspective, this is similar to
   pulling a third-party dependency. To verify the integrity of the included file, consider using the [`integrity`](#includeintegrity) keyword.
   If you link to another GitLab project you own, consider the use of both
-  [protected branches](../../user/project/repository/branches/protected.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
+  [protected branches](../../user/project/repository/branches/protected.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-branch-names)
   to enforce change management rules.
 
 ---
@@ -1179,7 +1179,7 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -5634,11 +5634,8 @@ job:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!note]
+> This feature is available for testing, but not ready for production use.
 
 Use `run` to define a series of [steps](../steps/_index.md) to be executed in a job. Each step can be either a script or a predefined step.
 

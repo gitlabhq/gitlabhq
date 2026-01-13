@@ -1,0 +1,6 @@
+---
+Gitlab/EeFeatureFlagInFoss:
+  Details: grace period
+  Exclude:
+    - 'app/views/devise/sessions/successful_verification.haml'
+    - 'lib/gitlab/audit/feature_flags.rb'

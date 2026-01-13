@@ -840,11 +840,8 @@ before making changes as some of the options carry a risk of potential data
 loss if not fully understood. The [replication mode](https://patroni.readthedocs.io/en/latest/replication_modes.html)
 configured determines the amount of tolerable data loss.
 
-{{< alert type="warning" >}}
-
-Replication is not a backup strategy! There is no replacement for a well-considered and tested backup solution.
-
-{{< /alert >}}
+> [!warning]
+> Replication is not a backup strategy! There is no replacement for a well-considered and tested backup solution.
 
 Linux package installations default [`synchronous_commit`](https://www.postgresql.org/docs/16/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
 
@@ -1198,11 +1195,8 @@ leader of the new cluster:
 The `pg_dump` and `pg_dumpall` commands are in `/opt/gitlab/embedded/bin`. In these commands,
 `EXISTING_CLUSTER_LEADER` is the host address of the leader node of the existing cluster.
 
-{{< alert type="note" >}}
-
-The `gitlab-psql` user must be able to authenticate the existing leader from the new leader node.
-
-{{< /alert >}}
+> [!note]
+> The `gitlab-psql` user must be able to authenticate the existing leader from the new leader node.
 
 #### Replicate data from the existing cluster
 

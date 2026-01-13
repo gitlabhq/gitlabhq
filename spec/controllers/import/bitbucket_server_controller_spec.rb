@@ -32,7 +32,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
     end
   end
 
-  describe 'POST create', :with_current_organization do
+  describe 'POST create' do
     let(:project_name) { "my-project_123" }
     let(:params) { { repo_id: repo_id } }
     let_it_be(:project) { create(:project) }

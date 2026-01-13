@@ -58,7 +58,8 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
   context 'in a project milestone' do
     let(:milestone) { create(:project_milestone, project: project, description: description) }
 
-    it 'includes mermaid frame correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408560' do
+    it 'includes mermaid frame correctly',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9494' do
       visit(project_milestone_path(project, milestone))
 
       wait_for_requests
@@ -75,7 +76,8 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
       project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
     end
 
-    it 'includes mermaid frame correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554077' do
+    it 'includes mermaid frame correctly',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9387' do
       visit(project_path(project))
 
       wait_for_all_requests

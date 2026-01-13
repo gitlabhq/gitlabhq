@@ -153,6 +153,13 @@ module API
         sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
 
+      def self.create_merge_request_mcp_params
+        [
+          :id, :title, :source_branch, :target_branch, :target_project_id,
+          :assignee_ids, :reviewer_ids, :description, :labels, :milestone_id
+        ]
+      end
+
       # No-op method for CE - EE will override this to apply context exclusion
       def filter_diffs_for_mcp(diffs, _project)
         diffs

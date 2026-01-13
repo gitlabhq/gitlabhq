@@ -1,0 +1,7 @@
+---
+name: read_starred_project
+description: Grants the ability to view projects user starred
+permissions:
+  - read_starred_project
+boundaries:
+  - user

@@ -7,6 +7,12 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
   let_it_be(:user) { create(:user) }
   let(:organization) { user.organization }
 
+  shared_examples 'enqueues worker' do
+    it 'creates a new worker' do
+      expect { enqueue_background_operation }.to change { worker_klass.count }.by(1)
+    end
+  end
+
   describe '.enqueue' do
     let(:job_class_name) { 'TestWorker' }
     let(:table_name) { 'users' }
@@ -97,23 +103,58 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Queueable, feature_categor
       end
     end
 
-    context 'with duplicate' do
-      before do
-        worker_klass.enqueue(job_class_name, table_name, column_name, job_arguments: job_arguments, user: user)
+    context 'with duplicates' do
+      context 'with undone workers' do
+        before do
+          # worker will be in the default 'queued' status
+          worker_klass.enqueue(job_class_name, table_name, column_name, job_arguments: job_arguments, user: user)
+        end
+
+        it 'skips enqueue and logs a warning' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            format(
+              described_class::EXISTING_OPERATION_MSG,
+              job_class_name,
+              table_name,
+              column_name,
+              job_arguments.join(', ')
+            )
+          )
+
+          expect { enqueue_background_operation }.not_to change { worker_klass.count }
+        end
       end
 
-      it 'skips enqueue and logs a warning' do
-        expect(Gitlab::AppLogger).to receive(:warn).with(
-          format(
-            described_class::EXISTING_OPERATION_MSG,
+      context 'with finished workers' do
+        before do
+          worker = worker_klass.enqueue(
             job_class_name,
             table_name,
             column_name,
-            job_arguments.join(', ')
+            job_arguments: job_arguments,
+            user: user
           )
-        )
 
-        expect { enqueue_background_operation }.not_to change { worker_klass.count }
+          worker.update!(status: 3) # finished
+        end
+
+        it_behaves_like 'enqueues worker'
+      end
+
+      context 'with failed workers' do
+        before do
+          worker = worker_klass.enqueue(
+            job_class_name,
+            table_name,
+            column_name,
+            job_arguments: job_arguments,
+            user: user
+          )
+
+          worker.update!(status: 4) # failed
+        end
+
+        it_behaves_like 'enqueues worker'
       end
     end
   end

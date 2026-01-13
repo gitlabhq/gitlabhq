@@ -38,6 +38,8 @@ class GroupsController < Groups::ApplicationController
   # admin intervention for every affected group. Non-admin users still require step-up auth.
   skip_before_action :enforce_step_up_auth_for_namespace, if: :skip_step_up_auth_for_owner_on_edit_and_update?
 
+  before_action :set_group_markdown_flags
+
   before_action :group_projects, only: [:activity, :merge_requests]
   before_action :event_filter, only: [:activity]
 

@@ -31,6 +31,10 @@ RSpec.describe 'devise/shared/_tabs_ldap.html.haml', feature_category: :system_a
 
   describe 'Base form' do
     before do
+      # Feature specs for when sign_in_form_vue is enabled will be added in
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+      stub_feature_flags(sign_in_form_vue: false)
+
       stub_devise
       allow(view).to receive_messages(
         captcha_enabled?: false,

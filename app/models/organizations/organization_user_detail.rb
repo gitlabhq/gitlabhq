@@ -13,7 +13,7 @@ module Organizations
     validate :no_namespace_conflicts
 
     scope :for_references, -> { includes(:organization, :user) }
-    scope :for_organization, ->(organization) { where(organization: organization) }
+    scope :in_organization, ->(organization) { where(organization: organization) }
     scope :with_usernames, ->(*usernames) {
       uniq_usernames = usernames.flatten.compact.uniq
       return none if uniq_usernames.blank?

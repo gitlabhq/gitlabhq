@@ -1,7 +1,6 @@
 ---
 name: update_trigger
 description: Grants the ability to update pipeline triggers
-feature_category: pipeline_composition
 boundaries:
   - project
 permissions:

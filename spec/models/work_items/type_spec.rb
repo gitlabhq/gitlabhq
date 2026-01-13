@@ -316,4 +316,86 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'temporary configuration methods' do
+    let_it_be(:work_item_type) { create(:work_item_type) }
+
+    describe '#supports_roadmap_view?' do
+      it 'returns nil' do
+        expect(work_item_type.supports_roadmap_view?).to be_nil
+      end
+    end
+
+    describe '#use_legacy_view?' do
+      it 'returns nil' do
+        expect(work_item_type.use_legacy_view?).to be_nil
+      end
+    end
+
+    describe '#can_promote_to_objective?' do
+      it 'returns nil' do
+        expect(work_item_type.can_promote_to_objective?).to be_nil
+      end
+    end
+
+    describe '#show_project_selector?' do
+      it 'returns nil' do
+        expect(work_item_type.show_project_selector?).to be_nil
+      end
+    end
+
+    describe '#supports_move_action?' do
+      it 'returns nil' do
+        expect(work_item_type.supports_move_action?).to be_nil
+      end
+    end
+
+    describe '#service_desk?' do
+      it 'returns nil' do
+        expect(work_item_type.service_desk?).to be_nil
+      end
+    end
+
+    describe '#incident_management?' do
+      it 'returns nil' do
+        expect(work_item_type.incident_management?).to be_nil
+      end
+    end
+
+    describe '#configurable?' do
+      it 'returns nil' do
+        expect(work_item_type.configurable?).to be_nil
+      end
+    end
+
+    describe '#creatable?' do
+      it 'returns nil' do
+        expect(work_item_type.creatable?).to be_nil
+      end
+    end
+
+    describe '#visible_in_settings?' do
+      it 'returns nil' do
+        expect(work_item_type.visible_in_settings?).to be_nil
+      end
+    end
+
+    describe '#archived?' do
+      it 'returns nil' do
+        expect(work_item_type.archived?).to be_nil
+      end
+    end
+
+    describe '#filterable?' do
+      it 'returns nil' do
+        expect(work_item_type.filterable?).to be_nil
+      end
+    end
+
+    describe '#only_for_group?' do
+      it 'returns nil' do
+        expect(work_item_type.only_for_group?).to be_nil
+      end
+    end
+  end
 end

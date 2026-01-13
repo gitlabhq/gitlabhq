@@ -35,3 +35,9 @@ export const I18N_DELETE_TAG_MODAL = {
   deleteButtonText: DELETE_BUTTON_TEXT,
   deleteButtonTextProtectedTag: DELETE_BUTTON_TEXT_PROTECTED_TAG,
 };
+
+export const SORT_DIRECTION_ASC = 'asc';
+export const SORT_DIRECTION_DESC = 'desc';
+export const SORT_OPTION_NAME = 'name';
+export const SORT_OPTION_UPDATED = 'updated';
+export const SORT_OPTION_VERSION = 'version';

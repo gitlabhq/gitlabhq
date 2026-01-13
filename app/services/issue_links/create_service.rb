@@ -36,9 +36,9 @@ module IssueLinks
     end
 
     def extractor_context
-      { group: issuable.namespace }
+      issuable.group_level? ? { group: issuable.namespace } : {}
     end
   end
 end
 
-IssueLinks::CreateService.prepend_mod_with('IssueLinks::CreateService')
+IssueLinks::CreateService.prepend_mod

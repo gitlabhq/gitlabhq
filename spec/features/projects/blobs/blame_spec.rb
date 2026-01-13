@@ -121,7 +121,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
 
       it_behaves_like 'a full blame page'
 
-      it 'shows loading text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410499' do
+      it 'shows loading text', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9488' do
         visit_blob_blame(path)
         click_link _('Show full blame')
         expect(page).to have_text('Loading full blame…')

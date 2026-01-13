@@ -1,0 +1,5 @@
+---
+name: delete_container_registry_protection_rule
+description: Grants the ability to delete container registry protection rules
+boundaries:
+  - project

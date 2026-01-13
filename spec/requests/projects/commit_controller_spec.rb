@@ -44,6 +44,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           expect(discussion).to have_key('reply_id')
           expect(discussion).to have_key('confidential')
           expect(discussion).to have_key('diff_discussion')
+          expect(discussion).to have_key('individual_note')
           expect(discussion).to have_key('notes')
 
           # These fields should NOT be present in the trimmed response format
@@ -51,7 +52,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           expect(discussion).not_to have_key('commit_id')
           expect(discussion).not_to have_key('expanded')
           expect(discussion).not_to have_key('for_commit')
-          expect(discussion).not_to have_key('individual_note')
           expect(discussion).not_to have_key('resolvable')
           expect(discussion).not_to have_key('truncated_diff_lines')
           expect(discussion).not_to have_key('active')

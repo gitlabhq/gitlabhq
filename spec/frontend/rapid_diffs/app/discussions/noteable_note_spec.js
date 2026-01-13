@@ -6,6 +6,7 @@ import NoteableNote from '~/rapid_diffs/app/discussions/noteable_note.vue';
 import NoteHeader from '~/rapid_diffs/app/discussions/note_header.vue';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import NoteBody from '~/rapid_diffs/app/discussions/note_body.vue';
+import TimelineEntryItem from '~/rapid_diffs/app/discussions/timeline_entry_item.vue';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { createAlert } from '~/alert';
 import {
@@ -89,6 +90,7 @@ describe('NoteableNote', () => {
 
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findNoteBody = () => wrapper.findComponent(NoteBody);
+  const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
 
   it('shows note header with correct props', () => {
     createComponent();
@@ -134,6 +136,19 @@ describe('NoteableNote', () => {
     createComponent();
     findNoteBody().vm.$emit('input', 'edit');
     expect(wrapper.emitted('noteEdited')).toStrictEqual([['edit']]);
+  });
+
+  describe('TimelineEntryItem', () => {
+    it.each`
+      prop                  | value        | expected
+      ${'timelineLayout'}   | ${true}      | ${true}
+      ${'isLastDiscussion'} | ${true}      | ${true}
+      ${'timelineLayout'}   | ${undefined} | ${false}
+      ${'isLastDiscussion'} | ${undefined} | ${false}
+    `('passes $prop as $expected when set to $value', ({ prop, value, expected }) => {
+      createComponent(value !== undefined ? { [prop]: value } : {});
+      expect(findTimelineEntryItem().props(prop)).toBe(expected);
+    });
   });
 
   describe('note deletion', () => {

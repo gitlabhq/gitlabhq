@@ -16,7 +16,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
       {
         name: permission_name,
         description: 'Modify a wiki',
-        feature_category: 'permissions',
         permissions: raw_permissions,
         boundaries: ['project']
       }
@@ -63,24 +62,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #
             #    - modify_wiki
             #        - property '/key' is invalid: error_type=schema
-            #        - root is missing required keys: description, feature_category, permissions, boundaries
-            #
-            #######################################################################
-          OUTPUT
-        end
-      end
-
-      context 'with invalid feature_category' do
-        let(:permission_definition) { super().merge(feature_category: 'unknown') }
-
-        it 'returns an error' do
-          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
-            #######################################################################
-            #
-            #  The following permissions failed schema validation.
-            #
-            #    - modify_wiki
-            #        - property '/feature_category' does not match format: known_product_category
+            #        - root is missing required keys: description, permissions, boundaries
             #
             #######################################################################
           OUTPUT

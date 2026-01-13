@@ -4,12 +4,13 @@ module Bitbucket
   class Paginator
     PAGE_LENGTH = 50 # The minimum length is 10 and the maximum is 100.
 
-    def initialize(connection, url, type, page_number: nil, limit: nil)
+    def initialize(connection, url, type, page_number: nil, limit: nil, after_cursor: nil)
       @connection = connection
       @type = type
       @url = url
       @page_number = page_number
       @limit = limit
+      @after_cursor = after_cursor
       @total = 0
     end
 
@@ -22,9 +23,17 @@ module Bitbucket
       @page.items
     end
 
+    def page_info
+      {
+        has_next_page: page.attrs[:next].present?,
+        start_cursor: @after_cursor,
+        end_cursor: next_page_cursor
+      }
+    end
+
     private
 
-    attr_reader :connection, :page, :url, :type, :page_number, :limit
+    attr_reader :connection, :page, :url, :type, :page_number, :limit, :after_cursor
 
     def has_next_page?
       page.nil? || page.next?
@@ -44,16 +53,19 @@ module Bitbucket
       limit > 0 && @total >= limit
     end
 
-    # Note to self for specs:
-    # - Allowed pagelen to be set by limit instead of just using PAGE_LENGTH
-    # - Allow specifying a starting page to grab one page at a time, so PageCounter can be used for logging
-    # - Added over_limit? to make sure only one page is called.
     def fetch_next_page
       extra_query = { pagelen: max_per_page }
       extra_query[:page] = page_number if page_number && limit
+      extra_query[:after] = after_cursor if after_cursor && page.nil?
 
       parsed_response = connection.get(next_url, extra_query)
       Page.new(parsed_response, type)
+    end
+
+    def next_page_cursor
+      return unless page.next?
+
+      Rack::Utils.parse_nested_query(URI.parse(next_url).query)['after']
     end
   end
 end

@@ -11,7 +11,7 @@ class AdjustSiphonMergeRequests < ClickHouse::Migration
     execute "ALTER TABLE siphon_merge_requests DROP COLUMN IF EXISTS title_html"
     execute "ALTER TABLE siphon_merge_requests DROP COLUMN IF EXISTS description_html"
 
-    execute "ALTER TABLE siphon_merge_requests MODIFY COLUMN lock_version Int64"
+    execute "ALTER TABLE siphon_merge_requests MODIFY COLUMN lock_version Int64 DEFAULT 0"
   end
 
   def down

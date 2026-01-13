@@ -9,8 +9,8 @@ title: Custom flows
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -22,7 +22,10 @@ title: Custom flows
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578228) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/569060) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -181,7 +184,7 @@ To use a flow:
 1. In your project, open an issue, merge request, or epic.
 1. To trigger the flow, mention, assign, or request a review from the flow service account user. By default, the user has the name `ai-<flow>-<group>`.
 
-   For example, if you enable a flow called `Code review flow` in the `GitLab Duo` group, the service account user is `ai-code-review-flow-gitlab-duo`.
+   For example, if you enable a flow called `Security scanner` in the `GitLab Duo` group, the service account user is `ai-security-scanner-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
 
 {{< alert type="warning" >}}

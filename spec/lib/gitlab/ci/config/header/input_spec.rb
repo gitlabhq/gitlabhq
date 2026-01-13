@@ -25,10 +25,6 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
   end
 
   describe 'rules configurations' do
-    before do
-      stub_feature_flags(ci_dynamic_pipeline_inputs: true)
-    end
-
     context 'when rules are valid' do
       let(:config) do
         {
@@ -55,28 +51,6 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
       it 'is valid' do
         expect(entry).to be_valid
         expect(entry.errors).to be_empty
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_dynamic_pipeline_inputs: false)
-      end
-
-      let(:config) do
-        {
-          rules: [
-            { if: '$[[ inputs.environment ]] == "production"', options: %w[option_a option_b] }
-          ]
-        }
-      end
-
-      it 'is not valid' do
-        expect(entry).not_to be_valid
-      end
-
-      it 'reports error about rules not being supported' do
-        expect(entry.errors).to include('environment rules is not yet supported')
       end
     end
 

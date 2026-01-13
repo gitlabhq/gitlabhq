@@ -49,13 +49,10 @@ To configure access between your GitLab instance and your local AI Gateway:
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
+> [!note]
+> If your AI Gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
-If your AI Gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
-
-{{< /alert >}}
-
-### Configure timeout for the AI Gateway
+## Configure timeout for the AI Gateway
 
 {{< history >}}
 
@@ -63,12 +60,8 @@ If your AI Gateway URL points to a local network or private IP address (for exam
 
 {{< /history >}}
 
-Prerequisites:
-
-- You must be an administrator.
-
-Configure the timeout for GitLab requests to the AI Gateway when using self-hosted models. You can use longer timeouts for models
-that need extended processing times for large context windows or complex queries.
+To conserve resources and prevent long-running queries, configure the timeout for GitLab requests to the AI Gateway when waiting for model responses.
+Use longer timeouts for self-hosted models with large context windows or complex queries.
 
 You can configure a timeout between 60 and 600 seconds (10 minutes). If you don't set the timeout, GitLab uses the default timeout of 60 seconds.
 
@@ -80,7 +73,7 @@ To configure the AI Gateway timeout:
 1. Under **AI Gateway request timeout**, enter the timeout value in seconds (between 60 and 600).
 1. Select **Save changes**.
 
-#### Determine the timeout value
+### Determine the timeout value
 
 The timeout value depends on your specific deployment and use case.
 
@@ -96,17 +89,12 @@ For more information on troubleshooting timeout errors, see [Error A1000](troubl
 
 ## Configure access to the GitLab Duo Agent Platform
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558083) from experiment to beta in GitLab 18.5.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19125) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -173,24 +161,21 @@ To set a model identifier for an Amazon Bedrock model:
 1. Add the region prefix to the model's inference profile ID for cross-region inferencing.
 1. Use the `bedrock/` prefix region as the prefix for the model identifier.
 
-   For example, for the Anthropic Claude 3.5 v2 model in the Tokyo region:
+   For example, for the Anthropic Claude 4.0 model in the Tokyo region:
 
    - The `AWS_REGION` is `ap-northeast-1`.
    - The cross-region inferencing prefix is `apac.`.
-   - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
+   - The model identifier is `bedrock/apac.anthropic.claude-sonnet-4-20250514-v1:0`.
 
 Some regions are not supported by cross-region inferencing. For these regions, do not specify a region prefix in the model identifier. For example:
 
 - The `AWS_REGION` is `eu-west-2`.
-- The model identifier is `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
+- The model identifier is `anthropic.claude-sonnet-4-5-20250929-v1:0`.
 
 ## Turn on self-hosted beta models and features
 
-{{< alert type="note" >}}
-
-Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-
-{{< /alert >}}
+> [!note]
+> Turning on beta self-hosted models and features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 To enable self-hosted beta models and features:
 

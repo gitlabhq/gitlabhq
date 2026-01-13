@@ -14,6 +14,7 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -39,6 +40,7 @@ describe('ReviewDrawer', () => {
   const findPlaceholderField = () => wrapper.findByTestId('placeholder-input-field');
   const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
   const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
+  const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   const submitForm = async () => {
     await findPlaceholderField().vm.$emit('focus');
@@ -48,7 +50,7 @@ describe('ReviewDrawer', () => {
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
   };
 
-  const createComponent = ({ canApprove = true, glFeatures = {} } = {}) => {
+  const createComponent = ({ canApprove = true } = {}) => {
     const requestHandlers = [
       [
         userCanApproveQuery,
@@ -74,7 +76,6 @@ describe('ReviewDrawer', () => {
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
       apolloProvider,
-      provide: { glFeatures },
     });
   };
 
@@ -345,33 +346,41 @@ describe('ReviewDrawer', () => {
     });
   });
 
-  describe('when mrReviewBatchSubmit is enabled', () => {
-    it('calls publishReview when drafts count is 0', async () => {
-      useBatchComments().drafts = [];
+  it('calls publishReview when drafts count is 0', async () => {
+    useBatchComments().drafts = [];
 
-      useBatchComments().drawerOpened = true;
+    useBatchComments().drawerOpened = true;
 
-      createComponent({ glFeatures: { mrReviewBatchSubmit: true } });
+    createComponent();
 
-      await waitForPromises();
+    await waitForPromises();
 
-      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-      expect(useBatchComments().publishReview).toHaveBeenCalled();
-    });
+    expect(useBatchComments().publishReview).toHaveBeenCalled();
+  });
 
-    it('calls publishReviewInBatches when drafts count is more than 0', async () => {
-      useBatchComments().drafts = new Array(1).fill({});
+  it('calls publishReviewInBatches when drafts count is more than 0', async () => {
+    useBatchComments().drafts = new Array(1).fill({});
 
-      useBatchComments().drawerOpened = true;
+    useBatchComments().drawerOpened = true;
 
-      createComponent({ glFeatures: { mrReviewBatchSubmit: true } });
+    createComponent();
 
-      await waitForPromises();
+    await waitForPromises();
 
-      findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-      expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
-    });
+    expect(useBatchComments().publishReviewInBatches).toHaveBeenCalled();
+  });
+
+  it('disables table of contents support in the markdown editor', async () => {
+    useBatchComments().drawerOpened = true;
+
+    createComponent();
+
+    await findPlaceholderField().vm.$emit('focus');
+
+    expect(findMarkdownField().props('supportsTableOfContents')).toBe(false);
   });
 });

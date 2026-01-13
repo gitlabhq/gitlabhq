@@ -8,6 +8,7 @@ mutation issueMoveList(
   $toListId: ID
   $moveBeforeId: ID
   $moveAfterId: ID
+  $positionInList: Int
 ) {
   issuableMoveList: issueMoveList(
     input: {
@@ -18,6 +19,7 @@ mutation issueMoveList(
       toListId: $toListId
       moveBeforeId: $moveBeforeId
       moveAfterId: $moveAfterId
+      positionInList: $positionInList
     }
   ) {
     issuable: issue {

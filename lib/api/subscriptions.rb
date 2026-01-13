@@ -50,6 +50,7 @@ module API
       resource source_type.pluralize, requirements: SUBSCRIBE_ENDPOINT_REQUIREMENTS do
         desc 'Subscribe to a resource' do
           success subscribable[:entity]
+          tags ['resource_subscriptions']
         end
         post ":id/#{subscribable[:type]}/:subscribable_id/subscribe", subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)
@@ -65,6 +66,7 @@ module API
 
         desc 'Unsubscribe from a resource' do
           success subscribable[:entity]
+          tags ['resource_subscriptions']
         end
         post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe", subscribable.slice(:feature_category) do
           parent = parent_resource(source_type)

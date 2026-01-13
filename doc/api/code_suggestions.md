@@ -30,11 +30,8 @@ Use this API to access the [GitLab Duo Code Suggestions](../user/project/reposit
 POST /code_suggestions/completions
 ```
 
-{{< alert type="note" >}}
-
-This endpoint rate-limits each user to 60 requests per 1-minute window.
-
-{{< /alert >}}
+> [!note]
+> This endpoint rate-limits each user to 60 requests per 1-minute window.
 
 Use the AI abstraction layer to generate code completions.
 
@@ -161,11 +158,8 @@ curl --request POST \
 POST /code_suggestions/direct_access
 ```
 
-{{< alert type="note" >}}
-
-This endpoint rate-limits each user to 10 requests per 5-minute window.
-
-{{< /alert >}}
+> [!note]
+> This endpoint rate-limits each user to 10 requests per 5-minute window.
 
 Returns user-specific connection details which can be used by IDEs/clients to send `completion` requests directly to
 AI gateway, including headers that must be proxied to the AI gateway as well as the required authentication token.
@@ -206,11 +200,8 @@ Example response:
 POST /code_suggestions/connection_details
 ```
 
-{{< alert type="note" >}}
-
-This endpoint rate-limits each user to 10 requests per 1-minute window.
-
-{{< /alert >}}
+> [!note]
+> This endpoint rate-limits each user to 10 requests per 1-minute window.
 
 Returns user-specific connection details which can be used by IDEs/clients for telemetry, including metadata about
 the GitLab instance the user is connected to.

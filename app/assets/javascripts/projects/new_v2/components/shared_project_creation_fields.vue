@@ -112,7 +112,6 @@ export default {
         name: visibilityLevelString,
         disabled: disableMessage !== '',
         disabledMessage: disableMessage,
-        id: 1,
       };
     },
     updateProjectNameValidationStatus(status) {
@@ -254,9 +253,8 @@ export default {
             name,
             disabled,
             disabledMessage,
-            id,
           } in visibilityLevels"
-          :id="id"
+          :id="name"
           :key="value"
           :value="value"
           :description="description"

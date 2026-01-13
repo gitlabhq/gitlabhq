@@ -52,9 +52,24 @@ RSpec.describe "Remove items linked to a work item", feature_category: :portfoli
   context 'when user has permissions to read the work item' do
     let(:current_user) { guest }
 
+    before do
+      tracking_service_double = instance_double(
+        Gitlab::WorkItems::Instrumentation::TrackingService,
+        execute: true
+      )
+
+      allow(Gitlab::WorkItems::Instrumentation::TrackingService).to receive(:new).and_return(
+        tracking_service_double)
+    end
+
     it 'unlinks the work items' do
       expect do
-        post_graphql_mutation(mutation, current_user: current_user)
+        post_graphql(
+          mutation.query,
+          current_user: current_user,
+          variables: mutation.variables,
+          headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => '120,https://gitlab.com/gitlab-org/gitlab/-/issues/585126' }
+        )
       end.to change { WorkItems::RelatedWorkItemLink.count }.by(-2)
 
       expect(response).to have_gitlab_http_status(:success)

@@ -1,0 +1,7 @@
+---
+name: create_user_ssh_key
+description: Grants the ability to create user SSH keys
+boundaries:
+  - user
+permissions:
+  - create_user_ssh_key

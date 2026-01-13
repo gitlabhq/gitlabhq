@@ -36,6 +36,78 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
 
     it_behaves_like 'assigns ref vars'
 
+    describe 'ref_type detection' do
+      subject { assign_ref_vars.then { @ref_type } }
+
+      context 'when ref is a branch' do
+        let(:ref) { container.default_branch }
+
+        it { is_expected.to eq 'heads' }
+      end
+
+      context 'when ref is a tag' do
+        let(:ref) { container.repository.tag_names.first }
+
+        it { is_expected.to eq 'tags' }
+      end
+
+      context 'when ref is ambiguous' do
+        let(:ref) { 'ambiguous' }
+
+        before do
+          container.repository.create_branch(ref, sample_commit[:id])
+          container.repository.expire_branches_cache
+          container.repository.add_tag(container.owner, ref, sample_commit[:id])
+          container.repository.expire_tags_cache
+        end
+
+        after do
+          container.repository.rm_branch(container.owner, ref)
+          container.repository.rm_tag(container.owner, ref)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when verified_ref_extractor is disabled' do
+        before do
+          stub_feature_flags(verified_ref_extractor: false)
+        end
+
+        subject { assign_ref_vars.then { ref_type } }
+
+        context 'when ref is a branch' do
+          let(:ref) { container.default_branch }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when ref is a tag' do
+          let(:ref) { container.repository.tag_names.first }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when ref is ambiguous' do
+          let(:ref) { 'ambiguous' }
+
+          before do
+            container.repository.create_branch(ref, sample_commit[:id])
+            container.repository.expire_branches_cache
+            container.repository.add_tag(container.owner, ref, sample_commit[:id])
+            container.repository.expire_tags_cache
+          end
+
+          after do
+            container.repository.rm_branch(container.owner, ref)
+            container.repository.rm_tag(container.owner, ref)
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+    end
+
     context 'when ref and path have incorrect format' do
       let(:ref) { { wrong: :format } }
       let(:path) { { also: :wrong } }
@@ -297,42 +369,35 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
   describe '#ref_type' do
     subject { ref_type }
 
-    let(:params) { ActionController::Parameters.new(ref_type: ref) }
+    let(:params) { ActionController::Parameters.new(ref_type: ref_type_input) }
 
-    context 'when ref_type is nil' do
-      let(:ref) { nil }
-
-      it { is_expected.to eq(nil) }
+    where(:ref_type_input, :ref_type_output) do
+      [
+        %w[heads heads],
+        %w[tags tags],
+        %w[tAgS tags],
+        [nil, nil],
+        ['invalid', nil],
+        [{ 'just' => 'hash' }, nil]
+      ]
     end
 
-    context 'when ref_type is heads' do
-      let(:ref) { 'heads' }
+    with_them do
+      it "returns and assigns expected value" do
+        is_expected.to eq(ref_type_output)
+        expect(@ref_type).to eq(ref_type_output)
+      end
 
-      it { is_expected.to eq('heads') }
-    end
+      context 'when verified_ref_extractor is disabled' do
+        before do
+          stub_feature_flags(verified_ref_extractor: false)
+        end
 
-    context 'when ref_type is tags' do
-      let(:ref) { 'tags' }
-
-      it { is_expected.to eq('tags') }
-    end
-
-    context 'when case does not match' do
-      let(:ref) { 'tAgS' }
-
-      it { is_expected.to(eq('tags')) }
-    end
-
-    context 'when ref_type is invalid' do
-      let(:ref) { 'invalid' }
-
-      it { is_expected.to eq(nil) }
-    end
-
-    context 'when ref_type is a hash' do
-      let(:ref) { { 'just' => 'hash' } }
-
-      it { is_expected.to eq(nil) }
+        it "returns and assigns expected value" do
+          is_expected.to eq(ref_type_output)
+          expect(defined?(@ref_type)).to be_nil
+        end
+      end
     end
   end
 

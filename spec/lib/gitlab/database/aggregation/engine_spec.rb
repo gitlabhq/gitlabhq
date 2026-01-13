@@ -3,6 +3,44 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :database do
+  let(:engine_klass) do
+    described_class.build do
+      def self.metrics_mapping
+        {
+          count: Gitlab::Database::Aggregation::PartDefinition
+        }
+      end
+
+      def self.dimensions_mapping
+        {
+          column: Gitlab::Database::Aggregation::PartDefinition
+        }
+      end
+
+      def self.filters_mapping
+        {
+          column: Gitlab::Database::Aggregation::PartDefinition
+        }
+      end
+
+      dimensions do
+        column :user_id, :integer
+      end
+
+      filters do
+        column :user_id, :integer
+      end
+
+      metrics do
+        count :total_count, :integer
+      end
+    end
+  end
+
+  it 'requires filters_mapping definition' do
+    expect(described_class).to require_method_definition(:filters_mapping)
+  end
+
   it 'requires metrics_mapping definition' do
     expect(described_class).to require_method_definition(:metrics_mapping)
   end
@@ -15,27 +53,7 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
     expect(described_class.new(context: {})).to require_method_definition(:execute_query_plan, nil)
   end
 
-  describe 'duplicates validation' do
-    let(:engine_klass) do
-      Gitlab::Database::Aggregation::Engine.build do
-        def self.metrics_mapping
-          {
-            count: Gitlab::Database::Aggregation::PartDefinition
-          }
-        end
-
-        def self.dimensions_mapping
-          {
-            column: Gitlab::Database::Aggregation::PartDefinition
-          }
-        end
-
-        dimensions do
-          column :user_id, :integer
-        end
-      end
-    end
-
+  describe 'duplicated definitions validation' do
     it 'raises an exception if duplicate dimensions are defined' do
       expect do
         engine_klass.dimensions do
@@ -48,6 +66,14 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       expect do
         engine_klass.metrics do
           count :user_id, :integer
+        end
+      end.to raise_error("Identical engine parts found: [:user_id]. Engine parts identifiers must be unique.")
+    end
+
+    it 'raises an exception if duplicate filters are defined' do
+      expect do
+        engine_klass.filters do
+          column :user_id, :integer
         end
       end.to raise_error("Identical engine parts found: [:user_id]. Engine parts identifiers must be unique.")
     end

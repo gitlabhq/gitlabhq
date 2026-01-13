@@ -79,6 +79,11 @@ sudo -u git -H psql -d gitlabhq_production
 - Run `gitlab-rails dbconsole` in the toolbox pod.
   - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 
+> [!note]
+> For cloud native deployments using managed PostgreSQL services (such as AWS RDS),
+> you cannot modify the database configuration file directly. Instead, configure
+> PostgreSQL parameters through your cloud service's parameter group or configuration interface.
+
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -238,6 +243,8 @@ You may also see errors in the [PostgreSQL logs](../logs/_index.md#postgresql-lo
 canceling statement due to statement timeout
 ```
 
+#### For Linux package installations
+
 To temporarily change the statement timeout:
 
 1. Open `/var/opt/gitlab/gitlab-rails/etc/database.yml` in an editor
@@ -252,6 +259,16 @@ To temporarily change the statement timeout:
 1. Perform the action for which you need a different timeout
    (for example the backup or the Rails command).
 1. Revert the edit in `/var/opt/gitlab/gitlab-rails/etc/database.yml`.
+
+#### For cloud native deployments
+
+For cloud native deployments using managed PostgreSQL services (such as AWS RDS, Azure Database for PostgreSQL, or Google Cloud SQL), you cannot modify the database configuration file directly. Instead, configure the `statement_timeout` parameter through your cloud service's parameter group or configuration interface:
+
+- **AWS RDS**: Modify the parameter group associated with your database instance and set `statement_timeout` to `0` (unlimited).
+- **Azure Database for PostgreSQL**: Update the server parameters in the Azure portal and set `statement_timeout` to `0`.
+- **Google Cloud SQL**: Modify the database flags and set `statement_timeout` to `0`.
+
+After making changes to the parameter group or configuration, you may need to reboot the database instance for the changes to take effect. Consult your cloud provider's documentation for specific instructions.
 
 ### Observe (RE)INDEX progress report
 

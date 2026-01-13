@@ -3,6 +3,8 @@
 module Packages
   module Protection
     class CreateRuleService < BaseProjectService
+      include Gitlab::InternalEventsTracking
+
       ALLOWED_ATTRIBUTES = %i[
         package_name_pattern
         package_type
@@ -22,6 +24,14 @@ module Packages
         unless package_protection_rule.persisted?
           return service_response_error(message: package_protection_rule.errors.full_messages)
         end
+
+        track_internal_event(
+          'create_package_protection_rule',
+          project: project,
+          namespace: project.namespace,
+          user: current_user,
+          additional_properties: { package_type: package_protection_rule.package_type }
+        )
 
         ServiceResponse.success(payload: { package_protection_rule: package_protection_rule })
       rescue StandardError => e

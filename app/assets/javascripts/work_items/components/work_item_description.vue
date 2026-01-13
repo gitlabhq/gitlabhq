@@ -152,7 +152,7 @@ export default {
         };
       },
       update(data) {
-        return data?.workspace?.workItem || {};
+        return data?.namespace?.workItem || {};
       },
       result() {
         if (this.isEditing) {
@@ -211,7 +211,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace || {};
+        return data.namespace || {};
       },
       skip() {
         return this.isGroup;
@@ -592,6 +592,7 @@ export default {
           :editor-ai-actions="editorAiActions"
           enable-autocomplete
           supports-quick-actions
+          supports-table-of-contents
           :autofocus="autofocus"
           class="gl-mt-3"
           @input="setDescriptionText"

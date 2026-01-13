@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationRecord do
+RSpec.describe ApplicationRecord, feature_category: :database do
   describe '#id_in' do
     let(:records) { create_list(:user, 3) }
 
-    it 'returns records of the ids', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448906' do
+    it 'returns records of the ids',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16825' do
       expect(User.id_in(records.last(2).map(&:id))).to eq(records.last(2))
     end
   end

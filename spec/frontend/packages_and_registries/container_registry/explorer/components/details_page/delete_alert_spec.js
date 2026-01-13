@@ -1,6 +1,6 @@
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue';
+import DeleteAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue';
 import {
   DELETE_TAG_SUCCESS_MESSAGE,
   DELETE_TAG_ERROR_MESSAGE,
@@ -16,7 +16,7 @@ describe('Delete alert', () => {
   const findLink = () => wrapper.findComponent(GlLink);
 
   const mountComponent = (propsData) => {
-    wrapper = shallowMount(component, { stubs: { GlSprintf }, propsData });
+    wrapper = shallowMount(DeleteAlert, { stubs: { GlSprintf }, propsData });
   };
 
   describe('when deleteAlertType is null', () => {
@@ -43,6 +43,7 @@ describe('Delete alert', () => {
             mountComponent({
               deleteAlertType,
               isAdmin: true,
+              showAdminTip: true,
               garbageCollectionHelpPagePath: 'foo',
             });
           });
@@ -57,15 +58,34 @@ describe('Delete alert', () => {
 
           it('alert body contains link', () => {
             const alertLink = findLink();
-            expect(alertLink.exists()).toBe(true);
+
             expect(alertLink.attributes('href')).toBe('foo');
+          });
+        });
+
+        describe('when the user is an admin and showAdminTip is false', () => {
+          beforeEach(() => {
+            mountComponent({
+              deleteAlertType,
+              isAdmin: true,
+              showAdminTip: false,
+              garbageCollectionHelpPagePath: 'foo',
+            });
+          });
+
+          it('alert exists and text is appropriate', () => {
+            expect(findAlert().text()).toBe(message);
+          });
+
+          it('alert title is empty string', () => {
+            expect(findAlert().attributes('title')).toBe('');
           });
         });
 
         describe('when the user is not an admin', () => {
           it('alert exist and text is appropriate', () => {
             mountComponent({ deleteAlertType });
-            expect(findAlert().exists()).toBe(true);
+
             expect(findAlert().text()).toBe(message);
           });
         });
@@ -85,7 +105,7 @@ describe('Delete alert', () => {
         describe('when the user is an admin', () => {
           it('alert exist and text is appropriate', () => {
             mountComponent({ deleteAlertType });
-            expect(findAlert().exists()).toBe(true);
+
             expect(findAlert().text()).toBe(message);
           });
         });
@@ -93,7 +113,7 @@ describe('Delete alert', () => {
         describe('when the user is not an admin', () => {
           it('alert exist and text is appropriate', () => {
             mountComponent({ deleteAlertType });
-            expect(findAlert().exists()).toBe(true);
+
             expect(findAlert().text()).toBe(message);
           });
         });

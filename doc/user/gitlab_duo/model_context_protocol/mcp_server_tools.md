@@ -15,11 +15,8 @@ title: GitLab MCP server tools
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-{{< /alert >}}
+> [!warning]
+> To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
 
 The GitLab MCP server provides a set of tools that integrate with your existing GitLab workflows.
 You can use these tools to interact directly with GitLab and perform common GitLab operations.
@@ -76,18 +73,24 @@ Get details for issue 42 in project 123
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
+- `assignee_ids`, `reviewer_ids`, `description`, `labels`, and `milestone_id` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217458) in GitLab 18.8.
 
 {{< /history >}}
 
-Creates a merge request in a project.
+Creates a merge request in a GitLab project.
 
-| Parameter           | Type    | Required | Description |
-|---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
-| `title`             | string  | Yes      | Title of the merge request. |
-| `source_branch`     | string  | Yes      | Name of the source branch. |
-| `target_branch`     | string  | Yes      | Name of the target branch. |
-| `target_project_id` | integer | No       | ID of the target project. |
+| Parameter           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | string            | Yes      | ID or URL-encoded path of the project. |
+| `title`             | string            | Yes      | Title of the merge request. |
+| `source_branch`     | string            | Yes      | Name of the source branch. |
+| `target_branch`     | string            | Yes      | Name of the target branch. |
+| `target_project_id` | integer           | No       | ID of the target project. |
+| `assignee_ids`      | array of integers | No       | Array of IDs of merge request assignees. Set to `0` or an empty value to unassign all assignees. |
+| `reviewer_ids`      | array of integers | No       | Array of IDs of merge request reviewers. Set to `0` or an empty value to unassign all reviewers. |
+| `description`       | string            | No       | Description of the merge request. |
+| `labels`            | array of strings  | No       | Array of label names. Set to an empty string to unassign all labels. |
+| `milestone_id`      | integer           | No       | ID of the milestone. |
 
 Example:
 
@@ -113,7 +116,7 @@ Get details for merge request 15 in project gitlab-org/gitlab
 
 ## `get_merge_request_commits`
 
-Retrieves the list of commits in a specific merge request.
+Retrieves the list of commits in a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -130,7 +133,7 @@ Show me all commits in merge request 42 from project 123
 
 ## `get_merge_request_diffs`
 
-Retrieves the diffs for a specific merge request.
+Retrieves the diffs for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -147,7 +150,7 @@ What files were changed in merge request 25 in the gitlab project?
 
 ## `get_merge_request_pipelines`
 
-Retrieves the pipelines for a specific merge request.
+Retrieves the pipelines for a specific GitLab merge request.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -162,7 +165,7 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 ## `get_pipeline_jobs`
 
-Retrieves the jobs for a specific CI/CD pipeline.
+Retrieves the jobs for a specific GitLab CI/CD pipeline.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|
@@ -181,7 +184,7 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213398) in GitLab 18.7.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581890) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -190,7 +193,7 @@ Creates a new note (comment) on a GitLab work item.
 | Parameter       | Type    | Required | Description |
 |-----------------|---------|----------|-------------|
 | `body`          | string  | Yes      | Content of the note. |
-| `url`           | string  | No       | GitLab URL for the work item (for example, `https://gitlab.com/namespace/project/-/work_items/42`). Required if `group_id` or `project_id` and `work_item_iid` are missing. |
+| `url`           | string  | No       | URL for the work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
 | `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
 | `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
 | `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
@@ -203,12 +206,40 @@ Example:
 Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
 ```
 
-## `gitlab_search`
+## `get_workitem_notes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/581892) in GitLab 18.7.
+
+{{< /history >}}
+
+Retrieves all notes (comments) for a specific GitLab work item.
+
+| Parameter       | Type    | Required | Description |
+|-----------------|---------|----------|-------------|
+| `url`           | string  | No       | URL for the work item. Required if `group_id` or `project_id` and `work_item_iid` are missing. |
+| `group_id`      | string  | No       | ID or path of the group. Required if `url` and `project_id` are missing. |
+| `project_id`    | string  | No       | ID or path of the project. Required if `url` and `group_id` are missing. |
+| `work_item_iid` | integer | No       | Internal ID of the work item. Required if `url` is missing. |
+| `after`         | string  | No       | Cursor for forward pagination. |
+| `before`        | string  | No       | Cursor for backward pagination. |
+| `first`         | integer | No       | Number of notes to return for forward pagination. |
+| `last`          | integer | No       | Number of notes to return for backward pagination. |
+
+Example:
+
+```plaintext
+Show me all comments on work item 42 in project gitlab-org/gitlab
+```
+
+## `search`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
 - Searching groups and projects and ordering and sorting results [added](https://gitlab.com/gitlab-org/gitlab/-/issues/571132) in GitLab 18.6.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214734) from `gitlab_search` to `search` in GitLab 18.8.
 
 {{< /history >}}
 
@@ -238,29 +269,17 @@ Search issues for "flaky test" across GitLab
 
 ## `semantic_code_search`
 
-{{< details >}}
-
-Offering: GitLab.com
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `code_snippet_search_graphqlapi`. Disabled by default.
 - Search by project path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/575234) in GitLab 18.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568359) from experiment to [beta](../../../policy/development_stages_support.md#beta) in GitLab 18.7. Feature flag `code_snippet_search_graphqlapi` removed.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/581105) to the GitLab UI in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `mcp_client`. Disabled by default.
 
 {{< /history >}}
 
-Searches for relevant code snippets in a project.
-
-This tool is available only for projects with
-[GitLab Duo turned on](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
-Project files must be indexed into vector embeddings.
-
-If this tool is invoked for a project without vector embeddings,
-indexing is triggered ad-hoc and the agent uses a different tool.
-This tool then becomes available after a few minutes.
+Searches for relevant code snippets in a GitLab project.
+For more information, see [semantic code search](../semantic_code_search.md).
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
@@ -269,6 +288,9 @@ This tool then becomes available after a few minutes.
 | `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
 | `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
 | `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
+
+For best results, describe the functionality or behavior you're interested in
+rather than using generic keywords or specific function or variable names.
 
 Example:
 

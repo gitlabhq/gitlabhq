@@ -3,30 +3,12 @@
 FactoryBot.define do
   factory :granular_scope, class: 'Authz::GranularScope' do
     organization { namespace&.organization || association(:common_organization) }
-    namespace
+    namespace { boundary ? boundary.namespace : association(:namespace) }
     permissions { [:create_member_role] }
+    access { boundary&.access }
 
-    trait :personal_projects do
-      access { :personal_projects }
-    end
-
-    trait :all_memberships do
-      namespace { nil }
-      access { :all_memberships }
-    end
-
-    trait :selected_memberships do
-      access { :selected_memberships }
-    end
-
-    trait :user do
-      namespace { nil }
-      access { :user }
-    end
-
-    trait :instance do
-      namespace { nil }
-      access { :instance }
+    transient do
+      boundary { nil }
     end
   end
 end

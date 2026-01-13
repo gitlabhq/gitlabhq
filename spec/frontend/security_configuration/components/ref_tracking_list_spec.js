@@ -466,6 +466,7 @@ describe('RefTrackingList component', () => {
           refType: 'HEAD',
           isProtected: false,
           commit: {
+            id: 'gid://gitlab/Commit/1',
             sha: 'abc123',
             shortId: 'abc123',
             title: 'Test commit',
@@ -521,6 +522,7 @@ describe('RefTrackingList component', () => {
                       refType: 'HEAD',
                       isProtected: false,
                       commit: {
+                        id: 'gid://gitlab/Commit/1',
                         sha: 'abc123',
                         shortId: 'abc123',
                         title: 'Test commit',

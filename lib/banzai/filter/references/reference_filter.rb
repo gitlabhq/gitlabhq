@@ -326,6 +326,17 @@ module Banzai
           end
           result[:reference_filter_nodes] = nodes
         end
+
+        # `original` is used to restore the original input in ReferenceRedactor when necessary.
+        # It always contains safe HTML --- if the original match was on a link, it is the
+        # inner HTML of the <a> tag (after sanitization, etc.).  If not, we escape the plain text
+        # match.
+        def data_attributes_for(match_text, link_content_html, **attrs)
+          {
+            **attrs,
+            original: link_content_html || CGI.escapeHTML(match_text)
+          }
+        end
       end
     end
   end

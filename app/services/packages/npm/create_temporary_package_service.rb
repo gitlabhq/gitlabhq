@@ -21,7 +21,7 @@ module Packages
         end
 
         ::Packages::Npm::ProcessTemporaryPackageFileWorker.perform_async(
-          current_user.id,
+          current_user.to_global_id.to_s,
           package_file.id,
           params[:deprecate]
         )

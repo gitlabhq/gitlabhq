@@ -3,6 +3,8 @@
 module API
   module Ci
     class JobArtifacts < ::API::Base
+      include PaginationParams
+
       helpers ::API::Helpers::ProjectStatsRefreshConflictsHelpers
 
       before { authenticate_non_get! }
@@ -29,6 +31,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :ref_name, type: String,
@@ -78,6 +81,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :ref_name, type: String,
@@ -116,6 +120,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -135,6 +140,52 @@ module API
           present_artifacts_file!(build.artifacts_file)
         end
 
+        desc 'List all files in the artifacts archive' do
+          detail 'Lists all files and directories in the artifacts archive without extracting them'
+          success code: 200, model: Entities::Ci::JobArtifactEntry
+          is_array true
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[job_artifacts]
+        end
+        params do
+          requires :job_id, type: Integer, desc: 'ID of a job',
+            documentation: { example: 42 }
+          optional :path, type: String, default: '',
+            desc: 'Path to browse in the artifacts archive. Defaults to root directory.',
+            documentation: { example: 'coverage/reports' }
+          optional :recursive, type: Boolean, default: false, desc: 'If `true`, return all entries recursively.',
+            documentation: { example: false }
+          optional :job_token, type: String,
+            desc: 'CI/CD job token for multi-project pipelines. ' \
+                  'Premium and Ultimate only.'
+          use :pagination
+        end
+        route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs,
+          permissions: :download_job_artifact, boundary_type: :project
+        get ':id/jobs/:job_id/artifacts/tree', urgency: :low do
+          authorize_download_artifacts!
+
+          build = find_build!(params[:job_id])
+          authorize_read_job_artifacts!(build)
+
+          not_found!('Artifacts') unless build.available_artifacts?
+          not_found!('Artifacts metadata') unless build.job_artifacts_metadata&.exists?
+
+          path = params[:path]
+          directory = path.present? ? "#{path.delete_suffix('/')}/" : ''
+
+          entry = build.artifacts_metadata_entry(directory, recursive: params[:recursive])
+          not_found!('Path') unless entry.exists?
+
+          entries = params[:recursive] ? entry.children : entry.directories(parent: false) + entry.files
+          present paginate(::Kaminari.paginate_array(entries)), with: Entities::Ci::JobArtifactEntry
+        end
+
         desc 'Download a specific file from artifacts archive' do
           detail 'This feature was introduced in GitLab 10.0'
           failure [
@@ -143,6 +194,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -181,6 +233,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -205,6 +258,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 409, message: 'Conflict' }
           ]
+          tags ['job_artifacts']
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -229,6 +283,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 409, message: 'Conflict' }
           ]
+          tags ['job_artifacts']
         end
         route_setting :authorization, permissions: :delete_artifact, boundary_type: :project
         delete ':id/artifacts' do

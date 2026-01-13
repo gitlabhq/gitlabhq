@@ -3,7 +3,7 @@
 module API
   module Entities
     class CommitSequence < Grape::Entity
-      expose :count, documentation: { type: 'integer', example: 1 }
+      expose :count, documentation: { type: 'Integer', example: 1 }
     end
   end
 end

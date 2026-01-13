@@ -1,0 +1,73 @@
+.gl-mb-5
+  %h2.gl-text-size-h2-display.gl-mt-8.gl-pb-3
+    = s_("Attestations|Certificate")
+  %table.gl-table.gl-w-full.gl-border-separate.gl-border-t{ 'data-testid': 'certificate-table' }
+    %colgroup
+      %col{ width: '40%' }
+      %col{ width: '60%' }
+    %thead
+      %tr
+        %th
+          = _('Key')
+        %th= _('Value')
+    %tbody
+      %tr{ 'data-testid': 'build-config-digest' }
+        %td
+          .gl-font-bold= s_('Attestations|Build Config Digest')
+        %td= @certificate[:build_config_digest]
+      %tr{ 'data-testid': 'build-config-uri' }
+        %td
+          .gl-font-bold= s_('Attestations|Build Config URI')
+        %td= link_to @certificate[:build_config_uri], @certificate[:build_config_uri]
+      %tr{ 'data-testid': 'build-signer-digest' }
+        %td
+          .gl-font-bold= s_('Attestations|Build Signer Digest')
+        %td= @certificate[:build_signer_digest]
+      %tr{ 'data-testid': 'build-signer-uri' }
+        %td
+          .gl-font-bold= s_('Attestations|Build Signer URI')
+        %td= link_to @certificate[:build_signer_uri], @certificate[:build_signer_uri]
+      %tr{ 'data-testid': 'build-trigger' }
+        %td
+          .gl-font-bold= s_('Attestations|Build Trigger')
+        %td= @certificate[:build_trigger]
+      %tr{ 'data-testid': 'issuer' }
+        %td
+          .gl-font-bold= s_('Attestations|Issuer')
+        %td= @certificate[:issuer]
+      %tr{ 'data-testid': 'runner-environment' }
+        %td
+          .gl-font-bold= s_('Attestations|Runner Environment')
+        %td= @certificate[:runner_environment]
+      %tr{ 'data-testid': 'runner-invocation-uri' }
+        %td
+          .gl-font-bold= s_('Attestations|Runner Invocation URI')
+        %td= link_to @certificate[:runner_invocation_uri], @certificate[:runner_invocation_uri]
+      %tr{ 'data-testid': 'source-repository-digest' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Digest')
+        %td= @certificate[:source_repository_digest]
+      %tr{ 'data-testid': 'source-repository-identifier' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Identifier')
+        %td= @certificate[:source_repository_identifier]
+      %tr{ 'data-testid': 'source-repository-owner-identifier' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Owner Identifier')
+        %td= @certificate[:source_repository_owner_identifier]
+      %tr{ 'data-testid': 'source-repository-owner-uri' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Owner URI')
+        %td= link_to @certificate[:source_repository_owner_uri], @certificate[:source_repository_owner_uri]
+      %tr{ 'data-testid': 'source-repository-ref' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Ref')
+        %td= @certificate[:source_repository_ref]
+      %tr{ 'data-testid': 'source-repository-uri' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository URI')
+        %td= link_to @certificate[:source_repository_uri], @certificate[:source_repository_uri]
+      %tr{ 'data-testid': 'source-repository-visibility' }
+        %td
+          .gl-font-bold= s_('Attestations|Source Repository Visibility')
+        %td= @certificate[:source_repository_visibility]

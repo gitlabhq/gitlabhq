@@ -49,7 +49,7 @@ RSpec.describe API::Entities::Release do
 
   describe 'description_html' do
     let(:issue) { create(:issue, :confidential, project: project) }
-    let(:issue_path) { Gitlab::Routing.url_helpers.project_issue_path(project, issue) }
+    let(:issue_path) { Gitlab::UrlBuilder.instance.issue_path(issue) }
     let(:issue_title) { 'title="%s"' % issue.title }
     let(:release) { create(:release, project: project, description: "Now shipping #{issue.to_reference}") }
 

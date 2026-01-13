@@ -131,11 +131,8 @@ For more information, see the [Sentry SDK documentation](https://docs.sentry.io/
 
 ## Rotate generated DSN
 
-{{< alert type="warning" >}}
-
-According to Sentry [it is safe to keep a DSN public](https://docs.sentry.io/concepts/key-terms/dsn-explainer/#dsn-utilization), but this opens up the possibility of junk events being sent to Sentry by malicious users. Therefore if possible you should keep the DSN secret. This doesn't apply to client-side applications where the DSN will be loaded and therefore stored on the user's device.
-
-{{< /alert >}}
+> [!warning]
+> According to Sentry [it is safe to keep a DSN public](https://docs.sentry.io/concepts/key-terms/dsn-explainer/#dsn-utilization), but this opens up the possibility of junk events being sent to Sentry by malicious users. Therefore if possible you should keep the DSN secret. This doesn't apply to client-side applications where the DSN will be loaded and therefore stored on the user's device.
 
 Prerequisites:
 

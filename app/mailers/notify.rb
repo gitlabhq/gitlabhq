@@ -157,7 +157,9 @@ class Notify < ApplicationMailer
   end
 
   def reply_display_name(model)
-    return model.namespace.full_name if model.is_a?(Issue)
+    # Issue is already in the inheritance chain of WorkItem, but let's make it explicit.
+    # Keep issue check first so it bails early
+    return model.namespace.full_name if model.is_a?(Issue) || model.is_a?(WorkItem)
 
     @project.full_name
   end
@@ -213,6 +215,29 @@ class Notify < ApplicationMailer
   def add_model_headers(object)
     # Use replacement so we don't strip the module.
     prefix = "X-GitLab-#{object.class.name.gsub(/::/, '-')}"
+
+    headers["#{prefix}-ID"] = object.id
+    headers["#{prefix}-IID"] = object.iid if object.respond_to?(:iid)
+    headers["#{prefix}-State"] = object.state if object.respond_to?(:state)
+    # Add X-GitLab-WorkItem-Type so email clients can distinguish
+    # between types of work items (issue, task, epic etc.)
+    if object.instance_of?(WorkItem) && object.respond_to?(:work_item_type)
+      headers["#{prefix}-Type"] = object.work_item_type.name
+    end
+
+    add_legacy_issue_model_headers(object)
+  end
+
+  # To prevent a breaking change we additionally add legacy issue
+  # headers for issue work items.
+  def add_legacy_issue_model_headers(object)
+    return if object.instance_of?(Issue)
+    return unless object.respond_to?(:work_item_type)
+    # Introduce a configuration check for the default type when we switched to system-defined types
+    # See https://gitlab.com/groups/gitlab-org/-/epics/19879
+    return unless %w[issue ticket].include?(object.work_item_type&.base_type)
+
+    prefix = "X-GitLab-Issue"
 
     headers["#{prefix}-ID"] = object.id
     headers["#{prefix}-IID"] = object.iid if object.respond_to?(:iid)

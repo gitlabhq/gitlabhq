@@ -23,7 +23,7 @@ They get notified of public comments on an issue or ticket by [Service Desk emai
 
 The maximum number of external participants on an issue or ticket is 10.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Multiple external participants in GitLab Service Desk](https://www.youtube.com/watch?v=eKNe7fYQCLc).
 <!-- Video published on 2024-05-13 -->
 
@@ -47,7 +47,7 @@ Prerequisites:
 
 To enable the setting for the project:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Select **Add external participants from the `Cc` header**.
@@ -151,7 +151,7 @@ email for the comment that contains the `/add_email` quick action.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add an external participant to an issue or ticket:
 
@@ -184,7 +184,7 @@ But they can still reply to emails they received before and create a new comment
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 - There must be at least one external participant on the issue or ticket.
 
 To remove an existing external participant from an issue or ticket:

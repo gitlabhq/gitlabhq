@@ -50,11 +50,8 @@ For tier, choose one:
 - `Premium, Ultimate`
 - `Ultimate`
 
-{{< alert type="note" >}}
-
-GitLab Dedicated and GitLab Dedicated for Government always include an Ultimate subscription.
-
-{{< /alert >}}
+> [!note]
+> GitLab Dedicated and GitLab Dedicated for Government always include an Ultimate subscription.
 
 ### Add-ons
 
@@ -84,12 +81,9 @@ For example:
 - `GitLab Self-Managed, GitLab Dedicated`
 - `GitLab Dedicated, GitLab Dedicated for Government`
 
-{{< alert type="note" >}}
-
-If you have reviewed a page and it specifically doesn't apply to GitLab Dedicated,
-[assign metadata](../metadata.md#indicate-gitlab-dedicated-support).
-
-{{< /alert >}}
+> [!note]
+> If you have reviewed a page and it specifically doesn't apply to GitLab Dedicated,
+> [assign metadata](../metadata.md#indicate-gitlab-dedicated-support).
 
 ### Status
 

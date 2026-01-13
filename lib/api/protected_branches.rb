@@ -24,12 +24,14 @@ module API
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' }
         ]
+        tags ['project_protected_branches']
       end
       params do
         use :pagination
         optional :search, type: String, desc: 'Search for a protected branch by name', documentation: { example: 'mai' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_protected_branch, boundary_type: :project
       get ':id/protected_branches' do
         authorize_read_code!
 
@@ -49,11 +51,13 @@ module API
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' }
         ]
+        tags ['project_protected_branches']
       end
       params do
         requires :name, type: String, desc: 'The name of the branch or wildcard', documentation: { example: 'main' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_protected_branch, boundary_type: :project
       get ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_read_code!
 
@@ -71,6 +75,7 @@ module API
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' }
         ]
+        tags ['project_protected_branches']
       end
       params do
         requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
@@ -87,6 +92,7 @@ module API
         use :optional_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :create_protected_branch, boundary_type: :project
       post ':id/protected_branches' do
         authorize_create_protected_branch!
 
@@ -116,6 +122,7 @@ module API
           { code: 401, message: '401 Unauthorized' },
           { code: 400, message: '400 Bad request' }
         ]
+        tags ['project_protected_branches']
       end
       params do
         requires :name, type: String, desc: 'The name of the branch', documentation: { example: 'main' }
@@ -126,6 +133,7 @@ module API
         use :optional_params_ee
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :update_protected_branch, boundary_type: :project
       patch ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
@@ -153,8 +161,10 @@ module API
           { code: 404, message: '404 Project Not Found' },
           { code: 401, message: '401 Unauthorized' }
         ]
+        tags ['project_protected_branches']
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_protected_branch, boundary_type: :project
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS, urgency: :low do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 

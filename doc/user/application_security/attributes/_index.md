@@ -54,7 +54,7 @@ Prerequisites:
 
 To manage security attributes for a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Security configuration**.
 
 ## Manage security attributes for projects
@@ -65,7 +65,7 @@ Prerequisites:
 
 To manage security attributes for a project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Select the **Security attributes** tab.
 

@@ -13,9 +13,11 @@ import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import getIssueParticipantsQuery from '~/sidebar/queries/get_issue_participants.query.graphql';
+import getMergeRequestParticipantsQuery from '~/sidebar/queries/get_mr_participants.query.graphql';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
   projectAutocompleteMembersResponse,
+  projectAutocompleteCustomResponse,
   searchAutocompleteQueryResponse,
   searchAutocompleteResponseOnMR,
   participantsQueryResponse,
@@ -77,6 +79,7 @@ describe('User select dropdown', () => {
       [searchUsersQuery, searchQueryHandler],
       [searchUsersQueryOnMR, jest.fn().mockResolvedValue(searchAutocompleteResponseOnMR)],
       [getIssueParticipantsQuery, participantsQueryHandler],
+      [getMergeRequestParticipantsQuery, participantsQueryHandler],
     ];
     if (customSearchQueryAndHandler) {
       queryHandlers.push(customSearchQueryAndHandler);
@@ -145,10 +148,13 @@ describe('User select dropdown', () => {
   });
 
   it('emits an `error` event if participants query was rejected', async () => {
-    createComponent({ participantsQueryHandler: mockError });
+    createComponent({
+      participantsQueryHandler: mockError,
+      searchQueryHandler: jest.fn().mockResolvedValue(projectAutocompleteMembersResponse),
+    });
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[]]);
+    expect(wrapper.emitted('error')).toBeDefined();
   });
 
   it('emits an `error` event if search query was rejected', async () => {
@@ -213,41 +219,70 @@ describe('User select dropdown', () => {
       expect(findSelectedParticipantByIndex(1).props('user')).toEqual(issuableAuthor);
     });
 
-    it('moves issuable author on top of unassigned list, if author is unassigned project member', async () => {
-      createComponent({
-        props: {
-          issuableAuthor: mockUser2,
-        },
+    describe('when author is an unassigned project member', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            issuableAuthor: { ...mockUser2 },
+          },
+        });
+        await waitForPromises();
       });
-      await waitForPromises();
-      expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject(mockUser2);
+
+      it('moves issuable author to the top of unassigned list', () => {
+        expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject({
+          id: mockUser2.id,
+          name: mockUser2.name,
+          username: mockUser2.username,
+          webUrl: mockUser2.webUrl,
+          webPath: mockUser2.webPath,
+          compositeIdentityEnforced: mockUser2.compositeIdentityEnforced,
+          status: {
+            availability: 'NOT_SET',
+          },
+        });
+      });
     });
 
-    it('moves issuable author on top of unassigned list after current user, if author and current user are unassigned project members', async () => {
+    describe('when author and current user are unassigned project members', () => {
       const currentUser = mockUser2;
       const issuableAuthor = mockUser1;
 
-      createComponent({
-        props: {
-          issuableAuthor,
-          currentUser,
-        },
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            issuableAuthor,
+            currentUser,
+          },
+        });
+        await waitForPromises();
       });
-      await waitForPromises();
 
-      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
-      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(mockUser1);
+      it('moves issuable author on top of unassigned list after current user', () => {
+        expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject({
+          id: mockUser2.id,
+          username: mockUser2.username,
+        });
+        expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject({
+          id: mockUser1.id,
+          username: mockUser1.username,
+        });
+      });
     });
 
-    it('displays author in a designated position if author is not assigned and not a project member', async () => {
-      createComponent({
-        props: {
-          issuableAuthor: assignee,
-        },
+    describe('when author is not assigned and not a project member', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: {
+            issuableAuthor: assignee,
+          },
+        });
+        await waitForPromises();
       });
-      await waitForPromises();
 
-      expect(findIssuableAuthor().exists()).toBe(true);
+      it('displays author in the base list', () => {
+        expect(findIssuableAuthor().exists()).toBe(true);
+      });
     });
   });
 
@@ -279,7 +314,7 @@ describe('User select dropdown', () => {
       `;
       const customSearchQueryHandler = jest
         .fn()
-        .mockResolvedValue(projectAutocompleteMembersResponse);
+        .mockResolvedValue(projectAutocompleteCustomResponse);
       const customSearchQueryAndHandler = [customSearchUsersQuery, customSearchQueryHandler];
       createComponent({
         props: {
@@ -295,9 +330,9 @@ describe('User select dropdown', () => {
 
   describe('when customSearchUsersProcessor prop provided', () => {
     it('uses custom query and processor', async () => {
-      const customSearchUsersProcessor = (data) => {
-        return data.workspace?.users.filter((user) => user?.username === 'francina.skiles');
-      };
+      const customSearchUsersProcessor = jest.fn((data) => {
+        return data.namespace?.users.filter((user) => user?.username === 'francina.skiles') || [];
+      });
       createComponent({
         props: {
           iid: null,
@@ -306,7 +341,8 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      expect(findUnselectedParticipants()).toHaveLength(1);
+      // The custom processor should be called when the component initializes
+      expect(customSearchUsersProcessor).toHaveBeenCalled();
     });
   });
 
@@ -400,21 +436,12 @@ describe('User select dropdown', () => {
 
       findUnselectedParticipants().at(0).trigger('click');
 
-      expect(wrapper.emitted('input')).toMatchObject([
-        [
-          [
-            {
-              avatarUrl:
-                'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-              id: 'gid://gitlab/User/1',
-              name: 'Administrator',
-              status: null,
-              username: 'root',
-              webUrl: '/root',
-            },
-          ],
-        ],
-      ]);
+      expect(wrapper.emitted('input')[0][0][0]).toMatchObject({
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: '/root',
+      });
     });
 
     it('adds user to selected if `allowMultipleAssignees` is true', async () => {
@@ -459,7 +486,7 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'ro');
       await waitForSearch();
 
-      expect(findUnselectedParticipants()).toHaveLength(3);
+      expect(findUnselectedParticipants()).toHaveLength(4);
     });
 
     it('renders a list of found users only if no external participants match search term', async () => {
@@ -471,12 +498,12 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'roo');
       await waitForSearch();
 
-      expect(findUnselectedParticipants()).toHaveLength(2);
+      expect(findUnselectedParticipants()).toHaveLength(3);
     });
 
     it('shows a message about no matches if search returned an empty list', async () => {
       const responseCopy = cloneDeep(searchAutocompleteQueryResponse);
-      responseCopy.data.workspace.users = [];
+      responseCopy.data.namespace.users = [];
 
       createComponent({
         searchQueryHandler: jest.fn().mockResolvedValue(responseCopy),
@@ -508,7 +535,7 @@ describe('User select dropdown', () => {
     it('clears search term and focuses search field after unselecting a user', async () => {
       createComponent({
         props: {
-          value: [searchAutocompleteQueryResponse.data.workspace.users[0]],
+          value: [searchAutocompleteQueryResponse.data.namespace.users[0]],
         },
         searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
       });

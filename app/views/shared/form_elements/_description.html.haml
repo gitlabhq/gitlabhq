@@ -26,6 +26,7 @@
                                testid: 'issuable-form-description-field',
                                form_field_placeholder: placeholder,
                                autofocus: 'false',
+                               supports_table_of_contents: 'true',
                                form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description',
                                project_id: @project.id,
                                can_use_composer: is_merge_request ? can_use_description_composer(current_user, model).to_s : nil,

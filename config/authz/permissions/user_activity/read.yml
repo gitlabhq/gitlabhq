@@ -1,0 +1,5 @@
+---
+name: read_user_activity
+description: Grants the ability to read user activity
+boundaries:
+  - user

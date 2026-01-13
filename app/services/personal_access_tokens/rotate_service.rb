@@ -49,6 +49,14 @@ module PersonalAccessTokens
       new_token = target_user.personal_access_tokens.create(create_token_params)
 
       if new_token.persisted?
+        if token.granular_scopes.any?
+          response = ::Authz::GranularScopeService.new(new_token).add_granular_scopes(
+            token.granular_scopes.map(&:build_copy)
+          )
+        end
+
+        return response if response&.error?
+
         update_project_bot_membership(target_user, new_token.expires_at)
         update_project_bot_to_inherit_current_user_external_status
 
@@ -114,6 +122,7 @@ module PersonalAccessTokens
         previous_personal_access_token_id: token.id,
         impersonation: token.impersonation,
         scopes: token.scopes,
+        granular: token.granular,
         expires_at: expires_at,
         organization: token.organization }
     end

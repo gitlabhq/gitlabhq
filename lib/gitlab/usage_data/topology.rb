@@ -230,7 +230,7 @@ module Gitlab
         instance_data_by_type.each do |memory_type, instance_data|
           topology_data_for_instance(instance, instance_data).each do |metric, memory_bytes|
             job = metric['job']
-            key = "process_memory_#{memory_type}".to_sym
+            key = :"process_memory_#{memory_type}"
 
             result[job] ||= {}
             result[job][key] ||= memory_bytes

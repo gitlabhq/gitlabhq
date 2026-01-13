@@ -9,6 +9,7 @@ class Projects::BoardsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_item_tasks_on_boards,
       !!project&.work_item_tasks_on_boards_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
+    push_frontend_feature_flag(:service_desk_ticket, project)
   end
 
   feature_category :team_planning

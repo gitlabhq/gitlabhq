@@ -8,7 +8,11 @@ module Gitlab
 
       def perform
         each_sub_batch do |sub_batch|
-          insert_default_branch_contexts(Project.id_in(sub_batch.pluck(:id)))
+          project_ids = sub_batch.where(has_vulnerabilities: true).pluck(:project_id)
+
+          next if project_ids.blank?
+
+          insert_default_branch_contexts(Project.id_in(project_ids))
         end
       end
 

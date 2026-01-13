@@ -34,8 +34,8 @@ module Ci
         end
       end
 
-      def extract_spec(blob)
-        result = Gitlab::Ci::Config::Yaml::Loader.new(blob).load_uninterpolated_yaml
+      def extract_spec(blob, path)
+        result = Gitlab::Ci::Config::Yaml::Loader.new(blob, filename: path).load_uninterpolated_yaml
 
         raise result.error_class, result.error unless result.valid?
 
@@ -65,6 +65,16 @@ module Ci
         return unless version
 
         version.components.template.find_by_name(component_name)
+      end
+
+      def find_catalog_components(component_names)
+        return [] if component_names.empty?
+
+        # Multiple versions of a component can have the same sha, so we return the latest one.
+        version = project.catalog_resource_versions.by_sha(sha).latest
+        return [] unless version
+
+        version.components.template.where(name: component_names)
       end
 
       private

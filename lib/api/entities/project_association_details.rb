@@ -13,9 +13,9 @@ module API
         end
       end
 
-      expose :visibility, documentation: { type: 'string', example: 'public' }
-      expose :web_url, documentation: { type: 'string', example: 'https://gitlab.example.com/gitlab/gitlab' }
-      expose :namespace, using: 'API::Entities::NamespaceBasic'
+      expose :visibility, documentation: { type: 'String', example: 'public' }
+      expose :web_url, documentation: { type: 'String', example: 'https://gitlab.example.com/gitlab/gitlab' }
+      expose :namespace, using: ::API::Entities::NamespaceBasic
     end
   end
 end

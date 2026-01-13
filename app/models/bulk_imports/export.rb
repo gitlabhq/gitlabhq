@@ -4,9 +4,11 @@ module BulkImports
   class Export < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
 
+    PENDING = -2
     STARTED = 0
     FINISHED = 1
     FAILED = -1
+    IN_PROGRESS_STATUSES = [PENDING, STARTED].freeze
 
     self.table_name = 'bulk_import_exports'
 
@@ -27,8 +29,10 @@ module BulkImports
     scope :for_status, ->(status) { where(status: status) }
     scope :for_user, ->(user) { where(user: user) }
     scope :for_user_and_relation, ->(user, relation) { where(user: user, relation: relation) }
+    scope :for_offline_export, ->(offline_export) { where(offline_export: offline_export) }
 
     state_machine :status, initial: :started do
+      state :pending, value: PENDING
       state :started, value: STARTED
       state :finished, value: FINISHED
       state :failed, value: FAILED

@@ -10,7 +10,7 @@ module API
         group.highest_group_member(options[:current_user])&.access_level
       end
 
-      expose :visibility, documentation: { type: 'string', example: 'public' }
+      expose :visibility, documentation: { type: 'String', example: 'public' }
     end
   end
 end

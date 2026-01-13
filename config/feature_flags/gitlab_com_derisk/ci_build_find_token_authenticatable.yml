@@ -1,0 +1,10 @@
+---
+name: ci_build_find_token_authenticatable
+description: Apply partition pruning to token authentication and related
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/580390
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215198
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582937
+milestone: '18.8'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

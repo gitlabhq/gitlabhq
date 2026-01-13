@@ -15,8 +15,13 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
       let(:non_member) { create(:user) }
       let(:member) { create(:user) }
       let(:admin) { create(:admin) }
-      let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-      let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
+      let!(:security_issue_1) do
+        create(:issue, :confidential, project: project, title: 'Security issue 1', author: author)
+      end
+
+      let!(:security_issue_2) do
+        create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee])
+      end
 
       it 'includes work item icons in list' do
         autocomplete = described_class.new(project, nil)
@@ -179,12 +184,14 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
     let_it_be(:project) { create(:project, :public, group: group) }
     let_it_be(:wiki) { create(:project_wiki, project: project) }
     let_it_be(:page1) { create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1') }
-    let_it_be(:page2_template) { create(:wiki_page, wiki: wiki, title: 'templates/page2', content: 'content2') }
-    let_it_be(:page3) { create(:wiki_page, wiki: wiki, title: 'page3', content: "---\ntitle: Real title\n---\ncontent3") }
+    let_it_be(:page2) do
+      create(:wiki_page, wiki: wiki, title: 'page2', content: "---\ntitle: Real title\n---\ncontent2")
+    end
 
     context 'when user can read wiki' do
-      it 'returns wiki pages (except templates)' do
-        service = described_class.new(project, user)
+      let(:service) { described_class.new(project, user) }
+
+      it 'returns wiki pages' do
         results = service.wikis
 
         expect(results.size).to eq(2)
@@ -192,11 +199,26 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
       end
 
       it 'loads real title of the page from frontmatter if present' do
-        service = described_class.new(project, user)
         results = service.wikis
 
         expect(results.size).to eq(2)
-        expect(results.last).to include(path: "/#{project.full_path}/-/wikis/page3", slug: 'page3', title: 'Real title')
+        expect(results.last).to include(path: "/#{project.full_path}/-/wikis/page2", slug: 'page2', title: 'Real title')
+      end
+
+      %w[templates uploads].each_with_index do |prefix, index|
+        context "with #{prefix}" do
+          let(:page_number) { index + 3 }
+
+          before do
+            create(:wiki_page, wiki: wiki, title: "#{prefix}/page#{page_number}", content: "content#{page_number}")
+          end
+
+          it "does not return #{prefix}" do
+            results = service.wikis
+
+            expect(results.pluck(:slug)).not_to include("#{prefix}/page#{page_number}")
+          end
+        end
       end
     end
 

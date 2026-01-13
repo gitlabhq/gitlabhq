@@ -6,12 +6,12 @@ module MergeRequests
 
       class_attribute :identifier, :description
 
-      def self.identifier(new_identifier)
-        self.identifier = new_identifier
+      def self.set_identifier(value)
+        self.identifier = value
       end
 
-      def self.description(new_description)
-        self.description = new_description
+      def self.set_description(value)
+        self.description = value
       end
 
       def initialize(merge_request:, params:)

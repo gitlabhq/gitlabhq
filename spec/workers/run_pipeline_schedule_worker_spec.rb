@@ -14,6 +14,15 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
     let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project, owner: user) }
     let(:worker) { described_class.new }
 
+    shared_examples 'does not create a pipeline' do
+      it 'does not create a pipeline' do
+        expect(Ci::CreatePipelineService).not_to receive(:new)
+        expect(worker).not_to receive(:run_pipeline_schedule)
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+    end
+
     shared_examples 'with validation errors' do
       let(:schedule_id) { pipeline_schedule.id }
       let(:user_id) { user.id }
@@ -37,7 +46,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
     end
 
     context 'when a schedule not found' do
-      it 'does not call the Service' do
+      it 'does not create a pipeline' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
         expect(worker).not_to receive(:run_pipeline_schedule)
 
@@ -58,12 +67,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
         project.delete
       end
 
-      it 'does not call the Service' do
-        expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect(worker).not_to receive(:run_pipeline_schedule)
-
-        worker.perform(pipeline_schedule.id, user.id)
-      end
+      it_behaves_like 'does not create a pipeline'
 
       it_behaves_like 'with validation errors' do
         let(:log_message) do
@@ -74,19 +78,11 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
     end
 
     context 'when a schedule project is archived' do
-      around do |example|
+      before do
         project.update!(archived: true)
-        example.run
-      ensure
-        project.update!(archived: false)
       end
 
-      it 'does not call the Service' do
-        expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect(worker).not_to receive(:run_pipeline_schedule)
-
-        worker.perform(pipeline_schedule.id, user.id)
-      end
+      it_behaves_like 'does not create a pipeline'
 
       it_behaves_like 'with validation errors' do
         let(:log_message) do
@@ -96,8 +92,53 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
       end
     end
 
+    context 'when a schedule project is pending deletion' do
+      before do
+        project.update!(pending_delete: true)
+      end
+
+      it_behaves_like 'does not create a pipeline'
+
+      it_behaves_like 'with validation errors' do
+        let(:log_message) do
+          "Failed to create a scheduled pipeline. schedule_id: " \
+            "#{schedule_id} message: Project, namespace or ancestors are scheduled for deletion"
+        end
+      end
+    end
+
+    context 'when a schedule project is marked for deletion' do
+      before do
+        project.update!(marked_for_deletion_at: 1.day.from_now)
+      end
+
+      it_behaves_like 'does not create a pipeline'
+
+      it_behaves_like 'with validation errors' do
+        let(:log_message) do
+          "Failed to create a scheduled pipeline. schedule_id: " \
+            "#{schedule_id} message: Project, namespace or ancestors are scheduled for deletion"
+        end
+      end
+    end
+
+    context 'when a schedule project namespace is scheduled for deletion' do
+      before do
+        create(:group_deletion_schedule, group: group, marked_for_deletion_on: 1.day.ago)
+      end
+
+      it_behaves_like 'does not create a pipeline'
+
+      it_behaves_like 'with validation errors' do
+        let(:log_message) do
+          "Failed to create a scheduled pipeline. schedule_id: " \
+            "#{schedule_id} message: Project, namespace or ancestors are scheduled for deletion"
+        end
+      end
+    end
+
     context 'when a user not found' do
-      it 'does not call the Service' do
+      it 'does not create a pipeline' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
         expect(worker).not_to receive(:run_pipeline_schedule)
 
@@ -128,7 +169,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
         end
       end
 
-      it 'does not call the service' do
+      it 'does not create a pipeline' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
         expect(worker).not_to receive(:run_pipeline_schedule)
 

@@ -24,11 +24,8 @@ This integration works with most LDAP-compliant directory servers, including:
 - OpenLDAP.
 - 389 Server.
 
-{{< alert type="note" >}}
-
-GitLab does not support [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)).
-
-{{< /alert >}}
+> [!note]
+> GitLab does not support [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)).
 
 Users added through LDAP:
 
@@ -534,11 +531,8 @@ required when `external_groups` is configured:
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 
-{{< alert type="note" >}}
-
-If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
-
-{{< /alert >}}
+> [!note]
+> If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
 
 ### Use multiple LDAP servers
 

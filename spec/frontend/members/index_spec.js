@@ -37,6 +37,7 @@ describe('initMembersApp', () => {
   beforeEach(() => {
     el = document.createElement('div');
     el.dataset.membersData = dataAttribute;
+    document.body.appendChild(el);
 
     window.gon = { current_user_id: 123 };
   });

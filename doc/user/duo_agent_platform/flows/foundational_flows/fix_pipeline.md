@@ -10,7 +10,6 @@ title: Fix CI/CD Pipeline Flow
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -19,15 +18,9 @@ title: Fix CI/CD Pipeline Flow
 - Introduced as [an experiment](../../../../policy/development_stages_support.md) in GitLab 18.4 [with flags](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci` and `ai_duo_agent_fix_pipeline_button`. `duo_workflow_in_ci` is enabled by default. `ai_duo_agent_fix_pipeline_button` is disabled by default. These flags can be enabled or disabled for the instance or project.
 - Enabled on GitLab.com and GitLab Self-Managed in GitLab 18.5.
 - Feature flag `ai_duo_agent_fix_pipeline_button` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205086) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `ai_duo_agent_fix_pipeline_button` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216681).
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 The Fix CI/CD Pipeline Flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
 
@@ -44,6 +37,9 @@ The flow can automatically fix various pipeline issues, including:
 
 This flow is available in the GitLab UI only.
 
+> ![note]
+> The Fix CI/CD Pipeline Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
+
 ## Prerequisites
 
 To use this flow, you must:
@@ -52,6 +48,7 @@ To use this flow, you must:
 - Have at least the Developer role in the project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
+- Ensure that the Fix CI/CD Pipeline Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
 
 ## Fix the pipeline in a merge request
 

@@ -34,7 +34,8 @@ module RapidDiffs
 
       options = {
         expanded: true,
-        ignore_whitespace_change: ignore_whitespace_changes
+        ignore_whitespace_change: ignore_whitespace_changes,
+        use_extra_viewer_as_main: false
       }
 
       diff_file = find_diff_file(options, old_path, new_path)
@@ -51,7 +52,11 @@ module RapidDiffs
         diff_file.expand_to_full!
       end
 
-      render diff_file_component(diff_file: diff_file, parallel_view: diff_view == :parallel), layout: false
+      render diff_file_component(
+        diff_file: diff_file,
+        parallel_view: diff_view == :parallel,
+        plain_view: (Gitlab::Utils.to_boolean(diff_file_params[:plain_view]) if diff_file_params[:plain_view].present?)
+      ), layout: false
     end
 
     private
@@ -90,7 +95,7 @@ module RapidDiffs
     end
 
     def diff_file_params
-      params.permit(:old_path, :new_path, :ignore_whitespace_changes, :view, :full)
+      params.permit(:old_path, :new_path, :ignore_whitespace_changes, :view, :full, :plain_view)
     end
   end
 end

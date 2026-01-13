@@ -69,7 +69,7 @@ import {
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
-} from '~/issues/list/utils';
+} from '~/work_items/list/utils';
 import {
   CREATED_DESC,
   PARAM_FIRST_PAGE_SIZE,
@@ -79,11 +79,11 @@ import {
   PARAM_STATE,
   urlSortParams,
   PARAM_SORT,
-} from '~/issues/list/constants';
+} from '~/work_items/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/merge_requests/list/eventhub';
-import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
+import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
 import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
 import MergeRequestReviewers from './merge_request_reviewers.vue';
@@ -108,6 +108,8 @@ const DateToken = () => import('~/vue_shared/components/filtered_search_bar/toke
 function cacheIsExpired(cacheAge, compareTo = Date.now()) {
   return cacheAge + BRANCH_LIST_REFRESH_INTERVAL <= compareTo;
 }
+
+const MAX_COUNT = 999;
 
 export default {
   name: 'MergeRequestsListApp',
@@ -255,6 +257,7 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
+        maxCount: MAX_COUNT,
         search: this.searchQuery,
       };
     },
@@ -818,6 +821,7 @@ export default {
     },
   },
   STATUS_OPEN,
+  MAX_COUNT,
 };
 </script>
 
@@ -849,6 +853,7 @@ export default {
       issuable-item-class="merge-request"
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :search-timeout="searchTimeout"
+      :max-count="$options.MAX_COUNT"
       always-allow-custom-empty-state
       @click-tab="handleClickTab"
       @next-page="handleNextPage"

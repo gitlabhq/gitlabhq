@@ -48,7 +48,6 @@ describe('UserMenu component', () => {
       },
       provide: {
         isImpersonating: false,
-        projectStudioEnabled: false,
         ...provide,
       },
     });
@@ -109,7 +108,6 @@ describe('UserMenu component', () => {
           {},
           {
             isImpersonating: false,
-            projectStudioEnabled: true,
           },
         );
         expect(findStopImpersonationButton().exists()).toBe(false);
@@ -123,7 +121,6 @@ describe('UserMenu component', () => {
           {},
           {
             isImpersonating: true,
-            projectStudioEnabled: true,
           },
         );
         expect(findStopImpersonationButton().exists()).toBe(true);
@@ -486,13 +483,8 @@ describe('UserMenu component', () => {
   });
 
   describe('mobile user counts', () => {
-    it('do not render when Project Studio is disabled', () => {
-      createWrapper();
-      expect(wrapper.findByTestId('user-counts-item').exists()).toBe(false);
-    });
-
     it('should render with mobile-only CSS', () => {
-      createWrapper({}, {}, { projectStudioEnabled: true });
+      createWrapper();
       expect(wrapper.findByTestId('user-counts-item').classes()).toContain('md:gl-hidden');
     });
   });
@@ -556,37 +548,25 @@ describe('UserMenu component', () => {
     const findAdminLinkItem = () => wrapper.findByTestId('admin-link');
 
     it.each`
-      projectStudioEnabled | isAdmin  | adminModeFeatureEnabled | adminModeActive | isRendered
-      ${false}             | ${false} | ${false}                | ${false}        | ${false}
-      ${false}             | ${false} | ${false}                | ${true}         | ${false}
-      ${false}             | ${false} | ${true}                 | ${false}        | ${false}
-      ${false}             | ${false} | ${true}                 | ${true}         | ${false}
-      ${false}             | ${true}  | ${false}                | ${false}        | ${false}
-      ${false}             | ${true}  | ${false}                | ${true}         | ${false}
-      ${false}             | ${true}  | ${true}                 | ${false}        | ${false}
-      ${false}             | ${true}  | ${true}                 | ${true}         | ${false}
-      ${true}              | ${false} | ${false}                | ${false}        | ${false}
-      ${true}              | ${false} | ${false}                | ${true}         | ${false}
-      ${true}              | ${false} | ${true}                 | ${false}        | ${false}
-      ${true}              | ${false} | ${true}                 | ${true}         | ${false}
-      ${true}              | ${true}  | ${false}                | ${false}        | ${true}
-      ${true}              | ${true}  | ${false}                | ${true}         | ${true}
-      ${true}              | ${true}  | ${true}                 | ${false}        | ${false}
-      ${true}              | ${true}  | ${true}                 | ${true}         | ${true}
+      isAdmin  | adminModeFeatureEnabled | adminModeActive | isRendered
+      ${false} | ${false}                | ${false}        | ${false}
+      ${false} | ${false}                | ${true}         | ${false}
+      ${false} | ${true}                 | ${false}        | ${false}
+      ${false} | ${true}                 | ${true}         | ${false}
+      ${true}  | ${true}                 | ${false}        | ${false}
+      ${true}  | ${false}                | ${false}        | ${true}
+      ${true}  | ${false}                | ${true}         | ${true}
+      ${true}  | ${true}                 | ${true}         | ${true}
     `(
-      'admin link item rendered is $isRendered when project studio is $projectStudioEnabled, isAdmin is $isAdmin, adminModeFeatureEnabled is $adminModeFeatureEnabled, and adminModeActive is $adminModeActive',
-      ({ projectStudioEnabled, isAdmin, adminModeFeatureEnabled, adminModeActive, isRendered }) => {
-        createWrapper(
-          {
-            admin_mode: {
-              user_is_admin: isAdmin,
-              admin_mode_feature_enabled: adminModeFeatureEnabled,
-              admin_mode_active: adminModeActive,
-            },
+      'admin link item rendered is $isRendered when isAdmin is $isAdmin, adminModeFeatureEnabled is $adminModeFeatureEnabled, and adminModeActive is $adminModeActive',
+      ({ isAdmin, adminModeFeatureEnabled, adminModeActive, isRendered }) => {
+        createWrapper({
+          admin_mode: {
+            user_is_admin: isAdmin,
+            admin_mode_feature_enabled: adminModeFeatureEnabled,
+            admin_mode_active: adminModeActive,
           },
-          {},
-          { projectStudioEnabled },
-        );
+        });
         expect(findAdminLinkItem().exists()).toBe(isRendered);
       },
     );

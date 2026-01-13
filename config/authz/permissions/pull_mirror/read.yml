@@ -1,0 +1,5 @@
+---
+name: read_pull_mirror
+description: Grants the ability to read pull mirror configuration
+boundaries:
+  - project

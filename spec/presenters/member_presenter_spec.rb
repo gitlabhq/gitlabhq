@@ -39,6 +39,7 @@ RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
     it 'does not return levels lower than user highest membership in the hierarchy' do
       expect(described_class.new(subgroup_member).valid_level_roles).to eq(
         'Reporter' => Gitlab::Access::REPORTER,
+        'Security Manager' => Gitlab::Access::SECURITY_MANAGER,
         'Developer' => Gitlab::Access::DEVELOPER,
         'Maintainer' => Gitlab::Access::MAINTAINER,
         'Owner' => Gitlab::Access::OWNER
@@ -50,6 +51,7 @@ RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
         'Guest' => Gitlab::Access::GUEST,
         'Planner' => Gitlab::Access::PLANNER,
         'Reporter' => Gitlab::Access::REPORTER,
+        'Security Manager' => Gitlab::Access::SECURITY_MANAGER,
         'Developer' => Gitlab::Access::DEVELOPER,
         'Maintainer' => Gitlab::Access::MAINTAINER,
         'Owner' => Gitlab::Access::OWNER

@@ -22,13 +22,13 @@ RSpec.describe 'Upload a design through graphQL', :js, feature_category: :design
   let_it_be(:map) { { "1": ["variables.files.0"] }.to_json }
   let_it_be(:operations) do
     {
-      "operationName": "uploadDesign",
-      "variables": {
-        "files": [nil],
-        "projectPath": design.project.full_path,
-        "iid": design.issue.iid
+      operationName: "uploadDesign",
+      variables: {
+        files: [nil],
+        projectPath: design.project.full_path,
+        iid: design.issue.iid
       },
-      "query": query
+      query: query
     }.to_json
   end
 

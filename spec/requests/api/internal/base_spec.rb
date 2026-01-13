@@ -85,7 +85,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
   end
 
-  describe 'GET /internal/two_factor_recovery_codes' do
+  describe 'POST /internal/two_factor_recovery_codes' do
     let(:key_id) { key.id }
 
     subject do

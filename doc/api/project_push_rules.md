@@ -15,11 +15,8 @@ description: Manage project push rules to enforce commit standards, validate mes
 
 Use this API to manage project [push rules](../user/project/repository/push_rules.md).
 
-{{< alert type="note" >}}
-
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for all regular expressions in push rules.
-
-{{< /alert >}}
+> [!note]
+> GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for all regular expressions in push rules.
 
 ## Get project push rules
 

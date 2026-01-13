@@ -19,51 +19,65 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
     it { is_expected.to eq(job) }
 
     context 'with a database token' do
-      before do
-        stub_feature_flags(ci_job_token_jwt: false)
-        token # preloads the job
-      end
-
-      it { is_expected.to eq(job) }
-
-      it 'uses partition_id as a filter' do
-        recorder = ActiveRecord::QueryRecorder.new { execute }
-
-        expect(recorder).not_to exceed_query_limit(1).for_query(/FROM "p_ci_builds"/)
-        expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
-        expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."token_encrypted" IN/)
-      end
-
-      context 'when the partition_id is incorrect' do
+      shared_examples('finding the job using partition pruning') do
         before do
-          allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(123)
-        end
-
-        it 'queries all partitions' do
-          recorder = ActiveRecord::QueryRecorder.new { execute }
-
-          expect(recorder).not_to exceed_query_limit(2).for_query(/FROM "p_ci_builds"/)
-          expect(recorder).not_to exceed_query_limit(2).for_query(/"p_ci_builds"."token_encrypted" IN/)
-          expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+          stub_feature_flags(ci_job_token_jwt: false)
+          token # preloads the job
         end
 
         it { is_expected.to eq(job) }
-      end
 
-      context 'when the partition_id can not be decoded' do
-        before do
-          allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(nil)
-        end
-
-        it 'queries all partitions' do
+        it 'uses partition_id as a filter' do
           recorder = ActiveRecord::QueryRecorder.new { execute }
 
           expect(recorder).not_to exceed_query_limit(1).for_query(/FROM "p_ci_builds"/)
+          expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
           expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."token_encrypted" IN/)
-          expect(recorder).not_to exceed_query_limit(0).for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
         end
 
-        it { is_expected.to eq(job) }
+        context 'when the partition_id is incorrect' do
+          before do
+            allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(123)
+          end
+
+          it 'queries all partitions' do
+            recorder = ActiveRecord::QueryRecorder.new { execute }
+
+            expect(recorder).not_to exceed_query_limit(2).for_query(/FROM "p_ci_builds"/)
+            expect(recorder).not_to exceed_query_limit(2).for_query(/"p_ci_builds"."token_encrypted" IN/)
+            expect(recorder).not_to exceed_query_limit(1)
+              .for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+          end
+
+          it { is_expected.to eq(job) }
+        end
+
+        context 'when the partition_id can not be decoded' do
+          before do
+            allow(::Ci::Builds::TokenPrefix).to receive(:decode_partition).with(job.token).and_return(nil)
+          end
+
+          it 'queries all partitions' do
+            recorder = ActiveRecord::QueryRecorder.new { execute }
+
+            expect(recorder).not_to exceed_query_limit(1).for_query(/FROM "p_ci_builds"/)
+            expect(recorder).not_to exceed_query_limit(1).for_query(/"p_ci_builds"."token_encrypted" IN/)
+            expect(recorder).not_to exceed_query_limit(0)
+              .for_query(/"p_ci_builds"."partition_id" = #{job.partition_id}/)
+          end
+
+          it { is_expected.to eq(job) }
+        end
+      end
+
+      it_behaves_like 'finding the job using partition pruning'
+
+      context 'when feature flag ci_build_find_token_authenticatable is disabled' do
+        before do
+          stub_feature_flags(ci_build_find_token_authenticatable: false)
+        end
+
+        it_behaves_like 'finding the job using partition pruning'
       end
     end
 

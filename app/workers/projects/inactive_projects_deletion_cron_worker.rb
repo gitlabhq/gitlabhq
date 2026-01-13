@@ -28,7 +28,7 @@ module Projects
       project_id = last_processed_project_id
 
       Project.where('projects.id > ?', project_id).each_batch(of: 100) do |batch| # rubocop: disable CodeReuse/ActiveRecord
-        inactive_projects = batch.inactive.not_aimed_for_deletion
+        inactive_projects = batch.dormant.not_aimed_for_deletion
 
         inactive_projects.each do |project|
           if over_time?
@@ -113,7 +113,7 @@ module Projects
 
     def admin_bot_for_organization_id(organization_id)
       @admin_bots ||= {}
-      @admin_bots[organization_id] ||= Users::Internal.for_organization(organization_id).admin_bot
+      @admin_bots[organization_id] ||= Users::Internal.in_organization(organization_id).admin_bot
     end
   end
 end

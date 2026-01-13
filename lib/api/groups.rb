@@ -392,7 +392,7 @@ module API
 
         if response.success?
           status 200
-          present_group_details(params, group, with_projects: params[:with_projects])
+          present_group_details(params, group.reset, with_projects: params[:with_projects])
         else
           render_api_error!(response.message, 422)
         end
@@ -493,6 +493,7 @@ module API
         tags %w[groups]
       end
       params do
+        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
         optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
           desc: 'Limit by visibility'
@@ -758,6 +759,7 @@ The following criteria must be met:
 
 This feature is gated by the :group_agnostic_token_revocation feature flag.
         DETAIL
+        tags ['groups']
       end
       params do
         requires :id, type: String, desc: 'The ID of a top-level group'

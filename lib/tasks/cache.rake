@@ -10,7 +10,7 @@ namespace :cache do
       [Gitlab::Redis::Cache, Gitlab::Redis::RepositoryCache].each do |redis_instance|
         redis_instance.with do |redis|
           cache_key_pattern = %W[#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*
-                                 projects/*/pipeline_status]
+            projects/*/pipeline_status]
 
           cache_key_pattern.each do |match|
             cursor = REDIS_SCAN_START_STOP

@@ -8,6 +8,7 @@ import { s__ } from '~/locale';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import { initTimeline } from '~/rapid_diffs/app/init_timeline';
 
 class CommitRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
@@ -38,6 +39,7 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
       } = await axios.get(this.appData.discussionsEndpoint);
       useDiffDiscussions(pinia).setInitialDiscussions(discussions);
       initNewDiscussionToggle(this.root);
+      initTimeline(this.appData);
     } catch (error) {
       createAlert({
         message: s__('RapidDiffs|Failed to load discussions. Try to reload the page.'),

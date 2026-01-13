@@ -64,6 +64,6 @@ scope(path: '*repository_path', format: false) do
       path
     end
 
-    get '/info/refs', constraints: ::Constraints::RepositoryRedirectUrlConstrainer.new, to: ref_redirect
+    get '/info/refs', constraints: ::Repositories::RepositoryRedirectUrlConstraint.new, to: ref_redirect
   end
 end

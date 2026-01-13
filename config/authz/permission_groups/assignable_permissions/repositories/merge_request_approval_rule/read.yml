@@ -1,0 +1,7 @@
+---
+name: read_merge_request_approval_rule
+description: Grants the ability to read merge request approval rules
+permissions:
+  - read_merge_request_approval_rule
+boundaries:
+  - project

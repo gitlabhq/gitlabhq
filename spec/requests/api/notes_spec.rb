@@ -445,7 +445,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       context '/merge' do
         let(:request_body) { "/merge" }
         let(:project) { create(:project, :public, :repository) }
-        let(:merge_request) { create(:merge_request_with_multiple_diffs, source_project: project, target_project: project, author: user) }
+        let(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project, author: user) }
         let(:params) { { body: request_body, merge_request_diff_head_sha: merge_request.diff_head_sha } }
 
         before do

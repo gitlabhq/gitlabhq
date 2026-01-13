@@ -12,6 +12,8 @@ module Gitlab
       # For now, these migrations are not considered ready for general use, for more information see the tracking epic:
       # https://gitlab.com/groups/gitlab-org/-/epics/6751
       module BatchedBackgroundMigrationHelpers
+        include Gitlab::Database::DynamicModelHelpers
+
         NonExistentMigrationError = Class.new(StandardError)
         BATCH_SIZE = 1_000 # Number of rows to process per job
         SUB_BATCH_SIZE = 100 # Number of rows to process per sub-batch
@@ -79,52 +81,43 @@ module Gitlab
           pause_ms: MINIMUM_PAUSE_MS,
           max_batch_size: nil,
           sub_batch_size: SUB_BATCH_SIZE,
-          gitlab_schema: nil
+          gitlab_schema: nil,
+          min_cursor: nil,
+          max_cursor: nil
         )
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
 
           gitlab_schema ||= gitlab_schema_from_context
-          # Version of the migration that queued the BBM, this is used to establish dependencies
           queued_migration_version = version
 
           Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
 
-          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments, include_compatible: true).exists?
-            Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
-              "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
-              "job_arguments: #{job_arguments.inspect}"
+          if migration_already_exists?(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments)
             return
           end
 
-          job_interval = BATCH_MIN_DELAY if job_interval < BATCH_MIN_DELAY
-
-          batch_max_value ||= connection.select_value(<<~SQL)
-            SELECT MAX(#{connection.quote_column_name(batch_column_name)})
-            FROM #{connection.quote_table_name(batch_table_name)}
-          SQL
-
-          status_event = batch_max_value.nil? ? :finish : :execute
-          batch_max_value ||= batch_min_value
+          job_interval = normalize_job_interval(job_interval)
 
           migration = Gitlab::Database::BackgroundMigration::BatchedMigration.new(
             job_class_name: job_class_name,
             table_name: batch_table_name,
             column_name: batch_column_name,
-            job_arguments: job_arguments,
             interval: job_interval,
             pause_ms: pause_ms,
-            min_value: batch_min_value,
-            max_value: batch_max_value,
             batch_class_name: batch_class_name,
             batch_size: batch_size,
-            sub_batch_size: sub_batch_size,
-            status_event: status_event
+            sub_batch_size: sub_batch_size
           )
 
-          if migration.job_class.respond_to?(:job_arguments_count) && migration.job_class.job_arguments_count != job_arguments.count
-            raise "Wrong number of job arguments for #{migration.job_class_name} " \
-              "(given #{job_arguments.count}, expected #{migration.job_class.job_arguments_count})"
+          migration.tap do |m|
+            if cursor_based_migration?(m)
+              setup_cursor_based_migration!(m, batch_table_name, job_arguments, min_cursor, max_cursor)
+            else
+              setup_legacy_migration!(m, batch_table_name, batch_min_value, batch_max_value, job_arguments)
+            end
           end
+
+          validate_job_arguments!(migration, job_arguments)
 
           assign_attributes_safely(
             migration,
@@ -309,6 +302,84 @@ module Gitlab
           last_required_stop = Gitlab::Database.upgrade_path.last_required_stop
 
           raise EARLY_FINALIZATION_ERROR unless queued_migration_milestone <= last_required_stop
+        end
+
+        def migration_already_exists?(gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments)
+          if Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(
+            gitlab_schema, job_class_name, batch_table_name, batch_column_name, job_arguments, include_compatible: true
+          ).exists?
+            Gitlab::AppLogger.warn "Batched background migration not enqueued because it already exists: " \
+              "job_class_name: #{job_class_name}, table_name: #{batch_table_name}, column_name: #{batch_column_name}, " \
+              "job_arguments: #{job_arguments.inspect}"
+            true
+          else
+            false
+          end
+        end
+
+        def normalize_job_interval(job_interval)
+          job_interval < BATCH_MIN_DELAY ? BATCH_MIN_DELAY : job_interval
+        end
+
+        def cursor_based_migration?(migration)
+          migration.job_class.respond_to?(:cursor_columns) && !migration.job_class.cursor_columns.empty?
+        end
+
+        def setup_cursor_based_migration!(migration, batch_table_name, job_arguments, min_cursor, max_cursor)
+          cursor_columns = migration.job_class.cursor_columns
+          min_cursor, max_cursor = resolve_cursor_bounds(min_cursor, max_cursor, batch_table_name, cursor_columns)
+
+          migration.min_cursor = min_cursor
+          migration.max_cursor = max_cursor
+          migration.job_arguments = job_arguments
+          migration.status_event = max_cursor == min_cursor ? :finish : :execute
+        end
+
+        def resolve_cursor_bounds(min_cursor, max_cursor, batch_table_name, cursor_columns)
+          return [min_cursor, max_cursor] if min_cursor && max_cursor
+
+          determine_cursor_bounds(batch_table_name, cursor_columns)
+        end
+
+        def setup_legacy_migration!(migration, batch_table_name, batch_min_value, batch_max_value, job_arguments)
+          batch_max_value = determine_batch_max_value(batch_max_value, batch_table_name, migration.column_name, batch_min_value)
+
+          migration.min_value = batch_min_value
+          migration.max_value = batch_max_value
+          migration.job_arguments = job_arguments
+          migration.status_event = batch_max_value.nil? || batch_min_value == batch_max_value ? :finish : :execute
+        end
+
+        def determine_cursor_bounds(table_name, cursor_columns)
+          model = define_batchable_model(table_name, connection: connection)
+
+          min_cursor = model.order(cursor_columns.index_with { :asc }).pick(*cursor_columns)
+          max_cursor = model.order(cursor_columns.index_with { :desc }).pick(*cursor_columns)
+
+          [min_cursor, max_cursor]
+        end
+
+        def determine_batch_max_value(batch_max_value, batch_table_name, batch_column_name, batch_min_value)
+          return batch_max_value if batch_max_value
+
+          max_value = connection.select_value(<<~SQL)
+            SELECT MAX(#{connection.quote_column_name(batch_column_name)})
+            FROM #{connection.quote_table_name(batch_table_name)}
+          SQL
+
+          max_value || batch_min_value
+        end
+
+        def validate_job_arguments!(migration, original_job_arguments)
+          return unless migration.job_class.respond_to?(:job_arguments_count)
+
+          expected_count = migration.job_class.job_arguments_count
+          actual_count = original_job_arguments.count
+
+          return if expected_count == actual_count
+
+          raise "Wrong number of job arguments for #{migration.job_class_name} " \
+            "(given #{actual_count}, expected #{expected_count})"
         end
       end
     end

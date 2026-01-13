@@ -9,12 +9,8 @@ title: Document features deployed behind feature flags
 GitLab uses [feature flags](../feature_flags/_index.md) to roll
 out the deployment of its own features.
 
-{{< alert type="note" >}}
-
-The developer who changes the state of a feature flag is responsible for
-updating the documentation.
-
-{{< /alert >}}
+> [!note]
+> The developer who changes the state of a feature flag is responsible for updating the documentation.
 
 ## When to document features behind a feature flag
 
@@ -81,24 +77,18 @@ Add this feature flag note at the start of the topic, just below the history.
 The final sentence (`not ready for production use`) is optional.
 
 ```markdown
-{{</* alert type="flag" */>}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{</* /alert */>}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 ```
 
 This note renders on the GitLab documentation site as:
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 ## History examples
 
@@ -111,11 +101,8 @@ The following examples show the progression of a feature flag. Update the histor
 
 {{</* /history */>}}
 
-{{</* alert type="flag" */>}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{</* /alert */>}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 ```
 
 When the feature is enabled by default on GitLab.com:
@@ -128,11 +115,8 @@ When the feature is enabled by default on GitLab.com:
 
 {{</* /history */>}}
 
-{{</* alert type="flag" */>}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{</* /alert */>}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 ```
 
 When the feature is enabled by default for all offerings:
@@ -146,11 +130,8 @@ When the feature is enabled by default for all offerings:
 
 {{</* /history */>}}
 
-{{</* alert type="flag" */>}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{</* /alert */>}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 ```
 
 When the flag is removed, add a `Generally available` entry. Ensure that you delete the `FLAG` note as well:

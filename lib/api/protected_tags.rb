@@ -28,6 +28,7 @@ module API
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_protected_tag, boundary_type: :project
       get ':id/protected_tags' do
         authorize!(:read_protected_tags, user_project)
         protected_tags = user_project.protected_tags.preload(:create_access_levels)
@@ -49,6 +50,7 @@ module API
         requires :name, type: String, desc: 'The name of the tag or wildcard', documentation: { example: 'release*' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :read_protected_tag, boundary_type: :project
       get ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize!(:read_protected_tags, user_project)
         protected_tag = user_project.protected_tags.find_by!(name: params[:name])
@@ -76,6 +78,7 @@ module API
           documentation: { example: 30 }
         use :optional_params_ee
       end
+      route_setting :authorization, permissions: :create_protected_tag, boundary_type: :project
       post ':id/protected_tags' do
         authorize!(:create_protected_tags, user_project)
         protected_tags_params = {
@@ -108,6 +111,7 @@ module API
         requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
+      route_setting :authorization, permissions: :delete_protected_tag, boundary_type: :project
       delete ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize!(:destroy_protected_tags, user_project)
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::TopicsController, :with_current_organization do
+RSpec.describe Admin::TopicsController, feature_category: :groups_and_projects do
   let_it_be(:namespace) { create :namespace, organization: current_organization }
   let_it_be(:topic) { create(:topic, name: 'topic', organization: namespace.organization) }
   let_it_be(:admin) { create(:admin, namespace: namespace) }
@@ -79,7 +79,7 @@ RSpec.describe Admin::TopicsController, :with_current_organization do
     it 'creates topic' do
       expect do
         post :create, params: { projects_topic: { name: 'test', title: 'Test' } }
-      end.to change { Projects::Topic.for_organization(current_organization.id).count }.by(1)
+      end.to change { Projects::Topic.in_organization(current_organization.id).count }.by(1)
     end
 
     it 'shows error message for invalid topic name' do

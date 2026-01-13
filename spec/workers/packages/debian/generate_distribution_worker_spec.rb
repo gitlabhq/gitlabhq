@@ -51,12 +51,17 @@ RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker, feat
           end
         end
 
-        context 'with valid parameters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446272' do
+        context 'with valid parameters',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17065' do
           it_behaves_like 'an idempotent worker' do
             let(:job_args) { [container_type_as_string, distribution_id] }
 
             it_behaves_like 'Generate Debian Distribution and component files'
           end
+
+          # Error tests are outside the idempotent worker wrapper because
+          # errors prevent re-execution, causing the idempotent check to fail
+          it_behaves_like 'Debian Distribution key generation error'
         end
       end
     end

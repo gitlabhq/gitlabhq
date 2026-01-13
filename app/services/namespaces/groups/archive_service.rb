@@ -14,8 +14,8 @@ module Namespaces
       AncestorAlreadyArchivedError = ServiceResponse.error(
         message: 'Cannot archive group since one of the ancestor groups is already archived!'
       )
-      ArchivingFailedError = ServiceResponse.error(
-        message: 'Failed to archive group!'
+      ScheduledDeletionError = ServiceResponse.error(
+        message: 'Cannot archive group since it is scheduled for deletion.'
       )
 
       Error = Class.new(StandardError)
@@ -26,20 +26,40 @@ module Namespaces
           return NotAuthorizedError
         end
 
-        return AlreadyArchivedError if group.archived
+        return AlreadyArchivedError if group.self_archived?
         return AncestorAlreadyArchivedError if group.ancestors_archived?
-        return ArchivingFailedError unless group.namespace_settings.update(archived: true)
+        return ScheduledDeletionError if group.scheduled_for_deletion_in_hierarchy_chain?
+
+        if unarchive_descendants?
+          group.transaction do
+            archive_group
+            group.unarchive_descendants!
+            group.unarchive_all_projects!
+          end
+        else
+          archive_group
+        end
 
         after_archive
         ServiceResponse.success
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, StateMachines::InvalidTransition
+        message = "Failed to archive group! #{group.errors.full_messages.to_sentence}".strip
+        ServiceResponse.error(message: message)
       end
 
       private
 
+      def archive_group
+        Namespace.transaction do
+          group.archive!(transition_user: current_user)
+          group.namespace_settings.update!(archived: true)
+        end
+      end
+
       def after_archive
         system_hook_service.execute_hooks_for(group, :update)
         publish_events
-        unlink_project_forks if Feature.enabled?(:destroy_fork_network_on_group_archive, group)
+        unlink_project_forks
       end
 
       def unlink_project_forks
@@ -48,6 +68,10 @@ module Namespaces
 
       def error_response(message)
         ServiceResponse.error(message: message)
+      end
+
+      def unarchive_descendants?
+        Feature.enabled?(:cascade_unarchive_group, group, type: :gitlab_com_derisk)
       end
     end
   end

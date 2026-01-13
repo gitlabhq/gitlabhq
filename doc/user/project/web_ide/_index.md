@@ -361,7 +361,7 @@ The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) ex
 
 ## Related topics
 
-- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
+- [GitLab Duo Chat (Classic) in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 

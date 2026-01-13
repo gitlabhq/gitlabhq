@@ -1,4 +1,4 @@
-import { GlButton, GlCard, GlLink } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import ArchiveSettings from '~/groups_projects/archive/components/archive_settings.vue';
@@ -9,6 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
@@ -29,17 +30,22 @@ describe('ArchiveSettings', () => {
     resourceType: RESOURCE_TYPES.GROUP,
     resourcePath: '/groups/test-group',
     resourceId: '123',
+    markedForDeletion: false,
     helpPath: '/help-path',
   };
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(ArchiveSettings, {
       propsData: { ...defaultProps, ...props },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
   const findGlCard = () => wrapper.findComponent(GlCard);
   const findGlButton = () => wrapper.findComponent(GlButton);
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
   const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe.each(Object.values(RESOURCE_TYPES))('for %s', (resourceType) => {
@@ -70,6 +76,27 @@ describe('ArchiveSettings', () => {
         createComponent({ props: { resourceType, helpPath: null } });
 
         expect(findGlLink().exists()).toBe(false);
+      });
+    });
+
+    describe('when markedForDeletion is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { resourceType, markedForDeletion: true } });
+      });
+
+      it('renders cancel icon with tooltip', () => {
+        const expectText = `To archive this ${resourceType}, you must restore it from deletion.`;
+
+        const icon = findGlIcon();
+        const tooltipDirective = getBinding(icon.element, 'gl-tooltip');
+
+        expect(icon.props('name')).toBe('cancel');
+        expect(icon.props('ariaLabel')).toBe(expectText);
+        expect(tooltipDirective.value).toBe(expectText);
+      });
+
+      it('does not render archive button', () => {
+        expect(findGlButton().exists()).toBe(false);
       });
     });
 

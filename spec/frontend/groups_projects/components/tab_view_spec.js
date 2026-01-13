@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { markRaw } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
@@ -36,7 +36,6 @@ import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';

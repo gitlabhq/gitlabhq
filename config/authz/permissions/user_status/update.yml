@@ -1,0 +1,5 @@
+---
+name: update_user_status
+description: Grants the ability to update user status
+boundaries:
+  - user

@@ -11,9 +11,9 @@ RSpec.describe FormHelper, feature_category: :shared do
 
       expect(helper.dropdown_max_select({}))
         .to eq(max)
-      expect(helper.dropdown_max_select({ 'max-select'.to_sym => 5 }))
+      expect(helper.dropdown_max_select({ "max-select": 5 }))
         .to eq(5)
-      expect(helper.dropdown_max_select({ 'max-select'.to_sym => max + 5 }))
+      expect(helper.dropdown_max_select({ "max-select": max + 5 }))
         .to eq(max)
     end
   end

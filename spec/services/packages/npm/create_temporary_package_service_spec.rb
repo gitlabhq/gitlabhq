@@ -32,44 +32,62 @@ RSpec.describe Packages::Npm::CreateTemporaryPackageService, feature_category: :
       end
     end
 
-    it 'creates temporary npm package and returns a success response with payload' do
-      expect { execute }
-        .to change { Packages::Npm::Package.count }.from(0).to(1)
+    shared_examples 'creating temporary npm package and returning a success response with payload' do
+      it 'creates temporary npm package and returns a success response with payload' do
+        expect { execute }
+          .to change { Packages::Npm::Package.count }.from(0).to(1)
 
-      is_expected.to be_success.and have_attributes(
-        payload: {
-          package: have_attributes(
-            name: package_name,
-            version: version,
-            status: 'processing',
-            package_type: 'npm'
-          )
-        }
-      )
+        is_expected.to be_success.and have_attributes(
+          payload: {
+            package: have_attributes(
+              name: package_name,
+              version: version,
+              status: 'processing',
+              package_type: 'npm'
+            )
+          }
+        )
+      end
     end
 
-    it 'creates package file' do
-      expect { execute }
-        .to change { Packages::PackageFile.count }.from(0).to(1)
+    shared_examples 'creating package file' do
+      it 'creates package file' do
+        expect { execute }
+          .to change { Packages::PackageFile.count }.from(0).to(1)
 
-      package_file = execute.payload[:package].package_files.first
+        package_file = execute.payload[:package].package_files.first
 
-      expect(package_file).to have_attributes(
-        file_name: "#{package_name}-#{version}.json",
-        file_sha1: sha1,
-        size: file.size,
-        status: 'processing'
-      )
+        expect(package_file).to have_attributes(
+          file_name: "#{package_name}-#{version}.json",
+          file_sha1: sha1,
+          size: file.size,
+          status: 'processing'
+        )
 
-      expect(package_file.file.content_type).to eq(described_class::CONTENT_TYPE)
+        expect(package_file.file.content_type).to eq(described_class::CONTENT_TYPE)
+      end
     end
 
-    it 'enqueues process temporary file worker', :sidekiq_inline do
-      expect(::Packages::Npm::ProcessTemporaryPackageFileWorker).to receive(:perform_async)
-        .with(user.id, an_instance_of(Integer), deprecate)
-        .and_call_original
+    shared_examples 'enqueueing process temporary file worker' do
+      it 'enqueues process temporary file worker', :sidekiq_inline do
+        expect(::Packages::Npm::ProcessTemporaryPackageFileWorker).to receive(:perform_async)
+          .with(user.to_global_id.to_s, an_instance_of(Integer), deprecate)
+          .and_call_original
 
-      execute
+        execute
+      end
+    end
+
+    it_behaves_like 'creating temporary npm package and returning a success response with payload'
+    it_behaves_like 'creating package file'
+    it_behaves_like 'enqueueing process temporary file worker'
+
+    context 'with deploy token' do
+      let_it_be(:user) { create(:deploy_token, :all_scopes, projects: [project]) }
+
+      it_behaves_like 'creating temporary npm package and returning a success response with payload'
+      it_behaves_like 'creating package file'
+      it_behaves_like 'enqueueing process temporary file worker'
     end
 
     context 'with CI job' do

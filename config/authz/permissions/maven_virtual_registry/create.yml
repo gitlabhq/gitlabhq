@@ -1,0 +1,4 @@
+name: create_maven_virtual_registry
+description: Grants the ability to create Maven virtual registries
+boundaries:
+  - group

@@ -20,6 +20,7 @@ module API
     end
 
     desc 'Get the current application settings' do
+      tags ['settings']
       success Entities::ApplicationSetting
     end
     get "application/settings" do
@@ -27,6 +28,7 @@ module API
     end
 
     desc 'Modify application settings' do
+      tags ['settings']
       success Entities::ApplicationSetting
     end
     params do

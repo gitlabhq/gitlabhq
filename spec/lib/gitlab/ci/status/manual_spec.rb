@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Manual do
+RSpec.describe Gitlab::Ci::Status::Manual, feature_category: :continuous_integration do
   subject do
     described_class.new(double('subject'), double('user'))
   end

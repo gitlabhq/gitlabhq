@@ -3,12 +3,12 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', '~> 15', '>= 15.7.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 3.2.1', require: false
+gem 'gitlab_quality-test_tooling', '~> 3.3.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'gitlab-rspec', path: '../gems/gitlab-rspec', require: false
 
 gem 'activesupport', '~> 7.2.3' # This should stay in sync with the root's Gemfile
-gem 'allure-rspec', '~> 2.27.0'
+gem 'allure-rspec', '~> 2.28.0'
 gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'deprecation_toolkit', '~> 2.3.0', require: false
@@ -26,8 +26,8 @@ gem 'parallel', '~> 1.27'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 2.0.1'
 gem 'octokit', '~> 9.2.0', require: false
-gem 'faraday-retry', '~> 2.3', '>= 2.3.2'
-gem 'zeitwerk', '~> 2.7', '>= 2.7.3'
+gem 'faraday-retry', '~> 2.4'
+gem 'zeitwerk', '~> 2.7', '>= 2.7.4'
 gem 'terminal-table', '~> 4.0.0', require: false
 gem 'slack-notifier', '~> 2.4', require: false
 gem 'fog-google', '~> 1.26', require: false

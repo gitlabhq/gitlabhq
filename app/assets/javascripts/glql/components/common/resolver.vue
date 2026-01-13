@@ -22,6 +22,11 @@ export default {
       required: true,
       type: String,
     },
+    trackingEventName: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -143,8 +148,10 @@ export default {
     },
 
     async trackRender() {
+      if (!this.trackingEventName) return;
+
       try {
-        this.trackEvent('render_glql_block', { label: await sha256(this.glqlQuery) });
+        this.trackEvent(this.trackingEventName, { label: await sha256(this.glqlQuery) });
       } catch (e) {
         // ignore any tracking errors
       }

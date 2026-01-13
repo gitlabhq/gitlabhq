@@ -318,11 +318,8 @@ clear it.
 
 To clear all exclusive leases:
 
-{{< alert type="warning" >}}
-
-Don't run it while GitLab or Sidekiq is running
-
-{{< /alert >}}
+> [!warning]
+> Don't run this command while GitLab or Sidekiq is running
 
 ```shell
 sudo gitlab-rake gitlab:exclusive_lease:clear
@@ -407,11 +404,8 @@ order that conforms to the GitLab release cadence.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Use with caution when running in a production environment, and run during off-peak times.
-
-{{< /alert >}}
+> [!warning]
+> Use with caution when running in a production environment, and run during off-peak times.
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy
 levels of index bloat over time. Reindexing can also be run as a
@@ -723,11 +717,8 @@ sudo gitlab-rake gitlab:db:collation_checker:ci
 By default, tables larger than 1 GB are skipped to avoid long-running queries that could impact database performance.
 You can adjust the table size threshold by setting the `MAX_TABLE_SIZE` environment variable.
 
-{{< alert type="warning" >}}
-
-Increasing the table size limit might result in long-running queries that could impact database performance.
-
-{{< /alert >}}
+> [!warning]
+> Increasing the table size limit might result in long-running queries that could impact database performance.
 
 ```shell
 # Set custom table size limit (in bytes)

@@ -2,10 +2,10 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { observeElementOnce } from '~/lib/utils/dom_utils';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
-import { getScrollingElement } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 
 jest.mock('~/lib/utils/dom_utils');
-jest.mock('~/lib/utils/scroll_utils');
+jest.mock('~/lib/utils/panels');
 
 describe('StickyViewportFillerHeight', () => {
   const initialViewportHeight = 800;

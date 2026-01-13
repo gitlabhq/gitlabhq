@@ -73,7 +73,7 @@ The GitLab standard consists of the following rules:
 - Prevent committers as approvers.
 - At least two approvals.
 - Static application security testing (SAST) scanner artifact.
-- Dynamic Application Security Testing (DAST) scanner artifact.
+- Dynamic application security testing (DAST) scanner artifact.
 
 ### Prevent authors as approvers
 

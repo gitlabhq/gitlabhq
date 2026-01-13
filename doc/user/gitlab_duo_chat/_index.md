@@ -19,7 +19,7 @@ title: GitLab Duo Chat (Classic)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
-{{< /collapsible>}}
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -44,7 +44,7 @@ contextual, conversational AI. Chat:
 - Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
 - Can include information from your repositories and projects to deliver targeted improvements.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
 Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).
@@ -63,11 +63,8 @@ You can also use GitLab Duo Chat in these IDEs by installing an editor extension
 - [Eclipse](../../editor_extensions/eclipse/setup.md)
 - [Visual Studio](../../editor_extensions/visual_studio/setup.md)
 
-{{< alert type="note" >}}
-
-If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
-
-{{< /alert >}}
+> [!note]
+> If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
 
 ## Use GitLab Duo Chat in the GitLab UI
 
@@ -76,15 +73,9 @@ If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user exp
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
 - Classic navigation instructions removed in GitLab 18.7.
+- New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of the new navigation and GitLab Duo sidebar is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 
@@ -101,6 +92,7 @@ To use Chat in the GitLab UI:
    ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
    ({{< icon name="duo-chat" >}}).
    A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+1. Under the Chat text box, turn off the **Agentic** toggle.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat)
      for your chat.
@@ -133,6 +125,7 @@ In GitLab 17.10 and later, you can have an unlimited number of simultaneous conv
    - On the GitLab Duo sidebar, select **New GitLab Duo Chat** ({{< icon name="pencil-square" >}}).
    - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
    A new Chat conversation replaces the previous one.
+1. Under the Chat text box, turn off the **Agentic** toggle.
 1. To view all of your conversations, view the [Chat history](#view-the-chat-history).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
 

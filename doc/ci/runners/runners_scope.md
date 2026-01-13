@@ -287,11 +287,8 @@ To create a group runner:
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
-{{< alert type="note" >}}
-
-The runner authentication token displays in the UI for only a short period of time during registration.
-
-{{< /alert >}}
+> [!note]
+> The runner authentication token displays in the UI for only a short period of time during registration.
 
 ### Create a group runner with a registration token (deprecated)
 
@@ -543,11 +540,8 @@ To create a project runner:
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
-{{< alert type="note" >}}
-
-The runner authentication token displays in the UI for only a short period of time during registration.
-
-{{< /alert >}}
+> [!note]
+> The runner authentication token displays in the UI for only a short period of time during registration.
 
 ### Create a project runner with a registration token (deprecated)
 

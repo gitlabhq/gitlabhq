@@ -53,7 +53,7 @@ Two connectivity options are available:
 - Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist) to restrict access to specified IP addresses.
 - Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) connections.
 
-For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificate-authority).
+For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificate-authorities-for-external-services).
 
 ##### Private connectivity for webhooks and integrations
 
@@ -182,11 +182,8 @@ To request proxied downloads:
 1. Include information about your network security requirements.
 1. Specify which object types need proxied access.
 
-{{< alert type="note" >}}
-
-Proxied downloads impact performance compared to direct S3 access.
-
-{{< /alert >}}
+> [!note]
+> Proxied downloads impact performance compared to direct S3 access.
 
 For more information, see [proxy download](../../administration/object_storage.md#proxy-download).
 
@@ -365,13 +362,13 @@ or [webhooks](../../user/project/integrations/webhooks.md) to trigger external a
 
 ## Service level availability
 
-GitLab Dedicated maintains a monthly service level objective of 99.5% availability.
+GitLab Dedicated maintains a monthly service level objective of 99.9% availability.
 
 Service level availability measures the percentage of time that GitLab Dedicated is available for use during a calendar month. GitLab calculates availability based on the following core services:
 
 | Service area       | Included features                                                                 |
 | ------------------ | --------------------------------------------------------------------------------- |
-| Web interface      | GitLab issues, merge requests, CI job logs, GitLab API, Git operations over HTTPS |
+| Web interface      | GitLab issues, merge requests, GitLab API, Git operations over HTTPS |
 | Container Registry | Registry HTTPS requests                                                           |
 | Git operations     | Git push, pull, and clone operations over SSH                                     |
 
@@ -384,6 +381,11 @@ The following are not included in service level availability calculations:
 - Scheduled maintenance windows
 - Emergency maintenance for critical security or data issues
 - Service disruptions caused by natural disasters, widespread internet outages, datacenter failures, or other events outside of GitLab control.
+
+### Disaster recovery
+
+For more information about disaster recovery, including recovery objectives, see
+[disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).
 
 ## Migrate to GitLab Dedicated
 

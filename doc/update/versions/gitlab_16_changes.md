@@ -869,7 +869,7 @@ Specific information applies to installations using Geo:
 
   - [Container registry](../../administration/packages/container_registry.md)
   - [Gitaly](../../administration/gitaly/tls_support.md)
-  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates)
+  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manually-add-ssltls-certificates)
   - Workhorse
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
@@ -1334,11 +1334,8 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
-{{< alert type="warning" >}}
-
-Double check your update to `storage`. You must append `/repositories` to the value of `path`.
-
-{{< /alert >}}
+> [!warning]
+> Double check your update to `storage`. You must append `/repositories` to the value of `path`.
 
 ```ruby
 gitaly['configuration'] = {

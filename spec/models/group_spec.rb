@@ -865,6 +865,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
     end
 
+    describe '#descendant_ids' do
+      it { expect(group.descendant_ids.to_sql).to include 'traversal_ids @>' }
+    end
+
     describe '#self_and_hierarchy' do
       it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
     end
@@ -1313,6 +1317,18 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.self_not_aimed_for_deletion' do
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
+
+      subject(:relation) { described_class.self_not_aimed_for_deletion }
+
+      it 'only includes groups not marked for deletion', :aggregate_failures do
+        is_expected.to include(group_not_marked_for_deletion)
+        is_expected.not_to include(group_marked_for_deletion)
+      end
+    end
+
     describe '.self_and_ancestors_not_aimed_for_deletion' do
       let_it_be(:group_not_marked_for_deletion) { create(:group) }
       let_it_be(:group_not_marked_for_deletion_subgroup) { create(:group, parent: group_not_marked_for_deletion) }
@@ -1707,6 +1723,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it_behaves_like 'ancestor aware active scope'
     end
 
+    describe '.self_active' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+
+      subject { described_class.self_active }
+
+      it { is_expected.to include(active_group) }
+      it { is_expected.not_to include(inactive_group) }
+    end
+
     describe '.self_and_ancestors_active' do
       subject { described_class.self_and_ancestors_active }
 
@@ -1726,6 +1752,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       subject { described_class.inactive }
 
       it_behaves_like 'ancestor aware inactive scope'
+    end
+
+    describe '.self_inactive' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+
+      subject { described_class.self_inactive }
+
+      it { is_expected.to include(inactive_group) }
+      it { is_expected.not_to include(active_group) }
     end
 
     describe '.self_or_ancestors_inactive' do
@@ -3587,6 +3623,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           'Guest' => 10,
           'Planner' => 15,
           'Reporter' => 20,
+          'Security Manager' => 25,
           'Developer' => 30,
           'Maintainer' => 40,
           'Owner' => 50
@@ -4287,6 +4324,28 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#use_work_item_url?' do
+    where(:consolidated_list, :legacy_url, :result) do
+      false | false | false
+      false | true | false
+      true | false | true
+      true | true | false
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(
+          work_item_planning_view: consolidated_list,
+          work_item_legacy_url: legacy_url
+        )
+      end
+
+      subject(:use_work_item_url?) { group.use_work_item_url? }
+
+      it { is_expected.to be(result) }
+    end
+  end
+
   describe '#work_items_saved_views_enabled?' do
     let_it_be(:user) { create(:user) }
 
@@ -4626,6 +4685,111 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'roles_user_can_assign' do
       let(:resource) { group }
       let(:membership) { create(:group_member, user: user, group: resource) }
+    end
+  end
+
+  describe '.security_managers' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:security_manager) { create(:group_member, :security_manager, group: group) }
+    let_it_be(:developer) { create(:group_member, :developer, group: group) }
+
+    context 'when security manager role is enabled' do
+      it 'returns security manager members' do
+        expect(group.members.security_managers).to include(security_manager)
+        expect(group.members.security_managers).not_to include(developer)
+      end
+    end
+
+    context 'when security manager role is disabled', :disable_security_manager do
+      it 'returns empty relation' do
+        expect(group.members.security_managers).to be_empty
+      end
+
+      it 'does not return security manager members even if they exist' do
+        expect(group.members.security_managers).not_to include(security_manager)
+      end
+    end
+  end
+
+  describe '#add_security_manager' do
+    let_it_be(:user) { create(:user) }
+
+    context 'with security manager role' do
+      it 'adds security manager when feature is enabled' do
+        member = group.add_security_manager(user)
+        expect(member.access_level).to eq(Gitlab::Access::SECURITY_MANAGER)
+        expect(group.members.security_managers).to include(member)
+      end
+    end
+
+    context 'when security manager role is disabled', :disable_security_manager do
+      it 'returns nil and does not add the user' do
+        result = group.add_security_manager(user)
+
+        expect(result).to be_nil
+        expect(group.members.where(user: user)).to be_empty
+      end
+    end
+  end
+
+  describe '#unarchive_descendants!' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group, :archived, parent: parent_group) }
+    let_it_be_with_reload(:subgroup) { create(:group, :archived, parent: group) }
+    let_it_be_with_reload(:sub_subgroup) { create(:group, :archived, parent: subgroup) }
+
+    it 'does not unarchive the group itself' do
+      group.unarchive_descendants!
+
+      expect(group.namespace_settings.reload.archived).to be(true)
+    end
+
+    it 'unarchives all descendant groups', :aggregate_failures do
+      group.unarchive_descendants!
+
+      expect(subgroup.namespace_settings.reload.archived).to be(false)
+      expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
+    end
+
+    it 'does not unarchive parent groups' do
+      parent_group.namespace_settings.update!(archived: true)
+
+      group.unarchive_descendants!
+
+      expect(parent_group.namespace_settings.reload.archived).to be(true)
+    end
+
+    it 'does not affect groups that are not archived' do
+      unarchived_group = create(:group, parent: group)
+
+      expect { group.unarchive_descendants! }.not_to change {
+        unarchived_group.namespace_settings.reload.archived
+      }
+    end
+  end
+
+  describe '#unarchive_all_projects!' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:archived_project_1) { create(:project, :archived, group: group) }
+    let_it_be_with_reload(:archived_project_2) { create(:project, :archived, group: group) }
+    let_it_be_with_reload(:non_archived_project) { create(:project, group: group) }
+
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:subgroup_archived_project) { create(:project, :archived, group: subgroup) }
+    let_it_be_with_reload(:subgroup_non_archived_project) { create(:project, group: subgroup) }
+
+    it 'unarchives all archived projects in the group', :aggregate_failures do
+      group.unarchive_all_projects!
+
+      expect(archived_project_1.reload.archived).to be(false)
+      expect(archived_project_2.reload.archived).to be(false)
+      expect(subgroup_archived_project.reload.archived).to be(false)
+    end
+
+    it 'does not affect projects that are not archived' do
+      expect { group.unarchive_all_projects! }
+        .to not_change { non_archived_project.reload.archived }
+          .and not_change { subgroup_non_archived_project.reload.archived }
     end
   end
 end

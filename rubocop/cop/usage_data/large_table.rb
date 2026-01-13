@@ -55,7 +55,7 @@ module RuboCop
             class_name = one_level_matches[0].first
             method_used = one_level_matches[1]&.first
           else
-            class_name = "#{two_level_matches[0].first}::#{two_level_matches[1].first}".to_sym
+            class_name = :"#{two_level_matches[0].first}::#{two_level_matches[1].first}"
             method_used = two_level_matches[2]&.first
           end
 

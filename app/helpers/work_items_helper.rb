@@ -16,9 +16,7 @@ module WorkItemsHelper
   # This method will be removed once all properties are migrated to GraphQL.
   # overridden in EE
   def work_item_views_only_data(resource_parent, current_user)
-    group = extract_group(resource_parent)
-
-    base_data_legacy_only(resource_parent, current_user, group)
+    base_data_legacy_only(resource_parent, current_user)
   end
 
   # overridden in EE
@@ -88,23 +86,11 @@ module WorkItemsHelper
   end
   # rubocop:enable Metrics/AbcSize
 
-  def base_data_legacy_only(resource_parent, current_user, group)
+  def base_data_legacy_only(resource_parent, current_user)
     {
       full_path: resource_parent.full_path,
       issues_list_path: issues_path_for(resource_parent),
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
-      initial_sort: current_user&.user_preference&.issues_sort,
-      is_signed_in: current_user.present?.to_s,
-      show_new_work_item: show_new_work_item_link?(resource_parent).to_s,
-      is_issue_repositioning_disabled: issue_repositioning_disabled(resource_parent).to_s,
-      project_namespace_full_path:
-        resource_parent.is_a?(Project) ? resource_parent.namespace.full_path : resource_parent.full_path,
-      group_id: group&.id,
-      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
-      can_read_crm_contact: can?(current_user, :read_crm_contact, resource_parent.crm_group).to_s,
-      max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
-      can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
-      has_projects: has_group_projects?(resource_parent).to_s,
       work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s,
       work_items_saved_views_enabled: resource_parent.work_items_saved_views_enabled?(current_user).to_s
     }

@@ -114,7 +114,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes || [];
+        return data.namespace?.workItemTypes?.nodes || [];
       },
       error(e) {
         this.throwError(e);

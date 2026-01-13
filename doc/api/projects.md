@@ -621,7 +621,10 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
 {{< alert type="note" >}}
 
 `last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity)
-and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+and [project events](events.md). To optimize database performance, this field updates at most once per hour.
+Events occurring within one hour of the last update do not modify the timestamp.
+As a result, `last_activity_at` can be out of date by up to one hour.
+`updated_at` is updated whenever the project record is changed in the database.
 
 {{< /alert >}}
 
@@ -654,11 +657,8 @@ Prerequisites:
 
 - To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
 
-{{< alert type="note" >}}
-
-Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
-
-{{< /alert >}}
+> [!note]
+> Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
 
 This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination)
 for selected `order_by` options.
@@ -1706,7 +1706,7 @@ Supported general project attributes:
 | `auto_cancel_pending_pipelines`                    | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                      | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
-| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
+| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [GitLab Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |
@@ -2436,6 +2436,18 @@ Upload an avatar to the specified project.
 PUT /projects/:id
 ```
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
+- The image must be one of the following file types:
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
+
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
@@ -2445,8 +2457,8 @@ Supported attributes:
 
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
-preceded by `@`. For example:
+`avatar=` parameter must point to an image file on your file system and be
+preceded by `@`.
 
 Example request:
 

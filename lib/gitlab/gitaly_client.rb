@@ -54,6 +54,23 @@ module Gitlab
     end
     private_class_method :interceptors
 
+    def self.retry_policy
+      ## Default max retry time is 6 seconds:
+      ##  0.4 +
+      ##  (0.4 * 2) = 0.8 +
+      ##  (0.8 * 2) = 1.6 +
+      ##  (1.6 * 2) = 3.2
+      ##  ==
+      ##  0.4 + 0.8 + 1.6 + 3.2 = 6
+      {
+        maxAttempts: Gitlab.config.gitaly.try(:client_max_attempts) || 4,
+        initialBackoff: '0.4s',
+        maxBackoff: Gitlab.config.gitaly.try(:client_max_backoff) || '1.4s',
+        backoffMultiplier: 2,
+        retryableStatusCodes: %w[UNAVAILABLE ABORTED]
+      }
+    end
+
     def self.channel_args
       {
         # These keepalive values match the go Gitaly client
@@ -173,13 +190,7 @@ module Gitlab
                 { service: 'gitaly.ServerService', method: 'ServerSignature' },
                 { service: 'grpc.health.v1.Health', method: 'Check' }
               ],
-              retryPolicy: {
-                maxAttempts: 4, # Initial request, plus up to three retries.
-                initialBackoff: '0.4s',
-                maxBackoff: '1.4s',
-                backoffMultiplier: 2, # Maximum retry duration is 2400ms.
-                retryableStatusCodes: %w[UNAVAILABLE ABORTED]
-              }
+              retryPolicy: retry_policy
             }
           ]
         }.to_json

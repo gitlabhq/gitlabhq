@@ -42,7 +42,7 @@ RSpec.describe CheckRateLimit do
 
     it 'renders error and logs request if throttled' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
-      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
       expect(subject).to receive(:render).with({ plain: _('This endpoint has been requested too many times. Try again later.'), status: :too_many_requests })
 
       subject.check_rate_limit!(key, scope: scope)
@@ -50,7 +50,7 @@ RSpec.describe CheckRateLimit do
 
     it 'redirects back if throttled and redirect_back option is set to true' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
-      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
       expect(subject).not_to receive(:render)
       expect(subject).to receive(:redirect_back_or_default).with(options: { alert: _('This endpoint has been requested too many times. Try again later.') })
 

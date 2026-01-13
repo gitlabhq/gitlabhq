@@ -50,113 +50,49 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseAggregatedConnection, :cli
   end
 
   describe '#nodes' do
-    let(:expected_results) do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:ordered_nodes) do
       [
         { 'name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0 },
         { 'name' => 'rspec', 'mean_duration_in_seconds' => 2.67 },
-        { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 }
+        { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 },
+        { 'name' => 'lint', 'mean_duration_in_seconds' => 0.5 }
       ]
     end
 
     subject(:nodes) { connection.nodes }
 
-    it 'returns aggregated results for the first page', :aggregate_failures do
-      expect(nodes).to eq(expected_results)
-
-      expect(connection.has_previous_page).to be_falsey
-      expect(connection.has_next_page).to be_truthy
+    it 'ordered_nodes matches actual full DB data' do
+      expect(ClickHouse::Client.select(aggregated_query_builder, :main)).to eq(ordered_nodes)
     end
 
-    context 'when the first argument is given', :aggregate_failures do
-      let(:arguments) { { first: 2 } }
-
-      it 'returns limited results for the first page' do
-        expect(nodes.size).to eq(2)
-        expect(nodes.pluck('name')).to eq(%w[compile-slow rspec])
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
-      end
+    where(:pagination_params, :expected_names, :has_previous, :has_next) do
+      {}                                           | %w[compile-slow rspec compile] | false | true
+      { first: 2 }                                 | %w[compile-slow rspec]         | false | true
+      { last: 2 }                                  | %w[compile lint]               | true  | false
+      { after: 'compile-slow' }                    | %w[rspec compile lint]         | true  | false
+      { before: 'compile' }                        | %w[compile-slow rspec]         | false | true
+      { after: 'compile-slow', before: 'compile' } | %w[rspec]                      | true  | true
+      { last: 1, before: 'compile' }               | %w[rspec]                      | true  | true
+      { first: 1, before: 'compile' }              | %w[compile-slow]               | false | true
     end
 
-    context 'when the last argument is given', :aggregate_failures do
-      let(:arguments) { { last: 2 } }
+    with_them do
+      context 'with pagination arguments' do
+        let(:arguments) do
+          args = pagination_params
+          args[:after] = encoded_cursor(ordered_nodes.detect { |o| o['name'] == args[:after] }) if args[:after]
+          args[:before] = encoded_cursor(ordered_nodes.detect { |o| o['name'] == args[:before] }) if args[:before]
+          args
+        end
 
-      it 'returns the last results' do
-        expect(nodes.size).to eq(2)
-        expect(nodes.pluck('name')).to eq(%w[compile lint])
+        it 'returns correct paginated results', :aggregate_failures do
+          expect(nodes).to eq(ordered_nodes.select { |r| r['name'].in?(expected_names) })
 
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_falsey
-      end
-    end
-
-    context 'when after cursor is provided', :aggregate_failures do
-      let(:cursor_node) { { 'name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0 } }
-      let(:arguments) { { after: encoded_cursor(cursor_node) } }
-
-      it 'returns results after the cursor' do
-        expect(nodes.pluck('name')).to contain_exactly('rspec', 'compile', 'lint')
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_falsey
-      end
-    end
-
-    context 'when before cursor is provided', :aggregate_failures do
-      let(:cursor_node) { { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 } }
-      let(:arguments) { { before: encoded_cursor(cursor_node) } }
-
-      it 'returns results before the cursor' do
-        expect(nodes.pluck('name')).to contain_exactly('compile-slow', 'rspec')
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when both after and before cursors are provided', :aggregate_failures do
-      let(:after_node) { { 'name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0 } }
-      let(:before_node) { { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 } }
-      let(:arguments) do
-        {
-          after: encoded_cursor(after_node),
-          before: encoded_cursor(before_node)
-        }
-      end
-
-      it 'returns results between the cursors' do
-        expect(nodes.size).to eq(1)
-        expect(nodes.pluck('name')).to contain_exactly('rspec')
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when before and last are provided', :aggregate_failures do
-      let(:before_node) { { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 } }
-      let(:arguments) { { last: 1, before: encoded_cursor(before_node) } }
-
-      it 'returns the last N results before the cursor' do
-        expect(nodes.size).to eq(1)
-        expect(nodes.pluck('name')).to contain_exactly('rspec')
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when before and first are provided', :aggregate_failures do
-      let(:before_node) { { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 } }
-      let(:arguments) { { first: 1, before: encoded_cursor(before_node) } }
-
-      it 'returns the first N results before the cursor' do
-        expect(nodes.size).to eq(1)
-        expect(nodes.pluck('name')).to contain_exactly('rspec')
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
+          expect(connection.has_previous_page).to be(has_previous)
+          expect(connection.has_next_page).to be(has_next)
+        end
       end
     end
 
@@ -174,52 +110,6 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseAggregatedConnection, :cli
       it 'raises an error' do
         expect { nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError, /Invalid cursor/)
       end
-    end
-  end
-
-  describe '#has_previous_page' do
-    subject(:has_previous_page) { connection.has_previous_page }
-
-    context 'when after cursor is provided' do
-      let(:cursor_node) { { 'name' => 'compile-slow', 'mean_duration_in_seconds' => 5.0 } }
-      let(:arguments) { { after: encoded_cursor(cursor_node) } }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when last is provided' do
-      let(:arguments) { { last: 2 } }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when on first page' do
-      let(:arguments) { { first: 2 } }
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
-  describe '#has_next_page' do
-    subject(:has_next_page) { connection.has_next_page }
-
-    context 'when before cursor is provided' do
-      let(:cursor_node) { { 'name' => 'compile', 'mean_duration_in_seconds' => 1.0 } }
-      let(:arguments) { { before: encoded_cursor(cursor_node) } }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when first is provided and there are more results' do
-      let(:arguments) { { first: 2 } }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when on last page' do
-      let(:arguments) { { last: 2 } }
-
-      it { is_expected.to be_falsey }
     end
   end
 

@@ -56,7 +56,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    | Field | Determined by | Description |
    | :---- | :---- | :---- |
-   | **Tenant name** | Your choice | Displayed name for your instance. Forms part of your URL as `<tenant_name>.gitlab-dedicated.com`. Permanent unless using a custom domain like `gitlab.yourcompany.com` instead of the default URL. |
+   | **Tenant name** | Your choice | Displayed name for your instance. Forms part of your URL as `<tenant_name>.gitlab-dedicated.com`. The tenant name cannot be changed once configured. |
    | **Primary region** | Infrastructure/compliance requirements | AWS region for primary operations and data storage. Can't be changed after creation because all infrastructure (compute, storage, databases) is provisioned in this region. |
    | **Secondary region** | Infrastructure/DR requirements | AWS region for Geo-based disaster recovery. Some regions have limited support. Can't be changed after creation. If you are using a Geo migration method, this field is not required. |
    | **Backup region** | Compliance/redundancy requirements | AWS region for backup replication. Can be the same as primary/secondary or different for increased redundancy. Can't be changed after creation because backup vaults and replication are configured during provisioning. |

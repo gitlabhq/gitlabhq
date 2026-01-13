@@ -1,5 +1,6 @@
 import { uniqueId } from 'lodash';
-import { historyReplaceState, NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/common_utils';
+import { historyReplaceState } from '~/lib/utils/common_utils';
+import { NO_SCROLL_TO_HASH_CLASS } from '~/lib/utils/constants';
 import {
   ACTIVE_TAB_CLASSES,
   ATTR_ROLE,

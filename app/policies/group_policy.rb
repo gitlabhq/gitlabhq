@@ -19,6 +19,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:owner) { access_level >= GroupMember::OWNER }
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
+  condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && access_level == GroupMember::SECURITY_MANAGER }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
@@ -292,6 +293,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_internal_note
   end
 
+  rule { security_manager }.policy do
+    enable :security_manager_access
+  end
+
   rule { admin | organization_owner }.policy do
     enable :read_group
   end
@@ -455,6 +460,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :register_group_runners
     enable :update_group_link
     enable :update_runners_registration_token
+    enable :security_manager_access
   end
 
   rule { can?(:read_nested_project_resources) }.policy do

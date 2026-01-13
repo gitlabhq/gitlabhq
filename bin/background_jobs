@@ -49,7 +49,7 @@ restart()
 start_sidekiq()
 {
   cmd="exec"
-  chpst=$(command -v chpst)
+  chpst=$(command -v chpst || true)
 
   if [ -n "$chpst" ]; then
     cmd="${cmd} ${chpst} -P"

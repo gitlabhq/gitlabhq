@@ -16,6 +16,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_CREATE_SOURCES,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -36,7 +37,7 @@ Vue.use(VueApollo);
 const projectData = namespaceProjectsList.data.namespace.projects.nodes;
 
 const findWorkItemTypeId = (typeName) => {
-  return namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  return namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes.find(
     (node) => node.name === typeName,
   ).id;
 };
@@ -135,11 +136,11 @@ describe('WorkItemLinksForm', () => {
   });
 
   it.each`
-    workspace    | isGroup  | queryResolver
+    namespace    | isGroup  | queryResolver
     ${'project'} | ${false} | ${namespaceWorkItemTypesResolver}
     ${'group'}   | ${true}  | ${namespaceWorkItemTypesResolver}
   `(
-    'fetches $workspace work item types when isGroup is $isGroup',
+    'fetches $namespace work item types when isGroup is $isGroup',
     async ({ isGroup, queryResolver }) => {
       await createComponent({ isGroup });
 
@@ -210,6 +211,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: false,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
@@ -234,6 +236,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: true,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
@@ -273,6 +276,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: false,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
@@ -302,6 +306,7 @@ describe('WorkItemLinksForm', () => {
               parentId: 'gid://gitlab/WorkItem/1',
             },
             confidential: true,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
         });
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
@@ -385,6 +390,7 @@ describe('WorkItemLinksForm', () => {
             parentId: 'gid://gitlab/WorkItem/1',
           },
           confidential: false,
+          createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
         },
       });
     });
@@ -412,7 +418,7 @@ describe('WorkItemLinksForm', () => {
 
   describe('adding an existing work item', () => {
     const selectAvailableWorkItemTokens = (
-      tokens = availableWorkItemsResponse.data.workspace.workItems.nodes,
+      tokens = availableWorkItemsResponse.data.namespace.workItems.nodes,
     ) => {
       findWorkItemTokenInput().vm.$emit('input', tokens);
     };
@@ -446,7 +452,7 @@ describe('WorkItemLinksForm', () => {
       expect(findAddChildButton().text()).toBe('Add tasks');
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(true);
       expect(findWorkItemTokenInput().props('value')).toBe(
-        availableWorkItemsResponse.data.workspace.workItems.nodes,
+        availableWorkItemsResponse.data.namespace.workItems.nodes,
       );
       findForm().vm.$emit('submit', {
         preventDefault: jest.fn(),
@@ -494,7 +500,7 @@ describe('WorkItemLinksForm', () => {
 
       // Trigger Token input update, causing error to clear
       await selectAvailableWorkItemTokens(
-        availableWorkItemsResponse.data.workspace.workItems.nodes.slice(0, 2),
+        availableWorkItemsResponse.data.namespace.workItems.nodes.slice(0, 2),
       );
 
       // Assert if error was cleared

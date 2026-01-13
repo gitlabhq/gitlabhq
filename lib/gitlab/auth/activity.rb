@@ -83,7 +83,7 @@ module Gitlab
       each_counter do |counter, metric, description|
         define_singleton_method(counter) do
           strong_memoize(counter) do
-            Gitlab::Metrics.counter("gitlab_auth_#{metric}_total".to_sym, description)
+            Gitlab::Metrics.counter(:"gitlab_auth_#{metric}_total", description)
           end
         end
 

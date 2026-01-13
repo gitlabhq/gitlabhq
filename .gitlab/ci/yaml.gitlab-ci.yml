@@ -3,11 +3,10 @@
 # This uses rules from project root `.yamllint`.
 lint-yaml:
   extends:
-    - .default-retry
     - .yaml-lint:rules
+    - .lint-base
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
-  needs: []
   script:
     - yamllint --strict -f colored .
 
@@ -17,11 +16,10 @@ lint-yaml:
 
 lint-pipeline-yaml:
   extends:
-    - .default-retry
     - .lint-pipeline-yaml:rules
+    - .lint-base
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
-  needs: []
   variables:
     LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates data/deprecations data/whats_new
   script:
@@ -29,11 +27,10 @@ lint-pipeline-yaml:
 
 lint-metrics-yaml:
   extends:
-    - .default-retry
     - .lint-metrics-yaml:rules
+    - .lint-base
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}pipelinecomponents/yamllint:latest
   stage: lint
-  needs: []
   variables:
     LINT_PATHS: config/metrics
   script:

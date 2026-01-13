@@ -141,13 +141,7 @@ module Issuable
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
-    scope :non_archived, -> do
-      if Feature.enabled?(:optimize_issuable_non_archived_scope, Feature.current_request, type: :gitlab_com_derisk)
-        join_project.merge(Project.self_and_ancestors_non_archived)
-      else
-        join_project.where(projects: { archived: false })
-      end
-    end
+    scope :non_archived, -> { join_project.merge(Project.self_and_ancestors_non_archived) }
 
     scope :includes_for_bulk_update, -> do
       associations = %i[
@@ -284,7 +278,11 @@ module Issuable
 
   class_methods do
     def participant_includes
-      [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
+      if Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
+        [:author, :award_emoji, { notes: [:author, :award_emoji] }]
+      else
+        [:author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] }]
+      end
     end
 
     # Searches for records with a matching title.
@@ -681,8 +679,11 @@ module Issuable
     includes = []
     includes << :author unless notes.authors_loaded?
     includes << :award_emoji unless notes.award_emojis_loaded?
-    includes << :project unless notes.projects_loaded?
-    includes << :system_note_metadata unless notes.system_note_metadata_loaded?
+
+    unless Feature.enabled?(:remove_per_source_permission_from_participants, Feature.current_request)
+      includes << :project unless notes.projects_loaded?
+      includes << :system_note_metadata unless notes.system_note_metadata_loaded?
+    end
 
     if persisted? && includes.any?
       notes.includes(includes)

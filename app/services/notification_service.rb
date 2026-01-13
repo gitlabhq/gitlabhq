@@ -891,12 +891,12 @@ class NotificationService
   end
 
   def send_service_desk_notification(note)
-    return unless note.noteable_type == 'Issue'
+    return unless %w[Issue WorkItem].include?(note.noteable_type)
     return if note.confidential
     return unless note.project && ::ServiceDesk.enabled?(note.project)
 
-    issue = note.noteable
-    recipients = issue.issue_email_participants
+    work_item = note.noteable
+    recipients = work_item.issue_email_participants
 
     return unless recipients.any?
 
@@ -908,7 +908,7 @@ class NotificationService
       # We store emails as-is but compare downcased versions.
       next if recipient.email.downcase == note_external_author
 
-      mailer.service_desk_new_note_email(issue.id, note.id, recipient).deliver_later
+      mailer.service_desk_new_note_email(work_item.id, note.id, recipient).deliver_later
       Gitlab::Metrics::BackgroundTransaction.current&.add_event(:service_desk_new_note_email)
     end
   end

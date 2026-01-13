@@ -15,7 +15,7 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
 
     subject(:response) { described_class.new(package, file, params).execute }
 
-    shared_examples 'creating package file' do
+    shared_examples 'creating package file' do |file_type|
       it 'creates a new package file with expected attributes' do
         is_expected.to be_success
 
@@ -48,6 +48,17 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
 
       it_behaves_like 'assigns build to package file' do
         subject(:package_file) { response[:package_file] }
+      end
+
+      context 'with manifest file' do
+        let(:file_name) { ::Packages::Conan::FileMetadatum::MANIFEST_FILE }
+
+        it 'updates revision status to default' do
+          package_file = response[:package_file]
+
+          expect(package_file.conan_file_metadatum.recipe_revision.reload).to be_default
+          expect(package_file.conan_file_metadatum.package_revision.reload).to be_default if file_type == :package_file
+        end
       end
     end
 
@@ -104,12 +115,26 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
 
       context 'with recipe file' do
         include_context 'with recipe file parameters'
-        it_behaves_like 'creating package file'
+        it_behaves_like 'creating package file', :recipe_file
       end
 
       context 'with package file' do
         include_context 'with package file parameters'
-        it_behaves_like 'creating package file'
+        it_behaves_like 'creating package file', :package_file
+
+        context 'without package reference' do
+          let(:params) { super().except(:conan_package_reference) }
+
+          it 'returns the error and does not create a package file' do
+            expect { response }.not_to change { Packages::PackageFile.count }
+
+            expect(response).to be_error.and have_attributes(
+              message: "Validation failed: Conan file metadatum package reference can't be blank, " \
+                'Conan file metadatum package revision must be present when recipe revision exists',
+              reason: :invalid_package_file
+            )
+          end
+        end
       end
     end
 
@@ -133,12 +158,12 @@ RSpec.describe Packages::Conan::CreatePackageFileService, feature_category: :pac
 
       context 'with recipe file' do
         include_context 'with recipe file parameters'
-        it_behaves_like 'creating package file'
+        it_behaves_like 'creating package file', :recipe_file
       end
 
       context 'with package file' do
         include_context 'with package file parameters'
-        it_behaves_like 'creating package file'
+        it_behaves_like 'creating package file', :package_file
       end
     end
 

@@ -45,7 +45,7 @@ The right sidebar shows the list of reviewers, and (if they follow the review fl
   [blocked this merge request](#prevent-merge-when-you-request-changes) until changes are made.
   This block [can be bypassed](#prevent-merge-when-you-request-changes).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
@@ -56,7 +56,7 @@ awaiting review from you. The merge requests you need to review are in the **Rev
 To see all merge requests that need your attention, use one of these methods:
 
 - Press the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
-- On the left sidebar, select **Merge requests** ({{< icon name="merge-request">}}).
+- On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}).
 - On the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests I'm working on**.
 
 ## View the review status of a merge request
@@ -152,15 +152,14 @@ them a notification email.
 
 When reviewing a merge request, follow the review process instead of leaving individual
 comments. When you select **Start a review**, the **Reviewers** section of the right sidebar updates
-your status from **Awaiting review** ({{< icon name="dash-circle">}}) to
-**Reviewer started review** ({{< icon name="comment-dots">}})
+your status from **Awaiting review** ({{< icon name="dash-circle" >}}) to
+**Reviewer started review** ({{< icon name="comment-dots" >}})
 
 To start your review of a merge request:
 
 1. Either:
-   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Review requests** page.
-   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
-<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
+   - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Merge requests** page.
+   - In the upper-right corner, select **Merge requests** ({{< icon name="merge-request" >}}).
 
 1. Find your merge request, and select the title of the merge request to view it.
 1. Read the merge request description and comments to learn about the merge request.
@@ -169,7 +168,7 @@ To start your review of a merge request:
 1. [Suggest multi-line or single-line changes](suggestions.md) as needed. When ready to save your
    first review comment, select **Start a review** to:
 
-   - Update your status in the right sidebar to **Reviewer started review** ({{< icon name="comment-dots">}}).
+   - Update your status in the right sidebar to **Reviewer started review** ({{< icon name="comment-dots" >}}).
    - Save your review comment, but leave it unpublished, like this:
 
      ![An unpublished multi-line review comment shown as 'Pending'.](img/pending_state_v18_1.png)
@@ -231,7 +230,7 @@ To read through and edit your review comments when you submit your review:
      addresses your feedback.
 
 1. Optional. Write a summary of your review. GitLab Premium and Ultimate users can select
-   **Add summary** ({{< icon name="tanuki-ai">}}) to create a summary for you. Include any
+   **Add summary** ({{< icon name="tanuki-ai" >}}) to create a summary for you. Include any
    quick actions you want performed.
 
 ### Discard your pending review

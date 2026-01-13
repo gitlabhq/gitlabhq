@@ -214,7 +214,7 @@ to the `Security/Dependency-Scanning.gitlab-ci.yml` and `Security/SAST.gitlab-ci
 templates mean that if you enable the `sast` or `dependency_scanning` jobs by setting the `rules` attribute,
 they fail with the error `(job) is used for configuration only, and its script should not be executed`.
 
-The `sast` or `dependency_scanning` stanzas can be used to make changes to all SAST or Dependency Scanning,
+The `sast` or `dependency_scanning` stanzas can be used to make changes to all SAST or dependency scanning,
 such as changing `variables` or the `stage`, but they cannot be used to define shared `rules`.
 
 There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/gitlab/-/issues/218444).

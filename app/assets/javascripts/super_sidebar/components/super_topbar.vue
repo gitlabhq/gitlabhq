@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
@@ -79,6 +80,16 @@ export default {
       );
     },
   },
+  methods: {
+    onSearchButtonDrop(event) {
+      const text = event.dataTransfer.getData('text/plain');
+      if (text) {
+        document.dispatchEvent(
+          new CustomEvent(EVENT_OPEN_GLOBAL_SEARCH, { detail: { searchText: text } }),
+        );
+      }
+    },
+  },
 };
 </script>
 
@@ -134,6 +145,8 @@ export default {
       category="tertiary"
       class="topbar-search-button !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 hover:!gl-border-alpha-dark-40 md:!gl-pr-2 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
       data-testid="super-topbar-search-button"
+      @drop.prevent="onSearchButtonDrop"
+      @dragover.prevent
     >
       <gl-icon name="search" class="gl-shrink-0" />
       <span class="topbar-search-button-placeholder gl-min-w-[20vw] gl-truncate gl-text-left">{{

@@ -38,7 +38,8 @@ and stable performance, you should first explore other options such as adjusting
 
 When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes because processes might
 switch to using that instead of being terminated. The kernel considers available swap memory as additional to the
-limits imposed by the cgroup. This situation could lead to notably compromised performance.
+limits imposed by the cgroup. This situation could lead to notably compromised performance. 
+To enable cgroups in Gitaly, you must configure the `repositories` field with a `count` greater than `0`.
 
 ## How Gitaly benefits from cgroups
 

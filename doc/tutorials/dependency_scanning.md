@@ -13,7 +13,7 @@ title: 'Tutorial: Set up dependency scanning'
 
 {{< /details >}}
 
-Dependency Scanning can automatically find security vulnerabilities in your software dependencies
+Dependency scanning can automatically find security vulnerabilities in your software dependencies
 while you're developing and testing your applications. For example, dependency scanning lets you
 know if your application uses an external (open source) library that is known to be vulnerable. You
 can then take action to protect your application.

@@ -84,6 +84,9 @@ module Issues
       # In the future only params[:work_item_type] should be provided
       base_type = work_item_type&.base_type || params[:issue_type]
 
+      # For custom types we need to bypass this check and instead check create_work_item
+      # and check whether type belongs to namespace hierarchy
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581940
       issue.work_item_type = if create_issue_type_allowed?(container, base_type)
                                work_item_type || WorkItems::Type.default_by_type(base_type)
                              else
@@ -109,10 +112,14 @@ module Issues
     end
 
     def build_issue_params
-      { author: current_user }
+      { author: }
         .merge(issue_params_with_info_from_discussions)
         .merge(public_params)
         .with_indifferent_access
+    end
+
+    def author
+      Gitlab::Auth::Identity.invert_composite_identity(current_user)
     end
   end
 end

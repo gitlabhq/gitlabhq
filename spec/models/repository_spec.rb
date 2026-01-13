@@ -3159,6 +3159,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       repository.after_create
     end
+
+    it 'calls after_create_repository' do
+      expect(repository.container).to receive(:after_create_repository)
+
+      repository.after_create
+    end
   end
 
   describe '#expire_status_cache' do

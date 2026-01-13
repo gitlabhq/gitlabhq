@@ -132,11 +132,8 @@ The required role depends on what you want to do:
 | View variable values | Developer |
 | Configure visibility setting | Owner |
 
-{{< alert type="warning" >}}
-
-When you turn on this setting, users with the Developer role can view variable values that might contain sensitive information from any manual pipeline run. For sensitive data like credentials or tokens, use [protected variables](../variables/_index.md#protect-a-cicd-variable) or [external secrets management](../secrets/_index.md) instead of manual pipeline variables.
-
-{{< /alert >}}
+> [!warning]
+> When you turn on this setting, users with the Developer role can view variable values that might contain sensitive information from any manual pipeline run. For sensitive data like credentials or tokens, use [protected variables](../variables/_index.md#protect-a-cicd-variable) or [external secrets management](../secrets/_index.md) instead of manual pipeline variables.
 
 To view manual pipeline variables:
 

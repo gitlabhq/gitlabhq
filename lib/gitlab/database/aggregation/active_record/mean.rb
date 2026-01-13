@@ -14,8 +14,7 @@ module Gitlab
           end
 
           def to_arel(context)
-            arel_node = expression ? expression.call : context[:scope].arel_table[name]
-            arel_node.average
+            super.average
           end
         end
       end

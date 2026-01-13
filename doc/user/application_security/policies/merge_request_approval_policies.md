@@ -20,11 +20,8 @@ title: Merge request approval policies
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
-
-{{< /alert >}}
+> [!note]
+> Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
 
 You can use merge request approval policies for multiple purposes, including:
 
@@ -34,11 +31,8 @@ You can use merge request approval policies for multiple purposes, including:
 - Enforce approval rules on all merge requests that meet certain conditions. For example, enforce that MRs are reviewed by multiple users with Developer and Maintainer roles for all MRs that target default branches.
 - Enforce settings for security and compliance on a project. For example, prevent users who have authored or committed changes to an MR from approving the MR. Or prevent users from pushing or force pushing to the default branch to ensure all changes go through an MR.
 
-{{< alert type="note" >}}
-
-When a protected branch is created or deleted, the policy approval rules synchronize, with a delay of 1 minute.
-
-{{< /alert >}}
+> [!note]
+> When a protected branch is created or deleted, the policy approval rules synchronize, with a delay of 1 minute.
 
 The following video gives you an overview of GitLab merge request approval policies (previously scan result policies):
 
@@ -175,11 +169,8 @@ before the policy changes take effect.
 
 The [policy editor](_index.md#policy-editor) supports YAML mode and rule mode.
 
-{{< alert type="note" >}}
-
-Propagating merge request approval policies created for groups with a large number of projects take a while to complete.
-
-{{< /alert >}}
+> [!note]
+> Propagating merge request approval policies created for groups with a large number of projects take a while to complete.
 
 ## Merge request approval policies schema
 
@@ -211,11 +202,8 @@ the following sections and tables provide an alternative.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
@@ -344,7 +332,7 @@ If you specify multiple approvers in the same `require_approval` block, any of t
 | `user_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
 | `group_approvers` | `array` of `string` | Conditional <sup>1</sup> | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `group_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | Conditional <sup>1</sup> | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. |
+| `role_approvers` | `array` of `string` | Conditional <sup>1</sup> | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. Only users with the exact role you specify can approve. Roles with higher privileges are not automatically included. For example, if you select `developer`, only users with the Developer role can approve. Maintainers and Owners cannot approve unless you also add them. |
 
 **Footnotes:**
 
@@ -447,11 +435,8 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Warn mode allows security teams to test and validate the impact of security policies before applying full enforcement, reducing developer friction when applying new security policies. When a policy is configured with `enforcement_type: warn`, the merge request provides an option to bypass any merge request approval policy violations.
 
@@ -539,11 +524,8 @@ The settings set in the policy overwrite settings in the project.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
@@ -757,11 +739,8 @@ Users who have these exceptions can bypass at two levels:
 - Merge request approval requirements: The user can bypass an approval requirement by providing a reason from the merge request UI.
 - Branch protections: The user can push directly to a branch with push protection from merge request approval policy by providing a reason in the [`security_policy.bypass_reason` Git push options](../../../topics/git/commit.md#push-options-for-security-policy)
 
-{{< alert type="note" >}}
-
-The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [`approval_settings`](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
-
-{{< /alert >}}
+> [!note]
+> The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [`approval_settings`](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
 
 #### Example YAML
 

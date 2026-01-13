@@ -7,16 +7,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
       class FinishedBuildsFinder < ::ClickHouse::Models::BaseModel
         include ActiveRecord::Sanitization::ClassMethods
 
-        ALLOWED_TO_GROUP = %i[name stage_id].freeze
-        ALLOWED_TO_SELECT = %i[name stage_id].freeze
+        ALLOWED_TO_GROUP = %i[name stage_name].freeze
+        ALLOWED_TO_SELECT = %i[name stage_name].freeze
         ALLOWED_AGGREGATIONS = %i[
-          mean_duration_in_seconds
+          mean_duration
           p50_duration
           p75_duration
           p90_duration
           p95_duration
           p99_duration
-          p95_duration_in_seconds
           rate_of_success
           rate_of_failed
           rate_of_canceled
@@ -82,20 +81,11 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         # Aggregation methods
-        def mean_duration_in_seconds
+        def mean_duration
           select(
             round(
               ms_to_s(query_builder.avg(:duration))
-            ).as('mean_duration_in_seconds'),
-            group_by_fields: false
-          )
-        end
-
-        def p95_duration_in_seconds
-          select(
-            round(
-              ms_to_s(query_builder.quantile(0.95, :duration))
-            ).as('p95_duration_in_seconds'),
+            ).as('mean_duration'),
             group_by_fields: false
           )
         end

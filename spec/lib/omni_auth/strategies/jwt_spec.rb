@@ -140,7 +140,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
         }
       end
 
-      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482939' do
+      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16824' do
         expect { jwt_strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::JwtTooLarge)
       end
     end

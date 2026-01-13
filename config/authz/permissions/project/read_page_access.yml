@@ -1,0 +1,5 @@
+---
+name: read_page_access_project
+description: Grants the ability to view project pages access
+boundaries:
+  - project

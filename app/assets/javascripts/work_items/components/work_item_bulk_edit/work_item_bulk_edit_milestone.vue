@@ -61,7 +61,7 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.attributes.nodes ?? [];
+        return data.namespace?.attributes.nodes ?? [];
       },
       error(error) {
         createAlert({

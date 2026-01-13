@@ -8,7 +8,7 @@ title: External agents
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
@@ -39,9 +39,7 @@ GitLab Duo agents work in parallel to help you create code, research results,
 and perform tasks simultaneously.
 
 You can create an agent and integrate it with an external
-AI model provider to customize it to your organization's needs. You use your own
-API key to integrate with the model provider.
-
+AI model provider to customize it to your organization's needs.
 Then, in a project issue, epic, or merge request, you can mention that external agent
 in a comment or discussion and ask the agent to complete a task.
 
@@ -57,30 +55,15 @@ The following integrations have been tested by GitLab and are available:
 
 - [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
-- [Opencode](https://opencode.ai/docs/gitlab/)
-- [Amazon Q](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html)
-- [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)
-
-For a click-through demo, see [GitLab Duo Agent Platform with Amazon Q](https://gitlab.navattic.com/dap-with-q).
-<!-- Demo published on 2025-11-03 -->
 
 ## Prerequisites
 
 Before you can create an agent and integrate it with an external AI model
 provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
-To integrate your agent with an external AI model provider, you must also have access credentials.
-You can use either an API key for the model provider or GitLab-managed credentials.
+To integrate your agent with an external AI model provider, you must also have access credentials which are provided and manged by GitLab.
 
-### API keys
-
-To integrate your agent with an external AI model provider,
-you can use an API key for the model provider:
-
-- For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
-- For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
-
-### GitLab-managed credentials
+### Access credentials
 
 {{< history >}}
 
@@ -88,14 +71,11 @@ you can use an API key for the model provider:
 
 {{< /history >}}
 
-Instead of using your own API keys for external AI model providers,
-you can configure external agents to use GitLab-managed credentials through an AI gateway.
-This way, you do not have to manage and rotate API keys yourself.
+External agents use GitLab-managed credentials through an AI gateway.
 
 When you use GitLab-managed credentials:
 
 - Set `injectGatewayToken: true` in your external agent configuration.
-- Remove the API key variables (for example, `ANTHROPIC_API_KEY`) from your CI/CD variables.
 - Configure the external agent to use the GitLab AI gateway proxy endpoints.
 
 The following environment variables are automatically injected when `injectGatewayToken` is `true`:
@@ -103,20 +83,16 @@ The following environment variables are automatically injected when `injectGatew
 - `AI_FLOW_AI_GATEWAY_TOKEN`: the authentication token for AI Gateway
 - `AI_FLOW_AI_GATEWAY_HEADERS`: formatted headers for API requests
 
-GitLab-managed credentials are available for Anthropic Claude and OpenAI Codex only.
+GitLab-managed credentials are available for only Anthropic Claude and OpenAI Codex.
 
-#### Supported models
+### Supported models
 
-For GitLab-managed credentials, the following AI models are supported:
+The following AI models are supported:
 
 Anthropic Claude:
 
-- `claude-3-sonnet-20240229`
-- `claude-3-5-sonnet-20240620`
 - `claude-3-haiku-20240307`
-- `claude-3-5-haiku-20241022`
-- `claude-3-5-sonnet-20241022`
-- `claude-3-7-sonnet-20250219`
+- `claude-haiku-4-5-20251001`
 - `claude-sonnet-4-20250514`
 - `claude-sonnet-4-5-20250929`
 
@@ -144,14 +120,14 @@ To add or update a variable in the project settings:
    - **Environments**: Select **All (default)**.
    - **Visibility**: Select the desired visibility.
 
-     For the API key and personal access token variables, select **Masked** or
+     For personal access token variables, select **Masked** or
      **Masked and hidden**.
    - Clear the **Protect variable** checkbox.
    - Clear the **Expand variable reference** checkbox.
    - **Description (optional)**: Enter a variable description.
    - **Key**: Enter the environment variable name of the CI/CD variable
      (for example, `GITLAB_HOST`).
-   - **Value**: The value of the API key, personal access token, or host.
+   - **Value**: The value of the personal access token or host.
 1. Select **Add variable**.
 
 For more information, see how to [add CI/CD variables to a project's settings](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui).
@@ -160,18 +136,10 @@ For more information, see how to [add CI/CD variables to a project's settings](.
 
 The following CI/CD variables are available:
 
-| Integration                | Environment variable         | Description |
-|----------------------------|------------------------------|-------------|
-| All                        | `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
-| All                        | `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
-| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`          | Anthropic API key (optional when `injectGatewayToken: true` is set). |
-| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI API key. |
-| Amazon Q                   | `AWS_SECRET_NAME`            | AWS Secret Manager secret name. |
-| Amazon Q                   | `AWS_REGION_NAME`            | AWS region name. |
-| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4 credentials. |
-| Google Gemini CLI          | `GOOGLE_CREDENTIALS`         | JSON credentials file contents. |
-| Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
-| Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
+| Environment variable         | Description |
+|------------------------------|-------------|
+| `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
+| `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
 
 ## Create an external agent
 
@@ -185,7 +153,7 @@ The preferred workflow is:
 
 In this case, a service account is created for you.
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
-This combination is called a [composite identity](../security.md).
+This combination is called a [composite identity](../composite_identity.md).
 
 If you'd prefer, you can [create an external agent manually](#create-an-external-agent-manually).
 
@@ -332,7 +300,7 @@ You must create [a service account](../../../user/profile/service_accounts.md) t
 the projects where you expect to use an external agent.
 
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
-This combination is called a [composite identity](../security.md).
+This combination is called a [composite identity](../composite_identity.md).
 
 Prerequisites:
 

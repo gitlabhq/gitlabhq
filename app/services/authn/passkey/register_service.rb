@@ -36,7 +36,7 @@ module Authn
           notify_on_success(user, registration.name)
 
           ServiceResponse.success(
-            message: _('Passkey added successfully! Next time you sign in, select the sign-in with passkey option.'),
+            message: success_message(user),
             payload: registration
           )
         rescue JSON::ParserError
@@ -58,6 +58,16 @@ module Authn
 
       def notify_on_success(user, device_name)
         notification_service.enabled_two_factor(user, :passkey, { device_name: device_name })
+      end
+
+      def success_message(user)
+        if user.two_factor_enabled?
+          _('Passkey added successfully! Next time you sign in, select the sign-in with passkey option. ' \
+            'Passkey is now your default 2FA method.')
+        else
+          _('Passkey added successfully! Next time you sign in, select the sign-in with passkey option. ' \
+            'For additional account security, enable two-factor authentication below.')
+        end
       end
     end
   end

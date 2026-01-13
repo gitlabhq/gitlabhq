@@ -1,4 +1,4 @@
-- title: "License-Check and the Policies tab on the License Compliance page"
+- title: "License-Check and the Policies tab on the license compliance page"
   announcement_milestone: "15.9"
   removal_milestone: "16.0"
   breaking_change: true
@@ -6,4 +6,4 @@
   stage: govern
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390417
   body: |
-    The **License-Check feature** is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/user/compliance/license_approval_policies/) instead.
+    The **License-Check feature** is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the policies tab on the license compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [license approval policy](https://docs.gitlab.com/user/compliance/license_approval_policies/) instead.

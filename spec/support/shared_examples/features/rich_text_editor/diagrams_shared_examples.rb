@@ -37,7 +37,7 @@ RSpec.shared_examples 'rich text editor - diagrams' do
     end
 
     it 'toggles the diagram when preview button is clicked',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397682' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17043' do
       find('[data-testid="preview-diagram"]').click
 
       expect(find(content_editor_testid)).not_to have_selector('iframe')

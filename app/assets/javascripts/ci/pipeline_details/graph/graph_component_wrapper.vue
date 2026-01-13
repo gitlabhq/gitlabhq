@@ -2,6 +2,7 @@
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
+import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
 import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -27,6 +28,7 @@ import {
   serializeLoadErrors,
   toggleQueryPollingByVisibility,
   unwrapPipelineData,
+  mergePipelineWithNeeds,
 } from './utils';
 
 const featureName = 'pipeline_needs_hover_tip';
@@ -64,6 +66,7 @@ export default {
       currentViewType: STAGE_VIEW,
       canRefetchHeaderPipeline: false,
       pipeline: null,
+      pipelineNeeds: null,
       skipRetryModal: false,
       showAlert: false,
       showJobCountWarning: false,
@@ -178,6 +181,24 @@ export default {
         }
       },
     },
+    pipelineNeeds: {
+      query: getPipelineNeeds,
+      variables() {
+        return {
+          projectPath: this.pipelineProjectPath,
+          iid: this.pipelineIid,
+        };
+      },
+      skip() {
+        return this.graphViewType !== LAYER_VIEW || !this.pipeline;
+      },
+      update(data) {
+        return data?.project?.pipeline;
+      },
+      error() {
+        this.reportFailure({ type: LOAD_FAILURE, skipSentry: true });
+      },
+    },
     userPermissions: {
       query: getPipelinePermissions,
       variables() {
@@ -235,12 +256,24 @@ export default {
     hoverTipPreviouslyDismissed() {
       return this.callouts.includes(enumFeatureName);
     },
-    showLoadingIcon() {
+    pipelineWithNeeds() {
+      return mergePipelineWithNeeds(this.pipeline, this.pipelineNeeds);
+    },
+    pipelineLoading() {
       /*
         Shows the icon only when the graph is empty, not when it is is
         being refetched, for instance, on action completion
       */
       return this.$apollo.queries.pipeline.loading && !this.pipeline;
+    },
+    pipelineNeedsLoading() {
+      return this.$apollo.queries.pipelineNeeds.loading;
+    },
+    showLoadingIcon() {
+      return this.pipelineLoading || this.pipelineNeedsLoading;
+    },
+    currentViewPipeline() {
+      return this.graphViewType === STAGE_VIEW ? this.pipeline : this.pipelineWithNeeds;
     },
     showGraphViewSelector() {
       return this.pipeline?.usesNeeds;
@@ -255,9 +288,13 @@ export default {
   },
   methods: {
     getPipelineInfo() {
-      if (this.currentViewType === LAYER_VIEW && !this.computedPipelineInfo) {
+      if (
+        this.currentViewType === LAYER_VIEW &&
+        !this.computedPipelineInfo &&
+        this.pipelineWithNeeds
+      ) {
         this.computedPipelineInfo = calculatePipelineLayersInfo(
-          this.pipeline,
+          this.pipelineWithNeeds,
           this.$options.name,
           this.metricsPath,
         );
@@ -362,9 +399,9 @@ export default {
     </local-storage-sync>
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />
     <pipeline-graph
-      v-if="pipeline"
+      v-if="currentViewPipeline"
       :config-paths="configPaths"
-      :pipeline="pipeline"
+      :pipeline="currentViewPipeline"
       :user-permissions="userPermissions"
       :computed-pipeline-info="getPipelineInfo()"
       :skip-retry-modal="skipRetryModal"

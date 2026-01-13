@@ -516,7 +516,7 @@ export default {
                 :parsed-payload="parsedPayload"
                 :saved-mapping="mapping"
                 :alert-fields="alertFields"
-                @onMappingUpdate="updateMapping"
+                @on-mapping-update="updateMapping"
               />
             </div>
           </template>

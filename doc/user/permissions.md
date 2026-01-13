@@ -125,6 +125,7 @@ Group permission for [analytics](analytics/_index.md) features including value s
 
 | Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [insights](project/insights/_index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [insights](project/insights/_index.md) charts                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -183,7 +184,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
+| Use GitLab Duo features <sup>1</sup>                                                                       |            |   ✓   |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |           |     ✓      |   ✓   |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |           |            |   ✓   |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
@@ -889,10 +890,9 @@ For more information, see
 Users with the Minimal Access role do not:
 
 - Automatically have access to projects and subgroups in that top-level group.
+  Owners must explicitly add these users to the specific subgroups and
+  projects.
 - Count as licensed seats on GitLab Self-Managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab.com namespace.
-
-Owners must explicitly add these users to the specific subgroups and
-projects.
 
 You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/_index.md)
 to control access to groups and projects in the group hierarchy. You can set the default role to

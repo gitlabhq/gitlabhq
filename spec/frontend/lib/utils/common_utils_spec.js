@@ -1,4 +1,11 @@
 import * as commonUtils from '~/lib/utils/common_utils';
+import { setHTMLFixture } from 'helpers/fixtures';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
+import { getCoveringElement, observeIntersectionOnce } from '~/lib/utils/viewport';
+
+jest.mock('~/lib/utils/viewport');
+jest.mock('~/lib/utils/sticky');
 
 describe('common_utils', () => {
   describe('getPagePath', () => {
@@ -52,181 +59,71 @@ describe('common_utils', () => {
   });
 
   describe('handleLocationHash', () => {
+    const hash = '#target';
+    const getTarget = () => document.querySelector(hash);
+
+    let scrollIntoView;
+
     beforeEach(() => {
-      jest.spyOn(window.document, 'getElementById');
+      scrollIntoView = jest.spyOn(Element.prototype, 'scrollIntoView');
+      setHTMLFixture(`<div id="target"></div><div id="user-content-h1"></div>`);
     });
 
-    afterEach(() => {
-      window.history.pushState({}, null, '');
+    it('scrolls to target element', async () => {
+      observeIntersectionOnce.mockResolvedValue({ isIntersecting: false });
+      getCoveringElement.mockResolvedValue(null);
+      setWindowLocation(hash);
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).toHaveBeenCalled();
+      expect(scrollPastCoveringElements).toHaveBeenCalledWith(getTarget());
     });
 
-    function expectGetElementIdToHaveBeenCalledWith(elementId) {
-      expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
-    }
-
-    it('decodes hash parameter', () => {
-      window.history.pushState({}, null, '#random-hash');
-      commonUtils.handleLocationHash();
-
-      expectGetElementIdToHaveBeenCalledWith('random-hash');
-      expectGetElementIdToHaveBeenCalledWith('user-content-random-hash');
+    it('scrolls to covered target element', async () => {
+      observeIntersectionOnce.mockResolvedValue({ isIntersecting: true });
+      getCoveringElement.mockResolvedValue({});
+      setWindowLocation(hash);
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).toHaveBeenCalled();
+      expect(scrollPastCoveringElements).toHaveBeenCalledWith(getTarget());
     });
 
-    it('decodes cyrillic hash parameter', () => {
-      window.history.pushState({}, null, '#definição');
-      commonUtils.handleLocationHash();
-
-      expectGetElementIdToHaveBeenCalledWith('definição');
-      expectGetElementIdToHaveBeenCalledWith('user-content-definição');
+    it('scrolls to user content target element', async () => {
+      scrollPastCoveringElements.mockResolvedValue();
+      observeIntersectionOnce.mockResolvedValue({ isIntersecting: false });
+      getCoveringElement.mockResolvedValue(null);
+      setWindowLocation('#h1');
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).toHaveBeenCalled();
+      expect(scrollPastCoveringElements).toHaveBeenCalledWith(
+        document.querySelector('#user-content-h1'),
+      );
     });
 
-    it('decodes encoded cyrillic hash parameter', () => {
-      window.history.pushState({}, null, '#defini%C3%A7%C3%A3o');
-      commonUtils.handleLocationHash();
-
-      expectGetElementIdToHaveBeenCalledWith('definição');
-      expectGetElementIdToHaveBeenCalledWith('user-content-definição');
+    it('does nothing if hash is not present', async () => {
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).not.toHaveBeenCalled();
     });
 
-    it(`does not scroll when ${commonUtils.NO_SCROLL_TO_HASH_CLASS} is set on target`, () => {
-      jest.spyOn(window, 'scrollBy');
-
-      document.body.innerHTML += `
-        <div id="parent">
-          <a href="#test">Link</a>
-          <div style="height: 2000px;"></div>
-          <div id="test" style="height: 2000px;" class="${commonUtils.NO_SCROLL_TO_HASH_CLASS}"></div>
-        </div>
-      `;
-
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-      jest.runOnlyPendingTimers();
-
-      try {
-        expect(window.scrollBy).not.toHaveBeenCalled();
-      } finally {
-        document.getElementById('parent').remove();
-      }
+    it('does nothing if target does not exist', async () => {
+      setHTMLFixture(``);
+      setWindowLocation(hash);
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).not.toHaveBeenCalled();
     });
 
-    it('scrolls element into view', () => {
-      document.body.innerHTML += `
-        <div id="parent">
-          <div style="height: 2000px;"></div>
-          <div id="test" style="height: 2000px;"></div>
-        </div>
-      `;
-
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-
-      expectGetElementIdToHaveBeenCalledWith('test');
-
-      expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
-
-      document.getElementById('parent').remove();
+    it('does nothing if target has js-no-scroll-to-hash class', async () => {
+      getTarget().classList.add('js-no-scroll-to-hash');
+      setWindowLocation(hash);
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).not.toHaveBeenCalled();
     });
 
-    it('scrolls user content element into view', () => {
-      document.body.innerHTML += `
-        <div id="parent">
-          <div style="height: 2000px;"></div>
-          <div id="user-content-test" style="height: 2000px;"></div>
-        </div>
-      `;
-
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-
-      expectGetElementIdToHaveBeenCalledWith('test');
-      expectGetElementIdToHaveBeenCalledWith('user-content-test');
-
-      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
-
-      document.getElementById('parent').remove();
-    });
-
-    it('scrolls to element with offset from navbar', () => {
-      jest.spyOn(window, 'scrollBy');
-      document.body.innerHTML += `
-        <div id="parent">
-          <div class="header-logged-out" style="position: fixed; top: 0; height: 50px;"></div>
-          <div style="height: 2000px; margin-top: 50px;"></div>
-          <div id="user-content-test" style="height: 2000px;"></div>
-        </div>
-      `;
-
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-      jest.advanceTimersByTime(1);
-
-      expectGetElementIdToHaveBeenCalledWith('test');
-      expectGetElementIdToHaveBeenCalledWith('user-content-test');
-
-      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
-      expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
-
-      document.getElementById('parent').remove();
-    });
-
-    it('Scrolls element to correct height on issue page', () => {
-      jest.spyOn(window, 'scrollBy');
-      const stickyHeaderHeight = 50;
-      const topPadding = 8;
-
-      const expectedOffset = stickyHeaderHeight + topPadding;
-
-      document.body.dataset.page = 'projects:issues:show';
-      document.body.innerHTML += `
-      <div id="parent">
-        <div class="issue-sticky-header" style="position: fixed; top: 0px; height: ${stickyHeaderHeight}px;"></div>
-        <div style="height: 2000px; margin-top: ${stickyHeaderHeight}px;"></div>
-        <div id="user-content-test" style="height: 2000px;"></div>
-      </div>
-      `;
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-      jest.advanceTimersByTime(1);
-
-      expectGetElementIdToHaveBeenCalledWith('test');
-      expectGetElementIdToHaveBeenCalledWith('user-content-test');
-
-      expect(window.scrollBy).toHaveBeenCalledWith(0, -1 * expectedOffset);
-
-      document.getElementById('parent').remove();
-    });
-
-    it('Scrolls element to correct height on MR page', () => {
-      jest.spyOn(window, 'scrollBy');
-      const stickyHeaderHeight = 100;
-      const fixedTabsHeight = 50;
-      const topPadding = 8;
-
-      const expectedOffset = stickyHeaderHeight + topPadding;
-
-      document.body.dataset.page = 'projects:merge_requests:show';
-
-      document.body.innerHTML += `
-      <div id="parent">
-        <div class="js-tabs-affix outer" style="height: ${fixedTabsHeight}px;"></div>
-        <div class="merge-request-sticky-header" style="position: fixed; top: 0px; height: ${stickyHeaderHeight}px;">
-          <div class="js-tabs-affix inner" style="height: ${fixedTabsHeight}px;"></div>
-        </div>
-        <div style="height: 2000px; margin-top: ${stickyHeaderHeight * 2}px;"></div>
-        <div id="user-content-test" style="height: 2000px;"></div>
-      </div>
-      `;
-      window.history.pushState({}, null, '#test');
-      commonUtils.handleLocationHash();
-      jest.advanceTimersByTime(1);
-
-      expectGetElementIdToHaveBeenCalledWith('test');
-      expectGetElementIdToHaveBeenCalledWith('user-content-test');
-
-      expect(window.scrollBy).toHaveBeenCalledWith(0, -1 * expectedOffset);
-
-      document.getElementById('parent').remove();
+    it('does nothing if target is already visible and is not covered', async () => {
+      observeIntersectionOnce.mockResolvedValue({ isIntersecting: true });
+      getCoveringElement.mockResolvedValue(null);
+      setWindowLocation(hash);
+      await commonUtils.handleLocationHash();
+      expect(scrollIntoView).not.toHaveBeenCalled();
     });
   });
 

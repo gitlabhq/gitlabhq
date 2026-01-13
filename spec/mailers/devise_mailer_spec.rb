@@ -29,7 +29,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
       it "shows the expected text" do
         expect(subject.body.encoded).to have_text "Welcome"
         expect(subject.body.encoded).not_to have_text user.email
-        expect(subject).to have_link('Confirm your account', href: organization_user_confirmation_url(user.organization, confirmation_token: 'faketoken'))
+        expect(subject).to have_link('Confirm your account', href: user_confirmation_url(confirmation_token: 'faketoken'))
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
           format(_('Confirm this email address within %{cut_off_days} days, otherwise the email address is removed.'), cut_off_days: ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS)
         )
 
-        is_expected.to have_link('Confirm your email address', href: organization_email_confirmation_url(secondary_email.organization, confirmation_token: 'faketoken'))
+        is_expected.to have_link('Confirm your email address', href: email_confirmation_url(confirmation_token: 'faketoken'))
       end
     end
   end
@@ -181,7 +181,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'includes a link to reset the password' do
-      is_expected.to have_link("Reset password", href: edit_organization_user_password_url(user.organization, reset_password_token: 'faketoken'))
+      is_expected.to have_link("Reset password", href: edit_user_password_url(reset_password_token: 'faketoken'))
     end
 
     it 'has the mailgun suppression bypass header' do
@@ -276,7 +276,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     end
 
     it 'includes link to unlock' do
-      is_expected.to have_link('Unlock account', href: organization_user_unlock_url(user.organization, unlock_token: 'faketoken'))
+      is_expected.to have_link('Unlock account', href: user_unlock_url(unlock_token: 'faketoken'))
     end
   end
 end

@@ -9,6 +9,7 @@ module Gitlab
     # see https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#use-job-arguments.
     # rubocop:disable Metrics/ClassLength
     # rubocop:disable Metrics/ParameterLists
+    # rubocop:disable Metrics/AbcSize -- will be refactored once cursor is default
     class BatchedMigrationJob
       include Gitlab::Database::DynamicModelHelpers
       include Gitlab::ClassAttributes
@@ -162,7 +163,9 @@ module Gitlab
 
       def base_relation
         if cursor?
-          model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection)
+          base_class = Gitlab::Database.application_record_for_connection(connection)
+          model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection,
+            base_class: base_class)
 
           cursor_expression = Arel::Nodes::Grouping.new(
             cursor_columns.map { |column| model_class.arel_table[column] }
@@ -221,3 +224,4 @@ module Gitlab
 end
 # rubocop:enable Metrics/ClassLength
 # rubocop:enable Metrics/ParameterLists
+# rubocop:enable Metrics/AbcSize

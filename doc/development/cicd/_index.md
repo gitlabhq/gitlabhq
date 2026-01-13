@@ -157,7 +157,7 @@ when transitioning to the `pending` state. This job is responsible for creating 
 a multi-project or child pipeline. The workflow loop starts again
 from the `CreatePipelineService` every time a downstream pipeline is triggered.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 You can watch a walkthrough of the architecture in [CI Backend Architectural Walkthrough](https://www.youtube.com/watch?v=ew4BwohS5OY).
 
 ### Pipeline processing

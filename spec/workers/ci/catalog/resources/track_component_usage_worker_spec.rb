@@ -86,6 +86,15 @@ RSpec.describe Ci::Catalog::Resources::TrackComponentUsageWorker, feature_catego
                'name' => component.name }])
         end.not_to change { Ci::Catalog::Resources::Components::LastUsage.count }
       end
+
+      it 'skips catalog component processing when project is missing' do
+        missing_project_hash = { 'project_id' => non_existing_record_id, 'sha' => version.sha,
+                                 'name' => component.name }
+
+        expect do
+          described_class.new.perform(project.id, user.id, [component_hash, missing_project_hash])
+        end.to change { Ci::Catalog::Resources::Components::LastUsage.count }.by(1)
+      end
     end
 
     context 'when component does not exist in the catalog' do
@@ -166,7 +175,8 @@ RSpec.describe Ci::Catalog::Resources::TrackComponentUsageWorker, feature_catego
       end
 
       it 'tracks the exception to Sentry' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError))
+        # Both ci_component_included and ci_catalog_component_included events fail
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(StandardError)).twice
 
         perform
       end
@@ -198,6 +208,36 @@ RSpec.describe Ci::Catalog::Resources::TrackComponentUsageWorker, feature_catego
           described_class.new.perform(project.id, user.id, [component_hash, component_hash2])
         end.to change { Ci::Catalog::Resources::Components::LastUsage.count }.by(1)
       end
+    end
+
+    it 'avoids N+1 database queries' do
+      component2 = create(:ci_catalog_resource_component, version: version, name: 'another_component')
+      component3 = create(:ci_catalog_resource_component, version: version, name: 'third_component')
+
+      component_hash2 = {
+        'project_id' => component2.project.id,
+        'sha' => version.sha,
+        'name' => component2.name
+      }
+
+      component_hash3 = {
+        'project_id' => component3.project.id,
+        'sha' => version.sha,
+        'name' => component3.name
+      }
+
+      # First run creates LastUsage records for component and component2
+      described_class.new.perform(project.id, user.id, [component_hash, component_hash2])
+
+      # Control run with 2 components (component_hash update + component3 insert)
+      control = ActiveRecord::QueryRecorder.new do
+        described_class.new.perform(project.id, user.id, [component_hash, component_hash3])
+      end
+
+      # This run has: component_hash update + component2 update + component3 insert
+      expect do
+        described_class.new.perform(project.id, user.id, [component_hash, component_hash2, component_hash3])
+      end.not_to exceed_query_limit(control)
     end
   end
 end

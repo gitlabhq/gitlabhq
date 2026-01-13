@@ -59,5 +59,11 @@ FactoryBot.define do
       visibility_level { Snippet::PUBLIC }
       secret { true }
     end
+
+    trait :with_file do
+      after :create do |snippet, _|
+        create(:upload, :personal_snippet_upload, :with_file, model: snippet) # rubocop:disable RSpec/FactoryBot/StrategyInCallback -- unable to create with association()
+      end
+    end
   end
 end

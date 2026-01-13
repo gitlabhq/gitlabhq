@@ -3,12 +3,10 @@
 module Gitlab
   module SidekiqStatus
     class ServerMiddleware
-      def call(worker, job, queue)
-        ret = yield
-
+      def call(_worker, job, _queue)
+        yield
+      ensure
         Gitlab::SidekiqStatus.unset(job['jid'])
-
-        ret
       end
     end
   end

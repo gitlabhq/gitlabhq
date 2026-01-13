@@ -101,6 +101,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Download the artifacts file for job | `GET /jobs/:id/artifacts` | `READ_JOBS` | Read |
 | Get a projects jobs | `GET /projects/:id/jobs` | `READ_JOBS` | Read |
 | Get pipeline jobs | `GET /projects/:id/pipelines/:pipeline_id/jobs` | `READ_JOBS` | Read |
+| List all files in the artifacts archive | `GET /projects/:id/jobs/:job_id/artifacts/tree` | `READ_JOBS` | Read |
 
 ### Merge requests endpoints
 
@@ -245,6 +246,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Get Merge Requests associated with a commit | `GET /projects/:id/repository/commits/:sha/merge_requests` | `READ_REPOSITORIES` | Read |
 | Get a project repository branches | `GET /projects/:id/repository/branches` | `READ_REPOSITORIES` | Read |
 | Get a project repository tags | `GET /projects/:id/repository/tags` | `READ_REPOSITORIES` | Read |
+| Get a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
 | Get a specific commit of a project | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
 | Get raw file contents from the repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
 

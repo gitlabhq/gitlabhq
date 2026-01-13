@@ -17,6 +17,7 @@ module API
         detail 'This feature was introduced in GitLab 9.3.'
         success Entities::Event
         is_array true
+        tags %w[events]
         failure [
           { code: 401, message: 'Unauthorized' }
         ]

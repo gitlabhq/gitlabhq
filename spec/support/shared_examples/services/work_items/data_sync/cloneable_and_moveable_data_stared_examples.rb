@@ -250,11 +250,11 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
                          [:group_level, { namespace: original_work_item.namespace }]
                        end
 
-    child_item_type1 = ::WorkItems::Type.find(WorkItems::SystemDefined::HierarchyRestriction.where(
+    child_item_type1 = ::WorkItems::Type.find(WorkItems::TypesFramework::SystemDefined::HierarchyRestriction.where(
       parent_type_id: original_work_item.work_item_type.id
     ).min_by(&:id).child_type_id).base_type
 
-    child_item_type2 = ::WorkItems::Type.find(WorkItems::SystemDefined::HierarchyRestriction.where(
+    child_item_type2 = ::WorkItems::Type.find(WorkItems::TypesFramework::SystemDefined::HierarchyRestriction.where(
       parent_type_id: original_work_item.work_item_type.id
     ).max_by(&:id).child_type_id).base_type
 

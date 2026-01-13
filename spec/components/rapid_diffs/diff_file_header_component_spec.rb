@@ -264,6 +264,103 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
         expect(view_on_env_item).to be_nil
       end
     end
+
+    context "with renderable diff" do
+      before do
+        allow(diff_file).to receive(:has_renderable?).and_return(true)
+      end
+
+      context 'with rich diff' do
+        before do
+          allow(diff_file).to receive(:rendered?).and_return(true)
+        end
+
+        it "has view plain diff option" do
+          render_component
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+          item = options_menu_items.find { |item| item['text'].match?('View plain diff') }
+          expect(item['extraAttrs']['data-click']).to eq('toggleRichView')
+          expect(Gitlab::Json.parse(item['extraAttrs']['data-rendered'])).to be_truthy
+        end
+      end
+
+      context 'with plain diff' do
+        before do
+          allow(diff_file).to receive(:rendered?).and_return(false)
+        end
+
+        it "has view rich diff option" do
+          render_component
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+          item = options_menu_items.find { |item| item['text'].match?('View rich diff') }
+          expect(item['extraAttrs']['data-click']).to eq('toggleRichView')
+          expect(Gitlab::Json.parse(item['extraAttrs']['data-rendered'])).to be_falsy
+        end
+      end
+    end
+
+    context 'with diffable text' do
+      before do
+        allow(diff_file).to receive(:diffable_text?).and_return(true)
+        allow(diff_file).to receive(:fully_expanded?).and_return(false)
+        allow(diff_file).to receive(:manually_expanded?).and_return(false)
+      end
+
+      it 'adds show full file menu item' do
+        render_component
+
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+        item = options_menu_items.find { |item| item['text']&.match?('Show full file') }
+
+        expect(item['extraAttrs']['data-full']).to be_falsy
+      end
+
+      context 'with manually expanded file' do
+        before do
+          allow(diff_file).to receive(:fully_expanded?).and_return(true)
+          allow(diff_file).to receive(:manually_expanded?).and_return(true)
+        end
+
+        it 'adds show changes only file menu item' do
+          render_component
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+          item = options_menu_items.find { |item| item['text']&.match?('Show changes only') }
+
+          expect(item['extraAttrs']['data-full']).to be_truthy
+        end
+      end
+
+      context 'with fully expanded file' do
+        before do
+          allow(diff_file).to receive(:fully_expanded?).and_return(true)
+        end
+
+        it 'does not add show full file option' do
+          render_component
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+          item = options_menu_items.find { |item| item['text']&.match?('Show full file') }
+
+          expect(item).to be_nil
+        end
+      end
+
+      context 'with rendered file' do
+        before do
+          allow(diff_file).to receive(:rendered?).and_return(true)
+        end
+
+        it 'does not add show full file option' do
+          render_component
+
+          options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+          item = options_menu_items.find { |item| item['text']&.match?('Show full file') }
+
+          expect(item).to be_nil
+        end
+      end
+    end
   end
 
   def create_instance(**args)

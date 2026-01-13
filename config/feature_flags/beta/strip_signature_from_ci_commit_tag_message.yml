@@ -1,0 +1,10 @@
+---
+name: strip_signature_from_ci_commit_tag_message
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583219
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215579
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583733
+milestone: '18.8'
+group: group::pipeline authoring
+type: beta
+default_enabled: true

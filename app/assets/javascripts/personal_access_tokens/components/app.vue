@@ -14,8 +14,11 @@ import {
   DEFAULT_SORT,
   PAGE_SIZE,
 } from '../constants';
+import { convertFiltersToVariables } from '../utils';
 import CreatePersonalAccessTokenButton from './create_personal_access_token_button.vue';
 import PersonalAccessTokensTable from './personal_access_tokens_table.vue';
+import PersonalAccessTokenDrawer from './personal_access_token_drawer.vue';
+import PersonalAccessTokenStatistics from './personal_access_token_statistics.vue';
 
 export default {
   name: 'PersonalAccessTokensApp',
@@ -27,6 +30,8 @@ export default {
     CrudComponent,
     PersonalAccessTokensTable,
     CreatePersonalAccessTokenButton,
+    PersonalAccessTokenDrawer,
+    PersonalAccessTokenStatistics,
   },
   data() {
     return {
@@ -35,7 +40,9 @@ export default {
         pageInfo: {},
       },
       filter: structuredClone(DEFAULT_FILTER),
+      filterObject: convertFiltersToVariables(DEFAULT_FILTER),
       sort: structuredClone(DEFAULT_SORT),
+      selectedToken: null,
       pagination: {
         first: PAGE_SIZE,
         after: null,
@@ -51,7 +58,7 @@ export default {
         return {
           id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
           sort: this.currentSort,
-          ...this.filterVariables,
+          ...this.filterObject,
           ...this.pagination,
         };
       },
@@ -82,20 +89,17 @@ export default {
     showPagination() {
       return this.tokens?.pageInfo?.hasNextPage || this.tokens?.pageInfo?.hasPreviousPage;
     },
-    filterVariables() {
-      return Object.fromEntries(
-        this.filter.flatMap((filterToken) => {
-          const { type, value } = filterToken;
-
-          if (!value?.data) return [];
-
-          return [[type, value.data]];
-        }),
-      );
-    },
   },
   methods: {
     handleFilter() {
+      this.filterObject = convertFiltersToVariables(this.filter);
+
+      this.$apollo.queries.tokens.refetch();
+    },
+    handleFilterClear() {
+      this.filter = [];
+      this.filterObject = {};
+
       this.$apollo.queries.tokens.refetch();
     },
     handleSortChange(value) {
@@ -120,6 +124,15 @@ export default {
         before: item,
       };
     },
+    selectToken(token) {
+      this.selectedToken = token;
+    },
+    handleStatisticsFilter(filter) {
+      this.filter = filter;
+      this.filterObject = convertFiltersToVariables(this.filter);
+
+      this.$apollo.queries.tokens.refetch();
+    },
   },
   i18n: {
     pageTitle: s__('AccessTokens|Personal access tokens'),
@@ -142,6 +155,8 @@ export default {
       </template>
     </page-heading>
 
+    <personal-access-token-statistics @filter="handleStatisticsFilter" />
+
     <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
       <gl-filtered-search
         v-model="filter"
@@ -150,7 +165,7 @@ export default {
         :available-tokens="$options.FILTER_OPTIONS"
         terms-as-tokens
         @submit="handleFilter"
-        @clear="handleFilter"
+        @clear="handleFilterClear"
       />
       <!-- eslint-disable vue/v-on-event-hyphenation -->
       <gl-sorting
@@ -170,7 +185,12 @@ export default {
         <create-personal-access-token-button />
       </template>
 
-      <personal-access-tokens-table :tokens="tokens.list" :loading="isLoading" class="gl-mb-5" />
+      <personal-access-tokens-table
+        :tokens="tokens.list"
+        :loading="isLoading"
+        class="gl-mb-5"
+        @select="selectToken"
+      />
 
       <template #pagination>
         <gl-keyset-pagination
@@ -181,5 +201,7 @@ export default {
         />
       </template>
     </crud-component>
+
+    <personal-access-token-drawer :token="selectedToken" @close="selectToken(null)" />
   </div>
 </template>

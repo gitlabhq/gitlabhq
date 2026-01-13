@@ -27,7 +27,7 @@ module API
         merge_request.metrics&.pipeline
       end
 
-      expose :head_pipeline, using: '::API::Entities::Ci::Pipeline', if: ->(_, options) do
+      expose :head_pipeline, using: ::API::Entities::Ci::Pipeline, if: ->(_, options) do
         Ability.allowed?(options[:current_user], :read_pipeline, options[:project])
       end
 

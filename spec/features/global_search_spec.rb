@@ -17,11 +17,7 @@ RSpec.describe 'Global search', :js, :with_current_organization, feature_categor
 
   shared_examples 'header search' do
     it 'renders search button' do
-      if Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-        expect(page).to have_selector('[data-testid="super-topbar-search-button"]')
-      else
-        expect(page).to have_selector('[data-testid="super-sidebar-search-button"]')
-      end
+      expect(page).to have_selector('[data-testid="super-topbar-search-button"]')
     end
 
     it 'opens search modal when shortcut "s" is pressed' do

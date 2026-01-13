@@ -3,6 +3,9 @@
 module Projects
   class UsageQuotasController < Projects::ApplicationController
     before_action :authorize_read_usage_quotas!
+    before_action only: :index do
+      push_frontend_feature_flag(:project_repositories_health_ui, @project)
+    end
 
     layout "project_settings"
 

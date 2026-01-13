@@ -32,19 +32,13 @@ Initial licensing can either be the Free Enterprise License (EE) or the open sou
 
 Currently the Amazon AMI uses the Amazon prepared Ubuntu AMI (x86 and ARM are available) as its starting point.
 
-{{< alert type="note" >}}
-
-When deploying a GitLab instance using the official AMI, the root password to the instance is the EC2 **Instance** ID (not the AMI ID). This way of setting the root account password is specific to official GitLab published AMIs ONLY.
-
-{{< /alert >}}
+> [!note]
+> When deploying a GitLab instance using the official AMI, the root password to the instance is the EC2 **Instance** ID (not the AMI ID). This way of setting the root account password is specific to official GitLab published AMIs ONLY.
 
 Instances running on Community Edition (CE) require a migration to Enterprise Edition (EE) to subscribe to the GitLab Premium or Ultimate plan. If you want to pursue a subscription, using the Free-forever plan of Enterprise Edition is the least disruptive method.
 
-{{< alert type="note" >}}
-
-Because any given GitLab upgrade might involve data disk updates or database schema upgrades, swapping out the AMI is not sufficient for taking upgrades.
-
-{{< /alert >}}
+> [!note]
+> Because any given GitLab upgrade might involve data disk updates or database schema upgrades, swapping out the AMI is not sufficient for taking upgrades.
 
 1. Sign in to the AWS Web Console, so that selecting the links in the following step take you directly to the AMI list.
 1. Pick the edition you want:

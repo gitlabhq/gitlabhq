@@ -120,6 +120,52 @@ RSpec.describe Authn::TokenField::Encrypted, feature_category: :system_access do
 
       it_behaves_like 'finds the resource with/without setting require_prefix_for_validation'
     end
+
+    context 'for custom finder' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline, status: :running) }
+      let_it_be(:token) { job.token }
+
+      let(:test_class) { Ci::Build }
+      let(:field) { 'token' }
+      let(:options) do
+        {
+          encrypted: :required,
+          encrypted_token_finder: 'Ci::Jobs::PartitionedTokenFinder'
+        }
+      end
+
+      subject(:strategy) do
+        described_class.new(test_class, field, options)
+      end
+
+      it 'finds the job using custom finder' do
+        expect(Ci::Jobs::PartitionedTokenFinder)
+          .to receive(:new).and_call_original
+        recorder = ActiveRecord::QueryRecorder.new do
+          expect(strategy.find_token_authenticatable(token)).to eq(job)
+        end
+
+        expect(recorder.count).to eq(1)
+        expect(recorder.log.first).to match(/"p_ci_builds"."token_encrypted" IN/)
+        expect(recorder.log.first).to match(/"p_ci_builds"."partition_id" =/)
+      end
+
+      context 'when encrypted_token_finder is not a string' do
+        let(:options) do
+          {
+            encrypted: :required,
+            encrypted_token_finder: Ci::Jobs::PartitionedTokenFinder
+          }
+        end
+
+        it 'raises argument error' do
+          expect { strategy.find_token_authenticatable(token) }
+            .to raise_error(ArgumentError, 'Please provider the finder class name in String type.')
+        end
+      end
+    end
   end
 
   describe '#ensure_token' do

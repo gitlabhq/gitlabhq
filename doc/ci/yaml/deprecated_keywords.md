@@ -37,11 +37,8 @@ default:
 
 ## `only` / `except`
 
-{{< alert type="note" >}}
-
-`only` and `except` are deprecated. To control when to add jobs to pipelines, use [`rules`](_index.md#rules) instead.
-
-{{< /alert >}}
+> [!note]
+> `only` and `except` are deprecated. To control when to add jobs to pipelines, use [`rules`](_index.md#rules) instead.
 
 You can use `only` and `except` to control when to add jobs to pipelines.
 

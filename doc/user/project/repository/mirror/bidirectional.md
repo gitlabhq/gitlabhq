@@ -156,45 +156,6 @@ This sample has a few limitations:
 - The script circumvents the Git hook quarantine environment because the update of `$TARGET_REPO`
   is seen as a ref update, and Git displays warnings about it.
 
-## Mirror with Perforce Helix with Git Fusion
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-Bidirectional mirroring should not be used as a permanent configuration. Refer to
-[Migrating from Perforce Helix](../../import/perforce.md) for alternative migration approaches.
-
-{{< /alert >}}
-
-[Git Fusion](https://www.perforce.com/manuals/git-fusion/#Git-Fusion/section_avy_hyc_gl.html) provides a Git interface
-to [Perforce Helix](https://www.perforce.com/products). GitLab can use the Perforce Helix
-interface to bidirectionally mirror projects. It can help when migrating from Perforce Helix
-to GitLab, if overlapping Perforce Helix workspaces cannot be migrated simultaneously.
-
-If you mirror with Perforce Helix, mirror only protected branches. Perforce Helix
-rejects any pushes that rewrite history. Only the fewest number of branches should be mirrored
-due to the performance limitations of Git Fusion.
-
-When you configure mirroring with Perforce Helix by using Git Fusion, you should use
-these Git Fusion settings:
-
-- Disable `change-pusher`. Otherwise, every commit is rewritten as being committed
-  by the mirroring account, rather than mapping to existing Perforce Helix users or the `unknown_git` user.
-- Use the `unknown_git` user as the commit author, if the GitLab user doesn't exist in
-  Perforce Helix.
-
 ## Related topics
 
 - [Troubleshooting](troubleshooting.md) for repository mirroring.

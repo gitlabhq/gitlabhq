@@ -29,7 +29,13 @@ module Resolvers
           required: false,
           description: 'Filter catalog resources by project topic names.'
 
-        def resolve_with_lookahead(scope:, search: nil, sort: nil, verification_level: nil, topics: nil)
+        argument :min_access_level, ::Types::AccessLevelEnum,
+          required: false,
+          description: 'Minimum access level required for the user on the catalog resource project.'
+
+        def resolve_with_lookahead(
+          scope:, search: nil, sort: nil, verification_level: nil, topics: nil, min_access_level: nil
+        )
           apply_lookahead(
             ::Ci::Catalog::Listing
               .new(context[:current_user])
@@ -38,7 +44,8 @@ module Resolvers
                 search: search,
                 scope: scope,
                 verification_level: verification_level,
-                topics: topics
+                topics: topics,
+                min_access_level: min_access_level
               )
           )
         end

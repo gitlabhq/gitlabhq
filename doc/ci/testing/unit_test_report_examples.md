@@ -179,7 +179,11 @@ Test:
 
 ## JavaScript
 
-There are a few tools that can produce JUnit report format XML files in JavaScript.
+You can use the following tools to produce JUnit XML files in JavaScript:
+
+- `jest-junit`
+- `karma-junit-reporter`
+- [`mocha-gitlab-reporter`](https://github.com/X-Guardian/mocha-gitlab-reporter)
 
 ### Jest
 
@@ -217,24 +221,6 @@ javascript:
   stage: test
   script:
     - karma start --reporters junit
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - junit.xml
-```
-
-### Mocha
-
-The [JUnit Reporter for Mocha](https://github.com/michaelleeallen/mocha-junit-reporter)
-NPM package can generate test reports for JavaScript applications. In the following
-`.gitlab-ci.yml` example, the `javascript` job uses Mocha to generate the test reports:
-
-```yaml
-javascript:
-  stage: test
-  script:
-    - mocha --reporter mocha-junit-reporter --reporter-options mochaFile=junit.xml
   artifacts:
     when: always
     reports:

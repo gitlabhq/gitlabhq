@@ -10,7 +10,7 @@ class AdjournedProjectsDeletionCronWorker
 
   include CronjobQueue
 
-  INTERVAL = 10.seconds.to_i
+  INTERVAL = 3.seconds.to_i
 
   feature_category :compliance_management
 

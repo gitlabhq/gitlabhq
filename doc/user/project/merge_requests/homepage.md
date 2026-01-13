@@ -33,15 +33,6 @@ flowchart LR
     E -->G{All<br>approvals?}
     G -->|Yes| K[Ready to merge]
     G -.->|No| J[Remains in<br><strong>Waiting for approvals</strong>]
-
-    linkStyle default stroke:red
-    linkStyle 0 stroke:green
-    linkStyle 1 stroke:green
-    linkStyle 3 stroke:green
-    linkStyle 5 stroke:green
-    linkStyle 6 stroke:green
-    linkStyle 7 stroke:green
-    style K stroke:black,fill:#28a745,color:#fff
 ```
 
 This review flow assumes reviewers use the **Start a review** and **Submit a review** features.
@@ -81,7 +72,7 @@ Your merge request homepage shows more information about these merge requests. T
 use any of these methods:
 
 - Use the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../shortcuts.md).
-- On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open">}}).
+- On the left sidebar, select **Merge requests** ({{< icon name="merge-request-open" >}}).
 - On the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests**.
 
 To help you focus on what needs your attention right now, GitLab organizes your merge request homepage
@@ -104,7 +95,7 @@ into three tabs:
 - **Author**: The author's avatar.
 - **Reviewers**: The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks**: A compact assessment of mergeability.
-  - A warning ({{< icon name="warning-solid">}}) if merge conflicts exist.
+  - A warning ({{< icon name="warning-solid" >}}) if merge conflicts exist.
   - Number of unresolved threads, like `0 of 3`.
   - Current required [approval status](approvals/_index.md#in-the-list-of-merge-requests).
   - Most recent pipeline status.
@@ -118,7 +109,7 @@ into three tabs:
 
 {{< /history >}}
 
-In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences">}}):
+In the upper right of your merge request homepage, select **Display preferences** ({{< icon name="preferences" >}}):
 
 - Toggle **Show labels** to show or hide labels for each merge request.
 - Sorting preferences: **Workflow** or **Role**.

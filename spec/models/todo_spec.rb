@@ -433,12 +433,13 @@ RSpec.describe Todo, feature_category: :notifications do
 
     context 'when the todo is coming from an issue' do
       let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       context 'when coming from the issue itself' do
         let_it_be(:todo) { create(:todo, project: project, user: user, target: issue) }
 
         it 'returns the issue web path' do
-          is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}")
+          is_expected.to eq("http://localhost#{issue_path}")
         end
       end
 
@@ -447,7 +448,7 @@ RSpec.describe Todo, feature_category: :notifications do
         let_it_be(:todo) { create(:todo, project: project, user: user, note: note, target: issue) }
 
         it 'returns the issue web path with an anchor to the note' do
-          is_expected.to eq("http://localhost/#{project.full_path}/-/issues/#{issue.iid}#note_#{note.id}")
+          is_expected.to eq("http://localhost#{issue_path}#note_#{note.id}")
         end
       end
 

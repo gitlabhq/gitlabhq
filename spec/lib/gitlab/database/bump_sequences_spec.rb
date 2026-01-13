@@ -11,8 +11,8 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
   let!(:ci_sequence_name) { 'ci_build_needs_id_seq' }
 
   let!(:main_sequence_name) do
-    # we cannot fix a specific sequence here as we are in the process of migrating tables to either
-    # gitlab_main_org or gitlab_main_clusterwide schema.
+    # we cannot fix a specific sequence here as we are in the process of migrating tables to
+    # gitlab_main_org schema.
 
     # Hence, we try to find any available table belonging to the `gitlab_main` schema, and use it's ID sequence.
     gitlab_main_tables = Gitlab::Database::GitlabSchema.tables_to_schema.select do |_table_name, schema_name|

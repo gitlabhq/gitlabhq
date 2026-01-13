@@ -288,30 +288,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
       it { is_expected.to eq expected }
     end
-
-    context 'when falls back for web requests' do
-      where(:git_http_enabled, :web_enabled, :expected) do
-        false | false | false
-        true  | false | true
-        false | true  | true
-        true  | true  | true
-      end
-
-      with_them do
-        before do
-          stub_application_setting(
-            throttle_authenticated_git_http_enabled: git_http_enabled,
-            throttle_authenticated_web_enabled: web_enabled
-          )
-        end
-
-        it 'enables Git HTTP setttings if either web or Git HTTP rate limiter is enabled' do
-          expect(request).to receive(:git_path?).and_return(true)
-
-          expect(request.throttle_authenticated_git_http?).to eq(expected)
-        end
-      end
-    end
   end
 
   describe '#throttle_authenticated_git_http?' do

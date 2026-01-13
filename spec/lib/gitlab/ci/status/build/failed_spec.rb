@@ -66,8 +66,76 @@ RSpec.describe Gitlab::Ci::Status::Build::Failed, feature_category: :continuous_
     let(:user) { create(:user) }
     let(:core_status) { Gitlab::Ci::Status::Failed.new(build, user) }
 
+    subject(:status_tooltip) { status.status_tooltip }
+
     it 'does override status_tooltip' do
       expect(status.status_tooltip).to eq 'Failed - (script failure)'
+    end
+
+    context 'with job_router_failure reason' do
+      let_it_be(:build) { create(:ci_build, :failed, failure_reason: :job_router_failure, project: project) }
+      let(:status) { described_class.new(core_status) }
+
+      it 'shows fallback message in tooltip' do
+        is_expected.to eq(
+          'Failed - (The Job Router failed to run this job. Please contact your administrator.)'
+        )
+      end
+
+      context 'with custom message' do
+        before do
+          create(:ci_job_message, job: build, severity: :error, content: 'Custom error details')
+        end
+
+        it 'includes the custom message in tooltip' do
+          is_expected.to eq(
+            'Failed - (The Job Router failed to run this job. Custom error details)'
+          )
+        end
+      end
+    end
+
+    context 'with other failure reasons' do
+      let(:build) { create(:ci_build, :script_failure, project: project) }
+      let(:status) { described_class.new(core_status) }
+
+      it 'shows default message without custom text' do
+        expect(status.status_tooltip).to eq('Failed - (script failure)')
+      end
+    end
+  end
+
+  describe '#fetch_custom_message' do
+    let(:core_status) { Gitlab::Ci::Status::Failed.new(build, user) }
+
+    subject(:fetch_custom_message) { status.send(:fetch_custom_message) }
+
+    context 'when build has error job messages' do
+      before do
+        create(:ci_job_message, job: build, severity: :error, content: 'Custom error message')
+      end
+
+      it 'returns the first error message content' do
+        is_expected.to eq('Custom error message')
+      end
+    end
+
+    context 'when build has no error job messages' do
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when subject does not respond to error_job_messages' do
+      let(:core_status) { instance_double(Gitlab::Ci::Status::Core) }
+
+      before do
+        allow(core_status).to receive(:subject).and_return(double('subject'))
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 
@@ -105,7 +173,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Failed, feature_category: :continuous_
 
     context 'invalid failure message' do
       before do
-        expect(build).to receive(:failure_reason) { 'invalid failure message' }
+        allow(build).to receive(:failure_reason) { 'invalid failure message' }
       end
 
       it "is an invalid status" do

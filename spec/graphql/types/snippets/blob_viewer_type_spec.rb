@@ -2,9 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['SnippetBlobViewer'], feature_category: :source_code_management do
+RSpec.describe GitlabSchema.types['SnippetBlobViewer'], :with_current_organization, feature_category: :source_code_management do
   let_it_be(:snippet) { create(:personal_snippet, :repository) }
   let_it_be(:blob) { snippet.repository.blob_at('HEAD', 'files/images/6049019_460s.jpg') }
+
+  before do
+    # Since this doesn't go through a request flow, we need to manually set Current.organization
+    Current.organization = current_organization
+  end
 
   it 'has the correct fields' do
     expected_fields = [:type, :load_async, :too_large, :collapsed,

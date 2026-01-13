@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PersonalAccessToken < ApplicationRecord
+  include AfterCommitQueue
   include Expirable
   include TokenAuthenticatable
   include Sortable
@@ -73,7 +74,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }
   scope :for_user_types, ->(user_types) { where(user_type: user_types) }
-  scope :for_organization, ->(organization) { where(organization_id: organization) }
+  scope :in_organization, ->(organization) { where(organization_id: organization) }
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
   scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }
@@ -203,10 +204,6 @@ class PersonalAccessToken < ApplicationRecord
     return unless has_attribute?(:scopes)
 
     self.scopes = Gitlab::Auth::DEFAULT_SCOPES if self.scopes.empty?
-  end
-
-  def user_admin?
-    user.admin? # rubocop: disable Cop/UserAdmin
   end
 
   def prefix_from_application_current_settings

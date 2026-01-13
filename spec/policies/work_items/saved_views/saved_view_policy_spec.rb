@@ -230,4 +230,65 @@ RSpec.describe WorkItems::SavedViews::SavedViewPolicy, feature_category: :portfo
       end
     end
   end
+
+  describe 'update_saved_view_visibility' do
+    context 'with shared saved view' do
+      let_it_be(:saved_view) { create(:saved_view, namespace: group, private: false, created_by_id: other_user.id) }
+
+      context 'when user has planner access but is not the author' do
+        before_all do
+          group.add_planner(user)
+        end
+
+        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+      end
+
+      context 'when user does not have planner access' do
+        before_all do
+          group.add_guest(user)
+        end
+
+        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+      end
+    end
+
+    context 'with private saved view' do
+      context 'when user is the author' do
+        let(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: user.id) }
+
+        before_all do
+          group.add_guest(user)
+        end
+
+        it { is_expected.to be_allowed(:update_saved_view_visibility) }
+      end
+
+      context 'when user is not the author but has planner access' do
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
+
+        before_all do
+          group.add_planner(user)
+        end
+
+        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+      end
+
+      context 'when user is not the author and does not have planner access' do
+        let_it_be(:saved_view) { create(:saved_view, namespace: group, private: true, created_by_id: other_user.id) }
+
+        before_all do
+          group.add_guest(user)
+        end
+
+        it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+      end
+    end
+
+    context 'when user cannot read namespace' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:saved_view) { create(:saved_view, namespace: private_group, private: false, created_by_id: user.id) }
+
+      it { is_expected.to be_disallowed(:update_saved_view_visibility) }
+    end
+  end
 end

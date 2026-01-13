@@ -7,17 +7,17 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   let_it_be(:organization) { create(:organization) }
 
   shared_examples 'bot users' do |bot_type, username, email|
-    subject(:bot_user) { described_class.for_organization(organization).public_send(bot_type) }
+    subject(:bot_user) { described_class.in_organization(organization).public_send(bot_type) }
 
     let(:bot_username) do
-      described_class.for_organization(organization).send(
+      described_class.in_organization(organization).send(
         :username_with_organization_suffix, username
       )
     end
 
     it 'creates the user if it does not exist' do
       expect do
-        described_class.for_organization(organization).public_send(bot_type)
+        described_class.in_organization(organization).public_send(bot_type)
       end.to change { User.where(user_type: bot_type).count }.by(1)
     end
 
@@ -45,10 +45,10 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     end
 
     it 'does not create a new user if it already exists' do
-      described_class.for_organization(organization).public_send(bot_type)
+      described_class.in_organization(organization).public_send(bot_type)
 
       expect do
-        described_class.for_organization(organization).public_send(bot_type)
+        described_class.in_organization(organization).public_send(bot_type)
       end.not_to change { User.count }
     end
 
@@ -164,10 +164,10 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
       end
 
       it 'does not create a new user if one already exists for the first organization' do
-        described_class.for_organization(first_organization).public_send(bot_type)
+        described_class.in_organization(first_organization).public_send(bot_type)
 
         expect do
-          described_class.for_organization(organization).public_send(bot_type)
+          described_class.in_organization(organization).public_send(bot_type)
         end.not_to change { User.count }
       end
 
@@ -185,7 +185,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
 
   shared_examples 'bot user avatars' do |bot_type, avatar_filename|
     it 'sets the custom avatar for the created bot' do
-      bot_user = described_class.for_organization(organization).public_send(bot_type)
+      bot_user = described_class.in_organization(organization).public_send(bot_type)
 
       expect(bot_user.avatar.url).to be_present
       expect(bot_user.avatar.filename).to eq(avatar_filename)
@@ -208,13 +208,13 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
 
   context 'when bot is the support_bot' do
-    subject { described_class.for_organization(organization).support_bot }
+    subject { described_class.in_organization(organization).support_bot }
 
     it { is_expected.to be_confirmed }
   end
 
   context 'when bot is the admin bot' do
-    subject { described_class.for_organization(organization).admin_bot }
+    subject { described_class.in_organization(organization).admin_bot }
 
     it { is_expected.to be_admin }
     it { is_expected.to be_confirmed }
@@ -241,16 +241,16 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     end
 
     context 'when organization is used' do
-      subject { described_class.for_organization(organization).support_bot_id }
+      subject { described_class.in_organization(organization).support_bot_id }
 
-      it { is_expected.to eq(described_class.for_organization(organization).support_bot.id) }
+      it { is_expected.to eq(described_class.in_organization(organization).support_bot.id) }
     end
   end
 
   context 'when organization_id is passed instead of organization' do
     let_it_be(:organization_id) { organization.id }
 
-    subject(:get_admin_bot) { described_class.for_organization(organization_id).admin_bot }
+    subject(:get_admin_bot) { described_class.in_organization(organization_id).admin_bot }
 
     context 'and bot exists' do
       let_it_be(:admin_bot) { create(:user, :admin_bot, organization: organization) }

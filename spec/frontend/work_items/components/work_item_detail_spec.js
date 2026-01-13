@@ -90,7 +90,7 @@ describe('WorkItemDetail component', () => {
   const successHandlerWithNoPermissions = jest
     .fn()
     .mockResolvedValue(workItemQueryResponseWithNoPermissions);
-  const { id } = workItemByIidQueryResponse.data.workspace.workItem;
+  const { id } = workItemByIidQueryResponse.data.namespace.workItem;
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
@@ -325,7 +325,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('passes `parentMilestone` prop to work item tree', () => {
-      const { milestone } = workItemByIidQueryResponse.data.workspace.workItem.widgets.find(
+      const { milestone } = workItemByIidQueryResponse.data.namespace.workItem.widgets.find(
         (widget) => widget.type === WIDGET_TYPE_MILESTONE,
       );
 
@@ -376,7 +376,7 @@ describe('WorkItemDetail component', () => {
     const mutationHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem: confidentialWorkItem.data.workspace.workItem,
+          workItem: confidentialWorkItem.data.namespace.workItem,
           errors: [],
         },
       },
@@ -442,7 +442,7 @@ describe('WorkItemDetail component', () => {
       const mutationHandler = jest.fn().mockResolvedValue({
         data: {
           workItemUpdate: {
-            workItem: workItemByIidQueryResponse.data.workspace.workItem,
+            workItem: workItemByIidQueryResponse.data.namespace.workItem,
             errors: [],
           },
         },
@@ -889,7 +889,7 @@ describe('WorkItemDetail component', () => {
       createComponent();
       await waitForPromises();
 
-      const { confidential } = workItemByIidQueryResponse.data.workspace.workItem;
+      const { confidential } = workItemByIidQueryResponse.data.namespace.workItem;
 
       expect(findNotesWidget().exists()).toBe(true);
       expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);

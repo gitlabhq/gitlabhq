@@ -12,11 +12,8 @@ title: GitLab for Jira Cloud app
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
-
-{{< /alert >}}
+> [!note]
+> This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
@@ -70,7 +67,7 @@ Alternatively, [get the app directly from the Atlassian Marketplace](https://mar
 
 You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-jira-cloud-app).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see
 [Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
 <!-- Video published on 2024-10-30 -->
@@ -163,11 +160,8 @@ After you link to a GitLab group:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature was added as a community contribution and is developed and maintained by the GitLab community only.
-
-{{< /alert >}}
+> [!note]
+> This feature was added as a community contribution and is developed and maintained by the GitLab community only.
 
 Prerequisites:
 
@@ -189,7 +183,7 @@ In Jira Service Management:
 
 In GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
@@ -215,11 +209,8 @@ For more information about deployment tracking in Jira, see [Set up deployment t
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature was added as a community contribution and is developed and maintained by the GitLab community only.
-
-{{< /alert >}}
+> [!note]
+> This feature was added as a community contribution and is developed and maintained by the GitLab community only.
 
 You can set up deployment gating to bring change requests from GitLab to Jira Service Management for approval.
 With deployment gating, any GitLab deployments to your selected environments are automatically sent
@@ -246,7 +237,7 @@ To enable deployment gating:
 
 - In GitLab:
 
-  1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+  1. On the top bar, select **Search or go to** and find your project.
   1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
@@ -264,7 +255,7 @@ To enable deployment gating:
 
 To add the service account to your protected environments in GitLab:
 
-1. On the left sidebar, select **Search or go to** and find your project. If you've [turned on the new navigation](../../user/interface_redesign.md), this field is on the top bar.
+1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).

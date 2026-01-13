@@ -412,7 +412,7 @@ module Keeps
     end
 
     def all_feature_flag_files
-      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,beta}/*.yml")
+      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,beta,wip}/*.yml")
     end
 
     def remove_feature_flag_prompts

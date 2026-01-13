@@ -18,7 +18,6 @@ module Authn
       ITERATION_DELAY = 0.1
       BATCH_SIZE = 10_000
       SUB_BATCH_SIZE = 1_000
-      CUTOFF_INTERVAL = 1.month
 
       def perform(cursor = nil)
         return unless Gitlab::CurrentSettings.authn_data_retention_cleanup_enabled?

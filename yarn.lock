@@ -1394,10 +1394,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^15.0.8":
-  version "15.0.8"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.0.8.tgz#b9cf5f08a67fd89a68db8a2255445bb39ea8668e"
-  integrity sha512-yI5VA/3vghzNvYgTNmtkdZ1zdm5nqfu/aCgn3FuIKk6SKuRGPW7PXyN0exh3XAvcSML72fZLET3DpMO4QgISSg==
+"@gitlab/duo-ui@^15.4.0":
+  version "15.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.4.0.tgz#8b914a7e9116e52d7415fa3304e62da82e469675"
+  integrity sha512-yCSPm2d79OlDfKwUdEokOrdxZS5UMGZjfdVR01i8ljBhsZAf8Dfic5TUc+m6uuoMxXneLCg11kCxwR7STrk7xA==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     diff "^8.0.2"
@@ -1406,16 +1406,17 @@
     lodash "^4.17.20"
     marked "^12.0.0"
     marked-bidi "^1.0.8"
+    marked-highlight "^2.2.3"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
     vue-resizable "1.3.4"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/eslint-plugin@21.2.1":
-  version "21.2.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-21.2.1.tgz#0cf60fd388139755577ec41e5d06679e5b31d59e"
-  integrity sha512-aa24XQpO+DV6BJXJWWMfPaqPs7uy8ThjmgRUB1G4bzaNf/u0OYTTON+t/+rT/qAVY3x7iDGgbHA1k8o/daa9sA==
+"@gitlab/eslint-plugin@21.3.1":
+  version "21.3.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-21.3.1.tgz#d46a282cd3998ad5ad0e3894846a4647151128cf"
+  integrity sha512-Hv0vmVLy2IWfGvVosHbIJPQZsBANU5VGt6Z3tKJWZ6rZFDEINC57gQZs0BFo6t/wgtuD8NqoosWPbeP0s0OVHA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.14.1"
     confusing-browser-globals "^1.0.11"
@@ -1438,7 +1439,8 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.1.tgz#dd335ed25cb33927abc1d80dfbfa31fc93e9bd15"
   integrity sha512-/7Q5Sy9Q3pmutV/1EgURm3iDZtV0HcE4nTwFpHLCrGDdxQ3pNv6SdujzeJExnfiI5Y+1FGfOvKwOlmiVuyDtzA==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  name jackspeak
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1487,6 +1489,13 @@
   dependencies:
     "@vue/devtools-api" "^6.6.4"
 
+"@gitlab/vuedraggable-vue3@npm:vuedraggable@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-4.0.1.tgz#3bcaab0808b7944030b7d9a29f9a63d59dfa12c5"
+  integrity sha512-7qN5jhB1SLfx5P+HCm3JUW+pvgA1bSLgYLSVOeLWBDH9z+zbaEH0OlyZBVMLOxFR+JUHJjwDD0oy7T4r9TEgDA==
+  dependencies:
+    sortablejs "1.10.2"
+
 "@gitlab/vuex-vue3@npm:vuex@4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.1.0.tgz#aa1b3ea5c7385812b074c86faeeec2217872e36c"
@@ -1494,10 +1503,10 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-"@gitlab/web-ide@^0.0.1-dev-20251210140521":
-  version "0.0.1-dev-20251210140521"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20251210140521.tgz#806272e636f5a3b1ea07595a164d9e79b20f8c7e"
-  integrity sha512-eW6VeJbYUgEJ1XCAEowPKHdIeUt+0GbEyLjsST2xxw49+QdR2A0KKhTf+O+qcvPDgZLpaOoaBaiK1Z7jMfQBeA==
+"@gitlab/web-ide@^0.0.1-dev-20260106142046":
+  version "0.0.1-dev-20260106142046"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20260106142046.tgz#b775a56ea84466fac30c07a53d2d202233a11f37"
+  integrity sha512-0/49RBnvXzRcfnikV7Mr3ucH5acg4lEZtvLUrb4NTyf3HwTnhTZF0M54GinBspj63l6/RNeaDw8ypMpmTmdlhQ==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"
@@ -2600,51 +2609,51 @@
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
-"@sentry-internal/browser-utils@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry-internal/browser-utils/-/browser-utils-10.30.0.tgz#1089903f46d10848eaae9d39a612c90a83506b22"
-  integrity sha512-dVsHTUbvgaLNetWAQC6yJFnmgD0xUbVgCkmzNB7S28wIP570GcZ4cxFGPOkXbPx6dEBUfoOREeXzLqjJLtJPfg==
+"@sentry-internal/browser-utils@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/browser-utils/-/browser-utils-10.32.1.tgz#7fcfe1d62858b3d65c6b2aa1677b16e03e1dcba1"
+  integrity sha512-sjLLep1es3rTkbtAdTtdpc/a6g7v7bK5YJiZJsUigoJ4NTiFeMI5uIDCxbH/tjJ1q23YE1LzVn7T96I+qBRjHA==
   dependencies:
-    "@sentry/core" "10.30.0"
+    "@sentry/core" "10.32.1"
 
-"@sentry-internal/feedback@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-10.30.0.tgz#6e914225090ab4cf2a5e4bbc70b7b2059a04a711"
-  integrity sha512-+bnQZ6SNF265nTXrRlXTmq5Ila1fRfraDOAahlOT/VM4j6zqCvNZzmeDD9J6IbxiAdhlp/YOkrG3zbr5vgYo0A==
+"@sentry-internal/feedback@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-10.32.1.tgz#e99e0f3f8ca5176f9c0effca1ec7a764e7d03bda"
+  integrity sha512-O24G8jxbfBY1RE/v2qFikPJISVMOrd/zk8FKyl+oUVYdOxU2Ucjk2cR3EQruBFlc7irnL6rT3GPfRZ/kBgLkmQ==
   dependencies:
-    "@sentry/core" "10.30.0"
+    "@sentry/core" "10.32.1"
 
-"@sentry-internal/replay-canvas@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-10.30.0.tgz#f8b62d2d9b6608b70d72ccea955fbfc8fbb40aef"
-  integrity sha512-RIlIz+XQ4DUWaN60CjfmicJq2O2JRtDKM5lw0wB++M5ha0TBh6rv+Ojf6BDgiV3LOQ7lZvCM57xhmNUtrGmelg==
+"@sentry-internal/replay-canvas@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-10.32.1.tgz#d8dbb3dfe7d8a9fdaa896f094582300b68bf7267"
+  integrity sha512-/XGTzWNWVc+B691fIVekV2KeoHFEDA5KftrLFAhEAW7uWOwk/xy3aQX4TYM0LcPm2PBKvoumlAD+Sd/aXk63oA==
   dependencies:
-    "@sentry-internal/replay" "10.30.0"
-    "@sentry/core" "10.30.0"
+    "@sentry-internal/replay" "10.32.1"
+    "@sentry/core" "10.32.1"
 
-"@sentry-internal/replay@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry-internal/replay/-/replay-10.30.0.tgz#36c7ee7d8ea2d2a9be939e76c77001669961cadc"
-  integrity sha512-Pj/fMIZQkXzIw6YWpxKWUE5+GXffKq6CgXwHszVB39al1wYz1gTIrTqJqt31IBLIihfCy8XxYddglR2EW0BVIQ==
+"@sentry-internal/replay@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay/-/replay-10.32.1.tgz#2be9f7491a3e7127aa1050c23028a7816b3998e2"
+  integrity sha512-KKmLUgIaLRM0VjrMA1ByQTawZyRDYSkG2evvEOVpEtR9F0sumidAQdi7UY71QEKE1RYe/Jcp/3WoaqsMh8tbnQ==
   dependencies:
-    "@sentry-internal/browser-utils" "10.30.0"
-    "@sentry/core" "10.30.0"
+    "@sentry-internal/browser-utils" "10.32.1"
+    "@sentry/core" "10.32.1"
 
-"@sentry/browser@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-10.30.0.tgz#501fa1d4992bafb2ada211ee2a20ba93cc8acb28"
-  integrity sha512-7M/IJUMLo0iCMLNxDV/OHTPI0WKyluxhCcxXJn7nrCcolu8A1aq9R8XjKxm0oTCO8ht5pz8bhGXUnYJj4eoEBA==
+"@sentry/browser@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-10.32.1.tgz#d13e4eff600bd996cc177a95e2a68ceb403e1272"
+  integrity sha512-NPNCXTZ05ZGTFyJdKNqjykpFm+urem0ebosILQiw3C4BxNVNGH4vfYZexyl6prRhmg91oB6GjVNiVDuJiap1gg==
   dependencies:
-    "@sentry-internal/browser-utils" "10.30.0"
-    "@sentry-internal/feedback" "10.30.0"
-    "@sentry-internal/replay" "10.30.0"
-    "@sentry-internal/replay-canvas" "10.30.0"
-    "@sentry/core" "10.30.0"
+    "@sentry-internal/browser-utils" "10.32.1"
+    "@sentry-internal/feedback" "10.32.1"
+    "@sentry-internal/replay" "10.32.1"
+    "@sentry-internal/replay-canvas" "10.32.1"
+    "@sentry/core" "10.32.1"
 
-"@sentry/core@10.30.0":
-  version "10.30.0"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-10.30.0.tgz#94365d864880fb67c6cfbc859d72991b2ede1e06"
-  integrity sha512-IfNuqIoGVO9pwphwbOptAEJJI1SCAfewS5LBU1iL7hjPBHYAnE8tCVzyZN+pooEkQQ47Q4rGanaG1xY8mjTT1A==
+"@sentry/core@10.32.1":
+  version "10.32.1"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-10.32.1.tgz#2a5c245b5e16063456cf44c7fe926c6ffb6116dd"
+  integrity sha512-PH2ldpSJlhqsMj2vCTyU0BI2Fx1oIDhm7Izo5xFALvjVCS0gmlqHt1udu6YlKn8BtpGH6bGzssvv5APrk+OdPQ==
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
@@ -9659,11 +9668,6 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
-
 jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
@@ -10589,6 +10593,11 @@ marked-bidi@^1.0.3, marked-bidi@^1.0.8:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/marked-bidi/-/marked-bidi-1.0.13.tgz#ca9e488ee58d52e50d5d0c62358300e3242f4788"
   integrity sha512-mXCLPK6lPWlJoTqz1tBoVRYafBGMH6R7EbV7YQFifIx4Mxjsivkwb09Tn5nBKVZCR6mYZKCY6/H7hHVqz3mlcw==
+
+marked-highlight@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/marked-highlight/-/marked-highlight-2.2.3.tgz#e7e5e7ccfb1699356c3a45d851db8fe983689172"
+  integrity sha512-FCfZRxW/msZAiasCML4isYpxyQWKEEx44vOgdn5Kloae+Qc3q4XR7WjpKKf8oMLk7JP9ZCRd2vhtclJFdwxlWQ==
 
 marked@^12.0.0:
   version "12.0.0"
@@ -13976,7 +13985,7 @@ sockjs@^0.3.24:
     uuid "^8.3.2"
     websocket-driver "^0.7.4"
 
-sortablejs@^1.10.2, sortablejs@^1.9.0:
+sortablejs@1.10.2, sortablejs@^1.10.2, sortablejs@^1.9.0:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.10.2.tgz#6e40364d913f98b85a14f6678f92b5c1221f5290"
   integrity sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==

@@ -96,7 +96,7 @@ module WikiActions
         # only include pages not starting with 'templates/'
         wiki
           .list_pages(direction: params[:direction])
-          .reject { |page| page.slug.start_with?('templates/') }
+          .reject { |page| page.slug.start_with?('templates/', 'uploads/') }
       ).page(pagination_params[:page])
     end
   end

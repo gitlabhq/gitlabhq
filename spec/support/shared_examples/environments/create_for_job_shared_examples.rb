@@ -432,6 +432,17 @@ RSpec.shared_examples 'create environment for job' do
     end
 
     context 'when a pipeline contains a teardown job' do
+      before_all do
+        Ci::ApplicationRecord.connection.execute(<<~SQL)
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+        SQL
+      end
+
       let!(:job) { build(factory_type, :stop_review_app, project: project) }
 
       it 'ensures environment existence for the job' do

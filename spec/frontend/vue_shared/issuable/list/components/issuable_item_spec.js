@@ -10,8 +10,13 @@ import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vu
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
-
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import {
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
+} from '~/work_items/constants';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
 import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
 
@@ -894,14 +899,14 @@ describe('IssuableItem', () => {
         type: 'Work item incident',
         item: {
           ...mockIssuable,
-          workItemType: { name: 'Incident' },
+          workItemType: { name: WORK_ITEM_TYPE_NAME_INCIDENT },
         },
       },
       {
         type: 'Work item Service Desk issue',
         item: {
           ...mockIssuable,
-          workItemType: { name: 'Issue' },
+          workItemType: { name: WORK_ITEM_TYPE_NAME_ISSUE },
           author: { username: 'support-bot' },
         },
       },
@@ -909,7 +914,14 @@ describe('IssuableItem', () => {
         type: 'Work item test case',
         item: {
           ...mockIssuable,
-          workItemType: { name: 'Test Case' },
+          workItemType: { name: WORK_ITEM_TYPE_NAME_TEST_CASE },
+        },
+      },
+      {
+        type: 'Work item ticket',
+        item: {
+          ...mockIssuable,
+          workItemType: { name: WORK_ITEM_TYPE_NAME_TICKET },
         },
       },
       {

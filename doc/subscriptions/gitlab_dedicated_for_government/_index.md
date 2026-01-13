@@ -58,11 +58,8 @@ All customer data, including repositories, databases, artifacts, and backups, re
 
 ### Advanced search
 
-{{< alert type="note" >}}
-
-This feature is currently available for use in production environments as a preview and continues to be enhanced.
-
-{{< /alert >}}
+> [!note]
+> This feature is currently available for use in production environments as a preview and continues to be enhanced.
 
 GitLab Dedicated for Government includes [advanced search](../../user/search/advanced_search.md) capabilities.
 You can search across your entire GitLab instance including code, issues, merge requests, and more.
@@ -71,11 +68,8 @@ You can search across your entire GitLab instance including code, issues, merge 
 
 GitLab Dedicated for Government leverages modified versions of the [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on your number of users.
 
-{{< alert type="note" >}}
-
-The published [reference architectures](../../administration/reference_architectures/_index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated for Government environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated for Government costs differ from standard reference architecture costs.
-
-{{< /alert >}}
+> [!note]
+> The published [reference architectures](../../administration/reference_architectures/_index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated for Government environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated for Government costs differ from standard reference architecture costs.
 
 #### Disaster recovery
 

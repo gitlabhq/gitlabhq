@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Middleware::SidekiqShardAwarenessValidation, feature_cate
     subject(:app_call) { described_class.new(app).call(env) }
 
     it 'enables shard-awareness check within the context of a request',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/460582' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9472' do
       expect { Sidekiq.redis(&:ping) }.not_to raise_error
       expect { app_call }.to raise_error(Gitlab::SidekiqSharding::Validator::UnroutedSidekiqApiError)
     end

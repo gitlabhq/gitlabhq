@@ -6,62 +6,52 @@ module Gitlab
       class QueryPlan
         include ActiveModel::Validations
 
-        attr_reader :dimensions, :metrics, :order
+        attr_reader :engine, :request
 
-        class << self
-          def build(request, engine)
-            engine_definition = engine.class
-            plan = new
+        validate :validate_request
+        validate :validate_parts
+        validate :validate_instance_keys_uniqueness
 
-            dimension_definitions = engine_definition.dimensions.index_by(&:identifier)
-            request.dimensions.each do |configuration|
-              dimension_definition = dimension_definitions[configuration[:identifier]]
-              if dimension_definition.nil?
-                add_error_for(plan, :dimensions, configuration[:identifier])
-                break
-              end
+        def initialize(engine, request)
+          @engine = engine
+          @request = request
+        end
 
-              plan.add_dimension(dimension_definition, configuration)
+        def filters
+          @filters ||= begin
+            definitions = engine.class.filters.index_by(&:identifier)
+            request.filters.map do |configuration|
+              Filter.new(definitions[configuration[:identifier]], configuration)
             end
-
-            metric_definitions = engine_definition.metrics.index_by(&:identifier)
-            request.metrics.each do |configuration|
-              metric_definition = metric_definitions[configuration[:identifier]]
-              if metric_definition.nil?
-                add_error_for(plan, :metrics, configuration[:identifier])
-                break
-              end
-
-              plan.add_metric(metric_definition, configuration)
-            end
-
-            request.order.each do |configuration|
-              plan_part = plan.orderable_parts.detect do |plan_part|
-                configuration.except(:direction) == plan_part.configuration
-              end
-
-              unless plan_part
-                add_error_for(plan, :order, configuration[:identifier])
-                break
-              end
-
-              plan.add_order(plan_part, configuration)
-            end
-
-            plan
-          end
-
-          def add_error_for(plan, object, identifier)
-            plan.errors.add(object,
-              format(s_("AggregationEngine|the specified identifier is not available: '%{identifier}'"),
-                identifier: identifier))
           end
         end
 
-        def initialize
-          @dimensions = []
-          @metrics = []
-          @order = []
+        def dimensions
+          @dimensions ||= begin
+            definitions = engine.class.dimensions.index_by(&:identifier)
+            request.dimensions.map do |configuration|
+              Dimension.new(definitions[configuration[:identifier]], configuration)
+            end
+          end
+        end
+
+        def metrics
+          @metrics ||= begin
+            definitions = engine.class.metrics.index_by(&:identifier)
+            request.metrics.map do |configuration|
+              Metric.new(definitions[configuration[:identifier]], configuration)
+            end
+          end
+        end
+
+        def order
+          @order ||= request.order.map do |configuration|
+            plan_part = orderable_parts.detect do |plan_part|
+              configuration.except(:direction) == plan_part.configuration
+            end
+
+            Order.new(plan_part, configuration)
+          end
         end
 
         def orderable_parts
@@ -69,19 +59,39 @@ module Gitlab
         end
 
         def parts
-          dimensions + metrics + order
+          filters + dimensions + metrics + order
         end
 
-        def add_dimension(definition, configuration)
-          @dimensions << Dimension.new(definition, configuration)
+        private
+
+        def validate_parts
+          parts.reject(&:valid?).each do |invalid_part|
+            errors.merge!(invalid_part.errors)
+          end
         end
 
-        def add_metric(definition, configuration)
-          @metrics << Metric.new(definition, configuration)
+        def validate_request
+          return unless request.metrics.empty?
+
+          errors.add(:metrics,
+            s_("AggregationEngine|at least one metric is required"))
         end
 
-        def add_order(plan_part, configuration)
-          @order << Order.new(plan_part, configuration)
+        def validate_instance_keys_uniqueness
+          return unless errors.empty?
+
+          instance_keys = (dimensions + metrics).group_by(&:instance_key)
+          duplicates = instance_keys.select { |_value, occurrences| occurrences.size > 1 }.values.flatten
+
+          return unless duplicates.any?
+
+          identifiers = duplicates.map(&:definition).map(&:identifier).uniq
+
+          placeholder = { identifiers: identifiers.join(', ') }
+          errors.add(
+            :base,
+            format(s_("AggregationEngine|duplicated identifiers found: %{identifiers}"), placeholder)
+          )
         end
       end
     end

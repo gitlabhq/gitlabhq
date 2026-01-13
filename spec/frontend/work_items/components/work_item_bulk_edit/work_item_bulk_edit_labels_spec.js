@@ -21,7 +21,7 @@ describe('WorkItemBulkEditLabels component', () => {
   const labelsManagePath = '/labels/manage/path';
 
   const labels = cloneDeep(projectLabelsResponse);
-  labels.data.workspace.labels.nodes.push({
+  labels.data.namespace.labels.nodes.push({
     __typename: 'Label',
     id: 'gid://gitlab/Label/4',
     title: 'Label 4',

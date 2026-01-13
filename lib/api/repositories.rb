@@ -115,6 +115,7 @@ module API
 
       desc 'Get a project repository tree' do
         success Entities::TreeObject
+        tags ['repositories']
       end
       params do
         optional :ref, type: String,
@@ -151,7 +152,9 @@ module API
         not_found!(e.message)
       end
 
-      desc 'Get raw blob contents from the repository'
+      desc 'Get raw blob contents from the repository' do
+        tags ['repositories']
+      end
       params do
         requires :sha, type: String,
           desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
@@ -164,7 +167,9 @@ module API
         send_git_blob @repo, @blob
       end
 
-      desc 'Get a blob from the repository'
+      desc 'Get a blob from the repository' do
+        tags ['repositories']
+      end
       params do
         requires :sha, type: String,
           desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
@@ -188,7 +193,9 @@ module API
         }
       end
 
-      desc 'Get an archive of the repository'
+      desc 'Get an archive of the repository' do
+        tags ['repositories']
+      end
       params do
         optional :sha, type: String,
           desc: 'The commit sha of the archive to be downloaded',
@@ -217,6 +224,7 @@ module API
 
       desc 'Compare two branches, tags, or commits' do
         success Entities::Compare
+        tags ['repositories']
       end
       params do
         requires :from, type: String,
@@ -255,6 +263,7 @@ module API
 
       desc 'Get repository health' do
         success Entities::RepositoryHealth
+        tags ['repositories']
       end
       params do
         optional :generate, type: Boolean, default: false, desc: 'Triggers a new health report to be generated'
@@ -280,6 +289,7 @@ module API
 
       desc 'Get repository contributors' do
         success Entities::Contributor
+        tags ['repositories']
       end
       params do
         use :pagination
@@ -298,6 +308,7 @@ module API
 
       desc 'Get the common ancestor between commits' do
         success Entities::Commit
+        tags ['repositories']
       end
       params do
         requires :refs, type: Array[String],
@@ -330,6 +341,7 @@ module API
       desc 'Generates a changelog section for a release and returns it' do
         detail 'This feature was introduced in GitLab 14.6'
         success Entities::Changelog
+        tags ['repositories']
       end
       params do
         use :release_params
@@ -357,6 +369,7 @@ module API
       desc 'Generates a changelog section for a release and commits it in a changelog file' do
         detail 'This feature was introduced in GitLab 13.9'
         success code: 200
+        tags ['repositories']
       end
       params do
         use :release_params

@@ -175,7 +175,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
             end
           end
 
-          context 'when updated_after equals updated_before', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
+          context 'when updated_after equals updated_before', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
             let_it_be(:updated_at) { internal_project.updated_at }
             let(:params) { { updated_after: updated_at, updated_before: updated_at } }
 
@@ -696,13 +696,13 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
     end
 
-    describe 'with CTE flag disabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
+    describe 'with CTE flag disabled', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
       let(:use_cte) { false }
 
       it_behaves_like 'ProjectFinder#execute examples'
     end
 
-    describe 'with CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
+    describe 'with CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
       let(:use_cte) { true }
 
       it_behaves_like 'ProjectFinder#execute examples'

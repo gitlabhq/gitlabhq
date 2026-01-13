@@ -93,6 +93,10 @@ module LoginHelpers
   # two_factor_auth - If two-factor authentication is enabled (default: false)
   # password - password to attempt to login with (default: user.password)
   def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil, visit: true)
+    # Feature specs for when sign_in_form_vue is enabled will be added in
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
+    stub_feature_flags(sign_in_form_vue: false)
+
     visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email

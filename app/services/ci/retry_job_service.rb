@@ -93,53 +93,7 @@ module Ci
     end
 
     def process_job_inputs(job, inputs)
-      validation_result = validate_inputs(job, inputs)
-      return validation_result if validation_result.error?
-
-      filtered_inputs = filter_inputs_with_defaults(job, inputs)
-      ServiceResponse.success(payload: { inputs: filtered_inputs })
-    end
-
-    def validate_inputs(job, inputs)
-      return ServiceResponse.success if inputs.blank?
-
-      inputs_spec = job.options[:inputs]
-      return ServiceResponse.success unless inputs_spec.present?
-
-      provided_input_keys = inputs.keys.map(&:to_s)
-      spec_keys = inputs_spec.keys.map(&:to_s)
-      unknown_inputs = provided_input_keys - spec_keys
-
-      if unknown_inputs.any?
-        return ServiceResponse.error(
-          message: "Unknown input#{'s' if unknown_inputs.size > 1}: #{unknown_inputs.join(', ')}"
-        )
-      end
-
-      provided_spec_keys = inputs_spec.keys.select { |key| provided_input_keys.include?(key.to_s) }
-      provided_specs = inputs_spec.slice(*provided_spec_keys)
-      builder = ::Ci::Inputs::Builder.new(provided_specs)
-      builder.validate_input_params!(inputs)
-
-      if builder.errors.any?
-        ServiceResponse.error(message: builder.errors.join(', '))
-      else
-        ServiceResponse.success
-      end
-    end
-
-    def filter_inputs_with_defaults(job, inputs)
-      return {} if inputs.blank?
-
-      inputs_spec = job.options[:inputs]
-      return inputs unless inputs_spec.present?
-
-      inputs.reject do |name, value|
-        spec = inputs_spec[name]
-        next false unless spec&.key?(:default)
-
-        value == spec[:default]
-      end
+      Ci::Inputs::ProcessorService.new(job, inputs).execute
     end
 
     def check_access!(job)

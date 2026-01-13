@@ -16,7 +16,9 @@ module Issuable # rubocop:disable Gitlab/BoundedContexts -- existing module we n
       def before_update
         return unless issuable.description_changed?
 
-        issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
+        author = Gitlab::Auth::Identity.invert_composite_identity(current_user)
+
+        issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: author)
       end
 
       private

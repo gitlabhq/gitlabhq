@@ -22,7 +22,7 @@ import GreetingHeader from './greeting_header.vue';
 import HomepagePreferencesBanner from './homepage_preferences_banner.vue';
 import UserItemsCountWidget from './user_items_count_widget.vue';
 import ActivityWidget from './activity_widget.vue';
-import RecentlyViewedWidget from './recently_viewed_widget.vue';
+import QuickAccessWidget from './quick_access_widget.vue';
 import TodosWidget from './todos_widget.vue';
 import PickUpWidget from './pick_up_widget.vue';
 import FeedbackWidget from './feedback_widget.vue';
@@ -34,7 +34,7 @@ export default {
     HomepagePreferencesBanner,
     ActivityWidget,
     TodosWidget,
-    RecentlyViewedWidget,
+    QuickAccessWidget,
     PickUpWidget,
     FeedbackWidget,
     UserItemsCountWidget,
@@ -252,7 +252,7 @@ export default {
         <activity-widget :activity-path="activityPath" />
       </section>
       <aside class="gl-flex gl-flex-col gl-gap-6">
-        <recently-viewed-widget />
+        <quick-access-widget />
         <feedback-widget v-if="showFeedbackWidget" />
       </aside>
     </div>

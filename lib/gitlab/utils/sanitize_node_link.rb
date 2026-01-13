@@ -54,7 +54,7 @@ module Gitlab
         return true if safe_protocol?(uri.scheme)
 
         false
-      rescue Addressable::URI::InvalidURIError
+      rescue Addressable::URI::InvalidURIError, Addressable::IDNA::PunycodeBigOutput
         return false if remove_invalid_links
 
         true

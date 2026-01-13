@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe LicenseHelper, feature_category: :team_planning do
-  subject(:new_trial_url) { helper.self_managed_new_trial_url }
+RSpec.describe LicenseHelper, feature_category: :plan_provisioning do
+  describe '#self_managed_new_trial_url', feature_category: :acquisition do
+    subject(:new_trial_url) { helper.self_managed_new_trial_url }
 
-  before do
-    allow(helper).to receive(:subscription_portal_new_trial_url).with(
-      return_to: helper.general_admin_application_settings_url(anchor: 'js-add-license-toggle')
-    ).and_return('subscription_portal_trial_url')
+    before do
+      allow(helper).to receive(:subscription_portal_new_trial_url).with(
+        return_to: helper.general_admin_application_settings_url(anchor: 'js-add-license-toggle')
+      ).and_return('subscription_portal_trial_url')
+    end
+
+    it { is_expected.to eq('subscription_portal_trial_url') }
   end
-
-  it { is_expected.to eq('subscription_portal_trial_url') }
 end

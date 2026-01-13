@@ -78,7 +78,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Generator do
         it 'sorts tags with unusual formats (numbers, hyphens, underscores, camel case) correctly' do
           expect(tag_names).to eq(tag_names.sort)
           # Tag names get normalized by `Tag.normalize_tag_names`: e.g. "_user_management" becomes " User Management"
-          expect(tag_names).to include("123numeric", "-api-v2", " User Management", "Adminpanel")
+          expect(tag_names).to include("123numeric", "-api-v2", " user management", "Adminpanel")
         end
       end
 

@@ -55,7 +55,7 @@ module QA
           'with released at',
           quarantine: {
             type: :stale,
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/468679'
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24021'
           }
         ) do
           it_behaves_like 'descending order by default',

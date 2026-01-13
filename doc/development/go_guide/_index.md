@@ -86,7 +86,7 @@ of possible security breaches in our code:
 - SQL injections
 
 Remember to run
-[SAST](../../user/application_security/sast/_index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/_index.md) on your project (or at least the
+[SAST](../../user/application_security/sast/_index.md) and [dependency scanning](../../user/application_security/dependency_scanning/_index.md) on your project (or at least the
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security requirements](../code_review.md#security).
 
@@ -176,7 +176,7 @@ If your Go project produces help text for users, consider following the advice g
 
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines).
-[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md)
+[Dependency scanning](../../user/application_security/dependency_scanning/_index.md)
 should be activated on all projects to ensure new dependencies
 security status and license compatibility.
 
@@ -518,7 +518,7 @@ directory at the root of the analyzer's repository. The `testdata` directory sho
 contain two subdirectories: `expect` and `reports`. The `reports` directory should
 contain sample SAST/DAST scanner reports which are passed into the `convert` function
 during the test setup. The `expect` directory should contain the expected GitLab Security Report
-that the `convert` returns. See Secret Detection for an
+that the `convert` returns. See secret detection for an
 [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
 
 If the scanner report is small, less than 35 lines, then feel free to

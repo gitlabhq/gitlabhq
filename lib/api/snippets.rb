@@ -14,7 +14,7 @@ module API
 
     helpers do
       def find_snippets(user: current_user, params: {})
-        SnippetsFinder.new(user, params).execute
+        SnippetsFinder.new(user, organization_id: Current.organization.id, **params).execute
       end
 
       def snippets_for_current_user

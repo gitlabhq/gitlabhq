@@ -134,6 +134,7 @@ export default {
         v-model="deleteAlertType"
         :garbage-collection-help-page-path="$options.garbageCollectionHelpUrl"
         :is-admin="config.isAdmin"
+        :show-admin-tip="!config.isMetadataDatabaseEnabled"
         class="gl-my-2"
       />
 

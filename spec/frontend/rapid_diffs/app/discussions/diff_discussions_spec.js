@@ -60,11 +60,15 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().toggleDiscussionReplies).toHaveBeenCalledWith(discussion);
   });
 
-  it('handles replyAdded event', () => {
-    const note = { id: '1' };
+  it('handles discussionUpdated event', () => {
+    const discussion = { id: '1' };
+    const updatedDiscussion = { id: '1', notes: [{ id: 'new-note' }] };
     createComponent({ discussions: [{ id: '1' }] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('replyAdded', note);
-    expect(useDiffDiscussions().addNote).toHaveBeenCalledWith(note);
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('discussionUpdated', updatedDiscussion);
+    expect(useDiffDiscussions().replaceDiscussion).toHaveBeenCalledWith(
+      discussion,
+      updatedDiscussion,
+    );
   });
 
   it('handles noteUpdated event', () => {
@@ -109,5 +113,31 @@ describe('DiffDiscussions', () => {
     createComponent({ discussions: [{ id: '1', notes: [note] }] });
     wrapper.findComponent(NoteableDiscussion).vm.$emit('noteEdited', { note, value });
     expect(useDiffDiscussions().editNote).toHaveBeenCalledWith({ note, value });
+  });
+
+  describe('timelineLayout prop', () => {
+    it('passes timelineLayout to NoteableDiscussion', () => {
+      createComponent({ discussions: [{ id: '1' }], timelineLayout: true });
+      expect(wrapper.findComponent(NoteableDiscussion).props('timelineLayout')).toBe(true);
+    });
+
+    it('defaults timelineLayout to false', () => {
+      createComponent({ discussions: [{ id: '1' }] });
+      expect(wrapper.findComponent(NoteableDiscussion).props('timelineLayout')).toBe(false);
+    });
+  });
+
+  describe('isLastDiscussion prop', () => {
+    it('passes isLastDiscussion as true for the last discussion', () => {
+      createComponent({ discussions: [{ id: '1' }, { id: '2' }] });
+      const discussions = wrapper.findAllComponents(NoteableDiscussion);
+      expect(discussions.at(0).props('isLastDiscussion')).toBe(false);
+      expect(discussions.at(1).props('isLastDiscussion')).toBe(true);
+    });
+
+    it('passes isLastDiscussion as true for single discussion', () => {
+      createComponent({ discussions: [{ id: '1' }] });
+      expect(wrapper.findComponent(NoteableDiscussion).props('isLastDiscussion')).toBe(true);
+    });
   });
 });

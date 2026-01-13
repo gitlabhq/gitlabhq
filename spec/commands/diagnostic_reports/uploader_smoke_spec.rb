@@ -5,7 +5,7 @@ require 'tempfile'
 
 # We need to capture pid from Process.spawn and then clean up by killing the process, which requires instance variables.
 # rubocop: disable RSpec/InstanceVariable
-RSpec.describe 'bin/diagnostic-reports-uploader', :uses_fast_spec_helper_but_runs_slow do
+RSpec.describe 'bin/diagnostic-reports-uploader', :uses_fast_spec_helper_but_runs_slow, feature_category: :durability_metrics do
   # This is a smoke test for 'bin/diagnostic-reports-uploader'.
   # We intend to run this binary with `ruby bin/diagnostic-reports-uploader`, without preloading the entire Rails app.
   # Also, we use inline gemfile, to avoid pulling full Gemfile from the main app into memory.
@@ -57,7 +57,7 @@ RSpec.describe 'bin/diagnostic-reports-uploader', :uses_fast_spec_helper_but_run
     FileUtils.rm_rf(reports_dir, secure: true)
   end
 
-  it 'starts successfully', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448411' do
+  it 'starts successfully', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9477' do
     expect(File.exist?(report.path)).to be true
 
     bin_path = rails_root_join("bin/diagnostic-reports-uploader")

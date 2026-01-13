@@ -346,8 +346,13 @@ include:
     - .use-pg17
   stage: test
   needs: ["setup-test-env"]
-# rspec job base specs
+
 ######################
+# lint stage base job
+.lint-base:
+  extends:
+    - .repo-from-artifacts
+    - .default-retry
 
 ############################
 # rspec job parallel configs

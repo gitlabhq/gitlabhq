@@ -38,6 +38,7 @@ module API
         resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc 'API to interface with MLflow Client, REST API version 1.28.0' do
             detail 'MLflow compatible API.'
+            tags ['mlops']
           end
           namespace MLFLOW_API_PREFIX do
             mount ::API::Ml::Mlflow::Experiments

@@ -1,0 +1,15 @@
+---
+table_name: activation_metrics
+classes:
+- Activation::Metric
+feature_categories:
+- onboarding
+description: Stores user-centric activation metrics to track individual user interactions
+  and milestones. The optional namespace_id provides context but is not the primary
+  query dimension.
+introduced_by_url: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/activation_engine/
+milestone: '18.8'
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
+table_size: small

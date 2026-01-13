@@ -54,7 +54,7 @@ export default {
         text: __('Delete'),
         extraAttrs: {
           'data-testid': 'delete',
-          disabled: this.disabled,
+          disabled: this.disabled || !this.userPermissions.createMergeRequestIn,
         },
       };
     },

@@ -216,7 +216,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   describe 'Branch Switcher' do
     def switch_to_branch(branch)
       # close button for the popover
-      find_by_testid('close-button').click if page.has_css?('[data-testid="close-button"]', wait: 0) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
+      find_by_testid('close-button').click
       within_testid 'branch-selector' do
         toggle_listbox
         select_listbox_item(branch, exact_text: true)
@@ -256,7 +256,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
         end
       end
 
-      it 'user who tries to navigate away can cancel the action and keep their changes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
+      it 'user who tries to navigate away can cancel the action and keep their changes', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9336' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.dismiss
@@ -268,7 +268,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
         end
       end
 
-      it 'user who tries to navigate away can confirm the action and discard their change', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410496' do
+      it 'user who tries to navigate away can confirm the action and discard their change', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9336' do
         click_link 'Pipelines'
 
         page.driver.browser.switch_to.alert.accept

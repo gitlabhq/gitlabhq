@@ -41,7 +41,7 @@ import {
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
-import { getSortOptions } from '~/issues/list/utils';
+import { getSortOptions } from '~/work_items/list/utils';
 import MergeRequestsListApp from '~/merge_requests/list/components/merge_requests_list_app.vue';
 import { BRANCH_LIST_REFRESH_INTERVAL } from '~/merge_requests/list/constants';
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';

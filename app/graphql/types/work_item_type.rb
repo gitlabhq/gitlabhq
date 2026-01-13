@@ -34,6 +34,9 @@ module Types
     field :description, GraphQL::Types::String, null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Description of the work item.'
+    field :external_author, GraphQL::Types::String, null: true,
+      description: 'Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated.',
+      experiment: { milestone: '18.8' }
     field :id, Types::GlobalIDType[::WorkItem], null: false,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Global ID of the work item.'

@@ -3,6 +3,8 @@ key_path: settings.anti_spam.akismet_enabled
 description: >
   Tracks whether Akismet integration is enabled
 product_group: authorization
+product_categories:
+- instance_resiliency
 value_type: boolean
 status: active
 milestone: "18.1"

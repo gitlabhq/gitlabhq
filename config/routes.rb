@@ -81,16 +81,6 @@ InitializerConnections.raise_if_new_database_connection do
       match '/-/jira_connect/subscriptions(.:format)' => 'jira_connect/subscriptions#index', via: :options
       match '/-/jira_connect/subscriptions/:id' => 'jira_connect/subscriptions#delete', via: :options
 
-      # Sign up
-      scope path: '/users/sign_up', module: :registrations, as: :users_sign_up do
-        Gitlab.ee do
-          resource :welcome, only: [:show, :update], controller: 'welcome'
-          resource :trial_welcome, only: [:new, :create], controller: 'trial_welcome'
-          resource :company, only: [:new, :create], controller: 'company'
-          resources :groups, only: [:new, :create]
-        end
-      end
-
       # Search
       get 'search' => 'search#show', as: :search
       get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete

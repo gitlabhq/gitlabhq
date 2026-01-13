@@ -30,7 +30,8 @@ class PreviewMarkdownService < BaseContainerService
     return text, [] unless quick_action_types.include?(target_type)
 
     quick_actions_service = QuickActions::InterpretService.new(container: container, current_user: current_user)
-    quick_actions_service.explain(text, find_commands_target, keep_actions: params[:render_quick_actions])
+    quick_actions_service.explain(text, find_commands_target,
+      keep_actions: Gitlab::Utils.to_boolean(params[:render_quick_actions]))
   end
 
   def find_user_references(text)
@@ -52,11 +53,11 @@ class PreviewMarkdownService < BaseContainerService
 
     Gitlab::Diff::SuggestionsParser.parse(text, position: position,
       project: project,
-      supports_suggestion: params[:preview_suggestions])
+      supports_suggestion: Gitlab::Utils.to_boolean(params[:preview_suggestions]))
   end
 
   def preview_sugestions?
-    params[:preview_suggestions] &&
+    Gitlab::Utils.to_boolean(params[:preview_suggestions]) &&
       target_type == 'MergeRequest' &&
       Ability.allowed?(current_user, :download_code, project)
   end

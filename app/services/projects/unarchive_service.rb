@@ -18,7 +18,7 @@ module Projects
       return NotAuthorizedError unless can?(current_user, :archive_project, project)
       return AncestorArchivedError if project.ancestors_archived?
 
-      if project.update(archived: false)
+      if unarchive_project
         after_unarchive
         ServiceResponse.success
       else
@@ -30,6 +30,12 @@ module Projects
     end
 
     private
+
+    def unarchive_project
+      ApplicationRecord.transaction do
+        project.unarchive(transition_user: current_user) && project.update(archived: false)
+      end
+    end
 
     def after_unarchive
       system_hook_service.execute_hooks_for(project, :update)

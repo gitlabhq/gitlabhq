@@ -132,19 +132,6 @@ module Search
         end.keys.map(&:to_s)
       end
 
-      # Check if a scope should be hidden when work_item_scope_frontend is enabled
-      # @param scope [Symbol] Scope key to check
-      # @param user [User] current user for feature flag checks (optional)
-      # @return [Boolean] True if scope should be hidden
-      def hidden_by_work_item_scope?(scope, user = nil)
-        return false unless user
-        return false unless ::Feature.enabled?(:work_item_scope_frontend, user)
-
-        # When work_item_scope_frontend is enabled, issues and epics are hidden
-        # as they become sub-items under "Work items"
-        [:issues, :epics].include?(scope)
-      end
-
       # Returns the scope definitions (can be overridden in EE)
       def scope_definitions
         SCOPE_DEFINITIONS

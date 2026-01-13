@@ -16,8 +16,8 @@ Start here to understand planning capabilities in GitLab.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [GitLab Agile Project Management](https://university.gitlab.com/courses/gitlab-agile-project-management-s2) | Learn how to use planning features to manage your projects in this self-paced course. | {{< icon name="star" >}} |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and issue boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | {{< icon name="star" >}} |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Portfolio Planning - Portfolio Management](https://www.youtube.com/watch?v=d9scVJUIF4c) | Find out how manage your portfolio with requirements, issues, epics, milestones, and time tracking. | {{< icon name="star" >}} |
+| <i class="fa-youtube-play" aria-hidden="true"></i> [Epics and issue boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | {{< icon name="star" >}} |
+| <i class="fa-youtube-play" aria-hidden="true"></i> [Portfolio Planning - Portfolio Management](https://www.youtube.com/watch?v=d9scVJUIF4c) | Find out how manage your portfolio with requirements, issues, epics, milestones, and time tracking. | {{< icon name="star" >}} |
 
 ## Set up and manage projects
 

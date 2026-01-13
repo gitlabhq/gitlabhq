@@ -21,6 +21,72 @@ RSpec.describe Gitlab::WorkItems::Instrumentation::EventActions, feature_categor
     end
   end
 
+  describe '.link_event' do
+    let_it_be(:work_item) { create(:work_item, :task) }
+    let_it_be(:other_work_item) { create(:work_item, :task) }
+
+    context 'with relates_to link' do
+      let(:link) { build(:work_item_link, link_type: 'relates_to') }
+
+      it 'returns correct events for add and remove actions' do
+        expect(described_class.link_event(link, work_item, :add))
+          .to eq(described_class::RELATED_ITEM_ADD)
+        expect(described_class.link_event(link, work_item, :remove))
+          .to eq(described_class::RELATED_ITEM_REMOVE)
+      end
+    end
+
+    context 'with blocks link' do
+      it 'returns blocking events when work_item is source' do
+        link = build(:work_item_link,
+          source_id: work_item.id,
+          target_id: other_work_item.id,
+          link_type: 'blocks')
+
+        expect(described_class.link_event(link, work_item, :add))
+          .to eq(described_class::BLOCKING_ITEM_ADD)
+        expect(described_class.link_event(link, work_item, :remove))
+          .to eq(described_class::BLOCKING_ITEM_REMOVE)
+      end
+
+      it 'returns blocked_by events when work_item is target' do
+        link = build(:work_item_link,
+          source_id: other_work_item.id,
+          target_id: work_item.id,
+          link_type: 'blocks')
+
+        expect(described_class.link_event(link, work_item, :add))
+          .to eq(described_class::BLOCKED_BY_ITEM_ADD)
+        expect(described_class.link_event(link, work_item, :remove))
+          .to eq(described_class::BLOCKED_BY_ITEM_REMOVE)
+      end
+
+      context 'with blocks link where work_item is neither source nor target' do
+        let(:unrelated_work_item) { create(:work_item, :task) }
+        let(:link) do
+          build(:work_item_link,
+            source_id: other_work_item.id,
+            target_id: create(:work_item, :task).id,
+            link_type: 'blocks')
+        end
+
+        it 'returns nil when work_item is not involved in the link' do
+          expect(described_class.link_event(link, unrelated_work_item, :add)).to be_nil
+          expect(described_class.link_event(link, unrelated_work_item, :remove)).to be_nil
+        end
+      end
+    end
+
+    context 'with invalid action' do
+      let(:link) { build(:work_item_link, link_type: 'relates_to') }
+
+      it 'returns nil' do
+        expect(described_class.link_event(link, work_item, :invalid)).to be_nil
+        expect(described_class.link_event(link, work_item, 'add')).to be_nil
+      end
+    end
+  end
+
   describe 'ALL_EVENTS' do
     let(:individual_event_constants) do
       described_class.constants - [:ALL_EVENTS]

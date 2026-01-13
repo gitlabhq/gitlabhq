@@ -151,6 +151,11 @@ describe('GreetingHeader', () => {
       expect(findGreeting().text()).toBe('Hi, John  Doe');
     });
 
+    it('handles name with special characters', () => {
+      createComponent({ gonData: { current_user_fullname: "O'Brien" } });
+      expect(findGreeting().text()).toBe("Hi, O'Brien");
+    });
+
     it('truncates very long names gracefully', () => {
       const longName = 'A'.repeat(100);
       createComponent({ gonData: { current_user_fullname: longName } });

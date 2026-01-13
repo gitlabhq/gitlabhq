@@ -111,11 +111,12 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable || {};
+        return data.workspace?.issuable || data.namespace?.issuable || {};
       },
       result({ data }) {
         if (this.glFeatures?.epicWidgetEditConfirmation && this.isEpicAttribute) {
-          this.hasCurrentAttribute = data?.workspace?.issuable.hasEpic;
+          this.hasCurrentAttribute =
+            data?.workspace?.issuable.hasEpic || data?.namespace?.issuable.hasEpic;
         }
       },
       skip() {

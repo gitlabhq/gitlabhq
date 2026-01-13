@@ -40,6 +40,7 @@ Use the `Bug` or `Feature Proposal` template.
 
 ## Related topics
 
+- [Security considerations for editor extensions](../security_considerations.md)
 - [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 - [Eclipse troubleshooting](troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)

@@ -248,16 +248,6 @@ module Gitlab
                 "DastProfiles|A selector describing the element used to enter the username on the login form."
               )
             },
-            DAST_CRAWL_EXTRACT_ELEMENT_TIMEOUT: {
-              additional: true,
-              type: "Duration string",
-              example: "5s",
-              name: s_("DastProfiles|Extract element timeout"),
-              description: s_(
-                "DastProfiles|The maximum amount of time to allow the browser to extract newly found elements " \
-                  "or navigations. Defaults to `5s`."
-              )
-            },
             DAST_CRAWL_MAX_ACTIONS: {
               additional: true,
               type: "number",
@@ -278,16 +268,6 @@ module Gitlab
                 "DastProfiles|The maximum number of chained actions that the crawler takes. " \
                   "For example, `Click, Form Fill, Click` is a depth of three. " \
                   "Defaults to `10`."
-              )
-            },
-            DAST_CRAWL_SEARCH_ELEMENT_TIMEOUT: {
-              additional: true,
-              type: "Duration string",
-              example: "3s",
-              name: s_("DastProfiles|Element search timeout"),
-              description: s_(
-                "DastProfiles|The maximum amount of time to allow the browser to search for new elements " \
-                  "or user actions. Defaults to `3s`."
               )
             },
             DAST_CRAWL_TIMEOUT: {

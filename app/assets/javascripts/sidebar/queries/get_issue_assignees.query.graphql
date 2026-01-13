@@ -9,11 +9,13 @@ query issueAssignees($fullPath: ID!, $iid: String!) {
       author {
         ...UserWithType
         ...UserAvailability
+        compositeIdentityEnforced @gl_introduced(version: "18.8.0")
       }
       assignees {
         nodes {
           ...UserWithType
           ...UserAvailability
+          compositeIdentityEnforced @gl_introduced(version: "18.8.0")
         }
       }
     }

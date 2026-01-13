@@ -39,6 +39,7 @@ class SlackIntegration < ApplicationRecord
     through: :slack_integrations_scopes
 
   scope :preloaded_integration, -> { preload(:integration) }
+  scope :preload_integration_organization, -> { preloaded_integration.preload(integration: [:group, :project]) }
   scope :with_bot, -> { where.not(bot_user_id: nil) }
   scope :by_team, ->(team_id) { where(team_id: team_id) }
   scope :by_integration, ->(integration_ids) { where(integration_id: integration_ids) }
@@ -50,6 +51,9 @@ class SlackIntegration < ApplicationRecord
     length: 2..4096
   validates :user_id, presence: true
   validates :integration, presence: true
+  # Bot tokens follow the format: xoxb-#####-#####-##### (around 60 characters)
+  # A generous limit of 255 allows for potential future token format changes
+  validates :bot_access_token, length: { maximum: 255 }, if: :bot_access_token_changed?
 
   after_commit :update_active_status_of_integration, on: [:create, :destroy]
 

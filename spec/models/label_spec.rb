@@ -149,7 +149,7 @@ RSpec.describe Label, feature_category: :team_planning do
           label = described_class.new
           label.valid?
 
-          expect(label.errors[:parent]).to include('Exactly one of group, project, organization must be present')
+          expect(label.errors[:parent]).to include('Exactly one of project, organization, group must be present')
         end
       end
 
@@ -243,13 +243,13 @@ RSpec.describe Label, feature_category: :team_planning do
   end
 
   describe 'scopes' do
-    describe '.for_organization' do
+    describe '.in_organization' do
       let(:organization1) { create(:organization) }
       let(:organization2) { create(:organization) }
       let!(:label1) { create(:admin_label, organization: organization1) }
       let!(:label2) { create(:admin_label, organization: organization2) }
 
-      subject { described_class.for_organization(organization2) }
+      subject { described_class.in_organization(organization2) }
 
       it { is_expected.to contain_exactly(label2) }
     end

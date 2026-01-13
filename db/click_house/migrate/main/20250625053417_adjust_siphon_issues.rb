@@ -15,9 +15,9 @@ class AdjustSiphonIssues < ClickHouse::Migration
     execute "ALTER TABLE siphon_issues DROP COLUMN IF EXISTS description_html"
 
     # These columns have NOT NULL check constraint
-    execute "ALTER TABLE siphon_issues MODIFY COLUMN work_item_type_id Int64"
-    execute "ALTER TABLE siphon_issues MODIFY COLUMN namespace_id Int64"
-    execute "ALTER TABLE siphon_issues MODIFY COLUMN lock_version Int64"
+    execute "ALTER TABLE siphon_issues MODIFY COLUMN work_item_type_id Int64 DEFAULT 0"
+    execute "ALTER TABLE siphon_issues MODIFY COLUMN namespace_id Int64 DEFAULT 0"
+    execute "ALTER TABLE siphon_issues MODIFY COLUMN lock_version Int64 DEFAULT 0"
   end
 
   def down

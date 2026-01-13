@@ -644,7 +644,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     subject { described_class.send(:service_desk_counts) }
 
     let(:project) { create(:project, :service_desk_enabled) }
-    let(:support_bot) { Users::Internal.for_organization(project.organization_id).support_bot }
+    let(:support_bot) { Users::Internal.in_organization(project.organization_id).support_bot }
 
     it 'gathers Service Desk data' do
       create_list(:issue, 2, :confidential, author: support_bot, project: project)

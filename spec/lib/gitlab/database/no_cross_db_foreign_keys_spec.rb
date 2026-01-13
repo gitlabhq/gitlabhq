@@ -73,7 +73,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. " \
         "When a foreign key references another database you must use a Loose Foreign Key instead https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
     else
-      # Any FK that references to / from a non-sharded table (e.g. gitlab_main_clusterwide) is not allowed
+      # Any FK that references to / from a non-sharded table is not allowed
       "Found extra cross-database foreign key #{column} referencing #{fk.to_table} with constraint name #{fk.name}. " \
         "Sharded tables referencing from / to non-sharded tables are not allowed in Cells architecture. " \
         "Consult https://docs.gitlab.com/development/cells for possible solutions. " \

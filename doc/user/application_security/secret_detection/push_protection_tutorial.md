@@ -18,7 +18,7 @@ and remediating leaks if they occur.
 In this tutorial, you'll configure secret push protection and see what happens when you try to commit a fake secret.
 You'll also learn how to skip secret push protection, in case you need to bypass a false positive.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 This tutorial is adapted from the following GitLab Unfiltered videos:
 
 - [Introduction to Secret Push Protection](https://www.youtube.com/watch?v=SFVuKx3hwNI)

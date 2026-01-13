@@ -97,6 +97,7 @@ export default {
       :z-index="$options.DRAWER_Z_INDEX"
       open
       class="gl-overscroll-contain"
+      data-testid="role-details-drawer"
       @close="closeDrawer"
     >
       <template #title>

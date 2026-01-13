@@ -214,4 +214,18 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
       expect(loader.raw).to eq(yml)
     end
   end
+
+  describe 'filename parameter' do
+    context 'when YAML has a parse error with filename' do
+      let(:yml) { 'invalid: yaml: syntax' }
+      let(:loader) { described_class.new(yml, filename: 'templates/bad.yml') }
+
+      it 'raises FormatError with filename in message' do
+        expect { loader.load! }.to raise_error(
+          Gitlab::Config::Loader::FormatError,
+          '(templates/bad.yml): mapping values are not allowed in this context at line 1 column 14'
+        )
+      end
+    end
+  end
 end

@@ -38,7 +38,8 @@ RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :groups_and_p
       end
     end
 
-    it "renders Access requests tab", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448572' do
+    it "renders Access requests tab",
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16785' do
       expect(page).to have_selector('.nav-link', text: "Access requests 2")
     end
 
@@ -54,7 +55,8 @@ RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :groups_and_p
       fill_in_filtered_search 'Search groups', with: 'group'
     end
 
-    it 'displays "Groups" tab', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448573' do
+    it 'displays "Groups" tab',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16786' do
       expect(page).to have_selector('.nav-link.active', text: 'Groups')
     end
 

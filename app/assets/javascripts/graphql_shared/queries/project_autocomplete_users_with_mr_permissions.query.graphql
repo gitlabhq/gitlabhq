@@ -1,16 +1,19 @@
 #import "../fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "ee_else_ce/graphql_shared/fragments/user_disabled_for_duo_usage.fragment.graphql"
 
 query projectAutocompleteUsersSearchWithMRPermissions(
   $search: String!
   $fullPath: ID!
   $mergeRequestId: MergeRequestID!
 ) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     users: autocompleteUsers(search: $search) {
       ...User
       ...UserAvailability
+      ...UserDisabledForDuoUsage
+      compositeIdentityEnforced @gl_introduced(version: "18.7.0")
       mergeRequestInteraction(id: $mergeRequestId) {
         canMerge
       }

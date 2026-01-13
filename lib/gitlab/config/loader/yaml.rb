@@ -15,12 +15,13 @@ module Gitlab
 
         attr_reader :raw
 
-        def initialize(config, additional_permitted_classes: [])
+        def initialize(config, additional_permitted_classes: [], filename: nil)
           @raw = config
           @config = YAML.safe_load(config,
             permitted_classes: [Symbol, *additional_permitted_classes],
             permitted_symbols: [],
-            aliases: true
+            aliases: true,
+            filename: filename
           )
         rescue Psych::Exception => e
           raise Loader::FormatError, e.message

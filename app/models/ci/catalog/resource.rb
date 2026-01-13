@@ -86,6 +86,16 @@ module Ci
           where_exists(user.authorizations_for_projects(related_project_column: 'catalog_resources.project_id'))
         end
 
+        def visible_to_user_with_access_level(user, min_access_level)
+          return none unless user
+          return visible_to_user(user) unless min_access_level
+
+          where_exists(user.authorizations_for_projects(
+            min_access_level: min_access_level,
+            related_project_column: 'catalog_resources.project_id'
+          ))
+        end
+
         # Used by Ci::ProcessSyncEventsService
         def sync!(event)
           # There may be orphaned records since this table does not enforce FKs

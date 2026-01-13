@@ -1,4 +1,5 @@
 <script>
+import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-service-desk-md.svg';
 import { GlEmptyState, GlLink } from '@gitlab/ui';
 import {
   noIssuesSignedOutButtonText,
@@ -9,6 +10,7 @@ import {
 } from '../constants';
 
 export default {
+  emptyStateSvg,
   i18n: {
     noIssuesSignedOutButtonText,
     infoBannerTitle,
@@ -21,17 +23,16 @@ export default {
     GlLink,
   },
   inject: [
-    'emptyStateSvgPath',
     'isSignedIn',
     'signInPath',
-    'canAdminIssues',
+    'canAdminIssue',
     'isServiceDeskEnabled',
     'serviceDeskEmailAddress',
     'serviceDeskHelpPath',
   ],
   computed: {
     canSeeEmailAddress() {
-      return this.canAdminIssues && this.isServiceDeskEnabled;
+      return this.canAdminIssue && this.isServiceDeskEnabled;
     },
   },
 };
@@ -41,7 +42,7 @@ export default {
   <div v-if="isSignedIn">
     <gl-empty-state
       :title="$options.i18n.infoBannerTitle"
-      :svg-path="emptyStateSvgPath"
+      :svg-path="$options.emptyStateSvg"
       data-testid="issues-service-desk-empty-state"
     >
       <template #description>
@@ -59,7 +60,7 @@ export default {
   <gl-empty-state
     v-else
     :title="$options.i18n.infoBannerTitle"
-    :svg-path="emptyStateSvgPath"
+    :svg-path="$options.emptyStateSvg"
     :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
     :primary-button-link="signInPath"
     data-testid="issues-service-desk-empty-state"

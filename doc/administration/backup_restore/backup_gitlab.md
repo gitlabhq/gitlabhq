@@ -763,6 +763,9 @@ Incremental repository backups can be faster than full repository backups becaus
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
 to create an incremental backup from.
 
+To restore an incremental backup to a new GitLab instance (no pre-existing data), you must create the incremental backup from a full backup.
+Do not skip any backup components when creating the base backup.
+
 Use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
 as documented in the [Backup ID](backup_archive_process.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
 [`BACKUP` environment variable](#backup-filename).

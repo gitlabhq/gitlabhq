@@ -6,7 +6,7 @@ class Projects::Analytics::CycleAnalytics::ValueStreamsController < Projects::Ap
 
   respond_to :json
 
-  feature_category :team_planning
+  feature_category :value_stream_management
   urgency :low
 
   private

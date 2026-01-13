@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import SystemNote from '~/rapid_diffs/app/discussions/system_note.vue';
 import NoteAuthor from '~/rapid_diffs/app/discussions/note_author.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TimelineEntryItem from '~/rapid_diffs/app/discussions/timeline_entry_item.vue';
 
 describe('SystemNote', () => {
   let wrapper;
@@ -11,6 +12,8 @@ describe('SystemNote', () => {
       propsData: props,
     });
   };
+
+  const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
 
   it('shows system message', () => {
     const note = { note_html: '<p id="test">test</p>' };
@@ -36,5 +39,25 @@ describe('SystemNote', () => {
     const note = { note_html: 'test', created_at: Date.now().toString() };
     createComponent({ note });
     expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(note.created_at);
+  });
+
+  describe('TimelineEntryItem', () => {
+    it('always passes timelineLayout as true', () => {
+      const note = { note_html: 'test' };
+      createComponent({ note });
+      expect(findTimelineEntryItem().props('timelineLayout')).toBe(true);
+    });
+
+    it('passes isLastDiscussion prop', () => {
+      const note = { note_html: 'test' };
+      createComponent({ note, isLastDiscussion: true });
+      expect(findTimelineEntryItem().props('isLastDiscussion')).toBe(true);
+    });
+
+    it('defaults isLastDiscussion to false', () => {
+      const note = { note_html: 'test' };
+      createComponent({ note });
+      expect(findTimelineEntryItem().props('isLastDiscussion')).toBe(false);
+    });
   });
 });

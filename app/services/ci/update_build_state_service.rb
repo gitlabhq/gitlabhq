@@ -106,12 +106,30 @@ module Ci
 
         Result.new(status: 200)
       when 'failed'
-        build.drop_with_exit_code!(params[:failure_reason], params[:exit_code])
+        handle_build_failure!
 
         Result.new(status: 200)
       else
         Result.new(status: 400)
       end
+    end
+
+    def handle_build_failure!
+      build.drop_with_exit_code!(params[:failure_reason], params[:exit_code])
+      create_failure_message! if should_create_failure_message?
+    end
+
+    def should_create_failure_message?
+      params[:failure_message].present? && params[:failure_reason] == 'job_router_failure'
+    end
+
+    def create_failure_message!
+      build.job_messages.create!(
+        content: params[:failure_message],
+        severity: :error,
+        project_id: build.project_id,
+        partition_id: build.partition_id
+      )
     end
 
     def discard_build_trace!

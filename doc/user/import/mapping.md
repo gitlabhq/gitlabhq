@@ -2,7 +2,7 @@
 stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Contribution and membership mapping
+title: Post-migration contribution and membership mapping
 ---
 
 {{< details >}}
@@ -25,15 +25,9 @@ title: Contribution and membership mapping
 - Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
+- `github_user_mapping` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216778) in GitLab 18.8.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-
-{{< /alert >}}
 
 {{< alert type="note" >}}
 
@@ -41,16 +35,26 @@ To leave feedback about this feature, add a comment to [issue 502565](https://gi
 
 {{< /alert >}}
 
-When you import groups or projects into GitLab, user contributions and memberships from the source instance are initially assigned to placeholder users rather than real users on the destination instance. This gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while maintaining control over the mapping process.
+When you import groups or projects into GitLab with post-migration mapping, user contributions and memberships from the
+source instance are initially assigned to placeholder users rather than real users on the destination instance. This
+gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while
+maintaining control over the mapping process.
 
-The mapping process allows you to reassign placeholders to existing users, create new users for reassignment, or choose to keep certain contributions assigned to placeholders to preserve historical context.
+With post-migration mapping, you can:
 
-This method of user contribution and membership mapping is available by default for
-[direct transfer](../group/import/_index.md), [GitHub importer](../project/import/github.md),
-[Bitbucket Server importer](../project/import/bitbucket_server.md), and [Gitea importer](../project/import/gitea.md) on
-GitLab.com and GitLab Self-Managed.
-For information on the other method available for GitLab Self-Managed with disabled feature flags,
-see the documentation for each importer.
+- Reassign contributions and memberships from placeholder users to existing users.
+- Create new users for reassignment.
+- Keep certain contributions assigned to placeholder users to preserve historical context.
+
+Post-migration user contribution and membership mapping is available on GitLab.com and GitLab Self-Managed by default for
+migrations from:
+
+- [GitLab by direct transfer](../group/import/_index.md)
+- [GitHub](../project/import/github.md)
+- [Bitbucket Server](bitbucket_server.md)
+- [Gitea](gitea.md)
+
+## Post-migration mapping workflow
 
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
@@ -124,7 +128,7 @@ Placeholder users do not count towards license limits.
 
 A placeholder user is created for each user on the source instance, except in the following scenarios:
 
-- You're importing a project from [Gitea](../project/import/gitea.md), and the user was deleted on Gitea before the import.
+- You're importing a project from [Gitea](gitea.md), and the user was deleted on Gitea before the import.
   Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
@@ -316,8 +320,9 @@ To reassign contributions and memberships to administrators, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4. Feature flag `group_owner_placeholder_confirmation_bypass` removed.
+- [Introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/544024) in GitLab 18.1 with a feature flag named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4.
+- [Generally available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569771) in GitLab 18.7. Feature flag `group_owner_placeholder_confirmation_bypass` removed.
 
 {{< /history >}}
 
@@ -658,3 +663,19 @@ be undone. Accepting the reassignment might cause contributions to be incorrectl
 
 The contribution reassignment process starts only after you accept the reassignment request by selecting
 **Approve reassignment** in GitLab. The process doesn't start by selecting links in the email.
+
+## Alternative mapping method
+
+An alternative to post-migration mapping is a method that maps during a migration.
+This method is not recommended, and any problems found are unlikely to be fixed.
+
+The alternative method of mapping:
+
+- Requires some preparation before migration, including disabling feature flags.
+- Is available for migrations from:
+  - GitHub.
+  - Bitbucket Server.
+  - Gitea (for GitLab 18.5 and earlier).
+- Is available for migrations to GitLab Self-Managed and GitLab Dedicated.
+
+For more information, see the alternative method of mapping documentation for each importer.

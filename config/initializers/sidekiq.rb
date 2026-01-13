@@ -32,6 +32,13 @@ unless Gem::Version.new(Sidekiq::VERSION) == Gem::Version.new('7.3.9')
         'and update Gitlab::SidekiqSharding::ScheduledEnq is compatible.'
 end
 
+Sidekiq::Cron.configure do |cfg|
+  # IMPORTANT: In sidekiq-cron > 2.0.0, setting `cron_poll_interval` to `nil` has the same effect as setting
+  # it to `0` (essentially disables it). To avoid that, we do the check below and preserve the fallback to default value
+  cfg.cron_poll_interval = Gitlab.config.cron_jobs.poll_interval if Gitlab.config.cron_jobs.poll_interval
+  cfg.cron_poll_interval = 0 if queue_instance != Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
+end
+
 Sidekiq.configure_server do |config|
   config[:strict] = false
   config[:scheduled_enq] = Gitlab::SidekiqSharding::ScheduledEnq
@@ -103,9 +110,6 @@ Sidekiq.configure_server do |config|
   Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
 
   Gitlab::SidekiqVersioning.install!
-
-  config[:cron_poll_interval] = Gitlab.config.cron_jobs.poll_interval
-  config[:cron_poll_interval] = 0 if queue_instance != Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME
 
   Gitlab::SidekiqConfig::CronJobInitializer.execute
 

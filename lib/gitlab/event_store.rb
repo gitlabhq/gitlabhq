@@ -41,6 +41,7 @@ module Gitlab
         # Add subscriptions here:
 
         store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+        store.subscribe ::Ci::TrackPipelineTriggerEventsWorker, to: ::Ci::PipelineCreatedEvent
         # Currently it is used only for DuoWorkflows::Workflow. DuoWorkflows::Workflow, pipeline can never be in manual.
         # That's why a constraint on manual is added. In future if this needs to be used at other places where manual
         # needs to be considered, then remove the if block and just verify that DuoWorkflows::Workflow is working fine.
@@ -63,6 +64,7 @@ module Gitlab
           if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
         store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
         store.subscribe ::Pages::DeletePagesDeploymentWorker, to: ::Projects::ProjectArchivedEvent
+        store.subscribe ::Pages::DeleteGroupPagesDeploymentsWorker, to: ::Namespaces::Groups::GroupArchivedEvent
         store.subscribe ::Pages::ResetPagesDefaultDomainRedirectWorker, to: ::Pages::Domains::PagesDomainDeletedEvent
         store.subscribe ::MergeRequests::ProcessDraftNotePublishedWorker, to: ::MergeRequests::DraftNotePublishedEvent
 

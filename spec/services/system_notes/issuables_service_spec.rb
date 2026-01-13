@@ -521,6 +521,39 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
           subject
         end
       end
+
+      context 'with work item instrumentation tracking' do
+        before do
+          allow_next_instance_of(described_class) do |instance|
+            allow(instance).to receive(:cross_reference_disallowed?).and_return(false)
+          end
+        end
+
+        context 'when mentioned_in is a WorkItem' do
+          let(:mentioned_in) { create(:work_item, project: project) }
+
+          it_behaves_like 'tracks work item event', :mentioned_in, :author, 'work_item_reference_add', :subject
+        end
+
+        context 'when mentioned_in is an Issue' do
+          let(:mentioned_in) { create(:issue, project: project) }
+          let(:work_item) { WorkItem.find(mentioned_in.id) }
+
+          it_behaves_like 'tracks work item event', :work_item, :author, 'work_item_reference_add', :subject
+        end
+
+        context 'when mentioned_in is a MergeRequest' do
+          let(:mentioned_in) { create(:merge_request, :simple, source_project: project) }
+
+          it_behaves_like 'does not track work item event', :subject
+        end
+
+        context 'when mentioned_in is a Commit' do
+          let(:mentioned_in) { project.repository.commit }
+
+          it_behaves_like 'does not track work item event', :subject
+        end
+      end
     end
   end
 

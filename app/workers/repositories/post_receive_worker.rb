@@ -8,7 +8,7 @@ module Repositories
     deduplicate :none
     data_consistency :sticky
 
-    # sidekiq_options retry: 3
+    sidekiq_options retry: 3
     include Gitlab::Experiment::Dsl
     include ::Gitlab::ExclusiveLeaseHelpers
 

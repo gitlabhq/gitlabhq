@@ -29,16 +29,19 @@ module RuboCop
         include MigrationHelpers
 
         MSG = {
-          invalid_url: "Invalid `%{key}` url for the dictionary. Please use the following format: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX",
-          invalid_milestone: "Invalid `%{key}` for the dictionary. It must be a string. Please ensure it is quoted.",
-          missing_key: "Mandatory key '%{key}' is missing from the dictionary. Please add with an appropriate value.",
+          invalid_url: "Invalid `%{key}` url for the dictionary: %{filename}. Please use the following format: " \
+            "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/XXX",
+          invalid_milestone: "Invalid `%{key}` for the dictionary: %{filename}. It must be a string. " \
+            "Please ensure it is quoted.",
+          missing_key: "Mandatory key '%{key}' is missing from the dictionary: %{filename}. " \
+            "Please add with an appropriate value.",
           missing_dictionary: <<-MESSAGE.delete("\n").squeeze(' ').strip,
-            Missing %{file_name}.
+            Missing %{filename}.
             Use the generator 'batched_background_migration' to create dictionary files automatically.
-            For more details refer: https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#generator
+            For more details refer: https://docs.gitlab.com/development/database/batched_background_migrations/#generate-a-batched-background-migration
           MESSAGE
           missing_finalized_by: <<-FINALIZE_MESSAGE.delete("\n").squeeze(' ').strip
-            Missing `finalized_by` attribute in dictionary for migration using `ensure_batched_background_migration_is_finished`.
+            Missing `finalized_by` attribute in dictionary: %{filename} for migration using `ensure_batched_background_migration_is_finished`.
             Please add the finalized_by attribute with the migration version or no-op the migration.
           FINALIZE_MESSAGE
         }.freeze
@@ -91,19 +94,24 @@ module RuboCop
         end
 
         def validate_dictionary_file(migration_name, node)
-          unless dictionary_file?(migration_name)
-            return [:missing_dictionary, { file_name: dictionary_file_path(migration_name) }]
-          end
+          filename = dictionary_file_path(migration_name)
+          return [:missing_dictionary, { filename: filename }] unless dictionary_file?(migration_name)
 
           bbm_dictionary = ::Gitlab::Utils::BatchedBackgroundMigrationsDictionary.new(version(node))
 
-          return [:missing_key, { key: :milestone }] unless bbm_dictionary.milestone.present?
+          return [:missing_key, { key: :milestone, filename: filename }] unless bbm_dictionary.milestone.present?
 
-          return [:invalid_milestone, { key: :milestone }] unless valid_milestone?(bbm_dictionary.milestone)
+          unless valid_milestone?(bbm_dictionary.milestone)
+            return [:invalid_milestone, { key: :milestone, filename: filename }]
+          end
 
-          return [:missing_key, { key: :introduced_by_url }] unless bbm_dictionary.introduced_by_url.present?
+          unless bbm_dictionary.introduced_by_url.present?
+            return [:missing_key, { key: :introduced_by_url, filename: filename }]
+          end
 
-          [:invalid_url, { key: :introduced_by_url }] unless valid_url?(bbm_dictionary.introduced_by_url)
+          return if valid_url?(bbm_dictionary.introduced_by_url)
+
+          [:invalid_url, { key: :introduced_by_url, filename: filename }]
         end
 
         def rails_root
@@ -128,7 +136,7 @@ module RuboCop
           return unless dictionary
           return if dictionary.finalized_by&.match?(TIMESTAMP_REGEX)
 
-          add_offense(node, message: MSG[:missing_finalized_by])
+          add_offense(node, message: format(MSG[:missing_finalized_by], filename: dictionary_file_path(migration_name)))
         end
 
         def extract_migration_name(node, migration_name_node)

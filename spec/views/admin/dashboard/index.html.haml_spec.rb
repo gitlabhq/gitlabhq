@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_category: :shared do
+RSpec.describe 'admin/dashboard/index.html.haml', :enable_admin_mode, feature_category: :system_access do
   include Devise::Test::ControllerHelpers
   include StubVersion
 

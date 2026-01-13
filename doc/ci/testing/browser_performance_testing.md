@@ -16,11 +16,8 @@ If your application offers a web interface and you're using
 [GitLab CI/CD](../_index.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
-{{< alert type="note" >}}
-
-You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/_index.md).
-
-{{< /alert >}}
+> [!note]
+> You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/_index.md).
 
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
 tool, for measuring the rendering performance of web sites. The

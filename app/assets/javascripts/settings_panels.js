@@ -61,6 +61,8 @@ export function closeSection(sectionArg) {
   chevron.addClass('gl-animated-icon-off').removeClass('gl-animated-icon-on');
 }
 
+// IMPORTANT: Keep this implementation in sync with app/assets/javascripts/vue_shared/components/settings/settings_block.vue
+// Both files handle settings block behavior and must maintain consistency.
 export function toggleSection($section) {
   $section.removeClass('no-animate');
   if (isExpanded($section)) {

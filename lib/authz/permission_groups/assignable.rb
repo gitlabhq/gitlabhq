@@ -9,7 +9,7 @@ module Authz
 
       class << self
         def all_permissions
-          definitions.flat_map(&:permissions)
+          definitions.flat_map(&:permissions).uniq
         end
 
         def for_permission(permission)

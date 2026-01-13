@@ -16,11 +16,9 @@ class Projects::ApplicationController < ApplicationController
   # By placing it after `before_action :project`, we guarantee the correct execution order.
   before_action :enforce_step_up_auth_for_namespace
 
-  layout 'project'
+  before_action :set_project_markdown_flags
 
-  before_action do
-    push_namespace_setting(:math_rendering_limits_enabled, @project&.parent)
-  end
+  layout 'project'
 
   helper_method :repository, :can_collaborate_with_project?, :user_access
 
@@ -105,10 +103,17 @@ class Projects::ApplicationController < ApplicationController
   def set_is_ambiguous_ref
     return @is_ambiguous_ref if defined? @is_ambiguous_ref
 
-    @is_ambiguous_ref = ExtractsRef::RequestedRef
-                                                .new(@project.repository, ref_type: ref_type, ref: @ref)
-                                                .find
-                                                .fetch(:ambiguous, false)
+    if Feature.enabled?(:verified_ref_extractor, @project)
+      return @is_ambiguous_ref = false if @ref_type.present?
+
+      @is_ambiguous_ref = ExtractsRef::VerifiedRefExtractor
+        .ambiguous_ref?(@project.repository, ref_type: ref_type, ref: @ref)
+    else
+      @is_ambiguous_ref = ExtractsRef::RequestedRef
+                                                  .new(@project.repository, ref_type: ref_type, ref: @ref)
+                                                  .find
+                                                  .fetch(:ambiguous, false)
+    end
   end
 
   def handle_update_result(result)
@@ -130,6 +135,12 @@ class Projects::ApplicationController < ApplicationController
     elsif params[:namespace_id].present?
       enforce_step_up_auth_for_namespace_id(params[:namespace_id])
     end
+  end
+
+  def set_project_markdown_flags
+    push_namespace_setting(:math_rendering_limits_enabled, @project&.parent)
+    push_force_frontend_feature_flag(:allow_iframes_in_markdown,
+      @project&.allow_iframes_in_markdown_feature_flag_enabled? == true)
   end
 end
 

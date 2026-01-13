@@ -66,7 +66,7 @@ When a commit is signed by the instance, GitLab relies on the `Author` field for
 
 ## Commits created using REST API
 
-[Commits created using the REST API](../../../../api/commits.md#create-a-commit-with-multiple-files-and-actions).
+[Commits created using the REST API](../../../../api/commits.md#create-a-commit).
 are also considered as web-based commits.
 Using the REST API endpoint, you can set `author_name` and `author_email` fields of the commit,
 which makes it possible to create commits on behalf of other users.

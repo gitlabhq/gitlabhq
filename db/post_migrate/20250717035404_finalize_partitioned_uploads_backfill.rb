@@ -8,13 +8,9 @@ class FinalizePartitionedUploadsBackfill < Gitlab::Database::Migration[2.3]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillPartitionedUploads',
-      table_name: :uploads,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op:
+    #   This migration is a no-op because the original migration was re-enqueued with a new version.
+    #   The new migration is 20251201121648_queue_re_enqueue_backfill_partitioned_uploads.rb
   end
 
   def down; end

@@ -65,7 +65,7 @@ describe('Diff File Row component', () => {
       createComponent({
         file: {
           type: fileType,
-          id: '#123456789',
+          codeReviewId: '#123456789',
         },
         level: 0,
         hideFileStats: false,
@@ -102,16 +102,5 @@ describe('Diff File Row component', () => {
     });
 
     expect(wrapper.classes('is-active')).toBe(true);
-  });
-
-  it('marks viewed files', () => {
-    createComponent({
-      level: 0,
-      file: { fileHash: '123', type: 'blob' },
-      viewedFiles: { 123: true },
-      hideFileStats: false,
-    });
-
-    expect(wrapper.findComponent(FileRow).props('fileClasses')).toContain('gl-text-subtle');
   });
 });

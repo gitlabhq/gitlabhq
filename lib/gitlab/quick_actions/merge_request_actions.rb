@@ -19,15 +19,15 @@ module Gitlab
         # /merge
         #
         desc do
-          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-            _("Merge automatically (%{strategy})") % { strategy: preferred_strategy.humanize }
+          if strategy = preferred_auto_merge_strategy(quick_action_target)
+            auto_merge_strategy_copy(strategy, :desc)
           else
             _("Merge immediately")
           end
         end
         explanation do
-          if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-            _("Schedules to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
+          if strategy = preferred_auto_merge_strategy(quick_action_target)
+            auto_merge_strategy_copy(strategy, :explanation)
           else
             _('Merges this merge request immediately.')
           end
@@ -37,8 +37,8 @@ module Gitlab
             _("The `/merge` quick action requires the SHA of the head of the branch.")
           elsif params[:merge_request_diff_head_sha] != quick_action_target.diff_head_sha
             _("Branch has been updated since the merge was requested.")
-          elsif preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
-            _("Scheduled to merge this merge request (%{strategy}).") % { strategy: preferred_strategy.humanize }
+          elsif strategy = preferred_auto_merge_strategy(quick_action_target)
+            auto_merge_strategy_copy(strategy, :feedback)
           else
             _('Merged this merge request.')
           end
@@ -557,6 +557,14 @@ module Gitlab
 
       def reviewers_to_remove?(updates)
         quick_action_target.reviewers.any? || updates&.dig(:reviewer_ids)&.any?
+      end
+
+      def auto_merge_strategy_copy(_strategy, type)
+        case type
+        when :desc then _('Set to auto-merge')
+        when :explanation then _('Sets this merge request to auto-merge when ready.')
+        when :feedback then _('Set to auto-merge.')
+        end
       end
 
       def merge_orchestration_service

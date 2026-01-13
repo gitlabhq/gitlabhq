@@ -2,7 +2,6 @@
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { hide } from '~/tooltips';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -11,7 +10,6 @@ export default {
   directives: {
     GlTooltip,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isFullscreen: false,
@@ -21,10 +19,7 @@ export default {
     toggleFocusMode() {
       hide(this.$refs.toggleFocusModeButton);
 
-      const boardWrapperElSelector = this.glFeatures.projectStudioEnabled
-        ? '.js-content-panels'
-        : '.content-wrapper > .js-focus-mode-board';
-      const issueBoardsContent = document.querySelector(boardWrapperElSelector);
+      const issueBoardsContent = document.querySelector('.js-content-panels');
       issueBoardsContent?.classList.toggle('is-focused');
 
       this.isFullscreen = !this.isFullscreen;

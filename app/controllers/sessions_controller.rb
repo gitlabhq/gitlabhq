@@ -36,6 +36,9 @@ class SessionsController < Devise::SessionsController
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha
   before_action :set_invite_params, only: [:new]
+  before_action only: [:new] do
+    push_frontend_feature_flag(:passkeys, Feature.current_request)
+  end
 
   after_action :log_failed_login, if: :action_new_and_failed_login?
   after_action :verify_known_sign_in, only: [:create]
@@ -67,9 +70,12 @@ class SessionsController < Devise::SessionsController
   end
 
   def new_passkey
-    return unless Feature.enabled?(:passkeys, Feature.current_request)
-
-    handle_passwordless_flow
+    if Feature.enabled?(:passkeys, Feature.current_request) &&
+        Gitlab::CurrentSettings.password_authentication_enabled_for_web?
+      handle_passwordless_flow
+    else
+      render_403
+    end
   end
 
   def create
@@ -112,7 +118,25 @@ class SessionsController < Devise::SessionsController
     end
   end
 
+  def sign_in_path
+    return render_404 unless Feature.enabled?(:two_step_sign_in, Feature.current_request)
+
+    respond_to do |format|
+      format.json do
+        render json: { sign_in_path: determine_sign_in_path }
+      end
+      format.html do
+        render_404
+      end
+    end
+  end
+
   private
+
+  # Overridden in EE
+  def determine_sign_in_path
+    nil
+  end
 
   override :after_pending_invitations_hook
   def after_pending_invitations_hook

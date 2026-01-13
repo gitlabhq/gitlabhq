@@ -36,7 +36,7 @@ runbooks. A sample runbook is provided, showcasing common operations. While
 Rubix makes it simple to create common Kubernetes and AWS workflows, you can
 also create them manually without Rubix.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 Watch this [video](https://www.youtube.com/watch?v=Q_OqHIIUPjE)
 for an overview of how this is accomplished in GitLab!
 

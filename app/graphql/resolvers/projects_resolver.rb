@@ -37,7 +37,8 @@ module Resolvers
 
     argument :trending, GraphQL::Types::Boolean,
       required: false,
-      description: "Return only projects that are trending."
+      description: "Return only projects that are trending.",
+      deprecated: { reason: 'Scheduled for removal in 19.0 due to low usage', milestone: '18.8' }
 
     argument :aimed_for_deletion, GraphQL::Types::Boolean,
       required: false,
@@ -102,7 +103,7 @@ module Resolvers
     end
 
     def finder_params(args)
-      {
+      params = {
         **project_finder_params(args),
         with_issues_enabled: args[:with_issues_enabled],
         with_merge_requests_enabled: args[:with_merge_requests_enabled],
@@ -110,7 +111,6 @@ module Resolvers
         archived: args[:archived],
         min_access_level: args[:min_access_level],
         language_name: args[:programming_language_name],
-        trending: args[:trending],
         aimed_for_deletion: args[:aimed_for_deletion],
         not_aimed_for_deletion: args[:not_aimed_for_deletion],
         marked_for_deletion_on: args[:marked_for_deletion_on],
@@ -119,6 +119,8 @@ module Resolvers
         last_repository_check_failed: args[:last_repository_check_failed],
         organization: ::Current.organization
       }
+      params[:trending] = args[:trending] unless Feature.enabled?(:disable_trending_args, current_user)
+      params
     end
 
     def sanitize_params(params)

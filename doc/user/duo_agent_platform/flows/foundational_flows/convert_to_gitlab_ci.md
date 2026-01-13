@@ -10,7 +10,6 @@ title: Convert to GitLab CI/CD Flow
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -19,6 +18,7 @@ title: Convert to GitLab CI/CD Flow
 - Introduced as [a beta](../../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
 - Feature flag `duo_workflow_in_ci` enabled by default in 18.4.
 - The `duo_workflow` flag must also be enabled, but it is enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 
 {{< /history >}}
 
@@ -39,6 +39,9 @@ The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to Git
 
 This flow is available in the GitLab UI only.
 
+> ![note]
+> The Convert to GitLab CI/CD Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
+
 ## Prerequisites
 
 To convert a Jenkinsfile, you must:
@@ -47,6 +50,7 @@ To convert a Jenkinsfile, you must:
 - Have at least the Developer role in the target GitLab project.
 - Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
+- Ensure that the Convert to GitLab CI/CD Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
 
 ## Use the flow
 

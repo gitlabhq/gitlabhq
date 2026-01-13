@@ -267,7 +267,10 @@ module SystemNotes
         track_cross_reference_action
 
         created_at = mentioned_in.created_at if USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE && mentioned_in.is_a?(Commit)
-        create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at), skip_touch_noteable: true)
+        note = create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at), skip_touch_noteable: true)
+        track_cross_reference(mentioned_in, note)
+
+        note
       end
     end
 
@@ -516,6 +519,23 @@ module SystemNotes
 
     def track_cross_reference_action
       track_issue_event(:track_issue_cross_referenced_action)
+    end
+
+    def track_cross_reference(mentioned_in, note)
+      work_item = case mentioned_in
+                  when Epic
+                    mentioned_in.issue
+                  when WorkItem, Issue
+                    mentioned_in
+                  end
+
+      return unless work_item
+
+      ::Gitlab::WorkItems::Instrumentation::TrackingService.new(
+        work_item: work_item,
+        current_user: note.author,
+        event: Gitlab::WorkItems::Instrumentation::EventActions::REFERENCE_ADD
+      ).execute
     end
 
     def hierarchy_note_params(action, parent, child)

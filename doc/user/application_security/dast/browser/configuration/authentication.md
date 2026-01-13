@@ -646,11 +646,8 @@ Authentication failed because a home page should be displayed after login. Inste
 
 ### Configure the authentication report
 
-{{< alert type="warning" >}}
-
-The authentication report can contain sensitive information such as the credentials used to perform the login.
-
-{{< /alert >}}
+> [!warning]
+> The authentication report can contain sensitive information such as the credentials used to perform the login.
 
 An authentication report can be saved as a CI/CD job artifact to assist with understanding the cause of an authentication failure.
 

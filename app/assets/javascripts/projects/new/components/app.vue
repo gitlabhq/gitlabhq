@@ -155,6 +155,7 @@ export default {
         v-if="newProjectGuidelines"
         id="new-project-guideline"
         v-safe-html="newProjectGuidelines"
+        class="md"
       ></div>
     </template>
     <template #welcome-footer>

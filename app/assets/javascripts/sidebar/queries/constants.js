@@ -7,6 +7,7 @@ import {
   TYPE_EPIC,
   TYPE_INCIDENT,
   TYPE_ISSUE,
+  TYPE_TICKET,
   TYPE_MERGE_REQUEST,
   TYPE_TEST_CASE,
   WORKSPACE_GROUP,
@@ -122,6 +123,10 @@ export const confidentialityQueries = {
     query: issueConfidentialQuery,
     mutation: updateIssueConfidentialMutation,
   },
+  [TYPE_TICKET]: {
+    query: issueConfidentialQuery,
+    mutation: updateIssueConfidentialMutation,
+  },
   [TYPE_EPIC]: {
     query: epicConfidentialQuery,
     mutation: updateEpicConfidentialMutation,
@@ -147,11 +152,11 @@ export const referenceQueries = {
 export const workspaceLabelsQueries = {
   [WORKSPACE_PROJECT]: {
     query: projectLabelsQuery,
-    dataPath: 'workspace.labels',
+    dataPath: 'namespace.labels',
   },
   [WORKSPACE_GROUP]: {
     query: groupLabelsQuery,
-    dataPath: 'workspace.labels',
+    dataPath: 'namespace.labels',
   },
 };
 

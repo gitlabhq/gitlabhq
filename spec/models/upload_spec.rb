@@ -89,6 +89,16 @@ RSpec.describe Upload do
           upload.destroy!
         end
       end
+
+      context 'uploader is ImportExportUploader' do
+        subject(:upload) { create(:upload, :import_export_uploader) }
+
+        it 'calls delete_file!' do
+          is_expected.to receive(:delete_file!)
+
+          upload.destroy!
+        end
+      end
     end
   end
 

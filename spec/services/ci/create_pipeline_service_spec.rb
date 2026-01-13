@@ -130,6 +130,15 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect(counter).to have_received(:increment)
       end
 
+      it 'schedules TrackPipelineTriggerEventsWorker via PipelineCreatedEvent' do
+        allow(Ci::TrackPipelineTriggerEventsWorker).to receive(:perform_async)
+
+        pipeline
+
+        expect(Ci::TrackPipelineTriggerEventsWorker).to have_received(:perform_async).with(
+          'Ci::PipelineCreatedEvent', { 'pipeline_id' => pipeline.id, 'partition_id' => pipeline.partition_id })
+      end
+
       it 'records pipeline size in a prometheus histogram' do
         histogram = spy('pipeline size histogram')
 

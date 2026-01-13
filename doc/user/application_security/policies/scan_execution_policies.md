@@ -40,8 +40,8 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 
 To create a scan execution policy, you can use any of the following resources:
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Learn more about [enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
+- <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
+- <i class="fa-youtube-play" aria-hidden="true"></i> Learn more about [enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 - For instructions on how to create scan execution policies, see [tutorial: set up a scan execution policy](../../../tutorials/scan_execution_policy/_index.md)
 
 ## Restrictions
@@ -199,11 +199,8 @@ from bypassing the pipeline execution policies.
 | `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
 | `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
-{{< alert type="note" >}}
-
-Scan execution policies that have the rule type `schedule` always ignore the `skip_ci` option. Scheduled scans run at their configured times regardless of whether `[skip ci]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are otherwise skipped.
-
-{{< /alert >}}
+> [!note]
+> Scan execution policies that have the rule type `schedule` always ignore the `skip_ci` option. Scheduled scans run at their configured times regardless of whether `[skip ci]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are otherwise skipped.
 
 ## `pipeline` rule type
 
@@ -253,11 +250,8 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-In GitLab 16.1 and earlier, you should not use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If you must use direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
-
-{{< /alert >}}
+> [!warning]
+> In GitLab 16.1 and earlier, you should not use [direct transfer](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) with scheduled scan execution policies. If you must use direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 Use the `schedule` rule type to run security scanners on a schedule.
 
@@ -418,11 +412,8 @@ rule in the defined policy are met.
 | `template` | `string` | `default` or `latest` | CI/CD template version to enforce. The `latest` version might introduce breaking changes and supports only `pipeline_sources` related to merge requests. For details, see [customize security scanning](../../application_security/detect/security_configuration.md#customize-security-scanning). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
-{{< alert type="note" >}}
-
-If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
-
-{{< /alert >}}
+> [!note]
+> If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Scanner behavior
 
@@ -450,7 +441,7 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 
 ### DAST profiles
 
-The following requirements apply when enforcing Dynamic Application Security Testing (DAST):
+The following requirements apply when enforcing dynamic application security testing (DAST):
 
 - For every project in the policy's scope the specified
   [site profile](../dast/profiles.md#site-profile) and
@@ -556,8 +547,8 @@ scan_execution_policy:
   - scan: secret_detection
     scan_settings:
       ignore_default_before_after_script: true
-- name: Enforce Secret Detection and container scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
+- name: Enforce secret detection and container scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with secret detection and container scanning scans for the default branch
   enabled: true
   rules:
   - type: pipeline
@@ -587,8 +578,8 @@ You can use this example in the YAML mode of the [scan execution policy editor](
 It corresponds to a single object from the previous example.
 
 ```yaml
-name: Enforce Secret Detection and container scanning in every default branch pipeline
-description: This policy enforces pipeline configuration to have a job with Secret Detection and container scanning scans for the default branch
+name: Enforce secret detection and container scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with secret detection and container scanning scans for the default branch
 enabled: true
 rules:
   - type: pipeline

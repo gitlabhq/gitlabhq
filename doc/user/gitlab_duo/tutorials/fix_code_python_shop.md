@@ -21,7 +21,7 @@ This tutorial is part one in a series, and guides you through creating and debug
 a [Python](https://www.python.org/) web application with a database backend
 that meets these requirements.
 
-You'll use [GitLab Duo Chat](../../gitlab_duo_chat/_index.md)
+You'll use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
 and [GitLab Duo Code Suggestions](../../project/repository/code_suggestions/_index.md)
 to help you:
 
@@ -104,7 +104,7 @@ You can also interact with GitLab Duo Chat while you're working with a subset of
 1. Select an option, or **Open Quick Chat** and ask a question, like
    `Can you simplify this code?` and press <kbd>Enter</kbd>.
 
-For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code).
 
 {{< /tab >}}
 
@@ -112,10 +112,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](../../gitlab_duo_chat
 
 1. Open a project in a JetBrains IDE that supports Python, such as
    [PyCharm](https://www.jetbrains.com/pycharm/), or [IntelliJ IDEA](https://www.jetbrains.com/idea/).
-1. Open GitLab Duo Chat in either a [chat window](../../gitlab_duo_chat/_index.md#in-a-chat-window)
-   or an [editor window](../../gitlab_duo_chat/_index.md#use-chat-while-working-in-the-editor-window).
-
-For more information, see [Use GitLab Duo Chat in JetBrains IDEs](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides).
+1. [Use GitLab Duo Chat](../../gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides).
 
 {{< /tab >}}
 
@@ -1407,10 +1404,12 @@ For more information, see [Using GitLab Duo /fix](https://youtu.be/agTqx__j6Ko?s
 - [GitLab Duo use cases](../use_cases.md)
 - [Get started with GitLab Duo](../../get_started/getting_started_gitlab_duo.md).
 - Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
-  <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
-  [GitLab Duo Chat](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
-  <!-- Video published on 2024-01-24 -->
+  [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
+  <!-- Video published on 2025-06-02 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i>
+  [GitLab Duo Chat (Classic)](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
+  <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
   <!-- Video published on 2025-03-18 -->

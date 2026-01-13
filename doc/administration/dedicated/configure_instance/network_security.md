@@ -33,85 +33,195 @@ to verify domain ownership, which requires:
 For instances configured with private networking (such as AWS PrivateLink), public DNS resolution
 ensures certificate management works properly, even when all other access is restricted to private networks.
 
-### Configure DNS records
+GitLab Dedicated supports custom domains through two configuration methods:
 
-To use a custom domain, first update your domain's DNS records.
+- Standard configuration: Uses CNAME records and Let's Encrypt certificates.
+  You configure your own DNS records and request domain activation through support.
+- Cloudflare security configuration: Uses NS records and Let's Encrypt certificates.
+  GitLab provides DNS configuration details and you implement them in coordination with support.
+
+Contact your Customer Success Manager to determine which configuration method applies to your instance.
+
+### Standard configuration
+
+With this configuration, your domain connects directly to your GitLab instance using a CNAME record.
+GitLab automatically manages SSL certificates using Let's Encrypt,
+which verifies domain ownership through public DNS lookups and renews certificates automatically every 90 days.
+
+{{< alert type="note" >}}
+
+Your custom domain must be accessible from the public internet for SSL certificate management,
+even if you access your instance through private networks.
+
+{{< /alert >}}
+
+For instances configured with private networking (such as AWS PrivateLink),
+public DNS access ensures certificate management works properly,
+even when all other access is restricted to private networks.
+
+#### Configure DNS records
 
 Prerequisites:
 
 - Access to your domain host's DNS settings.
 
-To set up DNS records for a custom domain with GitLab Dedicated:
+To configure DNS records:
 
 1. Sign in to your domain host's website.
 1. Go to the DNS settings.
-1. Add a `CNAME` record that points your custom domain to your GitLab Dedicated tenant. For example:
+1. Add a `CNAME` record that points your custom domain to your GitLab Dedicated instance. For example:
 
    ```plaintext
    gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
    ```
 
 1. Optional. If your domain has an existing `CAA` record, update it to include
-   [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority.
-   If your domain does not have any `CAA` records, you can skip this step. For example:
+   Let's Encrypt as a valid certificate authority. For example:
 
    ```plaintext
-   example.com.  IN  CAA 0 issue "pki.goog"
-   example.com.  IN  CAA 0 issue "letsencrypt.org"
+   gitlab.my-company.com.  IN  CAA 0 issue "pki.goog"
+   gitlab.my-company.com.  IN  CAA 0 issue "letsencrypt.org"
    ```
 
-   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and
-   Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
+   The `CAA` record defines which certificate authorities can issue certificates for your domain.
 
-1. Save your changes and wait for the DNS changes to propagate.
+1. Save your changes and wait for DNS changes to take effect.
 
-Keep these DNS records in place as long as you use a custom domain with your GitLab Dedicated instance.
+Keep your DNS records in place as long as you use the custom domain.
 
-{{< alert type="note" >}}
+#### Enable a custom domain
 
-Your custom domain must be publicly resolvable through DNS for SSL certificate management,
-even if you access your instance through private networks.
+Prerequisites:
 
-{{< /alert >}}
+- You have configured the DNS records.
 
-### Request a custom domain
+To enable your custom domain:
 
-After you configure DNS records, submit a
-[support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
-to enable your custom domain.
+1. Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. In your support ticket, specify:
+   - Your custom domain name. For example, `gitlab.company.com`.
+   - If you need custom domains for the container registry and GitLab agent server for Kubernetes, include the domain names you want to use.
+     For example, `registry.company.com` and `kas.company.com`.
 
-In your support ticket, specify:
+### Cloudflare security configuration
 
-- Your custom domain name.
-- Whether you need a custom domain for the bundled [container registry](../../packages/container_registry.md)
-  and [GitLab agent server for Kubernetes](../../clusters/kas.md).
-  For example, `registry.company.com` and `kas.company.com`.
+With this configuration, your domain must be delegated to GitLab using NS records,
+which allows traffic to be routed through Cloudflare Web Application Firewall (WAF).
+Cloudflare manages all DNS settings for your domain and provides enhanced security features.
 
-## Custom certificate authority
+> [!note]
+> This approach requires coordination with your Customer Success Manager.
+> The configuration is applied during your instance's maintenance period.
 
-If your GitLab Dedicated instance connects to external services with certificates from a private
-or internal certificate authority (CA), you must add that CA to your instance. By default, GitLab
-trusts only publicly recognized certificate authorities and rejects connections to services with
-certificates from untrusted sources.
+#### Request a custom domain
 
-For example, you might need to add a certificate authority to connect to:
+To request a custom domain:
 
-- Internal webhook endpoints
-- Private container registries
+1. Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. In your support ticket, specify:
+   - Your custom domain name. For example, `gitlab.company.com`.
+   - If you need custom domains for the container registry and GitLab agent server for Kubernetes, include the domain names you want to use.
+     For example, `registry.company.com` and `kas.company.com`.
+   - Your compliance requirements. For example, FedRAMP.
 
-### Add a custom certificate with Switchboard
+GitLab configures your domain in Cloudflare and provides:
+
+- Two Cloudflare nameservers, like `name1.ns.cloudflare.com` and `name2.ns.cloudflare.com`.
+- DNSSEC parameters (FedRAMP customers only), including:
+  - Key tag: Numeric identifier (provided by GitLab)
+  - Algorithm: Typically 13 (ECDSA P-256 with SHA-256) or 8 (RSA/SHA-256)
+  - Digest type: Typically 2 (SHA-256)
+  - Digest: Cryptographic hash of the public key (provided by GitLab)
+
+#### Configure DNS records
+
+Configure NS records in your DNS provider to delegate your subdomain to Cloudflare.
+
+Prerequisites:
+
+- Access to your domain host's DNS settings.
+- GitLab has provided nameservers and DNSSEC parameters (if applicable).
+
+To configure DNS records:
+
+1. Sign in to your domain host's website.
+1. Go to the DNS settings.
+1. Create NS records using the nameservers provided by GitLab. For example:
+
+   ```plaintext
+   gitlab.company.com.     NS    name1.ns.cloudflare.com.
+   gitlab.company.com.     NS    name2.ns.cloudflare.com.
+   ```
+
+1. Remove any conflicting A, AAAA, or CNAME records for the same subdomain.
+1. FedRAMP customers only. Add a DS record using the values provided by GitLab:
+
+   ```plaintext
+   gitlab.company.com.     DS    [Key Tag] [Algorithm] [Digest Type] [Digest]
+   ```
+
+   For example:
+
+   ```plaintext
+   gitlab.company.com.     DS    12345 13 2 A1B2C3D4E5F6...
+   ```
+
+1. Save your changes. DNS changes can take up to 48 hours to take effect.
+1. Verify your configuration:
+
+   ```shell
+   # Verify nameserver delegation
+   dig +short NS gitlab.company.com
+
+   # Verify DNS resolution
+   dig gitlab.company.com
+
+   # Verify DNSSEC (if configured)
+   dig +dnssec gitlab.company.com
+   ```
+
+1. Notify GitLab through your support ticket that DNS configuration is complete.
+
+GitLab then:
+
+- Verifies DNS delegation.
+- Configures SSL/TLS certificates.
+- Confirms when your custom domain is active.
+
+## Custom certificate authorities for external services
+
+GitLab Dedicated validates certificates when connecting to external services over HTTPS.
+By default, GitLab Dedicated trusts only publicly recognized certificate authorities and rejects
+connections to services with certificates from untrusted certificate authorities.
+
+If your external services use certificates from a private or internal certificate
+authority, you must add that certificate authority to your GitLab Dedicated instance.
+
+You might need custom certificate authorities to:
+
+- Connect to internal webhook endpoints
+- Pull images from private container registries
+- Integrate with on-premises services behind corporate public key infrastructure
+
+### Add a custom certificate
+
+Certificate chain blocks (multiple certificates in a single text block) are not supported.
+If you have multiple certificates in your chain, add each certificate separately.
+
+To add a custom certificate:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Custom certificates**.
 1. Select **+ Add Certificate**.
-1. Paste the certificate into the text box.
+1. Paste a single certificate into the text box. Include the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
 1. Select **Save**.
+1. Repeat steps 4-6 for each additional certificate in your chain.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
 
-### Add a custom certificate with a Support Request
-
-If you are unable to use Switchboard to add a custom certificate, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and attach your custom public certificate files to request this change.
+If you cannot use Switchboard to add a custom certificate,
+open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
+and attach each custom certificate as a separate file.
 
 ## AWS Private Link connectivity
 
@@ -379,11 +489,8 @@ PHZs are commonly used with reverse PrivateLink to create readable domain names 
 
 In some cases, you can also use PHZs to create aliases that resolve to publicly accessible DNS names. For example, you can create an internal DNS name that resolves to a public endpoint when you need internal systems to access a service through its private name.
 
-{{< alert type="note" >}}
-
-Changes to private hosted zones can disrupt services that use these records for up to five minutes.
-
-{{< /alert >}}
+> [!note]
+> Changes to private hosted zones can disrupt services that use these records for up to five minutes.
 
 ### PHZ domain structure
 

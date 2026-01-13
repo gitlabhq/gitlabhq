@@ -31,8 +31,17 @@ module Mutations
 
       argument :actions,
         [Types::CommitActionType],
-        required: true,
+        required: false,
+        default_value: [],
+        replace_null_with_default: true,
         description: 'Array of action hashes to commit as a batch.'
+
+      argument :allow_empty,
+        GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        replace_null_with_default: true,
+        description: 'Indicates whether an empty commit can be created. Defaults to `false`.'
 
       field :commit_pipeline_path,
         GraphQL::Types::String,
@@ -51,8 +60,16 @@ module Mutations
 
       authorize :push_code
 
-      def resolve(project_path:, branch:, message:, actions:, **args)
+      def resolve(project_path:, branch:, message:, **args)
+        actions = args[:actions]
+        allow_empty = args[:allow_empty]
+
         project = authorized_find!(project_path)
+
+        if actions.blank? && !allow_empty
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            'Provide at least one action, or set allowEmpty to true.'
+        end
 
         attributes = {
           commit_message: message,

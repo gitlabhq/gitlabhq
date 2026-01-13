@@ -107,11 +107,8 @@ To view your reference architecture:
 1. At the top of the page, select **Configuration**.
 1. From the tenant overview page, locate the **Reference architecture** field.
 
-{{< alert type="note" >}}
-
-To confirm the number of Gitaly nodes in your tenant architecture, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
-
-{{< /alert >}}
+> [!note]
+> To confirm the number of Gitaly nodes in your tenant architecture, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 ### Example storage calculations
 

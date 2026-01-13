@@ -81,7 +81,7 @@ RSpec.describe WebHooks::HookActions, feature_category: :webhooks do
 
   # rubocop:disable Rails/SaveBang -- methods with ! are not defined
 
-  describe '#create', :with_current_organization do
+  describe '#create' do
     let(:create_service) { instance_double(WebHooks::CreateService) }
 
     before do

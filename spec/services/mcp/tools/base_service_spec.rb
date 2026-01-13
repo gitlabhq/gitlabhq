@@ -76,6 +76,12 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
     end
   end
 
+  describe '.tool_aliases' do
+    it 'returns empty array by default' do
+      expect(described_class.tool_aliases).to eq([])
+    end
+  end
+
   describe '#to_h' do
     it 'returns tool metadata' do
       result = test_service.to_h

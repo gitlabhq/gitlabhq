@@ -21,8 +21,8 @@ title: Connect GKE clusters through cluster certificates (deprecated)
 {{< alert type="warning" >}}
 
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-Use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
-to create a cluster hosted on Google Kubernetes Engine (GKE).
+Use [Infrastructure as Code with OpenTofu and GitLab](../../infrastructure/iac/_index.md).
+You can also implement your own IaC solution using your preferred tool.
 
 {{< /alert >}}
 
@@ -38,7 +38,7 @@ use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 
 All GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
-To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md).
+To create a new GKE cluster from GitLab, use [Infrastructure as Code with OpenTofu and GitLab](../../infrastructure/iac/_index.md).
 
 ## Create a new cluster on GKE through cluster certificates
 

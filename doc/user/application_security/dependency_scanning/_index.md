@@ -50,11 +50,8 @@ table.no-vertical-table-lines tr {
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is proposed for removal in GitLab 20.0. However, the removal timeline is not finalized, and you can continue using Gemnasium as needed. For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
-
-{{< /alert >}}
+> [!warning]
+> The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is proposed for removal in GitLab 20.0. However, the removal timeline is not finalized, and you can continue using Gemnasium as needed. For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
 Dependency scanning identifies security vulnerabilities in your application's dependencies before
 they reach production. This identification protects your application from potential exploits and data breaches that
@@ -75,17 +72,14 @@ ensure coverage for all of these dependency types. To cover as much of your risk
 use all available security scanners. For a comparison of these features, see
 [Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
 
-{{< alert type="warning" >}}
+> [!warning]
+> Dependency scanning does not support runtime installation of compilers and interpreters.
 
-Dependency scanning does not support runtime installation of compilers and interpreters.
-
-{{< /alert >}}
-
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an overview, see [Dependency Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+- <i class="fa-youtube-play" aria-hidden="true"></i>
+  For an overview, see [Dependency scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+- <i class="fa-youtube-play" aria-hidden="true"></i>
   For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+- <i class="fa-youtube-play" aria-hidden="true"></i>
   For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Getting started
@@ -611,11 +605,8 @@ variables:
   HTTPS_PROXY: "https://squid-proxy:3128"
 ```
 
-{{< alert type="note" >}}
-
-Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
-
-{{< /alert >}}
+> [!note]
+> Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
 
 Alternatively it may be used in specific jobs, like dependency scanning:
 

@@ -34,7 +34,8 @@ RSpec.describe 'Projects > Files > User previews file while editing in single fi
   end
 
   context 'when user toggles preview' do
-    it 'renders math equations correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562351' do
+    it 'renders math equations correctly',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6039' do
       content = <<~MATH
       This math is inline $`a^2+b^2=c^2`$.
 

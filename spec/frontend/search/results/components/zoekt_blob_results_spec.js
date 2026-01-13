@@ -6,6 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as scrollUtils from '~/lib/utils/scroll_utils';
+import * as panels from '~/lib/utils/panels';
 
 import { MOCK_QUERY, mockGetBlobSearchQuery } from '../../mock_data';
 
@@ -101,7 +102,7 @@ describe('ZoektBlobResults', () => {
         }),
         removeEventListener: jest.fn(),
       };
-      jest.spyOn(scrollUtils, 'getScrollingElement').mockReturnValue(mockScrollingElement);
+      jest.spyOn(panels, 'getScrollingElement').mockReturnValue(mockScrollingElement);
       scrollToSpy = jest.spyOn(scrollUtils, 'scrollTo').mockImplementation(() => {});
     });
 

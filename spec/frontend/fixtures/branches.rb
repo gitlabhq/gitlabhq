@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Branches (JavaScript fixtures)' do
+RSpec.describe 'Branches (JavaScript fixtures)', feature_category: :source_code_management do
   include JavaScriptFixturesHelpers
 
   let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }

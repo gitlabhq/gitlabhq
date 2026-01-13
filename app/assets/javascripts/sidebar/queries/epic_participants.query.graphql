@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query epicParticipants($fullPath: ID!, $iid: ID) {
-  workspace: group(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     issuable: epic(iid: $iid) {
       id

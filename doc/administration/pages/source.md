@@ -395,11 +395,8 @@ world. Custom domains and TLS are supported.
 
 ## NGINX caveats
 
-{{< alert type="note" >}}
-
-The following information applies only to self-compiled installations.
-
-{{< /alert >}}
+> [!note]
+> The following information applies only to self-compiled installations.
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must
 not remove the backslashes.

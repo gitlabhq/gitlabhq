@@ -178,6 +178,11 @@ export const LINKED_ITEM_TYPE_VALUE = {
   BLOCKS: 'BLOCKS',
 };
 
+export const SAVED_VIEW_VISIBILITY = {
+  PRIVATE: 'private',
+  SHARED: 'shared',
+};
+
 export const LINK_ITEM_FORM_HEADER_LABEL = {
   [WORK_ITEM_TYPE_NAME_OBJECTIVE]: s__('WorkItem|The current objective'),
   [WORK_ITEM_TYPE_NAME_KEY_RESULT]: s__('WorkItem|The current key result'),
@@ -234,11 +239,13 @@ export const ROUTES = {
 export const WORK_ITEM_TYPE_ROUTE_WORK_ITEM = 'work_items';
 export const WORK_ITEM_TYPE_ROUTE_ISSUE = 'issues';
 export const WORK_ITEM_TYPE_ROUTE_EPIC = 'epics';
+export const WORK_ITEM_TYPE_ROUTE_SERVICE_DESK = 'service_desk';
 
 export const WORK_ITEM_BASE_ROUTE_MAP = {
   [WORK_ITEM_TYPE_ROUTE_WORK_ITEM]: null,
   [WORK_ITEM_TYPE_ROUTE_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
   [WORK_ITEM_TYPE_ROUTE_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
+  [WORK_ITEM_TYPE_ROUTE_SERVICE_DESK]: WORK_ITEM_TYPE_ENUM_TICKET,
 };
 
 export const WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemLinks.showLabels';
@@ -246,13 +253,6 @@ export const WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY = 'workItemTree.showLabels
 export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed';
 export const WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemRelationships.showLabels';
 export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelationships.showClosed';
-
-export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
-  'injection:prevent-router-navigation',
-);
-
-export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE = 'source';
-export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH = 'branch';
 
 export const BASE_ALLOWED_CREATE_TYPES = [
   WORK_ITEM_TYPE_NAME_INCIDENT,
@@ -468,3 +468,10 @@ export const WORK_ITEMS_NO_PARENT_LIST = [
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
 ];
+
+export const WORK_ITEM_CREATE_SOURCES = {
+  GLOBAL_NAV: 'global_nav',
+  CHILD_ITEMS_WIDGET: 'child_items_widget',
+  WORK_ITEM_LIST: 'work_item_list',
+  VULNERABILITY: 'vulnerability',
+};

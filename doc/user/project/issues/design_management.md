@@ -34,7 +34,7 @@ engineers can collaborate on designs with a single source of truth.
 You can share mockups of designs with your team, or visual regressions can be
 viewed and addressed.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For a video overview, see [Design Management](https://www.youtube.com/watch?v=CCMtCqdK_aM).
 <!-- Video published on 2019-07-11 -->
 

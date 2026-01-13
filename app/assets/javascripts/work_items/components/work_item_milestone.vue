@@ -131,7 +131,7 @@ export default {
         return !this.shouldFetch;
       },
       update(data) {
-        return data?.workspace?.attributes?.nodes || [];
+        return data?.namespace?.attributes?.nodes || [];
       },
       error() {
         this.$emit('error', this.i18n.milestoneFetchError);

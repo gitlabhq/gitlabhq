@@ -22,11 +22,8 @@ title: Set up GitLab Duo with Amazon Q
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
-
-{{< /alert >}}
+> [!note]
+> GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 To get a subscription for GitLab Duo with Amazon Q, contact your Account Executive.
 
@@ -102,11 +99,8 @@ Now, create an AWS identity provider:
 Next, you must create an IAM role that trusts the IAM identity provider and can
 access Amazon Q.
 
-{{< alert type="note" >}}
-
-After you set up the IAM role, you cannot change the AWS account that's associated with the role.
-
-{{< /alert >}}
+> [!note]
+> After you set up the IAM role, you cannot change the AWS account that's associated with the role.
 
 1. In the AWS IAM console, select **Access Management** > **Roles** > **Create role**.
 1. Select **Web identity**.

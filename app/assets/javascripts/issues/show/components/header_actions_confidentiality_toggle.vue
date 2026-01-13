@@ -35,7 +35,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.confidential || false;
+        return data.namespace?.issuable?.confidential || false;
       },
       skip() {
         return !this.iid;

@@ -3,7 +3,7 @@
 module API
   module Entities
     class NpmPackage < Grape::Entity
-      expose :name, documentation: { type: 'string', example: 'my_package' }
+      expose :name, documentation: { type: 'String', example: 'my_package' }
       expose :versions,
         documentation: {
           type: 'object',

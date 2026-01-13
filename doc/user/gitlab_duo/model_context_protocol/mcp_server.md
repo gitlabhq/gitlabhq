@@ -23,11 +23,8 @@ title: GitLab MCP server
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-{{< /alert >}}
+> [!warning]
+> To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
 
 With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
 you can securely connect AI tools and applications to your GitLab instance.

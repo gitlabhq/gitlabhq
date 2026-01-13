@@ -117,7 +117,7 @@ module Organizations
       def new_organization_bots
         # rubocop:disable GitlabSecurity/PublicSend -- Safe usage
         old_organization_bots.keys.index_with do |user_type|
-          ::Users::Internal.for_organization(new_organization).public_send(user_type.to_sym)
+          ::Users::Internal.in_organization(new_organization).public_send(user_type.to_sym)
         end
         # rubocop:enable GitlabSecurity/PublicSend
       end

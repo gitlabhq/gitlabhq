@@ -3,21 +3,21 @@
 module API
   module Entities
     class ProjectHook < Hook
-      expose :project_id, documentation: { type: 'string', example: 1 }
-      expose :issues_events, documentation: { type: 'boolean' }
-      expose :confidential_issues_events, documentation: { type: 'boolean' }
-      expose :note_events, documentation: { type: 'boolean' }
-      expose :confidential_note_events, documentation: { type: 'boolean' }
-      expose :pipeline_events, documentation: { type: 'boolean' }
-      expose :wiki_page_events, documentation: { type: 'boolean' }
-      expose :deployment_events, documentation: { type: 'boolean' }
-      expose :feature_flag_events, documentation: { type: 'boolean' }
-      expose :job_events, documentation: { type: 'boolean' }
-      expose :releases_events, documentation: { type: 'boolean' }
-      expose :milestone_events, documentation: { type: 'boolean' }
-      expose :emoji_events, documentation: { type: 'boolean' }
-      expose :resource_access_token_events, documentation: { type: 'boolean' }
-      expose :vulnerability_events, documentation: { type: 'boolean' }
+      expose :project_id, documentation: { type: 'String', example: 1 }
+      expose :issues_events, documentation: { type: 'Boolean' }
+      expose :confidential_issues_events, documentation: { type: 'Boolean' }
+      expose :note_events, documentation: { type: 'Boolean' }
+      expose :confidential_note_events, documentation: { type: 'Boolean' }
+      expose :pipeline_events, documentation: { type: 'Boolean' }
+      expose :wiki_page_events, documentation: { type: 'Boolean' }
+      expose :deployment_events, documentation: { type: 'Boolean' }
+      expose :feature_flag_events, documentation: { type: 'Boolean' }
+      expose :job_events, documentation: { type: 'Boolean' }
+      expose :releases_events, documentation: { type: 'Boolean' }
+      expose :milestone_events, documentation: { type: 'Boolean' }
+      expose :emoji_events, documentation: { type: 'Boolean' }
+      expose :resource_access_token_events, documentation: { type: 'Boolean' }
+      expose :vulnerability_events, documentation: { type: 'Boolean' }
     end
   end
 end

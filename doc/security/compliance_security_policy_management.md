@@ -127,11 +127,8 @@ Group administrators and owners can:
 - Create policies and frameworks for specific groups or projects, in addition to centrally-managed policies and frameworks.
 - Understand policy sources with clear indicators that show whether policies come from your team or central administration.
 
-{{< alert type="note" >}}
-
-The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
-
-{{< /alert >}}
+> [!note]
+> The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
 
 ### Project administrators and owners
 
@@ -142,11 +139,8 @@ Project administrators and owners can:
 - Create project-specific policies in addition to centrally-managed ones.
 - Understand policy sources with clear indicators that show whether policies come from your project, group, or central administration.
 
-{{< alert type="note" >}}
-
-The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
-
-{{< /alert >}}
+> [!note]
+> The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
 
 ### Developers
 
@@ -217,7 +211,7 @@ class CspDesignation
     end
 
     puts "Setting #{@csp_group.full_path} as CSP..."
-    Security::PolicySetting.for_organization(Organizations::Organization.default_organization).update! csp_namespace: @csp_group
+    Security::PolicySetting.in_organization(Organizations::Organization.default_organization).update! csp_namespace: @csp_group
 
     if config_ids.present?
       puts "Unassigning the policy project #{@spp.id} from the groups in the background to remove duplicate policies..."
@@ -234,7 +228,7 @@ class CspDesignation
     check_spp!
 
     puts "Unassigning #{@csp_group.full_path} as CSP..."
-    Security::PolicySetting.for_organization(Organizations::Organization.default_organization).update! csp_namespace: nil
+    Security::PolicySetting.in_organization(Organizations::Organization.default_organization).update! csp_namespace: nil
 
     if File.exist?(@backup_filename)
       puts "Reading group IDs from #{@backup_filename} to restore the policy project links..."

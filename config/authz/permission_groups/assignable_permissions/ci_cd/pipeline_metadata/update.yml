@@ -1,7 +1,6 @@
 ---
 name: update_pipeline_metadata
 description: Grants the ability to update pipeline metadata
-feature_category: continuous_integration
 permissions:
   - update_pipeline_metadata
 boundaries:

@@ -15,7 +15,7 @@ description: Store your container registry's data in a database to manage multip
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) as a [beta feature](../../policy/development_stages_support.md) in GitLab 16.4.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 {{< /history >}}
@@ -255,42 +255,103 @@ marked for deletion, objects successfully deleted, run intervals, and durations.
 See [enable the registry debug server](container_registry_troubleshooting.md#enable-the-registry-debug-server)
 for how to enable Prometheus.
 
-### Queue monitoring
+### Monitor task queues
 
-Check the size of the queues by counting the rows in the `gc_blob_review_queue` and
-`gc_manifest_review_queue` tables. Large queues are expected initially, with the number of rows
-proportional to the number of imported blobs and manifests. The queues should reduce over time,
-indicating that garbage collection is successfully reviewing jobs.
+Monitor the health and status of garbage collection task queues for blobs and manifests.
+
+#### Check the health of online garbage collection
+
+The following queries return tasks that were retried more than 10 times,
+or were eligible for review for longer than 24 hours. The online garbage collector should
+pick up an item for review within 24 hours with few failed attempts. If any rows are returned,
+investigate the health of your online garbage collector.
+
+For manifests:
 
 ```sql
-SELECT COUNT(*) FROM gc_blob_review_queue;
-SELECT COUNT(*) FROM gc_manifest_review_queue;
+SELECT
+  repository_id,
+  manifest_id,
+  ROUND(
+    EXTRACT(
+      EPOCH
+      FROM
+        AGE(NOW(), review_after)
+    ) / 3600
+  ) AS hours_eligible_for_review,
+  review_count as failed_review_attempts,
+  event
+FROM
+  gc_manifest_review_queue
+WHERE
+  review_after < NOW() - INTERVAL '24 hours'
+  OR review_count > 10
+LIMIT
+  20;
 ```
 
-Interpreting Queue Sizes:
+For blobs:
 
-- Shrinking queues: Indicate garbage collection is successfully processing tasks.
-- Near-Zero `gc_manifest_review_queue`: Most images flagged for potential deletion
-  have been reviewed and classified either as still in use or removed.
-- Overdue Tasks: Check for overdue GC tasks by running the following queries:
+```sql
+SELECT
+  substring(encode(digest, 'hex'), 3) AS digest,
+  ROUND(
+    EXTRACT(
+      EPOCH
+      FROM
+        AGE(NOW(), review_after)
+    ) / 3600
+  ) AS hours_eligible_for_review,
+  review_count as failed_review_attempts,
+  event
+FROM
+  gc_blob_review_queue
+WHERE
+  review_after < NOW() - INTERVAL '24 hours'
+  OR review_count > 10
+LIMIT
+  20;
+```
+
+If these queries return any rows, check the registry logs for messages related
+to garbage collection. Filter for entries by `component="registry.gc.*` and
+investigate any error messages.
+
+The unfiltered size of the `gc_manifest_review_queue` and `gc_blob_review_queue`
+are not good indicators of the health of the online garbage collector.
+These queues never fully clear for an active registry.
+
+Large amounts of tasks eligible for review are also not necessarily a cause for concern.
+The garbage collector might be working through items caused by a spike in activity.
+
+Similarly, the `created_at` date of these tasks alone is not good health indicator.
+When an event adds the same blob or manifest to the queue, the `review_after`
+of the existing task is updated, which postpones the review. No duplicate task is created. 
+
+This can occur any number of times, so
+tasks created months ago are not a cause for concern.
+
+#### Informational queries related to online garbage collection
+
+Check the number of tasks eligible for review by running the following queries:
 
   ```sql
   SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
   SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
   ```
 
-  A high number of overdue tasks indicates a problem. Large queue sizes are not concerning
-  as long as they are decreasing over time and the number of overdue tasks
-  is close to zero. A high number of overdue tasks should prompt an urgent inspection of logs.
+Generally, these queries should return relatively low counts, often nearing zero.
+However, these queries might return larger values if:
 
-Check GC logs for messages indicating that blobs are still in use, for example `msg=the blob is not dangling`,
-which implies they will not be deleted.
+- An import was started 24 to 48 hours ago
+- Large amounts of tags were deleted or a container repository was removed
+- Online garbage collection was disabled for an extended period
 
-### Adjust blobs interval
+### Adjust the garbage collector worker interval
 
-If the size of your `gc_blob_review_queue` is high, and you want to increase the frequency between
-the garbage collection blob or manifest worker runs, update your interval configuration
-from the default (`5s`) to `1s`:
+If the number of tasks eligible for review remains high, and you want to increase the frequency
+between the garbage collection blob or manifest worker runs, update your
+interval configuration from the default (`5s`) to `1s`:
 
 ```ruby
 registry['gc'] = {
@@ -423,12 +484,6 @@ flowchart TB
     P_Reg -- "Notifications" --> P_Rails
     P_Rails -- "Events" --> S_Rails
     S_Rails --> S_Reg
-
-    classDef primary fill:#d1f7c4
-    classDef secondary fill:#b8d4ff
-
-    class P_Rails,P_Reg,P_MainDB,P_RegDB,P_Obj primary
-    class S_Rails,S_Reg,S_MainDB,S_RegDB,S_Obj secondary
 ```
 
 Use separate database instances on each site because:
@@ -464,233 +519,4 @@ To revert to object storage metadata:
 
 ## Troubleshooting
 
-### Error: `there are pending database migrations`
-
-If the registry has been updated and there are pending schema migrations,
-the registry fails to start with the following error message:
-
-```shell
-FATA[0000] configuring application: there are pending database migrations, use the 'registry database migrate' CLI command to check and apply them
-```
-
-To fix this issue, follow the steps to [apply database migrations](#apply-database-migrations).
-
-Prior to version 18.3, you must manually apply database migrations on each version upgrade.
-
-### Error: `offline garbage collection is no longer possible`
-
-If the registry uses the metadata database and you try to run
-[offline garbage collection](container_registry.md#container-registry-garbage-collection),
-the registry fails with the following error message:
-
-```shell
-ERRO[0000] this filesystem is managed by the metadata database, and offline garbage collection is no longer possible, if you are not using the database anymore, remove the file at the lock_path in this log message lock_path=/docker/registry/lockfiles/database-in-use
-```
-
-You must either:
-
-- Stop using offline garbage collection.
-- If you no longer use the metadata database, delete the indicated lock file at the `lock_path` shown in the error message.
-  For example, remove the `/docker/registry/lockfiles/database-in-use` file.
-
-### Error: `cannot execute <STATEMENT> in a read-only transaction`
-
-The registry could fail to [apply database migrations](#apply-database-migrations)
-with the following error message:
-
-```shell
-err="ERROR: cannot execute CREATE TABLE in a read-only transaction (SQLSTATE 25006)"
-```
-
-Also, the registry could fail with the following error message if you try to run
-[online garbage collection](container_registry.md#performing-garbage-collection-without-downtime):
-
-```shell
-error="processing task: fetching next GC blob task: scanning GC blob task: ERROR: cannot execute SELECT FOR UPDATE in a read-only transaction (SQLSTATE 25006)"
-```
-
-You must verify that read-only transactions are disabled by checking the values of
-`default_transaction_read_only` and `transaction_read_only` in the PostgreSQL console.
-For example:
-
-```sql
-# SHOW default_transaction_read_only;
- default_transaction_read_only
- -------------------------------
- on
-(1 row)
-
-# SHOW transaction_read_only;
- transaction_read_only
- -----------------------
- on
-(1 row)
-```
-
-If either of these values is set to `on`, you must disable it:
-
-1. Edit your `postgresql.conf` and set the following value:
-
-   ```shell
-   default_transaction_read_only=off
-   ```
-
-1. Restart your Postgres server to apply these settings.
-1. Try to [apply database migrations](#apply-database-migrations) again, if applicable.
-1. Restart the registry `sudo gitlab-ctl restart registry`.
-
-### Error: `cannot import all repositories while the tags table has entries`
-
-If you try to [import existing registry metadata](#enable-the-database-for-existing-registries) and encounter the following error:
-
-```shell
-ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
-see https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html#troubleshooting
-common_blobs=true dry_run=false error="tags table is not empty"
-```
-
-This error happens when there are existing entries in the `tags` table of the registry database,
-which can happen if you:
-
-- Attempted the [one step import](container_registry_metadata_database_one_step_import.md) and encountered errors.
-- Attempted the [three-step import](container_registry_metadata_database_three_step_import.md) process and encountered errors.
-- Stopped the import process on purpose.
-- Tried to run the import again after any of the previous actions.
-- Ran the import against the wrong configuration file.
-
-To resolve this issue, you must delete the existing entries in the tags table.
-You must truncate the table manually on your PostgreSQL instance:
-
-1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is disabled:
-
-   ```ruby
-   registry['database'] = {
-     'enabled' => false,
-   }
-   ```
-
-1. Connect to your registry database using a PostgreSQL client.
-1. Truncate the `tags` table to remove all existing entries:
-
-   ```sql
-   TRUNCATE TABLE tags RESTART IDENTITY CASCADE;
-   ```
-
-1. After truncating the `tags` table, try running the import process again.
-
-### Error: `database-in-use lockfile exists`
-
-If you try to [import existing registry metadata](#enable-the-database-for-existing-registries) and encounter the following error:
-
-```shell
-|  [0s] step two: import tags failed to import metadata: importing all repositories: 1 error occurred:
-    * could not restore lockfiles: database-in-use lockfile exists
-```
-
-This error means that you have previously imported the registry and completed importing all
-repository data (step two) and the `database-in-use` exists in the registry file system.
-You should not run the importer again if you encounter this issue.
-
-If you must proceed, you must delete the `database-in-use` lock file manually from the file system.
-The file is located at `/path/to/rootdirectory/docker/registry/lockfiles/database-in-use`.
-
-### Error: `pre importing all repositories: AccessDenied:`
-
-You might receive an `AccessDenied` error when [importing existing registries](#enable-the-database-for-existing-registries)
-and using AWS S3 as your storage backend:
-
-```shell
-/opt/gitlab/embedded/bin/registry database import --step-one /var/opt/gitlab/registry/config.yml
-  [0s] step one: import manifests
-  [0s] step one: import manifests failed to import metadata: pre importing all repositories: AccessDenied: Access Denied
-```
-
-Ensure that the user executing the command has the
-correct [permission scopes](https://docker-docs.uclv.cu/registry/storage-drivers/s3/#s3-permission-scopes).
-
-### Registry fails to start due to metadata management issues
-
-The registry could fail to start with of the following errors:
-
-#### Error: `registry filesystem metadata in use, please import data before enabling the database`
-
-This error happens when the database is enabled in your configuration `registry['database'] = { 'enabled' => true}`
-but you have not [imported existing registry metadata](#enable-the-database-for-existing-registries) to the metadata database yet.
-
-#### Error: `registry metadata database in use, please enable the database`
-
-This error happens when you have completed the [import of existing registry metadata](#enable-the-database-for-existing-registries) to the metadata database,
-but you have not enabled the database in your configuration.
-
-#### Problems checking or creating the lock files
-
-If you encounter any of the following errors:
-
-- `could not check if filesystem metadata is locked`
-- `could not check if database metadata is locked`
-- `failed to mark filesystem for database only usage`
-- `failed to mark filesystem only usage`
-
-The registry cannot access the configured `rootdirectory`. This error is unlikely to happen if you
-had a working registry previously. Review the error logs for any misconfiguration issues.
-
-### Storage usage not decreasing after deleting tags
-
-By default, the online garbage collector will only start deleting unreferenced layers 48 hours from the time
-that all tags they were associated with were deleted. This delay ensures that the garbage collector does
-not interfere with long-running or interrupted image pushes, as layers are pushed to the registry before
-they are associated with an image and tag.
-
-### Error: `permission denied for schema public (SQLSTATE 42501)`
-
-During a registry migration or GitLab upgrade, you might get one of the following errors:
-
-- `ERROR: permission denied for schema public (SQLSTATE 42501)`
-- `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)`
-
-These types of errors are due to a change in PostgreSQL 15+, which removes the default CREATE privileges on the public schema for security reasons.
-By default, only database owners can create objects in the public schema in PostgreSQL 15+.
-
-To resolve the error, run the following command to give a registry user owner privileges of the registry database:
-
-```sql
-ALTER DATABASE <registry_database_name> OWNER TO <registry_user>;
-```
-
-This gives the registry user the necessary permissions to create tables and run migrations successfully.
-
-### Error: `database-in-use and filesystem-in-use lockfiles present`
-
-This error occurs when both the `filesystem-in-use` and `database-in-use`
-lockfiles are present on the configured registry storage and indicates
-an ambiguous registry state.
-
-To resolve this error, you must determine if your registry is meant to use the
-metadata database or legacy metadata storage.
-
-Your registry is likely meant to use the metadata database if:
-
-- You have previously performed one of the [import processes](#how-to-choose-the-right-import-method).
-- Your registry configuration indicates the registry is enabled.
-
-Check the file at `/etc/gitlab/gitlab.rb` to see if the registry is enabled:
-
-```ruby
-registry['database'] = {
-  'enabled' => true,
-}
-```
-
-After you have confirmed that registry is meant to use the database, delete the
-`filesystem-in-use` lockfile present in the configured registry storage
-located at `/docker/registry/lockfiles/filesystem-in-use`.
-
-Alternatively, if the above scenarios are not true, and your registry is meant
-to use legacy metadata storage, delete the `database-in-use` lockfile at
-`/docker/registry/lockfiles/database-in-use`.
-
-Finally, you can disable the lockfile checks by setting the environment variable
-`REGISTRY_FF_ENFORCE_LOCKFILES` to `false`. While this disables the checks, this
-error is meant to ensure the integrity of your registry data and it is preferable
-to confirm which metadata storage you are using. `REGISTRY_FF_ENFORCE_LOCKFILES`
-is a feature flag scheduled for removal in [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439).
+To review errors and troubleshooting solutions and workarounds, see [Troubleshooting the container registry metadata database](container_registry_metadata_database_troubleshooting.md).

@@ -67,3 +67,67 @@ RSpec.shared_context 'with approval policy preventing force pushing' do
     )
   end
 end
+
+RSpec.shared_context 'with approval security policy preventing force pushing' do
+  let(:approval_policy_preventing_force_pushing_policy_index) { 0 }
+
+  let!(:approval_policy_preventing_force_pushing) do
+    create(:security_policy, :prevent_pushing_and_force_pushing,
+      security_orchestration_policy_configuration: policy_configuration,
+      policy_index: approval_policy_preventing_force_pushing_policy_index)
+  end
+
+  let!(:approval_policy_rule_preventing_force_pushing) do
+    create(:approval_policy_rule,
+      security_policy: approval_policy_preventing_force_pushing,
+      content: {
+        type: 'scan_finding',
+        branches: [branch_name],
+        scanners: %w[container_scanning],
+        vulnerabilities_allowed: 0,
+        severity_levels: %w[critical],
+        vulnerability_states: %w[detected]
+      })
+  end
+
+  before do
+    if protected_branch.project_level?
+      create(:security_policy_project_link, project: protected_branch.project,
+        security_policy: approval_policy_preventing_force_pushing)
+    end
+
+    stub_licensed_features(security_orchestration_policies: true)
+  end
+end
+
+RSpec.shared_context 'with approval security policy blocking protected branches' do
+  let(:approval_policy_blocking_protected_branches_policy_index) { 0 }
+
+  let!(:approval_policy_blocking_protected_branches) do
+    create(:security_policy, :block_branch_modification,
+      security_orchestration_policy_configuration: policy_configuration,
+      policy_index: approval_policy_blocking_protected_branches_policy_index)
+  end
+
+  let!(:approval_policy_rule_blocking_protected_branches) do
+    create(:approval_policy_rule,
+      security_policy: approval_policy_blocking_protected_branches,
+      content: {
+        type: 'scan_finding',
+        branches: [branch_name],
+        scanners: %w[container_scanning],
+        vulnerabilities_allowed: 0,
+        severity_levels: %w[critical],
+        vulnerability_states: %w[detected]
+      })
+  end
+
+  before do
+    if protected_branch.project_level?
+      create(:security_policy_project_link, project: protected_branch.project,
+        security_policy: approval_policy_blocking_protected_branches)
+    end
+
+    stub_licensed_features(security_orchestration_policies: true)
+  end
+end

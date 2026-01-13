@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replicat
       let(:file_path) { artifact.file.path }
 
       it 'returns a relation that includes the artifact',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/545624' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9380' do
         query = cleaner.send(:query_for_row_tracking_the_file, file_path)
 
         expect(query.exists?).to be true

@@ -25,6 +25,10 @@ module Authz
       File.basename(File.dirname(source_file))
     end
 
+    def resource_name
+      definition[:name] || name.titlecase
+    end
+
     def feature_category
       definition[:feature_category]
     end

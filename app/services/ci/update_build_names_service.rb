@@ -25,7 +25,14 @@ module Ci
       builds_upsert_data =
         batch
           .pluck(:id, :partition_id, :name, :project_id)
-          .map { |values| Hash[keys.zip(values)] }
+          .filter_map do |values|
+            data = Hash[keys.zip(values)]
+
+            next unless data[:name]
+
+            data[:name] = data[:name].truncate(Ci::BuildName::MAX_JOB_NAME_LENGTH)
+            data
+          end
 
       return unless builds_upsert_data.any?
 

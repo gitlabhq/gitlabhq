@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:namespace) { create(:namespace, organization: organization) }
-  let_it_be(:other_namespace) { create(:namespace, organization: organization) }
+  let_it_be(:namespace) { create(:group, organization: organization) }
+  let_it_be(:namespace_boundary) { ::Authz::Boundary.for(namespace) }
+  let_it_be(:other_namespace) { create(:group, organization: organization) }
+  let_it_be(:other_namespace_boundary) { ::Authz::Boundary.for(other_namespace) }
 
   let(:personal_access_token) { create(:personal_access_token, organization: organization) }
   let(:service) { described_class.new(personal_access_token) }
@@ -14,7 +16,7 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
     subject(:result) { service.add_granular_scopes(scopes_to_add) }
 
     context 'with a single granular scope' do
-      let(:granular_scope) { build(:granular_scope, namespace: namespace) }
+      let(:granular_scope) { build(:granular_scope, boundary: namespace_boundary) }
       let(:scopes_to_add) { granular_scope }
 
       it 'adds the granular scope and sets organization_id on both scope and join record' do
@@ -29,11 +31,11 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       end
 
       context 'when adding a duplicate namespace scope' do
-        let(:duplicate_scope) { build(:granular_scope, namespace: namespace) }
+        let(:duplicate_scope) { build(:granular_scope, boundary: namespace_boundary) }
         let(:scopes_to_add) { duplicate_scope }
 
         before do
-          service.add_granular_scopes(build(:granular_scope, namespace: namespace))
+          service.add_granular_scopes(build(:granular_scope, boundary: namespace_boundary))
         end
 
         it 'returns an error and does not add the duplicate scope' do
@@ -44,8 +46,9 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       end
 
       context 'when adding duplicate instance-level scopes' do
-        let(:instance_scope) { build(:granular_scope, :instance) }
-        let(:duplicate_instance_scope) { build(:granular_scope, :instance) }
+        let(:instance_boundary) { ::Authz::Boundary.for(:instance) }
+        let(:instance_scope) { build(:granular_scope, boundary: instance_boundary) }
+        let(:duplicate_instance_scope) { build(:granular_scope, boundary: instance_boundary) }
         let(:scopes_to_add) { duplicate_instance_scope }
 
         before do
@@ -61,8 +64,8 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
     end
 
     context 'with multiple granular scopes' do
-      let(:first_scope) { build(:granular_scope, namespace: namespace) }
-      let(:second_scope) { build(:granular_scope, namespace: other_namespace) }
+      let(:first_scope) { build(:granular_scope, boundary: namespace_boundary) }
+      let(:second_scope) { build(:granular_scope, boundary: other_namespace_boundary) }
       let(:scopes_to_add) { [first_scope, second_scope] }
 
       it 'adds all granular scopes successfully' do
@@ -76,12 +79,12 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       end
 
       context 'when one scope fails validation' do
-        let(:duplicate_namespace_scope) { build(:granular_scope, namespace: namespace) }
-        let(:valid_scope) { build(:granular_scope, namespace: other_namespace) }
+        let(:duplicate_namespace_scope) { build(:granular_scope, boundary: namespace_boundary) }
+        let(:valid_scope) { build(:granular_scope, boundary: other_namespace_boundary) }
         let(:scopes_to_add) { [duplicate_namespace_scope, valid_scope] }
 
         before do
-          service.add_granular_scopes(build(:granular_scope, namespace: namespace))
+          service.add_granular_scopes(build(:granular_scope, boundary: namespace_boundary))
         end
 
         it 'fails fast and does not add any scopes' do
@@ -97,8 +100,8 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
     context 'with unpersisted personal access token' do
       let(:unpersisted_token) { build(:personal_access_token) }
       let(:service) { described_class.new(unpersisted_token) }
-      let(:first_scope) { build(:granular_scope, namespace: namespace) }
-      let(:duplicate_scope) { build(:granular_scope, namespace: namespace) }
+      let(:first_scope) { build(:granular_scope, boundary: namespace_boundary) }
+      let(:duplicate_scope) { build(:granular_scope, boundary: namespace_boundary) }
 
       it 'validates against in-memory granular scopes' do
         result = service.add_granular_scopes(first_scope)
@@ -112,7 +115,7 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
 
     context 'with loaded granular scopes association' do
       before do
-        existing_scope = build(:granular_scope, namespace: namespace)
+        existing_scope = build(:granular_scope, boundary: namespace_boundary)
         service.add_granular_scopes(existing_scope)
         personal_access_token.granular_scopes.to_a
       end
@@ -120,7 +123,7 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       it 'validates against loaded association when adding duplicate namespace' do
         expect(personal_access_token.granular_scopes.loaded?).to be(true)
 
-        duplicate_scope = build(:granular_scope, namespace: namespace)
+        duplicate_scope = build(:granular_scope, boundary: namespace_boundary)
         result = service.add_granular_scopes(duplicate_scope)
 
         expect(result).to be_error
@@ -130,7 +133,7 @@ RSpec.describe Authz::GranularScopeService, feature_category: :permissions do
       it 'validates against loaded association when adding to different namespace' do
         expect(personal_access_token.granular_scopes.loaded?).to be(true)
 
-        different_namespace_scope = build(:granular_scope, namespace: other_namespace)
+        different_namespace_scope = build(:granular_scope, boundary: other_namespace_boundary)
         result = service.add_granular_scopes(different_namespace_scope)
 
         expect(result).to be_success

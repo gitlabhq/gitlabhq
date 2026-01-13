@@ -130,7 +130,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
     expect(mock.history.post).toHaveLength(1);
     expect(mock.history.post[0].url).toBe(
-      `${window.location.origin}/api/markdown?render_quick_actions=true`,
+      `${window.location.origin}/api/markdown?render_quick_actions=true&no_header_anchors=true`,
     );
   });
 
@@ -141,7 +141,18 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
     expect(mock.history.post).toHaveLength(1);
     expect(mock.history.post[0].url).toBe(
-      `${window.location.origin}/api/markdown?render_quick_actions=false`,
+      `${window.location.origin}/api/markdown?render_quick_actions=false&no_header_anchors=true`,
+    );
+  });
+
+  it('passes no_header_anchors=false to renderMarkdownPath if table of contents are supported', async () => {
+    buildWrapper({ propsData: { supportsTableOfContents: true } });
+
+    await enableContentEditor();
+
+    expect(mock.history.post).toHaveLength(1);
+    expect(mock.history.post[0].url).toBe(
+      `${window.location.origin}/api/markdown?render_quick_actions=false&no_header_anchors=false`,
     );
   });
 

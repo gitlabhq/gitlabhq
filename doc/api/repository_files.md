@@ -272,11 +272,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
 ```
 
-{{< alert type="note" >}}
-
-Like [Get file from repository](repository_files.md#get-file-from-repository), you can use `HEAD` to get just file metadata.
-
-{{< /alert >}}
+> [!note]
+> Like [Get file from repository](repository_files.md#get-file-from-repository), you can use `HEAD` to get just file metadata.
 
 ## Create new file in repository
 
@@ -287,17 +284,14 @@ Like [Get file from repository](repository_files.md#get-file-from-repository), y
 {{< /history >}}
 
 Allows you to create a single file. For creating multiple files with a single request,
-see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 POST /projects/:id/repository/files/:file_path
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 Supported attributes:
 
@@ -349,17 +343,14 @@ Example response:
 {{< /history >}}
 
 Allows you to update a single file. For updating multiple files with a single request,
-refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+refer to the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 PUT /projects/:id/repository/files/:file_path
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [request size and rate limits](../administration/instance_limits.md#commits-and-files-api-limits). Requests larger than a default 300 MB limit are rejected. Requests greater than 20 MB are rate limited to 3 requests every 30 seconds.
 
 Supported attributes:
 
@@ -415,7 +406,7 @@ error message. Possible causes for a failed commit include:
 ## Delete existing file in repository
 
 Deletes a single file. To delete multiple files with a single request,
-see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+see the [commits API](commits.md#create-a-commit).
 
 ```plaintext
 DELETE /projects/:id/repository/files/:file_path

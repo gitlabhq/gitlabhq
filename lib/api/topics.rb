@@ -23,6 +23,7 @@ module API
     desc 'Get topics' do
       detail 'This feature was introduced in GitLab 14.5.'
       success Entities::Projects::Topic
+      tags ['project_topics']
     end
     params do
       optional :search, type: String,
@@ -47,6 +48,7 @@ module API
     desc 'Get topic' do
       detail 'This feature was introduced in GitLab 14.5.'
       success Entities::Projects::Topic
+      tags ['project_topics']
     end
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
@@ -60,6 +62,7 @@ module API
     desc 'Create a topic' do
       detail 'This feature was introduced in GitLab 14.5.'
       success Entities::Projects::Topic
+      tags ['project_topics']
     end
     params do
       requires :name, type: String, desc: 'Slug (name)'
@@ -86,6 +89,7 @@ module API
     desc 'Update a topic' do
       detail 'This feature was introduced in GitLab 14.5.'
       success Entities::Projects::Topic
+      tags ['project_topics']
     end
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
@@ -111,6 +115,7 @@ module API
 
     desc 'Delete a topic' do
       detail 'This feature was introduced in GitLab 14.9.'
+      tags ['project_topics']
     end
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
@@ -126,6 +131,7 @@ module API
     desc 'Merge topics' do
       detail 'This feature was introduced in GitLab 15.4.'
       success Entities::Projects::Topic
+      tags ['project_topics']
     end
     params do
       requires :source_topic_id, type: Integer, desc: 'ID of source project topic'

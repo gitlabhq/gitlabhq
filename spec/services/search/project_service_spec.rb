@@ -24,17 +24,5 @@ RSpec.describe Search::ProjectService, feature_category: :global_search do
 
       service_with_type.allowed_scopes
     end
-
-    context 'when search_scope_registry feature flag is disabled' do
-      before do
-        stub_feature_flags(search_scope_registry: false)
-      end
-
-      it 'returns legacy allowed scopes' do
-        result = service.allowed_scopes
-        expect(result).to eq(described_class::LEGACY_ALLOWED_SCOPES)
-        expect(result).to include('blobs', 'commits', 'issues', 'merge_requests', 'wiki_blobs')
-      end
-    end
   end
 end

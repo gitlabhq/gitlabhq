@@ -1,5 +1,9 @@
 import * as textUtils from '~/lib/utils/text_utility';
 import { stubCrypto } from 'helpers/crypto';
+import {
+  markdownConfig,
+  strictMarkdownConfig,
+} from '../../../../app/assets/javascripts/lib/utils/text_utility';
 
 describe('text_utility', () => {
   describe('addDelimiter', () => {
@@ -50,6 +54,15 @@ describe('text_utility', () => {
 
     it('returns empty string when given string is invalid', () => {
       expect(textUtils.capitalizeFirstCharacter(undefined)).toEqual('');
+    });
+  });
+
+  describe('strictMarkdownConfig', () => {
+    it('does not allow images', () => {
+      expect(strictMarkdownConfig).toEqual({
+        ...markdownConfig,
+        ALLOWED_TAGS: expect.not.arrayContaining(['img']),
+      });
     });
   });
 

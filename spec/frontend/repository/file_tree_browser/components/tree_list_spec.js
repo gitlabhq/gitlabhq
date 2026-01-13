@@ -18,6 +18,9 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import refQuery from '~/repository/queries/ref.query.graphql';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/file_tree_browser_popover.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { mockResponse } from '../mock_data';
 
@@ -40,6 +43,7 @@ describe('Tree List', () => {
   let apolloProvider;
   let pinia;
   let getQueryHandlerSuccess;
+  let userCalloutDismissSpy;
 
   const { trigger: triggerIntersection } = useMockIntersectionObserver();
   const triggerIntersectionForAll = () => {
@@ -52,6 +56,7 @@ describe('Tree List', () => {
   const createComponent = async (apiResponse = mockResponse, options = {}) => {
     const currentRef = 'main';
     getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
+    userCalloutDismissSpy = jest.fn();
 
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
     apolloProvider.defaultClient.cache.writeQuery({
@@ -70,6 +75,12 @@ describe('Tree List', () => {
       mocks: {
         $router: { push: jest.fn() },
         $route: { params: {}, $apollo: { query: jest.fn() }, ...options.mocks?.$route },
+      },
+      stubs: {
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: userCalloutDismissSpy,
+          shouldShowCallout: options.shouldShowCallout ?? false,
+        }),
       },
     });
 
@@ -90,6 +101,8 @@ describe('Tree List', () => {
   const findFileRowPlaceholders = () => wrapper.findAll('[data-placeholder-item]');
   const findSearchButton = () => wrapper.findByTestId('search-trigger');
   const findTooltip = () => wrapper.findComponent(GlTooltip);
+  const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+  const findFileTreeBrowserPopover = () => wrapper.findComponent(FileTreeBrowserPopover);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -449,6 +462,11 @@ describe('Tree List', () => {
         apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
         propsData: { projectPath: 'group/project', currentRef: 'main' },
         mocks: { $route: { params: { path: 'dir_100/file.txt' } } },
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({
+            shouldShowCallout: true,
+          }),
+        },
       });
 
       await waitForPromises();
@@ -476,6 +494,11 @@ describe('Tree List', () => {
         apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
         propsData: { projectPath: 'group/project', currentRef: 'main' },
         mocks: { $route: { params: { path: 'dir_99/file.txt' } } },
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({
+            shouldShowCallout: true,
+          }),
+        },
       });
 
       await waitForPromises();
@@ -489,6 +512,9 @@ describe('Tree List', () => {
         apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
         propsData: { projectPath: 'group/project', currentRef: 'main' },
         mocks: { $route: { params: { path: deepPath } } },
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          shouldShowCallout: true,
+        }),
       });
 
       await waitForPromises();
@@ -510,6 +536,11 @@ describe('Tree List', () => {
         pinia,
         propsData: { projectPath: 'group/project', currentRef: 'main' },
         mocks: { $router: { push: jest.fn() }, $route: route },
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({
+            shouldShowCallout: true,
+          }),
+        },
       });
       await waitForPromises();
 
@@ -826,6 +857,11 @@ describe('Tree List', () => {
         pinia,
         propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
         mocks: { $route: { params: {} } },
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({
+            shouldShowCallout: true,
+          }),
+        },
       });
 
       await waitForPromises();
@@ -962,5 +998,36 @@ describe('Tree List', () => {
       expect(fileRows.at(1).props('file').path).toBe('/submodule-project');
       expect(fileRows.at(2).props('file').path).toBe('/dir_1/file.txt');
     });
+  });
+
+  describe('file tree browser popover and user callout', () => {
+    describe('when `shouldShowCallout` is true', () => {
+      beforeEach(async () => {
+        await createComponent(mockResponse, { shouldShowCallout: true });
+        await waitForPromises();
+        await nextTick();
+      });
+
+      it('renders UserCalloutDismisser with correct feature-name', () => {
+        expect(findUserCalloutDismisser().props('featureName')).toBe('file_tree_browser_popover');
+      });
+
+      it('passes targetElement prop to FileTreeBrowserPopover', () => {
+        expect(findFileTreeBrowserPopover().props('targetElement')).not.toBeNull();
+      });
+
+      it('calls dismiss when popover emits dismiss event', async () => {
+        findFileTreeBrowserPopover().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(userCalloutDismissSpy).toHaveBeenCalled();
+      });
+    });
+  });
+
+  it('does not render UserCalloutDismisser when it has been dismissed', async () => {
+    await createComponent(mockResponse, { shouldShowCallout: false });
+    await waitForPromises();
+    expect(findFileTreeBrowserPopover().exists()).toBe(false);
   });
 });

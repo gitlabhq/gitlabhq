@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Database::Aggregation::Formatter, feature_category: :data
     end
   end
 
-  let(:plan) { Gitlab::Database::Aggregation::QueryPlan.build(request, engine.new(context: {})) }
+  let(:plan) { request.to_query_plan(engine.new(context: {})) }
   let(:request) do
     Gitlab::Database::Aggregation::Request.new(metrics: [{ identifier: :total_count },
       { identifier: :total_with_formatting_count }])

@@ -112,11 +112,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     let(:job) do
-      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     let(:bridge) do
-      build(:ci_bridge, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_bridge, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     before do
@@ -125,35 +125,128 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
     end
 
     context 'without tags' do
-      it 'extracts an empty tag list' do
+      it 'does not try to insert taggings' do
         expect(Gitlab::Ci::Tags::BulkInsert)
-          .to receive(:bulk_insert_tags!)
-          .with([job])
-          .and_call_original
+          .not_to receive(:bulk_insert_tags!)
 
         step.perform!
 
         expect(job).to be_persisted
         expect(job.tag_list).to eq([])
+        expect(Ci::Tag.count).to be_zero
+      end
+
+      context 'when ci_stop_populating_p_ci_build_tags FF is disabled' do
+        before do
+          stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
+        end
+
+        it 'extracts an empty tag list' do
+          expect(Gitlab::Ci::Tags::BulkInsert)
+            .to receive(:bulk_insert_tags!)
+            .with([job])
+            .and_call_original
+
+          step.perform!
+
+          expect(job).to be_persisted
+          expect(job.tag_list).to eq([])
+          expect(Ci::Tag.count).to be_zero
+        end
       end
     end
 
     context 'with tags' do
-      before do
-        job.tag_list = %w[tag1 tag2]
+      let(:job) do
+        build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project, tag_list: %w[tag1 tag2])
       end
 
-      it 'bulk inserts tags' do
+      it 'does not bulk inserts tags' do
         expect(Gitlab::Ci::Tags::BulkInsert)
-          .to receive(:bulk_insert_tags!)
-          .with([job])
-          .and_call_original
+          .not_to receive(:bulk_insert_tags!)
 
         step.perform!
 
         expect(job).to be_persisted
-        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+        expect(job.reload.tag_list).to eq(%w[tag1 tag2])
+        expect(job.reload.taggings).to be_empty
+        expect(Ci::Tag.named(%w[tag1 tag2])).to be_empty
       end
+
+      context 'when ci_stop_populating_p_ci_build_tags feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_stop_populating_p_ci_build_tags: false)
+        end
+
+        it 'bulk inserts tags with taggings' do
+          expect(Gitlab::Ci::Tags::BulkInsert)
+            .to receive(:bulk_insert_tags!)
+            .with([job])
+            .and_call_original
+
+          step.perform!
+
+          expect(job).to be_persisted
+          expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+          expect(job.reload.taggings.count).to be 2
+          expect(Ci::Tag.named(%w[tag1 tag2]).count).to be 2
+        end
+      end
+    end
+  end
+
+  describe 'pipeline logger tag counts' do
+    let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+    let(:job1) do
+      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project,
+        tag_list: %w[ruby docker])
+    end
+
+    let(:job2) do
+      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project,
+        tag_list: %w[docker postgres])
+    end
+
+    let(:logger) { Gitlab::Ci::Pipeline::Logger.new(project: project) }
+
+    before do
+      pipeline.stages = [stage]
+      stage.statuses = [job1, job2]
+
+      # Set temp_job_definition as it would be set by Seed::Build
+      config1 = { options: { script: ['echo test'] }, tag_list: %w[ruby docker] }
+      config2 = { options: { script: ['echo different'] }, tag_list: %w[docker postgres] }
+
+      job_def1 = Ci::JobDefinition.fabricate(
+        config: config1,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+      job_def2 = Ci::JobDefinition.fabricate(
+        config: config2,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+
+      job1.temp_job_definition = job_def1
+      job2.temp_job_definition = job_def2
+
+      allow(command).to receive(:logger).and_return(logger)
+    end
+
+    it 'does not execute SQL queries when calculating tag counts for logger' do
+      step.perform!
+
+      expect(pipeline).to be_persisted
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        logger.commit(pipeline: pipeline, caller: 'test')
+      end
+
+      # The logger should not make any SQL queries for pipeline_builds_tags_count
+      # and pipeline_builds_distinct_tags_count because it uses the cached tag_list
+      # from already-loaded builds
+      expect(recorder.count).to eq(0)
     end
   end
 

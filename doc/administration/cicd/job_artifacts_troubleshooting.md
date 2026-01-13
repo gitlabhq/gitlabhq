@@ -488,11 +488,8 @@ If you need to reclaim disk space quickly, you can expedite artifact deletion.
 If you need to reclaim disk space quickly after deleting a large number of artifacts,
 you can bypass the standard scheduling limitations and expedite the deletion process.
 
-{{< alert type="warning" >}}
-
-These commands put significant load on your system if you are deleting a large number of artifacts.
-
-{{< /alert >}}
+> [!warning]
+> These commands put significant load on your system if you are deleting a large number of artifacts.
 
 ```ruby
 # Set the pick_up_date to the current time on all artifacts

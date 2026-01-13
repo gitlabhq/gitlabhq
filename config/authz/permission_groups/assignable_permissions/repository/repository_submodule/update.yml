@@ -1,0 +1,7 @@
+---
+name: update_repository_submodule
+description: Grants the ability to update repository submodules
+permissions:
+  - update_repository_submodule
+boundaries:
+  - project

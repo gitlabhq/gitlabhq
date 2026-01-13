@@ -140,7 +140,7 @@ You can use CI/CD variables to customize the [CI component](https://gitlab.com/s
 
 The following variables configure the behavior of how Libbehave runs.
 
-| CI/CD variable                        | CLI Argument | Default | Description                                                          |
+| CI/CD variable                        | CLI argument | Default | Description                                                          |
 |---------------------------------------|--------------|---------|----------------------------------------------------------------------|
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME` | `-source`    | `""`    | Source branch to diff against (for example, feature-branch)          |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME` | `-target`    | `""`    | Target branch to diff against (for example, main)                    |
@@ -151,7 +151,7 @@ The following variables configure the behavior of how Libbehave runs.
 
 The following flags are available, but are untested and should be left at their default values:
 
-| CI/CD variable         | CLI Argument     | Default       | Description                 |
+| CI/CD variable         | CLI argument     | Default       | Description                 |
 |------------------------|------------------|---------------|-----------------------------|
 | `BEHAVE_RULE_PATHS`    | `-rules`         | `"/dist"`     | The path to the rule files. |
 | `BEHAVE_TARGET_DIR`    | `-dir`           | `""`          | The target directory to run behave against. |

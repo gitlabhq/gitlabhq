@@ -276,7 +276,7 @@ Nice work.
 
 ## Find more Git learning resources
 
-- Get a complete introduction to Git in the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Git for GitLab](https://www.youtube.com/watch?v=4lxvVj7wlZw) beginner's course (1h 33m).
+- Get a complete introduction to Git in the <i class="fa-youtube-play" aria-hidden="true"></i> [Git for GitLab](https://www.youtube.com/watch?v=4lxvVj7wlZw) beginner's course (1h 33m).
 - Find other tutorials about Git and GitLab on the [tutorials page](../_index.md).
 - PDF download: [GitLab Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 - Blog post: [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/).

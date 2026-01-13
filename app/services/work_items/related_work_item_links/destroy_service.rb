@@ -53,6 +53,7 @@ module WorkItems
       # related epic links records
       def perform_destroy_link(link, linked_item)
         link.destroy!
+        track_destroyed_link(link)
         removed_ids << linked_item.id
         true
       end
@@ -89,6 +90,14 @@ module WorkItems
         return success_message unless error_message.present?
 
         "#{success_message} #{error_message}"
+      end
+
+      def track_destroyed_link(link)
+        Gitlab::WorkItems::Instrumentation::TrackingService.new(
+          work_item: @work_item,
+          current_user: current_user,
+          event: ::Gitlab::WorkItems::Instrumentation::EventActions.link_event(link, @work_item, :remove)
+        ).execute
       end
     end
   end

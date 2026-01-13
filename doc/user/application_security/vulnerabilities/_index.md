@@ -77,7 +77,7 @@ For more information, see [SAST false positive detection](false_positive_detecti
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -98,7 +98,7 @@ GitLab Duo Vulnerability Explanation can help you with a vulnerability by using 
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Prerequisites:
 
@@ -148,7 +148,7 @@ The following data is shared with third-party AI APIs:
 {{< collapsible title="Model information" >}}
 
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for GitLab.com: Anthropic [Claude 4.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -171,7 +171,7 @@ You should always review the proposed change before merging it. When reviewing, 
 - Your application's existing functionality is preserved.
 - The vulnerability is resolved in accordance with your organization's standards.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Prerequisites:
 
@@ -545,7 +545,7 @@ a vulnerability's page includes a **Resolve with merge request** option.
 
 The following scanners are supported by this feature:
 
-- [Dependency Scanning](../dependency_scanning/_index.md).
+- [Dependency scanning](../dependency_scanning/_index.md).
   Automatic patch creation is only available for Node.js projects managed with
   `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
 

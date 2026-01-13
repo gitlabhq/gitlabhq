@@ -6,10 +6,11 @@ module RapidDiffs
 
     attr_reader :diff_file
 
-    def initialize(diff_file:, merge_request:, parallel_view: false)
+    def initialize(diff_file:, merge_request:, parallel_view: false, plain_view: false)
       @diff_file = diff_file
       @merge_request = merge_request
       @parallel_view = parallel_view
+      @plain_view = plain_view
     end
 
     def additional_menu_items

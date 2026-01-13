@@ -3,6 +3,7 @@
 module Mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
     include Gitlab::Graphql::VersionFilter::FutureFieldFallback
+    include Gitlab::Graphql::Authz::AuthorizeGranularToken
     include Gitlab::Graphql::Authorize::AuthorizeResource
     prepend Gitlab::Graphql::CopyFieldDescription
 

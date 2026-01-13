@@ -36,6 +36,11 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
       end
 
       it_behaves_like 'protected tags'
+
+      it_behaves_like 'authorizing granular token permissions', :read_protected_tag do
+        let(:boundary_object) { project }
+        let(:request) { get api(route, personal_access_token: pat), params: { per_page: 100 } }
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -115,6 +120,11 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
           )
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_protected_tag do
+        let(:boundary_object) { project }
+        let(:request) { get api(route, personal_access_token: pat) }
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -193,6 +203,14 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
           expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :create_protected_tag do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/protected_tags", personal_access_token: pat),
+            params: { name: 'new_protected_tag' }
+        end
+      end
     end
 
     context 'when authenticated as a guest' do
@@ -208,7 +226,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
     end
   end
 
-  describe 'DELETE /projects/:id/protected_tags/unprotect/:tag' do
+  describe 'DELETE /projects/:id/protected_tags/:tag' do
     context 'when the user is not a project member' do
       it 'hides the existence of the Protected Tag' do
         delete api("/projects/#{project.id}/protected_tags/#{tag_name}", user)
@@ -258,6 +276,11 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_protected_tag do
+        let(:boundary_object) { project }
+        let(:request) { delete api("/projects/#{project.id}/protected_tags/#{tag_name}", personal_access_token: pat) }
       end
     end
   end

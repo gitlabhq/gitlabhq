@@ -98,8 +98,6 @@ Style/SuperArguments:
     - 'ee/app/services/ee/protected_branches/destroy_service.rb'
     - 'ee/app/services/ee/users/destroy_service.rb'
     - 'ee/app/services/gitlab_subscriptions/user_add_on_assignments/base_create_service.rb'
-    - 'ee/app/workers/geo/bulk_mark_pending_batch_worker.rb'
-    - 'ee/app/workers/geo/bulk_mark_verification_pending_batch_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/lib/analytics/productivity_analytics_request_params.rb'
     - 'ee/lib/audit_events/strategies/base_google_cloud_logging_destination_strategy.rb'

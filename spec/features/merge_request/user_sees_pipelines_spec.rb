@@ -194,7 +194,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       context 'when actor is a reporter in parent project and a developer in fork project' do
         let(:actor) { reporter_in_parent_and_developer_in_fork }
 
-        it 'creates a pipeline in the fork project' do
+        it 'creates a pipeline in the fork project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/2261' do
           visit project_merge_request_path(parent_project, merge_request)
 
           create_merge_request_pipeline

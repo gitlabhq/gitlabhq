@@ -15,11 +15,8 @@ title: Installing a GitLab POC on Amazon Web Services (AWS)
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 
-{{< alert type="note" >}}
-
-For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Linux package installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [20 RPS or 1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more information.
-
-{{< /alert >}}
+> [!note]
+> For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Linux package installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [20 RPS or 1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more information.
 
 ## Getting started for production-grade GitLab
 
@@ -64,11 +61,8 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - A domain name for the GitLab instance
 - An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we create.
 
-{{< alert type="note" >}}
-
-It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
-
-{{< /alert >}}
+> [!note]
+> It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
 
 ## Architecture
 
@@ -368,11 +362,8 @@ We need a security group for our database that allows inbound traffic from the i
 
 ### Create the database
 
-{{< alert type="warning" >}}
-
-Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
-
-{{< /alert >}}
+> [!warning]
+> Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
 
 Now, it's time to create the database:
 
@@ -469,11 +460,8 @@ to these instances with SSH for actions that include making configuration change
 and performing upgrades. One way of doing this is by using a [bastion host](https://en.wikipedia.org/wiki/Bastion_host),
 sometimes also referred to as a jump box.
 
-{{< alert type="note" >}}
-
-If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
-
-{{< /alert >}}
+> [!note]
+> If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
 
 ### Create Bastion Host A
 

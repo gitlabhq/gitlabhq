@@ -70,7 +70,7 @@ describe('WorkItemDescription', () => {
 
   const mockWorkspacePermissionsResponse = {
     data: {
-      workspace: {
+      namespace: {
         id: 'gid://gitlab/Project/1',
         userPermissions: {
           generateDescription: true,
@@ -156,11 +156,12 @@ describe('WorkItemDescription', () => {
   };
 
   describe('editing description', () => {
-    it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
+    it('passes correct autocompletion data, preview markdown sources, enables quick actions and table of contents', async () => {
       await createComponent({ isEditing: true });
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
+        supportsTableOfContents: true,
         renderMarkdownPath: markdownPaths.markdownPreviewPath,
         autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
       });
@@ -814,7 +815,7 @@ describe('WorkItemDescription', () => {
       beforeEach(async () => {
         const workspacePermissionsHandlerNoPermission = jest.fn().mockResolvedValue({
           data: {
-            workspace: {
+            namespace: {
               id: 'gid://gitlab/Project/1',
               userPermissions: {
                 generateDescription: false,
@@ -841,7 +842,7 @@ describe('WorkItemDescription', () => {
       beforeEach(async () => {
         const workspacePermissionsHandlerNullWorkspace = jest.fn().mockResolvedValue({
           data: {
-            workspace: null,
+            namespace: null,
           },
         });
 

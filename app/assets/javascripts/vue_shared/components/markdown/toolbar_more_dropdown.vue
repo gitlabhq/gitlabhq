@@ -1,9 +1,8 @@
 <script>
-import { GlTooltip, GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
+import { GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { updateText } from '~/lib/utils/text_markdown';
 import { formatMarkdownTable } from '~/lib/utils/markdown_table_cleanup';
 import { DEFAULT_GLQL_VIEW_CONTENT } from '~/content_editor/extensions/code_block_highlight';
@@ -17,7 +16,6 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlTooltip,
-    GlBadge,
   },
   /* eslint-disable @gitlab/require-i18n-strings */
   data() {
@@ -64,13 +62,6 @@ export default {
           text: __('Embedded view'),
           action: () =>
             this.insertMarkdown(`\`\`\`glql\n${DEFAULT_GLQL_VIEW_CONTENT}\n\`\`\``, 'glqlView'),
-          badge: {
-            text: __('New'),
-            variant: 'info',
-            size: 'small',
-            target: '_blank',
-            href: helpPagePath('user/glql/_index'),
-          },
         },
         {
           text: __('Mermaid diagram'),
@@ -153,12 +144,7 @@ export default {
       @hidden="isDropdownOpen = false"
     >
       <template #list-item="{ item }">
-        <span class="gl-flex gl-items-center gl-justify-between">
-          {{ item.text }}
-          <gl-badge v-if="item.badge" v-bind="item.badge" class="gl-ml-4" @click.stop>
-            {{ item.badge.text }}
-          </gl-badge>
-        </span>
+        {{ item.text }}
       </template>
     </gl-disclosure-dropdown>
     <gl-tooltip v-if="!isDropdownOpen" :target="toggleId" placement="top">

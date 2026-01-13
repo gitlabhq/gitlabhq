@@ -44,6 +44,7 @@ describe('DiffView', () => {
         createCustomGetters(() => ({
           legacyNotes: {},
           legacyDiffs: {},
+          fileBrowser: {},
           batchComments: {
             shouldRenderDraftRow: () => false,
             shouldRenderParallelDraftRow: () => () => true,

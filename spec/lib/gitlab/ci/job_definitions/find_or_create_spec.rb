@@ -202,6 +202,8 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
 
       let(:definitions) { [job_def_true, job_def_false, job_def_default] }
 
+      let(:expected_config_keys) { Ci::JobDefinition::CONFIG_ATTRIBUTES - Ci::JobDefinition::NORMALIZED_DATA_COLUMNS }
+
       it 'sets interruptible based on config or defaults to false' do
         execute
 
@@ -213,7 +215,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           project_id: project.id,
           partition_id: partition_id,
           checksum: job_def_true.checksum,
-          config: config_interruptible_true,
+          config: config_interruptible_true.slice(*expected_config_keys),
           interruptible: true
         )
 
@@ -221,7 +223,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           project_id: project.id,
           partition_id: partition_id,
           checksum: job_def_false.checksum,
-          config: config_interruptible_false,
+          config: config_interruptible_false.slice(*expected_config_keys),
           interruptible: false
         )
 
@@ -229,9 +231,47 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           project_id: project.id,
           partition_id: partition_id,
           checksum: job_def_default.checksum,
-          config: config_no_interruptible,
+          config: config_no_interruptible.slice(*expected_config_keys),
           interruptible: false
         )
+      end
+
+      context 'when FF `ci_job_definitions_new_checksum` is disabled' do
+        let(:definition_true) { ::Ci::JobDefinition.find_by(checksum: job_def_true.checksum) }
+        let(:definition_false) { ::Ci::JobDefinition.find_by(checksum: job_def_false.checksum) }
+        let(:definition_default) { ::Ci::JobDefinition.find_by(checksum: job_def_default.checksum) }
+
+        before do
+          stub_feature_flags(ci_job_definitions_new_checksum: false)
+        end
+
+        it 'sets interruptible based on config' do
+          execute
+
+          expect(definition_true).to have_attributes(
+            project_id: project.id,
+            partition_id: partition_id,
+            checksum: job_def_true.checksum,
+            config: config_interruptible_true, # includes normalized data columns (interruptible) in config
+            interruptible: true
+          )
+
+          expect(definition_false).to have_attributes(
+            project_id: project.id,
+            partition_id: partition_id,
+            checksum: job_def_false.checksum,
+            config: config_interruptible_false,
+            interruptible: false
+          )
+
+          expect(definition_default).to have_attributes(
+            project_id: project.id,
+            partition_id: partition_id,
+            checksum: job_def_default.checksum,
+            config: config_no_interruptible, # no interruptible, if not explicitly passed
+            interruptible: false
+          )
+        end
       end
     end
 

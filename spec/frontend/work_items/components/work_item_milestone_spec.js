@@ -147,7 +147,7 @@ describe('WorkItemMilestone component', () => {
 
       expect(findSidebarDropdownWidget().props('loading')).toBe(false);
       expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
-        projectMilestonesResponse.data.workspace.attributes.nodes.length,
+        projectMilestonesResponse.data.namespace.attributes.nodes.length,
       );
     });
 
@@ -173,7 +173,7 @@ describe('WorkItemMilestone component', () => {
     });
 
     it('changes the milestone to the selected milestone', async () => {
-      const milestoneAtIndex = projectMilestonesResponse.data.workspace.attributes.nodes[0];
+      const milestoneAtIndex = projectMilestonesResponse.data.namespace.attributes.nodes[0];
 
       showDropdown();
 

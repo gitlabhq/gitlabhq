@@ -287,55 +287,34 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
         GQL
       end
 
-      context 'when the feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_dynamic_pipeline_inputs: project)
-        end
+      it 'returns inputs with rules' do
+        post_graphql(query_with_rules, current_user: user)
 
-        it 'returns inputs with rules' do
-          post_graphql(query_with_rules, current_user: user)
-
-          expect(graphql_data['project']['ciPipelineCreationInputs']).to contain_exactly(
-            a_hash_including(
-              'name' => 'environment',
-              'type' => 'STRING',
-              'default' => 'dev',
-              'options' => %w[dev staging prod],
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'instance_type',
-              'type' => 'STRING',
-              'rules' => contain_exactly(
-                a_hash_including(
-                  'if' => '$[[ inputs.environment ]] == "dev"',
-                  'options' => %w[t3.micro t3.small],
-                  'default' => 't3.micro'
-                ),
-                a_hash_including(
-                  'if' => '$[[ inputs.environment ]] == "prod"',
-                  'options' => %w[m5.large m5.xlarge],
-                  'default' => 'm5.large'
-                )
+        expect(graphql_data['project']['ciPipelineCreationInputs']).to contain_exactly(
+          a_hash_including(
+            'name' => 'environment',
+            'type' => 'STRING',
+            'default' => 'dev',
+            'options' => %w[dev staging prod],
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'instance_type',
+            'type' => 'STRING',
+            'rules' => contain_exactly(
+              a_hash_including(
+                'if' => '$[[ inputs.environment ]] == "dev"',
+                'options' => %w[t3.micro t3.small],
+                'default' => 't3.micro'
+              ),
+              a_hash_including(
+                'if' => '$[[ inputs.environment ]] == "prod"',
+                'options' => %w[m5.large m5.xlarge],
+                'default' => 'm5.large'
               )
             )
           )
-        end
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_dynamic_pipeline_inputs: false)
-        end
-
-        it 'does not return rules field' do
-          post_graphql(query_with_rules, current_user: user)
-
-          inputs = graphql_data['project']['ciPipelineCreationInputs']
-          instance_type_input = inputs.find { |i| i['name'] == 'instance_type' }
-
-          expect(instance_type_input['rules']).to be_nil
-        end
+        )
       end
     end
 
@@ -413,96 +392,90 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
           branch_name: 'feature-comprehensive')
       end
 
-      context 'when feature flag is enabled' do
-        before do
-          stub_feature_flags(ci_dynamic_pipeline_inputs: project)
-        end
+      it 'returns all input types correctly formatted as hashes' do
+        post_graphql(comprehensive_query, current_user: user)
 
-        it 'returns all input types correctly formatted as hashes' do
-          post_graphql(comprehensive_query, current_user: user)
+        inputs = graphql_data['project']['ciPipelineCreationInputs']
 
-          inputs = graphql_data['project']['ciPipelineCreationInputs']
-
-          expect(inputs).to contain_exactly(
-            a_hash_including(
-              'name' => 'string_with_description',
-              'type' => 'STRING',
-              'description' => 'A string input with description',
-              'default' => 'test-value',
-              'required' => false,
-              'options' => nil,
-              'regex' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'string_with_options',
-              'type' => 'STRING',
-              'default' => 'option1',
-              'options' => %w[option1 option2 option3],
-              'required' => false,
-              'regex' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'string_with_regex',
-              'type' => 'STRING',
-              'default' => 'abc',
-              'regex' => '^[a-z]+$',
-              'required' => false,
-              'options' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'number_input',
-              'type' => 'NUMBER',
-              'default' => 42,
-              'required' => false,
-              'options' => nil,
-              'regex' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'boolean_input',
-              'type' => 'BOOLEAN',
-              'default' => true,
-              'required' => false,
-              'options' => nil,
-              'regex' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'required_input',
-              'type' => 'STRING',
-              'required' => true,
-              'default' => nil,
-              'options' => nil,
-              'regex' => nil,
-              'rules' => nil
-            ),
-            a_hash_including(
-              'name' => 'rules_based_input',
-              'type' => 'STRING',
-              'required' => false,
-              'rules' => contain_exactly(
-                a_hash_including(
-                  'if' => '$[[ inputs.string_with_options ]] == "option1"',
-                  'options' => %w[a b],
-                  'default' => 'a'
-                ),
-                a_hash_including(
-                  'if' => '$[[ inputs.string_with_options ]] == "option2"',
-                  'options' => %w[c d],
-                  'default' => 'c'
-                )
+        expect(inputs).to contain_exactly(
+          a_hash_including(
+            'name' => 'string_with_description',
+            'type' => 'STRING',
+            'description' => 'A string input with description',
+            'default' => 'test-value',
+            'required' => false,
+            'options' => nil,
+            'regex' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'string_with_options',
+            'type' => 'STRING',
+            'default' => 'option1',
+            'options' => %w[option1 option2 option3],
+            'required' => false,
+            'regex' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'string_with_regex',
+            'type' => 'STRING',
+            'default' => 'abc',
+            'regex' => '^[a-z]+$',
+            'required' => false,
+            'options' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'number_input',
+            'type' => 'NUMBER',
+            'default' => 42,
+            'required' => false,
+            'options' => nil,
+            'regex' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'boolean_input',
+            'type' => 'BOOLEAN',
+            'default' => true,
+            'required' => false,
+            'options' => nil,
+            'regex' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'required_input',
+            'type' => 'STRING',
+            'required' => true,
+            'default' => nil,
+            'options' => nil,
+            'regex' => nil,
+            'rules' => nil
+          ),
+          a_hash_including(
+            'name' => 'rules_based_input',
+            'type' => 'STRING',
+            'required' => false,
+            'rules' => contain_exactly(
+              a_hash_including(
+                'if' => '$[[ inputs.string_with_options ]] == "option1"',
+                'options' => %w[a b],
+                'default' => 'a'
+              ),
+              a_hash_including(
+                'if' => '$[[ inputs.string_with_options ]] == "option2"',
+                'options' => %w[c d],
+                'default' => 'c'
               )
             )
           )
-        end
+        )
+      end
 
-        it 'successfully queries all input fields' do
-          expect { post_graphql(comprehensive_query, current_user: user) }.not_to raise_error
-          expect(graphql_errors).to be_nil
-        end
+      it 'successfully queries all input fields' do
+        expect { post_graphql(comprehensive_query, current_user: user) }.not_to raise_error
+        expect(graphql_errors).to be_nil
       end
     end
   end

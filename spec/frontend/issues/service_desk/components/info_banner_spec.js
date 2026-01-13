@@ -9,8 +9,8 @@ describe('InfoBanner', () => {
   const defaultProvide = {
     serviceDeskCalloutSvgPath: 'callout.svg',
     serviceDeskEmailAddress: 'sd@gmail.com',
-    canAdminIssues: true,
-    canEditProjectSettings: true,
+    canAdminIssue: true,
+    canAdminProject: true,
     serviceDeskSettingsPath: 'path/to/project/settings',
     serviceDeskHelpPath: 'path/to/documentation',
     isServiceDeskEnabled: true,
@@ -42,7 +42,7 @@ describe('InfoBanner', () => {
     });
 
     it('does not render, when user can not admin issues', () => {
-      wrapper = mountComponent({ canAdminIssues: false });
+      wrapper = mountComponent({ canAdminIssue: false });
 
       expect(wrapper.text()).not.toContain(infoBannerAdminNote);
       expect(wrapper.text()).not.toContain(wrapper.vm.serviceDeskEmailAddress);
@@ -72,7 +72,7 @@ describe('InfoBanner', () => {
     });
 
     it('does not render when user cannot edit settings', () => {
-      wrapper = mountComponent({ canEditProjectSettings: false });
+      wrapper = mountComponent({ canAdminProject: false });
 
       expect(wrapper.text()).not.toContain(enableServiceDesk);
       expect(findEnableSDButton().exists()).toBe(false);

@@ -5,18 +5,25 @@ require 'spec_helper'
 RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, feature_category: :database do
   include GraphqlHelpers
 
-  let_it_be(:event_4) { create(:closed_issue_event, created_at: 1.year.ago) }
-  let_it_be(:event_2) { create(:closed_issue_event, created_at: 3.years.ago) }
-  let_it_be(:event_1) { create(:closed_issue_event, created_at: 4.years.ago) }
-  let_it_be(:event_3) { create(:closed_issue_event, created_at: 2.years.ago) }
-
   let(:nodes) do
     ClickHouse::Client::QueryBuilder
       .new('events')
-      .select(:id, :created_at)
-      .where(target_type: 'Issue')
+      .select(:id)
       .order(:created_at, :asc)
+      .order(:updated_at, :desc)
       .order(:id, :asc)
+  end
+
+  let_it_be(:ordered_events) do
+    freeze_time do
+      event_0 = create(:closed_issue_event, created_at: 1.year.ago, updated_at: 1.year.ago)
+      event_1 = create(:closed_issue_event, created_at: 3.years.ago, updated_at: 1.year.ago)
+      event_2 = create(:closed_issue_event, created_at: 4.years.ago, updated_at: 1.year.ago)
+      event_3 = create(:closed_issue_event, created_at: 2.years.ago, updated_at: 2.years.ago)
+      event_4 = create(:closed_issue_event, created_at: 2.years.ago, updated_at: 1.year.ago)
+
+      [event_2, event_1, event_4, event_3, event_0]
+    end
   end
 
   let(:clickhouse_connection) { ClickHouse::Connection.new(:main) }
@@ -37,119 +44,51 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
     described_class.new(nodes, context: context).cursor_for(node)
   end
 
-  def decoded_cursor(cursor)
-    Gitlab::Json.parse(Base64.urlsafe_decode64(cursor))
-  end
-
   describe '#nodes' do
-    let(:expected_order) { [event_1.id, event_2.id, event_3.id, event_4.id] }
+    subject(:actual_ids) { connection.nodes.pluck("id") }
 
-    subject(:ids) { connection.nodes.pluck("id") }
+    context 'with pagination arguments' do
+      using RSpec::Parameterized::TableSyntax
 
-    it 'returns records for the first page' do
-      expect(ids).to eq(expected_order.first(3))
+      where(:pagination_params, :expected_events_range, :expected_has_previous_page, :expected_has_next_page) do
+        # No arguments - returns first 3 (max_page_size)
+        {}                      | (0..2)   | false | true
+        { first: 2 }            | (0..1)   | false | true
+        { last: 2 }             | (-2..-1) | true  | false
+        { after: 0 }            | (1..3)   | true  | true
+        { after: 0, first: 2 }  | (1..2)   | true  | true
+        { after: 0, last: 2 }   | (-2..-1) | true  | false
+        { before: 2 }           | (0..1)   | false | true
+        { before: 4, first: 2 } | (0..1)   | false | true
+        { before: 3, last: 2 }  | (1..2)   | true  | true
+        { after: 0, before: 2 } | (1..1)   | true  | true
+      end
 
-      expect(connection.has_previous_page).to be_falsey
-      expect(connection.has_next_page).to be_truthy
+      with_them do
+        let(:arguments) do
+          args = pagination_params
+          args[:after] = encoded_cursor(ordered_events[args[:after]]) if args[:after]
+          args[:before] = encoded_cursor(ordered_events[args[:before]]) if args[:before]
+          args
+        end
+
+        let(:expected_events) do
+          ordered_events[expected_events_range]
+        end
+
+        it 'returns correct nodes and pagination info' do
+          expect(actual_ids).to eq(expected_events.map(&:id))
+          expect(connection.has_previous_page).to eq(expected_has_previous_page)
+          expect(connection.has_next_page).to eq(expected_has_next_page)
+        end
+      end
     end
 
     context 'when clickhouse connection is not passed via context' do
       let(:context_values) { {} }
 
       it 'falls back to the main DB' do
-        expect(ids).to eq(expected_order.first(3))
-      end
-    end
-
-    context 'when the first argument is given' do
-      let(:arguments) { { first: 2 } }
-
-      it 'returns records for the first page' do
-        expect(ids).to eq(expected_order.first(2))
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when the last argument is given' do
-      let(:arguments) { { last: 2 } }
-
-      it 'returns records for the first page' do
-        expect(ids).to eq([expected_order[2], expected_order[3]])
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_falsey
-      end
-    end
-
-    context 'when after is passed' do
-      let(:arguments) { { after: encoded_cursor({ "id" => event_2.id, "created_at" => event_2.created_at }) } }
-
-      it 'only returns the events after the selected one' do
-        expect(ids).to eq(expected_order.last(2))
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_falsey
-      end
-    end
-
-    context 'when before is passed' do
-      let(:arguments) { { before: encoded_cursor({ "id" => event_2.id, "created_at" => event_2.created_at }) } }
-
-      it 'only returns the events before the selected one' do
-        expect(ids).to eq([expected_order[0]])
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when after and before are passed' do
-      let(:arguments) do
-        {
-          after: encoded_cursor({ "id" => event_1.id, "created_at" => event_1.created_at }),
-          before: encoded_cursor({ "id" => event_3.id, "created_at" => event_3.created_at })
-        }
-      end
-
-      it 'only returns events between the cursors' do
-        expect(ids).to eq([event_2.id])
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when before and last are passed' do
-      let(:arguments) do
-        {
-          last: 2,
-          before: encoded_cursor({ "id" => event_4.id, "created_at" => event_4.created_at })
-        }
-      end
-
-      it 'only returns events between the cursors' do
-        expect(ids).to eq([event_2.id, event_1.id])
-
-        expect(connection.has_previous_page).to be_truthy
-        expect(connection.has_next_page).to be_truthy
-      end
-    end
-
-    context 'when before and first are passed' do
-      let(:arguments) do
-        {
-          first: 2,
-          before: encoded_cursor({ "id" => event_3.id, "created_at" => event_3.created_at })
-        }
-      end
-
-      it 'only returns events between the cursors' do
-        expect(ids).to eq([expected_order[0], expected_order[1]])
-
-        expect(connection.has_previous_page).to be_falsey
-        expect(connection.has_next_page).to be_truthy
+        expect(actual_ids).to eq(ordered_events.first(3).map(&:id))
       end
     end
 
@@ -157,16 +96,20 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
       let(:arguments) { { after: "YQ" } }
 
       it 'raises error' do
-        expect { ids }.to raise_error(/Invalid cursor/)
+        expect { actual_ids }.to raise_error(/Invalid cursor/)
       end
     end
 
     context 'when SQL injection is attempted' do
       let(:arguments) do
         {
-          # Safe: (created_at, id) > (2025-01-01, 1)
-          # With SQL injection:  (created_at, id) > (2025-01-01, 1) OR 1=1--)
-          after: encoded_cursor({ "id" => "1) OR 1=1--", "created_at" => event_1.created_at })
+          # Safe: (created_at, updated_at, id) > (2025-01-01, 2025-01-01, 1)
+          # With SQL injection:  (created_at, updated_at, id) > (2025-01-01, 2025-01-01, 1) OR 1=1--)
+          after: encoded_cursor({
+            "id" => "1) OR 1=1--",
+            "created_at" => ordered_events.first.created_at,
+            "updated_at" => ordered_events.first.updated_at
+          })
         }
       end
 
@@ -185,7 +128,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
     end
   end
 
-  describe 'cursor generation' do
+  describe '#cursor_for' do
     let(:nodes) { ClickHouse::Client::QueryBuilder.new('events').order(:value, :asc) }
 
     def encode(string)

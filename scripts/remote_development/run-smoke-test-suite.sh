@@ -1,4 +1,45 @@
 #!/usr/bin/env bash
+#
+# Run the Remote Development smoke test suite.
+#
+# Usage: [ENV_VARS] ./scripts/remote_development/run-smoke-test-suite.sh [--help|-h]
+#
+# Environment variables:
+#   ONLY_RUBOCOP=1        Run only rubocop
+#   ONLY_RSPEC_FP=1       Run only FP specs
+#   ONLY_RSPEC_FAST=1     Run only fast specs
+#   ONLY_JEST=1           Run only jest specs
+#   ONLY_RSPEC_NON_FAST=1 Run only non-fast specs
+#   ONLY_RSPEC_FEATURE=1  Run only feature specs
+#
+#   SKIP_RUBOCOP=1        Skip rubocop
+#   SKIP_RSPEC_FP=1       Skip FP specs
+#   SKIP_RSPEC_FAST=1     Skip fast specs
+#   SKIP_JEST=1           Skip jest specs
+#   SKIP_RSPEC_NON_FAST=1 Skip non-fast specs
+#   SKIP_RSPEC_FEATURE=1  Skip feature specs
+#
+# Examples:
+#   ONLY_RSPEC_FAST=1 ONLY_RSPEC_NON_FAST=1 ./scripts/remote_development/run-smoke-test-suite.sh
+#   SKIP_RSPEC_FEATURE=1 SKIP_JEST=1 ./scripts/remote_development/run-smoke-test-suite.sh
+#
+# Note on Rubocop:
+#   By default, rubocop runs with REVEAL_RUBOCOP_TODO=1 and will fail even for violations
+#   ignored via '.rubocop_todo/...'. This encourages proactive resolution of newly introduced
+#   rubocop rule violations. To temporarily ignore TODOs, set REVEAL_RUBOCOP_TODO=0.
+#
+# Why is this script written in bash and has its logic duplicated across multiple features?
+#
+#   1. Bash handles interleaved STDOUT/STDERR streams correctly, preserving proper sequencing
+#      and color output from nested subprocesses. This is difficult to achieve in Ruby.
+#   2. We intentionally keep these scripts simple, linear, and minimal. Abstracting or DRYing
+#      them up would lead to complexity creep: rewriting in Ruby, adding tests, creating gems,
+#      and eventually building a whole framework. We avoid that path.
+#   3. Each feature area can customize their script independently without coordination.
+#
+#   See: https://gitlab.com/gitlab-org/gitlab/-/issues/560531#note_2681672640
+#        https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202481#note_2706447700
+#
 
 # shellcheck disable=SC2059
 
@@ -45,19 +86,19 @@ function run_rubocop {
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
 
-function run_fp {
+function run_rspec_fp {
   trap onexit_err ERR
 
   printf "\n\n${BBlue}Running backend RSpec FP specs${Color_Off}\n\n"
 
-  files_for_fp=()
+  files_for_rspec_fp=()
 
   while IFS='' read -r file; do
-      files_for_fp+=("$file")
+      files_for_rspec_fp+=("$file")
   done < <(git ls-files -- '**/gitlab/fp/*_spec.rb' '**/gitlab/fp/**/*_spec.rb')
 
 
-  bin/rspec "${files_for_fp[@]}"
+  bin/rspec "${files_for_rspec_fp[@]}"
 }
 
 function run_rspec_fast {
@@ -65,18 +106,18 @@ function run_rspec_fast {
 
   printf "\n\n${BBlue}Running backend RSpec fast specs${Color_Off}\n\n"
 
-  files_for_fast=()
+  files_for_rspec_fast=()
 
   while IFS='' read -r file; do
-      files_for_fast+=("$file")
+      files_for_rspec_fast+=("$file")
   done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb')
 
-  printf "Running rspec command:\n\n"
+  printf "Running rspec fast command:\n\n"
   printf "bin/rspec "
-  printf "%s " "${files_for_fast[@]}"
+  printf "%s " "${files_for_rspec_fast[@]}"
   printf "\n\n"
 
-  bin/rspec "${files_for_fast[@]}"
+  bin/rspec "${files_for_rspec_fast[@]}"
 }
 
 function run_jest {
@@ -94,17 +135,17 @@ function run_rspec_non_fast {
 
   printf "\n\n${BBlue}Running backend RSpec non-fast specs${Color_Off}\n\n"
 
-  files_for_non_fast=()
+  files_for_rspec_non_fast=()
 
   # Note that we do NOT exclude the fast_spec_helper specs here, because sometimes specs may pass
   # when run with fast_spec_helper, but fail when run with the full spec_helper. This happens when
   # they are run as part of a larger suite of mixed fast and slow files, for example, in CI jobs.
   # Running all fast and slow specs here ensures that we catch those cases.
   while IFS='' read -r file; do
-      files_for_non_fast+=("$file")
+      files_for_rspec_non_fast+=("$file")
   done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
-  files_for_non_fast+=(
+  files_for_rspec_non_fast+=(
       "ee/spec/graphql/ee/resolvers/clusters/agents_resolver_spec.rb"
       "ee/spec/graphql/types/query_type_spec.rb"
       "ee/spec/graphql/ee/types/subscription_type_spec.rb"
@@ -114,32 +155,52 @@ function run_rspec_non_fast {
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
 
-  printf "Running rspec command:\n\n"
+  printf "Running rspec non-fast command:\n\n"
   printf "bin/rspec --format documentation "
-  printf "%s " "${files_for_non_fast[@]}"
+  printf "%s " "${files_for_rspec_non_fast[@]}"
   printf "\n\n"
 
-  bin/rspec --format documentation "${files_for_non_fast[@]}"
+  bin/rspec --format documentation "${files_for_rspec_non_fast[@]}"
 }
 
 function run_rspec_feature {
   trap onexit_err ERR
 
   printf "\n\n${BBlue}Running backend RSpec feature specs${Color_Off}\n\n"
-  files_for_feature=()
+  files_for_rspec_feature=()
   while IFS='' read -r file; do
-      files_for_feature+=("$file")
+      files_for_rspec_feature+=("$file")
   done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
 
-  bin/rspec --format documentation -r spec_helper "${files_for_feature[@]}"
+  bin/rspec --format documentation -r spec_helper "${files_for_rspec_feature[@]}"
 }
 
 function print_success_message {
   printf "\n✅✅✅ ${BGreen}All executed linters/specs passed successfully!${Color_Off} ✅✅✅\n"
 }
 
+function print_usage {
+  awk 'NR==1{next} /^$/{exit} /^#/{gsub(/^# ?/,""); print}' "${BASH_SOURCE[0]}"
+  exit 0
+}
+
+function should_run {
+  local section=$1
+  local only_var="ONLY_${section}"
+  local skip_var="SKIP_${section}"
+
+  # If any ONLY_* var is set, run only those sections; otherwise use SKIP_* behavior
+  if [ -n "${ONLY_RUBOCOP}${ONLY_RSPEC_FP}${ONLY_RSPEC_FAST}${ONLY_JEST}${ONLY_RSPEC_NON_FAST}${ONLY_RSPEC_FEATURE}" ]; then
+    [ -n "${!only_var}" ]
+  else
+    [ -z "${!skip_var}" ]
+  fi
+}
+
 function main {
   trap onexit_err ERR
+
+  case "${1:-}" in --help|-h) print_usage ;; esac
 
   # Ensure we were not invoked via a non-bash shell which overrode the /bin/bash shebang
   [ -n "${BASH_VERSION:-}" ] || { printf "\n❌❌❌ ${BRed}Please run with bash${Color_Off} ❌❌❌\n" >&2; exit 1; }
@@ -154,17 +215,14 @@ function main {
   print_start_message
 
   # Run linting before tests
-  [ -z "${SKIP_RUBOCOP}" ] && run_rubocop
+  should_run RUBOCOP && run_rubocop
 
   # Test sections are sorted roughly in increasing order of execution time, in order to get the fastest feedback on failures.
-  [ -z "${SKIP_FP}" ] && run_fp
-  [ -z "${SKIP_FAST}" ] && run_rspec_fast
-  [ -z "${SKIP_JEST}" ] && run_jest
-  [ -z "${SKIP_NON_FAST}" ] && run_rspec_non_fast
-  [ -z "${SKIP_FEATURE}" ] && run_rspec_feature
-
-  # Convenience ENV vars to run focused sections, copy and paste as a prefix to script command, and remove the one(s) you want to run focused
-  # SKIP_RUBOCOP=1 SKIP_FP=1 SKIP_FAST=1 SKIP_JEST=1 SKIP_NON_FAST=1 SKIP_FEATURE=1
+  should_run RSPEC_FP && run_rspec_fp
+  should_run RSPEC_FAST && run_rspec_fast
+  should_run JEST && run_jest
+  should_run RSPEC_NON_FAST && run_rspec_non_fast
+  should_run RSPEC_FEATURE && run_rspec_feature
 
   print_success_message
 }

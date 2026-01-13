@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
+RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout, feature_category: :database do
   before do
     Rake.application.rake_require 'tasks/gitlab/cleanup'
   end
@@ -286,7 +286,8 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
           stub_env('LIMIT_TO_DELETE', 1)
         end
 
-        it 'deletes only one branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448376' do
+        it 'deletes only one branch',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17062' do
           expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
           expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
           expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil

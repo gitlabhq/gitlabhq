@@ -146,6 +146,7 @@ class Group < Namespace
   scope :self_or_ancestors_aimed_for_deletion, -> { where(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
+  scope :self_not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
   scope :self_and_ancestors_not_aimed_for_deletion, -> { where.not(self_or_ancestors_deletion_schedule_subquery.exists) }
 
   scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
@@ -249,9 +250,24 @@ class Group < Namespace
   scope :with_users, -> { includes(:users) }
 
   scope :active, -> { self_and_ancestors_active }
+  scope :self_active, -> { self_non_archived.self_not_aimed_for_deletion }
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
   scope :inactive, -> { self_or_ancestors_inactive }
+  scope :self_inactive, -> do
+    namespace_setting_reflection = reflect_on_association(:namespace_settings)
+    namespace_setting_table = Arel::Table.new(namespace_setting_reflection.table_name)
+
+    deletion_schedule_reflection = reflect_on_association(:deletion_schedule)
+    deletion_schedule_table = Arel::Table.new(deletion_schedule_reflection.table_name)
+
+    joins(:namespace_settings)
+      .left_joins(:deletion_schedule)
+      .where(
+        namespace_setting_table[:archived].eq(true)
+          .or(deletion_schedule_table[:group_id].not_eq(nil))
+      )
+  end
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
@@ -720,6 +736,12 @@ class Group < Namespace
     add_member(user, :reporter, current_user: current_user)
   end
 
+  def add_security_manager(user, current_user = nil)
+    return unless Gitlab::Security::SecurityManagerConfig.enabled?
+
+    add_member(user, :security_manager, current_user: current_user)
+  end
+
   def add_developer(user, current_user = nil)
     add_member(user, :developer, current_user: current_user)
   end
@@ -1169,6 +1191,11 @@ class Group < Namespace
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
 
+  def use_work_item_url?
+    work_items_consolidated_list_enabled? &&
+      !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
+  end
+
   # overriden in EE
   def has_active_hooks?(hooks_scope = :push_hooks)
     false
@@ -1285,6 +1312,20 @@ class Group < Namespace
     return false unless deletion_schedule
 
     deletion_schedule.marked_for_deletion_on.future?
+  end
+
+  def unarchive_descendants!
+    NamespaceSetting
+      .where(namespace_id: descendant_ids, archived: true)
+      .update_all(archived: false)
+  end
+
+  def unarchive_all_projects!
+    Project
+      .joins(:namespace)
+      .where("namespaces.traversal_ids @> '{?}'", id)
+      .where(archived: true)
+      .update_all(archived: false)
   end
 
   private

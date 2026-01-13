@@ -97,7 +97,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.namespace.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -155,7 +155,7 @@ export default {
               },
               (sourceData) =>
                 produce(sourceData, (draftState) => {
-                  const timeTrackingWidget = findTimeTrackingWidget(draftState.workspace.workItem);
+                  const timeTrackingWidget = findTimeTrackingWidget(draftState.namespace.workItem);
                   const timelogs = timeTrackingWidget.timelogs.nodes;
                   const index = timelogs.findIndex((timelog) => timelog.id === timelogId);
 

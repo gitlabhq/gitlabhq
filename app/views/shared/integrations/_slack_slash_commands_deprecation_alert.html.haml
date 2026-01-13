@@ -1,0 +1,9 @@
+= render Pajamas::AlertComponent.new(title: s_('SlackIntegration|Slack slash commands integration is deprecated'),
+  variant: :warning,
+  dismissible: false,
+  alert_options: { class: 'gl-my-5', data: { testid: 'slack-slash-commands-deprecation' } }) do |c|
+  - c.with_body do
+    = s_('SlackIntegration|Slack slash commands integration will be removed in GitLab 19.0. To run common GitLab operations from Slack, use the GitLab for Slack app instead.')
+    = link_to help_page_path('user/project/integrations/gitlab_slack_application.md'), target: '_blank' do
+      = _('Learn more.')
+      = sprite_icon('external-link')

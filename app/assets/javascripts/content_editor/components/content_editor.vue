@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { isEqual } from 'lodash';
-import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+import { markRaw } from 'vue';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
@@ -86,6 +86,11 @@ export default {
       required: false,
       default: false,
     },
+    supportsTableOfContents: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -162,6 +167,7 @@ export default {
       serializerConfig,
       autofocus,
       drawioEnabled,
+      supportsTableOfContents,
       editable,
       enableAutocomplete,
       autocompleteDataSources,
@@ -176,6 +182,7 @@ export default {
         extensions,
         serializerConfig,
         drawioEnabled,
+        supportsTableOfContents,
         enableAutocomplete,
         autocompleteDataSources,
         codeSuggestionsConfig,
@@ -320,7 +327,11 @@ export default {
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div class="md-area gl-relative" :class="{ immersive }" data-testid="content-editor-container">
+    <div
+      class="md-area"
+      data-testid="content-editor-container"
+      :class="{ 'immersive !gl-border-none !gl-bg-inherit': immersive, 'gl-relative': !immersive }"
+    >
       <gl-loading-icon
         v-if="isLoading"
         size="lg"
@@ -334,15 +345,32 @@ export default {
       />
       <content-editor-alert />
       <div data-testid="content-editor" :class="{ 'is-focused': focused }">
-        <formatting-toolbar
-          ref="toolbar"
-          :supports-quick-actions="supportsQuickActions"
-          :hide-attachment-button="disableAttachments"
-          :new-comment-template-paths-prop="newCommentTemplatePaths"
-          @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+        <div
+          data-testid="content-editor-header"
+          :class="{
+            'gl-sticky gl-top-0 gl-z-3 gl-bg-default': immersive,
+          }"
         >
-          <template #header-buttons><slot name="header-buttons"></slot></template>
-        </formatting-toolbar>
+          <slot name="header"></slot>
+          <formatting-toolbar
+            ref="toolbar"
+            :supports-quick-actions="supportsQuickActions"
+            :hide-attachment-button="disableAttachments"
+            :new-comment-template-paths-prop="newCommentTemplatePaths"
+            :class="{ 'gl-pt-0': immersive }"
+            @enableMarkdownEditor="$emit('enableMarkdownEditor')"
+          >
+            <template #header-buttons>
+              <slot name="header-buttons"></slot>
+              <editor-mode-switcher
+                v-if="immersive"
+                size="small"
+                value="richText"
+                @switch="handleEditorModeChanged"
+              />
+            </template>
+          </formatting-toolbar>
+        </div>
         <div v-if="showPlaceholder" class="gl-absolute gl-px-5 gl-pt-4 gl-text-disabled">
           {{ placeholder }}
         </div>
@@ -360,6 +388,8 @@ export default {
         <table-bubble-menu />
       </div>
       <div
+        v-if="!immersive"
+        data-testid="content-editor-footer"
         class="gl-border-t gl-flex gl-flex-row gl-items-center gl-justify-between gl-rounded-bl-base gl-rounded-br-base gl-border-default gl-px-2"
       >
         <editor-mode-switcher size="small" value="richText" @switch="handleEditorModeChanged" />

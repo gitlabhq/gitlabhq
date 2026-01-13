@@ -85,7 +85,7 @@ Each table row groups related information about a merge request together into co
 
 ## Set your display preferences
 
-In the upper right, select **Display preferences** ({{< icon name="preferences">}}) to sort your merge requests by:
+In the upper right, select **Display preferences** ({{< icon name="preferences" >}}) to sort your merge requests by:
 
 - **Workflow**. This view groups merge requests by their status. Merge requests needing your attention are shown first, regardless of whether
   you are the author or the reviewer.
@@ -141,7 +141,11 @@ The **Workflow** view groups merge requests by where they are in the
 what action to take next:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: Understand the Workflow view
+    accDescr: Diagram showing how workflow view groups merge requests and where they are in the review process
+
     A[Create a<br>merge request] --> B{Reviewers<br>added?}
     B-->|Yes| D[<strong>Review<br>requested</strong>]
     B -.->|No| C[<strong>Assigned<br>to you</strong>]
@@ -151,15 +155,6 @@ flowchart LR
     E -->G{All<br>approvals?}
     G -->|Yes| K[Ready to merge!]
     G -.->|No| J[Remains in<br><strong>Waiting for approvals</strong>]
-
-    linkStyle default stroke:red
-    linkStyle 0 stroke:green
-    linkStyle 1 stroke:green
-    linkStyle 3 stroke:green
-    linkStyle 5 stroke:green
-    linkStyle 6 stroke:green
-    linkStyle 7 stroke:green
-    style K stroke:black,fill:#28a745,color:#fff
 ```
 
 This review flow assumes:

@@ -27,6 +27,11 @@ export default {
       type: String,
       required: true,
     },
+    disabledItems: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     listItems: {
       type: Array,
       required: false,
@@ -173,9 +178,16 @@ export default {
       this.$emit('searchStarted', value);
     },
     handleItemClick(item) {
-      this.localSelectedItem = item;
+      // Handle both single and multi-select cases
+      const itemArray = Array.isArray(item) ? item : [item];
+      const itemsToUpdate = itemArray.filter((i) => !this.disabledItems.includes(i));
+
+      // For single select, unwrap the array
+      const finalValue = this.multiSelect ? itemsToUpdate : itemsToUpdate[0];
+
+      this.localSelectedItem = finalValue;
       if (!this.multiSelect) {
-        this.$emit('updateValue', item);
+        this.$emit('updateValue', finalValue);
       } else {
         this.isDirty = true;
         this.$emit('updateSelected', this.localSelectedItem);

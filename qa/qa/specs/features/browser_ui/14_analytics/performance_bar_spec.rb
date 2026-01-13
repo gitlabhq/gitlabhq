@@ -29,7 +29,7 @@ module QA
           'shows results for the original request and AJAX requests',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348030',
           quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547796',
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24017',
             type: :investigating,
             only: { job: /cng-instance|cng-relative-url/ }
           }

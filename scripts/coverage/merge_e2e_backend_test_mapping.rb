@@ -21,21 +21,27 @@ class BackendTestMappingMerger
     puts "=== E2E Test Mapping Merger ==="
 
     e2e_mapping = load_e2e_mapping
-    if e2e_mapping.nil? || e2e_mapping.empty?
-      warn "ERROR: No E2E mappings found"
-      return false
-    end
-
-    inverted_e2e_mapping = invert_mapping(e2e_mapping)
-    puts "Inverted E2E mapping: #{inverted_e2e_mapping.size} source files"
+    inverted_e2e_mapping = if e2e_mapping.nil? || e2e_mapping.empty?
+                             puts "No E2E mappings found, will use Crystalball mapping only"
+                             {}
+                           else
+                             inverted = invert_mapping(e2e_mapping)
+                             puts "Inverted E2E mapping: #{inverted.size} source files"
+                             inverted
+                           end
 
     crystalball_mapping = load_crystalball_mapping
     if crystalball_mapping.nil?
-      warn "ERROR: Crystalball mapping not found at #{CRYSTALBALL_MAPPING_PATH}"
-      return false
+      puts "Crystalball mapping not found at #{CRYSTALBALL_MAPPING_PATH}"
+      crystalball_mapping = {}
+    else
+      puts "Loaded Crystalball mapping: #{crystalball_mapping.size} source files"
     end
 
-    puts "Loaded Crystalball mapping: #{crystalball_mapping.size} source files"
+    if inverted_e2e_mapping.empty? && crystalball_mapping.empty?
+      warn "ERROR: Both E2E and Crystalball mappings are missing, cannot produce merged mapping"
+      return false
+    end
 
     merged_mapping = merge_mappings(crystalball_mapping, inverted_e2e_mapping)
     puts "Merged mapping: #{merged_mapping.size} source files"

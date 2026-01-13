@@ -36,6 +36,19 @@ module Cells
       end
     end
 
+    def handle_grpc_error(error, value)
+      case error.code
+      when GRPC::Core::StatusCodes::ALREADY_EXISTS
+        errors.add(unique_attribute, :taken, value: value)
+      when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
+        errors.add(:base, "Request timed out. Please try again.")
+      when GRPC::Core::StatusCodes::NOT_FOUND
+        errors.add(:base, "The requested resource does not exist.")
+      else
+        errors.add(:base, "An error occurred while processing your request")
+      end
+    end
+
     private
 
     def cells_claims_save_changes

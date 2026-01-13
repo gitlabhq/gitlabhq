@@ -51,7 +51,7 @@ Parent and child pipelines have a maximum depth of two levels of child pipelines
 A parent pipeline can trigger many child pipelines, and these child pipelines can trigger
 their own child pipelines. You cannot trigger another level of child pipelines.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
 
 ## Multi-project pipelines
@@ -190,7 +190,7 @@ targeting content that changed or to build a matrix of targets and architectures
 
 The artifact containing the generated YAML file must be within [instance limits](../../administration/instance_limits.md#maximum-size-of-the-ci-artifacts-archive).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
 
 For an example project that generates a dynamic child pipeline, see
@@ -733,11 +733,8 @@ a few different methods, based on where the variable is created or defined.
 
 ### Pass YAML-defined CI/CD variables
 
-{{< alert type="note" >}}
-
-Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility.
-
-{{< /alert >}}
+> [!note]
+> Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility.
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
 These variables are pipeline variables for [variable precedence](../variables/_index.md#cicd-variable-precedence).

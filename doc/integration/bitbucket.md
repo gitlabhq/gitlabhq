@@ -123,11 +123,8 @@ sign-in form. Select the icon to begin the authentication process. Bitbucket ask
 the user to sign in and authorize the GitLab application. If successful, the user
 is returned to GitLab and signed in.
 
-{{< alert type="note" >}}
-
-For multi-node architectures, the Bitbucket provider configuration must also be included on the Sidekiq nodes to be able to import projects.
-
-{{< /alert >}}
+> [!note]
+> For multi-node architectures, the Bitbucket provider configuration must also be included on the Sidekiq nodes to be able to import projects.
 
 ## Bitbucket project import
 

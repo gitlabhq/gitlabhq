@@ -31,6 +31,7 @@ export default {
     docs: __('GitLab documentation'),
     plans: __('Compare GitLab plans'),
     forum: __('GitLab community forum'),
+    university: __('GitLab University'),
     contribute: __('Contribute to GitLab'),
     feedback: __('Provide feedback'),
     shortcuts: __('Keyboard shortcuts'),
@@ -78,6 +79,13 @@ export default {
               href: this.sidebarData.docs_path,
               extraAttrs: {
                 ...this.trackingAttrs('gitlab_documentation'),
+              },
+            },
+            {
+              text: this.$options.i18n.university,
+              href: this.sidebarData.university_path,
+              extraAttrs: {
+                ...this.trackingAttrs('gitlab_university'),
               },
             },
             {

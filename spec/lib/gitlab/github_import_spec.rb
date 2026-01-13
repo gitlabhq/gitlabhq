@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport, feature_category: :importers do
   let(:organization) { create(:common_organization) }
-  let(:ghost_user) { Users::Internal.for_organization(organization.id).ghost }
+  let(:ghost_user) { Users::Internal.in_organization(organization.id).ghost }
 
   context 'github.com' do
     let(:project) { double(:project, unsafe_import_url: 'http://t0ken@github.com/user/repo.git', id: 1, group: nil) }

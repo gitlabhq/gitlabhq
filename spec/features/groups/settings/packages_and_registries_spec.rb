@@ -5,13 +5,16 @@ require 'spec_helper'
 RSpec.describe 'Group Package and registry settings', feature_category: :package_registry do
   include WaitForRequests
 
-  let(:user) { create(:user) }
-  let(:group) { create(:group) }
-  let(:sub_group) { create(:group, parent: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:sub_group) { create(:group, parent: group) }
 
-  before do
+  before_all do
     group.add_owner(user)
     sub_group.add_owner(user)
+  end
+
+  before do
     sign_in(user)
   end
 
@@ -25,7 +28,9 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
 
       within_testid('super-sidebar') do
         click_button 'Settings'
-        expect(page).not_to have_content 'Packages and registries'
+
+        expect(page).not_to have_link('Packages and registries',
+          href: group_settings_packages_and_registries_path(group))
       end
     end
 
@@ -37,15 +42,6 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
   end
 
   context 'when packages feature is enabled on the group' do
-    it 'the menu item is visible', :js do
-      visit group_path(group)
-
-      within_testid('super-sidebar') do
-        click_button 'Settings'
-        expect(page).to have_content 'Packages and registries'
-      end
-    end
-
     it 'has a page title set' do
       visit_settings_page
 
@@ -56,7 +52,8 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       visit_settings_page
 
       within_testid('super-sidebar') do
-        expect(page).to have_link _('Packages and registries')
+        expect(page).to have_selector('button[aria-expanded="true"]', text: 'Settings')
+        expect(page).to have_css('a[aria-current="page"]', text: 'Packages and registries')
       end
     end
 

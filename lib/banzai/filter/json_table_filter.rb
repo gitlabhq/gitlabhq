@@ -50,6 +50,8 @@ module Banzai
         @fields = json['fields']
         @items = json['items']
 
+        return unless valid_items_format?
+
         table = table_header
         table << table_body
 
@@ -106,6 +108,10 @@ module Banzai
         items.first.each_key { |value| array.push({ 'key' => value }) }
 
         array
+      end
+
+      def valid_items_format?
+        items.is_a?(Array) && items.any? && items.all?(Hash)
       end
     end
   end

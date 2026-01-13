@@ -111,7 +111,7 @@ publish:
 ## Best Practices for Package Security
 
 1. Enable npm **2FA for package publishing** to prevent unauthorized publishing.
-1. Enable GitLab [Dependency Scanning](../user/application_security/dependency_scanning/_index.md)
+1. Enable [dependency scanning](../user/application_security/dependency_scanning/_index.md)
    on the project and regularly review the vulnerability report.
 1. Monitor published packages for unusual activity or unauthorized updates.
 1. Document the purpose and scope of the package in the `README.md` to ensure clear communication with users.

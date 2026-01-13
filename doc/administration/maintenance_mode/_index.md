@@ -63,11 +63,8 @@ An error is displayed when a user tries to perform a write operation that isn't 
 
 ![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17_6.png)
 
-{{< alert type="note" >}}
-
-In some cases, the visual feedback from an action could be misleading. For example, when starring a project, the **Star** button changes to show the **Unstar** action. However, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
-
-{{< /alert >}}
+> [!note]
+> In some cases, visual feedback from an action might be misleading. For example, when starring a project, the **Star** button changes to show the **Unstar** action. However, this only updates the UI and doesn't take into account the status of the POST request.
 
 ### Administrator functions
 
@@ -211,7 +208,7 @@ Exporting a vulnerability list from a vulnerability report page does not work.
 
 Changing the status on a finding or vulnerability object does not work, even though no error is shown in the UI.
 
-SAST and Secret Detection cannot be initiated because they depend on passing CI jobs to create artifacts.
+SAST and secret detection cannot be initiated because they depend on passing CI/CD jobs to create artifacts.
 
 ## An example use case: a planned failover
 

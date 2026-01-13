@@ -35,11 +35,8 @@ Manage HTTP streaming destinations for top-level groups.
 
 Add a new streaming destination to top-level groups.
 
-{{< alert type="warning" >}}
-
-Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust the streaming destination.
-
-{{< /alert >}}
+> [!warning]
+> Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust the streaming destination.
 
 Prerequisites:
 

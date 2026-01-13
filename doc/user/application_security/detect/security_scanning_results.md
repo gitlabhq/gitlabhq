@@ -221,11 +221,8 @@ No solution is yet available for this issue. For details, see
 
 ### Report parsing and scan ingestion errors
 
-{{< alert type="note" >}}
-
-These steps are to be used by GitLab Support to reproduce such errors.
-
-{{< /alert >}}
+> [!note]
+> These steps are to be used by GitLab Support to reproduce such errors.
 
 Some security scans may result in errors in the **Security** tab of the pipeline related to report parsing or scan ingestion. If it is not possible to get a copy of the project from the user, you can reproduce the error using the report generated from the scan.
 

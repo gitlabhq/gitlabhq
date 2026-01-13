@@ -27,6 +27,7 @@ module API
             { code: 403, message: 'Forbidden' }
           ]
           is_array true
+          tags ['pipelines']
         end
 
         params do
@@ -89,6 +90,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           use :create_pipeline_params
@@ -123,6 +125,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           optional :ref, type: String, desc: 'Branch ref of pipeline. Uses project default branch if not specified.',
@@ -144,6 +147,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -167,6 +171,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -202,6 +207,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -237,6 +243,7 @@ module API
             { code: 404, message: 'Not found' }
           ]
           is_array true
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -257,6 +264,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -279,6 +287,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -294,6 +303,8 @@ module API
         desc 'Deletes a pipeline' do
           detail 'This feature was introduced in GitLab 11.6'
           http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]
+          success code: 204, message: 'Pipeline was deleted'
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -319,6 +330,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -349,6 +361,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
@@ -375,6 +388,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' }
           ]
+          tags ['pipelines']
         end
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }

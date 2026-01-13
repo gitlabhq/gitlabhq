@@ -72,7 +72,7 @@ To create the scan execution policy:
 1. Complete the fields.
    - **Name**: Enforce secret detection.
    - **Policy status**: Enabled.
-   - **Actions**: Run a Secret Detection scan.
+   - **Actions**: Run a secret detection scan.
    - **Conditions**: Triggers every time a pipeline runs for all branches.
 1. Select **Configure with a merge request**.
 

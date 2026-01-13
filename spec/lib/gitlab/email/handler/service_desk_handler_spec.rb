@@ -34,6 +34,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
+    # Keep duplicate tests here for easy feature flag removal.
+    # This way we don't need to touch code that stays.
     shared_examples 'a new issue request' do
       before do
         setup_attachment
@@ -44,6 +46,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         new_issue = Issue.last
 
+        expect(new_issue.work_item_type.base_type).to eq('issue')
         expect(new_issue.author).to eql(support_bot)
         expect(new_issue.confidential?).to be confidential_ticket
         expect(new_issue.all_references.all).to be_empty
@@ -82,6 +85,61 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       end
     end
 
+    shared_examples 'a new ticket request' do
+      before do
+        setup_attachment
+      end
+
+      it 'creates a new work item of type ticket' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
+
+        new_ticket = WorkItem.last
+
+        aggregate_failures do
+          expect(new_ticket).to have_attributes(
+            author: support_bot,
+            confidential?: confidential_ticket,
+            title: expected_subject,
+            description: expected_description.strip
+          )
+          # Check for the `service_desk` configuration in the future
+          # See https://gitlab.com/groups/gitlab-org/-/epics/19879
+          expect(new_ticket.work_item_type.base_type).to eq('ticket')
+          expect(new_ticket.all_references.all).to be_empty
+          expect(new_ticket.email&.email_message_id).to eq(message_id)
+        end
+      end
+
+      it 'creates an issue_email_participant' do
+        receiver.execute
+        new_ticket = WorkItem.last
+
+        expect(new_ticket.issue_email_participants.count).to eq(issue_email_participants_count)
+        expect(new_ticket.issue_email_participants.first.email).to eq(author_email)
+      end
+
+      it 'sends thank you email' do
+        expect(Notify).to receive(:service_desk_thank_you_email).once
+          .and_return(instance_double(ActionMailer::MessageDelivery, deliver_later: true))
+
+        receiver.execute
+      end
+
+      it 'adds metric events for incoming and reply emails' do
+        metric_transaction = instance_double(Gitlab::Metrics::WebTransaction, increment: true, observe: true)
+        allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
+        # Because IssueEmailParticipants::CreateService sends new_participant email
+        expect(metric_transaction).to receive(:add_event).with(:service_desk_new_participant_email)
+          .exactly(issue_email_participants_count - 1).times
+        expect(metric_transaction).to receive(:add_event).with(:receive_email_service_desk, {
+          handler: 'Gitlab::Email::Handler::ServiceDeskHandler'
+        })
+        expect(metric_transaction).to receive(:add_event).with(:service_desk_thank_you_email)
+
+        receiver.execute
+      end
+    end
+
     context 'when encoding of an email is iso-8859-2' do
       let(:email_raw) { email_fixture('emails/service_desk_encoding.eml') }
       let(:expected_description) do
@@ -91,10 +149,10 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       it 'creates a new issue with readable subject and body' do
         expect { receiver.execute }.to change { Issue.count }.by(1)
 
-        new_issue = Issue.last
+        new_ticket = WorkItem.last
 
-        expect(new_issue.title).to eq("Testing encoding iso-8859-2 ťžščľžťťč")
-        expect(new_issue.description).to eq(expected_description.strip)
+        expect(new_ticket.title).to eq("Testing encoding iso-8859-2 ťžščľžťťč")
+        expect(new_ticket.description).to eq(expected_description.strip)
       end
     end
 
@@ -109,20 +167,36 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             settings.update!(tickets_confidential_by_default: false)
           end
 
-          it_behaves_like 'a new issue request'
+          it_behaves_like 'a new ticket request'
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a new issue request'
+          end
         end
       end
 
-      it_behaves_like 'a new issue request'
+      it_behaves_like 'a new ticket request'
+
+      context 'when service_desk_ticket feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_ticket: false)
+        end
+
+        it_behaves_like 'a new issue request'
+      end
 
       it 'attaches existing CRM contacts' do
         contact = create(:contact, group: group, email: author_email)
         contact2 = create(:contact, group: group, email: "cc@example.com")
         contact3 = create(:contact, group: group, email: "kk@example.org")
         receiver.execute
-        new_issue = Issue.last
+        new_ticket = WorkItem.last
 
-        expect(new_issue.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2, contact3)
+        expect(new_ticket.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2, contact3)
       end
 
       it_behaves_like 'tickets should not be confidential is set'
@@ -133,8 +207,16 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         end
 
-        it_behaves_like 'a new issue request'
+        it_behaves_like 'a new ticket request'
         it_behaves_like 'tickets should not be confidential is set'
+
+        context 'when service_desk_ticket feature flag is disabled' do
+          before do
+            stub_feature_flags(service_desk_ticket: false)
+          end
+
+          it_behaves_like 'a new issue request'
+        end
       end
 
       context 'when group and project are public' do
@@ -143,7 +225,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         end
 
-        it_behaves_like 'a new issue request'
+        it_behaves_like 'a new ticket request'
+
+        context 'when service_desk_ticket feature flag is disabled' do
+          before do
+            stub_feature_flags(service_desk_ticket: false)
+          end
+
+          it_behaves_like 'a new issue request'
+        end
 
         context 'when tickets_confidential_by_default is false' do
           before do
@@ -151,15 +241,23 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
 
           # ticket stays confidential
-          it_behaves_like 'a new issue request'
+          it_behaves_like 'a new ticket request'
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a new issue request'
+          end
         end
       end
 
       context 'when add_external_participants_from_cc is true' do
         shared_examples 'does not add CC address' do
           it 'creates a new issue and adds issue_email_participant from From header' do
-            expect { receiver.execute }.to change { Issue.count }.by(1)
-            expect(Issue.last.issue_email_participants.map(&:email)).to match_array(%w[from@example.com])
+            expect { receiver.execute }.to change { WorkItem.count }.by(1)
+            expect(WorkItem.last.issue_email_participants.map(&:email)).to match_array(%w[from@example.com])
           end
         end
 
@@ -171,7 +269,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         let(:issue_email_participants_count) { 3 }
         let(:to_address) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
 
-        it_behaves_like 'a new issue request'
+        it_behaves_like 'a new ticket request'
+
+        context 'when service_desk_ticket feature flag is disabled' do
+          before do
+            stub_feature_flags(service_desk_ticket: false)
+          end
+
+          it_behaves_like 'a new issue request'
+        end
 
         context 'when more than the defined limit of participants are in Cc header' do
           before do
@@ -204,7 +310,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           # Author email plus 5 from Cc
           let(:issue_email_participants_count) { 6 }
 
-          it_behaves_like 'a new issue request'
+          it_behaves_like 'a new ticket request'
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a new issue request'
+          end
         end
 
         context 'when no CC header is present' do
@@ -261,7 +375,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       context 'with legacy incoming email address' do
         let(:email_raw) { fixture_file('emails/service_desk_legacy.eml') }
 
-        it_behaves_like 'a new issue request'
+        it_behaves_like 'a new ticket request'
+
+        context 'when service_desk_ticket feature flag is disabled' do
+          before do
+            stub_feature_flags(service_desk_ticket: false)
+          end
+
+          it_behaves_like 'a new issue request'
+        end
       end
 
       context 'when replying to issue creation email' do
@@ -288,7 +410,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           it 'adds a comment to the created issue' do
             subject
 
-            notes = Issue.last.notes
+            notes = WorkItem.last.notes
             new_note = notes.first
 
             expect(notes.count).to eq(1)
@@ -307,7 +429,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
             # 1 from issue creation
             # 1 from new note reply
-            expect(Issue.last.issue_email_participants.map(&:email))
+            expect(WorkItem.last.issue_email_participants.map(&:email))
               .to match_array(%w[alan@adventuretime.ooo jake@adventuretime.ooo])
           end
 
@@ -320,23 +442,21 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             it 'creates issue_email_participant for the author' do
               subject
 
-              expect(Issue.last.issue_email_participants.map(&:email))
+              expect(WorkItem.last.issue_email_participants.map(&:email))
                 .to match_array(%w[jake@adventuretime.ooo])
             end
           end
         end
 
-        context 'when an issue with message_id has not been found' do
+        context 'when a work item with message_id has not been found' do
           subject do
             receive_reply
           end
 
-          it 'creates a new issue correctly' do
-            expect { subject }.to change { Issue.count }.by(1)
+          it 'creates a new work item correctly' do
+            expect { subject }.to change { WorkItem.count }.by(1)
 
-            issue = Issue.last
-
-            expect(issue.description).to eq("Service desk reply!\n\n`/label ~label2`")
+            expect(WorkItem.last.description).to eq("Service desk reply!\n\n`/label ~label2`")
           end
 
           it 'sends thank you email once' do
@@ -349,7 +469,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           it 'creates issue_email_participant for the author' do
             subject
 
-            expect(Issue.last.issue_email_participants.map(&:email))
+            expect(WorkItem.last.issue_email_participants.map(&:email))
               .to match_array(%w[alan@adventuretime.ooo])
           end
         end
@@ -368,9 +488,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
             receiver.execute
 
-            issue_description = Issue.last.description
-            expect(issue_description).to include(expected_description)
-            expect(issue_description.lines.last).to eq('text from template')
+            description = WorkItem.last.description
+            expect(description).to include(expected_description)
+            expect(description.lines.last).to eq('text from template')
           end
 
           context 'when quick actions are present' do
@@ -383,10 +503,10 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
               receiver.execute
 
-              issue = Issue.last
-              expect(issue.description).to include('Text from template')
-              expect(issue.label_ids).to include(label.id)
-              expect(issue.milestone).to eq(milestone)
+              work_item = WorkItem.last
+              expect(work_item.description).to include('Text from template')
+              expect(work_item.label_ids).to include(label.id)
+              expect(work_item.milestone).to eq(milestone)
             end
 
             it 'applies group labels using quick actions' do
@@ -396,9 +516,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
               receiver.execute
 
-              issue = Issue.last
-              expect(issue.description).to include('Text from template')
-              expect(issue.label_ids).to include(group_label.id)
+              work_item = WorkItem.last
+              expect(work_item.description).to include('Text from template')
+              expect(work_item.label_ids).to include(group_label.id)
             end
 
             it 'redacts quick actions present on user email body' do
@@ -406,13 +526,13 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
               receiver.execute
 
-              issue = Issue.last
-              expect(issue).to be_opened
-              expect(issue.description).to include('`/label ~label1`')
-              expect(issue.description).to include('`/assign @user1`')
-              expect(issue.description).to include('`/close`')
-              expect(issue.assignees).to be_empty
-              expect(issue.milestone).to be_nil
+              work_item = WorkItem.last
+              expect(work_item).to be_opened
+              expect(work_item.description).to include('`/label ~label1`')
+              expect(work_item.description).to include('`/assign @user1`')
+              expect(work_item.description).to include('`/close`')
+              expect(work_item.assignees).to be_empty
+              expect(work_item.milestone).to be_nil
             end
 
             context 'when issues are set to private' do
@@ -426,11 +546,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
                 receiver.execute
 
-                issue = Issue.last
-                expect(issue.description).to include('Text from service_desk2 template')
-                expect(issue.label_ids).to include(label.id)
-                expect(issue.author_id).to eq(support_bot.id)
-                expect(issue.milestone).to eq(milestone)
+                work_item = WorkItem.last
+                expect(work_item.description).to include('Text from service_desk2 template')
+                expect(work_item.label_ids).to include(label.id)
+                expect(work_item.author_id).to eq(support_bot.id)
+                expect(work_item.milestone).to eq(milestone)
               end
             end
           end
@@ -444,9 +564,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           it 'does not append template text to issue description' do
             receiver.execute
 
-            new_issue = Issue.last
-
-            expect(new_issue.description).to eq(expected_description.strip)
+            expect(WorkItem.last.description).to eq(expected_description.strip)
           end
 
           it 'creates support bot note on issue' do
@@ -473,8 +591,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         it 'creates email with correct body' do
           receiver.execute
 
-          issue = Issue.last
-          expect(issue.description).to include('> This is an empty quote')
+          expect(WorkItem.last.description).to include('> This is an empty quote')
         end
       end
 
@@ -494,7 +611,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             settings.update!(project_key: service_desk_key)
           end
 
-          it_behaves_like 'a new issue request'
+          it_behaves_like 'a new ticket request'
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a new issue request'
+          end
 
           context 'when there is no project with the key' do
             let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', key: 'some_key') }
@@ -522,8 +647,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             end
 
             it 'process email for project with matching slug' do
-              expect { receiver.execute }.to change { Issue.count }.by(1)
-              expect(Issue.last.project).to eq(project_with_same_key)
+              expect { receiver.execute }.to change { WorkItem.count }.by(1)
+              expect(WorkItem.last.project).to eq(project_with_same_key)
             end
           end
         end
@@ -535,7 +660,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
           end
 
-          it_behaves_like 'a new issue request'
+          it_behaves_like 'a new ticket request'
+
+          context 'when service_desk_ticket feature flag is disabled' do
+            before do
+              stub_feature_flags(service_desk_ticket: false)
+            end
+
+            it_behaves_like 'a new issue request'
+          end
         end
       end
 
@@ -545,7 +678,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         shared_examples 'an early exiting handler' do
           it 'does not trigger the verification process and does not add an issue' do
             expect(ServiceDesk::CustomEmailVerifications::UpdateService).to receive(:execute).exactly(0).times
-            expect { receiver.execute }.to not_change { Issue.count }
+            expect { receiver.execute }.to not_change { WorkItem.count }
           end
         end
 
@@ -690,8 +823,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         allow(::Issue::Email).to receive(:create!).and_raise(StandardError)
       end
 
-      it 'still creates a new issue' do
-        expect { receiver.execute }.to change { Issue.count }.by(1)
+      it 'still creates a new work item' do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
       end
 
       it 'does not create issue email record' do
@@ -713,11 +846,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           expect { subject }.to raise_error(RateLimitedService::RateLimitedError)
         end
 
-        it 'creates 1 issue' do
+        it 'creates 1 work item' do
           expect do
             subject
           rescue RateLimitedService::RateLimitedError
-          end.to change { Issue.count }.by(1)
+          end.to change { WorkItem.count }.by(1)
         end
       end
 
@@ -730,8 +863,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           receiver2.execute
         end
 
-        it 'creates 2 issues' do
-          expect { subject }.to change { Issue.count }.by(2)
+        it 'creates 2 work items' do
+          expect { subject }.to change { WorkItem.count }.by(2)
         end
       end
 
@@ -740,8 +873,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           stub_application_setting(issues_create_limit: 2)
         end
 
-        it 'creates 2 issues' do
-          expect { subject }.to change { Issue.count }.by(2)
+        it 'creates 2 work items' do
+          expect { subject }.to change { WorkItem.count }.by(2)
         end
       end
     end
@@ -777,7 +910,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         end
       end
 
-      it_behaves_like 'a new issue request'
+      it_behaves_like 'a new ticket request'
+
+      context 'when service_desk_ticket feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_ticket: false)
+        end
+
+        it_behaves_like 'a new issue request'
+      end
     end
 
     context 'when there is no from address' do
@@ -787,8 +928,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         end
       end
 
-      it "creates a new issue" do
-        expect { receiver.execute }.to change { Issue.count }.by(1)
+      it "creates a new work item" do
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
       end
 
       it 'does not send thank you email' do
@@ -802,11 +943,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       it 'prefers the from address' do
         setup_attachment
 
-        expect { receiver.execute }.to change { Issue.count }.by(1)
+        expect { receiver.execute }.to change { WorkItem.count }.by(1)
 
-        new_issue = Issue.last
-
-        expect(new_issue.external_author).to eq('finn@adventuretime.ooo')
+        expect(WorkItem.last.external_author).to eq('finn@adventuretime.ooo')
       end
     end
 
@@ -815,12 +954,12 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         allow(::ServiceDesk).to receive(:enabled?).and_return(false)
       end
 
-      it 'does not create an issue' do
+      it 'does not create a work item' do
         expect do
           receiver.execute
         rescue StandardError
           nil
-        end.not_to change { Issue.count }
+        end.not_to change { WorkItem.count }
       end
 
       it 'does not send thank you email' do
@@ -837,27 +976,42 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       let(:email_raw) { email_fixture('emails/service_desk_forwarded.eml') }
       let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=fdskbsf@mail.gmail.com' }
 
-      it_behaves_like 'a new issue request'
+      it_behaves_like 'a new ticket request'
+
+      context 'when service_desk_ticket feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_ticket: false)
+        end
+
+        it_behaves_like 'a new issue request'
+      end
     end
 
     context 'when the email is forwarded' do
       let(:email_raw) { email_fixture('emails/service_desk_forwarded_new_issue.eml') }
+      let(:expected_description) do
+        <<~EOF
+          Service desk stuff!
 
-      it_behaves_like 'a new issue request' do
-        let(:expected_description) do
-          <<~EOF
-            Service desk stuff!
-
-            ---------- Forwarded message ---------
-            From: Jake the Dog <jake@adventuretime.ooo>
-            To: <jake@adventuretime.ooo>
+          ---------- Forwarded message ---------
+          From: Jake the Dog <jake@adventuretime.ooo>
+          To: <jake@adventuretime.ooo>
 
 
-            forwarded content
+          forwarded content
 
-            ![image](uploads/image.png)
-          EOF
+          ![image](uploads/image.png)
+        EOF
+      end
+
+      it_behaves_like 'a new ticket request'
+
+      context 'when service_desk_ticket feature flag is disabled' do
+        before do
+          stub_feature_flags(service_desk_ticket: false)
         end
+
+        it_behaves_like 'a new issue request'
       end
     end
   end
@@ -870,12 +1024,12 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
       expect { receiver.execute }.to raise_error(Gitlab::Email::ProcessingError)
     end
 
-    it "doesn't create an issue" do
+    it "doesn't create a work item" do
       expect do
         receiver.execute
       rescue StandardError
         nil
-      end.not_to change { Issue.count }
+      end.not_to change { WorkItem.count }
     end
   end
 end

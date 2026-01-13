@@ -16,7 +16,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347787',
         quarantine: {
           type: :flaky,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/456092"
+          issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18791"
         } do
         Flow::Login.sign_in(as: user)
 

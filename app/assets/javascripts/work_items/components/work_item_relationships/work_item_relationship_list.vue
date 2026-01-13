@@ -1,25 +1,32 @@
 <script>
-import DraggableList from 'vuedraggable';
-
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import { visitUrl } from '~/lib/utils/url_utility';
+import DraggableList from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 
+import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
+
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 
-import { RELATIONSHIP_TYPE_ENUM, WORK_ITEM_TYPE_NAME_INCIDENT } from '../../constants';
+import {
+  RELATIONSHIP_TYPE_ENUM,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TICKET,
+} from '../../constants';
 
 export default {
   RELATIONSHIP_TYPE_ENUM,
   components: {
     WorkItemLinkChildContents,
+    DraggableList,
   },
   props: {
     parentWorkItemId: {
@@ -204,8 +211,7 @@ export default {
       }
     },
     handleLinkedItemClick(event, linkedItem) {
-      // if the linkedItem is incident, redirect to the incident page
-      if (linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT) {
+      if (this.isLegacyItem(linkedItem)) {
         visitUrl(linkedItem.workItem.webUrl);
       } else {
         this.$emit('showModal', { event, child: linkedItem.workItem });
@@ -214,6 +220,25 @@ export default {
           scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
         });
       }
+    },
+    isLegacyItem(linkedItem) {
+      return (
+        this.isIncident(linkedItem) ||
+        this.isTicket(linkedItem) ||
+        this.isServiceDeskIssue(linkedItem)
+      );
+    },
+    isIncident(linkedItem) {
+      return linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT;
+    },
+    isTicket(linkedItem) {
+      return linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_TICKET;
+    },
+    isServiceDeskIssue(linkedItem) {
+      return (
+        linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE &&
+        linkedItem?.workItem?.author?.username === SUPPORT_BOT_USERNAME
+      );
     },
   },
 };
@@ -231,6 +256,7 @@ export default {
       :is="listRootComponent"
       v-bind="listOptions"
       ref="list"
+      :item-key="(linkedItem) => linkedItem.workItem.id"
       class="work-items-list content-list"
       :class="{
         'sortable-container gl-cursor-grab': canReorder,

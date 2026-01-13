@@ -224,7 +224,8 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       QUERY
     end
 
-    it 'avoids N+1 queries', :use_sql_query_cache, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448652' do
+    it 'avoids N+1 queries', :use_sql_query_cache,
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9485' do
       post_query # warm-up
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_query }

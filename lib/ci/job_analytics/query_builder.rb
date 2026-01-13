@@ -17,9 +17,6 @@ module Ci
       # @option options [Time] :to_time End time for filtering
       # @option options [String] :name_search Search by name of the pipeline jobs.
       def initialize(project:, current_user:, options: {})
-        raise ArgumentError, 'project must be a valid Project instance' unless project.is_a?(Project)
-        raise ArgumentError, 'current_user must be a valid User instance' unless current_user.is_a?(User)
-
         @project = project
         @current_user = current_user
         @select_fields = options[:select_fields] || []

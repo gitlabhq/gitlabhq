@@ -130,16 +130,10 @@ module Groups
     def group_with_namespaced_npm_packages?
       return false unless group.packages_feature_enabled?
 
-      npm_packages = if Feature.enabled?(:packages_projects_finder, group)
-                       projects = ::Packages::ProjectsFinder.new(current_user: current_user, group: group).execute
-                       ::Packages::PackagesFinder
-                         .new(projects, preload_pipelines: false, package_type: :npm)
-                         .execute
-                     else
-                       ::Packages::GroupPackagesFinder
-                         .new(current_user, group, preload_pipelines: false, package_type: :npm)
-                         .execute
-                     end.with_npm_scope(group.root_ancestor.path)
+      projects = ::Packages::ProjectsFinder.new(current_user: current_user, group: group).execute
+      npm_packages = ::Packages::PackagesFinder.new(projects, preload_pipelines: false, package_type: :npm)
+                                               .execute
+                                               .with_npm_scope(group.root_ancestor.path)
 
       different_root_ancestor? && npm_packages.exists?
     end

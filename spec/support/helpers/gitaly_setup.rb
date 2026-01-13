@@ -147,6 +147,8 @@ module GitalySetup
     # Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58776#note_547613780
     env = self.env.merge('HOME' => nil, 'XDG_CONFIG_HOME' => nil)
 
+    log_system_snapshot("before_spawn")
+
     pid = spawn(env, *args, [:out, :err] => "log/#{service}-test.log")
 
     begin
@@ -199,21 +201,42 @@ module GitalySetup
 
   def try_connect!(service, toml)
     LOGGER.debug "Trying to connect to #{service}: "
+
+    start_time = Time.now
+
     timeout = 60
     delay = 0.1
     connect = connect_proc(toml)
 
-    Integer(timeout / delay).times do
+    sample_iterations = 60
+    connected = false
+
+    Integer(timeout / delay).times do |i|
       connect.call
       LOGGER.debug " OK\n"
 
-      return
+      elapsed = (Time.now - start_time).round(2)
+      log_system_snapshot("after_success_#{elapsed}s")
+
+      connected = true
+      break
     rescue Errno::ENOENT, Errno::ECONNREFUSED
       LOGGER.debug '.'
+
+      if ENV['CI'] && i > 0 && (i % sample_iterations) == 0
+        elapsed = (Time.now - start_time).round(1)
+        log_system_snapshot("during_attempt_#{elapsed}s")
+      end
+
       sleep delay
     end
 
+    return if connected
+
     LOGGER.warn " FAILED to connect to #{service}\n"
+
+    elapsed = (Time.now - start_time).round(2)
+    log_system_snapshot("after_failure_#{elapsed}s")
 
     raise "could not connect to #{service}"
   end
@@ -441,5 +464,27 @@ module GitalySetup
 
     disk_usage = `df -h 2>/dev/null | grep overlay | awk '{print $5}' || echo "unknown"`
     LOGGER.debug "Disk usage: #{disk_usage.strip}\n"
+  end
+
+  def log_system_snapshot(label)
+    return unless ENV['CI'] || ENV['GITLAB_TESTING_LOG_LEVEL'] == 'debug'
+
+    if RUBY_PLATFORM.include?('darwin')
+      load = `sysctl -n vm.loadavg 2>/dev/null | awk '{print $2,$3,$4}'`.strip
+      mem_mb = `vm_stat 2>/dev/null | awk '/Pages free/ {print int($3 * 4096 / 1024 / 1024)}'`.strip
+      LOGGER.debug "\n[#{label}] load=#{load} mem_free=#{mem_mb}MB\n"
+    else
+      load = `cat /proc/loadavg 2>/dev/null | awk '{print $1,$2,$3}'`.strip
+      io_wait = `vmstat 1 2 2>/dev/null | tail -1 | awk '{print $16}'`.strip
+      mem = `grep MemAvailable /proc/meminfo 2>/dev/null | awk '{print $2}'`.strip
+      mem_mb = (mem.to_i / 1024.0).round
+      io_pressure = `cat /proc/pressure/io 2>/dev/null | grep some | awk '{print $2}' | cut -d= -f2`.strip
+
+      metrics = "load=#{load} io_wait=#{io_wait}% mem=#{mem_mb}MB"
+      metrics += " io_pressure=#{io_pressure}%" unless io_pressure.empty?
+      LOGGER.debug "\n[#{label}] #{metrics}\n"
+    end
+  rescue StandardError => e
+    LOGGER.debug "\n[#{label}] metrics unavailable: #{e.message}\n"
   end
 end

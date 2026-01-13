@@ -1,8 +1,9 @@
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+#import "~/graphql_shared/fragments/user_disabled_for_duo_usage.fragment.graphql"
 
 query issueParticipants($fullPath: ID!, $iid: String!, $getStatus: Boolean = false) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: issue(iid: $iid) {
       id
@@ -11,6 +12,7 @@ query issueParticipants($fullPath: ID!, $iid: String!, $getStatus: Boolean = fal
         nodes {
           ...User
           ...UserAvailability @include(if: $getStatus)
+          ...UserDisabledForDuoUsage
         }
       }
     }

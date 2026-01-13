@@ -11,7 +11,7 @@ if Gem::Version.new(Sidekiq::VERSION) != Gem::Version.new('7.3.9')
   raise 'New version of sidekiq detected, please remove or update this patch'
 end
 
-if Gem::Version.new(Sidekiq::Cron::VERSION) != Gem::Version.new('1.12.0')
+if Gem::Version.new(Sidekiq::Cron::VERSION) != Gem::Version.new('2.3.1')
   raise 'New version of sidekiq-cron detected, please remove or update this patch'
 end
 

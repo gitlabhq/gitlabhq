@@ -48,12 +48,16 @@ module ClickHouseSchemaHelpers
   end
 
   def clear_db(configuration = ClickHouse::Client.configuration)
-    configuration.databases.each_key do |db|
-      connection = ::ClickHouse::Connection.new(db, configuration)
-      # drop all tables
-      lookup_tables(db, configuration).each do |table|
-        connection.execute("DROP TABLE IF EXISTS #{table}")
-      end
+    identifiers = configuration.databases.each_key.to_a
+    identifiers.each do |identifier|
+      db_config = ClickHouse::Client.configuration.databases[identifier]
+      connection = ::ClickHouse::Connection.new(identifier, configuration)
+
+      # It's faster to re-create the database than dropping tables one by one
+      ClickHouse::Client.configuration.databases[:default] = db_config.with_default_database
+      ClickHouse::Client.execute("DROP DATABASE IF EXISTS #{db_config.database}", :default)
+      ClickHouse::Client.execute("CREATE DATABASE #{db_config.database}", :default)
+      ClickHouse::Client.configuration.databases.delete(:default)
 
       ClickHouse::MigrationSupport::SchemaMigration.new(connection).ensure_table
     end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_caching,
-  feature_category: :system_access do
+  feature_category: :rate_limiting do
   include RackAttackSpecHelpers
   include WorkhorseHelpers
   include SessionHelpers
@@ -720,6 +720,10 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'when rate limit is enabled' do
       before do
+        Gitlab::Redis::RateLimiting.with(&:flushdb)
+        Rack::Attack.clear_configuration
+        Gitlab::RackAttack.configure(Rack::Attack)
+
         settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
         settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
         settings_to_set[:throttle_authenticated_git_http_enabled] = true

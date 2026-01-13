@@ -17,11 +17,8 @@ to create a project. The project includes cluster applications that integrate wi
 and extend GitLab functionality. You can use the pattern shown in the project to extend
 your custom cluster applications.
 
-{{< alert type="note" >}}
-
-The project template works on GitLab.com without modifications. If you're on a GitLab Self-Managed instance, you must modify the `.gitlab-ci.yml` file.
-
-{{< /alert >}}
+> [!note]
+> The project template works on GitLab.com without modifications. If you're on a GitLab Self-Managed instance, you must modify the `.gitlab-ci.yml` file.
 
 ## Use one project for the agent and your manifests
 

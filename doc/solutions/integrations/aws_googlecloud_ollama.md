@@ -69,11 +69,8 @@ flowchart LR
 
 These components work together to realize the Self-Hosted AI functionality. This guide provides detailed instructions for building a complete self-hosted AI environment using Ollama as the LLM server.
 
-{{< alert type="note" >}}
-
-While for a full production environment, the [official documentation](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) recommends more powerful GPU instances such as 1x NVIDIA A100 (40 GB), the g4dn.xlarge instance type should be sufficient for evaluation purposes with a small team of users.
-
-{{< /alert >}}
+> [!note]
+> While for a full production environment, the [official documentation](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) recommends more powerful GPU instances such as 1x NVIDIA A100 (40 GB), the g4dn.xlarge instance type should be sufficient for evaluation purposes with a small team of users.
 
 #### Networking
 
@@ -279,11 +276,8 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 
 ![Enable Duo for root user](img/self_hosted_model/duo_enable_root_v17_10.png)
 
-{{< alert type="note" >}}
-
-Enabling Duo for just the root user is sufficient for initial setup and testing. Additional users can be granted Duo access later if needed, within your seat license limitations.
-
-{{< /alert >}}
+> [!note]
+> Enabling Duo for just the root user is sufficient for initial setup and testing. Additional users can be granted Duo access later if needed, within your seat license limitations.
 
 ### Configure GitLab Duo Self-Hosted in GitLab
 

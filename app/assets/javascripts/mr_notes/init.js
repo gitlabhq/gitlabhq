@@ -4,13 +4,13 @@ import eventHub from '~/notes/event_hub';
 import { initDiscussionCounter } from '~/mr_notes/discussion_counter';
 import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
-import { getReviewsForMergeRequest } from '~/diffs/utils/file_reviews';
 import { DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useBatchComments } from '~/batch_comments/store';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { pinia } from '~/pinia/instance';
+import { useCodeReview } from '~/diffs/stores/code_review';
 
 function setupMrNotesState(notesDataset, diffsDataset = {}) {
   const noteableData = JSON.parse(notesDataset.noteableData);
@@ -41,11 +41,13 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
     showSuggestPopover: parseBoolean(diffsDataset.showSuggestPopover),
     viewDiffsFileByFile: parseBoolean(diffsDataset.fileByFileDefault),
     defaultSuggestionCommitMessage: diffsDataset.defaultSuggestionCommitMessage,
-    mrReviews: getReviewsForMergeRequest(mrPath),
     diffViewType:
       getParameterValues('view')[0] || getCookie(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
     perPage: Number(diffsDataset.perPage),
   });
+  useCodeReview().setMrPath(mrPath);
+  useCodeReview().restoreFromAutosave();
+  useCodeReview().restoreFromLegacyMrReviews();
 }
 
 export function initMrStateLazyLoad() {

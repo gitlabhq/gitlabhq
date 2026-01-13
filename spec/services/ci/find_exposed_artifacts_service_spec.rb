@@ -182,7 +182,7 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       subject { described_class.new(project, user).for_pipeline(pipeline, limit: 2) }
 
       it 'returns the correct path for cross-project MRs' do
-        expect(subject).to eq(
+        expect(subject).to match_array(
           [
             {
               text: 'file artifact',
@@ -209,13 +209,7 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
     end
   end
 
-  context 'when job_artifacts_metadata.exposed_as is not populated',
-    quarantine: {
-      issue: [
-        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6762',
-        'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6802'
-      ]
-    } do
+  context 'when job_artifacts_metadata.exposed_as is not populated' do
     it_behaves_like '#for_pipeline' do
       def create_job_with_artifacts(options)
         create(:ci_build, pipeline: pipeline, options: options).tap do |job|

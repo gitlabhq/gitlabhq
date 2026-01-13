@@ -81,6 +81,7 @@ Parameters:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
+- `id` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -102,6 +103,7 @@ Response body attributes:
 
 | Attribute      | Type   | Description                                                                               |
 |:---------------|:-------|:------------------------------------------------------------------------------------------|
+| `id`           | integer | ID of the issue link.                                                                     |
 | `source_issue` | object | Details of the source issue of the relationship.                                          |
 | `target_issue` | object | Details of the target issue of the relationship.                                          |
 | `link_type`    | string | Type of the relationship. Possible values are `relates_to`, `blocks` and `is_blocked_by`. |
@@ -118,6 +120,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,
@@ -184,6 +187,12 @@ Example response:
 
 ## Create an issue link
 
+{{< history >}}
+
+- `id` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) in GitLab 18.9.
+
+{{< /history >}}
+
 Creates a two-way relation between two issues. The user must be allowed to
 update both issues to succeed.
 
@@ -209,6 +218,7 @@ Example response:
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,
@@ -275,6 +285,12 @@ Example response:
 
 ## Delete an issue link
 
+{{< history >}}
+
+- `id` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585093) in GitLab 18.9.
+
+{{< /history >}}
+
 Deletes an issue link, thus removes the two-way relationship.
 
 ```plaintext
@@ -290,6 +306,7 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 
 ```json
 {
+  "id": 1,
   "source_issue" : {
     "id" : 83,
     "iid" : 11,

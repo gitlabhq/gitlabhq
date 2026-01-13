@@ -45,7 +45,7 @@ RSpec.describe QA::Git::Repository do
 
     context 'when command is successful' do
       it 'returns the #run command Result output' do
-        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 3)).and_return(result)
+        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 3, timeout: timeout)).and_return(result)
 
         expect(call_method).to eq(command_return)
       end
@@ -81,7 +81,7 @@ RSpec.describe QA::Git::Repository do
 
     context 'when command is successful' do
       it 'returns the #run command Result output' do
-        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 1)).and_return(result)
+        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 1, timeout: timeout)).and_return(result)
 
         expect(call_method).to eq(command_return)
       end
@@ -110,6 +110,7 @@ RSpec.describe QA::Git::Repository do
       let(:opts) { '' }
       let(:call_method) { repository.clone }
       let(:command) { "git clone #{opts} #{repo_uri_with_credentials} ./" }
+      let(:timeout) { nil }
 
       context 'when no opts is given' do
         it_behaves_like 'command with retries'
@@ -128,6 +129,7 @@ RSpec.describe QA::Git::Repository do
       it_behaves_like 'command with retries' do
         let(:call_method) { repository.shallow_clone }
         let(:command) { "git clone --depth 1 #{repo_uri_with_credentials} ./" }
+        let(:timeout) { nil }
       end
     end
 
@@ -136,6 +138,7 @@ RSpec.describe QA::Git::Repository do
         let(:tag_name) { 'v1.0' }
         let(:call_method) { repository.delete_tag(tag_name) }
         let(:command) { "git push origin --delete #{tag_name}" }
+        let(:timeout) { nil }
       end
     end
 
@@ -143,6 +146,7 @@ RSpec.describe QA::Git::Repository do
       let(:branch) { QA::Runtime::Env.default_branch }
       let(:call_method) { repository.push_changes }
       let(:command) { "git push #{repo_uri_with_credentials} #{branch}" }
+      let(:timeout) { 60 }
 
       context 'when no branch is given' do
         it_behaves_like 'command with retries'
@@ -234,7 +238,7 @@ RSpec.describe QA::Git::Repository do
       [0, 1, 2].each do |version|
         it "configures git to use protocol version #{version}" do
           expect(repository).to receive(:run).with("git config protocol.version #{version}",
-            run_params.merge(max_attempts: 1))
+            run_params.merge(max_attempts: 1, timeout: nil))
 
           repository.git_protocol = version
         end
@@ -256,6 +260,7 @@ RSpec.describe QA::Git::Repository do
         let(:result_output) { +'packet: ls-remote< version 2' }
         let(:command_return) { '2' }
         let(:extra_env_vars) { ["GIT_TRACE_PACKET=1"] }
+        let(:timeout) { nil }
       end
 
       it "reports the detected version" do

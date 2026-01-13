@@ -44,11 +44,11 @@ import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
-const getNotesWidgetFromSourceData = (draftData) => findNotesWidget(draftData?.workspace?.workItem);
+const getNotesWidgetFromSourceData = (draftData) => findNotesWidget(draftData?.namespace?.workItem);
 
 const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
-  const noteWidgetIndex = draftData.workspace.workItem.widgets.findIndex(isNotesWidget);
-  draftData.workspace.workItem.widgets[noteWidgetIndex] = notesWidget;
+  const noteWidgetIndex = draftData.namespace.workItem.widgets.findIndex(isNotesWidget);
+  draftData.namespace.workItem.widgets[noteWidgetIndex] = notesWidget;
 };
 
 /**
@@ -290,7 +290,7 @@ export const updateParent = ({ cache, fullPath, iid, workItem }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const children = findHierarchyWidgetChildren(draftState.workspace?.workItem);
+      const children = findHierarchyWidgetChildren(draftState.namespace?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       if (index >= 0) children.splice(index, 1);
     }),
@@ -310,7 +310,7 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
   }
 
   const newData = produce(sourceData, (draftState) => {
-    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.workspace.workItem);
+    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.namespace.workItem);
     widgetCurrentUserTodos.currentUserTodos.nodes = todos;
   });
 
@@ -696,7 +696,7 @@ export const setNewWorkItemCache = ({
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 
   // get the widgets stored in draft data
-  const draftDataWidgetTypes = map(draftData?.workspace?.workItem?.widgets, 'type') || [];
+  const draftDataWidgetTypes = map(draftData?.namespace?.workItem?.widgets, 'type') || [];
   const freshWidgetTypes = map(widgets, 'type') || [];
 
   // this is to fix errors when we are introducing a new widget and the cache always updates from the old widgets
@@ -707,10 +707,7 @@ export const setNewWorkItemCache = ({
   );
 
   const isValidDraftData =
-    draftData?.workspace?.workItem &&
-    getStorageDraftString &&
-    draftData?.workspace?.workItem &&
-    draftWidgetsAreSameAsCacheDigits;
+    draftData?.namespace?.workItem && getStorageDraftString && draftWidgetsAreSameAsCacheDigits;
 
   /** check in case of someone plays with the localstorage, we need to be sure */
   if (!isValidDraftData) {
@@ -724,7 +721,7 @@ export const setNewWorkItemCache = ({
       iid: NEW_WORK_ITEM_IID,
     },
     data: {
-      workspace: {
+      namespace: {
         id: newWorkItemPath,
         workItem: {
           id: newWorkItemId(workItemType),

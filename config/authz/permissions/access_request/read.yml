@@ -1,0 +1,6 @@
+---
+name: read_access_request
+description: Grants ability to read access request
+boundaries:
+  - group
+  - project

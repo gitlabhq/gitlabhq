@@ -217,6 +217,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     describe 'with_secure_reports_from_metadata_config_options' do
+      before_all do
+        Ci::ApplicationRecord.connection.execute(<<~SQL)
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+          CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+            PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+        SQL
+      end
+
       let_it_be(:pipeline) { create(:ci_empty_pipeline) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be_with_refind(:build_metadata) { create(:ci_build_metadata, build: build) }
@@ -250,6 +261,308 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       subject { described_class.with_no_runner_assigned }
 
       it { is_expected.to match_array(builds_without_runner) }
+    end
+
+    describe '.with_downloadable_artifacts' do
+      subject { described_class.with_downloadable_artifacts }
+
+      context 'when job does not have a downloadable artifact' do
+        let!(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'does not return the job' do
+          is_expected.not_to include(job)
+        end
+      end
+
+      ::Enums::Ci::JobArtifact.downloadable_types.each do |type|
+        context "when job has a #{type} artifact" do
+          it 'returns the job' do
+            job = create(:ci_build, pipeline: pipeline)
+            create(
+              :ci_job_artifact,
+              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
+              file_type: type,
+              job: job
+            )
+
+            is_expected.to include(job)
+          end
+        end
+      end
+
+      context 'when job has a non-downloadable artifact' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'does not return the job' do
+          is_expected.not_to include(job)
+        end
+      end
+    end
+
+    describe '.with_erasable_artifacts' do
+      subject { described_class.with_erasable_artifacts }
+
+      context 'when job does not have any artifacts' do
+        let!(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'does not return the job' do
+          is_expected.not_to include(job)
+        end
+      end
+
+      ::Ci::JobArtifact.erasable_file_types.each do |type|
+        context "when job has a #{type} artifact" do
+          it 'returns the job' do
+            job = create(:ci_build, pipeline: pipeline)
+            create(
+              :ci_job_artifact,
+              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
+              file_type: type,
+              job: job
+            )
+
+            is_expected.to include(job)
+          end
+        end
+      end
+
+      context 'when job has a non-erasable artifact' do
+        let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+
+        it 'does not return the job' do
+          is_expected.not_to include(job)
+        end
+      end
+    end
+
+    describe '.with_any_artifacts' do
+      subject { described_class.with_any_artifacts }
+
+      context 'when job does not have any artifacts' do
+        it 'does not return the job' do
+          job = create(:ci_build, project: project)
+
+          is_expected.not_to include(job)
+        end
+      end
+
+      ::Ci::JobArtifact.file_types.each_key do |type|
+        context "when job has a #{type} artifact" do
+          it 'returns the job' do
+            job = create(:ci_build, project: project)
+            create(
+              :ci_job_artifact,
+              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
+              file_type: type,
+              job: job
+            )
+
+            is_expected.to include(job)
+          end
+        end
+      end
+    end
+
+    describe '.with_live_trace' do
+      subject { described_class.with_live_trace }
+
+      before do
+        stub_application_setting(ci_job_live_trace_enabled: true)
+      end
+
+      context 'when build has live trace' do
+        let!(:build) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
+
+        it 'selects the build' do
+          is_expected.to eq([build])
+        end
+      end
+
+      context 'when build does not have live trace' do
+        let!(:build) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
+
+        it 'does not select the build' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    describe '.with_stale_live_trace' do
+      subject { described_class.with_stale_live_trace }
+
+      before do
+        stub_application_setting(ci_job_live_trace_enabled: true)
+      end
+
+      context 'when build has a stale live trace' do
+        let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago, pipeline: pipeline) }
+
+        it 'selects the build' do
+          is_expected.to eq([build])
+        end
+      end
+
+      context 'when build does not have a stale live trace' do
+        let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.hour.ago, pipeline: pipeline) }
+
+        it 'does not select the build' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    describe '.finished_before' do
+      subject { described_class.finished_before(date) }
+
+      let(:date) { 1.hour.ago }
+
+      context 'when build has finished one day ago' do
+        let!(:build) { create(:ci_build, :success, finished_at: 1.day.ago, pipeline: pipeline) }
+
+        it 'selects the build' do
+          is_expected.to eq([build])
+        end
+      end
+
+      context 'when build has finished 30 minutes ago' do
+        let!(:build) { create(:ci_build, :success, finished_at: 30.minutes.ago, pipeline: pipeline) }
+
+        it 'returns an empty array' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when build is still running' do
+        let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+
+        it 'returns an empty array' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    describe '.with_artifacts' do
+      subject(:builds) { described_class.with_artifacts(artifact_scope) }
+
+      let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
+
+      let_it_be(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
+      let_it_be(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
+      let_it_be(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
+      let_it_be(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      it 'returns artifacts matching the given scope' do
+        expect(builds).to contain_exactly(build_1, build_4)
+      end
+
+      context 'when there are multiple builds containing artifacts' do
+        before do
+          create_list(:ci_build, 5, :success, :test_reports, pipeline: pipeline)
+        end
+
+        it 'does not execute a query for selecting job artifact one by one' do
+          recorded = ActiveRecord::QueryRecorder.new do
+            builds.each do |build|
+              build.job_artifacts.map { |a| a.file.exists? }
+            end
+          end
+
+          expect(recorded.count).to eq(2)
+        end
+      end
+    end
+
+    describe '.with_needs' do
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:build_b) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:build_need_a) { create(:ci_build_need, build: build) }
+      let_it_be(:build_need_b) { create(:ci_build_need, build: build_b) }
+
+      context 'when passing build name' do
+        subject { described_class.with_needs(build_need_a.name) }
+
+        it { is_expected.to contain_exactly(build) }
+      end
+
+      context 'when not passing any build name' do
+        subject { described_class.with_needs }
+
+        it { is_expected.to contain_exactly(build, build_b) }
+      end
+
+      context 'when not matching build name' do
+        subject { described_class.with_needs('undefined') }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe '.without_needs' do
+      subject { described_class.without_needs }
+
+      context 'when no build_need is created' do
+        it { is_expected.to contain_exactly(build, old_build, new_build) }
+      end
+
+      context 'when a build_need is created' do
+        let!(:need_a) { create(:ci_build_need, build: build) }
+
+        it { is_expected.to contain_exactly(old_build, new_build) }
+      end
+    end
+
+    describe '.belonging_to_runner_manager' do
+      subject { described_class.belonging_to_runner_manager(runner_manager) }
+
+      let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let_it_be(:build_b) { create(:ci_build, :success) }
+
+      context 'with runner_manager of runner associated with build' do
+        let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+        let!(:runner_manager_build) { create(:ci_runner_machine_build, build: build, runner_manager: runner_manager) }
+
+        it { is_expected.to contain_exactly(build) }
+      end
+
+      context 'with runner_manager of runner not associated with build' do
+        let!(:runner_manager) { create(:ci_runner_machine, runner: instance_runner) }
+        let!(:instance_runner) { create(:ci_runner, :with_runner_manager) }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'with nil runner_manager' do
+        let(:runner_manager) { nil }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe 'scopes for preloading' do
+      let_it_be(:runner) { create(:ci_runner) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
+        build.runner = runner
+        build.user = user
+        build.save!
+      end
+
+      describe '.eager_load_for_api' do
+        subject(:eager_load_for_api) { described_class.eager_load_for_api }
+
+        it { expect(eager_load_for_api.last.association(:user)).to be_loaded }
+        it { expect(eager_load_for_api.last.user.association(:user_detail)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:metadata)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:job_artifacts_archive)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:job_artifacts)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:runner)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:tags)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:ci_stage)).to be_loaded }
+        it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
+        it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
+      end
     end
   end
 
@@ -408,308 +721,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   it_behaves_like 'a triggerable processable', :ci_build
-
-  describe '.with_downloadable_artifacts' do
-    subject { described_class.with_downloadable_artifacts }
-
-    context 'when job does not have a downloadable artifact' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it 'does not return the job' do
-        is_expected.not_to include(job)
-      end
-    end
-
-    ::Enums::Ci::JobArtifact.downloadable_types.each do |type|
-      context "when job has a #{type} artifact" do
-        it 'returns the job' do
-          job = create(:ci_build, pipeline: pipeline)
-          create(
-            :ci_job_artifact,
-            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
-            file_type: type,
-            job: job
-          )
-
-          is_expected.to include(job)
-        end
-      end
-    end
-
-    context 'when job has a non-downloadable artifact' do
-      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
-
-      it 'does not return the job' do
-        is_expected.not_to include(job)
-      end
-    end
-  end
-
-  describe '.with_erasable_artifacts' do
-    subject { described_class.with_erasable_artifacts }
-
-    context 'when job does not have any artifacts' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it 'does not return the job' do
-        is_expected.not_to include(job)
-      end
-    end
-
-    ::Ci::JobArtifact.erasable_file_types.each do |type|
-      context "when job has a #{type} artifact" do
-        it 'returns the job' do
-          job = create(:ci_build, pipeline: pipeline)
-          create(
-            :ci_job_artifact,
-            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
-            file_type: type,
-            job: job
-          )
-
-          is_expected.to include(job)
-        end
-      end
-    end
-
-    context 'when job has a non-erasable artifact' do
-      let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
-
-      it 'does not return the job' do
-        is_expected.not_to include(job)
-      end
-    end
-  end
-
-  describe '.with_any_artifacts' do
-    subject { described_class.with_any_artifacts }
-
-    context 'when job does not have any artifacts' do
-      it 'does not return the job' do
-        job = create(:ci_build, project: project)
-
-        is_expected.not_to include(job)
-      end
-    end
-
-    ::Ci::JobArtifact.file_types.each_key do |type|
-      context "when job has a #{type} artifact" do
-        it 'returns the job' do
-          job = create(:ci_build, project: project)
-          create(
-            :ci_job_artifact,
-            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
-            file_type: type,
-            job: job
-          )
-
-          is_expected.to include(job)
-        end
-      end
-    end
-  end
-
-  describe '.with_live_trace' do
-    subject { described_class.with_live_trace }
-
-    before do
-      stub_application_setting(ci_job_live_trace_enabled: true)
-    end
-
-    context 'when build has live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
-
-      it 'selects the build' do
-        is_expected.to eq([build])
-      end
-    end
-
-    context 'when build does not have live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
-
-      it 'does not select the build' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.with_stale_live_trace' do
-    subject { described_class.with_stale_live_trace }
-
-    before do
-      stub_application_setting(ci_job_live_trace_enabled: true)
-    end
-
-    context 'when build has a stale live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago, pipeline: pipeline) }
-
-      it 'selects the build' do
-        is_expected.to eq([build])
-      end
-    end
-
-    context 'when build does not have a stale live trace' do
-      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.hour.ago, pipeline: pipeline) }
-
-      it 'does not select the build' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.finished_before' do
-    subject { described_class.finished_before(date) }
-
-    let(:date) { 1.hour.ago }
-
-    context 'when build has finished one day ago' do
-      let!(:build) { create(:ci_build, :success, finished_at: 1.day.ago, pipeline: pipeline) }
-
-      it 'selects the build' do
-        is_expected.to eq([build])
-      end
-    end
-
-    context 'when build has finished 30 minutes ago' do
-      let!(:build) { create(:ci_build, :success, finished_at: 30.minutes.ago, pipeline: pipeline) }
-
-      it 'returns an empty array' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when build is still running' do
-      let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-
-      it 'returns an empty array' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.with_artifacts' do
-    subject(:builds) { described_class.with_artifacts(artifact_scope) }
-
-    let(:artifact_scope) { Ci::JobArtifact.where(file_type: 'archive') }
-
-    let_it_be(:build_1) { create(:ci_build, :artifacts, pipeline: pipeline) }
-    let_it_be(:build_2) { create(:ci_build, :codequality_reports, pipeline: pipeline) }
-    let_it_be(:build_3) { create(:ci_build, :test_reports, pipeline: pipeline) }
-    let_it_be(:build_4) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-    it 'returns artifacts matching the given scope' do
-      expect(builds).to contain_exactly(build_1, build_4)
-    end
-
-    context 'when there are multiple builds containing artifacts' do
-      before do
-        create_list(:ci_build, 5, :success, :test_reports, pipeline: pipeline)
-      end
-
-      it 'does not execute a query for selecting job artifact one by one' do
-        recorded = ActiveRecord::QueryRecorder.new do
-          builds.each do |build|
-            build.job_artifacts.map { |a| a.file.exists? }
-          end
-        end
-
-        expect(recorded.count).to eq(2)
-      end
-    end
-  end
-
-  describe '.with_needs' do
-    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:build_b) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:build_need_a) { create(:ci_build_need, build: build) }
-    let_it_be(:build_need_b) { create(:ci_build_need, build: build_b) }
-
-    context 'when passing build name' do
-      subject { described_class.with_needs(build_need_a.name) }
-
-      it { is_expected.to contain_exactly(build) }
-    end
-
-    context 'when not passing any build name' do
-      subject { described_class.with_needs }
-
-      it { is_expected.to contain_exactly(build, build_b) }
-    end
-
-    context 'when not matching build name' do
-      subject { described_class.with_needs('undefined') }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.without_needs' do
-    subject { described_class.without_needs }
-
-    context 'when no build_need is created' do
-      it { is_expected.to contain_exactly(build) }
-    end
-
-    context 'when a build_need is created' do
-      let!(:need_a) { create(:ci_build_need, build: build) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.belonging_to_runner_manager' do
-    subject { described_class.belonging_to_runner_manager(runner_manager) }
-
-    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
-    let_it_be(:build_b) { create(:ci_build, :success) }
-
-    context 'with runner_manager of runner associated with build' do
-      let!(:runner_manager) { create(:ci_runner_machine, runner: runner) }
-      let!(:runner_manager_build) { create(:ci_runner_machine_build, build: build, runner_manager: runner_manager) }
-
-      it { is_expected.to contain_exactly(build) }
-    end
-
-    context 'with runner_manager of runner not associated with build' do
-      let!(:runner_manager) { create(:ci_runner_machine, runner: instance_runner) }
-      let!(:instance_runner) { create(:ci_runner, :with_runner_manager) }
-
-      it { is_expected.to be_empty }
-    end
-
-    context 'with nil runner_manager' do
-      let(:runner_manager) { nil }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe 'scopes for preloading' do
-    let_it_be(:runner) { create(:ci_runner) }
-    let_it_be(:user) { create(:user) }
-
-    before_all do
-      build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
-      build.runner = runner
-      build.user = user
-      build.save!
-    end
-
-    describe '.eager_load_for_api' do
-      subject(:eager_load_for_api) { described_class.eager_load_for_api }
-
-      it { expect(eager_load_for_api.last.association(:user)).to be_loaded }
-      it { expect(eager_load_for_api.last.user.association(:user_detail)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:metadata)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:job_artifacts_archive)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:job_artifacts)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:runner)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:tags)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:ci_stage)).to be_loaded }
-      it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
-      it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
-    end
-  end
 
   describe '#stick_build_if_status_changed' do
     it 'sticks the build if the status changed' do
@@ -948,7 +959,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#schedule' do
-    subject { build.schedule }
+    subject(:schedule) { build.schedule }
 
     before do
       project.add_developer(user)
@@ -959,7 +970,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'transits to scheduled' do
       allow(Ci::BuildScheduleWorker).to receive(:perform_at)
 
-      subject
+      schedule
 
       expect(build).to be_scheduled
     end
@@ -967,7 +978,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'updates scheduled_at column' do
       allow(Ci::BuildScheduleWorker).to receive(:perform_at)
 
-      subject
+      schedule
 
       expect(build.scheduled_at).not_to be_nil
     end
@@ -977,25 +988,25 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(Ci::BuildScheduleWorker)
           .to receive(:perform_at).with(be_like_time(1.minute.since), build.id)
 
-        subject
+        schedule
       end
     end
   end
 
   describe '#unschedule' do
-    subject { build.unschedule }
+    subject(:unschedule) { build.unschedule }
 
     context 'when build is scheduled' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
       it 'cleans scheduled_at column' do
-        subject
+        unschedule
 
         expect(build.scheduled_at).to be_nil
       end
 
       it 'transits to manual' do
-        subject
+        unschedule
 
         expect(build).to be_manual
       end
@@ -1005,7 +1016,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
       it 'does not transit status' do
-        subject
+        unschedule
 
         expect(build).to be_created
       end
@@ -1013,7 +1024,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#options_scheduled_at' do
-    subject { build.options_scheduled_at }
+    subject(:options_scheduled_at) { build.options_scheduled_at }
 
     let(:build) { build_stubbed(:ci_build, options: option, pipeline: pipeline) }
 
@@ -1039,13 +1050,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#enqueue_scheduled' do
-    subject { build.enqueue_scheduled }
+    subject(:enqueue_scheduled) { build.enqueue_scheduled }
 
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
       it 'does not transits the status' do
-        subject
+        enqueue_scheduled
 
         expect(build).to be_scheduled
       end
@@ -1055,13 +1066,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) { create(:ci_build, :expired_scheduled, pipeline: pipeline) }
 
       it 'cleans scheduled_at column' do
-        subject
+        enqueue_scheduled
 
         expect(build.scheduled_at).to be_nil
       end
 
       it 'transits to pending' do
-        subject
+        enqueue_scheduled
 
         expect(build).to be_pending
       end
@@ -1072,7 +1083,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'transits to preparing' do
-          subject
+          enqueue_scheduled
 
           expect(build).to be_preparing
         end
@@ -1081,7 +1092,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#any_runners_online?', :freeze_time do
-    subject { build.any_runners_online? }
+    subject(:any_runners_online?) { build.any_runners_online? }
 
     context 'when no runners' do
       it { is_expected.to be_falsey }
@@ -1136,7 +1147,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#any_runners_available?' do
-    subject { build.any_runners_available? }
+    subject(:any_runners_available?) { build.any_runners_available? }
 
     context 'when no runners' do
       it { is_expected.to be_falsey }
@@ -2329,12 +2340,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       specify do
-        expect(Ci::BuildTag.where(build_id: build_without_job_definition, tag_id: Ci::Tag.find_by_name('tag_from_tags')))
-          .not_to be_empty
+        expect(build_without_job_definition.job_definition).to be_nil
       end
 
-      specify do
-        expect(build_without_job_definition.job_definition).to be_nil
+      it 'does not create build tagging' do
+        expect(Ci::BuildTag.where(build_id: build_without_job_definition, tag_id: Ci::Tag.find_by_name('tag_from_tags')))
+          .to be_empty
       end
 
       it 'falls back to tags table' do
@@ -2375,17 +2386,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'saves tags' do
       build.save!
 
-      expect(build.tags.count).to eq(1)
-      expect(build.tags.first.name).to eq('tag')
-      expect(build.taggings.count).to eq(1)
-      expect(build.taggings.first.tag.name).to eq('tag')
+      expect(build.tag_list).to contain_exactly('tag')
+      expect(build.tags).to be_empty
+      expect(build.taggings).to be_empty
     end
 
-    it 'strips tags' do
-      build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+    context 'when tags have white-space' do
+      before do
+        build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
+      end
 
-      build.save!
-      expect(build.tags.map(&:name)).to match_array(%w[taga tagb tagc])
+      it 'strips tags' do
+        build.save!
+
+        expect(build.tag_list).to match_array(%w[taga tagb tagc])
+        expect(build.tags.map(&:name)).to be_empty
+      end
     end
 
     context 'with BulkInsertableTags.with_bulk_insert_tags' do
@@ -2515,10 +2531,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.current + 7.days, pipeline: pipeline) }
 
-    subject { build.keep_artifacts! }
+    subject(:keep_artifacts!) { build.keep_artifacts! }
 
     it 'to reset expire_at' do
-      subject
+      keep_artifacts!
 
       expect(build.artifacts_expire_at).to be_nil
     end
@@ -2527,7 +2543,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let!(:artifact) { create(:ci_job_artifact, job: build, expire_in: '7 days') }
 
       it 'to reset dependent objects' do
-        subject
+        keep_artifacts!
 
         expect(artifact.reload.expire_at).to be_nil
       end
@@ -6022,7 +6038,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#doom!' do
-    subject { build.doom! }
+    subject(:doom!) { build.doom! }
 
     let(:traits) { [] }
     let(:build) do
@@ -6037,7 +6053,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       new_timestamp = \
         freeze_time do
           Time.current.tap do
-            subject
+            doom!
           end
         end
 
@@ -6058,7 +6074,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         .with(a_hash_including(message: 'Build doomed', class: build.class.name, build_id: build.id))
         .and_call_original
 
-      subject
+      doom!
     end
 
     context 'with deployment' do
@@ -6068,7 +6084,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'updates the deployment status', :aggregate_failures do
         expect(build.deployment).to receive(:sync_status_with).with(build).and_call_original
 
-        subject
+        doom!
 
         expect(build.deployment.reload.status).to eq("failed")
       end
@@ -6078,7 +6094,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:traits) { [:queued] }
 
       it 'drops associated pending build' do
-        subject
+        doom!
 
         expect(build.reload.queuing_entry).not_to be_present
       end
@@ -6088,7 +6104,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:traits) { [:picked] }
 
       it 'drops associated runtime metadata', :aggregate_failures do
-        subject
+        doom!
 
         expect(build.reload.runtime_metadata).not_to be_present
       end
@@ -6526,6 +6542,69 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(definition.config).to eq({ options: build_attributes[:options], tag_list: tag_list })
       expect(definition.project_id).to eq(build_attributes[:project_id])
       expect(definition.partition_id).to eq(build_attributes[:partition_id])
+    end
+  end
+
+  describe 'partition pruning' do
+    describe '.find_by_token' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline, status: :running) }
+      let_it_be(:token) { job.token }
+
+      it 'uses partition_id filter in query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          expect(described_class.find_by_token(token)).to eq(job)
+        end
+
+        expect(recorder.count).to eq(1)
+        expect(recorder.log.first).to match(/"p_ci_builds"."token_encrypted" IN/)
+        expect(recorder.log.first).to match(/"p_ci_builds"."partition_id" =/)
+      end
+
+      context 'when ci_build_find_token_authenticatable feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_find_token_authenticatable: false)
+        end
+
+        it 'does not use partition_id filter in query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            expect(described_class.find_by_token(token)).to eq(job)
+          end
+
+          expect(recorder.count).to eq(1)
+          expect(recorder.log.first).to match(/"p_ci_builds"."token_encrypted" IN/)
+          expect(recorder.log.first).not_to match(/"p_ci_builds"."partition_id" =/)
+        end
+      end
+    end
+
+    describe 'for persisting record' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:job) { FactoryBot.build(:ci_build, pipeline: pipeline, status: :running) }
+
+      it 'uses partition_id filter in query' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          job.save!
+        end
+
+        expect(recorder.log).to include(/"p_ci_builds"."partition_id" =/)
+      end
+
+      context 'when ci_build_find_token_authenticatable feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_build_find_token_authenticatable: false)
+        end
+
+        it 'does not use partition_id filter in query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            job.save!
+          end
+
+          expect(recorder.log).not_to include(/"p_ci_builds"."partition_id" =/)
+        end
+      end
     end
   end
 end

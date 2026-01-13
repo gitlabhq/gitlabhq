@@ -31,11 +31,8 @@ Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurit
 
 OCS can be configured to run on a cadence by using `agent config` or a project's scan execution policy.
 
-{{< alert type="note" >}}
-
-If both `agent config` and `scan execution policies` are configured, the configuration from `scan execution policy` takes precedence.
-
-{{< /alert >}}
+> [!note]
+> If both `agent config` and `scan execution policies` are configured, the configuration from `scan execution policy` takes precedence.
 
 ### Enable via agent configuration
 
@@ -52,16 +49,10 @@ The `cadence` field is required. GitLab supports the following types of CRON syn
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-{{< alert type="note" >}}
-
-Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
-{{< /alert >}}
+> [!note]
+> Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
+>
+> The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 By default, operational container scanning does not scan any workloads for vulnerabilities.
 You can set the `vulnerability_report` block with the `namespaces`
@@ -95,11 +86,8 @@ To enable scanning of images in your Kubernetes cluster by using scan execution 
 [scan execution policy editor](../../application_security/policies/scan_execution_policies.md#scan-execution-policy-editor)
 to create a new schedule rule.
 
-{{< alert type="note" >}}
-
-The Kubernetes agent must be running in your cluster to scan running container images
-
-{{< /alert >}}
+> [!note]
+> The Kubernetes agent must be running in your cluster to scan running container images
 
 {{< alert type="note" >}}
 
@@ -129,16 +117,10 @@ The keys for a schedule rule are:
 - `agents:<agent-name>` (required): The name of the agent to use for scanning
 - `agents:<agent-name>:namespaces` (required): The Kubernetes namespaces to scan.
 
-{{< alert type="note" >}}
-
-Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
-{{< /alert >}}
+> [!note]
+> Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
+> 
+> The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).
 
@@ -335,11 +317,8 @@ To view vulnerability information in GitLab:
 
 This information can also be found under [operational vulnerabilities](../../application_security/vulnerability_report/_index.md#operational-vulnerabilities).
 
-{{< alert type="note" >}}
-
-You must have at least the Developer role.
-
-{{< /alert >}}
+> [!note]
+> You must have at least the Developer role.
 
 ## Scanning private images
 

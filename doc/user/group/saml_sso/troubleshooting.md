@@ -55,7 +55,7 @@ To generate a SAML Response:
 
 #### Manually generate a SAML response
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see this [video on manually generating a SAML response without using a browser plugin (using Google Chrome)](https://youtu.be/umMPj6ohF_I), uploaded by GitLab Support.
 <!-- Video published on 2024-09-09 -->
 

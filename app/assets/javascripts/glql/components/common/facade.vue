@@ -268,11 +268,14 @@ export default {
           ref="resolver"
           :key="retryCount"
           :glql-query="queryYaml"
+          tracking-event-name="render_glql_block"
           @change="onResolverChange"
         />
 
         <template v-if="showEmptyState" #empty>
-          {{ __('No data found for this query.') }}
+          <div class="gl-pt-4">
+            {{ __('No data found for this query.') }}
+          </div>
         </template>
       </crud-component>
       <glql-footnote v-if="!isCollapsed" />

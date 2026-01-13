@@ -1,6 +1,5 @@
 ---
 Migration/PreventIndexCreation:
-  Details: grace period
   Exclude:
     - 'db/migrate/20250506140822_add_index_project_id_on_project_authorizations_for_migration.rb'
     - 'db/migrate/20251014142227_add_fk_on_sbom_occurrence_refs_for_sbom_occurrences.rb'

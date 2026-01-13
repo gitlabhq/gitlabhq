@@ -228,19 +228,13 @@ To view jobs that ran in a project:
 
 You can filter the list by job status, source, name, and kind.
 
-{{< alert type="note" >}}
-
-The filter by name returns jobs created in the last 30 days. This retention period applies to both UI and API filtering.
-
-{{< /alert >}}
+> [!note]
+> The filter by name returns jobs created in the last 30 days. This retention period applies to both UI and API filtering.
 
 By default, the filter shows only build jobs. To view trigger jobs, clear the filter, then select **Kind** > **Trigger**.
 
-{{< alert type="note" >}}
-
-The **Kind** filter is available only for project jobs. It is not available in the **Admin** area.
-
-{{< /alert >}}
+> [!note]
+> The **Kind** filter is available only for project jobs. It is not available in the **Admin** area.
 
 ### Available job statuses
 

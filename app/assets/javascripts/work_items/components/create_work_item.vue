@@ -19,7 +19,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__, sprintf, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
-import { findWidget } from '~/issues/list/utils';
+import { findWidget } from '~/work_items/list/utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
@@ -64,6 +64,8 @@ import {
   CUSTOM_FIELDS_TYPE_TEXT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_STATUS,
+  WORK_ITEM_CREATE_SOURCES,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -222,6 +224,11 @@ export default {
       required: false,
       default: false,
     },
+    createSource: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -261,7 +268,7 @@ export default {
         return this.skipWorkItemQuery;
       },
       update(data) {
-        return data?.workspace?.workItem ?? {};
+        return data?.namespace?.workItem ?? {};
       },
       result() {
         this.initialLoadingWorkItem = false;
@@ -281,7 +288,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace;
+        return data.namespace;
       },
       async result() {
         this.initialLoadingWorkItemTypes = false;
@@ -431,10 +438,12 @@ export default {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      return this.workItemTypes.map((workItemType) => ({
-        value: workItemType.id,
-        text: NAME_TO_TEXT_MAP[workItemType.name],
-      }));
+      return this.workItemTypes
+        .filter((workItemType) => workItemType.name !== WORK_ITEM_TYPE_NAME_TICKET)
+        .map((workItemType) => ({
+          value: workItemType.id,
+          text: NAME_TO_TEXT_MAP[workItemType.name],
+        }));
     },
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);
@@ -789,6 +798,12 @@ export default {
           description: this.workItemDescription || '',
         },
       };
+
+      if (this.createSource) {
+        workItemCreateInput.createSource = this.createSource;
+      } else if (this.vulnerabilityId) {
+        workItemCreateInput.createSource = WORK_ITEM_CREATE_SOURCES.VULNERABILITY;
+      }
 
       if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
         workItemCreateInput.discussionsToResolve = {

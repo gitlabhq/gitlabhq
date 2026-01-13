@@ -394,6 +394,10 @@ module Gitlab
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end
 
+      def rendered?
+        false
+      end
+
       def ipynb?
         file_path.ends_with?('.ipynb')
       end
@@ -412,7 +416,7 @@ module Gitlab
       end
 
       def no_preview?
-        collapsed? || !modified_file?
+        collapsed? || !modified_file? || (empty? && !content_changed? && !submodule?)
       end
 
       def diffable_text?

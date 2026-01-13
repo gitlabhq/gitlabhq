@@ -29,11 +29,8 @@ To add a license to a project:
 
 Applicants must add the correct license to each project in their respective groups or namespaces. When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
 
-{{< alert type="note" >}}
-
-GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in your namespace must meet program requirements.
-
-{{< /alert >}}
+> [!note]
+> GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in your namespace must meet program requirements.
 
 ### Verification for Open Source Program
 
@@ -48,11 +45,8 @@ GitLab verifies three aspects of your namespace:
 - Each project in the namespace must use an [OSI-approved license](https://opensource.org/licenses).
 - Projects in the namespace must be publicly visible, except one private project is allowed for security purposes.
 
-{{< alert type="note" >}}
-
-Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements.
-
-{{< /alert >}}
+> [!note]
+> Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements.
 
 ## GitLab for Startups
 

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markdown do
   include FilterSpecHelper
 
+  let_it_be(:user) { create(:user) }
+
   it 'ignores non-GFM links' do
     html = %(See <a href="https://google.com/">Google</a>)
     doc = filter(html, current_user: build(:user))
@@ -17,7 +19,6 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
   end
 
   it 'skips when the skip_redaction flag is set' do
-    user = create(:user)
     project = create(:project)
     link = reference_link(project: project.id, reference_type: 'test')
 
@@ -47,7 +48,6 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
       end
 
       it 'allows permitted Project references' do
-        user = create(:user)
         project = create(:project)
         project.add_maintainer(user)
         link = reference_link(project: project.id, reference_type: 'test')
@@ -66,13 +66,13 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
       end
 
       it 'removes unpermitted references' do
-        user = create(:user)
         project = create(:project)
-        link = reference_link(project: project.id, reference_type: 'test')
+        link = reference_link(project: project.id, reference_type: 'test', original: 'original')
 
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
+        expect(doc.to_html).to eq('original')
       end
 
       it 'handles invalid references' do
@@ -86,58 +86,53 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
   context 'with data-issue' do
     context 'for confidential issues' do
       it 'removes references for non project members' do
-        non_member = create(:user)
         project = create(:project, :public)
         issue = create(:issue, :confidential, project: project)
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
 
-        doc = filter(link, current_user: non_member)
+        doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
       end
 
       it 'removes references for project members with guest role' do
-        member = create(:user)
         project = create(:project, :public)
-        project.add_guest(member)
+        project.add_guest(user)
         issue = create(:issue, :confidential, project: project)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
-        doc = filter(link, current_user: member)
+        doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
       end
 
       it 'allows references for author' do
-        author = create(:user)
         project = create(:project, :public)
-        issue = create(:issue, :confidential, project: project, author: author)
+        issue = create(:issue, :confidential, project: project, author: user)
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
-        doc = filter(link, current_user: author)
+        doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
 
       it 'allows references for assignee' do
-        assignee = create(:user)
         project = create(:project, :public)
-        issue = create(:issue, :confidential, project: project, assignees: [assignee])
+        issue = create(:issue, :confidential, project: project, assignees: [user])
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
 
-        doc = filter(link, current_user: assignee)
+        doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
 
       it 'allows references for project members' do
-        member = create(:user)
         project = create(:project, :public)
-        project.add_developer(member)
+        project.add_developer(user)
         issue = create(:issue, :confidential, project: project)
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
 
-        doc = filter(link, current_user: member)
+        doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
@@ -158,38 +153,35 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
         let(:private_project) { create(:project, :private) }
 
         it 'removes references for author' do
-          author = create(:user)
-          issue = create(:issue, :confidential, project: public_project, author: author)
+          issue = create(:issue, :confidential, project: public_project, author: user)
           issue.update!(project: private_project) # move issue to private project
           link = reference_link(project: private_project.id, issue: issue.id, reference_type: 'issue')
 
-          doc = filter(link, current_user: author)
+          doc = filter(link, current_user: user)
 
           expect(doc.css('a').length).to eq 0
         end
 
         it 'removes references for assignee' do
-          assignee = create(:user)
-          issue = create(:issue, :confidential, project: public_project, assignees: [assignee])
+          issue = create(:issue, :confidential, project: public_project, assignees: [user])
           issue.update!(project: private_project) # move issue to private project
           link = reference_link(project: private_project.id, issue: issue.id, reference_type: 'issue')
 
-          doc = filter(link, current_user: assignee)
+          doc = filter(link, current_user: user)
 
           expect(doc.css('a').length).to eq 0
         end
 
         it 'allows references for project members' do
-          member = create(:user)
           project = create(:project, :public)
           project_2 = create(:project, :private)
-          project.add_developer(member)
-          project_2.add_developer(member)
+          project.add_developer(user)
+          project_2.add_developer(user)
           issue = create(:issue, :confidential, project: project)
           issue.update!(project: project_2) # move issue to private project
           link = reference_link(project: project_2.id, issue: issue.id, reference_type: 'issue')
 
-          doc = filter(link, current_user: member)
+          doc = filter(link, current_user: user)
 
           expect(doc.css('a').length).to eq 1
         end
@@ -197,7 +189,6 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
     end
 
     it 'allows references for non confidential issues' do
-      user = create(:user)
       project = create(:project, :public)
       issue = create(:issue, project: project)
       link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
@@ -210,21 +201,20 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
 
   context "for user references" do
     context 'with data-group' do
+      let_it_be(:private_group) { create(:group, :private) }
+
       it 'removes unpermitted Group references' do
-        user = create(:user)
-        group = create(:group, :private)
-        link = reference_link(group: group.id, reference_type: 'user')
+        link = reference_link(group: private_group.id, reference_type: 'user', original: 'original')
 
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
+        expect(doc.to_html).to eq('original')
       end
 
       it 'allows permitted Group references' do
-        user = create(:user)
-        group = create(:group, :private)
-        group.add_developer(user)
-        link = reference_link(group: group.id, reference_type: 'user')
+        private_group.add_developer(user)
+        link = reference_link(group: private_group.id, reference_type: 'user')
 
         doc = filter(link, current_user: user)
 
@@ -232,7 +222,7 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
       end
 
       it 'handles invalid Group references' do
-        link = reference_link(group: 12345, reference_type: 'user')
+        link = reference_link(group: 0, reference_type: 'user')
 
         expect { filter(link) }.not_to raise_error
       end
@@ -240,7 +230,6 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
 
     context 'with data-user' do
       it 'allows any User reference' do
-        user = create(:user)
         link = reference_link(user: user.id, reference_type: 'user')
 
         doc = filter(link)

@@ -19,6 +19,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     project_with_runner_registration_token.add_guest(guest)
     project_with_runner_registration_token.add_planner(planner)
     project_with_runner_registration_token.add_reporter(reporter)
+    project_with_runner_registration_token.add_security_manager(security_manager)
     project_with_runner_registration_token.add_developer(developer)
     project_with_runner_registration_token.add_maintainer(maintainer)
     project_with_runner_registration_token.add_owner(owner)
@@ -510,11 +511,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     using RSpec::Parameterized::TableSyntax
 
     where(:role, :allowed) do
-      :owner      | true
-      :maintainer | true
-      :developer  | false
-      :reporter   | false
-      :guest      | false
+      :owner            | true
+      :maintainer       | true
+      :developer        | false
+      :security_manager | false
+      :reporter         | false
+      :guest            | false
     end
 
     with_them do
@@ -626,6 +628,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   it_behaves_like 'project policies as guest'
   it_behaves_like 'project policies as planner'
   it_behaves_like 'project policies as reporter'
+  it_behaves_like 'project policies as security_manager'
   it_behaves_like 'project policies as developer'
   it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'
@@ -1273,7 +1276,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'with service desk disabled' do
       it { expect_allowed(:public_access) }
-      it { expect_disallowed(:guest_access, :create_note, :read_project) }
+      it { expect_disallowed(:guest_access, :create_note, :read_project, :create_ticket) }
     end
 
     context 'with service desk enabled' do
@@ -1281,7 +1284,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
       end
 
-      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
+      it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item, :create_ticket) }
 
       context 'when issues are protected members only' do
         before do
@@ -1289,6 +1292,41 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
 
         it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }
+      end
+    end
+  end
+
+  describe 'create_ticket' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :service_desk_enabled, :allowed) do
+      :guest      | false | false
+      :planner    | false | false
+      :reporter   | false | false
+      :developer  | false | false
+      :maintainer | false | false
+      :owner      | false | false
+      :guest      | true  | false
+      :planner    | true  | true
+      :reporter   | true  | true
+      :developer  | true  | true
+      :maintainer | true  | true
+      :owner      | true  | true
+    end
+
+    with_them do
+      let(:current_user) { public_send(role) }
+
+      before do
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(service_desk_enabled)
+      end
+
+      it 'allows/disallows create_ticket based on role and service desk status' do
+        if allowed
+          is_expected.to be_allowed(:create_ticket)
+        else
+          is_expected.to be_disallowed(:create_ticket)
+        end
       end
     end
   end
@@ -3144,10 +3182,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'container_image policies' do
     using RSpec::Parameterized::TableSyntax
 
-    # These are permissions that admins should not have when the project is private
-    # or the container registry is private.
-    let(:admin_excluded_permissions) { [:build_read_container_image] }
-
     let(:anonymous_operations_permissions) { [:read_container_image] }
     let(:guest_operations_permissions) { anonymous_operations_permissions + [:build_read_container_image] }
 
@@ -3318,13 +3352,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     # Overrides `permissions_abilities` defined below to be suitable for container_image policies
     def permissions_abilities(role)
       case role
-      when :admin
-        if project_visibility == :private || access_level == ProjectFeature::PRIVATE
-          maintainer_operations_permissions - admin_excluded_permissions
-        else
-          maintainer_operations_permissions
-        end
-      when :maintainer, :owner
+      when :admin, :maintainer, :owner
         maintainer_operations_permissions
       when :developer
         developer_operations_permissions

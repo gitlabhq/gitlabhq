@@ -253,3 +253,14 @@ export const FLUX_RESUME_ACTION = {
   text: s__('KubernetesDashboard|Resume reconciliation'),
   icon: 'play',
 };
+
+// Ordered from latest version to oldest
+export const SUPPORTED_HELM_RELEASES = [
+  'helm.toolkit.fluxcd.io/v2',
+  'helm.toolkit.fluxcd.io/v2beta1',
+];
+export const SUPPORTED_KUSTOMIZATIONS = [
+  'kustomize.toolkit.fluxcd.io/v1',
+  'kustomize.toolkit.fluxcd.io/v1beta2',
+  'kustomize.toolkit.fluxcd.io/v1beta1',
+];

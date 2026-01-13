@@ -72,7 +72,7 @@ The following sections document various options for addressing performance issue
 
 One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64) with API security testing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API security testing share a single runner instance.
 
-| Hosted runner on Linux tag           | Requests per Second |
+| Hosted runner on Linux tag           | Requests per second |
 |------------------------------------|-----------|
 | `saas-linux-small-amd64` (default) | 255 |
 | `saas-linux-medium-amd64`          | 400 |
@@ -107,11 +107,8 @@ api_security:
     APISEC_EXCLUDE_PATHS: /api/large_response_json
 ```
 
-{{< alert type="warning" >}}
-
-Excluding operations from testing could allow some vulnerabilities to go undetected.
-
-{{< /alert >}}
+> [!warning]
+> Excluding operations from testing could allow some vulnerabilities to go undetected.
 
 ### Splitting a test into multiple jobs
 

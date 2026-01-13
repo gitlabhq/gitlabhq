@@ -41,6 +41,7 @@ describe('PasswordInput', () => {
     expect(passwordInput.attributes('title')).toBe(propsData.title);
     expect(passwordInput.attributes('required')).toBe('true');
     expect(passwordInput.attributes('disabled')).toBeUndefined();
+    expect(passwordInput.props('state')).toBe(null);
   });
 
   describe('when password input is not required', () => {
@@ -81,6 +82,14 @@ describe('PasswordInput', () => {
 
       expect(findPasswordInput().attributes('disabled')).toBeDefined();
       expect(findToggleButton().attributes('disabled')).toBeDefined();
+    });
+  });
+
+  describe('when state prop is passed', () => {
+    it('sets state prop on GlFormInput', () => {
+      wrapper = createComponent({ state: false });
+
+      expect(findPasswordInput().props('state')).toBe(false);
     });
   });
 });

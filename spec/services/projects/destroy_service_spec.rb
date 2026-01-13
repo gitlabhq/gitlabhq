@@ -6,6 +6,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   include ContainerRegistryHelpers
   include ProjectForksHelper
   include BatchDestroyDependentAssociationsHelper
+  include Namespaces::StatefulHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -16,6 +17,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_gitlab_api_client_to_support_gitlab_api(supported: false)
   end
 
   shared_examples 'deleting the project' do
@@ -47,10 +49,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   shared_examples 'deleting the project with pipeline and build' do
-    before do
-      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
-    end
-
     context 'with pipeline and build related records', :sidekiq_inline do # which has optimistic locking
       let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:build) { create(:ci_build, :artifacts, :with_runner_session, pipeline: pipeline) }
@@ -186,16 +184,29 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'when the deleting user does not have access' do
+    let_it_be(:unauthorized_user) { create(:user) }
+
     before do
       project.update!(pending_delete: true)
+      set_state(project.project_namespace, :deletion_scheduled)
     end
 
     it 'unsets the pending_delete on project' do
-      expect(destroy_project(project, create(:user))).to be(false)
+      expect(destroy_project(project, unauthorized_user)).to be(false)
 
       project.reload
 
       expect(project.pending_delete).to be_falsey
+    end
+
+    context 'when project state is deletion_scheduled' do
+      it 'transitions state to deletion_in_progress' do
+        expect(project).to receive(:cancel_deletion!).with(transition_user: unauthorized_user).and_call_original
+
+        expect { destroy_project(project, unauthorized_user) }.to change { project.reload.state }
+         .from(Namespaces::Stateful::STATES[:deletion_scheduled])
+         .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+      end
     end
   end
 
@@ -211,6 +222,32 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
 
     it_behaves_like 'deleting the project'
+  end
+
+  describe 'project state transition' do
+    before do
+      project.add_owner(user)
+    end
+
+    context 'when project state is ancestor_inherited' do
+      it 'transitions the project state to deletion_in_progress' do
+        expect(project).to receive(:start_deletion!).with(transition_user: user)
+
+        destroy_project(project, user, {})
+      end
+
+      context 'when project is already in deletion_in_progress state' do
+        before do
+          allow(project).to receive(:deletion_in_progress?).and_return(true)
+        end
+
+        it 'does not call start_deletion!' do
+          expect(project).not_to receive(:start_deletion!)
+
+          destroy_project(project, user, {})
+        end
+      end
+    end
   end
 
   context "deleting a project with merge requests" do
@@ -434,6 +471,32 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
 
     it_behaves_like 'deleting the project with pipeline and build'
+
+    describe 'project state transition' do
+      before do
+        project.add_owner(user)
+      end
+
+      context 'when project state is ancestor_inherited' do
+        it 'transitions the project state to deletion_in_progress before scheduling the job' do
+          expect(project).to receive(:start_deletion!).with(transition_user: user)
+
+          destroy_project(project, user, {})
+        end
+
+        context 'when project is already in deletion_in_progress state' do
+          before do
+            allow(project).to receive(:deletion_in_progress?).and_return(true)
+          end
+
+          it 'does not call start_deletion!' do
+            expect(project).not_to receive(:start_deletion!)
+
+            destroy_project(project, user, {})
+          end
+        end
+      end
+    end
 
     context 'errors' do
       context 'when `remove_legacy_registry_tags` fails' do
@@ -865,10 +928,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   end
 
   context 'error while destroying', :sidekiq_inline do
-    before do
-      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
-    end
-
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:builds) { create_list(:ci_build, 2, :artifacts, pipeline: pipeline) }
     let!(:build_trace) { create(:ci_build_trace_chunk, build: builds[0]) }
@@ -886,6 +945,21 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
       expect(project.all_pipelines).to be_empty
       expect(project.builds).to be_empty
+    end
+
+    context 'when project state is deletion_scheduled' do
+      before do
+        set_state(project.project_namespace, :deletion_scheduled)
+        allow(project).to receive(:destroy!).and_raise(StandardError)
+      end
+
+      it 'calls reschedule_deletion to transition state back' do
+        expect(project).to receive(:reschedule_deletion!).with(transition_user: user).and_call_original
+
+        destroy_project(project, user, {})
+
+        expect(project.reload.state).to eq(Namespaces::Stateful::STATES[:deletion_scheduled])
+      end
     end
   end
 
@@ -1095,6 +1169,44 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         )
 
         service.send(:destroy_orphaned_ci_job_artifacts!)
+      end
+    end
+  end
+
+  describe '#destroy_relation_export_uploads!' do
+    let(:service) { described_class.new(project, user) }
+
+    context 'when project has relation export uploads' do
+      let!(:export_job) { create(:project_export_job, project: project) }
+      let!(:relation_export) { create(:project_relation_export, project_export_job: export_job) }
+      let!(:relation_export_upload) { create(:relation_export_upload, relation_export: relation_export) }
+
+      it 'calls the RemoveRelationExportUploadsService' do
+        expect(Projects::ImportExport::RemoveRelationExportUploadsService)
+          .to receive(:new).with(project).and_call_original
+        expect_any_instance_of(Projects::ImportExport::RemoveRelationExportUploadsService)
+          .to receive(:execute).and_call_original
+
+        service.send(:destroy_relation_export_uploads!)
+      end
+
+      it 'enqueues workers for each upload', :sidekiq_inline do
+        relation_export_upload.update!(export_file: fixture_file_upload('spec/fixtures/gitlab/import_export/labels.tar.gz'))
+        upload_id = relation_export_upload.uploads.first.id
+
+        expect(Projects::ImportExport::RemoveRelationExportUploadWorker)
+          .to receive(:perform_async).with(upload_id)
+
+        service.send(:destroy_relation_export_uploads!)
+      end
+    end
+
+    context 'when project has no relation export uploads' do
+      it 'does not enqueue any workers' do
+        expect(Projects::ImportExport::RemoveRelationExportUploadWorker)
+          .not_to receive(:perform_async)
+
+        service.send(:destroy_relation_export_uploads!)
       end
     end
   end

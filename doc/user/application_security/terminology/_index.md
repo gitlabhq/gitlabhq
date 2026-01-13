@@ -78,6 +78,30 @@ includes the relationships between them. It's differentiated from a lock file be
 not be required by a [package manager](#package-managers) during installation like in the case of a `pipdeptree graph`
 [export](https://github.com/tox-dev/pipdeptree/blob/28ed57c8e96ed1fce13a7abbf167e850625a835c/README.md#visualizing-the-dependency-graph).
 
+## Dependency version conflict
+
+A dependency version conflict occurs when dependency version constraints cannot be satisfied.
+
+Consider the following:
+
+- Dependency X requires `packageA` at exactly version 1.0.0
+- Dependency Y requires `packageA` version 1.0.1 or higher
+
+In this example, no version of `packageA` can satisfy both constraints, resulting in a dependency
+version conflict.
+
+## Dependency version incompatibility
+
+A dependency version incompatibility occurs when a package's version does not satisfy a version constraint.
+
+Consider the following:
+
+- `packageA` has versions `1.0.0` and `1.0.1`
+- Dependency X requires `packageA` version 1.0.1 or higher
+
+In this example, `packageA` version `1.0.0` does not satisfy the version constraint, and so is incompatible.
+However, `packageA` version `1.0.1` does satisfy the constraint.
+
 ## Duplicate finding
 
 A legitimate finding that is reported multiple times. This can occur when different scanners
@@ -106,6 +130,12 @@ You can interact with vulnerability findings in two ways.
 A flexible and non-destructive way to visually organize vulnerabilities in groups when there are multiple findings
 that are likely related but do not qualify for deduplication. For example, you can include findings that should be
 evaluated together, would be fixed by the same action, or come from the same source.
+
+## Identifier
+
+An identifier is an ID for the vulnerability from an external database, such as Common Vulnerabilities and Exposures (CVE)
+or Common Weakness Enumeration (CWE). A vulnerability may have multiple identifiers.
+An identifier is composed of a type (like `CVE`) and an ID (like `CVE-2021-44228`).
 
 ## Insignificant finding
 
@@ -262,13 +292,8 @@ Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the sca
 
 ## Primary identifier
 
-A finding's primary identifier is a value that is unique to each finding. The external type and external ID
-of the finding's [first identifier](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v2.4.0-rc1/dist/sast-report-format.json#L228)
-combine to create the value.
-
-An example primary identifier is `CVE`, which is used for Trivy. The identifier must be stable.
-Subsequent scans must return the same value for the same finding, even if the location has slightly
-changed.
+The first [identifier](#identifier) is the primary identifier. The primary identifier must be stable.
+Subsequent scans must return the same value for the same finding, even if the location of the vulnerability has changed.
 
 ## Processor
 

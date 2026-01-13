@@ -1,0 +1,12 @@
+---
+table_name: p_knowledge_graph_replicas
+classes: []
+feature_categories:
+- knowledge_graph
+description: Represents a replica of a namespace on a Zoekt node
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191162
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell_local
+table_size: small
+removed_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216324'
+removed_in_milestone: '18.8'

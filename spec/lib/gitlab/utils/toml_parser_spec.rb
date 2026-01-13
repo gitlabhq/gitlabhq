@@ -44,11 +44,12 @@ RSpec.describe Gitlab::Utils::TomlParser, feature_category: :source_code_managem
           <<~TOML
             rust.unused_must_use = "deny"
             rust.rust_2018_idioms = { level = "deny", priority = -1 }
+            rust.unused_must_use = "allow"
           TOML
         end
 
         it 'raises a ParserError with the error message' do
-          error_message = 'error parsing TOML: Key "rust" is defined more than once'
+          error_message = 'error parsing TOML: Key "unused_must_use" is defined more than once'
           expect { result }.to raise_error(Gitlab::Utils::TomlParser::ParseError, error_message)
         end
       end

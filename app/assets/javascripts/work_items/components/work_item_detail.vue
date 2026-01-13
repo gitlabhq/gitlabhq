@@ -259,7 +259,7 @@ export default {
         if (this.workItemId) {
           return data.workItem ?? {};
         }
-        return data.workspace?.workItem ?? {};
+        return data.namespace?.workItem ?? {};
       },
       error() {
         if (this.workItem?.id === this.workItemId || this.workItem?.iid === this.workItemIid) {
@@ -316,7 +316,7 @@ export default {
         return this.isGroup || this.workItemLoading;
       },
       update(data) {
-        return data.workspace?.userPermissions ?? defaultWorkspacePermissions;
+        return data.namespace?.userPermissions ?? defaultWorkspacePermissions;
       },
     },
   },
@@ -872,11 +872,27 @@ export default {
       );
     },
     preventDefaultConditionally(event) {
-      const $refs = this.$refs.workItemNotes?.$el.$refs;
+      // We do not want to prevent drag and drop for child and related item trees
+      const ignoredClasses = ['tree-item', 'linked-item'];
+      if (ignoredClasses.some((className) => event.target.classList.contains(className))) {
+        return;
+      }
+
+      // Dragging image resize handles in RTE do not require repositioning like text does
+      // so we return early after preventing default behaviour, this fixes
+      // a problem as mentioned in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217708#note_2987427072
+      if (event.target.classList.contains('image-resize')) {
+        event.preventDefault();
+        return;
+      }
+
+      // Drag happened on text selection, check if
+      // text is dropped between note forms.
+      const $refs = this.$refs.workItemNotes?.$refs;
       const topForm = $refs.addNoteTop;
       const bottomForm = $refs.addNoteBottom;
 
-      if (!topForm?.contains(event.target) && !bottomForm?.contains(event.target)) {
+      if (!topForm?.$el.contains(event.target) && !bottomForm?.$el.contains(event.target)) {
         event.preventDefault();
       }
     },
@@ -950,7 +966,7 @@ export default {
       @drop.prevent.stop="onDrop"
     >
       <!-- Do not remove the element below, it allows for scrolling to top on click of sticky header -->
-      <div v-if="glFeatures.projectStudioEnabled" id="top"></div>
+      <div id="top"></div>
       <section class="work-item-view">
         <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
           s__('WorkItem|Edit work item')

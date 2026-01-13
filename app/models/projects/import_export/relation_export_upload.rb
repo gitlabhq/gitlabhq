@@ -7,6 +7,7 @@ module Projects
 
       self.table_name = 'project_relation_export_uploads'
 
+      belongs_to :project, inverse_of: :relation_export_uploads
       belongs_to :relation_export,
         class_name: 'Projects::ImportExport::RelationExport',
         foreign_key: :project_relation_export_id,

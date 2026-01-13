@@ -1119,9 +1119,10 @@ module API
     def boundary_for_endpoint
       return unless access_token.try(:granular?)
 
-      case authorization_settings[:boundary_type]
-      when :standalone
-        ::Authz::Boundary.for(nil)
+      access = authorization_settings[:boundary_type]
+      case access
+      when :user, :instance
+        ::Authz::Boundary.for(access)
       when :group
         group = find_group(params[:group_id] || params[:id])
         ::Authz::Boundary.for(group) if group

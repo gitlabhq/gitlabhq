@@ -8,6 +8,10 @@ RSpec.describe 'Project wikis', :js, feature_category: :wiki do
   let(:wiki) { create(:project_wiki, user: user, project: project) }
   let(:project) { create(:project, namespace: user.namespace, creator: user) }
 
+  before do
+    stub_feature_flags(wiki_immersive_editor: false)
+  end
+
   it_behaves_like 'User creates wiki page'
   it_behaves_like 'User deletes wiki page'
   it_behaves_like 'User previews wiki changes'

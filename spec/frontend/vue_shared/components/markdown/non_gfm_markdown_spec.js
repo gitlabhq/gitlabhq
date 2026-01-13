@@ -32,6 +32,11 @@ describe('NonGitlabMarkdown', () => {
   const findMarkdownBlock = () => wrapper.findByTestId('non-code-markdown');
   const findImageTags = () => wrapper.findAll('img');
 
+  it('should not render image tags', () => {
+    createComponent({ propsData: { markdown: '![alt text](image.jpg)' } });
+    expect(findImageTags()).toHaveLength(0);
+  });
+
   describe('rendering markdown without code snippet', () => {
     beforeEach(() => {
       createComponent({ propsData: { markdown: nonCodeContent } });
@@ -152,22 +157,6 @@ describe('NonGitlabMarkdown', () => {
         await nextTick();
         const copyCodeButton = findCopyCodeButton();
         expect(copyCodeButton.exists()).toBe(false);
-      });
-    });
-
-    describe('image tags', () => {
-      it('should not render image tags by default', () => {
-        createComponent({ propsData: { markdown: '![alt text](image.jpg)' } });
-        expect(findImageTags()).toHaveLength(0);
-      });
-
-      describe('when withImages prop is true', () => {
-        it('should render image tags', () => {
-          createComponent({ propsData: { markdown: '![alt text](image.jpg)', withImages: true } });
-
-          expect(findImageTags()).toHaveLength(1);
-          expect(findImageTags().at(0).attributes('src')).toBe('image.jpg');
-        });
       });
     });
   });

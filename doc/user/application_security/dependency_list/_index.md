@@ -26,7 +26,7 @@ dependencies, including their known vulnerabilities. This list is a collection o
 project, including existing and new findings. This information is sometimes referred to as a
 Software Bill of Materials, SBOM, or BOM.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Project Dependency - Advanced Security Testing](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
 
 ## Set up the dependency list

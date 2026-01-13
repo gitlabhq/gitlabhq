@@ -12,7 +12,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
     )
   end
 
-  let_it_be(:ghost_user) { Users::Internal.for_organization(project.organization).ghost }
+  let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
   let_it_be(:merge_request) { create(:merged_merge_request, project: project) }
   let_it_be(:merger_source_user) { generate_source_user(project, 999) }
 

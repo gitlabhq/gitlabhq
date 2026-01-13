@@ -281,11 +281,8 @@ You can now use your chosen OmniAuth provider to sign in to GitLab.
 
 Administrators can enable or disable sign-in for some OmniAuth providers.
 
-{{< alert type="note" >}}
-
-By default, sign-in is enabled for all the OAuth providers configured in `config/gitlab.yml`.
-
-{{< /alert >}}
+> [!note]
+> By default, sign-in is enabled for all the OAuth providers configured in `config/gitlab.yml`.
 
 To enable or disable an OmniAuth provider:
 
@@ -401,11 +398,8 @@ omniauth:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Some providers require additional configuration to synchronize these attributes. For example, SAML providers require [mapping profile attributes](saml.md#map-profile-attributes).
-
-{{< /alert >}}
+> [!note]
+> Some providers require additional configuration to synchronize these attributes. For example, SAML providers require [mapping profile attributes](saml.md#map-profile-attributes).
 
 You can enable profile syncing from selected OmniAuth providers.
 You can sync any combination of the following user attributes:

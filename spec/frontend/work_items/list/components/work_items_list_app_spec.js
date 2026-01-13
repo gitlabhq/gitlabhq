@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -7,14 +7,17 @@ import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
+import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
+import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
-import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
-import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
+import EmptyStateWithAnyIssues from '~/work_items/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -26,7 +29,7 @@ import {
   UPDATED_DESC,
   urlSortParams,
   RELATIVE_POSITION_ASC,
-} from '~/issues/list/constants';
+} from '~/work_items/list/constants';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
@@ -76,9 +79,11 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -97,6 +102,7 @@ jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/common_utils');
 
 const showToast = jest.fn();
 
@@ -108,6 +114,17 @@ const hasWorkItemsData = {
       id: 'namespace',
       workItems: {
         nodes: [{ id: 'thing' }],
+      },
+    },
+  },
+};
+
+const emptyHasWorkItemsResponse = {
+  data: {
+    namespace: {
+      id: 'namespace',
+      workItems: {
+        nodes: [],
       },
     },
   },
@@ -157,6 +174,12 @@ const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
+const findGlAlert = () => wrapper.findComponent(GlAlert);
+const findServiceDeskEmptyStateWithAnyIssues = () =>
+  wrapper.findComponent(EmptyStateWithAnyTickets);
+const findServiceDeskEmptyStateWithoutAnyIssues = () =>
+  wrapper.findComponent(EmptyStateWithoutAnyTickets);
+const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 
 const mountComponent = ({
   provide = {},
@@ -176,6 +199,7 @@ const mountComponent = ({
   isIssueRepositioningDisabled = false,
   hasProjects = true,
   stubs = {},
+  isLoggedInValue = true,
 } = {}) => {
   window.gon = {
     ...window.gon,
@@ -191,6 +215,8 @@ const mountComponent = ({
       ...routes({ fullPath: '/work_item' }),
     ],
   });
+
+  isLoggedIn.mockReturnValue(isLoggedInValue);
 
   wrapper = shallowMountExtended(WorkItemsListApp, {
     router,
@@ -227,7 +253,7 @@ const mountComponent = ({
       hasCustomFieldsFeature: false,
       hasStatusFeature: false,
       isGroup: true,
-      isSignedIn: true,
+      isServiceDeskSupported: false,
       showNewWorkItem: true,
       workItemType: null,
       canCreateWorkItem: false,
@@ -361,7 +387,7 @@ describe('when work items are fetched', () => {
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: ['ISSUE', 'INCIDENT', 'TASK'],
+        types: ['ISSUE', 'INCIDENT', 'TASK', 'TICKET'],
         excludeGroupWorkItems: false,
       }),
     );
@@ -395,6 +421,21 @@ describe('when work items are fetched', () => {
 
     expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
     expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+  });
+
+  describe('when workItemPlanningView flag is enabled', () => {
+    beforeEach(async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+    });
+
+    it('passes undefined as error to IssuableList', () => {
+      expect(findIssuableList().props('error')).toBe('');
+    });
+
+    it('does not display error alert when there is no error', () => {
+      expect(findGlAlert().exists()).toBe(false);
+    });
   });
 
   describe('when isGroupIssuesList is true', () => {
@@ -432,6 +473,7 @@ describe('sort options', () => {
           hasBlockedIssuesFeature: true,
           hasIssuableHealthStatusFeature: true,
           hasIssueWeightsFeature: true,
+          hasStatusFeature: true,
         },
       });
       await waitForPromises();
@@ -449,6 +491,7 @@ describe('sort options', () => {
         expect.objectContaining({ title: 'Title' }),
         expect.objectContaining({ title: 'Start date' }),
         expect.objectContaining({ title: 'Health' }),
+        expect.objectContaining({ title: 'Status' }),
         expect.objectContaining({ title: 'Weight' }),
         expect.objectContaining({ title: 'Blocking' }),
       ]);
@@ -462,6 +505,7 @@ describe('sort options', () => {
           hasBlockedIssuesFeature: false,
           hasIssuableHealthStatusFeature: false,
           hasIssueWeightsFeature: false,
+          hasStatusFeature: false,
         },
       });
       await waitForPromises();
@@ -483,12 +527,13 @@ describe('sort options', () => {
   });
 
   describe('when epics list', () => {
-    it('does not render "Priority", "Label priority", "Manual" and "Weight" sort options', async () => {
+    it('does not render "Priority", "Label priority", "Manual", "Status", and "Weight" sort options', async () => {
       mountComponent({
         provide: {
           hasBlockedIssuesFeature: true,
           hasIssuableHealthStatusFeature: true,
           hasIssueWeightsFeature: true,
+          hasStatusFeature: true,
           workItemType: WORK_ITEM_TYPE_NAME_EPIC,
         },
       });
@@ -506,6 +551,26 @@ describe('sort options', () => {
         expect.objectContaining({ title: 'Health' }),
         expect.objectContaining({ title: 'Blocking' }),
       ]);
+    });
+  });
+
+  describe('when service desk list', () => {
+    it('does not render "Status" sort options', async () => {
+      mountComponent({
+        provide: {
+          hasBlockedIssuesFeature: true,
+          hasIssuableHealthStatusFeature: true,
+          hasIssueWeightsFeature: true,
+          hasStatusFeature: true,
+          workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+        },
+      });
+      await waitForPromises();
+      const sortOptions = findIssuableList()
+        .props('sortOptions')
+        .map((sort) => sort.title);
+
+      expect(sortOptions).not.toContain('Status');
     });
   });
 
@@ -642,6 +707,24 @@ describe.each`
     await nextTick();
 
     expect(wrapper.text()).not.toContain(message);
+  });
+
+  describe('when workItemPlanningView flag is enabled', () => {
+    beforeEach(async () => {
+      mountComponent({
+        [handlerName]: jest.fn().mockRejectedValue(new Error('ERROR')),
+        workItemPlanningView: true,
+      });
+      await waitForPromises();
+    });
+
+    it('passes empty string as error to IssuableList', () => {
+      expect(findIssuableList().props('error')).toBe('');
+    });
+
+    it('displays error alert in the component', () => {
+      expect(findGlAlert().text()).toContain(message);
+    });
   });
 });
 
@@ -1158,7 +1241,7 @@ describe('events', () => {
 
     describe('when user is signed out', () => {
       it('does not call mutation to save sort preference', async () => {
-        mountComponent({ provide: { isSignedIn: false } });
+        mountComponent({ isLoggedInValue: false });
         await waitForPromises();
 
         findIssuableList().vm.$emit('sort', CREATED_DESC);
@@ -1202,9 +1285,6 @@ describe('work item drawer', () => {
 
         mountComponent({
           mockPreferencesHandler: mockHandler,
-          provide: {
-            isSignedIn: true,
-          },
         });
 
         await waitForPromises();
@@ -1479,16 +1559,6 @@ describe('empty states', () => {
     opened: 0,
   };
 
-  const emptyHasWorkItemsResponse = {
-    data: {
-      namespace: {
-        id: 'namespace',
-        workItems: {
-          nodes: [],
-        },
-      },
-    },
-  };
   const getEmptyQueryHandler = ({
     emptyWorkItems = emptyWorkItemsResponse,
     emptyWorkItemsSlim = emptyWorkItemsSlimResponse,
@@ -2053,5 +2123,86 @@ describe('iid filter search', () => {
 
     await waitForPromises();
     expect(findDrawer().props('open')).toBe(false);
+  });
+});
+
+describe('when service desk list', () => {
+  describe('service desk info banner', () => {
+    describe('when there are work items', () => {
+      it.each`
+        workItemType                  | isServiceDeskSupported | isInfoBannerVisible
+        ${WORK_ITEM_TYPE_NAME_TICKET} | ${true}                | ${true}
+        ${WORK_ITEM_TYPE_NAME_TICKET} | ${false}               | ${false}
+        ${undefined}                  | ${true}                | ${false}
+        ${undefined}                  | ${false}               | ${false}
+      `(
+        'only renders InfoBanner when service desk is supported and it is the service desk list',
+        async ({ workItemType, isServiceDeskSupported, isInfoBannerVisible }) => {
+          mountComponent({
+            provide: { isServiceDeskSupported, workItemType },
+            hasWorkItemsHandler: jest.fn().mockResolvedValue(hasWorkItemsData),
+          });
+          await waitForPromises();
+
+          expect(findServiceDeskInfoBanner().exists()).toBe(isInfoBannerVisible);
+        },
+      );
+    });
+
+    describe('when there no work items', () => {
+      it.each`
+        workItemType                  | isServiceDeskSupported
+        ${WORK_ITEM_TYPE_NAME_TICKET} | ${true}
+        ${WORK_ITEM_TYPE_NAME_TICKET} | ${false}
+        ${undefined}                  | ${true}
+        ${undefined}                  | ${false}
+      `('never renders InfoBanner', async ({ workItemType, isServiceDeskSupported }) => {
+        mountComponent({
+          provide: { isServiceDeskSupported, workItemType },
+          hasWorkItemsHandler: jest.fn().mockResolvedValue(emptyHasWorkItemsResponse),
+        });
+        await waitForPromises();
+
+        expect(findServiceDeskInfoBanner().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('nav actions', () => {
+    it('does not render the bulk edit button, create work item modal, or actions dropdown', async () => {
+      mountComponent({
+        provide: {
+          isServiceDeskSupported: true,
+          workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+        },
+      });
+      await waitForPromises();
+
+      expect(findBulkEditStartButton().exists()).toBe(false);
+      expect(findCreateWorkItemModal().exists()).toBe(false);
+      expect(findWorkItemListActions().exists()).toBe(false);
+    });
+  });
+
+  describe('empty state', () => {
+    it('renders EmptyStateWithAnyTickets when there are work items', async () => {
+      mountComponent({
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        hasWorkItemsHandler: jest.fn().mockResolvedValue(hasWorkItemsData),
+      });
+      await waitForPromises();
+
+      expect(findServiceDeskEmptyStateWithAnyIssues().exists()).toBe(true);
+    });
+
+    it('renders EmptyStateWithoutAnyTickets when there are no work items', async () => {
+      mountComponent({
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        hasWorkItemsHandler: jest.fn().mockResolvedValue(emptyHasWorkItemsResponse),
+      });
+      await waitForPromises();
+
+      expect(findServiceDeskEmptyStateWithoutAnyIssues().exists()).toBe(true);
+    });
   });
 });

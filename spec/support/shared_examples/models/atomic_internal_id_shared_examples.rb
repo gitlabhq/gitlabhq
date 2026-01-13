@@ -80,8 +80,8 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
       it 'calls InternalId.generate_next and sets internal id attribute',
         quarantine: {
           issue: [
-            'https://gitlab.com/gitlab-org/gitlab/-/issues/451015',
-            'https://gitlab.com/gitlab-org/gitlab/-/issues/448591'
+            'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9474',
+            'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9476'
           ]
         } do
         iid = rand(1..1000)
@@ -110,8 +110,8 @@ RSpec.shared_examples 'AtomicInternalId' do |validate_presence: true|
         it 'calls InternalId.update_last_value and sets the `last_value` to that of the instance',
           quarantine: {
             issue: [
-              'https://gitlab.com/gitlab-org/gitlab/-/issues/451015',
-              'https://gitlab.com/gitlab-org/gitlab/-/issues/448591'
+              'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9474',
+              'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9476'
             ]
           } do
           write_internal_id(internal_id)

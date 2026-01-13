@@ -1077,27 +1077,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.legacy_builds_count_in_alive_pipelines' do
-    before do
-      ::Ci::HasStatus::ALIVE_STATUSES.each do |status|
-        alive_pipeline = create(:ci_pipeline, status: status, project: project)
-        create(:ci_build, pipeline: alive_pipeline)
-        create(:ci_bridge, pipeline: alive_pipeline)
-      end
-
-      completed_pipeline = create(:ci_pipeline, :success, project: project)
-      create(:ci_build, pipeline: completed_pipeline)
-
-      old_pipeline = create(:ci_pipeline, :running, project: project, created_at: 2.days.ago)
-      create(:ci_build, pipeline: old_pipeline)
-    end
-
-    it 'includes all builds in alive pipelines created in the last 24 hours' do
-      expect(described_class.legacy_builds_count_in_alive_pipelines)
-        .to eq(::Ci::HasStatus::ALIVE_STATUSES.count)
-    end
-  end
-
   describe '#merge_request?' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be_with_reload(:pipeline) do
@@ -4677,6 +4656,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#environments_in_self_and_project_descendants' do
     subject { pipeline.environments_in_self_and_project_descendants }
 
+    before_all do
+      Ci::ApplicationRecord.connection.execute(<<~SQL)
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_100"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (100);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_101"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (101);
+        CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."ci_builds_metadata_102"
+          PARTITION OF "p_ci_builds_metadata" FOR VALUES IN (102);
+      SQL
+    end
+
     shared_examples_for 'fetches environments in self and project descendant pipelines' do |factory_type|
       context 'when pipeline is not child nor parent' do
         let_it_be(:pipeline) { create(:ci_pipeline, :created) }
@@ -6887,25 +6877,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let(:lfk_column) { :user_id }
       let_it_be(:model) { create(:ci_pipeline, user: create(:user)) }
       let_it_be(:parent) { model.user }
-    end
-  end
-
-  describe 'tags count' do
-    let_it_be_with_refind(:pipeline) do
-      create(:ci_empty_pipeline, project: project)
-    end
-
-    it { expect(pipeline.tags_count).to eq(0) }
-    it { expect(pipeline.distinct_tags_count).to eq(0) }
-
-    context 'with builds' do
-      before do
-        create(:ci_build, pipeline: pipeline, tag_list: %w[a b])
-        create(:ci_build, pipeline: pipeline, tag_list: %w[b c])
-      end
-
-      it { expect(pipeline.tags_count).to eq(4) }
-      it { expect(pipeline.distinct_tags_count).to eq(3) }
     end
   end
 

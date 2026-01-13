@@ -48,10 +48,10 @@ class Issue < ApplicationRecord
   #
   # This should be kept consistent with the enums used for the GraphQL issue list query in
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
-  TYPES_FOR_LIST = %w[issue incident test_case task objective key_result].freeze
+  TYPES_FOR_LIST = %w[issue incident test_case task objective key_result ticket].freeze
 
   # Types of issues that should be displayed on issue board lists
-  TYPES_FOR_BOARD_LIST = %w[issue incident].freeze
+  TYPES_FOR_BOARD_LIST = %w[issue incident ticket].freeze
 
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
@@ -163,27 +163,8 @@ class Issue < ApplicationRecord
   end
 
   scope :non_archived, ->(use_existing_join: false) do
-    if Feature.enabled?(:optimize_issuable_non_archived_scope, Feature.current_request, type: :gitlab_com_derisk)
-      relation = left_joins(:project)
-      relation_with_namespace = relation.joins(
-        "LEFT OUTER JOIN namespaces ON namespaces.type = 'Group' AND " \
-          "(namespaces.id = projects.namespace_id OR namespaces.id = issues.namespace_id)"
-      )
-
-      project_condition = relation_with_namespace
-        .where.not(project_id: nil)
-        .where(projects: { archived: false })
-        .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
-
-      group_condition = relation_with_namespace
-        .where(project_id: nil)
-        .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
-
-      project_condition.or(group_condition)
-    else
-      relation = use_existing_join ? self : left_joins(:project)
-      relation.where(project_id: nil).or(relation.where(projects: { archived: false }))
-    end
+    relation = use_existing_join ? self : left_joins(:project)
+    relation.where(project_id: nil).or(relation.where(projects: { archived: false }))
   end
 
   scope :with_due_date, -> { where.not(due_date: nil) }

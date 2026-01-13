@@ -22,7 +22,7 @@ title: Pipeline execution policies
 
 Use pipeline execution policies to manage and enforce CI/CD jobs for multiple projects with a single configuration.
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
+- <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
 
 ## Schema
 
@@ -589,11 +589,8 @@ By following these guidelines, you can create policies that work reliably across
 
 ### `inject_ci` (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy-type) instead as it supports the enforcement of custom policy stages.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy-type) instead as it supports the enforcement of custom policy stages.
 
 This strategy adds custom CI/CD configurations into the existing project pipeline without completely replacing the project's original CI/CD configuration. It is suitable when you want to enhance or extend the current pipeline with additional steps, such as adding new security scans, compliance checks, or custom scripts.
 
@@ -732,6 +729,15 @@ By defining workflow rules in the policy, you can set rules that are enforced ac
 like preventing the use of branch pipelines.
 
 {{< /alert >}}
+
+#### Pipeline name
+
+Pipeline execution policies that use the `override_project_ci` strategy override the [pipeline name](../../../ci/yaml/_index.md#workflowname) that is defined in the project's original CI/CD configuration.
+
+You can define the pipeline name in the pipeline execution policy configuration.
+
+If there are multiple pipeline execution policies with the `override_project_ci` strategy, the lowest one in the group hierarchy is applied.
+For example, a policy for the project overrides a policy for the group the project belongs to. A policy for a subgroup takes precedence over a policy for the group the subgroup belongs to.
 
 ### Include a project's CI/CD configuration in the pipeline execution policy configuration
 

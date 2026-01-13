@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Seeder, feature_category: :shared do
+RSpec.describe Gitlab::Seeder, feature_category: :tooling do
   describe 'scopes' do
     it 'has not_mass_generated scope' do
       Gitlab::Seeder.quiet do

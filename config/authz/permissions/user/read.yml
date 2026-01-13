@@ -1,0 +1,5 @@
+---
+name: read_user
+description: Grants the ability to read user information
+boundaries:
+  - user

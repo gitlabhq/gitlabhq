@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Types::Authz::AccessTokens::PermissionType, feature_category: :permissions do
   let(:fields) do
-    %w[name description action resource category boundaries]
+    %w[name description action resource resource_name resource_description category boundaries]
   end
 
   specify { expect(described_class.graphql_name).to eq('AccessTokenPermission') }

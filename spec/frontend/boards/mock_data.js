@@ -51,7 +51,7 @@ export const mockBoard = {
 
 export const mockProjectBoardResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/114',
       board: mockBoard,
       __typename: 'Project',
@@ -61,7 +61,7 @@ export const mockProjectBoardResponse = {
 
 export const mockGroupBoardResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Group/114',
       board: mockBoard,
       __typename: 'Group',
@@ -950,7 +950,7 @@ export const mockLabel2 = {
 
 export const mockProjectLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Project/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],
@@ -962,7 +962,7 @@ export const mockProjectLabelsResponse = {
 
 export const mockGroupLabelsResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'gid://gitlab/Group/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],

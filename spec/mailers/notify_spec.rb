@@ -784,7 +784,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       describe 'on an issue' do
         let(:note) { create_note }
-        let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
+        let(:note_on_issue_path) { "#{::Gitlab::UrlBuilder.instance.issue_path(issue)}#note_#{note.id}" }
 
         def create_note
           create(:discussion_note_on_issue, noteable: issue, project: project, author: note_author)
@@ -969,12 +969,18 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         create(:issue_email_participant, issue: issue, email: 'service.desk@example.com')
       end
 
+      let_it_be(:support_bot) { create(:support_bot) }
+
       before do
         issue.update!(external_author: 'service.desk@example.com')
       end
 
       describe 'thank you email', feature_category: :service_desk do
         subject { described_class.service_desk_thank_you_email(issue.id) }
+
+        it_behaves_like 'an email with X-GitLab headers containing IDs' do
+          let(:model) { issue }
+        end
 
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
@@ -993,7 +999,171 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it 'uses service bot name by default' do
+          expect_sender(support_bot)
+        end
+
+        it 'has legacy Issue headers' do
+          aggregate_failures do
+            is_expected.to have_header('X-GitLab-Issue-ID', issue.id.to_s)
+            is_expected.to have_header('X-GitLab-Issue-IID', issue.iid.to_s)
+            is_expected.to have_header('X-GitLab-Issue-State', issue.state.to_s)
+          end
+        end
+
+        context 'when custom outgoing name is set' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: 'some custom name') }
+
+          it 'uses custom name in "from" header' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq('some custom name')
+            expect(sender.address).to eq(gitlab_sender)
+          end
+        end
+
+        context 'when custom outgoing name is empty' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
+
+          it 'uses service bot name' do
+            expect_sender(support_bot)
+          end
+        end
+
+        context 'when custom email is enabled' do
+          let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
+          let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+          let_it_be(:settings) do
+            create(
+              :service_desk_setting,
+              project: project,
+              custom_email: 'supersupport@example.com'
+            )
+          end
+
+          before_all do
+            verification.mark_as_finished!
+            project.reset
+            settings.update!(custom_email_enabled: true)
+          end
+
+          it 'uses custom email and service bot name in "from" header' do
+            expect_sender(support_bot, sender_email: 'supersupport@example.com')
+          end
+
+          it 'uses SMTP delivery method and has correct settings' do
+            expect_service_desk_custom_email_delivery_options(settings)
+          end
+        end
+      end
+
+      describe 'new note email', feature_category: :service_desk do
+        let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
+
+        subject { described_class.service_desk_new_note_email(issue.id, first_note.id, issue_email_participant) }
+
+        it_behaves_like 'an email with X-GitLab headers containing IDs' do
+          let(:model) { issue }
+        end
+
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'a mail with default delivery method'
+
+        it 'has the correct recipient' do
+          is_expected.to deliver_to('service.desk@example.com')
+        end
+
+        it 'uses author\'s name in "from" header' do
+          expect_sender(first_note.author)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(issue, include_project: false, reply: true)
+            is_expected.to have_body_text(first_note.note)
+          end
+        end
+
+        it 'has legacy Issue headers' do
+          aggregate_failures do
+            is_expected.to have_header('X-GitLab-Issue-ID', issue.id.to_s)
+            is_expected.to have_header('X-GitLab-Issue-IID', issue.iid.to_s)
+            is_expected.to have_header('X-GitLab-Issue-State', issue.state.to_s)
+          end
+        end
+
+        context 'when custom email is enabled' do
+          let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
+          let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+
+          let_it_be(:settings) do
+            create(
+              :service_desk_setting,
+              project: project,
+              custom_email: 'supersupport@example.com'
+            )
+          end
+
+          before_all do
+            verification.mark_as_finished!
+            project.reset
+            settings.update!(custom_email_enabled: true)
+          end
+
+          it 'uses custom email and author\'s name in "from" header' do
+            expect_sender(first_note.author, sender_email: project.service_desk_setting.custom_email)
+          end
+
+          it 'uses SMTP delivery method and has correct settings' do
+            expect_service_desk_custom_email_delivery_options(settings)
+          end
+        end
+      end
+    end
+
+    context 'for service desk tickets' do
+      let_it_be(:ticket) do
+        create(:work_item, :ticket, project: project, external_author: 'service.desk@example.com')
+      end
+
+      let_it_be(:issue_email_participant) do
+        create(:issue_email_participant, issue: ticket, email: 'service.desk@example.com')
+      end
+
+      describe 'thank you email', feature_category: :service_desk do
+        subject { described_class.service_desk_thank_you_email(ticket.id) }
+
+        it_behaves_like 'an email with X-GitLab headers containing IDs' do
+          let(:model) { ticket }
+        end
+
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'a mail with default delivery method'
+
+        it 'has the correct recipient' do
+          is_expected.to deliver_to('service.desk@example.com')
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(ticket, include_project: false, reply: true)
+            is_expected.to have_body_text("Thank you for your support request! We are tracking your request as ticket #{ticket.to_reference}, and will respond as soon as we can.")
+          end
+        end
+
+        it 'uses service bot name by default' do
           expect_sender(Users::Internal.support_bot)
+        end
+
+        it 'has legacy Issue headers' do
+          aggregate_failures do
+            is_expected.to have_header('X-GitLab-Issue-ID', ticket.id.to_s)
+            is_expected.to have_header('X-GitLab-Issue-IID', ticket.iid.to_s)
+            is_expected.to have_header('X-GitLab-Issue-State', ticket.state.to_s)
+          end
         end
 
         context 'when custom outgoing name is set' do
@@ -1043,9 +1213,13 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       describe 'new note email', feature_category: :service_desk do
-        let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
+        let_it_be(:first_note) { create(:discussion_note_on_work_item, noteable: ticket, project: project, note: 'Hello world') }
 
-        subject { described_class.service_desk_new_note_email(issue.id, first_note.id, issue_email_participant) }
+        subject { described_class.service_desk_new_note_email(ticket.id, first_note.id, issue_email_participant) }
+
+        it_behaves_like 'an email with X-GitLab headers containing IDs' do
+          let(:model) { ticket }
+        end
 
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
@@ -1062,8 +1236,16 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it 'has the correct subject and body' do
           aggregate_failures do
-            is_expected.to have_referable_subject(issue, include_project: false, reply: true)
+            is_expected.to have_referable_subject(ticket, include_project: false, reply: true)
             is_expected.to have_body_text(first_note.note)
+          end
+        end
+
+        it 'has legacy Issue headers' do
+          aggregate_failures do
+            is_expected.to have_header('X-GitLab-Issue-ID', ticket.id.to_s)
+            is_expected.to have_header('X-GitLab-Issue-IID', ticket.iid.to_s)
+            is_expected.to have_header('X-GitLab-Issue-State', ticket.state.to_s)
           end
         end
 

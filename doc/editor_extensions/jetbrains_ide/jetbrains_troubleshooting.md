@@ -12,8 +12,19 @@ in the JetBrains plugin's project. If an issue matches your problem, update the 
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/new)
 and provide the [required information for Support](#required-information-for-support).
 
-For troubleshooting JetBrains IDEs for GitLab Duo Code Suggestions,
-see [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
+## GitLab Duo features do not appear
+
+If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in your IDE:
+
+- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+- Confirm that the feature is enabled:
+
+  1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+  1. Ensure that **Enable Code Suggestions**, **Enable GitLab Duo Chat**, or **GitLab Duo Agent Platform** are selected.
+  1. Select **OK** or **Save**.
+  1. Restart your IDE if prompted.
+
+For other GitLab Duo Code Suggestions errors, see [troubleshooting Code Suggestions for JetBrains IDEs](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting).
 
 ## Enable debug mode
 
@@ -136,16 +147,15 @@ on the **Versions** tab.
 Gather this information from affected users, and provide it in your bug report:
 
 1. The error message shown to the user.
-1. Plugin and Language Server logs:
-   - [Debug logs](#enable-debug-mode).
-   - [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
-   - [Logs output](#get-debug-logs)
-1. Diagnostics output. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
-   - In the **About** section, copy the **Build Version**.
-   - For plugin-specific versions: in the **Plugins** section, copy the output.
-1. System details. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
-   - For the operating system type and version: in the dialog, copy **Operating System**.
-   - For the machine specifications, copy the `System` section.
+1. Diagnostics and logs. Choose one of the following methods:  
+   - Automatic (recommended):
+     - Run the `GitLab: Export Diagnostics Bundle` quick action. Available with GitLab Duo plugin 3.27.0 or later.
+     - This downloads a zip file containing IDE logs and diagnostics to a location you specify.
+   - Manual:
+     - Enable and collect [debug logs](#enable-debug-mode)
+     - Enable and collect [Language Server debug logs](#enable-gitlab-language-server-debug-logs)
+     - Capture [logs output](#get-debug-logs)
+     - Run `GitLab: Diagnostics` from the quick actions menu and copy the Markdown output
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:

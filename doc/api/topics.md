@@ -264,11 +264,8 @@ Supported attributes:
 | `source_topic_id` | integer | Yes      | ID of source project topic |
 | `target_topic_id` | integer | Yes      | ID of target project topic |
 
-{{< alert type="note" >}}
-
-The `source_topic_id` and `target_topic_id` must belong to the same organization.
-
-{{< /alert >}}
+> [!note]
+> The `source_topic_id` and `target_topic_id` must belong to the same organization.
 
 Example request:
 

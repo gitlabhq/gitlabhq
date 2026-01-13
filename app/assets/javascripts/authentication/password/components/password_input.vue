@@ -56,6 +56,19 @@ export default {
       required: false,
       default: false,
     },
+    state: {
+      type: Boolean,
+      required: false,
+      default: null,
+    },
+    /**
+     * Can be used for v-model on this component
+     */
+    value: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -85,6 +98,7 @@ export default {
   <div class="gl-field-error-anchor gl-relative">
     <gl-form-input
       :id="id"
+      :value="value"
       class="js-password-complexity-validation js-track-error !gl-pr-8"
       :required="required"
       :autocomplete="autocomplete"
@@ -95,6 +109,7 @@ export default {
       :title="title"
       :type="type"
       :disabled="disabled"
+      :state="state"
       v-on="$listeners"
     />
     <gl-button

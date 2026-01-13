@@ -33,6 +33,12 @@ This access can also [be restricted](#limit-job-token-scope-for-public-or-intern
 
 ## Job token access
 
+{{< history >}}
+
+- Permission to get a single tag [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216463) in GitLab 18.8.
+
+{{< /history >}}
+
 CI/CD job tokens can access the following resources:
 
 | Resource                                                                                              | Notes |
@@ -57,7 +63,7 @@ CI/CD job tokens can access the following resources:
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
 | [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint of public repositories. |
-| [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` endpoint. |
+| [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` and `GET /projects/:id/repository/tags/:tag_name` endpoints. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
 more granular.

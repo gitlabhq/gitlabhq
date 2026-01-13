@@ -1,0 +1,14 @@
+---
+table_name: ai_namespace_feature_access_rules
+classes:
+- Ai::NamespaceFeatureAccessRule
+feature_categories:
+- ai_abstraction_layer
+description: Stores namespace-level AI accessible entity rules that define which AI features (duo_classic, duo_agents,
+  duo_flows) are accessible through specific namespaces within a root namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216915
+milestone: '18.8'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  root_namespace_id: namespaces
+table_size: small

@@ -4,6 +4,7 @@ module Packages
   module Protection
     class DeleteRuleService
       include Gitlab::Allowable
+      include Gitlab::InternalEventsTracking
 
       def initialize(package_protection_rule, current_user:)
         if package_protection_rule.blank? || current_user.blank?
@@ -21,6 +22,14 @@ module Packages
         end
 
         deleted_package_protection_rule = package_protection_rule.destroy!
+
+        track_internal_event(
+          'delete_package_protection_rule',
+          project: package_protection_rule.project,
+          namespace: package_protection_rule.project.namespace,
+          user: current_user,
+          additional_properties: { package_type: deleted_package_protection_rule.package_type }
+        )
 
         ServiceResponse.success(payload: { package_protection_rule: deleted_package_protection_rule })
       rescue StandardError => e

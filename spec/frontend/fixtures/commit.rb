@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Commit (JavaScript fixtures)' do
+RSpec.describe 'Commit (JavaScript fixtures)', feature_category: :source_code_management do
   include JavaScriptFixturesHelpers
 
   let_it_be(:project) { create(:project, :repository) }

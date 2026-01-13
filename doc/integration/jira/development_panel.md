@@ -18,7 +18,7 @@ To set up the Jira development panel:
 - **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
 - **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/_index.md) developed and maintained by Atlassian.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Jira development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
 
 ## Feature availability

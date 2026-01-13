@@ -135,10 +135,12 @@ describe('Init file browser', () => {
       .reply(HTTP_STATUS_OK, { diff_files: createDiffFiles() });
 
     setHTMLFixture(`
-      <div id="js-page-breadcrumbs-extra"></div>
-      <div data-file-browser-toggle></div>
-      <div data-file-browser data-metadata-endpoint="/metadata"></div>
-      <diff-file data-file-data="{}" id="first"><div></div></diff-file>
+      <div>
+        <div id="js-page-breadcrumbs-extra"></div>
+        <div data-file-browser-toggle></div>
+        <div data-file-browser data-metadata-endpoint="/metadata"></div>
+        <diff-file data-file-data="{}" id="first"><div></div></diff-file>
+      </div>
     `);
 
     DiffFile.getAll().forEach((file) =>

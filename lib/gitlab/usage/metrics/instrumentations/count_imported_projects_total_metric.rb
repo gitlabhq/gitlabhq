@@ -11,7 +11,7 @@ module Gitlab
           operation :count
 
           IMPORT_TYPES = %w[gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest
-                            gitlab_migration].freeze
+            gitlab_migration].freeze
 
           def value
             count(project_relation) + count(entity_relation)

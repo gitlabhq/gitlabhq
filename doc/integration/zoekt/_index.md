@@ -128,7 +128,7 @@ The `gitlab:zoekt:info` Rake task returns an output similar to the following:
 
 ```console
 Exact Code Search
-GitLab version:                                    18.7.0
+GitLab version:                                    18.8.0
 Enable indexing:                                   yes
 Enable searching:                                  yes
 Pause indexing:                                    no
@@ -141,6 +141,7 @@ Offline nodes automatically deleted after:         20m
 Indexing timeout per project:                      30m
 Maximum number of files per project to be indexed: 500000
 Maximum file size for indexing:                    1MB
+Maximum trigrams per file:                         20000
 Retry interval for failed namespaces:              1d
 Number of replicas per namespace:                  1
 
@@ -499,6 +500,33 @@ To set maximum file size for indexing:
 1. In the **Maximum file size for indexing** text box, enter a value
    (for example, `512B`, `50KB`, `2MB`, or `1GB`).
    The value can also be in lowercase.
+1. Select **Save changes**.
+
+## Set the maximum trigram count for indexing
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584506) in GitLab 18.8.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the maximum number of trigrams for a file to be indexed.
+The default value is `20,000`.
+
+Trigrams are three-character sequences that Zoekt uses for efficient code search.
+For files that exceed this trigram limit, only filenames are indexed.
+A higher limit affects both indexing and search performance.
+
+To set the maximum trigram count for indexing:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. In the **Maximum trigrams per file** text box, enter a number greater than zero.
 1. Select **Save changes**.
 
 ## Define the retry interval for failed namespaces

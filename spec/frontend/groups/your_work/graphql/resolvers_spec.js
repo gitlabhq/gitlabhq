@@ -78,6 +78,8 @@ describe('your work groups resolver', () => {
       isSelfDeletionScheduled: mockGroup.is_self_deletion_scheduled,
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
+      archived: mockGroup.archived,
+      isSelfArchived: mockGroup.is_self_archived,
       userPermissions: {
         archiveGroup: true,
         canLeave: false,

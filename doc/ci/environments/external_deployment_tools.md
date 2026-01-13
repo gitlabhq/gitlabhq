@@ -38,11 +38,8 @@ You can configure your tool to make a request to the GitLab [Deployment API](../
 - When a deployment succeeds, [update the deployment status to `success`](../../api/deployments.md#update-a-deployment).
 - When a deployment fails, [update the deployment status to `failed`](../../api/deployments.md#update-a-deployment).
 
-{{< alert type="note" >}}
-
-You can create a [project access token](../../user/project/settings/project_access_tokens.md) for the GitLab API authentication.
-
-{{< /alert >}}
+> [!note]
+> You can create a [project access token](../../user/project/settings/project_access_tokens.md) for the GitLab API authentication.
 
 ### Example: Track deployments of ArgoCD
 

@@ -245,6 +245,36 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
 
           context "path optional parameter" do
+            it "returns current directory commits when provided path parameter is '.'" do
+              path = '.'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(20)
+              expect(json_response.first["id"]).to eq("498214de67004b1da3d820901307bed2a68a8ef6")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            it "returns default project commits when provided path parameter is '/'" do
+              path = '/'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(20)
+              expect(json_response.first["id"]).to eq("b83d6e391c22777fca1ed3012fce84f633d7fed0")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            it "returns project commits matching provided path parameter that starts with '/'" do
+              path = '/files/ruby/popen.rb'
+
+              get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+              expect(json_response.size).to eq(3)
+              expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+              expect(response).to include_limited_pagination_headers
+            end
+
             it "returns project commits matching provided path parameter" do
               path = 'files/ruby/popen.rb'
 
@@ -690,7 +720,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       context 'missing actions' do
         let(:params) { super().except(:actions) }
 
-        it_behaves_like 'returns bad request - validation error', "actions is required"
+        it_behaves_like 'returns bad request - validation error', "Provide at least one action, or set allow_empty to true"
+      end
+
+      context 'when actions is not an array' do
+        let(:params) { super().merge(actions: 'not an array') }
+
+        it_behaves_like 'returns bad request - validation error', "actions must be an array"
       end
 
       context 'actions validation' do
@@ -909,6 +945,122 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
+      context 'when actions does not touch files' do
+        let(:base_params) do
+          {
+            branch: 'master',
+            commit_message: 'message'
+          }
+        end
+
+        shared_examples 'warns the user' do
+          it 'returns a 400 with the proper message' do
+            expect(response).to have_gitlab_http_status(:bad_request)
+
+            msg = "400 Bad request - Provide at least one action, or set allow_empty to true"
+            expect(json_response['message']).to eq(msg)
+          end
+        end
+
+        shared_examples 'creates an empty commit' do
+          it 'returns 200 and creates the empty commit' do
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['title']).to eq('message')
+            expect(json_response['stats']['additions']).to eq(0)
+            expect(json_response['stats']['deletions']).to eq(0)
+            expect(json_response['stats']['total']).to eq(0)
+          end
+        end
+
+        context 'when actions is empty' do
+          let(:params) { base_params.merge(actions: [], allow_empty: allow_empty) }
+
+          context 'when allow_empty is true' do
+            let(:allow_empty) { true }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates an empty commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:allow_empty) { false }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:allow_empty) { nil }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is not passed' do
+            let(:params) { base_params.merge(actions: []) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+        end
+
+        context 'when actions is not passed' do
+          let(:params) { base_params.merge(allow_empty: allow_empty) }
+
+          context 'when allow_empty is true' do
+            let(:allow_empty) { true }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates an empty commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:allow_empty) { false }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:allow_empty) { nil }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+
+          context 'when allow_empty is not passed' do
+            let(:params) { base_params }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'warns the user'
+          end
+        end
+      end
+
       context 'a new file in project repo' do
         context 'when user is a direct project member' do
           let(:params) { valid_c_params }
@@ -935,6 +1087,72 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
               let(:request) { workhorse_body_upload(url, valid_c_params) }
               let(:message) { '403 Forbidden' }
             end
+          end
+        end
+
+        context 'when creating a commit with file actions' do
+          let(:base_params) do
+            {
+              branch: 'master',
+              commit_message: message,
+              actions: [
+                {
+                  action: 'create',
+                  file_path: new_file_path,
+                  content: 'puts 8'
+                }
+              ]
+            }
+          end
+
+          shared_examples 'creates a commit' do
+            it 'creates the commit' do
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['title']).to eq(message)
+              expect(json_response['stats']['additions']).to eq(1)
+              expect(json_response['stats']['deletions']).to eq(0)
+              expect(json_response['stats']['total']).to eq(1)
+            end
+          end
+
+          context 'when allow_empty is true' do
+            let(:params) { base_params.merge(allow_empty: true) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is false' do
+            let(:params) { base_params.merge(allow_empty: false) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is nil' do
+            let(:params) { base_params.merge(allow_empty: nil) }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
+          end
+
+          context 'when allow_empty is missing' do
+            let(:params) { base_params }
+
+            before do
+              workhorse_body_upload(url, params)
+            end
+
+            include_examples 'creates a commit'
           end
         end
       end
@@ -1606,12 +1824,37 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
     end
 
+    shared_examples 'does not filter content type in logs' do |content_type|
+      let(:params) do
+        {
+          branch: 'master',
+          commit_message: 'hello world',
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'does not filter content-type in logs' do
+        expect(::API::API::LOGGER).to receive(:info).with(
+          hash_including(params: hash_including("Content-Type" => content_type))
+        )
+
+        workhorse_body_upload(url, params)
+      end
+    end
+
     context 'with json encoding' do
       it_behaves_like 'param validations'
       it_behaves_like 'update actions'
       it_behaves_like 'multiple operations'
       it_behaves_like 'chmod actions'
       it_behaves_like 'committing into a fork as a maintainer'
+      it_behaves_like 'does not filter content type in logs', 'application/json'
 
       it 'returns a 400 bad request with invalid json' do
         perform_workhorse_json_body_upload(url, 'not valid json {')
@@ -1665,6 +1908,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       it_behaves_like 'multiple operations'
       it_behaves_like 'chmod actions'
       it_behaves_like 'committing into a fork as a maintainer'
+      it_behaves_like 'does not filter content type in logs', 'multipart/form-data; boundary=XXX'
 
       context 'for create actions' do
         let(:new_branch_name) { 'multipart-form-patch' }

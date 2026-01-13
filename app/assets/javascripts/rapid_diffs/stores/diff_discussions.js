@@ -4,13 +4,13 @@ import { isCurrentUser } from '~/lib/utils/common_utils';
 
 function addReactiveDiscussionProps(discussion) {
   return {
-    ...discussion,
     repliesExpanded: true,
     isReplying: false,
+    hidden: false,
+    ...discussion,
     notes: discussion.notes.map((note) => {
       return { ...note, isEditing: false, editedNote: null };
     }),
-    hidden: false,
   };
 }
 
@@ -62,6 +62,9 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       discussion.notes.splice(discussion.notes.indexOf(note), 1);
       if (discussion.notes.length === 0) this.deleteDiscussion(discussion);
     },
+    addDiscussion(discussion) {
+      this.discussions.push(addReactiveDiscussionProps(discussion));
+    },
     deleteDiscussion(discussion) {
       this.discussions.splice(this.discussions.indexOf(discussion), 1);
     },
@@ -76,17 +79,20 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       this.setEditingMode(editableNote, true);
       return true;
     },
-    addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine }) {
+    replyToLineDiscussion({ oldPath, newPath, oldLine, newLine }) {
       const [existingDiscussion] = this.findDiscussionsForPosition({
         oldPath,
         newPath,
         oldLine,
         newLine,
-      });
+      }).filter((discussion) => !discussion.isForm);
       if (existingDiscussion) {
         this.startReplying(existingDiscussion);
         return existingDiscussion.id;
       }
+      return this.addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine });
+    },
+    addNewLineDiscussionForm({ oldPath, newPath, oldLine, newLine }) {
       const id = [oldPath, newPath, oldLine, newLine].join('-');
       if (this.discussions.some((discussion) => discussion.id === id)) return id;
       this.discussions.push({
@@ -160,7 +166,6 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
       return ({ oldPath, newPath, oldLine, newLine }) => {
         return this.discussions.filter((discussion) => {
           return (
-            !discussion.isForm &&
             discussion.diff_discussion &&
             discussion.position.old_path === oldPath &&
             discussion.position.new_path === newPath &&

@@ -101,14 +101,12 @@ optional authentication, and optional Git SHA. The variable uses the following f
 [<AUTH_USER>[:<AUTH_PASSWORD>]@]<PROJECT_PATH>[@<GIT_SHA>]
 ```
 
-{{< alert type="note" >}}
+> [!note]
+> If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
 
-If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
-
-{{< /alert >}}
-
-The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file.
-In this example, the file is committed on the default branch of `example-ruleset-project` at the path `.gitlab/sast-ruleset.toml`.
+The following example enables SAST and uses a shared ruleset customization file. In this example,
+the file is committed on the default branch of `example-ruleset-project` at the path
+`.gitlab/sast-ruleset.toml`.
 
 ```yaml
 include:
@@ -167,11 +165,8 @@ differ based on the kind of configuration you're making.
 
 #### `interpolate`
 
-{{< alert type="warning" >}}
-
-To reduce the risk of leaking secrets, use this feature with caution.
-
-{{< /alert >}}
+> [!warning]
+> To reduce the risk of leaking secrets, use this feature with caution.
 
 The example below shows a configuration that uses the `$GITURL` environment variable to access a
 private repository. The variable contains a username and token (for example `https://user:token@url`), so
@@ -301,11 +296,8 @@ Configuration example:
 
 ### The `[[$analyzer.passthrough]]` section
 
-{{< alert type="note" >}}
-
-Passthrough configurations are available for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) only.
-
-{{< /alert >}}
+> [!note]
+> Passthrough configurations are available for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) only.
 
 The `[[$analyzer.passthrough]]` section allows you to build a custom configuration for an analyzer. You
 can define up to 20 of these sections per analyzer. Passthroughs are composed into a _passthrough chain_
@@ -647,7 +639,7 @@ rules:
 
 ### Specify a private remote configuration
 
-The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file. The file is:
+The following example enables SAST and uses a shared ruleset customization file. The file is:
 
 - Downloaded from a private project that requires authentication, by using a [Group Access Token](../../group/settings/group_access_tokens.md) securely stored within a CI variable.
 - Checked out at a specific Git commit SHA instead of the default branch.

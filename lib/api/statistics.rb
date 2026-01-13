@@ -11,6 +11,7 @@ module API
 
     desc 'Get the current application statistics' do
       success code: 200, model: Entities::ApplicationStatistics
+      tags %w[application_statistics]
     end
     get "application/statistics", urgency: :low do
       counts = Gitlab::Database::Count.approximate_counts(COUNTED_ITEMS)

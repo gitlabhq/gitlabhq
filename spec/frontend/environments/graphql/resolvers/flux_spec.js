@@ -8,6 +8,7 @@ import {
   connectionStatus,
   k8sResourceType,
 } from '~/environments/graphql/resolvers/kubernetes/constants';
+import { SUPPORTED_HELM_RELEASES, SUPPORTED_KUSTOMIZATIONS } from '~/environments/constants';
 import {
   fluxKustomizationMock,
   fluxHelmReleaseMock,
@@ -543,6 +544,179 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         __typename: 'LocalKubernetesErrors',
         errors: ['not authorized'],
       });
+    });
+  });
+
+  describe.each([
+    ['fluxKustomizations', 'kustomize.toolkit.fluxcd.io/v1', 'kustomizations'],
+    ['fluxHelmReleases', 'helm.toolkit.fluxcd.io/v2beta1', 'helmreleases'],
+  ])('%s', (queryName, version, resourceName) => {
+    const namespace = 'flux-system';
+    const endpoint = `${configuration.basePath}/apis/${version}/namespaces/${namespace}/${resourceName}`;
+    const mockItems = [
+      {
+        apiVersion: version,
+        metadata: {
+          name: `${resourceName}-1`,
+          namespace,
+        },
+      },
+      {
+        apiVersion: version,
+        metadata: {
+          name: `${resourceName}-2`,
+          namespace,
+        },
+      },
+    ];
+
+    it('should return list of resources with success response', async () => {
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_OK, { items: mockItems });
+
+      const result = await mockResolvers.Query[queryName](null, {
+        configuration,
+        namespace,
+        version,
+      });
+
+      expect(result).toEqual(mockItems);
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      const apiError = 'Forbidden';
+      mock
+        .onGet(endpoint, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_UNAUTHORIZED, { reason: apiError });
+
+      const error = mockResolvers.Query[queryName](null, {
+        configuration,
+        namespace,
+        version,
+      });
+
+      await expect(error).rejects.toThrow(apiError);
+    });
+  });
+
+  describe.each([
+    ['discoverFluxKustomizations', 'kustomize.toolkit.fluxcd.io', SUPPORTED_KUSTOMIZATIONS],
+    ['discoverFluxHelmReleases', 'helm.toolkit.fluxcd.io', SUPPORTED_HELM_RELEASES],
+  ])('%s', (queryName, discoverGroup, supportedVersions) => {
+    const discoverUrl = `${configuration.basePath}/apis/${discoverGroup}`;
+
+    it('should return preferred and supported versions when both are available', async () => {
+      const mockDiscoverResponse = {
+        preferredVersion: {
+          groupVersion: supportedVersions[0],
+          version: supportedVersions[0].split('/')[1],
+        },
+        versions: supportedVersions.map((version) => ({
+          groupVersion: version,
+          version: version.split('/')[1],
+        })),
+      };
+
+      mock
+        .onGet(discoverUrl, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_OK, mockDiscoverResponse);
+
+      const result = await mockResolvers.Query[queryName](null, {
+        configuration,
+      });
+
+      expect(result).toEqual({
+        preferredVersion: supportedVersions[0],
+        supportedVersion: supportedVersions[0],
+      });
+    });
+
+    it('should return supported version when preferred version is missing', async () => {
+      const mockDiscoverResponse = {
+        versions: supportedVersions.map((version) => ({
+          groupVersion: version,
+          version: version.split('/')[1],
+        })),
+      };
+
+      mock
+        .onGet(discoverUrl, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_OK, mockDiscoverResponse);
+
+      const result = await mockResolvers.Query[queryName](null, {
+        configuration,
+      });
+
+      expect(result).toEqual({
+        preferredVersion: '',
+        supportedVersion: supportedVersions[0],
+      });
+    });
+
+    it('should return empty supportedVersion when no supported versions match', async () => {
+      const mockDiscoverResponse = {
+        preferredVersion: {
+          groupVersion: 'unsupported.io/v1',
+          version: 'v1',
+        },
+        versions: [
+          {
+            groupVersion: 'unsupported.io/v1',
+            version: 'v1',
+          },
+        ],
+      };
+
+      mock
+        .onGet(discoverUrl, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_OK, mockDiscoverResponse);
+
+      const result = await mockResolvers.Query[queryName](null, {
+        configuration,
+      });
+
+      expect(result).toEqual({
+        preferredVersion: 'unsupported.io/v1',
+        supportedVersion: '',
+      });
+    });
+
+    it('should return different preferred and supported versions', async () => {
+      const mockDiscoverResponse = {
+        preferredVersion: {
+          groupVersion: 'kustomize.toolkit.fluxcd.io/v3',
+          version: 'v3',
+        },
+        versions: [
+          { groupVersion: 'kustomize.toolkit.fluxcd.io/v3', version: 'v3' },
+          { groupVersion: supportedVersions[0], version: supportedVersions[0].split('/')[1] },
+        ],
+      };
+
+      mock
+        .onGet(discoverUrl, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_OK, mockDiscoverResponse);
+
+      const result = await mockResolvers.Query[queryName](null, { configuration });
+
+      expect(result).toEqual({
+        preferredVersion: 'kustomize.toolkit.fluxcd.io/v3',
+        supportedVersion: supportedVersions[0],
+      });
+    });
+
+    it('should throw an error if the API call fails', async () => {
+      const apiError = 'Not Found';
+      mock
+        .onGet(discoverUrl, { withCredentials: true, headers: configuration.headers })
+        .reply(HTTP_STATUS_UNAUTHORIZED, { reason: apiError });
+
+      const error = mockResolvers.Query[queryName](null, {
+        configuration,
+      });
+
+      await expect(error).rejects.toThrow(apiError);
     });
   });
 });

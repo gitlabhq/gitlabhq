@@ -338,7 +338,7 @@ export default {
         };
       },
       update(data) {
-        return findNotesWidget(data.workspace?.workItem)?.discussions || [];
+        return findNotesWidget(data.namespace?.workItem)?.discussions || [];
       },
       skip() {
         return !this.workItemIid;
@@ -347,7 +347,7 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result({ data }) {
-        this.workItemNamespace = data?.workspace?.workItem?.namespace;
+        this.workItemNamespace = data?.namespace?.workItem?.namespace;
         this.isLoadingMore = false;
         if (this.hasNextPage) {
           this.fetchMoreNotes();

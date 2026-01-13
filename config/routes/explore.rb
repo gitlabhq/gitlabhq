@@ -3,6 +3,9 @@
 namespace :explore do
   resources :projects, only: [:index] do
     collection do
+      get :active, to: 'projects#index', as: :active
+      get :inactive, to: 'projects#index', as: :inactive
+      get :all, to: 'projects#index', as: :all
       get :trending
       get :starred
       get :topics

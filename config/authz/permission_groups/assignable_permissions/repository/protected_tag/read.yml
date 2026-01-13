@@ -1,0 +1,7 @@
+---
+name: read_protected_tag
+description: Grants the ability to read protected tags
+permissions:
+  - read_protected_tag
+boundaries:
+  - project

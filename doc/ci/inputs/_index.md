@@ -269,7 +269,7 @@ spec:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/582671) in GitLab 18.7 with a flag named `ci_dynamic_pipeline_inputs`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18546) in GitLab 18.7.
 
 {{< /history >}}
 
@@ -337,6 +337,32 @@ In this example:
 - When `cloud_provider` is `gcp`, GCP-specific instance types are available regardless
   of the environment.
 - If none of the conditions match, the fallback rule provides generic size options.
+
+You can also use the `||` (OR) operator to match multiple conditions. For example:
+
+```yaml
+spec:
+  inputs:
+    deployment_type:
+      options: ['canary', 'blue-green', 'rolling', 'recreate']
+      default: 'rolling'
+
+    requires_approval:
+      description: 'Whether deployment requires manual approval'
+      rules:
+        - if: $[[ inputs.deployment_type ]] == 'canary' || $[[ inputs.deployment_type ]] == 'blue-green'
+          options: ['true']
+          default: 'true'
+        - options: ['true', 'false']
+          default: 'false'
+---
+
+deploy:
+  script: echo "Deploying with $[[ inputs.deployment_type ]] strategy"
+```
+
+In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
+`canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
 
 ## Set input values
 
@@ -669,8 +695,8 @@ Assuming the value of `inputs.test` is `0123456789`, then the output would be `3
 
 {{< /history >}}
 
-Use `posix_escape` to escape any POSIX _Bourne shell_ control or meta characters that might be included in input values.
-`posix_escape` escapes the characters by inserting ` \ ` before any problematic characters in the input.
+Use `posix_escape` to escape any POSIX _Bourne shell_ control or meta characters in input values.
+`posix_escape` escapes the characters by inserting ` \ ` before relevant characters in the input.
 
 Example:
 
@@ -686,22 +712,20 @@ test-job:
   script: printf '%s\n' $[[ inputs.test | posix_escape ]]
 ```
 
-In this example, `posix_escape` escapes all the characters that could be shell control or metadata characters:
+In this example, `posix_escape` escapes characters that could be shell control or metadata characters:
 
 ```console
 $ printf '%s\n' A\ string\ with\ single\ \'\ and\ double\ \"\ quotes\ and\ \ \ blanks
 A string with single ' and double " quotes and   blanks
 ```
 
-The escaped input preserves all special characters and spacing exactly as provided.
+The escaped input preserves special characters and spacing as provided.
 
-{{< alert type="warning" >}}
+> [!warning]
+> Do not rely on `posix_escape` for security purposes with untrusted input values.
 
-Not using `posix_escape` can be a security risk if the input contains untrusted input.
-
-{{< /alert >}}
-
-Input values that do not escape shell control or metadata characters have risks:
+`posix_escape` makes a best-effort attempt to preserve the input value exactly, but some
+character combinations could still cause undesired results. Even when using `posix_escape`, it is possible that:
 
 - Shell code included in the string might be executed.
 - Single or double quotes might be used to escape any surrounding quoting.
@@ -709,11 +733,11 @@ Input values that do not escape shell control or metadata characters have risks:
 - Input or output redirection might be used to read or write to local files.
 - Unescaped spaces are used by shells to split a string into multiple arguments.
 
-Escaping might be unnecessary if:
+For security purposes you should ensure that your inputs are trusted. You can use:
 
-- The [`spec:input:type`](../yaml/_index.md#specinputstype) is `number` or `boolean`, which cannot contain problematic characters.
-- The input value is validated with [`spec:input:regex`](../yaml/_index.md#specinputsregex) to prevent problematic input.
-- The input value is from a trusted source.
+- The [`spec:input:type`](../yaml/_index.md#specinputstype) `number` or `boolean`, which cannot contain problematic characters.
+- The [`spec:input:regex`](../yaml/_index.md#specinputsregex) keyword to prevent problematic inputs.
+- The [`spec:input:options`](../yaml/_index.md#specinputsoptions) keyword to define a predefined list of input options.
 
 If you combine `posix_escape` with `expand_vars`, you must set `expand_vars` first.
 Otherwise `posix_escape` would escape the `$` in the variable, preventing expansion.

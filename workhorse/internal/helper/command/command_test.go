@@ -95,3 +95,14 @@ func TestKillProcessGroup(t *testing.T) {
 		})
 	}
 }
+
+func TestKillProcessGroupAfterWait(t *testing.T) {
+	// exits immediately
+	cmd := exec.Command("true")
+
+	require.NoError(t, cmd.Start())
+	require.NoError(t, cmd.Wait())
+
+	err := KillProcessGroup(cmd)
+	require.NoError(t, err)
+}

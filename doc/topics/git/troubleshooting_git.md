@@ -139,11 +139,8 @@ instructions in the [SSH troubleshooting](../../user/ssh_troubleshooting.md#pass
 If you're a GitLab administrator with server access, you can also prevent
 session timeouts by configuring SSH `keep-alive` on the client or the server.
 
-{{< alert type="note" >}}
-
-Configuring both the client and the server is unnecessary.
-
-{{< /alert >}}
+> [!note]
+> Configuring both the client and the server is unnecessary.
 
 To configure SSH on the client side:
 

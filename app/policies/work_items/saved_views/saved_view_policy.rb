@@ -34,6 +34,7 @@ module WorkItems
         enable :read_saved_view
         enable :update_saved_view
         enable :delete_saved_view
+        enable :update_saved_view_visibility
       end
 
       rule { can_read_namespace & ~is_private }.policy do

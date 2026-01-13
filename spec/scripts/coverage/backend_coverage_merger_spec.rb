@@ -177,20 +177,46 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
       coverage = {}
       merger.send(:parse_lcov, rspec_lcov_path, coverage)
 
-      expect(coverage['app/models/user.rb']).to eq({ 1 => 5, 2 => 3, 10 => 0 })
-      expect(coverage['app/models/project.rb']).to eq({ 1 => 10 })
+      expect(coverage['app/models/user.rb'][:lines]).to eq({ 1 => 5, 2 => 3, 10 => 0 })
+      expect(coverage['app/models/project.rb'][:lines]).to eq({ 1 => 10 })
     end
 
     it 'merges with existing coverage data' do
-      coverage = { 'app/models/user.rb' => { 1 => 2, 3 => 1 } }
+      coverage = {
+        'app/models/user.rb' => { lines: { 1 => 2, 3 => 1 }, branches: [], branch_stats: { found: 0, hit: 0 } }
+      }
       merger.send(:parse_lcov, rspec_lcov_path, coverage)
 
       # Line 1 should be merged: 2 + 5 = 7
-      expect(coverage['app/models/user.rb'][1]).to eq(7)
+      expect(coverage['app/models/user.rb'][:lines][1]).to eq(7)
       # Line 2 should be new from LCOV
-      expect(coverage['app/models/user.rb'][2]).to eq(3)
+      expect(coverage['app/models/user.rb'][:lines][2]).to eq(3)
       # Line 3 should be preserved from existing
-      expect(coverage['app/models/user.rb'][3]).to eq(1)
+      expect(coverage['app/models/user.rb'][:lines][3]).to eq(1)
+    end
+
+    context 'with branch coverage data' do
+      let(:lcov_content) do
+        <<~LCOV
+          TN:
+          SF:app/models/user.rb
+          DA:1,5
+          DA:2,3
+          BRDA:1,0,1,3
+          BRDA:1,0,2,2
+          BRF:2
+          BRH:2
+          end_of_record
+        LCOV
+      end
+
+      it 'parses branch coverage data' do
+        coverage = {}
+        merger.send(:parse_lcov, rspec_lcov_path, coverage)
+
+        expect(coverage['app/models/user.rb'][:branches]).to match_array(['BRDA:1,0,1,3', 'BRDA:1,0,2,2'])
+        expect(coverage['app/models/user.rb'][:branch_stats]).to eq({ found: 2, hit: 2 })
+      end
     end
   end
 
@@ -215,8 +241,8 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
         coverage = {}
         merger.send(:parse_coverband_json, coverband_path, coverage)
 
-        expect(coverage['app/models/user.rb']).to eq({ 1 => 5, 2 => 10 })
-        expect(coverage['app/controllers/application_controller.rb']).to eq({ 1 => 3 })
+        expect(coverage['app/models/user.rb'][:lines]).to eq({ 1 => 5, 2 => 10 })
+        expect(coverage['app/controllers/application_controller.rb'][:lines]).to eq({ 1 => 3 })
       end
     end
 
@@ -239,10 +265,10 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
         coverage = {}
         merger.send(:parse_coverband_json, coverband_path, coverage)
 
-        expect(coverage['app/models/user.rb'][1]).to eq(5)
-        expect(coverage['app/models/user.rb'][2]).to eq(10)
-        expect(coverage['app/models/user.rb'][3]).to be_nil
-        expect(coverage['app/models/user.rb'][4]).to eq(2)
+        expect(coverage['app/models/user.rb'][:lines][1]).to eq(5)
+        expect(coverage['app/models/user.rb'][:lines][2]).to eq(10)
+        expect(coverage['app/models/user.rb'][:lines][3]).to be_nil
+        expect(coverage['app/models/user.rb'][:lines][4]).to eq(2)
       end
     end
 
@@ -265,7 +291,7 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
         coverage = {}
         merger.send(:parse_coverband_json, coverband_path, coverage)
 
-        expect(coverage['app/models/user.rb']).to eq({ 1 => 5 })
+        expect(coverage['app/models/user.rb'][:lines]).to eq({ 1 => 5 })
         expect(coverage['./app/models/user.rb']).to be_nil
       end
     end
@@ -274,8 +300,16 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
   describe '#write_lcov (private)' do
     let(:coverage_data) do
       {
-        'app/models/user.rb' => { 1 => 5, 2 => 10, 3 => 0 },
-        'app/controllers/application_controller.rb' => { 1 => 3 }
+        'app/models/user.rb' => {
+          lines: { 1 => 5, 2 => 10, 3 => 0 },
+          branches: [],
+          branch_stats: { found: 0, hit: 0 }
+        },
+        'app/controllers/application_controller.rb' => {
+          lines: { 1 => 3 },
+          branches: [],
+          branch_stats: { found: 0, hit: 0 }
+        }
       }
     end
 
@@ -300,8 +334,43 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
       expect(merger).to receive(:puts).with('Coverage summary:')
       expect(merger).to receive(:puts).with('  Files: 2')
       expect(merger).to receive(:puts).with(%r{Lines: 3/4})
+      expect(merger).to receive(:puts).with(%r{Branches: 0/0})
 
       merger.send(:write_lcov, coverage_data)
+    end
+
+    context 'with branch coverage data' do
+      let(:coverage_data) do
+        {
+          'app/models/user.rb' => {
+            lines: { 1 => 5, 2 => 10 },
+            branches: ['BRDA:1,0,1,3', 'BRDA:1,0,2,2'],
+            branch_stats: { found: 2, hit: 2 }
+          }
+        }
+      end
+
+      it 'writes branch coverage data to LCOV output' do
+        merger.send(:write_lcov, coverage_data)
+
+        output_file = File.join(temp_dir, 'coverage-backend', 'coverage.lcov')
+        content = File.read(output_file)
+
+        expect(content).to include('BRDA:1,0,1,3')
+        expect(content).to include('BRDA:1,0,2,2')
+        expect(content).to include('BRF:2')
+        expect(content).to include('BRH:2')
+      end
+
+      it 'prints branch coverage in summary' do
+        expect(merger).to receive(:puts).with('')
+        expect(merger).to receive(:puts).with('Coverage summary:')
+        expect(merger).to receive(:puts).with('  Files: 1')
+        expect(merger).to receive(:puts).with(%r{Lines: 2/2})
+        expect(merger).to receive(:puts).with('  Branches: 2/2 (100.0%)')
+
+        merger.send(:write_lcov, coverage_data)
+      end
     end
   end
 end

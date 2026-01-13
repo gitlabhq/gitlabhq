@@ -786,6 +786,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    describe '.self_aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects marked for deletion' do
+        result = described_class.self_aimed_for_deletion
+
+        expect(result).to include(for_deletion_project)
+        expect(result).not_to include(active_project)
+      end
+    end
+
     describe '.self_or_ancestors_aimed_for_deletion' do
       subject { described_class.self_or_ancestors_aimed_for_deletion }
 
@@ -798,6 +810,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns projects not marked for deletion' do
         result = described_class.not_aimed_for_deletion
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(for_deletion_project)
+      end
+    end
+
+    describe '.self_not_aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects not marked for deletion' do
+        result = described_class.self_not_aimed_for_deletion
 
         expect(result).to include(active_project)
         expect(result).not_to include(for_deletion_project)
@@ -835,11 +859,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:marked_after) { create(:project, marked_for_deletion_at: cutoff_date + 2.days) }
       let_it_be(:marked_before) { create(:project, marked_for_deletion_at: cutoff_date - 2.days) }
       let_it_be(:marked_on_date) { create(:project, marked_for_deletion_at: cutoff_date) }
+      let_it_be(:marked_before_deletion_in_progress) do
+        create(:project, pending_delete: true, marked_for_deletion_at: cutoff_date - 2.days)
+      end
 
       it 'returns projects marked for deletion on or before the specified date' do
         result = described_class.marked_for_deletion_before(cutoff_date)
 
-        expect(result).to include(marked_before, marked_on_date)
+        expect(result).to include(marked_before, marked_on_date, marked_before_deletion_in_progress)
         expect(result).not_to include(marked_after, active_project)
       end
     end
@@ -852,6 +879,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { described_class.archived }
 
       it_behaves_like 'includes projects in archived hierarchy'
+    end
+
+    describe '.self_archived' do
+      let_it_be(:archived_group) { create(:group, :archived) }
+      let_it_be(:active_project) { create(:project, group: archived_group, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns archived projects' do
+        result = described_class.self_archived
+
+        expect(result).to include(archived_project)
+        expect(result).not_to include(active_project)
+      end
     end
 
     describe '.self_or_ancestors_archived' do
@@ -869,10 +909,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'excludes projects in archived hierarchy'
     end
 
+    describe '.self_non_archived' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns non-archived projects' do
+        result = described_class.self_non_archived
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(archived_project)
+      end
+    end
+
     describe '.self_and_ancestors_non_archived' do
       subject { described_class.self_and_ancestors_non_archived }
 
       it_behaves_like 'excludes projects in archived hierarchy'
+    end
+
+    describe '.self_active' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:inactive_project) { create(:project, archived: true) }
+
+      it 'returns active projects' do
+        result = described_class.self_active
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(inactive_project)
+      end
     end
 
     describe '.self_and_ancestors_active' do
@@ -880,6 +944,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it_behaves_like 'excludes projects in archived hierarchy'
       it_behaves_like 'excludes projects in hierarchy marked for deletion'
+    end
+
+    describe '.self_inactive' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:inactive_project) { create(:project, archived: true) }
+
+      it 'returns inactive projects' do
+        result = described_class.self_inactive
+
+        expect(result).to include(inactive_project)
+        expect(result).not_to include(active_project)
+      end
     end
 
     describe '.self_or_ancestors_inactive' do
@@ -1733,7 +1809,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe 'delegation' do
     let_it_be(:project) { create(:project) }
 
-    [:add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
+    [:add_guest, :add_planner, :add_reporter, :add_security_manager, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
@@ -1756,10 +1832,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
-    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:allowed_work_item_types).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:allowed_work_item_type?).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:supports_work_items?).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:state).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:archive).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:unarchive).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:schedule_deletion).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:reschedule_deletion!).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:start_deletion!).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:cancel_deletion).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:cancel_deletion!).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:deletion_in_progress?).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[
@@ -2974,6 +3058,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(relation).to eq([project_c, project_b, project_a])
       end
     end
+
+    context 'when exclude_description is true' do
+      it 'does not consider the description column when sorting' do
+        # with search='similar'
+        # if exclude_description=false:
+        #   project_a goes first because its description adds to the similarity score
+        # if exclude_description=true:
+        #   project_b goes first because the description is not added to the similarity score,
+        #   giving project_a and project_b the same similarity scores,
+        #   with "project_id DESC" becoming the tiebreaker
+        expect(
+          described_class.sorted_by_similarity_desc(search_term, exclude_description: true)
+        ).to eq(
+          [project_b, project_a, project_c]
+        )
+      end
+    end
   end
 
   describe '.with_shared_runners_enabled' do
@@ -3300,6 +3401,48 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:integrations_slack, project: project_4, inherit_from_id: nil)
 
       expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
+    end
+  end
+
+  describe 'user and recency scopes', :freeze_time do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_3) { create(:project) }
+
+    describe '.recently_contributed_by' do
+      before do
+        # user contributed to `project_1` last week
+        create(:event, :created, project: project_1, author: user, created_at: 1.week.ago)
+
+        # user contributed to `project_2` 2 months ago
+        create(:event, :created, project: project_2, author: user, created_at: 2.months.ago)
+      end
+
+      it "returns the user's contributed projects within the given `since` param" do
+        projects = described_class.recently_contributed_by(user, since: 1.month.ago)
+        expect(projects).to match_array([project_1])
+      end
+    end
+
+    describe '.recently_visited_by' do
+      before do
+        # user visited `project_1` last week
+        create(:project_visit, target_user: user, target_project: project_1, visited_at: 1.week.ago)
+
+        # user visited `project_2` 2 months ago
+        create(:project_visit, target_user: user, target_project: project_2, visited_at: 2.months.ago)
+      end
+
+      it "returns the user's visited projects within the given `since` param" do
+        projects = described_class.recently_visited_by(user, since: 1.month.ago)
+        expect(projects).to match_array([project_1])
+      end
+
+      it "returns an empty list when user is `nil`" do
+        projects = described_class.recently_visited_by(nil, since: 1.month.ago)
+        expect(projects).to be_empty
+      end
     end
   end
 
@@ -3765,6 +3908,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
+    context 'when exclude_description is true' do
+      it 'does not search on the description' do
+        expect(described_class.search('kitten', exclude_description: true)).to be_empty
+      end
+    end
+
     describe 'with pending_delete project' do
       let(:pending_delete_project) { create(:project, pending_delete: true) }
 
@@ -3947,7 +4096,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#create_repository' do
-    let_it_be(:project) { build(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'using a regular repository' do
       it 'creates the repository' do
@@ -5995,6 +6144,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           it { is_expected.to contain_exactly(private_project, private_project2) }
         end
+      end
+    end
+  end
+
+  describe '.public_non_forked_or_visible_to_user' do
+    let_it_be(:user) { create(:user) }
+
+    let_it_be(:private_authorized_project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let_it_be(:private_unauthorized_project) { create(:project, :private) }
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:public_forked_project) do
+      create(:project, :public).tap do |forked_project|
+        fork_network = create(:fork_network, root_project: public_project)
+        create(:fork_network_member, project: forked_project, fork_network: fork_network)
+      end
+    end
+
+    subject(:projects) { described_class.public_non_forked_or_visible_to_user(user) }
+
+    it 'returns public non-forked projects and projects visible to the logged in user' do
+      expect(projects).to match_array([
+        private_authorized_project,
+        public_project
+      ])
+    end
+
+    context 'when user can read all resources' do
+      before do
+        allow(user).to receive(:can_read_all_resources?).and_return(true)
+      end
+
+      it 'returns all accessible projects except for public forked projects' do
+        expect(projects).to match_array([
+          private_authorized_project,
+          private_unauthorized_project,
+          public_project
+        ])
       end
     end
   end
@@ -9894,31 +10080,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#inactive?' do
+  describe '#dormant?' do
     let_it_be_with_reload(:project) { create(:project, name: 'test-project') }
 
-    it_behaves_like 'returns true if project is inactive'
+    it_behaves_like 'returns true if project is dormant'
   end
 
-  describe '.inactive' do
+  describe '.dormant' do
     before do
       stub_application_setting(inactive_projects_min_size_mb: 5)
       stub_application_setting(inactive_projects_send_warning_email_after_months: 12)
     end
 
-    it 'returns projects that are inactive' do
+    it 'returns projects that are dormant' do
       create_project_with_statistics.tap do |project|
         project.update!(last_activity_at: Time.current)
       end
       create_project_with_statistics.tap do |project|
         project.update!(last_activity_at: 13.months.ago)
       end
-      inactive_large_project = create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
+      dormant_large_project = create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
                                  .tap { |project| project.update!(last_activity_at: 2.years.ago) }
       create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
                                .tap { |project| project.update!(last_activity_at: 1.month.ago) }
 
-      expect(described_class.inactive).to contain_exactly(inactive_large_project)
+      expect(described_class.dormant).to contain_exactly(dormant_large_project)
     end
   end
 
@@ -10231,6 +10417,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'checks self (project) and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
       let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
+  describe '#use_work_item_url?' do
+    let_it_be(:group) { build_stubbed(:group) }
+    let_it_be(:project_in_group) { build_stubbed(:project, group: group) }
+    let_it_be(:project_in_user) { build_stubbed(:project, :in_user_namespace) }
+
+    where(:project, :consolidated_list, :legacy_url, :result) do
+      ref(:project_in_group) | false | false | false
+      ref(:project_in_group) | false | true | false
+      ref(:project_in_group) | true | false | true
+      ref(:project_in_group) | true | ref(:group) | false
+      ref(:project_in_group) | true | ref(:project_in_group) | false
+      ref(:project_in_group) | true | ref(:project_in_user) | true
+      ref(:project_in_user) | false | false | false
+      ref(:project_in_user) | false | true | false
+      ref(:project_in_user) | true | false | true
+      ref(:project_in_user) | true | ref(:group) | true
+      ref(:project_in_user) | true | ref(:project_in_group) | true
+      ref(:project_in_user) | true | ref(:project_in_user) | false
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(
+          work_item_planning_view: consolidated_list,
+          work_item_legacy_url: legacy_url
+        )
+      end
+
+      subject(:use_work_item_url?) { project.use_work_item_url? }
+
+      it { is_expected.to be(result) }
     end
   end
 
@@ -10702,20 +10922,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#ensure_pool_repository' do
     let_it_be_with_reload(:project) { create(:project) }
 
-    it 'returns existing pool repository when present' do
-      pool_repo = create(:pool_repository, source_project: project)
+    context 'when pool repository exists' do
+      let!(:pool_repo) { create(:pool_repository, source_project: project) }
 
-      expect(project.ensure_pool_repository).to eq(pool_repo)
+      it 'returns existing pool repository when present' do
+        expect { project.ensure_pool_repository }.not_to change { PoolRepository.count }
+
+        expect(project.ensure_pool_repository).to eq(pool_repo)
+      end
     end
 
-    it 'creates new pool repository when none exists' do
-      expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
-      expect(project.ensure_pool_repository).to be_a(PoolRepository)
-    end
+    context 'when no pool repository exists' do
+      it 'creates new pool repository when none exists' do
+        expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
 
-    it 'sets the organization to its own organization' do
-      expect(project.ensure_pool_repository.organization)
-        .to eq(project.organization)
+        expect(project.ensure_pool_repository).to be_a(PoolRepository)
+        expect(project.pool_repository.organization_id).to eq(project.organization.id)
+      end
+
+      it 'sets the organization to its own organization' do
+        expect(project.ensure_pool_repository.organization)
+          .to eq(project.organization)
+      end
     end
   end
 

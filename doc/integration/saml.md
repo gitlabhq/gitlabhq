@@ -13,11 +13,8 @@ description: Configure enterprise authentication with SAML integration for singl
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
-
-{{< /alert >}}
+> [!note]
+> For GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
 
 This page describes how to set up instance-wide SAML single sign on (SSO) for
 GitLab Self-Managed.
@@ -411,11 +408,8 @@ You can configure GitLab to use multiple SAML IdPs if:
 - The `strategy_class` is explicitly set because it cannot be inferred from provider
   name.
 
-{{< alert type="note" >}}
-
-When you configure multiple SAML IdPs, to ensure that SAML Group Links work, you must configure all SAML IdPs to contain group attributes in the SAML response. For more information, see [SAML Group Links](../user/group/saml_sso/group_sync.md).
-
-{{< /alert >}}
+> [!note]
+> When you configure multiple SAML IdPs, to ensure that SAML Group Links work, you must configure all SAML IdPs to contain group attributes in the SAML response. For more information, see [SAML Group Links](../user/group/saml_sso/group_sync.md).
 
 To set up multiple SAML IdPs:
 
@@ -770,11 +764,8 @@ your provider's support.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-These attributes are case-sensitive.
-
-{{< /alert >}}
+> [!note]
+> These attributes are case-sensitive.
 
 | Field           | Supported default keys                                                                                                                                                         |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -2228,11 +2219,8 @@ URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
-{{< alert type="note" >}}
-
-Only use this setting to map attributes that are part of the OmniAuth `info` hash schema.
-
-{{< /alert >}}
+> [!note]
+> Only use this setting to map attributes that are part of the OmniAuth `info` hash schema.
 
 For example, if your `SAMLResponse` contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the

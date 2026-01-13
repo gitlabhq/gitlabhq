@@ -23,6 +23,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | `user_id`         | integer, null | ID of the associated user. This gets pseudonymized in the Snowplow enricher. Refer to the [metrics dictionary](https://metrics.gitlab.com/identifiers/). | `longhash`         |
 | `global_user_id`  | string, null  | An anonymized `user_id` hash unique across instances.                                            | `longhash`         |
 | `is_gitlab_team_member` | boolean, null | Indicates if the action was triggered by a GitLab team member.                                   | `true`, `false`    |
+| `user_type`       | string, null  | Differentiates between human and bot usage.                                                       | `"human"`, `"bot"` |
 
 ### Instance Information
 
@@ -50,6 +51,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 |-------------------------------|---------------|-----------------------------------------------------------------------------|--------------------------|
 | `feature_category`            | string, null  | Category where the specific feature belongs.                                | `"duo_chat"`            |
 | `feature_enabled_by_namespace_ids` | array, null | List of namespace IDs allowing the user to use the tracked feature.         | `[123, 456, 789]`       |
+| `feature_enablement_type`     | string, null  | How the feature was enabled.                                                | `"duo_core"`, `"duo_pro"`, `"duo_enterprise"`, `"duo_with_amazon_q"` |
 | `plan`                        | string, null  | Name of the subscription plan (maximum length: 32 characters).              | `"free"`, `"ultimate"`  |
 
 ### Tracking and Context
@@ -57,9 +59,11 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | Field                 | Type          | Description                                              | Example                      |
 |-----------------------|---------------|----------------------------------------------------------|------------------------------|
 | `source`              | string, null  | Name of the source application.                         | `"gitlab-rails"`, `"gitlab-javascript"` |
+| `app_id`              | string, null  | Application identifier.                                  | `"gitlab_duo_workflow"`, `"gitlab"` |
 | `google_analytics_id` | string, null  | Google Analytics ID from the marketing site.            | `"UA-XXXXXXXX-X"`           |
 | `context_generated_at` | string, null | Timestamp indicating when the context was generated.    | `"2023-12-20T10:00:00Z"`    |
 | `correlation_id`      | string, null  | Unique request ID for each request.                     | `uuid`                      |
+| `billing_event_id`    | string, null  | Unique identifier for each billing event (RFC9562 UUID). Used for linking to billable usage events. Multiple billing event IDs can exist per `correlation_id`. | `uuid`                      |
 | `extra`               | object, null  | Additional data associated with the event, in key-value pair format. | `{"key": "value"}`          |
 
 ### Adding a New Field to the Standard Context

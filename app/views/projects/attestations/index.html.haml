@@ -29,8 +29,7 @@
                 = render Pajamas::BadgeComponent.new(attestation.status, icon_only: true, icon: 'status-success', variant: 'success')
               - else
                 = render Pajamas::BadgeComponent.new(attestation.status, icon_only: true, icon: 'error', variant: 'danger')
-              -# TODO: add link to show view (gitlab.com/gitlab-org/gitlab/-/issues/566595)
-              = render Pajamas::ButtonComponent.new(href: '/', variant: :link, block: false, button_options: { class: 'gl-mb-3' }) do
+              = render Pajamas::ButtonComponent.new(href: project_attestation_path(@project, attestation.iid), variant: :link, block: false, button_options: { class: 'gl-mb-3' }) do
                 = attestation.file.filename
             .gl-text-subtle.gl-mt-2
               - build = attestation.build

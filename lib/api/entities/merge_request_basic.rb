@@ -42,7 +42,7 @@ module API
       end
       expose :draft?, as: :draft
       expose :imported?, as: :imported
-      expose :imported_from, documentation: { type: 'string', example: 'bitbucket' }
+      expose :imported_from, documentation: { type: 'String', example: 'bitbucket' }
 
       # [Deprecated]  see draft
       #
@@ -97,7 +97,7 @@ module API
         Gitlab::UrlBuilder.build(merge_request)
       end
 
-      expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |merge_request|
+      expose :time_stats, using: ::API::Entities::IssuableTimeStats do |merge_request|
         merge_request
       end
 

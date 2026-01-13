@@ -35,11 +35,7 @@ module Gitlab
             }
           end
 
-          def polymorphic_taggings?
-            true
-          end
-
-          def monomorphic_taggings?(_runner)
+          def uses_taggings?
             true
           end
         end

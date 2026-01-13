@@ -1,5 +1,4 @@
 <script>
-import { computed } from 'vue';
 import {
   GlButton,
   GlFilteredSearchToken,
@@ -8,14 +7,15 @@ import {
   GlIcon,
   GlSkeletonLoader,
   GlModalDirective,
+  GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
-import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -26,7 +26,7 @@ import {
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
-} from 'ee_else_ce/issues/list/utils';
+} from 'ee_else_ce/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -38,8 +38,9 @@ import {
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
-import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
+import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
@@ -53,15 +54,15 @@ import {
   urlSortParams,
   UPDATED_DESC,
   RELATIVE_POSITION_ASC,
-} from '~/issues/list/constants';
-import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
+} from '~/work_items/list/constants';
+import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { setPageFullWidth, setPageDefaultWidth } from '~/lib/utils/common_utils';
+import { setPageFullWidth, setPageDefaultWidth, isLoggedIn } from '~/lib/utils/common_utils';
 import { __, s__, n__, formatNumber } from '~/locale';
 import {
   OPERATOR_IS,
@@ -116,7 +117,6 @@ import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
-import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
@@ -131,12 +131,16 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   STATE_CLOSED,
-  STATE_OPEN,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TICKET,
   METADATA_KEYS,
+  WORK_ITEM_CREATE_SOURCES,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
+import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
+import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import { findHierarchyWidget } from '../utils';
 import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
@@ -161,11 +165,6 @@ const WorkItemParentToken = () =>
 const WorkItemTypeToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/work_item_type_token.vue');
 
-const statusMap = {
-  [STATUS_OPEN]: STATE_OPEN,
-  [STATUS_CLOSED]: STATE_CLOSED,
-};
-
 const CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY = '2026-01-01';
 const FEATURE_NAME = 'work_item_consolidated_list_feedback';
 
@@ -173,10 +172,12 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   searchProjectsQuery,
+  WORK_ITEM_CREATE_SOURCES,
   importModalId: 'work-item-import-modal',
   components: {
     GlLoadingIcon,
     GlButton,
+    InfoBanner,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
@@ -186,6 +187,8 @@ export default {
     WorkItemHealthStatus,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
+    EmptyStateWithAnyTickets,
+    EmptyStateWithoutAnyTickets,
     CreateWorkItemModal,
     LocalBoard,
     WorkItemListHeading,
@@ -195,17 +198,13 @@ export default {
     GlSkeletonLoader,
     NewResourceDropdown,
     WorkItemsSavedViewsSelectors,
+    GlAlert,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin()],
-  provide() {
-    return {
-      showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
-    };
-  },
   inject: [
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
@@ -223,7 +222,7 @@ export default {
     'hasCustomFieldsFeature',
     'isGroup',
     'isProject',
-    'isSignedIn',
+    'isServiceDeskSupported',
     'showNewWorkItem',
     'workItemType',
     'canReadCrmOrganization',
@@ -285,7 +284,8 @@ export default {
       namespaceId: null,
       displaySettings: {},
       workItemTypes: [],
-      isSortKeyInitialized: !this.isSignedIn,
+      isLoggedIn: isLoggedIn(),
+      isSortKeyInitialized: !this.isLoggedIn,
       hasWorkItems: null,
       workItemsCount: null,
     };
@@ -325,7 +325,7 @@ export default {
         this.isSortKeyInitialized = true;
       },
       skip() {
-        return !this.workItemTypeId || !this.isSignedIn;
+        return !this.workItemTypeId || !this.isLoggedIn;
       },
       error(error) {
         this.isSortKeyInitialized = true;
@@ -344,7 +344,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.nodes ?? [];
+        return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading;
@@ -371,7 +371,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.nodes ?? [];
+        return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading;
@@ -394,7 +394,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.namespace.workItems.count || 0;
+        return data?.namespace?.workItems.count || 0;
       },
       skip() {
         return isEmpty(this.pageParams) || this.metadataLoading || !this.isPlanningViewsEnabled;
@@ -410,7 +410,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.[this.namespace].workItemStateCounts ?? {};
+        return data?.[this.namespace]?.workItemStateCounts ?? {};
       },
       skip() {
         return this.isPlanningViewsEnabled || isEmpty(this.pageParams) || this.metadataLoading;
@@ -429,14 +429,14 @@ export default {
         };
       },
       update(data) {
-        return data?.namespace.workItems.nodes.length > 0 || false;
+        return data?.namespace?.workItems.nodes.length > 0 || false;
       },
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
       },
       result({ data }) {
-        const count = data?.namespace.workItems.nodes.length || 0;
+        const count = data?.namespace?.workItems.nodes.length || 0;
         if (!this.isInitialLoadComplete) {
           this.hasAnyIssues = Boolean(count);
           this.isInitialLoadComplete = true;
@@ -452,7 +452,7 @@ export default {
         };
       },
       update(data) {
-        return data?.workspace?.workItemTypes?.nodes;
+        return data?.namespace?.workItemTypes?.nodes;
       },
       error(error) {
         Sentry.captureException(error);
@@ -460,6 +460,9 @@ export default {
     },
   },
   computed: {
+    isInfoBannerVisible() {
+      return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
+    },
     workItems() {
       if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
         return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
@@ -511,6 +514,9 @@ export default {
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
+    },
+    isServiceDeskList() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
     },
     hasSearch() {
       return Boolean(this.searchQuery);
@@ -668,7 +674,7 @@ export default {
         });
       }
 
-      if (this.isSignedIn) {
+      if (this.isLoggedIn) {
         tokens.push({
           type: TOKEN_TYPE_CONFIDENTIAL,
           title: TOKEN_TITLE_CONFIDENTIAL,
@@ -832,7 +838,7 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
         hasManualSort: !this.isEpicsList,
-        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList,
+        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList && !this.isServiceDeskList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,
@@ -889,8 +895,8 @@ export default {
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
     },
-    showImportExportButtons() {
-      return !this.isGroup && this.isSignedIn;
+    canExport() {
+      return !this.isGroup && this.isLoggedIn && this.workItems.length > 0;
     },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
@@ -925,7 +931,9 @@ export default {
     },
     workItemTypeId() {
       const workItemTypeName = this.workItemType || WORK_ITEM_TYPE_NAME_ISSUE;
-      return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id;
+      return (
+        this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName)?.id || ''
+      );
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
@@ -1009,7 +1017,7 @@ export default {
       });
     },
     handleListDataResults(listData) {
-      this.pageInfo = listData?.namespace.workItems.pageInfo ?? {};
+      this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
 
       if (listData?.namespace) {
         document.title = this.calculateDocumentTitle(listData);
@@ -1151,7 +1159,7 @@ export default {
       this.sortKey = sortKey;
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      if (this.isSignedIn) {
+      if (this.isLoggedIn) {
         this.saveSortPreference(sortKey);
       }
 
@@ -1207,7 +1215,8 @@ export default {
       if (this.state === STATUS_ALL) {
         return;
       }
-      if (statusMap[this.state] !== workItem.state) {
+
+      if (this.state !== workItem.state) {
         this.refetchItems({ refetchCounts: true });
       }
     },
@@ -1442,7 +1451,7 @@ export default {
 <template>
   <gl-loading-icon v-if="shouldLoad" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="shouldShowList">
+  <div v-else-if="shouldShowList" :class="{ 'work-item-list-container': isPlanningViewsEnabled }">
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>
@@ -1458,11 +1467,12 @@ export default {
         @workItemDeleted="deleteItem"
         @work-item-updated="handleStatusChange"
       />
+      <info-banner v-if="isInfoBannerVisible" />
       <issuable-list
         :active-issuable="activeItem"
         :current-tab="state"
         :default-page-size="pageSize"
-        :error="error"
+        :error="isPlanningViewsEnabled ? undefined : error"
         :has-next-page="pageInfo.hasNextPage"
         :has-previous-page="pageInfo.hasPreviousPage"
         :initial-filter-value="filterTokens"
@@ -1505,11 +1515,12 @@ export default {
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
+            :is-service-desk-list="isServiceDeskList"
             :work-item-type-id="workItemTypeId"
             :sort-key="sortKey"
           />
         </template>
-        <template v-if="!isPlanningViewsEnabled" #nav-actions>
+        <template v-if="!isPlanningViewsEnabled && !isServiceDeskList" #nav-actions>
           <div class="gl-flex gl-justify-end gl-gap-3">
             <gl-button
               v-if="enableClientSideBoardsExperiment"
@@ -1534,6 +1545,7 @@ export default {
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               :is-epics-list="isEpicsList"
+              :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @workItemCreated="handleWorkItemCreated"
             />
             <new-resource-dropdown
@@ -1544,7 +1556,7 @@ export default {
               :group-id="groupId"
             />
             <work-item-list-actions
-              :show-import-export-buttons="showImportExportButtons"
+              :can-export="canExport"
               :show-work-item-by-email-button="showWorkItemByEmail"
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
@@ -1558,6 +1570,11 @@ export default {
 
         <template #list-header>
           <template v-if="isPlanningViewsEnabled">
+            <div v-if="error" class="gl-mt-5">
+              <gl-alert variant="danger" :dismissible="hasWorkItems" @dismiss="error = undefined">
+                {{ error }}
+              </gl-alert>
+            </div>
             <template v-if="!workItemsSavedViewsEnabled">
               <work-item-list-heading>
                 <div class="gl-flex gl-justify-end gl-gap-3">
@@ -1595,7 +1612,7 @@ export default {
                     :group-id="groupId"
                   />
                   <work-item-list-actions
-                    :show-import-export-buttons="showImportExportButtons"
+                    :can-export="canExport"
                     :show-work-item-by-email-button="showWorkItemByEmail"
                     :work-item-count="workItemsCount"
                     :query-variables="csvExportQueryVariables"
@@ -1609,10 +1626,10 @@ export default {
             </template>
 
             <template v-if="workItemsSavedViewsEnabled">
-              <work-items-saved-views-selectors>
+              <work-items-saved-views-selectors :full-path="rootPageFullPath">
                 <template #header-area>
                   <work-item-list-actions
-                    :show-import-export-buttons="showImportExportButtons"
+                    :can-export="canExport"
                     :show-work-item-by-email-button="showWorkItemByEmail"
                     :work-item-count="currentTabCount"
                     :query-variables="csvExportQueryVariables"
@@ -1629,6 +1646,7 @@ export default {
                     :is-group="isGroup"
                     :preselected-work-item-type="preselectedWorkItemType"
                     :is-epics-list="isEpicsList"
+                    :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                     @workItemCreated="handleWorkItemCreated"
                   />
                 </template>
@@ -1661,10 +1679,19 @@ export default {
           <issue-card-statistics :issue="issuable" />
         </template>
 
-        <template #empty-state>
+        <template v-if="!error" #empty-state>
           <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab">
+            <template v-if="isServiceDeskList">
+              <empty-state-with-any-tickets
+                v-if="hasAnyIssues"
+                :has-search="hasSearch"
+                :is-open-tab="isOpenTab"
+              />
+              <empty-state-without-any-tickets v-else />
+            </template>
+
             <empty-state-with-any-issues
-              v-if="hasAnyIssues"
+              v-else-if="hasAnyIssues"
               :has-search="hasSearch"
               :is-open-tab="isOpenTab"
               :is-epic="isEpicsList"
@@ -1678,6 +1705,7 @@ export default {
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
                   :is-epics-list="isEpicsList"
+                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                   @workItemCreated="handleWorkItemCreated"
                 />
                 <new-resource-dropdown
@@ -1703,6 +1731,7 @@ export default {
                   :is-group="isGroup"
                   :preselected-work-item-type="preselectedWorkItemType"
                   :show-project-selector="!hasEpicsFeature"
+                  :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
                   @workItemCreated="handleWorkItemCreated"
                 />
               </template>

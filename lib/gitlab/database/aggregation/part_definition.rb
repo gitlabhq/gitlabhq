@@ -21,17 +21,12 @@ module Gitlab
           @formatter = formatter
         end
 
-        def to_hash
-          {
-            identifier: identifier,
-            name: name,
-            type: type,
-            description: description
-          }
-        end
-
         def format_value(val)
           formatter ? formatter.call(val) : val
+        end
+
+        def validate_part(_plan_part)
+          # no-op by default
         end
 
         # part identifier. Must be unique across all part definitions.

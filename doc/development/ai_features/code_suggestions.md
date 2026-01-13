@@ -49,7 +49,7 @@ For more information, see [setting up GitLab Duo on your GitLab.com staging acco
 
 ### Video demonstrations of installing and using Code Suggestions in IDEs
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For more guidance, see the following video demonstrations of installing
 and using Code Suggestions in:
 

@@ -13,8 +13,8 @@ import {
   listenSystemColorSchemeChange,
   removeListenerSystemColorSchemeChange,
 } from '~/lib/utils/css_utils';
-import { scrollTo, getScrollingElement } from '~/lib/utils/scroll_utils';
-
+import { scrollTo } from '~/lib/utils/scroll_utils';
+import { getScrollingElement } from '~/lib/utils/panels';
 import { DEFAULT_SHOW_CHUNKS } from '~/search/results/constants';
 
 export default {

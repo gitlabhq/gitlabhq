@@ -42,7 +42,6 @@ module NamespaceSettings
 
       handle_default_branch_name
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
-      handle_early_access_program_participation
       handle_jwt_ci_cd_job_token_enabled
 
       if group.namespace_settings
@@ -74,14 +73,6 @@ module NamespaceSettings
       # path. Until then, we want to sync up both columns.
       protection = Gitlab::Access::BranchProtection.new(settings_params.delete(:default_branch_protection).to_i)
       settings_params[:default_branch_protection_defaults] = protection.to_hash
-    end
-
-    def handle_early_access_program_participation
-      want_participate = Gitlab::Utils.to_boolean(settings_params[:early_access_program_participant])
-      return unless want_participate
-
-      not_participant = !group.namespace_settings&.early_access_program_participant
-      settings_params[:early_access_program_joined_by_id] = current_user.id if not_participant
     end
 
     def handle_jwt_ci_cd_job_token_enabled

@@ -23,6 +23,9 @@ class ProjectPolicy < BasePolicy
   desc "User has reporter access"
   condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
 
+  desc "User has security manager access"
+  condition(:security_manager) { Gitlab::Security::SecurityManagerConfig.enabled? && team_access_level == Gitlab::Access::SECURITY_MANAGER }
+
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
@@ -344,6 +347,7 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { planner }.enable :planner_access
   rule { reporter }.enable :reporter_access
+  rule { security_manager }.enable :security_manager_access
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
   rule { owner | admin | organization_owner }.enable :owner_access
@@ -354,6 +358,7 @@ class ProjectPolicy < BasePolicy
     enable :guest_access
     enable :planner_access
     enable :reporter_access
+    enable :security_manager_access
     enable :developer_access
     enable :maintainer_access
 
@@ -460,8 +465,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:create_issue) }.enable :create_task
 
-  # These abilities are not allowed to admins that are not members of the project,
-  # that's why they are defined separately.
   rule { guest & can?(:download_code) }.enable :build_download_code
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
@@ -1174,6 +1177,10 @@ class ProjectPolicy < BasePolicy
     prevent :guest_access
   end
 
+  rule { (can?(:planner_access) | can?(:reporter_access)) & service_desk_enabled }.policy do
+    enable :create_ticket
+  end
+
   rule { project_bot }.enable :project_bot_access
 
   rule { can?(:read_all_resources) & resource_access_token_feature_available }.enable :read_resource_access_tokens
@@ -1345,8 +1352,8 @@ class ProjectPolicy < BasePolicy
     return ::Gitlab::Access::REPORTER if alert_bot?
     return ::Gitlab::Access::REPORTER if support_bot? && service_desk_enabled?
 
-    # NOTE: max_member_access has its own cache
-    project.team.max_member_access(@user.id)
+    # NOTE: max_member_access_for_user is cached
+    project.max_member_access_for_user(@user)
   end
 
   def access_allowed_to?(feature)

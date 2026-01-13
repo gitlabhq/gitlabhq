@@ -96,6 +96,7 @@ You can see example adding a new gem: [!121676](https://gitlab.com/gitlab-org/gi
 1. Pick a good name for the gem, by following the [Gem naming](#gem-naming) convention.
 1. Create the new gem in `gems/<name-of-gem>` with `bundle gem gems/<name-of-gem> --no-exe --no-coc --no-ext --no-mit`.
 1. Remove the `.git` folder in `gems/<name-of-gem>` with `rm -rf gems/<name-of-gem>/.git`.
+1. Remove the auto-generated RBS `sig/` directory with `rm -r gems/<name-of-gem>/sig/`.
 1. Edit `gems/<name-of-gem>/README.md` to provide a simple description of the Gem.
 1. Edit `gems/<name-of-gem>/<name-of-gem>.gemspec` and fill the details about the Gem as in the following example:
 

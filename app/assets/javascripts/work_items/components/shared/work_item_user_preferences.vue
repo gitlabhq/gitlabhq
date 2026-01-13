@@ -10,6 +10,7 @@ import produce from 'immer';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
@@ -29,7 +30,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isSignedIn', 'isGroupIssuesList'],
+  inject: ['isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -56,6 +57,11 @@ export default {
       required: false,
       default: false,
     },
+    isServiceDeskList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemTypeId: {
       type: String,
       required: true,
@@ -69,6 +75,7 @@ export default {
     return {
       isDropdownVisible: false,
       isLoading: false,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -84,7 +91,7 @@ export default {
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
         if (item.key === METADATA_KEYS.STATUS) {
-          return !this.isEpicsList;
+          return !this.isEpicsList && !this.isServiceDeskList;
         }
         return !this.isGroup || item.isPresentInGroup || this.isGroupIssuesList;
       });
@@ -223,7 +230,7 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    v-if="isSignedIn"
+    v-if="isLoggedIn"
     v-gl-tooltip="tooltipText"
     icon="preferences"
     text-sr-only
@@ -232,7 +239,7 @@ export default {
     no-caret
     placement="bottom-end"
     :auto-close="false"
-    class="gl-mt-[10px] @sm/panel:gl-mt-0"
+    class="@sm/panel:gl-mt-0"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >

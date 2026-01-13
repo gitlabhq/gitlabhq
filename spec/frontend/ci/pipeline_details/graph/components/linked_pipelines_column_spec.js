@@ -248,12 +248,10 @@ describe('Linked Pipelines Column', () => {
         });
       });
 
-      it('passes permissions to the expanded pipeline graph', async () => {
+      it('passes the entire userPermissions object to the expanded pipeline graph', async () => {
         await clickExpandButton();
 
-        expect(findPipelineGraph().props('userPermissions')).toMatchObject({
-          updatePipeline: true,
-        });
+        expect(findPipelineGraph().props('userPermissions')).toEqual(mockPermissions);
       });
     });
 

@@ -27,7 +27,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
   end
 
   it 'show members from project and group', :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/560627' do
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9376' do
     visit_members_page
 
     expect(first_row).to have_content(group_owner.name)
@@ -37,7 +37,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
   end
 
   it 'show user once if member of both group and project', :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/560628' do
+    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5753' do
     group.add_reporter(project_maintainer)
 
     visit_members_page

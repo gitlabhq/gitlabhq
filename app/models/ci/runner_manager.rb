@@ -183,12 +183,16 @@ module Ci
     end
 
     # While using update_columns may be useful from performance perspective, we still want
-    # the `updated_at` column to be updated. As most updates to the Ci::RunnerManager entity
-    # happen through the `heartbeat` method, when receiving some new/updated details from the
-    # runner side and without this change, `updated_at` may equal to `created_at` even months
-    # later, while the record did get multiple changes in that time.
+    # the `updated_at` column to be updated when actual runner attributes change.
+    # However, we don't want to update it when only contacted_at changes, as this would
+    # cause unnecessary incremental sync operations in downstream systems (e.g., Snowflake).
     def update_columns(attrs = {})
-      super(attrs.reverse_merge(updated_at: Time.current))
+      # Only update columns that actually changed
+      attrs_to_update = changed_values(attrs)
+
+      attrs_to_update[:updated_at] = Time.current if attrs_to_update.except(:contacted_at, :creation_state).any?
+
+      super(attrs_to_update) if attrs_to_update.any?
     end
 
     def supports_after_script_on_cancel?
@@ -196,6 +200,13 @@ module Ci
     end
 
     private
+
+    def changed_values(values)
+      # Always use read_attribute to get the actual database value, not cached value.
+      values.select do |key, new_value|
+        read_attribute(key) != new_value
+      end
+    end
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.

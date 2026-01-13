@@ -7,7 +7,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
 
   const createComponent = ({ pageParams = {} } = {}) => {
     wrapper = shallowMountExtended(WorkItemsSavedViewsSelectors, {
-      propsData: { pageParams },
+      propsData: { pageParams, fullPath: 'test-project-path' },
       slots: {
         'header-area': '<div data-testid="header-area-slot">Header Area</div>',
       },

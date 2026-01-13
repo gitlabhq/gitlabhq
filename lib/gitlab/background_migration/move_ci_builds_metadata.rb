@@ -456,7 +456,7 @@ module Gitlab
           exposed_paths = COALESCE(
             p_ci_job_artifacts.exposed_paths,
             CASE
-              WHEN p_ci_builds_metadata.config_options->'artifacts'->'paths' IS NOT NULL
+              WHEN jsonb_typeof(p_ci_builds_metadata.config_options->'artifacts'->'paths') = 'array'
               THEN ARRAY(
                 SELECT jsonb_array_elements_text(p_ci_builds_metadata.config_options->'artifacts'->'paths')
               )

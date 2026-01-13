@@ -55,7 +55,7 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
           title: issue_b.title,
           state: issue_b.state,
           reference: issue_b.to_reference(project),
-          path: "/#{project.full_path}/-/issues/#{issue_b.iid}",
+          path: ::Gitlab::UrlBuilder.instance.issue_path(issue_b),
           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_a.id}"
         ))
 
@@ -64,7 +64,7 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
           title: issue_c.title,
           state: issue_c.state,
           reference: issue_c.to_reference(project),
-          path: "/#{project.full_path}/-/issues/#{issue_c.iid}",
+          path: ::Gitlab::UrlBuilder.instance.issue_path(issue_c),
           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_b.id}"
         ))
 
@@ -73,7 +73,7 @@ RSpec.describe IssueLinks::ListService, feature_category: :team_planning do
           title: issue_d.title,
           state: issue_d.state,
           reference: issue_d.to_reference(project),
-          path: "/#{project.full_path}/-/issues/#{issue_d.iid}",
+          path: ::Gitlab::UrlBuilder.instance.issue_path(issue_d),
           relation_path: "/#{project.full_path}/-/issues/#{issue.iid}/links/#{issue_link_c.id}"
         ))
       end

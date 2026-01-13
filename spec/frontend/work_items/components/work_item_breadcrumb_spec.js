@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBreadcrumb } from '@gitlab/ui';
 import WorkItemBreadcrumb from '~/work_items/components/work_item_breadcrumb.vue';
-import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
 
 describe('WorkItemBreadcrumb', () => {
   let wrapper;
@@ -73,6 +73,21 @@ describe('WorkItemBreadcrumb', () => {
             name: 'workItemList',
             query: undefined,
             params: { type: 'epics' },
+          },
+        },
+      ]);
+    });
+
+    it('renders root `Service Desk` breadcrumb on epics list page', () => {
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TICKET });
+
+      expect(findBreadcrumb().props('items')).toEqual([
+        {
+          text: 'Service Desk',
+          to: {
+            name: 'workItemList',
+            query: undefined,
+            params: { type: 'service_desk' },
           },
         },
       ]);

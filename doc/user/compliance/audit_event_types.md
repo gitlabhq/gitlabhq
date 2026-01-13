@@ -50,6 +50,13 @@ An audit event type's scope limits the availability of the audit event type to e
 
 Audit event types belong to the following product categories.
 
+### Agent foundations
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`feature_access_rules_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217749) | GitLab Duo feature access rules were updated | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/584380) | Instance |
+| [`namespace_feature_access_rules_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217896) | GitLab Duo namespace feature access rules were updated | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/work_items/584381) | Group |
+
 ### Ai framework
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -305,6 +312,11 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`duo_session_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is created | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
+| [`duo_session_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session has failed | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
+| [`duo_session_finished`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is finished | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
+| [`duo_session_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is started | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
+| [`duo_session_stopped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216689) | Duo session is stopped | {{< yes >}} | GitLab [18.8](https://gitlab.com/gitlab-org/gitlab/-/issues/518088) | Project |
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< yes >}} | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
@@ -552,6 +564,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | The security policy project is updated for a project | {{< yes >}} | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
+| [`policy_warn_mode_group_protected_branch_modification_override`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213392) | A group is affected by a warn mode policy that prevents modification of the group's protected branches if the policy changes from warn mode to strictly enforced. | {{< no >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/580966) | Group |
 | [`policy_warn_mode_merge_request_approval`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210351) | A merge request approval would have been prevented by a security policy in warn mode. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/563867) | Project |
 | [`policy_warn_mode_merge_request_approval_settings_overrides`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212756) | A merge request's target branch is affected by a policy in warn mode that sets more restrictive approval settings if the policy changes from warn mode to enforced. | {{< no >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/580797) | Project |
 | [`policy_warn_mode_push_settings_overrides`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209501) | Approval settings from a security policy in warn mode will override branch protections | {{< no >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/563867) | Project |

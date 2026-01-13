@@ -178,7 +178,7 @@ Or:
 1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 To learn how to be notified when a new release is available, watch [Notification for releases](https://www.youtube.com/watch?v=qyeNkGgqmH4).
 
 ## Notification events

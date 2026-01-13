@@ -17,8 +17,8 @@ module API
               not_found!
             end
 
-            ::Packages::Conan::Metadatum.validate_username_and_channel(username, channel) do |none_field|
-              bad_request!("#{none_field} can't be solely blank")
+            ::Packages::Conan::Metadatum.validate_username_and_channel(username, channel) do
+              not_found!
             end
           end
 

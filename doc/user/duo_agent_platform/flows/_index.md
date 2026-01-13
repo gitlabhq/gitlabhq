@@ -10,7 +10,6 @@ title: Flows
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -22,8 +21,13 @@ title: Flows
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled by default.
+- Introduced as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_flows`. Disabled by default.
+- Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.8.
 - Additional flags are required for foundational flows.
+- Foundational flows [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Custom flows [changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) to beta in GitLab 18.8.
 
 {{< /history >}}
 
@@ -50,10 +54,8 @@ Flows are available in IDEs and the GitLab UI.
 - In the UI, they run directly in GitLab CI/CD, helping you automate common development tasks without the need to leave your browser.
 - In IDEs, the software development flow is available in VS Code, Visual Studio, and JetBrains. Support for other flows is being proposed.
 
-For more information about flows executing in CI/CD, see [the flow execution documentation](execution.md).
-
-For more focused pieces of work, like understanding selected code,
-use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md).
+For more information about how flows execute in CI/CD, see [the flow execution documentation](execution.md).
+For information about the security of flows, see [the composite identity documentation](../security.md).
 
 ## Prerequisites
 
@@ -81,6 +83,13 @@ To view flows that are running for your project:
 To view a history of flows you've run in your project:
 
 - On the **Flows** tab, scroll down and view **Recent agent sessions**.
+
+## Customize flows with `AGENTS.md`
+
+Use `AGENTS.md` files to provide context and instructions for GitLab Duo to follow while executing
+foundational and custom flows.
+
+For more information, see [`AGENTS.md` customization files](../../gitlab_duo/customize_duo/agents_md.md).
 
 ## Give feedback
 

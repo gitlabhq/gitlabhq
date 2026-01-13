@@ -22,8 +22,8 @@ module Gitlab
         SUB_BATCH_SIZE_THRESHOLD = 65
         STUCK_JOBS_TIMEOUT = 1.hour.freeze
         TIMEOUT_EXCEPTIONS = [ActiveRecord::StatementTimeout, ActiveRecord::ConnectionTimeoutError,
-                              ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout,
-                              ActiveRecord::QueryCanceled].freeze
+          ActiveRecord::AdapterTimeout, ActiveRecord::LockWaitTimeout,
+          ActiveRecord::QueryCanceled].freeze
 
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
         has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id

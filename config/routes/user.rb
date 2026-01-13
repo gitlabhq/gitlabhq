@@ -59,6 +59,7 @@ devise_scope :user do
   get '/users/skip_verification_confirmation', to: 'sessions#skip_verification_confirmation'
   post '/users/fallback_to_email_otp', to: 'sessions#fallback_to_email_otp'
   post '/users/passkeys/sign_in', to: 'sessions#new_passkey', as: :users_passkeys_sign_in
+  get '/users/sign_in_path', to: 'sessions#sign_in_path', as: :users_sign_in_path
 
   # Redirect on GitHub authorization request errors. E.g. it could happen when user:
   # 1. cancel authorization the GitLab OAuth app via GitHub to import GitHub repos
@@ -110,7 +111,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
   end
 end
 
-constraints(::Constraints::UserUrlConstrainer.new) do
+constraints(Users::UserUrlConstraint.new) do
   # Get all SSH keys of user
   get ':username.keys' => 'users#ssh_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
 

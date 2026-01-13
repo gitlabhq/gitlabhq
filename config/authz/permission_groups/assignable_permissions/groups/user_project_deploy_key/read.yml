@@ -1,0 +1,7 @@
+---
+name: read_user_project_deploy_key
+description: Grants the ability to read user project deploy keys
+boundaries:
+  - user
+permissions:
+  - read_user_project_deploy_key

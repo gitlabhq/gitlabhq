@@ -107,3 +107,7 @@ Use `*_path` helpers instead of `*_url` helpers:
 -# Incorrect - Absolute URL
 = link_to _('Dashboard'), dashboard_projects_url
 ```
+
+## Linking to help pages
+
+For guidance on how to link to help pages, see [linking to /help](documentation/help.md#linking-to-help).

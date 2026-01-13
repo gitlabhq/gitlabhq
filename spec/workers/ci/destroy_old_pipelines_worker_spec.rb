@@ -19,7 +19,7 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
 
     subject(:perform) { worker.perform_work }
 
-    it 'loops thought the available pipelines' do
+    it 'loops through the available pipelines' do
       stub_const("#{described_class.name}::LIMIT", 3)
 
       expect { perform }.to change { project.all_pipelines.count }.by(-2)

@@ -35,6 +35,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const projectPath = 'gitlab-org/gitlab';
 const defaultBranch = 'main';
 const projectBranchCount = 99;
+const failedPipelinesLink = '/pipelines?status=failed';
 
 describe('PipelinesDashboardClickhouse', () => {
   useFakeDate('2022-02-15T08:30'); // a date with a time
@@ -55,6 +56,7 @@ describe('PipelinesDashboardClickhouse', () => {
         defaultBranch,
         projectPath,
         projectBranchCount,
+        failedPipelinesLink,
       },
       stubs: {
         GlTruncate,
@@ -95,6 +97,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             branch: defaultBranch,
             dateRange: DATE_RANGE_DEFAULT,
+            jobName: '',
           },
         });
       });
@@ -109,6 +112,7 @@ describe('PipelinesDashboardClickhouse', () => {
           branch: defaultBranch,
           fromTime: new Date('2022-02-08'),
           toTime: new Date('2022-02-15'),
+          jobName: null,
         });
       });
     });
@@ -121,6 +125,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             dateRange: DATE_RANGE_DEFAULT,
             branch: defaultBranch,
+            jobName: '',
           },
           variables: {
             source: null,
@@ -128,6 +133,7 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: defaultBranch,
             fromTime: new Date('2022-02-08'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '',
         },
@@ -137,6 +143,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: null,
             dateRange: DATE_RANGE_30_DAYS,
             branch: BRANCH_ANY,
+            jobName: '',
           },
           variables: {
             source: null,
@@ -144,6 +151,7 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: null,
             fromTime: new Date('2022-01-16'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '?branch=~any&time=30d',
         },
@@ -153,6 +161,7 @@ describe('PipelinesDashboardClickhouse', () => {
             source: SOURCE_PUSH,
             dateRange: DATE_RANGE_180_DAYS,
             branch: 'feature-branch',
+            jobName: '',
           },
           variables: {
             source: SOURCE_PUSH,
@@ -160,8 +169,27 @@ describe('PipelinesDashboardClickhouse', () => {
             branch: 'feature-branch',
             fromTime: new Date('2021-08-19'),
             toTime: new Date('2022-02-15'),
+            jobName: null,
           },
           query: '?branch=feature-branch&source=PUSH&time=180d',
+        },
+        {
+          name: 'feature branch pushes in the last 180 days filtering by "test" job',
+          input: {
+            source: SOURCE_PUSH,
+            dateRange: DATE_RANGE_180_DAYS,
+            branch: 'feature-branch',
+            jobName: 'test',
+          },
+          variables: {
+            source: SOURCE_PUSH,
+            fullPath: projectPath,
+            branch: 'feature-branch',
+            fromTime: new Date('2021-08-19'),
+            toTime: new Date('2022-02-15'),
+            jobName: 'test',
+          },
+          query: '?branch=feature-branch&job=test&source=PUSH&time=180d',
         },
       ];
 
@@ -234,11 +262,21 @@ describe('PipelinesDashboardClickhouse', () => {
       expect(findPipelinesStats().props('aggregate')).toEqual(
         pipelineAnalyticsData.data.project.pipelineAnalytics.aggregate,
       );
+      expect(findPipelinesStats().props('failedPipelinesPath')).toEqual(
+        '/pipelines?status=failed&ref=main',
+      );
 
       expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
       expect(findAllSingleStats().at(1).text()).toBe('Median duration 30m');
       expect(findAllSingleStats().at(2).text()).toBe('Failure rate 25%');
       expect(findAllSingleStats().at(3).text()).toBe('Success rate 25%');
+    });
+
+    it('renders with no branch selected', () => {
+      setWindowLocation('?branch=~any');
+      createComponent({ mountFn: mount });
+
+      expect(findPipelinesStats().props('failedPipelinesPath')).toEqual('/pipelines?status=failed');
     });
   });
 

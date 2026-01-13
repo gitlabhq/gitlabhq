@@ -20,6 +20,7 @@ module Issuable
       @links = issuable_class.related_link_class&.where(id: params[:link_ids])
       return unless user && issuable && links.present?
 
+      track_new_links
       create_issuable_notes!
     rescue ArgumentError => error
       logger.error(
@@ -58,6 +59,16 @@ module Issuable
       return if note.present?
 
       "{noteable_id: #{noteable.id}, reference_ids: #{[references].flatten.collect(&:id)}}"
+    end
+
+    def track_new_links
+      @links.each do |link|
+        Gitlab::WorkItems::Instrumentation::TrackingService.new(
+          work_item: @issuable,
+          current_user: @user,
+          event: ::Gitlab::WorkItems::Instrumentation::EventActions.link_event(link, @issuable, :add)
+        ).execute
+      end
     end
   end
 end

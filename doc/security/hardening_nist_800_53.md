@@ -60,11 +60,11 @@ including but not limited to:
 
 - [Security configuration](../user/application_security/detect/security_configuration.md)
 - [Container scanning](../user/application_security/container_scanning/_index.md)
-- [Dependency Scanning](../user/application_security/dependency_scanning/_index.md)
+- [Dependency scanning](../user/application_security/dependency_scanning/_index.md)
 - [Static application security testing](../user/application_security/sast/_index.md)
 - [Infrastructure as Code (IaC) Scanning](../user/application_security/iac_scanning/_index.md)
-- [Secret Detection](../user/application_security/secret_detection/_index.md)
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/_index.md)
+- [Secret detection](../user/application_security/secret_detection/_index.md)
+- [Dynamic application security testing (DAST)](../user/application_security/dast/_index.md)
 - [API fuzzing](../user/application_security/api_fuzzing/_index.md)
 - [Coverage-guided fuzz testing](../user/application_security/coverage_fuzzing/_index.md)
 
@@ -232,7 +232,7 @@ as WebAuthn, must be used (IA-2).
 
 - GitLab [provides instructions](../user/ssh.md) on how to configure SSH keys to authenticate and communicate with Git. [Commits can be signed](../user/project/repository/signed_commits/ssh.md), providing additional verification for anyone with a public key.
 
-- Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers. Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, administrators can [block or ban compromised keys](ssh_keys_restrictions.md#block-banned-or-compromised-keys).
+- Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers. Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, GitLab [blocks compromised keys](../user/ssh.md#add-an-ssh-key-to-your-gitlab-account).
 
 **Personal access tokens**
 
@@ -597,7 +597,7 @@ monthly reporting requirements. GitLab provides security
 including [Trivy](https://github.com/aquasecurity/trivy)
 and [Grype](https://github.com/anchore/grype) scanners.
 Additionally, GitLab provides [dependency scanning functionality](../user/application_security/dependency_scanning/_index.md).
-Dynamic Application Security Testing (DAST) in GitLab can be used to
+DAST in GitLab can be used to
 satisfy web application scanning requirements. [GitLab DAST](../user/application_security/dast/_index.md)
 can be configured to run in a pipeline and produce vulnerability reports
 for running web applications.
@@ -607,9 +607,9 @@ application code include:
 
 - [Static application security testing (SAST)](../user/application_security/sast/_index.md)
 
-- [Secret Detection](../user/application_security/secret_detection/_index.md)
+- [Secret detection](../user/application_security/secret_detection/_index.md)
 
-- [API Security](../user/application_security/api_security/_index.md)
+- [API security](../user/application_security/api_security/_index.md)
 
 #### Patch Management
 

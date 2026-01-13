@@ -2,211 +2,198 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectMemberPresenter do
+RSpec.describe ProjectMemberPresenter, feature_category: :groups_and_projects do
   let(:user) { double(:user) }
   let(:project) { double(:project) }
   let(:project_member) { double(:project_member, source: project) }
   let(:presenter) { described_class.new(project_member, current_user: user) }
 
   describe '#can_resend_invite?' do
+    subject(:can_resend_invite) { presenter.can_resend_invite? }
+
+    before do
+      allow(project_member).to receive(:invite?).and_return(is_invited)
+      allow(presenter).to receive(:can?).with(user, :admin_project_member, project).and_return(can_admin)
+    end
+
     context 'when project_member is invited' do
-      before do
-        expect(project_member).to receive(:invite?).and_return(true)
-      end
+      let(:is_invited) { true }
 
       context 'and user can admin_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :admin_project_member, project).and_return(true)
-        end
+        let(:can_admin) { true }
 
-        it { expect(presenter.can_resend_invite?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'and user cannot admin_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :admin_project_member, project).and_return(false)
-        end
+        let(:can_admin) { false }
 
-        it { expect(presenter.can_resend_invite?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
 
     context 'when project_member is not invited' do
-      before do
-        expect(project_member).to receive(:invite?).and_return(false)
-      end
+      let(:can_admin) { true }
+      let(:is_invited) { false }
 
-      context 'and user can admin_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :admin_project_member, project).and_return(true)
-        end
-
-        it { expect(presenter.can_resend_invite?).to eq(false) }
-      end
-
-      context 'and user cannot admin_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :admin_project_member, project).and_return(false)
-        end
-
-        it { expect(presenter.can_resend_invite?).to eq(false) }
-      end
+      it { is_expected.to eq(false) }
     end
   end
 
   describe '#last_owner?' do
-    context 'when member is the holder of the personal namespace' do
-      before do
-        allow(project_member).to receive(:holder_of_the_personal_namespace?).and_return(true)
-      end
+    subject(:last_owner) { presenter.last_owner? }
 
-      it { expect(presenter.last_owner?).to eq(true) }
+    before do
+      allow(project_member).to receive(:holder_of_the_personal_namespace?).and_return(is_holder)
+    end
+
+    context 'when member is the holder of the personal namespace' do
+      let(:is_holder) { true }
+
+      it { is_expected.to eq(true) }
     end
 
     context 'when member is not the holder of the personal namespace' do
-      before do
-        allow(project_member).to receive(:holder_of_the_personal_namespace?).and_return(false)
-      end
+      let(:is_holder) { false }
 
-      it { expect(presenter.last_owner?).to eq(false) }
+      it { is_expected.to eq(false) }
     end
   end
 
   describe '#can_update?' do
+    subject(:can_update) { presenter.can_update? }
+
+    before do
+      allow(project_member).to receive(:owner?).and_return(is_owner)
+    end
+
     context 'when user is NOT attempting to update an Owner' do
+      let(:is_owner) { false }
+      let(:can_update_member) { true }
+
       before do
-        allow(project_member).to receive(:owner?).and_return(false)
+        allow(presenter).to receive(:can?).with(user, :update_project_member, presenter).and_return(can_update_member)
+        allow(presenter).to receive(:can?).with(user, :override_project_member, presenter).and_return(false)
       end
 
       context 'when user can update_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :update_project_member, presenter).and_return(true)
-        end
-
-        specify { expect(presenter.can_update?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'when user cannot update_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :update_project_member, presenter).and_return(false)
-          allow(presenter).to receive(:can?).with(user, :override_project_member, presenter).and_return(false)
-        end
+        let(:can_update_member) { false }
 
-        specify { expect(presenter.can_update?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
 
     context 'when user is attempting to update an Owner' do
+      let(:is_owner) { true }
+      let(:can_manage_owners) { true }
+
       before do
-        allow(project_member).to receive(:owner?).and_return(true)
+        allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(can_manage_owners)
       end
 
       context 'when user can manage owners' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(true)
-        end
-
-        specify { expect(presenter.can_update?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'when user cannot manage owners' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(false)
-        end
+        let(:can_manage_owners) { false }
 
-        specify { expect(presenter.can_update?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
   end
 
   describe '#can_remove?' do
+    subject(:can_remove) { presenter.can_remove? }
+
+    before do
+      allow(project_member).to receive(:owner?).and_return(is_owner)
+    end
+
     context 'when user is NOT attempting to remove an Owner' do
+      let(:is_owner) { false }
+      let(:can_destroy_member) { true }
+
       before do
-        allow(project_member).to receive(:owner?).and_return(false)
+        allow(presenter).to receive(:can?).with(user, :destroy_project_member, presenter).and_return(can_destroy_member)
       end
 
       context 'when user can destroy_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :destroy_project_member, presenter).and_return(true)
-        end
+        let(:can_destroy_member) { true }
 
-        specify { expect(presenter.can_remove?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'when user cannot destroy_project_member' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :destroy_project_member, presenter).and_return(false)
-        end
+        let(:can_destroy_member) { false }
 
-        specify { expect(presenter.can_remove?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
 
     context 'when user is attempting to remove an Owner' do
+      let(:is_owner) { true }
+      let(:can_manage_owners) { true }
+
       before do
-        allow(project_member).to receive(:owner?).and_return(true)
+        allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(can_manage_owners)
       end
 
       context 'when user can manage owners' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(true)
-        end
+        let(:can_manage_owners) { true }
 
-        specify { expect(presenter.can_remove?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'when user cannot manage owners' do
-        before do
-          allow(presenter).to receive(:can?).with(user, :manage_owners, project).and_return(false)
-        end
+        let(:can_manage_owners) { false }
 
-        specify { expect(presenter.can_remove?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
   end
 
   describe '#can_approve?' do
+    subject(:can_approve) { presenter.can_approve? }
+
+    before do
+      allow(project_member).to receive(:request?).and_return(has_request)
+      allow(presenter).to receive(:can_update?).and_return(can_update)
+    end
+
     context 'when project_member has request an invite' do
-      before do
-        expect(project_member).to receive(:request?).and_return(true)
-      end
+      let(:has_request) { true }
 
       context 'and user can update_project_member' do
-        before do
-          allow(presenter).to receive(:can_update?).and_return(true)
-        end
+        let(:can_update) { true }
 
-        it { expect(presenter.can_approve?).to eq(true) }
+        it { is_expected.to eq(true) }
       end
 
       context 'and user cannot update_project_member' do
-        before do
-          allow(presenter).to receive(:can_update?).and_return(false)
-        end
+        let(:can_update) { false }
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
 
     context 'when project_member did not request an invite' do
-      before do
-        expect(project_member).to receive(:request?).and_return(false)
-      end
+      let(:has_request) { false }
 
       context 'and user can update_project_member' do
-        before do
-          allow(presenter).to receive(:can_update?).and_return(true)
-        end
+        let(:can_update) { true }
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
 
       context 'and user cannot update_project_member' do
-        before do
-          allow(presenter).to receive(:can_update?).and_return(false)
-        end
+        let(:can_update) { false }
 
-        it { expect(presenter.can_approve?).to eq(false) }
+        it { is_expected.to eq(false) }
       end
     end
   end

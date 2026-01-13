@@ -13,10 +13,6 @@ module Gitlab
             :"#{name}_count"
           end
 
-          def to_hash
-            super.merge(kind: :column)
-          end
-
           def to_arel(_context)
             Arel::Nodes::Count.new([Arel.star])
           end

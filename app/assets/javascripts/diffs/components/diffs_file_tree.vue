@@ -1,13 +1,10 @@
 <script>
 import { debounce } from 'lodash';
-import { mapActions } from 'pinia';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
-import * as types from '~/diffs/store/mutation_types';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
-import { getPanelElement } from '~/lib/utils/scroll_utils';
+import { getPanelElement } from '~/lib/utils/panels';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -41,6 +38,16 @@ export default {
       type: Boolean,
       required: false,
       default: true,
+    },
+    currentDiffFileId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    linkedFilePath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -91,9 +98,6 @@ export default {
     PanelBreakpointInstance.removeBreakpointListener(this.updateIsNarrowScreen);
   },
   methods: {
-    ...mapActions(useLegacyDiffs, {
-      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
-    }),
     restoreTreeWidthUserPreference() {
       const userPreference =
         getCookie(TREE_LIST_WIDTH_STORAGE_KEY) || localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY);
@@ -101,7 +105,6 @@ export default {
       this.treeWidth = parseInt(userPreference, 10);
     },
     onFileClick(file) {
-      this.setCurrentDiffFile(file.fileHash);
       this.$emit('clickFile', file);
     },
     onResizeStart() {
@@ -170,6 +173,8 @@ export default {
         :total-files-count="totalFilesCount"
         :row-height="rowHeight"
         :group-blobs-list-items="groupBlobsListItems"
+        :current-diff-file-id="currentDiffFileId"
+        :linked-file-path="linkedFilePath"
         @clickFile="onFileClick"
         @toggleFolder="$emit('toggleFolder', $event)"
       />

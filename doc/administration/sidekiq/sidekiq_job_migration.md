@@ -1,6 +1,6 @@
 ---
-stage: Data Access
-group: Durability
+stage: Tenant Scale
+group: Tenant Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Sidekiq job migration Rake tasks
 ---

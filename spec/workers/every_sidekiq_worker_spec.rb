@@ -440,6 +440,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RefreshLicenseComplianceChecksWorker' => 3,
         'Releases::CreateEvidenceWorker' => 3,
         'RemoteMirrorNotificationWorker' => 3,
+        'Repositories::PostReceiveWorker' => 3,
         'RepositoryCheck::BatchWorker' => false,
         'RepositoryCheck::ClearWorker' => false,
         'RepositoryCheck::SingleRepositoryWorker' => false,
@@ -508,6 +509,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Vulnerabilities::UpdateArchivedAttributeOfVulnerabilityReadsWorker' => 2,
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,
+        'VirtualRegistries::Cache::DestroyOrphanEntriesWorker' => 0,
         'VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker' => 0,
         'VirtualRegistries::Cleanup::ExecutePolicyWorker' => 0,
         'WaitForClusterCreationWorker' => 3,
@@ -523,7 +525,9 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::Runners::ExportUsageCsvWorker' => 3,
         'AppSec::ContainerScanning::ScanImageWorker' => 3,
         'Ci::DestroyOldPipelinesWorker' => 0,
-        'AuditEvents::AuditEventStreamingWorker' => 3
+        'AuditEvents::AuditEventStreamingWorker' => 3,
+        'Vulnerabilities::TriggerFalsePositiveDetectionWorkflowWorker' => 10,
+        'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10
       }.merge(extra_retry_exceptions)
     end
 

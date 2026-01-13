@@ -5,44 +5,26 @@ require 'spec_helper'
 RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio_management do
   include BoardHelpers
 
-  let_it_be(:user)    { create(:user) }
-  let_it_be(:group)   { create(:group, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
-  let_it_be(:board)   { create(:board, project: project) }
-  let_it_be(:label)   { create(:label, project: project, name: 'Label') }
-  let_it_be(:list)    { create(:list, board: board, label: label, position: 0) }
+  let_it_be(:board) { create(:board, project: project) }
+  let_it_be(:label) { create(:label, project: project, name: 'Label') }
+  let_it_be(:list) { create(:list, board: board, label: label, position: 0) }
 
   let_it_be(:issue, reload: true) { create(:issue, project: project, relative_position: 1) }
 
   before do
     project.add_maintainer(user)
+    sign_in(user)
+
+    visit project_board_path(project, board)
+    click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
+
+    wait_for_requests
   end
 
-  context 'when project studio is enabled' do
-    before do
-      skip 'Test not applicable in classic UI' unless Users::ProjectStudio.enabled_for_user?(user) # rubocop:disable RSpec/AvoidConditionalStatements -- temporary Project Studio rollout
-      sign_in(user)
-
-      visit project_board_path(project, board)
-      click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
-
-      wait_for_requests
-    end
-
-    it_behaves_like 'work item drawer on the boards'
-  end
-
-  context 'when project studio is disabled' do
-    before do
-      sign_in(user)
-
-      visit project_board_path(project, board)
-
-      wait_for_requests
-    end
-
-    it_behaves_like 'work item drawer on the boards'
-  end
+  it_behaves_like 'work item drawer on the boards'
 
   def first_card
     find('[data-testid="board-list"]:nth-child(1)').first("[data-testid='board-card']")
