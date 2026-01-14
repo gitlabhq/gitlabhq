@@ -279,6 +279,18 @@ describe('Markdown field component', () => {
             supportsQuickActions: true,
           });
         });
+
+        it('hides preview when textareaValue changes', async () => {
+          previewToggle = getPreviewToggle();
+
+          previewToggle.trigger('click');
+
+          subject.setProps({ textareaValue: 'new content' });
+
+          await nextTick();
+
+          expect(subject.find('.md-preview-holder').element.style.display).toBe('none');
+        });
       });
 
       describe('no_header_anchors', () => {

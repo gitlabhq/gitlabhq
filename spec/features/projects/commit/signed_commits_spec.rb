@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :public, :repository) }
 
-  it 'changes from unverified to verified when the user changes their email to match the gpg key', :sidekiq_might_not_need_inline do
+  it 'changes from unverified to verified when the user changes their email to match the gpg key',
+    :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: 'unrelated.user@example.org')
 
@@ -47,7 +48,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     expect(page).to have_selector('.gl-badge', text: 'Verified')
   end
 
-  context 'shows popover badges' do
+  context 'when shows popover badges' do
     let(:user_1) do
       create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
     end
@@ -59,7 +60,12 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     end
 
     let(:user_2) do
-      create(:user, email: GpgHelpers::User2.emails.first, username: 'bette.cartwright', name: 'Bette Cartwright').tap do |user|
+      create(
+        :user,
+        email: GpgHelpers::User2.emails.first,
+        username: 'bette.cartwright',
+        name: 'Bette Cartwright'
+      ).tap do |user|
         # secondary, unverified email
         create :email, user: user, email: 'mail@koffeinfrei.org'
       end
@@ -243,9 +249,12 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
       context 'on x509 on signed commits' do
         let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
-        let_it_be(:commit) { create(:commit, project: project, sha: commit_sha, committer_email: 'r.meier@siemens.com') }
         let_it_be(:x509_certificate) { create(:x509_certificate, email: 'r.meier@siemens.com') }
         let_it_be(:user) { create(:user, email: 'r.meier@siemens.com') }
+        let_it_be(:commit) do
+          create(:commit, project: project, sha: commit_sha, committer_email: 'r.meier@siemens.com')
+        end
+
         let(:message) { 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.' }
         let(:mapped_message) { 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.' }
         let(:fingerprint) { x509_certificate.subject_key_identifier.tr(':', ' ') }
@@ -259,13 +268,21 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
           }
         end
 
-        let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate, project: project, committer_email: 'r.meier@siemens.com') }
+        let(:signature) do
+          create(
+            :x509_commit_signature,
+            commit_sha: commit_sha,
+            x509_certificate: x509_certificate,
+            project: project,
+            committer_email: 'r.meier@siemens.com'
+          )
+        end
 
         before do
           signature
         end
 
-        context 'happy path - no mapping' do
+        context 'when happy path - no mapping' do
           it 'label is verified' do
             expect_to_have_label_content(commit.sha, message, fingerprint)
           end
@@ -292,7 +309,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     end
   end
 
-  context 'view signed commit on the tree view' do
+  context 'when viewing signed commit on the tree view' do
     shared_examples 'a commit with a signature' do
       before do
         visit project_tree_path(project, 'signed-commits')

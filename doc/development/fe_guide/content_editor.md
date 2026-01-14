@@ -94,21 +94,20 @@ export default {
 
 ### Listen for changes
 
-You can still react to changes in the rich text editor. Reacting to changes helps
-you know if the document is empty or dirty. Use the `@change` event handler for
-this purpose.
+You can still react to changes in the rich text editor. Use the `@change` event
+handler for this purpose.
 
 ```html
 <script>
 export default {
   data() {
     return {
-      empty: false,
+      disabled: false,
     };
   },
   methods: {
-    handleContentEditorChange({ empty }) {
-      this.empty = empty;
+    handleContentEditorChange({ markdown }) {
+      this.disabled = !!/XXX/.exec(markdown);
     }
   },
 };
@@ -121,7 +120,7 @@ export default {
       @initialized="loadInitialContent"
       @change="handleContentEditorChange"
     />
-    <gl-button :disabled="empty" @click="submitChanges">
+    <gl-button :disabled="disabled" @click="submitChanges">
       {{ __('Submit changes') }}
     </gl-button>
   </div>

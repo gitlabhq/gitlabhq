@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="rd-discussion-timeline gl-mt-5">
+  <div class="rd-discussion-timeline gl-mt-5" data-testid="commit-timeline">
     <div class="rd-discussion-timeline-comments">
       <diff-discussions :discussions="timelineDiscussions" timeline-layout />
     </div>
@@ -73,6 +73,7 @@ export default {
       <note-signed-out-widget v-if="!isLoggedIn" />
       <note-form
         v-else-if="userPermissions.can_create_note"
+        class="js-main-target-form"
         :save-note="saveNote"
         :save-button-title="__('Comment')"
         :can-cancel="false"

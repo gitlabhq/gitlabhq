@@ -19,9 +19,6 @@ module Gitlab
       ISSUE_MARKED_AS_DUPLICATE = 'g_project_management_issue_marked_as_duplicate'
       ISSUE_LOCKED = 'g_project_management_issue_locked'
       ISSUE_UNLOCKED = 'g_project_management_issue_unlocked'
-      ISSUE_DESIGNS_ADDED = 'g_project_management_issue_designs_added'
-      ISSUE_DESIGNS_MODIFIED = 'g_project_management_issue_designs_modified'
-      ISSUE_DESIGNS_REMOVED = 'g_project_management_issue_designs_removed'
       ISSUE_DUE_DATE_CHANGED = 'g_project_management_issue_due_date_changed'
       ISSUE_TIME_ESTIMATE_CHANGED = 'g_project_management_issue_time_estimate_changed'
       ISSUE_TIME_SPENT_CHANGED = 'g_project_management_issue_time_spent_changed'
@@ -89,18 +86,6 @@ module Gitlab
 
         def track_issue_unlocked_action(author:, project:)
           track_internal_event(ISSUE_UNLOCKED, author, project)
-        end
-
-        def track_issue_designs_added_action(author:, project:)
-          track_internal_event(ISSUE_DESIGNS_ADDED, author, project)
-        end
-
-        def track_issue_designs_modified_action(author:, project:)
-          track_internal_event(ISSUE_DESIGNS_MODIFIED, author, project)
-        end
-
-        def track_issue_designs_removed_action(author:, project:)
-          track_internal_event(ISSUE_DESIGNS_REMOVED, author, project)
         end
 
         def track_issue_due_date_changed_action(author:, project:)

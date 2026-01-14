@@ -32,10 +32,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
   # Use define_method instead of let (which is memoized) so that this just works across a
   # reload.
   #
-  files = [
-    'small_diff.md', 'large_diff.md', 'large_diff_renamed.md', 'undiffable.md',
-    'too_large.md', 'too_large_image.jpg'
-  ]
+  files = %w[small_diff.md large_diff.md large_diff_renamed.md undiffable.md too_large.md too_large_image.jpg]
 
   files.each do |file|
     define_method(file.split('.').first) { file_container(file) }
@@ -68,7 +65,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     expect(large_diff).not_to have_selector('.nothing-here-block')
   end
 
-  context 'visiting a commit with collapsed diffs' do
+  context 'when visiting a commit with collapsed diffs' do
     it 'shows small diffs immediately' do
       expect(small_diff).to have_selector('.code')
       expect(small_diff).not_to have_selector('.nothing-here-block')
@@ -91,7 +88,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       expect(too_large_image).to have_selector('.image')
     end
 
-    context 'expanding a diff for a renamed file' do
+    context 'when expanding a diff for a renamed file' do
       before do
         large_diff_renamed.find('.click-to-expand').click
         wait_for_requests
@@ -110,7 +107,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       end
     end
 
-    context 'expanding a large diff' do
+    context 'when expanding a large diff' do
       before do
         # Wait for diffs
         find('.js-file-title', match: :first)
@@ -124,7 +121,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
         expect(large_diff).not_to have_selector('.nothing-here-block')
       end
 
-      context 'adding a comment to the expanded diff' do
+      context 'when adding a comment to the expanded diff' do
         let(:comment_text) { 'A comment' }
 
         before do
@@ -139,7 +136,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
           expect(large_diff.find('.notes')).to have_content comment_text
         end
 
-        context 'reloading the page' do
+        context 'when reloading the page' do
           before do
             refresh
           end
@@ -149,7 +146,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
             expect(large_diff).to have_selector('.nothing-here-block')
           end
 
-          context 'expanding the diff' do
+          context 'when expanding the diff' do
             before do
               # Wait for diffs
               find('.js-file-title', match: :first)
@@ -171,7 +168,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       end
     end
 
-    context 'collapsing an expanded diff' do
+    context 'when collapsing an expanded diff' do
       before do
         # Wait for diffs
         find('.js-file-title', match: :first)
@@ -184,7 +181,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
         expect(small_diff).to have_selector('.nothing-here-block')
       end
 
-      context 're-expanding the same diff' do
+      context 'when re-expanding the same diff' do
         before do
           # Wait for diffs
           find('.js-file-title', match: :first)
@@ -199,7 +196,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       end
     end
 
-    context 'expanding a diff when symlink was converted to a regular file' do
+    context 'when expanding a diff when symlink was converted to a regular file' do
       let(:branch) { 'symlink-expand-diff' }
 
       it 'shows the content of the regular file' do
@@ -214,7 +211,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     end
   end
 
-  context 'visiting a commit without collapsed diffs' do
+  context 'when visiting a commit without collapsed diffs' do
     let(:branch) { 'feature' }
 
     it 'does not show Expand all button' do
@@ -222,7 +219,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     end
   end
 
-  context 'visiting a commit with more than safe files' do
+  context 'when visiting a commit with more than safe files' do
     let(:branch) { 'expand-collapse-files' }
 
     # safe-files -> 100 | safe-lines -> 5000 | commit-files -> 105
@@ -244,7 +241,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     end
   end
 
-  context 'visiting a commit with more than safe lines' do
+  context 'when visiting a commit with more than safe lines' do
     let(:branch) { 'expand-collapse-lines' }
 
     # safe-files -> 100 | safe-lines -> 5000 | commit_files -> 8 (each 1250 lines)
@@ -261,19 +258,13 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     end
   end
 
-  context 'expanding all diffs' do
+  context 'when expanding all diffs' do
     before do
       click_link('Expand all')
+      wait_for_requests
 
       # Wait for elements to appear to ensure full page reload
-      expect(page).to have_content(
-        "File suppressed by a .gitattributes entry, the file's encoding is unsupported, " \
-          "or the file size exceeds the limit.")
-      expect(page).to have_content('Source diff could not be displayed: it is too large.')
-      expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
-
-      wait_for_requests
     end
 
     it 'reloads the page with all diffs expanded' do
@@ -284,7 +275,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
       expect(large_diff).not_to have_selector('.nothing-here-block')
     end
 
-    context 'collapsing an expanded diff' do
+    context 'when collapsing an expanded diff' do
       before do
         # Wait for diffs
         find('.js-file-title', match: :first)
@@ -297,7 +288,7 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
         expect(small_diff).to have_selector('.nothing-here-block')
       end
 
-      context 're-expanding the same diff' do
+      context 'when re-expanding the same diff' do
         before do
           # Wait for diffs
           find('.js-file-title', match: :first)

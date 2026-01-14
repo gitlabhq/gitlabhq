@@ -72,6 +72,7 @@ describe('NewLineDiscussionForm', () => {
       autofocus: useDiffDiscussions().discussions[0].shouldFocus,
       noteBody: useDiffDiscussions().discussions[0].noteBody,
       saveNote: expect.any(Function),
+      saveButtonTitle: 'Comment',
       restoreFromAutosave: true,
     });
   });

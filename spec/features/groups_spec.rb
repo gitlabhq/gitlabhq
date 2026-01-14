@@ -282,12 +282,12 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
       it 'creates private subgroup' do
         fill_in 'Subgroup name', with: 'bar'
+        wait_for_requests
         click_button 'foo'
+        find('li[role="option"]', text: 'foo2').click
 
-        expect(page).to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo2')
-        expect(page).not_to have_css('[data-testid="select_group_dropdown_item"]', text: 'foo3')
+        expect(page).not_to have_selector('li[role="option"]', text: 'foo3')
 
-        click_button 'foo2'
         click_button 'Create subgroup'
 
         expect(page).to have_current_path(group_path('foo2/bar'), ignore_query: true)

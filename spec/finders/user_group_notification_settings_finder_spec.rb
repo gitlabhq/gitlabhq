@@ -15,7 +15,7 @@ RSpec.describe UserGroupNotificationSettingsFinder, feature_category: :team_plan
     context 'when the groups have no ancestors' do
       let_it_be(:groups) { create_list(:group, 3) }
 
-      it 'will be a default Global notification setting', :aggregate_failures do
+      it 'is a default Global notification setting', :aggregate_failures do
         expect(subject.count).to eq(3)
         expect(attributes(&:notification_email)).to match_array([nil])
         expect(attributes(&:level)).to match_array(['global'])

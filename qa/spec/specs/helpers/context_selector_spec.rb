@@ -461,7 +461,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
 
   it 'outputs a message for invalid environments' do
     group = describe_successfully do
-      it('will skip', only: :production) {}
+      it('skips', only: :production) {}
     end
 
     expect(group.examples.first.execution_result.pending_message).to match(/[Tt]est.*not compatible.*environment/)

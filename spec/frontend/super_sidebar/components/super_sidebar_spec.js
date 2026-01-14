@@ -4,7 +4,6 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
-import UserBar from '~/super_sidebar/components/user_bar.vue';
 import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavior.vue';
 import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
@@ -37,7 +36,7 @@ jest.mock('~/super_sidebar/utils', () => ({
 
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
-const UserBarStub = {
+const SidebarMenuStub = {
   template: `<div><a href="#">link</a></div>`,
 };
 const peekClass = 'super-sidebar-peek';
@@ -49,7 +48,6 @@ describe('SuperSidebar component', () => {
 
   const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
-  const findUserBar = () => wrapper.findComponent(UserBar);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
@@ -80,7 +78,7 @@ describe('SuperSidebar component', () => {
       },
       stubs: {
         TrialWidget: TrialWidgetStub,
-        UserBar: stubComponent(UserBar, UserBarStub),
+        SidebarMenu: stubComponent(SidebarMenu, SidebarMenuStub),
       },
       attachTo: document.body,
     });
@@ -127,11 +125,6 @@ describe('SuperSidebar component', () => {
     it('does not add inert attribute when expanded', () => {
       createWrapper();
       expect(findSidebar().attributes('inert')).toBe(undefined);
-    });
-
-    it('renders UserBar with sidebarData', () => {
-      createWrapper();
-      expect(findUserBar().props('sidebarData')).toBe(mockSidebarData);
     });
 
     it('renders HelpCenter with sidebarData', () => {
@@ -483,7 +476,7 @@ describe('SuperSidebar component', () => {
   });
 
   describe('focusing first focusable element', () => {
-    const findFirstFocusableElement = () => findUserBar().find('a');
+    const findFirstFocusableElement = () => findSidebarMenu().find('a');
     let focusSpy;
 
     beforeEach(() => {

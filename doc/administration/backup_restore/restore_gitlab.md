@@ -71,6 +71,19 @@ variables used for two-factor authentication. Without the keys, multiple issues
 occur, including loss of access by users with two-factor authentication
 enabled, and GitLab Runners cannot sign in.
 
+{{< alert type="warning" >}}
+
+**WebAuthn devices are disabled when restoring to a different FQDN:**
+WebAuthn registrations (such as YubiKeys) are cryptographically bound to the origin
+(domain/hostname) where they were created. If you restore a backup to a GitLab instance
+with a different FQDN than the original instance, all WebAuthn devices will be disabled.
+Users will need to re-register their WebAuthn devices after the restore is complete.
+
+For more information about WebAuthn and hostname requirements, see
+[Two-factor authentication](../../user/profile/account/two_factor_authentication.md#information-for-gitlab-administrators).
+
+{{< /alert >}}
+
 Based on your installation method, restore the following:
 
 {{< tabs >}}

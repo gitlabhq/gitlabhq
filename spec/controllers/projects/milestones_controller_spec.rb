@@ -57,7 +57,7 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       expect(response).to redirect_to(new_project_release_path(project))
     end
 
-    it 'will not redirect when given a redirect_path with an error' do
+    it 'does not redirect when given a redirect_path with an error' do
       post :create, params: { namespace_id: project.namespace.id, project_id: project.id, redirect_path: 'new_release', milestone: { title: nil } }
 
       expect(response).to have_gitlab_http_status(:ok)

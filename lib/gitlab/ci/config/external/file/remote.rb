@@ -108,7 +108,7 @@ module Gitlab
                 return true
               end
 
-              errors.push("Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of HTTP code `#{code}` error!")
+              errors.push("Remote file `#{masked_location}` could not be fetched after #{attempt} #{'attempt'.pluralize(attempt)} because of HTTP code `#{code}` error!")
               false
             end
 

@@ -393,7 +393,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
       end
 
       it 'returns error message about a timeout' do
-        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched after 3 attempts because of HTTP code `404` error!')
+        expect(subject).to eq('Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` could not be fetched after 1 attempt because of HTTP code `404` error!')
       end
     end
 

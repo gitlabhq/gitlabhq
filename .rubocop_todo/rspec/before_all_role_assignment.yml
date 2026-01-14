@@ -657,8 +657,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/boards/sidebar_assignee_spec.rb'
     - 'spec/features/boards/sidebar_labels_spec.rb'
     - 'spec/features/boards/sidebar_spec.rb'
-    - 'spec/features/commit_spec.rb'
-    - 'spec/features/commits/user_view_commits_spec.rb'
     - 'spec/features/commits_spec.rb'
     - 'spec/features/dashboard/issues_filter_spec.rb'
     - 'spec/features/dashboard/todos/todos_spec.rb'

@@ -1,0 +1,16 @@
+diff --git a/node_modules/@tiptap/vue-2/dist/index.js b/node_modules/@tiptap/vue-2/dist/index.js
+index e80329d..13e155f 100644
+--- a/node_modules/@tiptap/vue-2/dist/index.js
++++ b/node_modules/@tiptap/vue-2/dist/index.js
+@@ -272,6 +272,11 @@ class VueNodeView extends NodeView {
+         });
+         // @ts-ignore
+         const vue = (_b = (_a = this.editor.contentComponent) === null || _a === void 0 ? void 0 : _a.$options._base) !== null && _b !== void 0 ? _b : Vue; // eslint-disable-line
++        Object.defineProperty(props, '__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__', {
++            value: true,
++            enumerable: true,
++            configurable: true
++        });
+         const Component = vue.extend(this.component).extend({
+             props: Object.keys(props),
+             provide: () => {

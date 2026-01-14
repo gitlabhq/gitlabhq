@@ -181,31 +181,6 @@ module.exports = (path, options = {}) => {
     return '<rootDir>/coverage-frontend/';
   };
 
-  const gfmParserDependencies = [
-    'rehype-.*',
-    'remark-.*',
-    'hast*',
-    'unist.*',
-    'markdown-table',
-    'mdast-util-.*',
-    'micromark.*',
-    'vfile.*',
-    'bail',
-    'trough',
-    'unified',
-    'is-plain-obj',
-    'decode-named-character-reference',
-    'character-entities*',
-    'property-information',
-    'space-separated-tokens',
-    'comma-separated-tokens',
-    'web-namespaces',
-    'zwitch',
-    'html-void-elements',
-    'ccount',
-    'escape-string-regexp',
-  ];
-
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
     '@gitlab/ui',
@@ -231,7 +206,13 @@ module.exports = (path, options = {}) => {
     'vscode-languageserver-types',
     'yaml',
     'dexie',
-    ...gfmParserDependencies,
+    'markdown-table',
+    'mdast-util-.*',
+    'micromark.*',
+    'is-plain-obj',
+    'decode-named-character-reference',
+    'character-entities*',
+    'escape-string-regexp',
   ];
 
   return {

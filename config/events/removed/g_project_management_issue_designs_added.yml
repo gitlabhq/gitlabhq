@@ -1,7 +1,7 @@
 ---
-description: A design was modified on an issue
+description: A design was added to an issue
 internal_events: true
-action: g_project_management_issue_designs_modified
+action: g_project_management_issue_designs_added
 extra_properties:
 identifiers:
 - project
@@ -14,4 +14,6 @@ tiers:
 - free
 - premium
 - ultimate
-
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218509
+milestone_removed: '18.9'

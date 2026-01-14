@@ -43,7 +43,7 @@ For more information on how to turn off prompt caching, see
 [prompt caching](../project/repository/code_suggestions/_index.md#prompt-caching).
 
 > [!note]
-> For OpenAI models, you cannot turn off prompt caching. Ensure that you use a model that is suitable for your data retention requirements.
+> For OpenAI models, you cannot turn off prompt caching. If you have turned off prompt caching and you use an OpenAI model, GitLab attempts to invalidate the cache by adding the current timestamp to the prompt. Ensure that you use a model that is suitable for your data retention requirements.
 
 All GitLab AI model Sub-Processors are restricted from using model input and
 output to train models and are under data protection agreements with GitLab that

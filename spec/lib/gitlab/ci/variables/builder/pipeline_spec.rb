@@ -414,6 +414,62 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
       end
     end
 
+    context 'when pipeline triggered by upstream project' do
+      let_it_be(:upstream_project) { create(:project) }
+      let(:upstream_pipeline) { create(:ci_pipeline, project: upstream_project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:bridge) do
+        create(:ci_bridge, pipeline: upstream_pipeline, downstream_pipeline: pipeline, downstream: project)
+      end
+
+      before do
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: pipeline)
+      end
+
+      it 'exposes upstream pipeline variables' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_UPSTREAM_PROJECT_ID' => upstream_pipeline.project_id.to_s,
+            'CI_UPSTREAM_PIPELINE_ID' => upstream_pipeline.id.to_s,
+            'CI_UPSTREAM_JOB_ID' => bridge.id.to_s
+          )
+      end
+    end
+
+    context 'when child pipeline triggered by parent pipeline in same project' do
+      let(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:bridge) do
+        create(:ci_bridge, pipeline: parent_pipeline, downstream_pipeline: pipeline, downstream: project)
+      end
+
+      before do
+        create(:ci_sources_pipeline, source_job: bridge, pipeline: pipeline)
+      end
+
+      it 'exposes upstream pipeline variables' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_UPSTREAM_PROJECT_ID' => parent_pipeline.project_id.to_s,
+            'CI_UPSTREAM_PIPELINE_ID' => parent_pipeline.id.to_s,
+            'CI_UPSTREAM_JOB_ID' => bridge.id.to_s
+          )
+      end
+    end
+
+    context 'when pipeline is not a downstream pipeline' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it 'does not expose upstream pipeline variables' do
+        expect(subject.to_hash.keys)
+          .not_to include(
+            'CI_UPSTREAM_PROJECT_ID',
+            'CI_UPSTREAM_PIPELINE_ID',
+            'CI_UPSTREAM_JOB_ID'
+          )
+      end
+    end
+
     context 'when source is external pull request' do
       let(:pipeline) do
         create(:ci_pipeline, source: :external_pull_request_event, external_pull_request: pull_request)

@@ -244,7 +244,7 @@ class EventCreateService
 
     # Track human users only (excluding bots) for customer health scoring
     unless current_user.bot?
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:project_action_human_users, values: current_user.id)
+      track_internal_event('perform_git_operation_on_project', user: current_user, project: project)
     end
 
     namespace = project.namespace

@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import { ALERT_EVENT } from '../constants';
-import { getMarkdownSource } from '../services/markdown_sourcemap';
+import { getMarkdownSource } from '../services/markdown_source';
 import { shouldRenderHTMLTable } from '../services/serializer/table';
 
 export default Table.extend({

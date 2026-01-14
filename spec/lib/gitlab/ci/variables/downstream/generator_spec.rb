@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
 
   let(:bridge) do
     instance_double(
-      'Ci::Bridge',
+      Ci::Bridge,
       variables: bridge_variables,
       forward_yaml_variables?: true,
       forward_pipeline_variables?: true,

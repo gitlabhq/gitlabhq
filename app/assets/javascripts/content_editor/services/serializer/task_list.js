@@ -1,10 +1,9 @@
-import { preserveUnchanged } from '../serialization_helpers';
-import { renderBulletList } from './bullet_list';
-import { renderOrderedList } from './ordered_list';
+import bulletList from './bullet_list';
+import orderedList from './ordered_list';
 
-const taskList = preserveUnchanged((state, node) => {
-  if (node.attrs.numeric) renderOrderedList(state, node);
-  else renderBulletList(state, node);
-});
+function taskList(state, node) {
+  if (node.attrs.numeric) orderedList(state, node);
+  else bulletList(state, node);
+}
 
 export default taskList;

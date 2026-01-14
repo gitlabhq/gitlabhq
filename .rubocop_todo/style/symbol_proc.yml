@@ -122,7 +122,6 @@ Style/SymbolProc:
     - 'spec/features/merge_request/user_resolves_conflicts_spec.rb'
     - 'spec/features/merge_request/user_resolves_diff_notes_and_discussions_resolve_spec.rb'
     - 'spec/features/merge_request/user_sees_pipelines_spec.rb'
-    - 'spec/features/projects/commit/user_comments_on_commit_spec.rb'
     - 'spec/features/projects/environments/environment_spec.rb'
     - 'spec/features/projects/labels/update_prioritization_spec.rb'
     - 'spec/finders/license_template_finder_spec.rb'

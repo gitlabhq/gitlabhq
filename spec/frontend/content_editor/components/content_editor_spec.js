@@ -273,15 +273,7 @@ describe('ContentEditor', () => {
     });
 
     it('emits change event with the latest markdown', () => {
-      expect(wrapper.emitted('change')).toEqual([
-        [
-          {
-            markdown,
-            changed: false,
-            empty: false,
-          },
-        ],
-      ]);
+      expect(wrapper.emitted('change')).toEqual([[{ markdown }]]);
     });
 
     it('hides the placeholder text', () => {

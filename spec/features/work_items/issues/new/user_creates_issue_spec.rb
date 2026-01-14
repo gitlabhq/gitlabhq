@@ -310,7 +310,7 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       visit(new_project_issue_path(project))
     end
 
-    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'" do
+    it "escapes user names with an apostrophe when clicking 'Assign to me'" do
       click_button 'assign yourself'
 
       expect(page).to have_content(user_special.name)

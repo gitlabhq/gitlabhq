@@ -15,8 +15,11 @@ RSpec.describe 'Commit', feature_category: :source_code_management do
 
     let(:files) { commit.diffs.diff_files.to_a }
 
-    before do
+    before_all do
       project.add_maintainer(user)
+    end
+
+    before do
       sign_in(user)
     end
 

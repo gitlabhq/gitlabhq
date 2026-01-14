@@ -1,7 +1,6 @@
 import { Node } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import PlayableWrapper from '../components/wrappers/playable.vue';
-import { getSourceMapAttributes } from '../services/markdown_sourcemap';
 
 const queryPlayableElement = (element, mediaType) => element.querySelector(mediaType);
 
@@ -38,7 +37,6 @@ export default Node.create({
         parseHTML: (element) =>
           queryPlayableElement(element, this.options.mediaType).getAttribute('height'),
       },
-      ...getSourceMapAttributes((element) => queryPlayableElement(element, this.options.mediaType)),
     };
   },
 

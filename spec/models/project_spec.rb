@@ -982,7 +982,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:last_activity_at) { 1.day.ago }
       let(:project) { build(:project, last_activity_at: last_activity_at) }
 
-      it 'will use supplied timestamp' do
+      it 'uses supplied timestamp' do
         expect { project.valid? }.not_to change(project, :last_activity_at)
       end
     end
@@ -4476,7 +4476,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when retrieving the latest_unscheduled_pipelines' do
       subject { project.latest_unscheduled_pipelines(ref: project.default_branch, sha: project.commit.id) }
 
-      it 'should not contain scheduled pipelines' do
+      it 'does not contain scheduled pipelines' do
         expect(subject.length).to eq(1)
         expect(subject).to include(push_pipeline)
       end
@@ -10126,7 +10126,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let!(:deployment) { create(:deployment, :created, project: project) }
     let!(:old_deployment) { create(:deployment, :created, project: project, finished_at: 1.year.ago) }
 
-    it 'will call fast_destroy_all on a specific deployment by id' do
+    it 'calls fast_destroy_all on a specific deployment by id' do
       expect(Deployment).to receive(:fast_destroy_all).and_call_original
 
       expect do

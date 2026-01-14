@@ -98,6 +98,7 @@ export default {
       :autosave-key="autosaveKey"
       :autofocus="discussion.shouldFocus"
       :note-body="discussion.noteBody"
+      :save-button-title="__('Comment')"
       :save-note="saveNote"
       restore-from-autosave
       @input="setNewLineDiscussionFormText(discussion, $event)"

@@ -140,30 +140,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue designs added actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_ADDED }
-
-      subject(:track_event) { described_class.track_issue_designs_added_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue designs modified actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_MODIFIED }
-
-      subject(:track_event) { described_class.track_issue_designs_modified_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue designs removed actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_DESIGNS_REMOVED }
-
-      subject(:track_event) { described_class.track_issue_designs_removed_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue due date changed actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_DUE_DATE_CHANGED }

@@ -18,7 +18,7 @@ RSpec.describe Releases::Link do
     context 'when url is invalid' do
       let(:link) { build(:release_link, url: 'hoge') }
 
-      it 'will be invalid' do
+      it 'is invalid' do
         expect(link).to be_invalid
       end
     end
@@ -88,7 +88,7 @@ RSpec.describe Releases::Link do
     with_them do
       let(:link) { build(:release_link, url: protocol + '://assets.com/download') }
 
-      it 'will be valid' do
+      it 'is valid' do
         expect(link).to be_valid
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe Releases::Link do
     context 'for torrent' do
       let(:link) { build(:release_link, url: 'torrent://assets.com/download') }
 
-      it 'will be invalid' do
+      it 'is invalid' do
         expect(link).to be_invalid
       end
     end
@@ -107,7 +107,7 @@ RSpec.describe Releases::Link do
   describe 'when filepath is greater than max length' do
     let!(:invalid_link) { build(:release_link, filepath: 'x' * (Releases::Link::FILEPATH_MAX_LENGTH + 1), release: release) }
 
-    it 'will not execute regex' do
+    it 'does not execute regex' do
       invalid_link.filepath_format_valid?
 
       expect(invalid_link.errors[:filepath].size).to eq(1)

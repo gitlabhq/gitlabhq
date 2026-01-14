@@ -19263,6 +19263,9 @@ msgstr ""
 msgid "Configure settings for exact code search."
 msgstr ""
 
+msgid "Configure settings for semantic search."
+msgstr ""
+
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -25288,6 +25291,9 @@ msgstr ""
 msgid "Disable password authentication for users with an SSO identity"
 msgstr ""
 
+msgid "Disable semantic search"
+msgstr ""
+
 msgid "Disabled"
 msgstr ""
 
@@ -25797,6 +25803,9 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
+msgid "DuoAgenticChat|GitLab Duo Agentic Chat is unavailable"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
 msgstr ""
 
@@ -25818,13 +25827,22 @@ msgstr ""
 msgid "DuoAgenticChat|No credits remain for this billing period. To continue collaborating with GitLab Duo, turn off the Agentic mode toggle. You can still get AI assistance, just without the advanced agentic features. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "DuoAgenticChat|Return to Classic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|Select default namespace"
+msgstr ""
+
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
-msgid "DuoAgenticChat|To use GitLab Duo Agentic Chat, please select a default namespace in your %{linkStart}User Profile Preferences%{linkEnd}."
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
 msgstr ""
 
 msgid "DuoAgenticChat|Turn off Agentic mode"
@@ -64040,6 +64058,9 @@ msgstr ""
 msgid "Semantic search"
 msgstr ""
 
+msgid "Semantic search will be disabled soon."
+msgstr ""
+
 msgid "Send"
 msgstr ""
 
@@ -67034,7 +67055,7 @@ msgstr ""
 msgid "Successfully confirmed"
 msgstr ""
 
-msgid "Successfully created connection for semantic search."
+msgid "Successfully created connection for semantic search. Indexing will start soon."
 msgstr ""
 
 msgid "Successfully deactivated"
@@ -69346,6 +69367,9 @@ msgid "This action cannot be undone, and will permanently delete the %{key} SSH 
 msgstr ""
 
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
+msgstr ""
+
+msgid "This action is destructive. Disabling semantic search will remove all indexed data. If you reconnect in the future, a full index will be performed."
 msgstr ""
 
 msgid "This action will permanently delete this group, including its subgroups and projects, on %{date}. Scheduled pipelines will not run during deletion."
@@ -73285,9 +73309,6 @@ msgid "Use template"
 msgstr ""
 
 msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
-msgstr ""
-
-msgid "Use the advanced search cluster for semantic search."
 msgstr ""
 
 msgid "Use the link below to confirm your email address (%{email})"

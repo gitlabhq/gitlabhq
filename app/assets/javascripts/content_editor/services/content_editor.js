@@ -18,7 +18,6 @@ export class ContentEditor {
     this._deserializer = deserializer;
     this._eventHub = eventHub;
     this._assetResolver = assetResolver;
-    this._pristineDoc = null;
     this._autocompleteHelper = autocompleteHelper;
 
     this.codeSuggestionsConfig = codeSuggestionsConfig;
@@ -39,18 +38,6 @@ export class ContentEditor {
 
   get serializer() {
     return this._serializer;
-  }
-
-  get changed() {
-    if (!this._pristineDoc) {
-      return !this.empty;
-    }
-
-    return !this._pristineDoc.eq(this.tiptapEditor.state.doc);
-  }
-
-  get empty() {
-    return this.tiptapEditor.isEmpty;
   }
 
   get editable() {
@@ -107,7 +94,6 @@ export class ContentEditor {
     const { doc } = editor.state;
 
     if (document) {
-      this._pristineDoc = document;
       let tr = editor.state.tr.replaceWith(0, doc.content.size, document);
       for (const [key, value] of Object.entries(document.attrs)) {
         tr = tr.step(new DocAttrStep(key, value));
@@ -117,9 +103,9 @@ export class ContentEditor {
   }
 
   getSerializedContent() {
-    const { _tiptapEditor: editor, _serializer: serializer, _pristineDoc: pristineDoc } = this;
+    const { _tiptapEditor: editor, _serializer: serializer } = this;
     const { doc } = editor.state;
 
-    return serializer.serialize({ doc, pristineDoc });
+    return serializer.serialize({ doc });
   }
 }

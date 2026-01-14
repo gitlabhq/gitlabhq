@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Commit > User view commits', feature_category: :source_code_management do
+RSpec.describe 'Commit > User views commits', feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }
@@ -30,9 +30,12 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
       context 'and user is an inherited member from the group' do
         context 'and user is a guest' do
-          before do
+          before_all do
             group.add_guest(user)
             sign_in(user)
+          end
+
+          before do
             visit project_commits_path(project)
           end
 
@@ -46,8 +49,11 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
       context 'and user is an inherited member from the group' do
         context 'and user is a guest' do
-          before do
+          before_all do
             group.add_guest(user)
+          end
+
+          before do
             sign_in(user)
             visit project_commits_path(project)
           end

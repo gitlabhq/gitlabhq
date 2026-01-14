@@ -230,6 +230,7 @@ export default {
     textareaValue: {
       immediate: true,
       handler(textareaValue, oldVal) {
+        this.hidePreview();
         const all = /@all([^\w._-]|$)/;
         const hasAll = all.test(textareaValue);
         const hadAll = all.test(oldVal);

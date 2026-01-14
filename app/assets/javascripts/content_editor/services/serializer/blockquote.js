@@ -1,22 +1,11 @@
-import {
-  preserveUnchanged,
-  containsEmptyParagraph,
-  buffer,
-  placeholder,
-  setIsInBlockquote,
-} from '../serialization_helpers';
-import { renderHTMLNode } from './html_node';
+import { containsEmptyParagraph, buffer, placeholder } from '../serialization_helpers';
 
-export const renderBlockquote = (state, node) => {
+function blockquote(state, node) {
   if (state.options.skipEmptyNodes) {
     if (!node.childCount || containsEmptyParagraph(node)) return;
   }
 
-  const { multiline, sourceMarkdown, sourceTagName } = node.attrs;
-  if (sourceTagName && !sourceMarkdown) {
-    renderHTMLNode(sourceTagName)(state, node);
-    return;
-  }
+  const { multiline } = node.attrs;
 
   if (multiline) {
     const placeholderQuotes = placeholder(state);
@@ -36,11 +25,8 @@ export const renderBlockquote = (state, node) => {
 
     placeholderQuotes.replaceWith('>'.repeat(numQuotes));
   } else {
-    setIsInBlockquote(true);
     state.wrapBlock('> ', null, node, () => state.renderContent(node));
-    setIsInBlockquote(false);
   }
-};
+}
 
-const blockquote = preserveUnchanged(renderBlockquote);
 export default blockquote;

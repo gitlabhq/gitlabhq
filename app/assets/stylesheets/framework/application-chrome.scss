@@ -735,12 +735,7 @@
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h s l / 16%);
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 90);
-      --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 2));
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
-    }
-
-    .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
-      @apply gl-bg-alpha-dark-6 gl-border-default;
     }
 
     .super-sidebar hr {
@@ -815,7 +810,6 @@
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 88);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h calc(s - 30) l / 16%);
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 85);
-      --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 20));
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 32%);
     }
 
@@ -861,6 +855,17 @@
   .bottom-scrim-visible,
   .top-scrim-visible {
     border-color: var(--theme-border-color);
+  }
+
+  .organization-switcher-button {
+    @apply gl-bg-alpha-dark-8 dark:gl-bg-alpha-light-16;
+    @apply gl-border-transparent;
+
+    .gl-button-text {
+      display: flex;
+      align-items: center;
+      gap: var(--gl-spacing-scale-2);
+    }
   }
 
   .panel-header .top-bar-fixed,

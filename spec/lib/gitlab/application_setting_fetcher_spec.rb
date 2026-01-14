@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ApplicationSettingFetcher, feature_category: :cell do
       described_class.current_application_settings
     end
 
-    it 'will re-initialize settings' do
+    it 're-initializes settings' do
       expect(ApplicationSetting).to receive(:build_from_defaults).and_call_original
 
       clear_in_memory_application_settings!

@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         context 'when feature flag is disabled' do
           let(:ff_enabled) { false }
 
-          it "will not lock created partition" do
+          it "does not lock created partition" do
             sync_partitions
 
             expect(partitions_locked_for_writes?).to eq(false)

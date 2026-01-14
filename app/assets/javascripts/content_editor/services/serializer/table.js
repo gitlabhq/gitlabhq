@@ -1,5 +1,5 @@
 import { uniq } from 'lodash';
-import { preserveUnchanged, renderTagClose, renderTagOpen } from '../serialization_helpers';
+import { renderTagClose, renderTagOpen } from '../serialization_helpers';
 
 const tableMap = new WeakMap();
 
@@ -11,10 +11,10 @@ function getChildren(node) {
   return children;
 }
 
-function getRowsAndCells(table) {
+function getRowsAndCells(t) {
   const cells = [];
   const rows = [];
-  table.descendants((n) => {
+  t.descendants((n) => {
     if (n.type.name === 'tableCell' || n.type.name === 'tableHeader') {
       cells.push(n);
       return false;
@@ -29,10 +29,10 @@ function getRowsAndCells(table) {
   return { rows, cells };
 }
 
-function unsetIsInBlockTable(table) {
-  tableMap.delete(table);
+function unsetIsInBlockTable(t) {
+  tableMap.delete(t);
 
-  const { rows, cells } = getRowsAndCells(table);
+  const { rows, cells } = getRowsAndCells(t);
   rows.forEach((row) => tableMap.delete(row));
   cells.forEach((cell) => {
     tableMap.delete(cell);
@@ -40,8 +40,8 @@ function unsetIsInBlockTable(table) {
   });
 }
 
-export function shouldRenderHTMLTable(table) {
-  const { rows, cells } = getRowsAndCells(table);
+export function shouldRenderHTMLTable(t) {
+  const { rows, cells } = getRowsAndCells(t);
 
   const cellChildCount = Math.max(...cells.map((cell) => cell.childCount));
   const maxColspan = Math.max(...cells.map((cell) => cell.attrs.colspan));
@@ -82,10 +82,10 @@ export function isInTable(node) {
   return tableMap.has(node);
 }
 
-function setIsInBlockTable(table, value) {
-  tableMap.set(table, value);
+function setIsInBlockTable(t, value) {
+  tableMap.set(t, value);
 
-  const { rows, cells } = getRowsAndCells(table);
+  const { rows, cells } = getRowsAndCells(t);
   rows.forEach((row) => tableMap.set(row, value));
   cells.forEach((cell) => {
     tableMap.set(cell, value);
@@ -94,7 +94,7 @@ function setIsInBlockTable(table, value) {
   });
 }
 
-const table = preserveUnchanged((state, node) => {
+function table(state, node) {
   state.flushClose();
   setIsInBlockTable(node, shouldRenderHTMLTable(node));
 
@@ -109,6 +109,6 @@ const table = preserveUnchanged((state, node) => {
   state.flushClose();
 
   unsetIsInBlockTable(node);
-});
+}
 
 export default table;

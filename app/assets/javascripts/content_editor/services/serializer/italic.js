@@ -1,21 +1,18 @@
-import { openTag, closeTag, preserveUnchangedMark } from '../serialization_helpers';
+import { openTag, closeTag } from '../serialization_helpers';
 
 const generateItalicTag = (wrapTagName = openTag) => {
   return (_, mark) => {
-    const type = /^(\*|_).*/.exec(mark.attrs.sourceMarkdown)?.[1];
-    if (type === '*' || type === '_') return type;
-
-    if (mark.attrs.sourceTagName) return wrapTagName(mark.attrs.sourceTagName);
+    if (mark.attrs.htmlTag) return wrapTagName(mark.attrs.htmlTag);
 
     return '_';
   };
 };
 
-const italic = preserveUnchangedMark({
+const italic = {
   open: generateItalicTag(),
   close: generateItalicTag(closeTag),
   mixable: true,
   expelEnclosingWhitespace: true,
-});
+};
 
 export default italic;

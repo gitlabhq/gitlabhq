@@ -92,7 +92,6 @@ RSpec/ExpectInHook:
     - 'spec/features/boards/new_issue_spec.rb'
     - 'spec/features/boards/reload_boards_on_browser_back_spec.rb'
     - 'spec/features/dashboard/groups_list_spec.rb'
-    - 'spec/features/expand_collapse_diffs_spec.rb'
     - 'spec/features/file_uploads/maven_package_spec.rb'
     - 'spec/features/groups/container_registry_spec.rb'
     - 'spec/features/groups/group_settings_spec.rb'

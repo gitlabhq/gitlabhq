@@ -86,7 +86,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         stub_const("Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS", 2)
       end
 
-      it 'will not exceed the assignee limit' do
+      it 'does not exceed the assignee limit' do
         expect do
           subject.update!(assignees: [assignee_1, assignee_2, assignee_3])
         end.to raise_error(ActiveRecord::RecordInvalid)

@@ -164,6 +164,11 @@ pre-push:
       files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
       glob: '{spec,ee/spec}/**/*_spec.rb'
       run: scripts/lint/validate_fast_spec_helper_usage.rb
+    secrets-detection-clickhouse:
+      tags: backend database
+      files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
+      glob: 'db/click_house/main.sql'
+      run: scripts/lint-clickhouse-migrations.sh
 
   scripts:
     'merge_conflicts':
@@ -233,6 +238,10 @@ pre-commit:
       root: ee/frontend_islands
       glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
       run: 'yarn run lint:types'
+    secrets-detection-clickhouse:
+      tags: backend database
+      glob: 'db/click_house/main.sql'
+      run: scripts/lint-clickhouse-migrations.sh
 
 auto-fix:
   parallel: true

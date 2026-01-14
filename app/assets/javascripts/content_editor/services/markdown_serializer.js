@@ -55,12 +55,6 @@ import table from './serializer/table';
 import time from './serializer/time';
 import htmlNode from './serializer/html_node';
 
-const LIST_TYPES = [
-  extensions.BulletList.name,
-  extensions.OrderedList.name,
-  extensions.TaskList.name,
-];
-
 const defaultSerializerConfig = {
   marks: {
     [extensions.Bold.name]: bold,
@@ -123,55 +117,6 @@ const defaultSerializerConfig = {
   },
 };
 
-const createChangeTracker = (doc, pristineDoc) => {
-  const changeTracker = new WeakMap();
-  const pristineSourceMarkdownMap = new Map();
-
-  if (doc && pristineDoc) {
-    pristineDoc.descendants((node) => {
-      if (node.attrs.sourceMapKey) {
-        pristineSourceMarkdownMap.set(`${node.attrs.sourceMapKey}${node.type.name}`, node);
-      }
-
-      node.marks?.forEach((mark) => {
-        if (mark.attrs.sourceMapKey) {
-          pristineSourceMarkdownMap.set(`${mark.attrs.sourceMapKey}${mark.type.name}`, {
-            mark,
-            node,
-          });
-        }
-      });
-    });
-
-    doc.descendants((node) => {
-      const pristineNode = pristineSourceMarkdownMap.get(
-        `${node.attrs.sourceMapKey}${node.type.name}`,
-      );
-      let isPristine = false;
-
-      if (pristineNode) {
-        isPristine = node.eq(pristineNode);
-        changeTracker.set(node, isPristine);
-      }
-
-      if (!isPristine && LIST_TYPES.includes(node.type.name)) return false;
-
-      node.marks?.forEach((mark) => {
-        const { node: pristineNodeForMark, mark: pristineMark } =
-          pristineSourceMarkdownMap.get(`${mark.attrs.sourceMapKey}${mark.type.name}`) || {};
-
-        if (pristineMark) {
-          changeTracker.set(mark, mark.eq(pristineMark) && node.eq(pristineNodeForMark));
-        }
-      });
-
-      return true;
-    });
-  }
-
-  return changeTracker;
-};
-
 export default class MarkdownSerializer {
   /**
    * Converts a ProseMirror document to Markdown. See the
@@ -189,21 +134,12 @@ export default class MarkdownSerializer {
     this.serializerConfig = serializerConfig;
   }
   /**
-   * Serializes a ProseMirror document as Markdown. If a node contains
-   * sourcemap metadata, the serializer is capable of restoring the
-   * Markdown from which the node was generated using a Markdown
-   * deserializer.
-   *
-   * See the Sourcemap metadata extension for more information.
+   * Serializes a ProseMirror document as Markdown.
    *
    * @param {ProseMirror.Node} params.doc ProseMirror document to convert into Markdown
-   * @param {ProseMirror.Node} params.pristineDoc Pristine version of the document that
-   * should be converted into Markdown. This is used to detect which nodes in the document
-   * changed.
    * @returns A String that represents the serialized document as Markdown
    */
-  serialize({ doc, pristineDoc }, { useCanonicalSrc = true, skipEmptyNodes = false } = {}) {
-    const changeTracker = createChangeTracker(doc, pristineDoc);
+  serialize({ doc }, { useCanonicalSrc = true, skipEmptyNodes = false } = {}) {
     const serializer = new ProseMirrorMarkdownSerializer(
       {
         ...defaultSerializerConfig.nodes,
@@ -219,15 +155,8 @@ export default class MarkdownSerializer {
       tightLists: true,
       useCanonicalSrc,
       skipEmptyNodes,
-      changeTracker,
       escapeExtraCharacters: /<|>/g,
     });
-
-    // If the pristine document contains link reference definitions,
-    // append them to the serialized document
-    if (pristineDoc?.attrs.referenceDefinitions) {
-      return `${serialized}\n\n${pristineDoc.attrs.referenceDefinitions}`;
-    }
 
     return serialized;
   }

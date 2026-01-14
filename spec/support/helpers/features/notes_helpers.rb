@@ -19,7 +19,7 @@ module Features
         perform_enqueued_jobs do
           page.within(".js-main-target-form") do
             fill_in("note[note]", with: text)
-            find(".js-comment-submit-button").click
+            find_button('Comment').click
           end
         end
         wait_for_requests

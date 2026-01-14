@@ -1,7 +1,6 @@
 import { repeatCodeBackticks } from '~/lib/utils/text_markdown';
-import { preserveUnchanged } from '../serialization_helpers';
 
-const codeBlock = preserveUnchanged((state, node) => {
+const codeBlock = (state, node) => {
   if (state.options.skipEmptyNodes && !node.childCount) return;
 
   let { language } = node.attrs;
@@ -17,6 +16,6 @@ const codeBlock = preserveUnchanged((state, node) => {
   state.ensureNewLine();
   state.write(backticks);
   state.closeBlock(node);
-});
+};
 
 export default codeBlock;

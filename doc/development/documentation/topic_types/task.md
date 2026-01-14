@@ -151,9 +151,11 @@ For example, `To create an issue:`
 
 ## Task prerequisites
 
-As a best practice, if the task requires the user to have a role other than Guest,
-put the minimum role in the prerequisites. See [the Word list](../styleguide/word_list.md) for
+If the task requires the user to have a role other than Guest,
+list all applicable roles in the prerequisites. See [the Word list](../styleguide/word_list.md) for
 how to write the phrase for each role.
+
+If the task can only be performed by an administrator, put `Administrator access.` in the prerequisites.
 
 `Prerequisites` must always be plural, even if the list includes only one item.
 

@@ -362,7 +362,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser, feature_category: :markdown 
           .to eq([project])
       end
 
-      it 'will not overflow the stack' do
+      it 'does not overflow the stack' do
         ids = 1.upto(1_000_000).to_a
 
         # Avoid executing a large, unnecessary SQL query

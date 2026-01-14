@@ -20,7 +20,6 @@ import {
   toggleSuperSidebarIconOnly,
 } from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
-import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import IconOnlyToggle from './icon_only_toggle.vue';
 import HelpCenter from './help_center.vue';
@@ -33,7 +32,6 @@ export default {
   components: {
     GlButton,
     IconOnlyToggle,
-    UserBar,
     HelpCenter,
     SidebarMenu,
     SidebarPeekBehavior,
@@ -208,9 +206,7 @@ export default {
       }
     },
     firstFocusableElement() {
-      if (this.projectStudioEnabled) return this.$refs.sidebarMenu.$el.querySelector('a');
-
-      return this.$refs.userBar.$el.querySelector('a');
+      return this.$refs.sidebarMenu.$el.querySelector('a');
     },
     lastFocusableElement() {
       if (this.isAdmin && !this.projectStudioEnabled) {
@@ -269,12 +265,6 @@ export default {
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
       </h2>
-      <user-bar
-        v-if="!projectStudioEnabled"
-        ref="userBar"
-        :has-collapse-button="!showOverlay"
-        :sidebar-data="sidebarData"
-      />
       <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"

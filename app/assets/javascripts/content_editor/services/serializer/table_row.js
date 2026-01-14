@@ -1,4 +1,3 @@
-import { omit } from 'lodash';
 import {
   buffer,
   renderTagClose,
@@ -50,7 +49,7 @@ function renderTableRowAsHTML(state, node) {
   node.forEach((cell, _, i) => {
     const tag = cell.type.name === 'tableHeader' ? 'th' : 'td';
 
-    renderTagOpen(state, tag, omit(cell.attrs, 'sourceMapKey', 'sourceMarkdown'));
+    renderTagOpen(state, tag, cell.attrs);
 
     const buffered = buffer(state, () => {
       if (!containsParagraphWithOnlyText(cell)) {

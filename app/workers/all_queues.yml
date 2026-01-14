@@ -2915,6 +2915,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :pipeline_hooks
+- :name: pipeline_hooks:ci_observability_group_export
+  :worker_name: Ci::Observability::GroupExportWorker
+  :feature_category: :observability
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :pipeline_hooks
 - :name: pipeline_hooks:pipeline_hooks
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration

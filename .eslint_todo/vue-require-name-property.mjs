@@ -951,7 +951,6 @@ export default {
     'app/assets/javascripts/super_sidebar/components/super_sidebar.vue',
     'app/assets/javascripts/super_sidebar/components/super_sidebar_toggle.vue',
     'app/assets/javascripts/super_sidebar/components/super_topbar.vue',
-    'app/assets/javascripts/super_sidebar/components/user_bar.vue',
     'app/assets/javascripts/super_sidebar/components/user_menu.vue',
     'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue',
     'app/assets/javascripts/tags/components/delete_tag_modal.vue',

@@ -3,7 +3,7 @@ import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
-import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_ENUM_INCIDENT, WORK_ITEM_TYPE_ENUM_TICKET } from '~/work_items/constants';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardCardInner from './board_card_inner.vue';
@@ -123,7 +123,10 @@ export default {
 
       // we redirect to incident page instead of opening the drawer
       // should be removed when we introduce incident WI type
-      if (this.item.type === WORK_ITEM_TYPE_ENUM_INCIDENT) {
+      if (
+        this.item.type === WORK_ITEM_TYPE_ENUM_INCIDENT ||
+        this.item.type === WORK_ITEM_TYPE_ENUM_TICKET
+      ) {
         visitUrl(this.item.webUrl);
         return;
       }

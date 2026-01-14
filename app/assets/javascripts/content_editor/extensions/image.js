@@ -2,7 +2,6 @@ import { Image } from '@tiptap/extension-image';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
 import { PARSE_HTML_PRIORITY_HIGH } from '../constants';
 import ImageWrapper from '../components/wrappers/image.vue';
-import { getSourceMapAttributes } from '../services/markdown_sourcemap';
 
 const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
@@ -77,7 +76,6 @@ export default Image.extend({
         default: false,
         renderHTML: () => '',
       },
-      ...getSourceMapAttributes(resolveImageEl),
     };
   },
   parseHTML() {

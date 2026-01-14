@@ -1,12 +1,9 @@
-import { identity, isFunction } from 'lodash';
 import { htmlEncode } from '~/lib/utils/html';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
   th: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
 };
-
-const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey', 'sourceTagName'];
 
 const ignoreAttrs = {
   dd: ['isTerm'],
@@ -40,7 +37,7 @@ export function placeholder(state) {
   };
 }
 
-export function containsOnlyText(node) {
+function containsOnlyText(node) {
   if (node.childCount === 1) {
     const child = node.child(0);
     return child.isText && child.marks.length === 0;
@@ -70,9 +67,7 @@ export function containsParagraphWithOnlyText(node) {
 }
 
 const shouldIgnoreAttr = (tagName, attrKey, attrValue) =>
-  ignoreAttrs[tagName]?.includes(attrKey) ||
-  defaultIgnoreAttrs.includes(attrKey) ||
-  defaultAttrs[tagName]?.[attrKey] === attrValue;
+  ignoreAttrs[tagName]?.includes(attrKey) || defaultAttrs[tagName]?.[attrKey] === attrValue;
 
 export function openTag(tagName, attrs) {
   let str = `<${tagName}`;
@@ -99,7 +94,7 @@ const reMarks = /(^|\s)(\*|\*\*|_|__|`|~~)$/;
 
 const regexes = [reSpace, reBrackets, rePunctuation, reMarks];
 
-export function ensureSpace(state) {
+function ensureSpace(state) {
   state.flushClose();
   if (!state.atBlank() && !regexes.some((regex) => regex.test(state.out))) state.write(' ');
 }
@@ -150,96 +145,6 @@ export function renderTextInline(text, state, node) {
   } else {
     state.write(text);
   }
-}
-
-let inBlockquote = false;
-
-export const isInBlockquote = () => inBlockquote;
-export const setIsInBlockquote = (value) => {
-  inBlockquote = value;
-};
-
-const expandPreserveUnchangedConfig = (configOrRender) =>
-  isFunction(configOrRender)
-    ? { render: configOrRender, overwriteSourcePreservationStrategy: false, inline: false }
-    : configOrRender;
-
-export function preserveUnchanged(configOrRender) {
-  // eslint-disable-next-line max-params
-  return (state, node, parent, index) => {
-    const { render, overwriteSourcePreservationStrategy, inline } =
-      expandPreserveUnchangedConfig(configOrRender);
-
-    const { sourceMarkdown } = node.attrs;
-    const same = state.options.changeTracker.get(node);
-
-    // sourcemaps for elements in blockquotes are not accurate
-    if (same && !overwriteSourcePreservationStrategy && !isInBlockquote()) {
-      state.write(sourceMarkdown);
-
-      if (!inline) {
-        state.closeBlock(node);
-      }
-    } else {
-      render(state, node, parent, index, same, sourceMarkdown);
-    }
-  };
-}
-
-export function preserveUnchangedMark({ open, close, escape = true, ...restConfig }) {
-  // use a buffer to replace the content of the serialized mark with the sourceMarkdown
-  // when the mark is unchanged
-  let bufferStartPos = -1;
-  let esc;
-
-  function startBuffer(state) {
-    bufferStartPos = state.out.length;
-  }
-
-  function bufferStarted() {
-    return bufferStartPos !== -1;
-  }
-
-  function endBuffer(state, replace) {
-    const whitespace = state.out.substring(bufferStartPos).match(/^\s+/m)?.[0] || '';
-    state.out = state.out.substring(0, bufferStartPos) + whitespace + replace;
-    bufferStartPos = -1;
-  }
-
-  return {
-    ...restConfig,
-    // eslint-disable-next-line max-params
-    open: (state, mark, parent, index) => {
-      if (!escape) {
-        esc = state.esc;
-        state.esc = identity;
-      }
-
-      const same = state.options.changeTracker.get(mark);
-
-      if (same) {
-        startBuffer(state);
-        return '';
-      }
-
-      return open(state, mark, parent, index);
-    },
-    // eslint-disable-next-line max-params
-    close: (state, mark, parent, index) => {
-      if (!escape) {
-        state.esc = esc;
-      }
-
-      const { sourceMarkdown } = mark.attrs;
-
-      if (bufferStarted()) {
-        endBuffer(state, sourceMarkdown);
-        return '';
-      }
-
-      return close(state, mark, parent, index);
-    },
-  };
 }
 
 export const findChildWithMark = (mark, parent) => {

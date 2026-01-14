@@ -1,12 +1,3 @@
-import { identity } from 'lodash';
-
-const preserveMarkdown = () => gon.features?.preserveMarkdown;
-
-export const docHasSourceMap = (element) => {
-  const commentNode = element.ownerDocument.body.lastChild;
-  return Boolean(commentNode?.nodeName === '#comment' && commentNode.textContent);
-};
-
 export const getFullSource = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
 
@@ -26,15 +17,6 @@ const getRangeFromSourcePos = (sourcePos) => {
     start: { row: Math.max(0, Number(startRow) - 1), col: Math.max(0, Number(startCol) - 1) },
     end: { row: Math.max(0, Number(endRow) - 1), col: Math.max(0, Number(endCol) - 1) },
   };
-};
-
-const getMarkdownSourceKey = (element) => {
-  return element.dataset.sourcepos;
-};
-
-const getSourceTagName = (element) => {
-  if (!docHasSourceMap(element)) return undefined;
-  return element.tagName.toLowerCase();
 };
 
 export const getMarkdownSource = (element) => {
@@ -63,24 +45,4 @@ export const getMarkdownSource = (element) => {
   } catch {
     return undefined;
   }
-};
-
-export const getSourceMapAttributes = (queryElement = identity) => {
-  return {
-    sourceMarkdown: {
-      default: null,
-      parseHTML: (el) => (preserveMarkdown() ? getMarkdownSource(queryElement(el)) : null),
-      renderHTML: () => '',
-    },
-    sourceMapKey: {
-      default: null,
-      parseHTML: (el) => (preserveMarkdown() ? getMarkdownSourceKey(queryElement(el)) : null),
-      renderHTML: () => '',
-    },
-    sourceTagName: {
-      default: null,
-      parseHTML: (el) => (preserveMarkdown() ? getSourceTagName(queryElement(el)) : null),
-      renderHTML: () => '',
-    },
-  };
 };

@@ -1,6 +1,4 @@
-import { preserveUnchangedMark } from '../serialization_helpers';
-
-const inlineDiff = preserveUnchangedMark({
+const inlineDiff = {
   mixable: true,
   open(_, mark) {
     return mark.attrs.type === 'addition' ? '{+' : '{-';
@@ -8,6 +6,6 @@ const inlineDiff = preserveUnchangedMark({
   close(_, mark) {
     return mark.attrs.type === 'addition' ? '+}' : '-}';
   },
-});
+};
 
 export default inlineDiff;

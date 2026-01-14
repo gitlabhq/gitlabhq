@@ -41,4 +41,33 @@ RSpec.describe "User edits a comment on a commit", :js, feature_category: :sourc
       expect(page).to have_content(new_comment_text)
     end
   end
+
+  context 'when checking task lists' do
+    let(:note_with_task) do
+      <<~MARKDOWN
+
+      - [ ] Task 1
+      MARKDOWN
+    end
+
+    before do
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+      create(:note_on_commit, project: project, commit_id: sample_commit.id, note: note_with_task, author: user)
+
+      visit(project_commit_path(project, sample_commit.id))
+    end
+
+    it 'allows the tasks to be checked' do
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 0)
+
+      all('.task-list-item-checkbox').each(&:click)
+      wait_for_requests
+
+      visit(project_commit_path(project, sample_commit.id))
+
+      expect(page).to have_selector('li.task-list-item', count: 2)
+      expect(page).to have_selector('li.task-list-item input[checked]', count: 2)
+    end
+  end
 end

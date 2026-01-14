@@ -324,7 +324,7 @@ export default {
       <template #toggle>
         <gl-button
           category="tertiary"
-          class="user-bar-dropdown-toggle btn-with-notification !gl-rounded-full !gl-border-none !gl-px-0"
+          class="btn-with-notification !gl-rounded-full !gl-border-none !gl-px-0"
           :href="data.link_to_profile"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
