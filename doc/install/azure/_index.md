@@ -18,15 +18,14 @@ the [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace
 This tutorial describes installing GitLab
 Enterprise Edition in a single Virtual Machine (VM).
 
-## Prerequisite
+## Prerequisites
 
-You need an account on Azure. Use of the following methods to obtain an account:
-
-- If you or your company already have an account with a subscription, use that account.
-  If not, you can [create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
-- If you have an MSDN subscription, you can activate your Azure subscriber benefits. Your MSDN
-  subscription gives you recurring Azure credits every month, so you can use
-  those credits and try out GitLab.
+- An Azure account. Use one of the following methods:
+  - If you or your company already have an account with a subscription, use that account.
+  - [Create a free account](https://azure.microsoft.com/en-us/free/), which grants you a $200 credit to explore Azure for 30 days. For more information, see [Azure free account](https://azure.microsoft.com/en-us/pricing/offers/ms-azr-0044p/).
+  - If you have an MSDN subscription, activate your Azure subscriber benefits. Your MSDN
+    subscription gives you recurring Azure credits every month.
+- Administrator access to maintain your GitLab instance.
 
 ## Deploy and configure GitLab
 

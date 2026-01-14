@@ -7,6 +7,13 @@ export const SCOPE = {
   all: 'ALL',
   namespaces: 'NAMESPACES',
 };
+export const MIN_ACCESS_LEVEL = 'MAINTAINER';
+
+export const TAB_NAME = {
+  all: 'all',
+  namespaces: 'namespaces',
+  analytics: 'analytics',
+};
 
 export const SORT_OPTION_CREATED = 'CREATED';
 export const SORT_OPTION_POPULARITY = 'USAGE_COUNT';

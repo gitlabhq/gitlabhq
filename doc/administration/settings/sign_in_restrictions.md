@@ -17,6 +17,10 @@ Use sign-in restrictions to customize authentication restrictions for web interf
 
 ## Settings
 
+Prerequisites:
+
+- Administrator access.
+
 To access sign-in restriction settings:
 
 1. In the upper-right corner, select **Admin**.

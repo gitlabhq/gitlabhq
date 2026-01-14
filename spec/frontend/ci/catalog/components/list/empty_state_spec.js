@@ -39,6 +39,21 @@ describe('EmptyState', () => {
     });
   });
 
+  describe('on the analytics tab', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { currentTab: 'analytics' },
+      });
+    });
+
+    it('renders a special empty state', () => {
+      expect(findEmptyState().props().title).toBe('Analytics unavailable');
+      expect(findEmptyState().props().description).toBe(
+        'You need maintainer access to at least one CI/CD catalog project to view usage analytics.',
+      );
+    });
+  });
+
   describe('when there is a search query', () => {
     beforeEach(() => {
       createComponent({

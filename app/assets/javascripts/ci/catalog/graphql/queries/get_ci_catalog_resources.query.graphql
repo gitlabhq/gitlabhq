@@ -2,6 +2,7 @@
 
 query getCatalogResources(
   $scope: CiCatalogResourceScope
+  $minAccessLevel: AccessLevelEnum
   $searchTerm: String
   $sortValue: CiCatalogResourceSort
   $after: String
@@ -11,6 +12,7 @@ query getCatalogResources(
 ) {
   ciCatalogResources(
     scope: $scope
+    minAccessLevel: $minAccessLevel
     search: $searchTerm
     sort: $sortValue
     after: $after

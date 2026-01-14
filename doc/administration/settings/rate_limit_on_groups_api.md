@@ -33,6 +33,10 @@ Configure the rate limit for each IP address and user for requests to the follow
 | [`GET /groups/:id/projects`](../../api/groups.md#list-projects) | 600     | 1 minute |
 | [`POST /groups/:id/archive`](../../api/groups.md#archive-a-group) | 60    | 1 minute |
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -102,6 +106,10 @@ POST /groups/:id/archive
 POST /groups/:id/unarchive
 ```
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -135,6 +143,10 @@ see [Archive a group](../../api/groups.md#archive-a-group).
 
 Configure the rate limit for each group and user for requests to the
 [delete members endpoint](../../api/group_members.md#remove-a-member-from-a-group).
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 

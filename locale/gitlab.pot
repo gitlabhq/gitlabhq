@@ -14471,7 +14471,18 @@ msgstr ""
 msgid "CiCatalogComponent|Type"
 msgstr ""
 
+msgid "CiCatalog|%d project"
+msgid_plural "CiCatalog|%d projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "CiCatalog|All"
+msgstr ""
+
+msgid "CiCatalog|Analytics"
+msgstr ""
+
+msgid "CiCatalog|Analytics unavailable"
 msgstr ""
 
 msgid "CiCatalog|Back to the CI/CD Catalog"
@@ -14546,6 +14557,9 @@ msgstr ""
 msgid "CiCatalog|Private - This component project can only be viewed by project members."
 msgstr ""
 
+msgid "CiCatalog|Projects"
+msgstr ""
+
 msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
 msgstr ""
 
@@ -14574,6 +14588,9 @@ msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}W
 msgstr ""
 
 msgid "CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days."
+msgstr ""
+
+msgid "CiCatalog|The number of unique projects that used a component from this catalog in a pipeline in the last 30 days."
 msgstr ""
 
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
@@ -14621,6 +14638,9 @@ msgstr ""
 msgid "CiCatalog|Unreleased"
 msgstr ""
 
+msgid "CiCatalog|Usage statistics"
+msgstr ""
+
 msgid "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog."
 msgstr ""
 
@@ -14631,6 +14651,9 @@ msgid "CiCatalog|We want to help you create and manage pipeline component reposi
 msgstr ""
 
 msgid "CiCatalog|What are verified component creators?"
+msgstr ""
+
+msgid "CiCatalog|You need maintainer access to at least one CI/CD catalog project to view usage analytics."
 msgstr ""
 
 msgid "CiCatalog|Your groups"

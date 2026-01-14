@@ -19,7 +19,11 @@ description: Configure security and compliance administration settings, includin
 ### SBOM Scan API limits
 
 The [dependency scanning using SBOM feature](../../user/application_security/dependency_scanning/dependency_scanning_sbom/_index.md) uses an internal API
-with [predefined limits](../instance_limits.md#dependency-scanning-using-sbom-limits)
+with [predefined limits](../instance_limits.md#dependency-scanning-using-sbom-limits).
+
+Prerequisites:
+
+- Administrator access.
 
 To configure different values for these limits:
 

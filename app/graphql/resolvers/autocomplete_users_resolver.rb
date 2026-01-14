@@ -8,12 +8,14 @@ module Resolvers
       required: false,
       description: 'Query to search users by name, username, or public email.'
 
-    def resolve(**args)
+    def resolve(search: nil)
       ::Autocomplete::UsersFinder.new(
         current_user: context[:current_user],
         project: project,
         group: group,
-        params: finder_params(args)
+        params: {
+          search: search
+        }
       ).execute
     end
 
@@ -26,13 +28,5 @@ module Resolvers
     def group
       object if object.is_a?(Group)
     end
-
-    def finder_params(args)
-      {
-        search: args[:search]
-      }
-    end
   end
 end
-
-Resolvers::AutocompleteUsersResolver.prepend_mod_with('Resolvers::AutocompleteUsersResolver')

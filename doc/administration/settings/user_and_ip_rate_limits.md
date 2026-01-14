@@ -36,6 +36,10 @@ The rate limits for API requests don't affect requests made by the frontend, as 
 counted as web traffic.
 {{< /alert >}}
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Enable unauthenticated API request rate limit
 
 To enable the unauthenticated API request rate limit:

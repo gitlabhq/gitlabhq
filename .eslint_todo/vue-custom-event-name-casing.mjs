@@ -38,8 +38,6 @@ export default {
     'app/assets/javascripts/ci/artifacts/components/artifact_row.vue',
     'app/assets/javascripts/ci/artifacts/components/artifacts_bulk_delete.vue',
     'app/assets/javascripts/ci/artifacts/components/job_checkbox.vue',
-    'app/assets/javascripts/ci/catalog/components/list/catalog_tabs.vue',
-    'app/assets/javascripts/ci/catalog/components/list/ci_resources_list.vue',
     'app/assets/javascripts/ci/common/private/job_action_button.vue',
     'app/assets/javascripts/ci/common/private/job_action_component.vue',
     'app/assets/javascripts/ci/common/private/job_dropdown_item.vue',

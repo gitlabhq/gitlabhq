@@ -150,7 +150,6 @@ describe('Reviewer dropdown component', () => {
       expect(autocompleteUsersMock).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         mergeRequestId: 'gid://gitlab/MergeRequest/1',
-        hideServiceAccountsWithoutFlowTriggers: true,
         search: '',
       });
     });
@@ -161,7 +160,6 @@ describe('Reviewer dropdown component', () => {
       expect(autocompleteUsersMock).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         mergeRequestId: 'gid://gitlab/MergeRequest/1',
-        hideServiceAccountsWithoutFlowTriggers: true,
         search: 'search string',
       });
     });

@@ -36,6 +36,10 @@ You can configure the per minute rate limit per user for requests to the [POST /
 
 ## Change the rate limit
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.

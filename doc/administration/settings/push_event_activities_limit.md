@@ -22,6 +22,10 @@ For example, if you push to four branches simultaneously, the activity feed disp
 {{< icon name="commit" >}} `Pushed to 4 branches at (project name)` event instead of four separate
 push events.
 
+Prerequisites:
+
+- Administrator access.
+
 To set a different **Push event activities limit**, either:
 
 - In the [Application settings API](../../api/settings.md#available-settings), set the

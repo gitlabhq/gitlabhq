@@ -23,6 +23,7 @@ gdk-update:
   script:
     - unset BUNDLER_CHECKSUM_VERIFICATION_OPT_IN
     - cd /home/gdk/gdk/gitlab
+    - yarn patch-package --reverse || true # Remove patches from cached node_modules (reapplied during gdk update)
     - git remote set-url origin "$CI_REPOSITORY_URL"
     - gdk config set gitlab.default_branch "$CI_COMMIT_SHA"
     - gdk update

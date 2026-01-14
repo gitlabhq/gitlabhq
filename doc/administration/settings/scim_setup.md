@@ -33,7 +33,8 @@ If you are a GitLab.com user, see [configuring SCIM for GitLab.com groups](../..
 
 Prerequisites:
 
-- Configure [SAML single sign-on](../../integration/saml.md).
+- [SAML single sign-on](../../integration/saml.md) configured.
+- Administrator access.
 
 To configure GitLab SCIM:
 

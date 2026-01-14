@@ -34,6 +34,10 @@ Configure the rate limit for each IP address and user for requests to the follow
 | [`GET /users/:user_id/contributed_projects`](../../api/projects.md#list-projects-a-user-has-contributed-to) | 100     | 1 minute |
 | [`GET /users/:user_id/starred_projects`](../../api/project_starring.md#list-projects-starred-by-a-user)     | 100     | 1 minute |
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -63,6 +67,10 @@ For more information about project API endpoints, see the [projects API](../../a
 
 Configure the rate limit for each project and user for requests to the
 [delete members endpoint](../../api/project_members.md#remove-a-member-from-a-project).
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 
@@ -94,6 +102,10 @@ after one minute.
 
 Configure the rate limit for requests to the
 [list project members endpoint](../../api/project_members.md#list-all-members-of-a-project).
+
+Prerequisites:
+
+- Administrator access.
 
 To change the rate limit:
 

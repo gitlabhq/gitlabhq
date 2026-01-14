@@ -19,6 +19,10 @@ action blocks requests that exceed a rate of 300 per minute. Access to the endpo
 
 ## Set the rate limit
 
+Prerequisites:
+
+- Administrator access.
+
 To limit the number of requests made to the issue and epic creation endpoints:
 
 1. In the upper-right corner, select **Admin**.

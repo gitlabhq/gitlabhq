@@ -32,6 +32,10 @@ You can configure the per minute rate limit per IP address and per user for requ
 | [`GET /users/:id/gpg_keys`](../../api/user_keys.md#list-all-gpg-keys-for-a-user)                     | 120 each minute |
 | [`GET /users/:id/gpg_keys/:key_id`](../../api/user_keys.md#get-a-gpg-key-for-a-user)                 | 120 each minute |
 
+Prerequisites:
+
+- Administrator access.
+
 To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.

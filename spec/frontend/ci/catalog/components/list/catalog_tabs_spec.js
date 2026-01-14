@@ -13,20 +13,25 @@ describe('Catalog Tabs', () => {
     resourceCounts: {
       all: 11,
       namespaces: 4,
+      analytics: 0,
     },
   };
 
   const findAllTab = () => wrapper.findByTestId('resources-all-tab');
   const findGroupResourcesTab = () => wrapper.findByTestId('resources-group-tab');
+  const findAnalyticsTab = () => wrapper.findByTestId('resources-analytics-tab');
   const findLoadingIcons = () => wrapper.findAllComponents(GlLoadingIcon);
 
   const triggerTabChange = (index) => wrapper.findAllComponents(GlTab).at(index).vm.$emit('click');
 
-  const createComponent = (props = defaultProps) => {
+  const createComponent = ({ props = defaultProps, showCiCdCatalogAnalytics = true } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CatalogTabs, {
         propsData: {
           ...props,
+        },
+        provide: {
+          glFeatures: { showCiCdCatalogAnalytics },
         },
         stubs: { GlTabs },
       }),
@@ -35,11 +40,11 @@ describe('Catalog Tabs', () => {
 
   describe('When count queries are loading', () => {
     beforeEach(() => {
-      createComponent({ ...defaultProps, isLoading: true });
+      createComponent({ props: { ...defaultProps, isLoading: true } });
     });
 
     it('renders loading icons', () => {
-      expect(findLoadingIcons()).toHaveLength(2);
+      expect(findLoadingIcons()).toHaveLength(3);
     });
   });
 
@@ -58,14 +63,40 @@ describe('Catalog Tabs', () => {
       );
     });
 
-    it.each`
-      tabIndex | expectedScope
-      ${0}     | ${SCOPE.all}
-      ${1}     | ${SCOPE.namespaces}
-    `('emits setScope with $expectedScope on tab change', ({ tabIndex, expectedScope }) => {
-      triggerTabChange(tabIndex);
+    it('renders resources analytics tab with count', () => {
+      expect(trimText(findAnalyticsTab().text())).toBe(
+        `Analytics ${defaultProps.resourceCounts.analytics}`,
+      );
+    });
 
-      expect(wrapper.emitted()).toEqual({ setScope: [[expectedScope]] });
+    it.each`
+      tabIndex | scope               | name            | minAccessLevel
+      ${0}     | ${SCOPE.all}        | ${'all'}        | ${undefined}
+      ${1}     | ${SCOPE.namespaces} | ${'namespaces'} | ${undefined}
+      ${2}     | ${SCOPE.namespaces} | ${'analytics'}  | ${'MAINTAINER'}
+    `(
+      'emits tab-change with scope $scope, name $name and minAccessLevel $minAccessLevel on tab change',
+      ({ tabIndex, scope, name, minAccessLevel }) => {
+        triggerTabChange(tabIndex);
+
+        expect(wrapper.emitted()).toEqual({
+          'tab-change': [[{ scope, name, minAccessLevel }]],
+        });
+      },
+    );
+  });
+
+  describe('When show_ci_cd_catalog_analytics feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({ showCiCdCatalogAnalytics: false });
+    });
+
+    it('renders only All and Your groups tabs', () => {
+      expect(wrapper.findAllComponents(GlTab)).toHaveLength(2);
+    });
+
+    it('does not render analytics tab', () => {
+      expect(findAnalyticsTab().exists()).toBe(false);
     });
   });
 });

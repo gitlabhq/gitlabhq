@@ -38,6 +38,10 @@ See also:
 Throttling of protected paths is enabled by default and can be disabled or
 customized.
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Protected paths**.

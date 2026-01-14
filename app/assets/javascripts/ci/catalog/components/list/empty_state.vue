@@ -4,7 +4,7 @@ import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import EMPTY_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-catalog-md.svg';
 import { s__ } from '~/locale';
-import { COMPONENTS_DOCS_URL } from '~/ci/catalog/constants';
+import { COMPONENTS_DOCS_URL, TAB_NAME } from '~/ci/catalog/constants';
 
 export default {
   name: 'CiCatalogEmptyState',
@@ -21,6 +21,10 @@ export default {
       required: false,
       default: '',
     },
+    currentTab: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     searchLabels() {
@@ -35,6 +39,12 @@ export default {
     },
     isQueryTooSmall() {
       return this.isSearching && this.searchTerm?.length < 3;
+    },
+    isAnalyticsTab() {
+      return this.currentTab === TAB_NAME.analytics;
+    },
+    emptyLabels() {
+      return this.isAnalyticsTab ? this.$options.i18n.analytics : this.$options.i18n.default;
     },
   },
   i18n: {
@@ -53,6 +63,12 @@ export default {
     searchTooSmall: {
       title: s__('CiCatalog|Search incomplete'),
       description: s__('CiCatalog|Search keyword must have at least 3 characters'),
+    },
+    analytics: {
+      title: s__('CiCatalog|Analytics unavailable'),
+      description: s__(
+        'CiCatalog|You need maintainer access to at least one CI/CD catalog project to view usage analytics.',
+      ),
     },
   },
   FILTERED_SVG_URL,
@@ -77,8 +93,8 @@ export default {
     </gl-empty-state>
     <gl-empty-state
       v-else
-      :title="$options.i18n.default.title"
-      :description="$options.i18n.default.description"
+      :title="emptyLabels.title"
+      :description="emptyLabels.description"
       :svg-path="$options.EMPTY_SVG_URL"
     />
   </div>

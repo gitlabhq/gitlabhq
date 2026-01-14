@@ -34,6 +34,10 @@ no difference in functionality compared to the general user and IP rate limits.
 
 ## Enable unauthenticated request rate limit for packages API
 
+Prerequisites:
+
+- Administrator access.
+
 To enable the unauthenticated request rate limit:
 
 1. In the upper-right corner, select **Admin**.
@@ -47,6 +51,10 @@ To enable the unauthenticated request rate limit:
      Defaults to `15`.
 
 ## Enable authenticated API request rate limit for packages API
+
+Prerequisites:
+
+- Administrator access.
 
 To enable the authenticated API request rate limit:
 

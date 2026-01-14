@@ -14,6 +14,10 @@ title: Rate limits on note creation
 
 You can configure the per-user rate limit for requests to the note creation endpoint.
 
+Prerequisites:
+
+- Administrator access.
+
 To change the note creation rate limit:
 
 1. In the upper-right corner, select **Admin**.

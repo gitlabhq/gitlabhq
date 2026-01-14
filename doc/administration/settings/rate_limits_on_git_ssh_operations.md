@@ -32,6 +32,10 @@ The `git-upload-pack`, `git pull`, and `git clone` commands share a rate limit b
 
 {{< /history >}}
 
+Prerequisites:
+
+- Administrator access.
+
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 
 1. In the upper-right corner, select **Admin**.

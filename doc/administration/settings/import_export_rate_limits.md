@@ -13,7 +13,11 @@ description: "Configure rate limit settings for your GitLab instance when import
 
 {{< /details >}}
 
-You can configure the rate limits for imports and exports of projects and groups:
+You can configure the rate limits for imports and exports of projects and groups.
+
+Prerequisites:
+
+- Administrator access.
 
 To change a rate limit:
 

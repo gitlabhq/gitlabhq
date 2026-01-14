@@ -18,6 +18,10 @@ Redis. To avoid excessive memory for Redis, we:
 - Compress job arguments before storing them in Redis.
 - Reject jobs that exceed the specified threshold limit after compression.
 
+Prerequisites:
+
+- Administrator access.
+
 To access Sidekiq job size limits:
 
 1. In the upper-right corner, select **Admin**.

@@ -33921,7 +33921,6 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupautocompleteusershideserviceaccountswithoutflowtriggers"></a>`hideServiceAccountsWithoutFlowTriggers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether or not to hide service accounts without an associated Duo flow trigger. |
 | <a id="groupautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Group.availableSecurityScanProfiles`
@@ -42773,7 +42772,6 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectautocompleteusershideserviceaccountswithoutflowtriggers"></a>`hideServiceAccountsWithoutFlowTriggers` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether or not to hide service accounts without an associated Duo flow trigger. |
 | <a id="projectautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Project.availableDeployKeys`

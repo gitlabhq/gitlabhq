@@ -118,6 +118,10 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 
 ### Enable or disable version check
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Usage statistics**.
@@ -161,6 +165,10 @@ The payload is available in the [Metrics and profiling](#manually-upload-service
 {{< /alert >}}
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable Service Ping:
 
@@ -220,6 +228,10 @@ the **Admin** area.
 Service Ping Generation controls whether Service Ping data is automatically generated on your instance. When enabled, GitLab periodically generates Service Ping payloads containing usage statistics. This setting works independently of whether the data is shared with GitLab.
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable Service Ping Generation:
 
@@ -288,6 +300,10 @@ The **Include optional data in Service Ping** option is available only if either
 {{< /alert >}}
 
 ### Through the UI
+
+Prerequisites:
+
+- Administrator access.
 
 To enable or disable optional data in Service Ping:
 

@@ -32,6 +32,10 @@ Requests that exceed the limit are logged into `auth.log`.
 
 ## Set a limit on inbound alerts
 
+Prerequisites:
+
+- Administrator access.
+
 To set inbound incident management alert limits:
 
 1. In the upper-right corner, select **Admin**.

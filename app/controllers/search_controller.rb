@@ -94,13 +94,6 @@ class SearchController < ApplicationController
 
       render json: { count: count }
     end
-
-    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
-      elapsed: @global_search_duration_s,
-      search_type: @search_type,
-      search_level: @search_level,
-      search_scope: scope
-    )
   end
 
   def settings
@@ -132,19 +125,7 @@ class SearchController < ApplicationController
     # Cache the response on the frontend
     expires_in 1.minute
 
-    results = nil
-    global_search_duration_s = Benchmark.realtime do
-      results = search_autocomplete_opts(term, filter: @filter, scope: @scope)
-    end
-
-    render json: Gitlab::Json.dump(results)
-
-    Gitlab::Metrics::GlobalSearchSlis.record_apdex(
-      elapsed: global_search_duration_s,
-      search_type: search_type,
-      search_level: search_service.level,
-      search_scope: @scope
-    )
+    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter, scope: @scope))
   end
 
   def opensearch; end

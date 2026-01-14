@@ -25,7 +25,6 @@ export default {
     'app/assets/javascripts/ci/admin/jobs_table/admin_jobs_table_app.vue',
     'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
-    'app/assets/javascripts/ci/catalog/components/pages/ci_resources_page.vue',
     'app/assets/javascripts/ci/common/pipeline_summary/pipeline_summary.vue',
     'app/assets/javascripts/ci/common/pipelines_table.vue',
     'app/assets/javascripts/ci/common/private/job_dropdown_item.vue',

@@ -1,0 +1,10 @@
+---
+name: show_ci_cd_catalog_analytics
+description: Enables analytics view for CI/CD Catalog maintainers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579458
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216621
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584229
+milestone: '18.8'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false
