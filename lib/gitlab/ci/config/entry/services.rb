@@ -15,6 +15,10 @@ module Gitlab
             validates :config, services_with_ports_alias_unique: true, if: ->(record) { record.opt(:with_image_ports) }
           end
 
+          def value
+            super.compact
+          end
+
           def composable_class
             Entry::Service
           end

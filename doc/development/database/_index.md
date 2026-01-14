@@ -125,6 +125,7 @@ including the major methods:
 ## ClickHouse
 
 - [Introduction](clickhouse/_index.md)
+- [Table design with Siphon](clickhouse/clickhouse_table_design_with_siphon.md)
 - [ClickHouse within GitLab](clickhouse/clickhouse_within_gitlab.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)

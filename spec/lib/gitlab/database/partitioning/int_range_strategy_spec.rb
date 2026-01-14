@@ -92,6 +92,48 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
       SQL
     end
 
+    context 'when the sequence does not start from 1' do
+      before do
+        sequence_name = model.sequence_name.split('.').last
+
+        allow(connection).to receive(:select_value)
+          .with("SELECT min_value FROM pg_sequences WHERE sequencename = '#{sequence_name}'")
+          .and_return(100)
+      end
+
+      it 'returns missing partitions starting from the min_id' do
+        expect(missing_partitions.size).to eq(6)
+
+        expect(missing_partitions).to include(
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 100, 110),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 110, 120),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 120, 130),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 130, 140),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 140, 150),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 150, 160)
+        )
+      end
+    end
+
+    context 'when sequencename is nil' do
+      before do
+        allow(model).to receive(:sequence_name).and_return(nil)
+      end
+
+      it 'returns missing partitions starting from 1' do
+        expect(missing_partitions.size).to eq(6)
+
+        expect(missing_partitions).to include(
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1,  11),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 11, 21),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 21, 31),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 31, 41),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 41, 51),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 51, 61)
+        )
+      end
+    end
+
     context 'when the current partitions are not completed' do
       before do
         connection.execute(<<~SQL)

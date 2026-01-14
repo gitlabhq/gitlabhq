@@ -16,4 +16,7 @@
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm) do
         = _("New group")
 
-= render 'groups'
+- if @explore_groups_vue_enabled
+  #js-explore-groups
+- else
+  = render 'groups'

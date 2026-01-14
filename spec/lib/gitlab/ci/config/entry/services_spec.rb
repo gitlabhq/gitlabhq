@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Services do
+RSpec.describe Gitlab::Ci::Config::Entry::Services, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   before do
@@ -21,6 +21,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Services do
     describe '#value' do
       it 'returns valid array' do
         expect(entry.value).to eq([{ name: 'postgresql:9.5' }, { name: 'postgresql:9.1', alias: 'postgres_old' }])
+      end
+    end
+
+    context 'with nil in the array' do
+      let(:config) { [nil] }
+
+      it 'returns valid array' do
+        expect(entry.value).to eq([])
       end
     end
   end

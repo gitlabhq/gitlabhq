@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
 
+  before do
+    # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/525136
+    stub_feature_flags(explore_groups_vue: false)
+  end
+
   context 'when there are groups to show' do
     let_it_be(:group) { create(:group, created_at: 5.days.ago) }
     let_it_be(:public_group) { create(:group, :public, created_at: 4.days.ago) }

@@ -69,6 +69,18 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
             it { is_expected.to be_valid }
           end
 
+          context 'for trigger:include::remote' do
+            let(:config) do
+              {
+                options: {
+                  trigger: { include: [{ remote: "gitlab-org/gitlab/somefile.yml" }] }
+                }
+              }
+            end
+
+            it { is_expected.to be_valid }
+          end
+
           context 'for trigger:include::rules' do
             let(:config) do
               {

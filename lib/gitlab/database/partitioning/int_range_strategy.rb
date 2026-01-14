@@ -65,7 +65,7 @@ module Gitlab
         def desired_partitions
           end_id = are_partitions_syncronized? ? max_id : max_id + (HEADROOM * partition_size) # Adds 6 new partitions
 
-          create_int_range_partitions(MIN_ID, end_id)
+          create_int_range_partitions(min_id, end_id)
         end
 
         def create_int_range_partitions(start_id, end_id)
@@ -81,8 +81,17 @@ module Gitlab
           partitions
         end
 
+        def min_id
+          return MIN_ID unless model.sequence_name
+
+          sequence_name = model.sequence_name.split('.').last
+
+          model.connection
+            .select_value("SELECT min_value FROM pg_sequences WHERE sequencename = '#{sequence_name}'") || MIN_ID
+        end
+
         def max_id
-          last_partition&.to || MIN_ID
+          last_partition&.to || min_id
         end
 
         def are_partitions_syncronized?

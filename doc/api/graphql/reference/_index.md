@@ -12698,6 +12698,31 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectunassignerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.securityScanProfileAttach`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `SecurityScanProfileAttachInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityscanprofileattachclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityscanprofileattachgroupids"></a>`groupIds` | [`[GroupID!]`](#groupid) | Group IDs to attach the profile to. |
+| <a id="mutationsecurityscanprofileattachprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Project IDs to attach the profile to. |
+| <a id="mutationsecurityscanprofileattachsecurityscanprofileid"></a>`securityScanProfileId` | [`SecurityScanProfileID!`](#securityscanprofileid) | Security scan profile ID to attach. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityscanprofileattachclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityscanprofileattacherrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.securityTrainingUpdate`
 
 Input type: `SecurityTrainingUpdateInput`
@@ -53445,6 +53470,7 @@ Member role permission.
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
 | <a id="memberrolepermissionadmin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
+| <a id="memberrolepermissionapply_security_scan_profiles"></a>`APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
 | <a id="memberrolepermissionmanage_deploy_tokens"></a>`MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
@@ -53489,6 +53515,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolestandardpermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
 | <a id="memberrolestandardpermissionadmin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
+| <a id="memberrolestandardpermissionapply_security_scan_profiles"></a>`APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | <a id="memberrolestandardpermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
 | <a id="memberrolestandardpermissionmanage_deploy_tokens"></a>`MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | <a id="memberrolestandardpermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |

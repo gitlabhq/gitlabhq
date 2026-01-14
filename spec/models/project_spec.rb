@@ -3373,6 +3373,33 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.root_ids_for' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:group1_project) { create(:project, namespace: group1) }
+    let_it_be(:group2_project) { create(:project, namespace: group2) }
+    let_it_be(:subgroup) { create(:group, parent: group1) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    it 'returns unique root namespace ids for given project ids', :aggregate_failures do
+      expect(described_class.root_ids_for([group1_project.id, subgroup_project.id])).to match_array([group1.id])
+      expect(described_class.root_ids_for([group2_project.id])).to eq([group2.id])
+      expect(described_class.root_ids_for([subgroup_project.id])).to eq([group1.id])
+    end
+
+    it 'returns empty array when project_ids is nil' do
+      expect(described_class.root_ids_for(nil)).to be_empty
+    end
+
+    it 'returns empty array when project_ids is empty' do
+      expect(described_class.root_ids_for([])).to be_empty
+    end
+
+    it 'handles non-existent project ids' do
+      expect(described_class.root_ids_for([non_existing_record_id])).to be_empty
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

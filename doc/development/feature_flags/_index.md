@@ -226,7 +226,8 @@ Remember that using this type should follow a conscious decision not to introduc
 instance/group/project/user setting.
 
 While `ops` type flags have an unlimited lifespan, every 12 months, they must be evaluated to determine if
-they are still necessary.
+they are still necessary. If so, the `milestone` field must be updated to the latest milestone to
+confirm that the `ops` feature flag is still in use.
 
 #### Constraints
 

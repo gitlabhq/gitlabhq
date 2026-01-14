@@ -1380,6 +1380,17 @@ class Project < ApplicationRecord
         .group_by(&:last)
         .transform_values { |projects| projects.map(&:first) }
     end
+
+    def root_ids_for(project_ids)
+      namespace_ids = id_in(project_ids)
+        .limit(Project::MAX_PLUCK)
+        .distinct
+        .pluck(:namespace_id)
+
+      return [] if namespace_ids.empty?
+
+      Namespace.root_ids_for(namespace_ids)
+    end
   end
 
   def initialize(attributes = nil)

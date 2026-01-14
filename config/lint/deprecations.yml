@@ -1,1 +1,10 @@
  files:
+   - reason: "Ongoing migration of Explore > Groups to Vue"
+     feature_issue: https://gitlab.com/groups/gitlab-org/-/work_items/13791
+     removal_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/585432
+     feature_category: groups_and_projects
+     paths:
+       - app/views/explore/groups/_groups.html.haml
+       - app/assets/javascripts/groups/init_groups_list_with_filtered_search.js
+       - app/assets/javascripts/groups/components/groups_list_with_filtered_search_app.vue
+       - spec/frontend/groups/components/groups_list_with_filtered_search_app_spec.js

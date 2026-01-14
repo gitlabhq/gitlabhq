@@ -1279,7 +1279,7 @@ without **GitLab Duo**.
 
 Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
 
-Do not use **Duo Agent Platform** by itself.
+Do not use **Duo Agent Platform** or **DAP**.
 
 ## GitLab Duo Core
 

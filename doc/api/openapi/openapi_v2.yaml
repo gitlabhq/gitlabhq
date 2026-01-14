@@ -53128,6 +53128,8 @@ definitions:
         - 30
         - 40
         example: 40
+      apply_security_scan_profiles:
+        type: boolean
       admin_merge_request:
         type: boolean
       archive_project:

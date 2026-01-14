@@ -48,8 +48,12 @@ module QA
           new.click_run_pipeline_button
         end
 
+        # Wait for pipeline creation via API to avoid flakiness from slow infrastructure
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+
         Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until { show.passed? }
+          # Use longer timeout to account for runner availability delays
+          expect(show).to have_passed(timeout: 180)
 
           show.click_job(pipeline_job_name)
         end
