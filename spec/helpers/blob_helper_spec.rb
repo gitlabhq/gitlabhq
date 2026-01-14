@@ -480,6 +480,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:selected_branch).and_return(ref)
+      allow(user).to receive(:namespace).and_return(build_stubbed(:namespace, owner: user))
     end
 
     context 'when editing a blob' do
@@ -487,6 +488,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         project_presenter = instance_double(ProjectPresenter)
 
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(true)
+        allow(helper).to receive(:can?).with(user, :create_merge_request_in, project).and_return(true)
         allow(project).to receive(:present).and_return(project_presenter)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(true)
         allow(project).to receive(:empty_repo?).and_return(false)
@@ -515,6 +517,40 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         })
       end
 
+      it 'returns data related to update action in a forked project' do
+        fork_project = build_stubbed(:project, id: 999)
+        allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+        allow(blob).to receive(:stored_externally?).and_return(false)
+        allow(project).to receive(:branch_allows_collaboration?).with(user, ref).and_return(false)
+        assign(:last_commit_sha, '782426692977b2cedb4452ee6501a404410f9b00')
+        # User cannot push to the original project's branch
+        project_presenter = instance_double(ProjectPresenter)
+        allow(project).to receive(:present).and_return(project_presenter)
+        allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
+
+        app_data = helper.edit_blob_app_data(project, id, blob, ref, "update")
+
+        expect(app_data).to include({
+          action: 'update',
+          update_path: project_update_blob_path(project, id),
+          cancel_path: project_blob_path(project, id),
+          original_branch: ref,
+          target_branch: ref,
+          can_push_code: 'true',
+          can_push_to_branch: 'false',
+          empty_repo: 'false',
+          blob_name: blob.name,
+          branch_allows_collaboration: 'false',
+          last_commit_sha: '782426692977b2cedb4452ee6501a404410f9b00',
+          project_id: project.id,
+          project_path: project.full_path,
+          new_merge_request_path: project_new_merge_request_path(project),
+          target_project_id: 999,
+          target_project_path: namespace_project_path(user, fork_project),
+          next_fork_branch_name: 'patch-1'
+        })
+      end
+
       it 'returns data related to create action' do
         expect(helper.edit_blob_app_data(project, id, blob, ref, "create")).to include({
           action: 'create',
@@ -531,12 +567,36 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
           new_merge_request_path: project_new_merge_request_path(project)
         })
       end
+
+      it 'uses project_create_blob_path for create action update_path' do
+        result = helper.edit_blob_app_data(project, id, blob, ref, "create")
+
+        expect(result[:update_path]).to eq(project_create_blob_path(project, id))
+      end
+
+      it 'uses project_tree_path for create action cancel_path' do
+        result = helper.edit_blob_app_data(project, id, blob, ref, "create")
+
+        expect(result[:cancel_path]).to eq(project_tree_path(project, id))
+      end
+
+      it 'uses project_update_blob_path for update action update_path' do
+        result = helper.edit_blob_app_data(project, id, blob, ref, "update")
+
+        expect(result[:update_path]).to eq(project_update_blob_path(project, id))
+      end
+
+      it 'uses project_blob_path for update action cancel_path' do
+        result = helper.edit_blob_app_data(project, id, blob, ref, "update")
+
+        expect(result[:cancel_path]).to eq(project_blob_path(project, id))
+      end
     end
 
     context 'when user cannot push code' do
       it 'returns false for push permissions' do
+        allow(helper).to receive(:can?).with(user, :create_merge_request_in, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
-
         expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           can_push_code: 'false'
         )
@@ -546,7 +606,8 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
     context 'when user cannot push to branch' do
       it 'returns false for branch push permissions' do
         project_presenter = instance_double(ProjectPresenter)
-
+        allow(helper).to receive(:can?).with(user, :create_merge_request_in, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
         allow(project).to receive(:present).and_return(project_presenter)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
 
@@ -573,6 +634,218 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           branch_allows_collaboration: 'true'
         )
+      end
+    end
+
+    describe '#edit_blob_update_path' do
+      it 'returns update path for update action' do
+        path = helper.send(:edit_blob_update_path, project, id, true, false)
+
+        expect(path).to eq(project_update_blob_path(project, id))
+      end
+
+      it 'returns create path for create action' do
+        path = helper.send(:edit_blob_update_path, project, id, false, true)
+
+        expect(path).to eq(project_create_blob_path(project, id))
+      end
+
+      it 'returns nil when neither is_update nor is_create is true' do
+        path = helper.send(:edit_blob_update_path, project, id, false, false)
+
+        expect(path).to be_nil
+      end
+    end
+
+    describe '#edit_blob_cancel_path' do
+      it 'returns blob path for update action' do
+        path = helper.send(:edit_blob_cancel_path, project, id, true, false)
+
+        expect(path).to eq(project_blob_path(project, id))
+      end
+
+      it 'returns tree path for create action' do
+        path = helper.send(:edit_blob_cancel_path, project, id, false, true)
+
+        expect(path).to eq(project_tree_path(project, id))
+      end
+
+      it 'returns nil when neither is_update nor is_create is true' do
+        path = helper.send(:edit_blob_cancel_path, project, id, false, false)
+
+        expect(path).to be_nil
+      end
+    end
+
+    describe '#edit_blob_fork_project_id' do
+      context 'when user can collaborate with project' do
+        before do
+          allow(helper).to receive(:can_collaborate_with_project?).with(project, ref: ref).and_return(true)
+        end
+
+        it 'returns fork project id when user has forked the project' do
+          fork_project = build_stubbed(:project, id: 999)
+          allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+
+          fork_id = helper.send(:edit_blob_fork_project_id, project, ref)
+
+          expect(fork_id).to eq(999)
+        end
+
+        it 'returns nil when current_user.fork_of returns nil' do
+          allow(user).to receive(:fork_of).with(project).and_return(nil)
+
+          fork_id = helper.send(:edit_blob_fork_project_id, project, ref)
+
+          expect(fork_id).to be_nil
+        end
+
+        context 'when current_user is nil' do
+          before do
+            allow(helper).to receive(:current_user).and_return(nil)
+            allow(helper).to receive(:can_collaborate_with_project?).with(project, ref: ref).and_return(true)
+          end
+
+          it 'returns nil' do
+            fork_id = helper.send(:edit_blob_fork_project_id, project, ref)
+
+            expect(fork_id).to be_nil
+          end
+        end
+      end
+
+      context 'when user cannot collaborate with project' do
+        before do
+          allow(helper).to receive(:can_collaborate_with_project?).with(project, ref: ref).and_return(false)
+        end
+
+        it 'returns nil' do
+          fork_id = helper.send(:edit_blob_fork_project_id, project, ref)
+
+          expect(fork_id).to be_nil
+        end
+      end
+    end
+
+    describe '#edit_blob_fork_project' do
+      context 'when user is logged in' do
+        context 'when user has forked the project' do
+          it 'returns the fork project id from the fork object' do
+            fork_project = build_stubbed(:project, id: 999)
+            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+
+            fork = helper.send(:edit_blob_fork_project, project)
+
+            expect(fork.id).to eq(999)
+          end
+        end
+
+        context 'when user has not forked the project' do
+          it 'returns nil when current_user.fork_of returns nil' do
+            allow(user).to receive(:fork_of).with(project).and_return(nil)
+
+            fork = helper.send(:edit_blob_fork_project, project)
+
+            expect(fork).to be_nil
+          end
+        end
+
+        context 'when user has namespace but has not forked the project' do
+          before do
+            allow(user).to receive(:fork_of).with(project).and_return(nil)
+          end
+
+          it 'returns nil' do
+            fork = helper.send(:edit_blob_fork_project, project)
+
+            expect(fork).to be_nil
+          end
+        end
+
+        context 'when user namespace is nil' do
+          before do
+            allow(user).to receive(:namespace).and_return(nil)
+          end
+
+          it 'returns nil' do
+            fork = helper.send(:edit_blob_fork_project, project)
+
+            expect(fork).to be_nil
+          end
+        end
+      end
+
+      context 'when user is not logged in' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it 'returns nil' do
+          fork = helper.send(:edit_blob_fork_project, project)
+
+          expect(fork).to be_nil
+        end
+      end
+    end
+
+    describe '#edit_blob_fork_project_path' do
+      context 'when user is logged in' do
+        context 'when user has forked the project and cannot create groups' do
+          before do
+            fork_project = build_stubbed(:project, id: 999)
+            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+            allow(user).to receive(:already_forked?).with(project).and_return(true)
+            allow(user).to receive(:has_groups_allowing_project_creation?).and_return(false)
+          end
+
+          it 'returns the fork project path' do
+            fork_project = build_stubbed(:project, id: 999)
+            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+
+            path = helper.send(:edit_blob_fork_project_path, project)
+
+            expect(path).to eq(namespace_project_path(user, fork_project))
+          end
+        end
+
+        context 'when user has not forked the project' do
+          before do
+            allow(user).to receive(:already_forked?).with(project).and_return(false)
+          end
+
+          it 'returns nil' do
+            path = helper.send(:edit_blob_fork_project_path, project)
+
+            expect(path).to be_nil
+          end
+        end
+
+        context 'when user can create groups' do
+          before do
+            fork_project = build_stubbed(:project, id: 999)
+            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+            allow(user).to receive(:already_forked?).with(project).and_return(true)
+            allow(user).to receive(:has_groups_allowing_project_creation?).and_return(true)
+          end
+
+          it 'returns nil' do
+            path = helper.send(:edit_blob_fork_project_path, project)
+
+            expect(path).to be_nil
+          end
+        end
+      end
+
+      context 'when user is not logged in' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it 'returns nil' do
+          path = helper.send(:edit_blob_fork_project_path, project)
+
+          expect(path).to be_nil
+        end
       end
     end
   end

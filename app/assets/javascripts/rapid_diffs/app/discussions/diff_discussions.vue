@@ -38,12 +38,11 @@ export default {
 
 <template>
   <div class="gl-rounded-[var(--content-border-radius)] gl-bg-default gl-text-default">
-    <ul
-      v-for="(discussion, index) in discussions"
-      :key="discussion.id"
-      class="gl-m-0 gl-list-none gl-p-0"
-    >
+    <ul class="gl-m-0 gl-list-none gl-p-0">
       <noteable-discussion
+        v-for="(discussion, index) in discussions"
+        :key="discussion.id"
+        :class="timelineLayout && index !== 0 && 'gl-mt-4'"
         :discussion="discussion"
         :request-last-note-editing="requestLastNoteEditing"
         :timeline-layout="timelineLayout"

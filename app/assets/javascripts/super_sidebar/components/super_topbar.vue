@@ -162,7 +162,7 @@ export default {
           :groups="sidebarData.create_new_menu_groups"
         />
         <div
-          class="gl-border-r gl-mx-2 gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
+          class="gl-border-r gl-mx-2 gl-my-3 gl-block gl-h-5 gl-w-1 gl-border-r-strong md:gl-ml-3 md:gl-mr-0"
         ></div>
 
         <user-counts

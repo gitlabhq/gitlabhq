@@ -50,6 +50,9 @@ export default {
     'projectId',
     'projectPath',
     'newMergeRequestPath',
+    'targetProjectId',
+    'targetProjectPath',
+    'nextForkBranchName',
   ],
   data() {
     return {
@@ -120,10 +123,11 @@ export default {
       this.originalFilePath = this.editor.getOriginalFilePath();
       this.$refs[this.updateModalId].show();
     },
-    getUpdatePath(branch, filePath) {
-      const url = new URL(window.location.href);
-      url.pathname = joinPaths(this.projectPath, '-/blob', branch, filePath);
-      return url.toString();
+    getUpdatePath(baseUrl, options) {
+      const { targetPath, branch, filePath } = options;
+      const urlObj = new URL(baseUrl);
+      urlObj.pathname = joinPaths(targetPath, '-/blob', branch, filePath);
+      return urlObj.toString();
     },
     getResultingBranch(responseData, formData) {
       return responseData.branch || formData.branch_name || formData.original_branch;
@@ -141,21 +145,21 @@ export default {
     },
     editBlobWithUpdateFileApi(originalFormData) {
       const url = buildApiUrl(this.$options.UPDATE_FILE_PATH)
-        .replace(':id', this.projectId)
+        .replace(':id', this.targetProjectId)
         .replace(':file_path', encodeURIComponent(this.originalFilePath));
 
       const data = {
         ...prepareDataForApiEdit(originalFormData),
         content: originalFormData.file,
         file_path: originalFormData.file_path,
-        id: this.projectId,
+        id: this.targetProjectId,
         last_commit_id: originalFormData.last_commit_sha,
       };
 
       return axios.put(url, data);
     },
     editBlobWithCommitsApi(originalFormData) {
-      const url = buildApiUrl(this.$options.COMMIT_FILE_PATH).replace(':id', this.projectId);
+      const url = buildApiUrl(this.$options.COMMIT_FILE_PATH).replace(':id', this.targetProjectId);
 
       const action = {
         action: 'move',
@@ -195,6 +199,7 @@ export default {
         filePath: this.filePath,
         lastCommitSha: this.lastCommitSha,
         fromMergeRequestIid: this.fromMergeRequestIid,
+        forkBranchName: this.canPushToBranch ? undefined : this.nextForkBranchName,
       });
 
       try {
@@ -253,38 +258,84 @@ export default {
     handleEditBlobSuccess(responseData, formData) {
       const resultingBranch = this.getResultingBranch(responseData, formData);
       const isNewBranch = this.originalBranch !== resultingBranch;
+      const urlString = window.location.href;
 
-      if (this.fromMergeRequestIid && resultingBranch === this.originalBranch) {
-        const url = new URL(window.location.href);
-        url.pathname = joinPaths(this.projectPath, '/-/merge_requests/', this.fromMergeRequestIid);
-        const cleanUrl = removeParams(['from_merge_request_iid'], url.toString());
-        visitUrl(cleanUrl);
-        return;
-      }
-
-      if (formData.create_merge_request && isNewBranch) {
-        const mrUrl = mergeUrlParams(
-          { [MR_SOURCE_BRANCH]: resultingBranch },
-          this.newMergeRequestPath,
-        );
-        visitUrl(mrUrl);
+      if (this.shouldRedirectToExistingMR(resultingBranch)) {
+        this.redirectToExistingMergeRequest(urlString);
+      } else if (!this.canPushToBranch) {
+        this.redirectToForkMergeRequest(urlString, resultingBranch);
+      } else if (this.shouldCreateNewMR(formData, isNewBranch)) {
+        this.redirectToCreateMergeRequest(resultingBranch);
       } else {
-        const successPath = this.getUpdatePath(
+        this.redirectToBlobWithAlert({
+          urlString,
           resultingBranch,
-          responseData.file_path || formData.file_path,
-        );
-        const createMergeRequestNotChosen = !formData.create_merge_request;
-
-        const message = this.successMessageForAlert(isNewBranch, createMergeRequestNotChosen);
-
-        saveAlertToLocalStorage({
-          message,
-          messageLinks: { changesLink: successPath },
-          variant: VARIANT_INFO,
+          responseData,
+          formData,
+          isNewBranch,
         });
-
-        visitUrl(successPath);
       }
+    },
+    shouldRedirectToExistingMR(resultingBranch) {
+      return (
+        this.fromMergeRequestIid &&
+        resultingBranch === this.originalBranch &&
+        !this.branchAllowsCollaboration
+      );
+    },
+    shouldCreateNewMR(formData, isNewBranch) {
+      return formData.create_merge_request && isNewBranch;
+    },
+    redirectToExistingMergeRequest(url) {
+      const urlCopy = new URL(url);
+      urlCopy.pathname = joinPaths(
+        this.projectPath,
+        '/-/merge_requests/',
+        this.fromMergeRequestIid,
+      );
+      const cleanUrl = removeParams(['from_merge_request_iid'], urlCopy.toString());
+      visitUrl(cleanUrl);
+    },
+    redirectToCreateMergeRequest(resultingBranch) {
+      const mrUrl = mergeUrlParams(
+        { [MR_SOURCE_BRANCH]: resultingBranch },
+        this.newMergeRequestPath,
+      );
+      visitUrl(mrUrl);
+    },
+    redirectToForkMergeRequest(url, resultingBranch) {
+      const urlCopy = new URL(url);
+      urlCopy.pathname = joinPaths(this.targetProjectPath, '/-/merge_requests/new');
+
+      const mrParams = {
+        'merge_request[source_project_id]': this.targetProjectId,
+        'merge_request[source_branch]': resultingBranch,
+        'merge_request[target_project_id]': this.projectId,
+        'merge_request[target_branch]': this.originalBranch,
+      };
+
+      const finalMrUrl = mergeUrlParams(mrParams, urlCopy.toString());
+      visitUrl(finalMrUrl);
+    },
+    redirectToBlobWithAlert(options) {
+      const { urlString, resultingBranch, responseData, formData, isNewBranch } = options;
+      const cleanUrl = removeParams(['from_merge_request_iid'], urlString);
+      const successPath = this.getUpdatePath(cleanUrl, {
+        targetPath: this.targetProjectPath,
+        branch: resultingBranch,
+        filePath: responseData.file_path || formData.file_path,
+      });
+      const createMergeRequestNotChosen = !formData.create_merge_request;
+
+      const message = this.successMessageForAlert(isNewBranch, createMergeRequestNotChosen);
+
+      saveAlertToLocalStorage({
+        message,
+        messageLinks: { changesLink: successPath },
+        variant: VARIANT_INFO,
+      });
+
+      visitUrl(successPath);
     },
     handleControllerSuccess(responseData) {
       if (responseData.filePath) {

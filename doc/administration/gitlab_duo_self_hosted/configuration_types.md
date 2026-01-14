@@ -35,7 +35,6 @@ There are two configuration options for self-managed customers:
 In this configuration, your GitLab instance depends on and sends requests to the external GitLab AI Gateway, which communicates with external AI vendors such as Google Vertex or Anthropic. The response is then forwarded back to your GitLab instance.
 
 ```mermaid
-%%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
 sequenceDiagram
     accTitle: GitLab.com AI Gateway flow
     accDescr: User requests are processed through a self-hosted GitLab instance, external AI Gateway, and AI vendor.
@@ -59,7 +58,6 @@ sequenceDiagram
 In this configuration, the entire system is isolated within the enterprise, ensuring a fully self-hosted environment that safeguards data privacy.
 
 ```mermaid
-%%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
 sequenceDiagram
     accTitle: Self-hosted AI Gateway flow
     accDescr: User requests are processed entirely within self-hosted infrastructure using an AI Gateway and model.
@@ -98,7 +96,6 @@ As illustrated in the following diagram:
 1. The results are then relayed back to the GitLab instance, completing the flow by sending the response to the user, which is designed to be secure and efficient.
 
 ```mermaid
-%%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
 sequenceDiagram
     accTitle: GitLab Duo authentication flow
     accDescr: Authentication tokens are minted, verified, and used to secure AI model requests.

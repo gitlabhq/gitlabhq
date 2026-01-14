@@ -91,7 +91,7 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
           end
 
           expect(page).to have_content(
-            'An error occurred editing the blob'
+            'You are attempting to update a file that has changed since you started editing it.'
           )
         end
       end

@@ -162,8 +162,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       let(:request_params) do
         {
           note: {
-            note: 'This is a timeline discussion',
-            type: 'DiscussionNote'
+            note: 'This is a timeline discussion'
           }
         }
       end
@@ -180,6 +179,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         discussion = json_response['discussion']
         expect(discussion).to have_key('id')
         expect(discussion).to have_key('notes')
+        expect(discussion[:individual_note]).to be_falsy
         expect(discussion['notes'].first['note']).to eq('This is a timeline discussion')
       end
     end

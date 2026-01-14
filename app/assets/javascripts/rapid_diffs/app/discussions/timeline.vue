@@ -62,11 +62,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-5">
-    <diff-discussions :discussions="timelineDiscussions" timeline-layout />
+  <div class="rd-discussion-timeline gl-mt-5">
+    <div class="rd-discussion-timeline-comments">
+      <diff-discussions :discussions="timelineDiscussions" timeline-layout />
+    </div>
     <div
       v-if="!isLoggedIn || userPermissions.can_create_note"
-      class="gl-rounded-[var(--content-border-radius)] gl-bg-default gl-px-5 gl-py-4"
+      class="gl-mt-5 gl-rounded-[var(--content-border-radius)] gl-bg-default"
     >
       <note-signed-out-widget v-if="!isLoggedIn" />
       <note-form

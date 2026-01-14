@@ -44,6 +44,7 @@ html:not(.page-with-panels) .file-tree-browser  {
   &.file-tree-browser-peek {
     @apply gl-shadow;
     @apply gl-rounded-base;
+    @apply gl-rounded-l-none;
     bottom: 0;
   }
 }

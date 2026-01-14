@@ -58,6 +58,7 @@ RSpec.describe ConfirmationsController, :with_current_organization, type: :reque
     end
 
     include_examples 'set_current_context'
+
     include_examples 'confirmation response', 'user'
 
     context 'when user cannot be found because incorrect organization specified' do
@@ -75,20 +76,82 @@ RSpec.describe ConfirmationsController, :with_current_organization, type: :reque
       end
     end
 
-    context 'with email confirmation' do
+    context 'for secondary email confirmation' do
       let_it_be_with_reload(:email) { create(:email, user: user) }
       let(:resource) { email }
-
-      let(:confirmation_token) do
-        email.send_confirmation_instructions
-        email.confirmation_token
-      end
+      let(:user_id) { email.user_id }
+      let(:confirmation_token)  { email.confirmation_token }
 
       subject(:perform_request) do
-        get email_confirmation_path, params: { confirmation_token: confirmation_token }
+        get email_confirmation_path, params: { confirmation_token: confirmation_token, user_id: user_id }
+      end
+
+      before do
+        email.send_confirmation_instructions
       end
 
       include_examples 'confirmation response', 'email'
+
+      context 'when user cannot be found because of incorrect user_id' do
+        let(:another_user) { create(:user) }
+        let(:user_id) { another_user.id }
+
+        it 'does not confirm secondary email' do
+          expect { perform_request }.not_to change { email.reload.confirmed? }
+
+          expect(response).to be_ok
+          expect(response.body).to include('User is invalid')
+        end
+      end
+
+      context 'when user_id is blank' do
+        let(:user_id) { '' }
+
+        # legacy behavior; to be removed in 18.11 or beyond once all
+        # confirmations emails are guaranteed to have user_id parameter
+        include_examples 'confirmation response', 'email'
+
+        context 'and invalid confirmation token is passed' do
+          let(:confirmation_token) { Devise.friendly_token }
+
+          it 'does not confirm secondary email' do
+            expect { perform_request }.not_to change { email.reload.confirmed? }
+
+            expect(response).to be_ok
+            expect(response.body).to include(/Confirmation token is invalid/)
+          end
+        end
+      end
+
+      context 'when user_id is nil' do
+        let(:user_id) { nil }
+
+        # legacy behavior; to be removed in 18.11 or beyond once all
+        # confirmations emails are guaranteed to have user_id parameter
+        include_examples 'confirmation response', 'email'
+      end
+
+      context 'when user cannot be found because of blank confirmation_token' do
+        let(:confirmation_token) { '' }
+
+        it 'does not confirm secondary email' do
+          expect { perform_request }.not_to change { email.reload.confirmed? }
+
+          expect(response).to be_ok
+          expect(response.body).to include(/Confirmation token.*be blank/)
+        end
+      end
+
+      context 'when invalid confirmation token is provided' do
+        let(:confirmation_token) { Devise.friendly_token }
+
+        it 'does not confirm secondary email' do
+          expect { perform_request }.not_to change { email.reload.confirmed? }
+
+          expect(response).to be_ok
+          expect(response.body).to include(/Confirmation token is invalid/)
+        end
+      end
     end
   end
 end

@@ -231,6 +231,8 @@ class Projects::CommitController < Projects::ApplicationController
       create_params[:position] = enrich_position_data(create_params[:position])
     end
 
+    create_params[:type] = 'DiscussionNote' if create_params[:type].blank?
+
     create_params.merge!(noteable_params)
   end
 

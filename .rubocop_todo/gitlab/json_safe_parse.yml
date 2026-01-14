@@ -324,7 +324,7 @@ Gitlab/JsonSafeParse:
     - 'lib/observability/o11y_token.rb'
     - 'lib/tasks/ci/validate_id_token_configuration_task.rb'
     - 'lib/tasks/gitlab/background_migrations.rake'
-    - 'lib/tasks/gitlab/openapi.rake'
+    - 'lib/tasks/gitlab/openapi/v2.rake'
     - 'spec/components/diffs/stats_component_spec.rb'
     - 'spec/components/rapid_diffs/app_component_spec.rb'
     - 'spec/components/rapid_diffs/diff_file_header_component_spec.rb'

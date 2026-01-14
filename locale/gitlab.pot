@@ -75741,9 +75741,6 @@ msgstr ""
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr ""
 
-msgid "Vulnerability|AI Confidence Score"
-msgstr ""
-
 msgid "Vulnerability|AI detected false positive"
 msgstr ""
 
@@ -75751,6 +75748,9 @@ msgid "Vulnerability|AI false positive assessment details"
 msgstr ""
 
 msgid "Vulnerability|AI false positive confidence score"
+msgstr ""
+
+msgid "Vulnerability|AI false positive scan complete"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
@@ -75867,13 +75867,16 @@ msgstr ""
 msgid "Vulnerability|External Security Report"
 msgstr ""
 
+msgid "Vulnerability|FP scanning found that this vulnerability is "
+msgstr ""
+
 msgid "Vulnerability|False positive detected"
 msgstr ""
 
-msgid "Vulnerability|False positive flag dismissed successfully."
+msgid "Vulnerability|File:"
 msgstr ""
 
-msgid "Vulnerability|File:"
+msgid "Vulnerability|For more information, view vulnerability details."
 msgstr ""
 
 msgid "Vulnerability|GitLab Security Report"
@@ -75921,7 +75924,13 @@ msgstr ""
 msgid "Vulnerability|Location"
 msgstr ""
 
+msgid "Vulnerability|NOT a false positive"
+msgstr ""
+
 msgid "Vulnerability|Namespace:"
+msgstr ""
+
+msgid "Vulnerability|Not an FP"
 msgstr ""
 
 msgid "Vulnerability|Policy violation detected"
@@ -76081,9 +76090,6 @@ msgid "Vulnerability|What is a validity check?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
-msgstr ""
-
-msgid "Vulnerability|Why it is likely a false positive"
 msgstr ""
 
 msgid "Vulnerability|circular dependency"

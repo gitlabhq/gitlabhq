@@ -184,7 +184,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
   context 'when an user does not have write access', :js do
     before do
-      stub_feature_flags(blob_edit_refactor: false)
       project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
       wait_for_requests
@@ -278,13 +277,37 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       wait_for_requests
 
       expect(page).to have_content('New commit message')
+      expect(page).to have_css 'div.branch-selector', text: 'patch-1'
+    end
+
+    it 'commits a renamed file in a forked project', :sidekiq_might_not_need_inline do
+      click_link('.gitignore')
+      edit_in_single_file_editor
+
+      expect_fork_prompt
+      click_link_or_button('Fork')
+
+      edit_in_single_file_editor
+
+      fill_in _('File path'), with: '.gitignore-example'
+
+      click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        click_button('Commit changes')
+      end
+
+      wait_for_requests
+
+      expect(page).to have_content('New commit message')
+      expect(page).to have_css 'div.branch-selector', text: 'patch-1'
     end
 
     context 'when the user already had a fork of the project', :js do
       let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
 
       before do
-        stub_feature_flags(blob_edit_refactor: false)
         visit(project2_tree_path_root_ref)
         wait_for_requests
       end

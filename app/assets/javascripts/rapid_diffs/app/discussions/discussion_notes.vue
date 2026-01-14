@@ -75,48 +75,49 @@ export default {
       <template #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
-    </noteable-note>
-    <li
-      v-if="hasReplies || userPermissions.can_create_note"
-      class="gl-m-0 gl-rounded-[var(--content-border-radius)] gl-bg-subtle"
-    >
-      <ul class="gl-list-none gl-p-0">
-        <toggle-replies-widget
-          v-if="hasReplies"
-          :collapsed="!expanded"
-          :replies="replies"
-          class="gl-border-t !gl-border-x-0 gl-border-t-subtle"
-          @toggle="$emit('toggleDiscussionReplies')"
-        />
-        <template v-if="expanded">
-          <template v-for="note in replies">
-            <system-note
-              v-if="note.system"
-              :key="`system-${note.id}`"
-              :note="note"
-              :is-last-discussion="isLastDiscussion"
+      <template #footer>
+        <div
+          v-if="hasReplies || userPermissions.can_create_note"
+          class="gl-m-0 gl-rounded-[var(--content-border-radius)] gl-bg-subtle"
+        >
+          <ul class="gl-list-none gl-p-0">
+            <toggle-replies-widget
+              v-if="hasReplies"
+              :collapsed="!expanded"
+              :replies="replies"
+              class="gl-border-t !gl-border-x-0 gl-border-t-subtle"
+              @toggle="$emit('toggleDiscussionReplies')"
             />
-            <noteable-note
-              v-else
-              :key="note.id"
-              :note="note"
-              :timeline-layout="timelineLayout"
-              :is-last-discussion="isLastDiscussion"
-              @noteDeleted="$emit('noteDeleted', note)"
-              @noteUpdated="$emit('noteUpdated', $event)"
-              @noteEdited="$emit('noteEdited', { note, value: $event })"
-              @startEditing="$emit('startEditing', note)"
-              @cancelEditing="$emit('cancelEditing', note)"
-              @toggleAward="$emit('toggleAward', { note, award: $event })"
-            >
-              <template #avatar-badge>
-                <slot name="avatar-badge"></slot>
+            <template v-if="expanded">
+              <template v-for="note in replies">
+                <system-note
+                  v-if="note.system"
+                  :key="`system-${note.id}`"
+                  :note="note"
+                  :is-last-discussion="isLastDiscussion"
+                />
+                <noteable-note
+                  v-else
+                  :key="note.id"
+                  :note="note"
+                  :is-last-discussion="isLastDiscussion"
+                  @noteDeleted="$emit('noteDeleted', note)"
+                  @noteUpdated="$emit('noteUpdated', $event)"
+                  @noteEdited="$emit('noteEdited', { note, value: $event })"
+                  @startEditing="$emit('startEditing', note)"
+                  @cancelEditing="$emit('cancelEditing', note)"
+                  @toggleAward="$emit('toggleAward', { note, award: $event })"
+                >
+                  <template #avatar-badge>
+                    <slot name="avatar-badge"></slot>
+                  </template>
+                </noteable-note>
               </template>
-            </noteable-note>
-          </template>
-          <slot name="footer" :has-replies="hasReplies"></slot>
-        </template>
-      </ul>
-    </li>
+              <slot name="footer" :has-replies="hasReplies"></slot>
+            </template>
+          </ul>
+        </div>
+      </template>
+    </noteable-note>
   </ul>
 </template>

@@ -29,6 +29,28 @@ describe('edit_form_data_utils', () => {
         from_merge_request_iid: params.fromMergeRequestIid,
       });
     });
+
+    it('overrides branch_name with forkBranchName when provided', () => {
+      formData.append('branch_name', 'original-branch');
+      const result = prepareEditFormData(formData, {
+        ...params,
+        forkBranchName: 'fork-branch',
+      });
+
+      expect(result).toEqual({
+        file: params.fileContent,
+        file_path: params.filePath,
+        last_commit_sha: params.lastCommitSha,
+        from_merge_request_iid: params.fromMergeRequestIid,
+        branch_name: 'fork-branch',
+      });
+    });
+
+    it('does not add branch_name when forkBranchName is not provided', () => {
+      const result = prepareEditFormData(formData, params);
+
+      expect(result.branch_name).toBeUndefined();
+    });
   });
 
   describe('prepareCreateFormData', () => {

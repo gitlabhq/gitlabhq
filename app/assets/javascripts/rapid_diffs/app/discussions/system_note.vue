@@ -44,7 +44,7 @@ export default {
       </div>
     </template>
     <template #content>
-      <div class="gl-flex gl-flex-wrap gl-gap-3 gl-text-subtle">
+      <div class="gl-mt-1 gl-flex gl-flex-wrap gl-gap-3 gl-text-subtle">
         <note-author v-if="note.author" :author="note.author" :show-username="false" />
         <span v-else>{{ __('A deleted user') }}</span>
         <div

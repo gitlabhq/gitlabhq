@@ -24,6 +24,9 @@ export default function initBlobEditHeader(editor) {
     projectId,
     projectPath,
     newMergeRequestPath,
+    targetProjectId,
+    targetProjectPath,
+    nextForkBranchName,
   } = el.dataset;
 
   return new Vue({
@@ -40,6 +43,9 @@ export default function initBlobEditHeader(editor) {
       projectId,
       projectPath,
       newMergeRequestPath,
+      targetProjectId,
+      targetProjectPath,
+      nextForkBranchName,
       emptyRepo: parseBoolean(emptyRepo),
       canPushCode: parseBoolean(canPushCode),
       canPushToBranch: parseBoolean(canPushToBranch),

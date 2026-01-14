@@ -720,6 +720,7 @@ export default [
       '@graphql-eslint/no-unused-fragments': 'error',
       '@graphql-eslint/no-duplicate-fields': 'error',
       'local-rules/graphql-require-feature-category': 'error',
+      'local-rules/graphql-require-valid-urgency': 'error',
     },
   },
   {

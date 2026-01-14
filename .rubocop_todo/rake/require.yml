@@ -9,5 +9,5 @@ Rake/Require:
     - 'lib/tasks/gitlab/docs/redirect.rake'
     - 'lib/tasks/gitlab/graphql.rake'
     - 'lib/tasks/gitlab/lfs/migrate.rake'
-    - 'lib/tasks/gitlab/openapi.rake'
+    - 'lib/tasks/gitlab/openapi/v2.rake'
     - 'lib/tasks/tokens.rake'

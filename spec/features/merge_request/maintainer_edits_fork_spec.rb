@@ -24,7 +24,6 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
   end
 
   before do
-    stub_feature_flags(blob_edit_refactor: false)
     target_project.add_maintainer(user)
     sign_in(user)
 

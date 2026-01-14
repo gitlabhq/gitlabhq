@@ -3340,10 +3340,6 @@ class Project < ApplicationRecord
     JiraConnectSubscription.for_project(self).exists?
   end
 
-  def limited_protected_branches(limit)
-    protected_branches.limit(limit)
-  end
-
   def group_protected_branches
     return root_namespace.protected_branches if root_namespace.is_a?(Group)
 

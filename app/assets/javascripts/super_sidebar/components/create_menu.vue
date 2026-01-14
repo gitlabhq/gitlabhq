@@ -110,14 +110,14 @@ export default {
 <template>
   <gl-disclosure-dropdown
     v-gl-tooltip.bottom="dropdownOpen ? '' : $options.i18n.createNew"
-    category="tertiary"
     icon="plus"
+    size="small"
     no-caret
     text-sr-only
     :toggle-text="$options.i18n.createNew"
     :toggle-id="$options.toggleId"
     :dropdown-offset="dropdownOffset"
-    class="super-sidebar-new-menu-dropdown"
+    class="super-sidebar-new-menu-dropdown gl-self-center"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"
     @hidden="dropdownOpen = false"

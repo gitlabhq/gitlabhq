@@ -1,5 +1,24 @@
 @use 'constants';
 
+.rd-discussion-timeline {
+  --content-border-radius: 0 0 #{$gl-border-radius-lg} #{$gl-border-radius-lg};
+  @apply gl-max-w-limited;
+}
+
+.rd-discussion-timeline-comments {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    top: calc(#{$gl-spacing-scale-2} + #{$gl-spacing-scale-7}/2);
+    bottom: 0;
+    left: calc(#{$gl-spacing-scale-7}/2 - 1px);
+    background-color: $gl-background-color-strong;
+  }
+}
+
 .rd-discussion-row {
   --rd-line-border-color: var(--rd-content-border-color);
   --content-border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);

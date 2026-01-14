@@ -643,6 +643,22 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION heal_ci_runner_taggings_tag_id() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW.tag_id IS NULL AND NEW.tag_name IS NOT NULL THEN
+  INSERT INTO tags (name)
+  VALUES (NEW.tag_name)
+  ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+  RETURNING id INTO NEW.tag_id;
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION insert_catalog_resource_sync_event() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -43240,7 +43256,7 @@ CREATE INDEX index_elastic_reindexing_tasks_on_state ON elastic_reindexing_tasks
 
 CREATE INDEX index_elasticsearch_indexed_namespaces_on_created_at ON elasticsearch_indexed_namespaces USING btree (created_at);
 
-CREATE UNIQUE INDEX index_emails_on_confirmation_token ON emails USING btree (confirmation_token);
+CREATE INDEX index_emails_confirmation_token ON emails USING btree (confirmation_token);
 
 CREATE INDEX index_emails_on_created_at_where_confirmed_at_is_null ON emails USING btree (created_at) WHERE (confirmed_at IS NULL);
 
@@ -43251,6 +43267,8 @@ CREATE UNIQUE INDEX index_emails_on_email ON emails USING btree (email);
 CREATE INDEX index_emails_on_email_trigram ON emails USING gin (email gin_trgm_ops);
 
 CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
+
+CREATE UNIQUE INDEX index_emails_on_user_id_and_confirmation_token ON emails USING btree (user_id, confirmation_token);
 
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
 
@@ -50917,6 +50935,10 @@ CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCIN
 CREATE TRIGGER ci_pipeline_artifacts_loose_fk_trigger AFTER DELETE ON ci_pipeline_artifacts REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runner_machines');
+
+CREATE TRIGGER ci_runner_taggings_heal_tag_id_trigger BEFORE INSERT ON ci_runner_taggings FOR EACH ROW EXECUTE FUNCTION heal_ci_runner_taggings_tag_id();
+
+ALTER TABLE ci_runner_taggings ENABLE ALWAYS TRIGGER ci_runner_taggings_heal_tag_id_trigger;
 
 CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 

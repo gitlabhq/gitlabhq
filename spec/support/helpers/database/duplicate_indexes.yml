@@ -176,3 +176,6 @@ users:
     - index_users_on_organization_id
   index_users_on_organization_id_and_confirmation_token:
     - index_users_on_organization_id
+emails:
+  index_emails_on_user_id_and_confirmation_token:
+    - index_emails_on_user_id

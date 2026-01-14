@@ -39,7 +39,6 @@ When authorization is requested, GitLab validates that both the service account
 and the user who originated the quick action have sufficient permissions.
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
     accTitle: Authentication flow for GitLab Duo
     accDescr: API requests are checked against user permissions first, then service account permissions, with access denied if either check fails.
@@ -49,7 +48,4 @@ flowchart TD
     B -->|Yes| C{Service account has access?}
     C -->|No| D
     C -->|Yes| E[API request succeeds]
-
-    style D fill:#ffcccc
-    style E fill:#ccffcc
 ```

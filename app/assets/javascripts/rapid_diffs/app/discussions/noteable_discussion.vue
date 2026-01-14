@@ -164,7 +164,7 @@ export default {
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer="{ hasReplies }">
-        <li
+        <div
           v-if="canReply"
           data-testid="reply-wrapper"
           class="gl-list-none gl-rounded-[var(--content-border-radius)] gl-border-t-subtle gl-bg-subtle gl-px-5 gl-py-4"
@@ -186,7 +186,7 @@ export default {
           <div v-else-if="userPermissions.can_create_note">
             <discussion-reply-placeholder @focus="showReplyForm" />
           </div>
-        </li>
+        </div>
       </template>
     </discussion-notes>
   </li>

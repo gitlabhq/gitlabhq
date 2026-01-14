@@ -135,6 +135,25 @@ Add a comment at the top of your `.graphql` file in the following format:
 
 The category must be one of the valid categories defined in [`config/feature_categories.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml).
 
+### Urgency tag (optional)
+
+GraphQL query, mutation, and subscription files can optionally include an `@urgency` comment to indicate the performance expectations for the operation. This is validated by the `local-rules/graphql-require-valid-urgency` ESLint rule.
+
+If present, the urgency comment must use one of these valid values:
+
+- `high` - For critical, time-sensitive operations
+- `medium` - For moderately important operations
+- `default` - For standard operations
+- `low` - For non-critical background operations
+
+The urgency tag is **optional**. If you omit it, there will be no linter error. However, if you include it, the value must be one of the valid options listed above.
+
+#### Format
+
+```graphql
+# @urgency: <value>
+```
+
 ### Fragments
 
 [Fragments](https://graphql.org/learn/queries/#fragments) are a way to make your complex GraphQL queries more readable and re-usable. Here is an example of GraphQL fragment:

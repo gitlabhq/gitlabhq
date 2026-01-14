@@ -1843,6 +1843,39 @@ Assign a reviewer or request a new review from one or more users.
 - Behaves like [`/assign_reviewer`](#assign_reviewer), but also requests a new review from currently assigned reviewers.
 - For more information, see [request a review](merge_requests/reviews/_index.md#request-a-review).
 
+### `run_pipeline`
+
+Run a new pipeline for the merge request.
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212811) in GitLab 18.7.
+
+{{< /history >}}
+
+**Availability**:
+
+- Merge request
+
+**Examples**:
+
+- Run a new pipeline:
+
+  ```plaintext
+    /run_pipeline
+  ```
+
+**Additional details**:
+
+- The pipeline is triggered asynchronously and appears shortly after the command is executed.
+- You must have permission to create pipelines for the merge request.
+- You can combine this with other quick actions. For example, to run a pipeline and set auto-merge:
+
+  ```plaintext
+    /run_pipeline
+    /merge
+  ```
+
 ### `set_parent`
 
 Set the parent item.

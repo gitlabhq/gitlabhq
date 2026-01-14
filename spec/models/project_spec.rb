@@ -8982,18 +8982,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#limited_protected_branches' do
-    let(:project) { create(:project) }
-    let!(:protected_branch) { create(:protected_branch, project: project) }
-    let!(:another_protected_branch) { create(:protected_branch, project: project) }
-
-    subject { project.limited_protected_branches(1) }
-
-    it 'returns limited number of protected branches based on specified limit' do
-      expect(subject.count).to eq(1)
-    end
-  end
-
   describe '#group_protected_branches' do
     subject { project.group_protected_branches }
 
