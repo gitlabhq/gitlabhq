@@ -1149,7 +1149,8 @@ RSpec.describe API::Issues, feature_category: :team_planning do
               message: "Post-filtering - api/issues",
               redacted_count: 1,
               postfiltering_duration: be_a(Float),
-              user_id: current_user.id
+              user_id: current_user.id,
+              collection_count: 2
             ).at_least(:once).and_call_original
 
             get api('/issues', current_user), params: { scope: 'assigned_to_me' }

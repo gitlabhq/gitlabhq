@@ -10354,6 +10354,9 @@ msgstr ""
 msgid "Audit events"
 msgstr ""
 
+msgid "Audit events:"
+msgstr ""
+
 msgid "AuditLogs|(removed)"
 msgstr ""
 
@@ -74558,6 +74561,9 @@ msgid "View job currently using resource"
 msgstr ""
 
 msgid "View labels"
+msgstr ""
+
+msgid "View logs"
 msgstr ""
 
 msgid "View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following."

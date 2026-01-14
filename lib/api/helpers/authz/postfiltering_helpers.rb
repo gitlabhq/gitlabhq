@@ -11,9 +11,11 @@ module API
               filtered = filter_proc.call
             end
 
+            collection_size = collection.to_a.size
             Gitlab::AppLogger.info(
               message: "Post-filtering - #{resource_type}",
-              redacted_count: collection.to_a.size - filtered.size,
+              redacted_count: collection_size - filtered.size,
+              collection_count: collection_size,
               postfiltering_duration: postfilter_duration,
               user_id: current_user.id
             )

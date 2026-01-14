@@ -34,8 +34,23 @@ test the complete restore process before using it in production.
 You need to have a working GitLab installation before you can perform a
 restore. This is because the system user performing the restore actions (`git`)
 is usually not allowed to create or delete the SQL database needed to import
-data into (`gitlabhq_production`). All existing data is either erased
-(SQL) or moved to a separate directory (such as repositories and uploads).
+data into (`gitlabhq_production`).
+
+### The destination GitLab instance must not have existing data
+
+The restore process handles existing data differently depending on the data type:
+
+- PostgreSQL data is automatically erased during the restore process.
+- Git repositories: If repositories with the same name already exist, the restore fails
+  with a "repository already exists" error. For more information, see
+  [issue 118459](https://gitlab.com/gitlab-org/gitlab/-/issues/118459).
+- File system data is attempted to be moved to a separate directory before restoration.
+- Object storage data is not automatically cleared. You must manually clear object storage
+  buckets before restoring to avoid retaining orphaned data.
+
+For a reliable restore process, for example when automating production-to-staging
+restores, use a fresh GitLab installation at the same version as the backup.
+
 Restoring SQL data skips views owned by PostgreSQL extensions.
 
 ### The destination GitLab instance must have the exact same version

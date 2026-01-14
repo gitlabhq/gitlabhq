@@ -26,6 +26,7 @@ RSpec.describe API::Helpers::Authz::PostfilteringHelpers, feature_category: :per
       expect(Gitlab::AppLogger).to receive(:info).with(
         message: "Post-filtering - api/evens",
         redacted_count: 3,
+        collection_count: 6,
         postfiltering_duration: an_instance_of(Float),
         user_id: current_user.id
       ).and_call_original
