@@ -1338,41 +1338,7 @@ due to large volumes of data being indexed:
 
 1. After the indexing is complete, [select the **Search with advanced search** checkbox](#enable-advanced-search).
 
-### Deleted documents
-
-Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
-
-Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
-
-You should generally let Elasticsearch merge and reclaim space automatically with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
-
-However, some larger installations may wish to tune the merge policy settings:
-
-- Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes allows merging to happen more frequently.
-
-  ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
-       --data '{
-         "index" : {
-           "merge.policy.max_merged_segment": "2gb"
-         }
-       }'
-  ```
-
-- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so you should not change this unless you understand the tradeoffs.
-
-  ```shell
-  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
-       --data '{
-         "index" : {
-           "merge.policy.reclaim_deletes_weight": "3.0"
-         }
-       }'
-  ```
-
-- Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
-
-## Index large instances with dedicated Sidekiq nodes or processes
+### Index large instances with dedicated Sidekiq nodes or processes
 
 {{< alert type="warning" >}}
 
@@ -1419,7 +1385,7 @@ to the available workload and concurrency settings. For more details, see how to
 
 {{< /alert >}}
 
-### Single node, two processes
+#### Single node, two processes
 
 To create both an indexing and a non-indexing Sidekiq process in one node:
 
@@ -1460,7 +1426,7 @@ After reconfiguring GitLab, existing jobs are not processed until the Rake task 
 
 {{< /alert >}}
 
-### Two nodes, one process for each
+#### Two nodes, one process for each
 
 To handle these queue groups on two nodes:
 
@@ -1530,6 +1496,40 @@ It is important to run the Rake task immediately after reconfiguring GitLab.
 After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
 {{< /alert >}}
+
+### Deleted documents
+
+Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
+
+Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
+
+You should generally let Elasticsearch merge and reclaim space automatically with the default settings. From [Lucene's Handling of Deleted Documents](https://www.elastic.co/blog/lucenes-handling-of-deleted-documents "Lucene's Handling of Deleted Documents"), _"Overall, besides perhaps decreasing the maximum segment size, it is best to leave Lucene defaults as-is and not fret too much about when deletes are reclaimed."_
+
+However, some larger installations may wish to tune the merge policy settings:
+
+- Consider reducing the `index.merge.policy.max_merged_segment` size from the default 5 GB to maybe 2 GB or 3 GB. Merging only happens when a segment has at least 50% deletions. Smaller segment sizes allows merging to happen more frequently.
+
+  ```shell
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.max_merged_segment": "2gb"
+         }
+       }'
+  ```
+
+- You can also adjust `index.merge.policy.reclaim_deletes_weight`, which controls how aggressively deletions are targeted. But this can lead to costly merge decisions, so you should not change this unless you understand the tradeoffs.
+
+  ```shell
+  curl --request PUT localhost:9200/gitlab-production/_settings ---header 'Content-Type: application/json' \
+       --data '{
+         "index" : {
+           "merge.policy.reclaim_deletes_weight": "3.0"
+         }
+       }'
+  ```
+
+- Do not do a [force merge](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") to remove deleted documents. A warning in the [documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-forcemerge.html "Force Merge") states that this can lead to very large segments that may never get reclaimed, and can also cause significant performance or availability issues.
 
 ## Reverting to Basic Search
 

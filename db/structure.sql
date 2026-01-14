@@ -55814,9 +55814,6 @@ ALTER TABLE ONLY merge_request_predictions
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_b3c9c17bd4 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
 
-ALTER TABLE p_ai_active_context_code_repositories
-    ADD CONSTRAINT fk_rails_b3d72d06cf FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE SET NULL;
-
 ALTER TABLE virtual_registries_packages_npm_cache_local_entries
     ADD CONSTRAINT fk_rails_b4ba49a985 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 

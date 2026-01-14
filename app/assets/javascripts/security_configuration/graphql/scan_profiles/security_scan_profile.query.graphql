@@ -1,0 +1,10 @@
+# @feature_category: security_asset_inventories
+query SecurityScanProfile($id: SecurityScanProfileID!) {
+  securityScanProfile(id: $id) {
+    id
+    name
+    description
+    scanType
+    gitlabRecommended
+  }
+}

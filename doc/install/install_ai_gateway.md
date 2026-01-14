@@ -87,7 +87,7 @@ Newer features are available from nightly builds, but backwards compatibility is
 
 1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
 1. For GitLab instances that use an offline license, in the AIGW container,
-   set `-e DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL=` (empty string).
+   set `-e DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL=` (empty string without quotes).
    This configuration:
    - Forces the GitLab Duo Workflow Service to authenticate
      exclusively against the local GitLab instance.

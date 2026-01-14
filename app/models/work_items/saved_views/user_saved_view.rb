@@ -9,7 +9,12 @@ module WorkItems
       belongs_to :user, inverse_of: :user_saved_views
       belongs_to :saved_view, class_name: 'WorkItems::SavedViews::SavedView', inverse_of: :user_saved_views
 
+      before_create :set_initial_position
+
       validates :saved_view_id, uniqueness: { scope: :user_id }
+      scope :in_namespace, ->(namespace) { where(namespace: namespace) }
+      scope :for_user, ->(user) { where(user: user) }
+      scope :for_saved_view, ->(saved_view) { where(saved_view: saved_view) }
 
       before_create :set_initial_position
 
@@ -49,7 +54,7 @@ module WorkItems
       private
 
       def set_initial_position
-        move_to_end
+        move_to_end if relative_position.nil?
       end
     end
   end

@@ -15430,8 +15430,8 @@ Input type: `WorkItemSavedViewReorderInput`
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemsavedviewreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemsavedviewreorderid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view to be reordered. |
-| <a id="mutationworkitemsavedviewreordermoveafterid"></a>`moveAfterId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that should be placed after the saved view. |
-| <a id="mutationworkitemsavedviewreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that should be placed before the saved view. |
+| <a id="mutationworkitemsavedviewreordermoveafterid"></a>`moveAfterId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that the reordered view should be placed after. |
+| <a id="mutationworkitemsavedviewreordermovebeforeid"></a>`moveBeforeId` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | Global ID of a saved view that the reordered view should be placed before. |
 
 #### Fields
 

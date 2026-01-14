@@ -87,7 +87,9 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
           format(_('Confirm this email address within %{cut_off_days} days, otherwise the email address is removed.'), cut_off_days: ApplicationSetting::USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS)
         )
 
-        is_expected.to have_link('Confirm your email address', href: email_confirmation_url(confirmation_token: 'faketoken'))
+        # user_id param can be removed once the emails table is re-sharded
+        # https://gitlab.com/gitlab-org/gitlab/-/work_items/585903
+        is_expected.to have_link('Confirm your email address', href: email_confirmation_url(confirmation_token: 'faketoken', user_id: secondary_email.user_id))
       end
     end
   end
