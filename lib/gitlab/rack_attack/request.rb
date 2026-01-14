@@ -182,7 +182,7 @@ module Gitlab
       end
 
       def throttle_authenticated_git_http?
-        git_path? && !git_lfs_path? &&
+        git_path? &&
           (
             Gitlab::Throttle.settings.throttle_authenticated_git_http_enabled ||
             Gitlab::Throttle.settings.throttle_authenticated_web_enabled

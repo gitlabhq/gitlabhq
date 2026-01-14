@@ -263,7 +263,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
     let(:git_clone_project_path_get_info_refs) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
     let(:git_clone_path_post_git_upload_pack) { "/#{project.full_path}.git/git-upload-pack" }
-    let(:git_lfs_path) { "/#{project.full_path}.git/info/lfs/objects/batch" }
 
     subject { request.throttle_unauthenticated_git_http? }
 
@@ -275,11 +274,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
       ref(:git_clone_path_post_git_upload_pack)  | true  | true  | true
       ref(:git_clone_path_post_git_upload_pack)  | false | false | false
-
-      ref(:git_lfs_path) | true  | true  | true
-      ref(:git_lfs_path) | false | true  | false
-      ref(:git_lfs_path) | true  | false | false
-      ref(:git_lfs_path) | false | false | false
 
       '/users/sign_in'                           | true  | true  | false
       '/users/sign_in'                           | false | false | false
@@ -326,7 +320,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
     let(:git_info_refs_path) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
     let(:git_receive_pack_path) { "/#{project.full_path}.git/git-receive-pack" }
     let(:git_upload_pack_path) { "/#{project.full_path}.git/git-upload-pack" }
-    let(:git_lfs_path) { "/#{project.full_path}.git/info/lfs/objects/batch" }
 
     subject { request.throttle_authenticated_git_http? }
 
@@ -345,11 +338,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       ref(:git_upload_pack_path)   | false | true  | true
       ref(:git_upload_pack_path)   | true  | false | false
       ref(:git_upload_pack_path)   | false | false | false
-
-      ref(:git_lfs_path) | true  | true  | false
-      ref(:git_lfs_path) | false | true  | false
-      ref(:git_lfs_path) | true  | false | false
-      ref(:git_lfs_path) | false | false | false
 
       '/users/sign_in'             | true  | true  | false
       '/users/sign_in'             | false | true  | false
