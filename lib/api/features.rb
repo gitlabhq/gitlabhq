@@ -66,6 +66,9 @@ module API
           type: String,
           desc: "A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, " \
             "`snippets/21.git`, to name a few. Use comma to separate multiple repository paths"
+        optional :runner,
+          type: String,
+          desc: "A runner ID, or comma-separated list of runner IDs"
         optional :force, type: Boolean, desc: 'Skip feature flag validation checks, such as a YAML definition'
 
         mutually_exclusive :key, :feature_group
@@ -74,6 +77,7 @@ module API
         mutually_exclusive :key, :namespace
         mutually_exclusive :key, :project
         mutually_exclusive :key, :repository
+        mutually_exclusive :key, :runner
       end
       post ':name' do
         flag_params = declared_params(include_missing: false)

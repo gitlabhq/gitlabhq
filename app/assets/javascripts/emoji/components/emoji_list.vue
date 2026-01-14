@@ -12,7 +12,7 @@ export default {
     },
   },
   data() {
-    return { render: false };
+    return { categories: {}, showEmojiList: false };
   },
   computed: {
     filteredCategories() {
@@ -31,14 +31,18 @@ export default {
     },
   },
   async mounted() {
-    this.categories = await getEmojiCategories();
-    this.render = true;
+    try {
+      this.categories = await getEmojiCategories();
+      this.showEmojiList = true;
+    } catch (e) {
+      this.categories = {};
+    }
   },
 };
 </script>
 
 <template>
-  <div v-if="render">
+  <div v-if="showEmojiList">
     <slot :filtered-categories="filteredCategories"></slot>
   </div>
 </template>

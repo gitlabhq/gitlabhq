@@ -135,10 +135,11 @@ POST /features/:name
 | `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
 | `project`       | string         | no       | A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths                                                                                                 |
 | `repository`    | string         | no       | A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, , `snippets/21.git`, to name a few. Use comma to separate multiple repository paths              |
+| `runner`        | string         | no       | A runner ID, or comma-separated list of runner IDs                                                                                                                                               |
 | `force`         | boolean        | no       | Skip feature flag validation checks, such as a YAML definition                                                                                                                                   |
 
 You can enable or disable a feature for a `feature_group`, a `user`,
-a `group`, a `namespace`, a `project`, and a `repository` in a single API call.
+a `group`, a `namespace`, a `project`, a `repository`, and a `runner` in a single API call.
 
 ```shell
 curl --request POST \

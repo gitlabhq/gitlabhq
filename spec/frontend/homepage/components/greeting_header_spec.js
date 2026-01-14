@@ -106,7 +106,10 @@ describe('GreetingHeader', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findGreeting = () => wrapper.find('h1');
   const findStatusBadge = () => wrapper.find('[data-testid="status-emoji-badge"]');
-  const findStatusEmoji = () => wrapper.find('gl-emoji-stub');
+  const findStatusEmoji = () => {
+    const stub = wrapper.find('gl-emoji-stub');
+    return stub.exists() ? stub : wrapper.find('gl-emoji');
+  };
   const findAvatarButton = () => wrapper.find('[data-testid="status-modal-trigger"]');
   const findStatusModal = () => wrapper.findComponent(SetStatusModal);
 

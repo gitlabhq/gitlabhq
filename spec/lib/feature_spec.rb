@@ -1198,19 +1198,52 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       let(:project) { create(:project) }
       let(:group) { create(:group) }
       let(:user_name) { project.first_owner.username }
+      let_it_be(:runner) { create(:ci_runner) }
 
       subject do
         described_class.new(
           user: user_name,
           project: project.full_path,
           group: group.full_path,
-          repository: project.repository.full_path
+          repository: project.repository.full_path,
+          runner: runner.id.to_s
         )
       end
 
       it 'returns all found targets' do
         expect(subject.targets).to be_an(Array)
-        expect(subject.targets).to eq([project.first_owner, project, group, project.repository])
+        expect(subject.targets).to match_array([project.first_owner, project, group, project.repository, runner])
+      end
+
+      context 'when runner target is specified' do
+        let_it_be(:runner) { create(:ci_runner) }
+
+        subject { described_class.new(runner: runner.id.to_s) }
+
+        it 'returns the runner as a target' do
+          expect(subject.targets).to eq([runner])
+        end
+
+        context 'with multiple runners' do
+          let_it_be(:runner2) { create(:ci_runner) }
+
+          subject { described_class.new(runner: "#{runner.id},#{runner2.id}") }
+
+          it 'returns all runners as targets' do
+            expect(subject.targets).to match_array([runner, runner2])
+          end
+        end
+
+        context 'when runner does not exist' do
+          subject { described_class.new(runner: '999999') }
+
+          it 'raises UnknownTargetError' do
+            expect { subject.targets }.to raise_error(
+              Feature::Target::UnknownTargetError,
+              '999999 is not found!'
+            )
+          end
+        end
       end
 
       context 'when repository target works with different types of repositories' do

@@ -46,6 +46,35 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
       end
     end
 
+    context 'when duplicate DeletedObject records point to the same file' do
+      let(:data) { [] }
+
+      before do
+        # Simulate race condition: bulk_import called twice for same artifact
+        Ci::DeletedObject.bulk_import([artifact])
+        Ci::DeletedObject.bulk_import([artifact])
+      end
+
+      it 'creates two DeletedObject records' do
+        expect(Ci::DeletedObject.count).to eq(2)
+      end
+
+      it 'cleans up both records successfully' do
+        expect { execute }.to change { Ci::DeletedObject.count }.from(2).to(0)
+      end
+
+      it 'deletes file on first record and is idempotent on second' do
+        records = Ci::DeletedObject.all.order(:id).to_a
+
+        expect(records.first).to receive(:delete_file_from_storage).and_call_original
+        expect(records.second).to receive(:delete_file_from_storage).and_call_original
+
+        allow(service).to receive(:load_next_batch).and_return(records, [])
+
+        expect(execute).to be_success
+      end
+    end
+
     context 'with artifacts both ready and not ready for deletion' do
       let(:data) { [] }
 

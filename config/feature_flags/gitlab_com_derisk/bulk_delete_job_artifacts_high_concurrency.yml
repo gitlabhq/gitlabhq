@@ -1,0 +1,10 @@
+---
+name: bulk_delete_job_artifacts_high_concurrency
+description: To toggle higher concurrency for the worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/582116
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214596
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/582451
+milestone: '18.8'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

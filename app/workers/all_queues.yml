@@ -567,6 +567,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:ci_schedule_bulk_delete_job_artifact_cron
+  :worker_name: Ci::ScheduleBulkDeleteJobArtifactCronWorker
+  :feature_category: :job_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_schedule_delete_objects_cron
   :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration
@@ -3635,6 +3645,16 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: ci_bulk_delete_expired_job_artifacts
+  :worker_name: Ci::BulkDeleteExpiredJobArtifactsWorker
+  :feature_category: :job_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: ci_cancel_pipeline

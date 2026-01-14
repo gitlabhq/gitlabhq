@@ -16,7 +16,6 @@ class ResourceStateEvent < ResourceEvent
   enum :state, Issue.available_states.merge(MergeRequest.available_states).merge(reopened: 5)
 
   before_validation :ensure_namespace_id
-  after_create :issue_usage_metrics
 
   scope :merged_with_no_event_source, -> do
     where(state: :merged, source_merge_request: nil, source_commit: nil)
@@ -42,23 +41,6 @@ class ResourceStateEvent < ResourceEvent
 
   def ensure_namespace_id
     self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(issuable, allow_nil: true).namespace_id
-  end
-
-  def issue_usage_metrics
-    return unless for_issue?
-
-    case state
-    when 'closed'
-      issue_usage_counter.track_issue_closed_action(author: user, project: issue.project)
-    when 'reopened'
-      issue_usage_counter.track_issue_reopened_action(author: user, project: issue.project)
-    else
-      # no-op, nothing to do, not a state we're tracking
-    end
-  end
-
-  def issue_usage_counter
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter
   end
 end
 

@@ -304,5 +304,30 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_art
         is_expected.to eq(destroyed_artifacts_count: 0, destroyed_ids: [], statistics_updates: {}, status: :success)
       end
     end
+
+    context 'when second service loads artifacts before first service deletes them (race condition)' do
+      let(:artifact) { create(:ci_job_artifact, :zip) }
+      let(:artifacts) { Ci::JobArtifact.where(id: artifact.id) }
+
+      it 'creates duplicate DeletedObject records but both are cleaned up' do
+        service1 = described_class.new(artifacts, pick_up_at: Time.current)
+        service2 = described_class.new(artifacts, pick_up_at: Time.current)
+
+        result1 = service1.execute
+        result2 = service2.execute
+
+        expect(result1[:status]).to eq(:success)
+        expect(result2[:status]).to eq(:success)
+
+        # Both report destroyed count based on their stale in-memory data
+        expect(result1[:destroyed_artifacts_count]).to eq(1)
+        expect(result2[:destroyed_artifacts_count]).to eq(1)
+
+        expect(Ci::JobArtifact.exists?(artifact.id)).to be(false)
+
+        # Duplicate DeletedObject records are created but this is cleaned up in DeleteObjectsService
+        expect(Ci::DeletedObject.count).to eq(2)
+      end
+    end
   end
 end

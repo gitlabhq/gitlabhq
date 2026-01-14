@@ -16,6 +16,14 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
       .values.find { |defn| defn.development? && !defn.default_enabled }
   end
 
+  shared_examples 'actor not found error' do |action|
+    it 'returns an error' do
+      expect(Feature).not_to receive(action)
+      expect(subject).to be_error
+      expect(subject.reason).to eq(:actor_not_found)
+    end
+  end
+
   describe 'sequences of executions' do
     subject(:flag) do
       Feature.get(feature_name) # rubocop: disable Gitlab/AvoidFeatureGet
@@ -230,11 +238,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when user does not exist' do
           let(:params) { { value: 'true', user: 'unknown-user' } }
 
-          it 'does nothing' do
-            expect(Feature).not_to receive(:enable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :enable
         end
       end
 
@@ -268,11 +272,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when group does not exist' do
           let(:params) { { value: 'true', group: 'unknown-group' } }
 
-          it 'returns an error' do
-            expect(Feature).not_to receive(:disable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :enable
         end
       end
 
@@ -322,6 +322,22 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         it 'enables the feature flag' do
           expect(Feature).to receive(:enable).with(feature_name, project.repository)
           expect(subject).to be_success
+        end
+      end
+
+      context 'when enabling for a runner' do
+        let_it_be(:runner) { create(:ci_runner) }
+        let(:params) { { value: 'true', runner: runner.id.to_s } }
+
+        it 'enables the feature flag' do
+          expect(Feature).to receive(:enable).with(feature_name, runner)
+          expect(subject).to be_success
+        end
+
+        context 'when runner does not exist' do
+          let(:params) { { value: 'true', runner: '999999' } }
+
+          it_behaves_like 'actor not found error', :enable
         end
       end
 
@@ -460,11 +476,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when user does not exist' do
           let(:params) { { value: 'false', user: 'unknown-user' } }
 
-          it 'returns an error' do
-            expect(Feature).not_to receive(:disable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :disable
         end
       end
 
@@ -489,11 +501,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when project does not exist' do
           let(:params) { { value: 'false', project: 'unknown-project' } }
 
-          it 'returns an error' do
-            expect(Feature).not_to receive(:disable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :disable
         end
       end
 
@@ -508,11 +516,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when group does not exist' do
           let(:params) { { value: 'false', group: 'unknown-group' } }
 
-          it 'returns an error' do
-            expect(Feature).not_to receive(:disable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :disable
         end
       end
 
@@ -528,11 +532,7 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
         context 'when namespace does not exist' do
           let(:params) { { value: 'false', namespace: 'unknown-namespace' } }
 
-          it 'returns an error' do
-            expect(Feature).not_to receive(:disable)
-            expect(subject).to be_error
-            expect(subject.reason).to eq(:actor_not_found)
-          end
+          it_behaves_like 'actor not found error', :disable
         end
       end
 
@@ -553,6 +553,22 @@ RSpec.describe Admin::SetFeatureFlagService, feature_category: :feature_flags do
           expect(Feature).to receive(:disable).with(feature_name, user)
           expect(Feature).to receive(:disable).with(feature_name, feature_group)
           expect(subject).to be_success
+        end
+      end
+
+      context 'when disabling for a runner' do
+        let_it_be(:runner) { create(:ci_runner) }
+        let(:params) { { value: 'false', runner: runner.id.to_s } }
+
+        it 'disables the feature flag' do
+          expect(Feature).to receive(:disable).with(feature_name, runner)
+          expect(subject).to be_success
+        end
+
+        context 'when runner does not exist' do
+          let(:params) { { value: 'false', runner: '999999' } }
+
+          it_behaves_like 'actor not found error', :disable
         end
       end
     end

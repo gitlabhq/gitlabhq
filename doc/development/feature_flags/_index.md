@@ -651,6 +651,7 @@ GitLab supports the following feature flag actors:
 - `User` model
 - `Project` model
 - `Group` model
+- `Ci::Runner` model
 - Current request
 
 The actor is a second parameter of the `Feature.enabled?` call. For example:

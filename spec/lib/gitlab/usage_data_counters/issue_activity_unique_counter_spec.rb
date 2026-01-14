@@ -60,22 +60,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue closed actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_CLOSED }
-
-      subject(:track_event) { described_class.track_issue_closed_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue reopened actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_REOPENED }
-
-      subject(:track_event) { described_class.track_issue_reopened_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue label changed actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_LABEL_CHANGED }

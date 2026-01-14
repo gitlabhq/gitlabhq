@@ -121,7 +121,8 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
 
     shared_examples 'enables the flag for the actor' do |actor_type|
       it 'sets the feature gate' do
-        post api(path, admin, admin_mode: true), params: { value: 'true', actor_type => actor.full_path }
+        actor_value = actor_type == :runner ? actor.id.to_s : actor.full_path
+        post api(path, admin, admin_mode: true), params: { value: 'true', actor_type => actor_value }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to match(
@@ -157,6 +158,34 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
     context 'when enabling for a repository by path' do
       it_behaves_like 'enables the flag for the actor', :repository do
         let_it_be(:actor) { create(:project).repository }
+      end
+    end
+
+    context 'when enabling for a runner by ID' do
+      it_behaves_like 'enables the flag for the actor', :runner do
+        let_it_be(:actor) { create(:ci_runner) }
+      end
+
+      context 'with multiple runners' do
+        let_it_be(:runner) { create(:ci_runner) }
+        let_it_be(:runner2) { create(:ci_runner) }
+
+        it 'sets the feature gate for all runners' do
+          post api(path, admin, admin_mode: true), params: { value: 'true', runner: "#{runner.id},#{runner2.id}" }
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['gates']).to include(
+            { 'key' => 'actors', 'value' => contain_exactly(runner.flipper_id, runner2.flipper_id) }
+          )
+        end
+      end
+
+      context 'when runner does not exist' do
+        it 'returns a 400' do
+          post api(path, admin, admin_mode: true), params: { value: 'true', runner: '999999' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
     end
 
@@ -212,6 +241,14 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       context 'when key and project are provided' do
         before do
           post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', project: 'somepath' }
+        end
+
+        it_behaves_like 'fails to set the feature flag'
+      end
+
+      context 'when key and runner are provided' do
+        before do
+          post api("/features/#{feature_name}", admin, admin_mode: true), params: { value: '0.01', key: 'percentage_of_actors', runner: '1' }
         end
 
         it_behaves_like 'fails to set the feature flag'
