@@ -65,6 +65,10 @@ To use a cluster management project to manage your cluster:
 
 ### Associate the cluster management project with the cluster
 
+Prerequisites:
+
+- Administrator access to associate an instance cluster.
+
 To associate a cluster management project with your cluster:
 
 1. Go to the appropriate configuration page. For a:

@@ -35,17 +35,18 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
 ## Prerequisites
 
-- Have one of these configured:
+- One of these configured:
   - Access to the [GitLab AI Gateway](../../administration/gitlab_duo/gateway.md).
   - A [self-hosted AI Gateway](../../install/install_ai_gateway.md) with access
     to the Vertex AI `text-embedding-005` model for embedding generation.
-- Have these features turned on:
+- These features turned on:
   - For GitLab.com, experiment features for your top-level namespace.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
-- Have [GitLab Duo](turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
-- Have a supported vector store configured:
+- [GitLab Duo](turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
+- A supported vector store configured:
   - Elasticsearch 8.0 and later.
   - OpenSearch 2.0 and later.
+- Administrator access.
 
 ## Enable semantic code search
 

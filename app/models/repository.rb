@@ -775,11 +775,9 @@ class Repository
   end
 
   def list_last_commits_for_tree(sha, path, offset: 0, limit: 25, literal_pathspec: false)
-    commits = raw_repository.list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
-
-    commits.each do |path, commit|
-      commits[path] = ::Commit.new(commit, container)
-    end
+    raw_repository
+      .list_last_commits_for_tree(sha, path, offset: offset, limit: limit, literal_pathspec: literal_pathspec)
+      .transform_values { |commit| ::Commit.new(commit, container) }
   end
 
   def last_commit_for_path(sha, path, literal_pathspec: false)

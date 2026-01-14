@@ -75,6 +75,10 @@ To fix this issue, enable the **Monitor** feature for the project.
 
 On-premise Sentry integrations may encounter this issue when attempting to connect.
 
+Prerequisites:
+
+- Administrator access.
+
 To fix this issue:
 
 1. In the upper-right corner, select **Admin**.

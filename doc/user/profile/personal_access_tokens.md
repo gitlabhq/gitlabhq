@@ -191,6 +191,10 @@ After you have used the API to disable personal access tokens, those tokens cann
 
 {{< /history >}}
 
+Prerequisites:
+
+- Administrator access.
+
 In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
 
 1. In the upper-right corner, select **Admin**.

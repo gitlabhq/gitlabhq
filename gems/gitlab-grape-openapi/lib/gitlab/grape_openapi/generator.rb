@@ -6,7 +6,9 @@ module Gitlab
       attr_reader :tag_registry
 
       def initialize(options = {})
-        @api_classes = Array(options[:api_classes])
+        @api_classes = Array(options[:api_classes]).reject do |api_class|
+          Gitlab::GrapeOpenapi.configuration.excluded_api_classes.include?(api_class.name)
+        end
         @entity_classes = Array(options[:entity_classes])
         @schema_registry = SchemaRegistry.new
         @tag_registry = TagRegistry.new

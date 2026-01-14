@@ -291,7 +291,8 @@ For more information on the administration of LDAP and group sync, see [LDAP syn
 
 Prerequisites:
 
-- You must have integrated an LDAP server with your instance.
+- An LDAP server integrated with your instance.
+- Administrator access.
 
 To link a custom admin role with an LDAP CN:
 
@@ -310,7 +311,8 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 
 Prerequisites:
 
-- You must have integrated an LDAP server with your instance.
+- An LDAP server integrated with your instance.
+- Administrator access.
 
 To link a custom admin role with an LDAP filter:
 

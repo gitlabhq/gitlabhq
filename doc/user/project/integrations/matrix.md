@@ -22,6 +22,12 @@ You can configure GitLab to send notifications to a Matrix room.
 
 ## Set up the Matrix integration in GitLab
 
+Prerequisites:
+
+- Administrator access for instance enablement.
+- The Owner role for group enablement.
+- The Maintainer or Owner role for project enablement.
+
 After you join to a Matrix room, you can configure GitLab to send notifications:
 
 1. To enable the integration:

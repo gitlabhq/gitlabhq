@@ -374,6 +374,10 @@ For **Requeue indexing workers**, the default value is `false`.
 For **Number of shards for non-code indexing**, the default value is `2`.
 These settings limit indexing to 2000 documents per minute.
 
+Prerequisites:
+
+- Administrator access.
+
 To adjust worker settings:
 
 1. In the upper-right corner, select **Admin**.

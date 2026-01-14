@@ -71,6 +71,10 @@ The service accounts page displays information about service accounts in your to
 
 {{< tab title="Instance-wide service accounts" >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To view service accounts for the entire instance:
 
 1. In the upper-right corner, select **Admin**.

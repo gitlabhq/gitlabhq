@@ -10,6 +10,10 @@ For general hardening guidelines, see the [main hardening documentation](hardeni
 You control the hardening recommendations for GitLab instances through the
 web interface.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## System hooks
 
 1. In the upper-right corner, select **Admin**.

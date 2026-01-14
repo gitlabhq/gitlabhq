@@ -28,6 +28,12 @@ You can configure GitLab to send notifications to a Webex Teams space:
 
 ## Configure settings in GitLab
 
+Prerequisites:
+
+- Administrator access for instance enablement.
+- The Owner role for group enablement.
+- The Maintainer or Owner role for project enablement.
+
 After you have a webhook URL for your Webex Teams space, you can configure GitLab to send
 notifications:
 

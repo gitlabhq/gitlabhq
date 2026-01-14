@@ -1323,6 +1323,7 @@ vulnerability_finding:
   - flip_guard
   - detection_transitions
   - project_tracked_context
+  - security_finding_enrichments
 scanner:
   - findings
   - security_findings

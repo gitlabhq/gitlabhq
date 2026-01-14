@@ -272,6 +272,10 @@ For more information, see [bot users for groups](../../group/settings/group_acce
 
 By default, GitLab deletes group and project access tokens and their [token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the last active token from the token family becomes inactive. This removes all tokens in the token family and the associated bot user and migrates the bot user contributions to a system-wide "Ghost User".
 
+Prerequisites:
+
+- Administrator access.
+
 To modify the retention period for inactive tokens:
 
 1. In the upper-right corner, select **Admin**.

@@ -141,7 +141,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab [18.6](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
+- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_on_agent_platform`. Disabled by default.
 - Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209) in GitLab 18.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 

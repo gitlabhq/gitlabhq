@@ -61,6 +61,10 @@ In the GitLab UI, foundational flows use a service account that:
 - Creates commits with its own email address.
 - Creates branches with the `workloads/` prefix (for example, `workloads/a1b2c3d4e5f`).
 
+Prerequisites:
+
+- Administrator access.
+
 To configure push rules for a project:
 
 1. Find the email address associated with the service account:
@@ -81,7 +85,7 @@ To configure push rules for a project:
       For example: `^(workloads|duo/feature)/.*$`
    1. Select **Save push rules**.
 
-If you are an administrator, you can create push rules for the instance:
+To create push rules for the instance:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.

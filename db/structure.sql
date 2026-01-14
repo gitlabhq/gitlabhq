@@ -27871,6 +27871,8 @@ CREATE TABLE security_finding_enrichments (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     cve text NOT NULL,
+    epss_score double precision,
+    is_known_exploit boolean,
     CONSTRAINT check_1f198c362f CHECK ((char_length(cve) <= 24))
 );
 
@@ -45762,7 +45764,11 @@ CREATE INDEX index_sec_finding_enrichments_on_created_at ON security_finding_enr
 
 CREATE INDEX index_sec_finding_enrichments_on_cve_enrichment_id ON security_finding_enrichments USING btree (cve_enrichment_id);
 
+CREATE INDEX index_sec_finding_enrichments_on_epss_score ON security_finding_enrichments USING btree (epss_score) WHERE (epss_score IS NOT NULL);
+
 CREATE UNIQUE INDEX index_sec_finding_enrichments_on_finding_and_cve ON security_finding_enrichments USING btree (finding_uuid, cve);
+
+CREATE INDEX index_sec_finding_enrichments_on_is_known_exploit ON security_finding_enrichments USING btree (is_known_exploit) WHERE (is_known_exploit IS NOT NULL);
 
 CREATE INDEX index_sec_finding_enrichments_on_project_id ON security_finding_enrichments USING btree (project_id);
 

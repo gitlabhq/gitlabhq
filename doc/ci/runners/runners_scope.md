@@ -715,6 +715,11 @@ To view runner statistics:
 
 {{< /history >}}
 
+Prerequisites:
+
+- Administrator access to view instance runners.
+- The Maintainer or Owner role to view group runners.
+
 The version of GitLab Runner used by your runners should be
 [kept up-to-date](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 

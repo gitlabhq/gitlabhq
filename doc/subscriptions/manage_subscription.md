@@ -413,6 +413,10 @@ also automated.
 
 ### Manually synchronize subscription data
 
+Prerequisites:
+
+- Administrator access.
+
 You can also manually synchronize subscription data at any time.
 
 1. In the upper-right corner, select **Admin**.

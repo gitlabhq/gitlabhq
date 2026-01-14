@@ -15,6 +15,10 @@ title: CI/CD settings
 
 Configure CI/CD settings for your GitLab instance in the Admin area.
 
+Prerequisites:
+
+- You must have administrator access.
+
 The following settings are available:
 
 - Variables: Configure CI/CD variables available to all projects in your instance.

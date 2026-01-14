@@ -80,6 +80,10 @@ To create a new application for a group:
 
 {{< /details >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To create an application for your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.

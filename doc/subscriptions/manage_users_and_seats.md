@@ -193,6 +193,10 @@ You can view and export your [license usage](../administration/license_usage.md)
 
 ### View users
 
+Prerequisites:
+
+- Administrator access.
+
 View the lists of users in your instance:
 
 1. In the upper-right corner, select **Admin**.

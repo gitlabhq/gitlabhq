@@ -266,6 +266,10 @@ You can also specify an IAM ARN, which is the IAM role you assigned to your EC2 
 For more information, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user).
 
+Prerequisites:
+
+- Administrator access.
+
 To set an IAM ARN as a master user, you must
 use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
@@ -296,6 +300,10 @@ If you create a master user in the internal user database,
 you can use HTTP basic authentication to make requests to the cluster.
 For more information, see the
 [AWS documentation](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-master-user).
+
+Prerequisites:
+
+- Administrator access.
 
 To create a master user, you must configure the OpenSearch domain URL and
 the master username and password on your GitLab instance:

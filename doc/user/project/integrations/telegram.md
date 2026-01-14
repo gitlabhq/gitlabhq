@@ -54,6 +54,12 @@ To configure the bot in Telegram:
 
 {{< /history >}}
 
+Prerequisites:
+
+- Administrator access for instance enablement.
+- The Owner role for group enablement.
+- The Maintainer or Owner role for project enablement.
+
 After you invite the bot to a Telegram channel, you can configure GitLab to send notifications:
 
 1. To enable the integration:

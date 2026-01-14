@@ -32108,6 +32108,7 @@ GitLab Duo Agent Platform session.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowagentname"></a>`agentName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.8. **Status**: Experiment. Name of the agent used for the workflow. |
 | <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during execution. |
 | <a id="duoworkflowaicatalogitemversionid"></a>`aiCatalogItemVersionId` {{< icon name="warning-solid" >}} | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | **Introduced** in GitLab 18.4. **Status**: Experiment. ID of the AI catalog item version that triggered the workflow. |
 | <a id="duoworkflowallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |

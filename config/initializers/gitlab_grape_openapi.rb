@@ -64,4 +64,40 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Todos' => 'To-Dos',
     'Vscode' => 'VSCode'
   }.freeze
+
+  # CONFIGURE EXCLUDED APIs
+  # API endpoints can be excluded from OpenApi spec generation and the resulting
+  # documentation by adding their API classes to the excluded_api_classes array.
+  # Grape API classes are not loaded when this config is intitialized.
+  # Only use string names. Using class constants will cause loading errors.
+  # eg.  config.excluded_api_classes = [ 'API::InternalApiClass', 'API::AdminApiClass' ]
+  config.excluded_api_classes = [
+    'GitlabSubscriptions::API::Internal::Users',
+    'GitlabSubscriptions::API::Internal::UpcomingReconciliations',
+    'GitlabSubscriptions::API::Internal::Subscriptions',
+    'GitlabSubscriptions::API::Internal::Namespaces::Provision',
+    'GitlabSubscriptions::API::Internal::Namespaces',
+    'GitlabSubscriptions::API::Internal::Members',
+    'GitlabSubscriptions::API::Internal::ComputeMinutes',
+    'GitlabSubscriptions::API::Internal::AddOnPurchases',
+    'GitlabSubscriptions::API::Internal::API',
+    'API::Internal::SecretsManager',
+    'API::Internal::Observability',
+    'API::Internal::Ai::XRay::Scan',
+    'API::Internal::Search::Zoekt',
+    'API::Internal::Ci::JobRouter',
+    'API::Internal::AppSec::Dast::SiteValidations',
+    'API::RemoteDevelopment::Internal::Agents::Agentw::ServerConfig',
+    'API::RemoteDevelopment::Internal::Agents::Agentw::AuthorizeUserAccess',
+    'API::RemoteDevelopment::Internal::Agents::Agentw::AgentInfo',
+    'API::Internal::Shellhorse',
+    'API::Internal::Workhorse',
+    'API::Internal::MailRoom',
+    'API::Internal::ErrorTracking',
+    'API::Internal::Kubernetes',
+    'API::Internal::Pages',
+    'API::Internal::Lfs',
+    'API::Internal::Base',
+    'API::Internal::AutoFlow'
+  ]
 end

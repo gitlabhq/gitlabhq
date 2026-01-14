@@ -156,12 +156,14 @@ Because of LLM limits and performance reasons, the content of the currently
 opened file is truncated:
 
 - For code completion: to 32,000 tokens (roughly 128,000 characters).
-- For code generation: to 200,000 tokens (roughly 800,000 characters).
+- For code generation: to 80,000 tokens (roughly 320,000 characters).
 
 Content above the cursor is prioritized over content below the cursor. The content
 above the cursor is truncated from the left side, and content below the cursor
 is truncated from the right side. These numbers represent the maximum input context
 size for Code Suggestions.
+
+Support for increasing the code generation limit is proposed in [issue 585841](https://gitlab.com/gitlab-org/gitlab/-/issues/585841).
 
 ## Output length
 
@@ -220,6 +222,10 @@ Prompt caching is enabled by default to improve Code Suggestions latency. When p
 
 You can turn off prompt caching for top-level groups in the GitLab Duo settings.
 This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+
+Prerequisites:
+
+- Administrator access for GitLab Self-Managed.
 
 On GitLab.com:
 

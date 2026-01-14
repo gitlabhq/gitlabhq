@@ -31,6 +31,12 @@ You can configure GitLab to send notifications to a Pumble channel:
 
 ## Configure settings in GitLab
 
+Prerequisites:
+
+- Administrator access for instance enablement.
+- The Owner role for group enablement.
+- The Maintainer or Owner role for project enablement.
+
 After you have a webhook URL for your Pumble channel, configure GitLab to send
 notifications:
 

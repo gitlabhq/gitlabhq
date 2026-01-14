@@ -57,6 +57,10 @@ your cluster's level.
 
 **Instance-level clusters**:
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Kubernetes**.
 

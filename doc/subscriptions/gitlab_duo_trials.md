@@ -31,9 +31,10 @@ The trial starts when you receive the confirmation email including the activatio
 
 Prerequisites:
 
-- You must have an active [GitLab Enterprise Edition (EE)](../administration/license.md).
-- You must have GitLab 18.0 or later.
-- Your instance must be set up to access [GitLab Duo Core](subscription-add-ons.md#gitlab-duo-self-hosted).
+- An active [GitLab Enterprise Edition (EE)](../administration/license.md).
+- GitLab 18.0 or later.
+- Access to [GitLab Duo Core](subscription-add-ons.md#gitlab-duo-self-hosted).
+- Administrator access.
 
 To start an Ultimate trial with GitLab Duo Core and get access to AI-native features:
 

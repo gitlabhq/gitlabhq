@@ -263,6 +263,10 @@ For example, the following policy document allows assuming a role whose name sta
 
 ### Configure Amazon authentication
 
+Prerequisites:
+
+- Administrator access.
+
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 

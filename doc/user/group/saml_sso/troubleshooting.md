@@ -534,6 +534,10 @@ You might get a 422 error that states "Email is not allowed for sign-up. Please 
 
 This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
 
+Prerequisites:
+
+- Administrator access.
+
 To implement this workaround:
 
 1. In the upper-right corner, select **Admin**.

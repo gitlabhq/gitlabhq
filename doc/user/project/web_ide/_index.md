@@ -401,6 +401,10 @@ The URL you're using to access the Web IDE and the configured OAuth callback URL
 
 To resolve this issue, you must update the OAuth callback URL to match the URL used to access the GitLab instance.
 
+Prerequisites:
+
+- Administrator access.
+
 To update the OAuth callback URL:
 
 1. In the upper-right corner, select **Admin**.

@@ -5,5 +5,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483550
 milestone: '17.4'
 group: group::compliance
-type: beta
+type: ops
 default_enabled: false

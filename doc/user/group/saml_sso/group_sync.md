@@ -438,6 +438,10 @@ To configure Azure AD for a GitLab.com group:
 
 {{< tab title="GitLab Self-Managed" >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To configure for GitLab Self-Managed:
 
 1. Configure [SAML SSO for the instance](../../../integration/saml.md).
@@ -482,7 +486,8 @@ When global group memberships lock is enabled:
 
 Prerequisites:
 
-- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md) must be configured.
+- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md) configured.
+- Administrator access.
 
 To lock memberships to SAML Group Links synchronization:
 
