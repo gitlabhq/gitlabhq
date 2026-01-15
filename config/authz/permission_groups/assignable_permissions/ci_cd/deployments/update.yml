@@ -1,0 +1,7 @@
+---
+name: update_deployment
+description: Grants the ability to modify deployments in a project
+boundaries:
+  - project
+permissions:
+  - update_deployment

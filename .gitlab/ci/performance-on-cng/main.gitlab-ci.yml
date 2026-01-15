@@ -95,6 +95,7 @@ run-performance-tests:
     CPT_PACKAGE_REGISTRY_API_TOKEN: $CPT_PACKAGE_REGISTRY_API_TOKEN
     CPT_BASELINE_PACKAGE_NAME: "gitlab-org-gitlab"
     GENERATE_REPORT_FROM_DUO: true
+    USE_TELEGRAF_METRICS: false
   rules:
     - if: '$PARENT_CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org?($|\/)/'
       variables:

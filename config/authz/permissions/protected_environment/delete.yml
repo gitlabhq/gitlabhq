@@ -1,0 +1,6 @@
+---
+name: delete_protected_environment
+description: Grants the ability to delete protected environments
+boundaries:
+  - project
+  - group

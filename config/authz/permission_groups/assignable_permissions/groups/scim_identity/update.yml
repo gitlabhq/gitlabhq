@@ -1,0 +1,7 @@
+---
+name: update_scim_identity
+description: Grants the ability to update SCIM user identity
+boundaries:
+  - group
+permissions:
+  - update_scim_identity

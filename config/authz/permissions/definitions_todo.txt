@@ -143,7 +143,6 @@ admin_work_item
 admin_work_item_lifecycle
 admin_work_item_link
 apply_suggestion
-approve_deployment
 approve_merge_request
 approve_user
 archive_group
@@ -194,7 +193,6 @@ create_container_image
 create_container_registry_protection_immutable_tag_rule
 create_coverage_fuzzing_corpus
 create_custom_emoji
-create_deployment
 create_design
 create_environment
 create_environment_terminal
@@ -460,7 +458,6 @@ read_ci_minutes_limited_summary
 read_ci_pipeline_schedules_plan_limit
 read_cloud_connector_status
 read_cluster
-read_cluster_agent
 read_cluster_environments
 read_code
 read_code_review_analytics
@@ -493,7 +490,6 @@ read_dependency_list_export
 read_dependency_proxy
 read_deploy_board
 read_deploy_key
-read_deployment
 read_design
 read_design_activity
 read_dora4_analytics
@@ -553,7 +549,6 @@ read_incident_management_oncall_schedule
 read_incident_management_timeline_event
 read_incident_management_timeline_event_tag
 read_insights
-read_instance_metadata
 read_instance_security_dashboard
 read_internal_note
 read_issuable
@@ -574,7 +569,6 @@ read_licenses
 read_limit_alert
 read_manual_variables
 read_member_access_request
-read_merge_request
 read_merge_request_closing_issue
 read_merge_request_iid
 read_merge_train_car
@@ -767,7 +761,6 @@ update_deploy_key
 update_deploy_key_title
 update_deploy_keys_project
 update_deploy_token
-update_deployment
 update_design
 update_duo_workflow
 update_environment

@@ -1,0 +1,7 @@
+---
+name: update_saml_identity
+description: Grants the ability to update SAML user identity
+boundaries:
+  - group
+permissions:
+  - update_saml_identity

@@ -2174,13 +2174,10 @@
   rules:
     - <<: *if-merge-request-targeting-stable-branch
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
+    - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-labels-pipeline-skip-performance
       when: never
     - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
-      when: never
-    - <<: *if-not-canonical-namespace
       when: never
     # Do not run for scheduled pipeline for ruby-next branch
     - <<: *if-ruby-branch-schedule
@@ -2188,13 +2185,11 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
+    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
+      changes: *backend-only-patterns
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
-    - <<: *if-group-code-review-label-or-maintenance-label-on-mr
-      changes: *backend-only-patterns
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - !reference [".prevent-tier-1", rules]
     - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:fulfillment-e2e-quarantine-report:

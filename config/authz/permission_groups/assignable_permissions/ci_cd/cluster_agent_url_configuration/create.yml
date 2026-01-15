@@ -1,0 +1,7 @@
+---
+name: create_cluster_agent_url_configuration
+description: Grants the ability to create cluster agent URL configurations
+boundaries:
+  - project
+permissions:
+  - create_cluster_agent_url_configuration

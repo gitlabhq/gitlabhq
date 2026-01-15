@@ -1,0 +1,7 @@
+---
+name: read_deployment
+description: Grants the ability to view deployments in a project
+boundaries:
+  - project
+permissions:
+  - read_deployment

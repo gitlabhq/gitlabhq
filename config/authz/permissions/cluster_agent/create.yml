@@ -1,0 +1,5 @@
+---
+name: create_cluster_agent
+description: Grants the ability to create cluster agents
+boundaries:
+  - project

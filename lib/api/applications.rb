@@ -30,6 +30,7 @@ module API
           desc: 'The application is used where the client secret can be kept confidential. Native mobile apps \
                         and Single Page Apps are considered non-confidential. Defaults to true if not supplied'
       end
+      route_setting :authorization, permissions: :create_oauth_application, boundary_type: :instance
       post do
         application = Authn::OauthApplication.new(declared_params)
         application.organization = Current.organization
@@ -47,6 +48,7 @@ module API
         is_array true
         tags ['applications']
       end
+      route_setting :authorization, permissions: :read_oauth_application, boundary_type: :instance
       get do
         applications = ApplicationsFinder.new.execute
         present applications, with: Entities::Application
@@ -60,6 +62,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
       end
+      route_setting :authorization, permissions: :delete_oauth_application, boundary_type: :instance
       delete ':id' do
         application = ApplicationsFinder.new(params).execute
         break not_found!('Application') unless application
@@ -77,6 +80,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the application (not the application_id)'
       end
+      route_setting :authorization, permissions: :renew_secret_oauth_application, boundary_type: :instance
       post ':id/renew-secret' do
         application = ApplicationsFinder.new(params).execute
         break not_found!('Application') unless application

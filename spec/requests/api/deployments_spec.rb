@@ -23,6 +23,11 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       get api("/projects/#{project.id}/deployments", user), params: params
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_deployment do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/deployments", personal_access_token: pat) }
+    end
+
     it_behaves_like 'enforcing job token policies', :read_deployments,
       allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
       let(:request) do
@@ -171,6 +176,12 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
     let_it_be(:deployment_with_bridge) { create(:deployment, :with_bridge, :success) }
     let_it_be(:deployment_with_build) { create(:deployment, :success) }
 
+    it_behaves_like 'authorizing granular token permissions', :read_deployment do
+      let(:project) { deployment_with_build.environment.project }
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/deployments/#{deployment_with_build.id}", personal_access_token: pat) }
+    end
+
     context 'as a member of the project' do
       shared_examples "returns project deployments" do
         let(:project) { deployment.environment.project }
@@ -254,6 +265,22 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
           status: 'success'
         }
       )
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_deployment do
+      let(:boundary_object) { project }
+      let(:request) do
+        post(
+          api("/projects/#{project.id}/deployments", personal_access_token: pat),
+          params: {
+            environment: 'staging',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+      end
     end
 
     it_behaves_like 'enforcing job token policies', [:admin_deployments, :admin_environments] do
@@ -538,6 +565,14 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_deployment do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/deployments/#{deploy.id}", personal_access_token: pat),
+          params: { status: 'success' }
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_deployments do
       let(:request) do
         put api("/projects/#{source_project.id}/deployments/#{deploy.id}"),
@@ -677,6 +712,11 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions', :delete_deployment do
+      let(:boundary_object) { project }
+      let(:request) { delete api("/projects/#{project.id}/deployments/#{old_deploy.id}", personal_access_token: pat) }
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_deployments do
       let(:request) do
         delete api("/projects/#{source_project.id}/deployments/#{old_deploy.id}"),
@@ -735,6 +775,13 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
     let!(:deployment) { create(:deployment, :success, project: project) }
 
     subject { get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", user) }
+
+    it_behaves_like 'authorizing granular token permissions', [:read_deployment, :read_merge_request] do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/deployments/#{deployment.id}/merge_requests", personal_access_token: pat)
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :read_deployments,
       allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do

@@ -1,5 +1,6 @@
 #import "./work_item_linked_items.fragment.graphql"
 
+# @feature_category: team_planning
 query workItemLinkedItems($fullPath: ID!, $iid: String!) {
   namespace(fullPath: $fullPath) {
     id

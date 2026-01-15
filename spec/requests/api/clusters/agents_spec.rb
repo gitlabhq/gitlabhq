@@ -40,6 +40,13 @@ RSpec.describe API::Clusters::Agents, feature_category: :deployment_management d
           expect(json_response.count).to eq(0)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster_agent do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/cluster_agents", personal_access_token: pat)
+        end
+      end
     end
 
     context 'unauthorized user' do
@@ -84,6 +91,13 @@ RSpec.describe API::Clusters::Agents, feature_category: :deployment_management d
         get api("/projects/#{project.id}/cluster_agents/#{non_existing_record_id}", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster_agent do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/cluster_agents/#{agent.id}", personal_access_token: pat)
+        end
       end
     end
 
@@ -130,6 +144,13 @@ RSpec.describe API::Clusters::Agents, feature_category: :deployment_management d
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_cluster_agent do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/cluster_agents", personal_access_token: pat), params: { name: 'new-agent' }
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/cluster_agents/:agent_id' do
@@ -161,6 +182,13 @@ RSpec.describe API::Clusters::Agents, feature_category: :deployment_management d
 
     it_behaves_like '412 response' do
       let(:request) { api("/projects/#{project.id}/cluster_agents/#{agent.id}", user) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_cluster_agent do
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/cluster_agents/#{agent.id}", personal_access_token: pat)
+      end
     end
   end
 end

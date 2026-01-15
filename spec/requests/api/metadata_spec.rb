@@ -15,6 +15,11 @@ RSpec.describe API::Metadata, feature_category: :shared do
     context 'when authenticated as user' do
       let(:user) { create(:user) }
 
+      it_behaves_like 'authorizing granular token permissions', :read_instance_metadata do
+        let(:boundary_object) { :instance }
+        let(:request) { get api(endpoint, personal_access_token: pat) }
+      end
+
       it 'returns the metadata information' do
         get api(endpoint, user)
 

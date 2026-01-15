@@ -1,5 +1,6 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
+# @feature_category: team_planning
 query BoardListsEE(
   $fullPath: ID!
   $boardId: BoardID!

@@ -1,3 +1,4 @@
+# @feature_category: continuous_integration
 query getDownstreamPipelineJobs($fullPath: ID!, $iid: ID!, $retried: Boolean) {
   project(fullPath: $fullPath) {
     id

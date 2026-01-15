@@ -53,34 +53,21 @@ table.no-vertical-table-lines tr {
 > [!warning]
 > The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is proposed for removal in GitLab 20.0. However, the removal timeline is not finalized, and you can continue using Gemnasium as needed. For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
-Dependency scanning identifies security vulnerabilities in your application's dependencies before
-they reach production. This identification protects your application from potential exploits and data breaches that
-could damage user trust and your business reputation. When vulnerabilities are found during pipeline
-runs, they appear directly in your merge request, giving you immediate visibility of security issues
-before code is committed.
+Dependency scanning integrates into your CI/CD pipelines, and runs automatically to identify
+security vulnerabilities in your application's dependencies. By scanning branches before they merge,
+you have immediate visibility of security issues in merge requests. This can help you make informed
+decisions about potential vulnerabilities before merging your code.
 
-All dependencies in your code, including transitive (nested) dependencies, are automatically
-analyzed during pipelines. This analysis catches security issues that manual review processes might miss.
-Dependency scanning integrates into your existing CI/CD workflow with minimal configuration changes,
-making it straightforward to implement secure development practices from day one.
+By default, dependency scanning analyzes all dependencies in your code, including runtime,
+development, and transitive (nested) dependencies. You can optionally exclude development
+dependencies from scanning.
 
-Vulnerabilities can also be identified outside a pipeline by
+- <i class="fa-youtube-play" aria-hidden="true"></i> For an overview, see [Dependency scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)<!-- Video published on 2024-04-06 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://www.youtube.com/watch?v=ii05cMbJ4xQ)<!-- Video published on 2023-09-19 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i> For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)<!-- Video published on 2023-09-19 -->
+
+For vulnerability scanning of dependencies outside a pipeline, see
 [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md).
-
-GitLab offers both dependency scanning and [container scanning](../container_scanning/_index.md) to
-ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
-use all available security scanners. For a comparison of these features, see
-[Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
-
-> [!warning]
-> Dependency scanning does not support runtime installation of compilers and interpreters.
-
-- <i class="fa-youtube-play" aria-hidden="true"></i>
-  For an overview, see [Dependency scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
-- <i class="fa-youtube-play" aria-hidden="true"></i>
-  For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
-- <i class="fa-youtube-play" aria-hidden="true"></i>
-  For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Getting started
 
@@ -304,6 +291,9 @@ After you are confident in the dependency scanning results for a single project,
 
 ## Supported languages and package managers
 
+> [!note]
+> Dependency scanning does not support runtime installation of compilers and interpreters.
+
 The following languages and dependency managers are supported by dependency scanning:
 
 <!-- markdownlint-disable MD044 -->
@@ -498,11 +488,31 @@ The following languages and dependency managers are supported by dependency scan
 <!-- markdownlint-enable MD029 -->
 <!-- markdownlint-enable MD044 -->
 
-### Running jobs in merge request pipelines
+## Supported development dependencies
+
+Detection of development dependencies is supported for the following languages and package managers:
+
+<!-- vale gitlab_base.Substitutions = NO -->
+<!-- markdownlint-disable MD044 -->
+| Language                  | Package manager | Files                                                                                          |
+|---------------------------|-----------------|------------------------------------------------------------------------------------------------|
+| C/C++/Fortran/Go/Python/R | conda           | conda-lock.yml                                                                                 |
+| Java                      | Maven           | maven.graph.json                                                                               |
+| Java/Kotlin               | Gradle          | dependencies.lock, dependencies.direct.lock, gradle-html-dependency-report.js, gradle.lockfile |
+| JavaScript/TypeScript     | npm             | package-lock.json, npm-shrinkwrap.json                                                         |
+| JavaScript/TypeScript     | pnpm            | pnpm-lock.yaml                                                                                 |
+| PHP                       | Composer        | composer.lock                                                                                  |
+| Python                    | Pipenv          | Pipfile.lock                                                                                   |
+| Python                    | Poetry          | poetry.lock                                                                                    |
+| Python                    | uv              | uv.lock                                                                                        |
+<!-- markdownlint-enable MD044 -->
+<!-- vale gitlab_base.Substitutions = YES -->
+
+## Running jobs in merge request pipelines
 
 See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)
 
-### Customizing analyzer behavior
+## Customizing analyzer behavior
 
 To customize dependency scanning, use [CI/CD variables](#available-cicd-variables).
 

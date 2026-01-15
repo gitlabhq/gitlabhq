@@ -1,0 +1,5 @@
+---
+name: update_oauth_application
+description: Grants the ability to update OAuth applications
+boundaries:
+  - instance
