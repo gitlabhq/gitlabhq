@@ -8,5 +8,6 @@ description: Data related to the Slack application integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105439
 milestone: '15.7'
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558262
+sharding_key:
+  organization_id: organizations
 table_size: small

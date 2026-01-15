@@ -1,0 +1,5 @@
+---
+name: delete_release_link
+description: Grants the ability to delete release links
+boundaries:
+  - project

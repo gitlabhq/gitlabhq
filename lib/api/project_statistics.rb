@@ -21,6 +21,7 @@ module API
         ]
         tags %w[projects]
       end
+      route_setting :authorization, permissions: :read_statistic, boundary_type: :project
 
       get ":id/statistics" do
         statistic_finder = ::Projects::DailyStatisticsFinder.new(user_project)

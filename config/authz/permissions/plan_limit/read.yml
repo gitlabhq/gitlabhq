@@ -1,0 +1,5 @@
+---
+name: read_plan_limit
+description: Grants the ability to view plan limits
+boundaries:
+  - instance

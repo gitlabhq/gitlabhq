@@ -1,0 +1,5 @@
+---
+name: read_job_token_scope_allowlist
+description: Grants the ability to view projects or groups in job token scope allowlist
+boundaries:
+  - project

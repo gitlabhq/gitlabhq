@@ -63,6 +63,11 @@ export default {
       required: false,
       default: '',
     },
+    isAnimating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -525,7 +530,11 @@ export default {
 <template>
   <section aria-labelledby="tree-list-heading" class="gl-flex gl-h-full gl-flex-col">
     <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
-      <file-tree-browser-toggle id="file-tree-browser-toggle" ref="toggle" />
+      <file-tree-browser-toggle
+        id="file-tree-browser-toggle"
+        ref="toggle"
+        :is-animating="isAnimating"
+      />
       <user-callout-dismisser feature-name="file_tree_browser_popover">
         <template #default="{ dismiss, shouldShowCallout }">
           <file-tree-browser-popover

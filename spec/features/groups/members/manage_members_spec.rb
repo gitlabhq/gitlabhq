@@ -84,7 +84,7 @@ RSpec.describe 'Groups > Members > Manage members', :js, feature_category: :grou
         page.within role_dropdown_selector do
           wait_for_requests
           toggle_listbox
-          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer Owner])
+          expect_listbox_items(Gitlab::Access.all_keys)
         end
       end
     end

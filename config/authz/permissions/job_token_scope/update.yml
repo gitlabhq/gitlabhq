@@ -1,0 +1,5 @@
+---
+name: update_job_token_scope
+description: Grants the ability to update CI/CD job token scope settings
+boundaries:
+  - project

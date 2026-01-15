@@ -19,11 +19,8 @@ title: Bidirectional mirroring
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Bidirectional mirroring may cause conflicts.
-
-{{< /alert >}}
+> [!warning]
+> Bidirectional mirroring may cause conflicts.
 
 Bidirectional [mirroring](_index.md) configures two repositories to both pull from,
 and push to, each other. There is no guarantee that either repository can update

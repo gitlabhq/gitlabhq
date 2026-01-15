@@ -38,7 +38,8 @@ module API
               use :pagination
             end
             route_setting :authentication, job_token_allowed: true
-            route_setting :authorization, job_token_policies: :read_releases,
+            route_setting :authorization, permissions: :read_release_link, boundary_type: :project,
+              job_token_policies: :read_releases,
               allow_public_access_for_enabled_project_features: :releases
             get 'links' do
               authorize! :read_release, release
@@ -67,7 +68,8 @@ module API
                 desc: 'The type of the link: `other`, `runbook`, `image`, or `package`. Defaults to `other`'
             end
             route_setting :authentication, job_token_allowed: true
-            route_setting :authorization, job_token_policies: :admin_releases
+            route_setting :authorization, permissions: :create_release_link, boundary_type: :project,
+              job_token_policies: :admin_releases
             post 'links' do
               result = ::Releases::Links::CreateService
                 .new(release, current_user, declared_params(include_missing: false))
@@ -96,7 +98,8 @@ module API
                 tags release_links_tags
               end
               route_setting :authentication, job_token_allowed: true
-              route_setting :authorization, job_token_policies: :read_releases,
+              route_setting :authorization, permissions: :read_release_link, boundary_type: :project,
+                job_token_policies: :read_releases,
                 allow_public_access_for_enabled_project_features: :releases
               get do
                 authorize! :read_release, release
@@ -127,7 +130,8 @@ module API
                 at_least_one_of :name, :url
               end
               route_setting :authentication, job_token_allowed: true
-              route_setting :authorization, job_token_policies: :admin_releases
+              route_setting :authorization, permissions: :update_release_link, boundary_type: :project,
+                job_token_policies: :admin_releases
               put do
                 result = ::Releases::Links::UpdateService
                   .new(release, current_user, declared_params(include_missing: false))
@@ -152,7 +156,8 @@ module API
                 tags release_links_tags
               end
               route_setting :authentication, job_token_allowed: true
-              route_setting :authorization, job_token_policies: :admin_releases
+              route_setting :authorization, permissions: :delete_release_link, boundary_type: :project,
+                job_token_policies: :admin_releases
               delete do
                 result = ::Releases::Links::DestroyService
                   .new(release, current_user)

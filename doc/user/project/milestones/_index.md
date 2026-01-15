@@ -248,11 +248,8 @@ name into a single group milestone.
 All issues and merge requests that were previously assigned to one of these project
 milestones become assigned to the new group milestone.
 
-{{< alert type="warning" >}}
-
-This action cannot be reversed and the changes are permanent.
-
-{{< /alert >}}
+> [!warning]
+> This action cannot be reversed and the changes are permanent.
 
 Prerequisites:
 

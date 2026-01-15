@@ -90,11 +90,8 @@ To view a group's burndown chart:
 
 A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
-{{< alert type="note" >}}
-
-You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
-
-{{< /alert >}}
+> [!note]
+> You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 

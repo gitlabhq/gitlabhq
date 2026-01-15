@@ -29,9 +29,10 @@ describe('FileTreeBrowserToggle', () => {
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-  const createComponent = () => {
+  const createComponent = (propsData = {}) => {
     wrapper = shallowMount(FileTreeBrowserToggle, {
       pinia,
+      propsData,
       stubs: {
         GlTooltip,
       },
@@ -226,6 +227,14 @@ describe('FileTreeBrowserToggle', () => {
       createComponent();
 
       expect(findShortcut().exists()).toBe(false);
+    });
+
+    it('does not render tooltip when isAnimating is true', () => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
+      createComponent({ isAnimating: true });
+
+      expect(findTooltip().exists()).toBe(false);
     });
   });
 });

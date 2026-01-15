@@ -116,11 +116,8 @@ To review certificates you've already accepted:
 
 ### Eclipse
 
-{{< alert type="note" >}}
-
-To enable GitLab Duo Code Suggestions, open an Eclipse project. If you open a single file, Code Suggestions is disabled for all file types.
-
-{{< /alert >}}
+> [!note]
+> To enable GitLab Duo Code Suggestions, open an Eclipse project. If you open a single file, Code Suggestions is disabled for all file types.
 
 To verify that Code Suggestions is turned on in Eclipse:
 
@@ -157,11 +154,8 @@ For example, in Visual Studio:
 
 The process for turning off Code Suggestions is different for each IDE.
 
-{{< alert type="note" >}}
-
-You cannot turn off code generation and code completion separately.
-
-{{< /alert >}}
+> [!note]
+> You cannot turn off code generation and code completion separately.
 
 ### VS Code
 

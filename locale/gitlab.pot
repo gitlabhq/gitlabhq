@@ -3015,6 +3015,9 @@ msgstr ""
 msgid "AICatalog|Other"
 msgstr ""
 
+msgid "AICatalog|Pending approval"
+msgstr ""
+
 msgid "AICatalog|Please describe below."
 msgstr ""
 
@@ -3043,6 +3046,9 @@ msgid "AICatalog|Project-specific automation."
 msgstr ""
 
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
+msgstr ""
+
+msgid "AICatalog|Ready to enable"
 msgstr ""
 
 msgid "AICatalog|Reason for reporting"
@@ -3166,6 +3172,12 @@ msgid "AICatalog|To prevent versioning issues, you can edit only the latest vers
 msgstr ""
 
 msgid "AICatalog|To prevent versioning issues, you can edit only the latest version of this flow. To edit an earlier version, %{linkStart}duplicate the flow%{linkEnd}."
+msgstr ""
+
+msgid "AICatalog|To use this %{itemType}, a user with at least the Maintainer role must enable it in this project."
+msgstr ""
+
+msgid "AICatalog|To use this %{itemType}, a user with the Owner role must enable it in the top-level group."
 msgstr ""
 
 msgid "AICatalog|Tools"
@@ -36899,6 +36911,12 @@ msgstr ""
 msgid "Integrations|There are no projects using custom settings"
 msgstr ""
 
+msgid "Integrations|This integration is deprecated and replaced with the %{linkStart}GitLab for Slack app%{linkEnd}. Contact your GitLab administrator for help."
+msgstr ""
+
+msgid "Integrations|This integration is deprecated. Install the %{linkStart}GitLab for Slack app%{linkEnd} instead."
+msgstr ""
+
 msgid "Integrations|This integration, and inheriting projects were reset."
 msgstr ""
 
@@ -41920,7 +41938,7 @@ msgstr ""
 msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
 msgstr ""
 
-msgid "MemberRole|The Security Manager role provides comprehensive visibility and management over security aspects of the group or project."
+msgid "MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project."
 msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
@@ -60393,6 +60411,9 @@ msgid "Security Dashboard"
 msgstr ""
 
 msgid "Security Finding not found"
+msgstr ""
+
+msgid "Security Manager"
 msgstr ""
 
 msgid "Security Policy project already exists, but is not linked."

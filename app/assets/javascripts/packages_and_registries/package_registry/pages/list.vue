@@ -288,9 +288,8 @@ export default {
         </div>
       </template>
     </delete-packages>
-    <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-center">
+    <div v-if="!isDeleteInProgress" class="gl-flex gl-justify-between @md/panel:gl-justify-center">
       <persisted-pagination
-        class="gl-mt-3"
         :pagination="pageInfo"
         @prev="fetchPreviousPage"
         @next="fetchNextPage"
@@ -298,7 +297,7 @@ export default {
       <page-size-selector
         v-if="packagesCount"
         :value="pageSize"
-        class="gl-relative gl-right-5 @md/panel:gl-absolute"
+        class="gl-relative gl-right-0 @md/panel:gl-absolute @md/panel:gl-right-5"
         @input="handlePageSizeChange"
       />
     </div>

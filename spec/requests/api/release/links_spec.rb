@@ -25,6 +25,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   end
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links' do
+    it_behaves_like 'authorizing granular token permissions', :read_release_link do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api("/projects/#{project.id}/releases/v0.1/assets/links", personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_releases,
       allow_public_access_for_enabled_project_features: :releases do
       let_it_be(:user) { maintainer }
@@ -114,6 +122,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let!(:release_link) { create(:release_link, release: release) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_release_link do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", personal_access_token: pat)
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :read_releases,
       allow_public_access_for_enabled_project_features: :releases do
@@ -215,6 +231,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     let(:last_release_link) { release.links.last }
+
+    it_behaves_like 'authorizing granular token permissions', :create_release_link do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{project.id}/releases/v0.1/assets/links", personal_access_token: pat), params: params
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_releases do
       let_it_be(:user) { maintainer }
@@ -369,6 +393,15 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     let(:params) { { name: 'awesome-app.msi' } }
     let!(:release_link) { create(:release_link, release: release) }
 
+    it_behaves_like 'authorizing granular token permissions', :update_release_link do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", personal_access_token: pat),
+          params: params
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_releases do
       let_it_be(:user) { maintainer }
       let(:request) do
@@ -515,6 +548,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   describe 'DELETE /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let!(:release_link) do
       create(:release_link, release: release)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_release_link do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", personal_access_token: pat)
+      end
     end
 
     it_behaves_like 'enforcing job token policies', :admin_releases do

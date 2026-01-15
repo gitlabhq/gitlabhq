@@ -79,11 +79,8 @@ After your pipeline completes successfully:
 1. In **Deployments**, you can view your active deployment URL.
 1. To visit your deployed GitLab Pages site, select the URL.
 
-{{< alert type="note" >}}
-
-It might take a few minutes for your site to become available after the pipeline completes.
-
-{{< /alert >}}
+> [!note]
+> It might take a few minutes for your site to become available after the pipeline completes.
 
 ## Troubleshooting
 

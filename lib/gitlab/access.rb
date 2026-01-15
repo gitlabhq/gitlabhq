@@ -55,12 +55,16 @@ module Gitlab
         options_with_owner.values
       end
 
+      def all_keys
+        options_with_owner.keys
+      end
+
       def options
         {
           "Guest" => GUEST,
           "Planner" => PLANNER,
           "Reporter" => REPORTER,
-          **(Gitlab::Security::SecurityManagerConfig.enabled? ? { "Security Manager" => SECURITY_MANAGER } : {}),
+          "Security Manager" => (Gitlab::Security::SecurityManagerConfig.enabled? ? SECURITY_MANAGER : nil),
           "Developer" => DEVELOPER,
           "Maintainer" => MAINTAINER
         }.compact
@@ -84,7 +88,7 @@ module Gitlab
           GUEST => s_('MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders.'),
           PLANNER => s_('The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code.'),
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
-          **(Gitlab::Security::SecurityManagerConfig.enabled? ? { SECURITY_MANAGER => s_('MemberRole|The Security Manager role provides comprehensive visibility and management over security aspects of the group or project.') } : {}),
+          SECURITY_MANAGER => (Gitlab::Security::SecurityManagerConfig.enabled? ? s_('MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project.') : nil),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
           MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
           OWNER => s_('MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')

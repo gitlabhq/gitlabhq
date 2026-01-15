@@ -125,6 +125,12 @@ describe('Tree List', () => {
     expect(findFileTreeToggle().exists()).toBe(true);
   });
 
+  it('passes isAnimating prop to file tree browser toggle', async () => {
+    await createComponent(mockResponse, { propsData: { isAnimating: true } });
+
+    expect(findFileTreeToggle().props('isAnimating')).toBe(true);
+  });
+
   it('renders file rows with correct props', () => {
     const fileRows = findFileRows();
 

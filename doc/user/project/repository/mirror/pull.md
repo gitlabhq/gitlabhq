@@ -111,11 +111,8 @@ To always update your local branches with remote versions, even if they have
 diverged from the remote, select **Overwrite diverged branches** when you
 create a mirror.
 
-{{< alert type="warning" >}}
-
-For mirrored branches, enabling this option results in the loss of local changes.
-
-{{< /alert >}}
+> [!warning]
+> For mirrored branches, enabling this option results in the loss of local changes.
 
 ### Trigger pipelines for mirror updates
 
@@ -133,11 +130,8 @@ the remote repository updates branches or tags. Before you enable this feature:
   - Make an update to the remote repository that attempts to fetch stored CI/CD variable values when the pipeline runs.
   - Could push commits to your mirrored project if the [**Allow Git push requests to the repository**](../../../../ci/jobs/ci_job_token.md#allow-git-push-requests-to-your-project-repository) setting is enabled.
 
-{{< alert type="warning" >}}
-
-Only enable this feature for your own projects or those with trusted maintainers.
-
-{{< /alert >}}
+> [!warning]
+> Only enable this feature for your own projects or those with trusted maintainers.
 
 ## Trigger an update by using the API
 

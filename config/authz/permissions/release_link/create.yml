@@ -1,0 +1,5 @@
+---
+name: create_release_link
+description: Grants the ability to create release links
+boundaries:
+  - project

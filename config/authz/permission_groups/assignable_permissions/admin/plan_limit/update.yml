@@ -1,0 +1,7 @@
+---
+name: update_plan_limit
+description: Grants the ability to modify plan limits
+boundaries:
+  - instance
+permissions:
+  - update_plan_limit

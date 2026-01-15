@@ -138,11 +138,8 @@ The previous YAML example uses [user-defined job names](_index.md#user-defined-j
 
 ## Nuxt.js
 
-{{< alert type="note" >}}
-
-GitLab Pages supports only static sites.
-
-{{< /alert >}}
+> [!note]
+> GitLab Pages supports only static sites.
 
 By default, Nuxt uses the `public` folder to store static assets. For GitLab
 Pages, rename the `public` folder to a collision-free alternative first:

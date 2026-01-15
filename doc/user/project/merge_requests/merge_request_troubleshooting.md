@@ -108,11 +108,8 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 If closing a merge request doesn't work through the UI or API, try closing it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 u = User.find_by_username('<username>')

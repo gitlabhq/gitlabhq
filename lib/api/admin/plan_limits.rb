@@ -7,7 +7,7 @@ module API
 
       PLAN_LIMITS_TAGS = %w[plan_limits].freeze
 
-      feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+      feature_category :plan_provisioning
 
       helpers do
         def current_plan(name)
@@ -31,6 +31,7 @@ module API
         optional :plan_name, type: String, values: Plan.all_plans, default: Plan::DEFAULT,
           desc: 'Name of the plan to get the limits from. Default: default.'
       end
+      route_setting :authorization, permissions: :read_plan_limit, boundary_type: :instance
       get "application/plan_limits" do
         params = declared_params(include_missing: false)
         plan = current_plan(params.delete(:plan_name))
@@ -91,6 +92,7 @@ module API
           desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
             '0 for unlimited (GitLab.com only).'
       end
+      route_setting :authorization, permissions: :update_plan_limit, boundary_type: :instance
       put "application/plan_limits" do
         params = declared_params(include_missing: false)
         plan = current_plan(params.delete(:plan_name))

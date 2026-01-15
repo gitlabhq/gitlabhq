@@ -133,11 +133,8 @@ To create a permalink:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 When viewing a repository file, GitLab shows a badge with the number of open merge requests that target
 the current branch and modify the file. This helps you identify files that have pending changes.

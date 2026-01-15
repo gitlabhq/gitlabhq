@@ -46,5 +46,13 @@ RSpec.describe API::ProjectStatistics, feature_category: :source_code_management
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(json_response['message']).to eq('403 Forbidden')
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_statistic do
+      let(:user) { reporter }
+      let(:boundary_object) { public_project }
+      let(:request) do
+        get api("/projects/#{public_project.id}/statistics", personal_access_token: pat)
+      end
+    end
   end
 end

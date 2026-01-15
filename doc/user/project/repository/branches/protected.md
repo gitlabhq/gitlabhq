@@ -13,11 +13,8 @@ title: Protected branches
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-The **Protected branches** settings for projects will be removed. Configure protected branches from **Settings** > **Repository** > **Branch rules** instead.
-
-{{< /alert >}}
+> [!note]
+> The **Protected branches** settings for projects will be removed. Configure protected branches from **Settings** > **Repository** > **Branch rules** instead.
 
 Protected branches enforce specific permissions on branches in GitLab to ensure code stability
 and quality. Protected branches:

@@ -126,11 +126,8 @@ to apply to every repository's default branch for the instance, or for individua
 - **Not protected** - Both developers and maintainers can push new commits
   and force push.
 
-{{< alert type="warning" >}}
-
-Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
-
-{{< /alert >}}
+> [!warning]
+> Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
 
 ### For all projects in an instance
 
@@ -178,11 +175,8 @@ disable this privilege for group owners, enforcing the protection rule set for t
 1. Clear the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-GitLab administrators can still update the default branch protection of a group.
-
-{{< /alert >}}
+> [!note]
+> GitLab administrators can still update the default branch protection of a group.
 
 ### For all projects in a group
 

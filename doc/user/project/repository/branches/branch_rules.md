@@ -105,11 +105,8 @@ To create a branch rule:
 
 ### Add a branch rule protection
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 To add protections to a new branch:
 
@@ -129,11 +126,8 @@ To add protections to a new branch:
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 Prerequisites:
 
@@ -212,11 +206,8 @@ To edit a squash option:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Not available for `all protected branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all protected branches`.
 
 To add a status check service:
 
@@ -267,11 +258,8 @@ To edit a branch rule target:
 
 For information about branch protection controls, see [Protected branches](protected.md).
 
-{{< alert type="note" >}}
-
-Not available for `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Not available for `all branches`.
 
 ## Delete a branch rule
 
@@ -291,11 +279,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-Deleting a branch rule is not available for rules targeting `all branches`.
-
-{{< /alert >}}
+> [!note]
+> Deleting a branch rule is not available for rules targeting `all branches`.
 
 Prerequisites:
 

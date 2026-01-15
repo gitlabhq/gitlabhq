@@ -130,11 +130,8 @@ The **Update status check** form is then shown.
 
 ![Status checks update form](img/status_checks_update_form_v14_0.png)
 
-{{< alert type="note" >}}
-
-You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
-
-{{< /alert >}}
+> [!note]
+> You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
 
 To update the status check, change the values in the form and select **Update status check**.
 

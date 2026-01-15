@@ -73,11 +73,8 @@ You can configure redirects for your site using a `_redirects` file. For more in
 
 Permanently delete all Pages deployments for a project.
 
-{{< alert type="note" >}}
-
-The change cannot be undone.
-
-{{< /alert >}}
+> [!warning]
+> The change cannot be undone.
 
 To delete your pages:
 
@@ -323,11 +320,8 @@ create-pages:
       - dist
 ```
 
-{{< alert type="warning" >}}
-
-The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/519499) in GitLab 17.9 and must now be nested under the `pages` keyword.
-
-{{< /alert >}}
+> [!note]
+> The top-level `publish` keyword was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/519499) in GitLab 17.9 and must now be nested under the `pages` keyword.
 
 ## Regenerate unique domain for GitLab Pages
 

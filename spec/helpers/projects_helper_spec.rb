@@ -1602,7 +1602,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       Gitlab::Access::NO_ACCESS           | _('No access')
       Gitlab::Access::MINIMAL_ACCESS      | _("Minimal Access")
       Gitlab::Access::GUEST               | _('Guest')
+      Gitlab::Access::PLANNER             | _('Planner')
       Gitlab::Access::REPORTER            | _('Reporter')
+      Gitlab::Access::SECURITY_MANAGER    | _('Security Manager')
       Gitlab::Access::DEVELOPER           | _('Developer')
       Gitlab::Access::MAINTAINER          | _('Maintainer')
       Gitlab::Access::OWNER               | _('Owner')
@@ -1611,6 +1613,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     with_them do
       it 'with correct key' do
         expect(helper.localized_project_human_access(key)).to eq(localized_project_human_access)
+      end
+    end
+    context 'when security manager is disabled', :disable_security_manager do
+      it 'does not include Security Manager role' do
+        expect(helper.localized_project_human_access(Gitlab::Access::SECURITY_MANAGER)).to be_blank
       end
     end
   end

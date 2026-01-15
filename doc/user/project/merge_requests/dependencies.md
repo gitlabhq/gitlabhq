@@ -88,11 +88,8 @@ graph LR;
 Nested dependencies do not display in the GitLab UI, but UI support is
 proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
 
-{{< alert type="note" >}}
-
-A merge request cannot depend on itself (self-referential), but it's possible to create circular dependencies.
-
-{{< /alert >}}
+> [!note]
+> A merge request cannot depend on itself (self-referential), but it's possible to create circular dependencies.
 
 ## View dependencies for a merge request
 

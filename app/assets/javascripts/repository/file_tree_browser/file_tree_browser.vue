@@ -39,6 +39,7 @@ export default {
   data() {
     return {
       treeWidth: TREE_WIDTH,
+      isAnimating: false,
     };
   },
   computed: {
@@ -91,7 +92,11 @@ export default {
       data-testid="overlay"
       @click="onOverlayClick"
     ></div>
-    <transition name="file-tree-browser-slide">
+    <transition
+      name="file-tree-browser-slide"
+      @before-leave="isAnimating = true"
+      @after-leave="isAnimating = false"
+    >
       <file-browser-height
         v-show="fileTreeBrowserIsVisible"
         :enable-sticky-height="!isCompact"
@@ -108,7 +113,12 @@ export default {
           @update:size="onSizeUpdate"
           @resize-end="saveTreeWidthPreference"
         />
-        <tree-list :project-path="projectPath" :current-ref="currentRef" :ref-type="refType" />
+        <tree-list
+          :project-path="projectPath"
+          :current-ref="currentRef"
+          :ref-type="refType"
+          :is-animating="isAnimating"
+        />
         <gl-button
           target="_blank"
           icon="comment-dots"

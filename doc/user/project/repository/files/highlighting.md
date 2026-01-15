@@ -37,11 +37,8 @@ library for syntax highlighting.
 
 ## Override syntax highlighting for a file type
 
-{{< alert type="note" >}}
-
-The Web IDE [does not support `.gitattribute` files](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
-
-{{< /alert >}}
+> [!note]
+> The Web IDE [does not support `.gitattribute` files](https://gitlab.com/gitlab-org/gitlab/-/issues/22014).
 
 To override syntax highlighting for a file type:
 

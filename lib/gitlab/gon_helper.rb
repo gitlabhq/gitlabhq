@@ -111,6 +111,8 @@ module Gitlab
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, true)
+
+      push_force_frontend_feature_flag(:security_manager_role_enabled, Gitlab::Security::SecurityManagerConfig.enabled?)
     end
 
     # Exposes the state of a feature flag to the frontend code.

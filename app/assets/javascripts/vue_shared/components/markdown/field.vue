@@ -149,6 +149,11 @@ export default {
       required: false,
       default: () => [],
     },
+    immersive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -375,8 +380,10 @@ export default {
   <div
     ref="gl-form"
     class="js-vue-markdown-field md-area gfm-form !gl-relative"
+    :class="{ 'immersive !gl-border-none !gl-bg-inherit': immersive, 'gl-relative': !immersive }"
     :data-uploads-path="uploadsPath"
   >
+    <slot v-if="immersive" name="header"></slot>
     <markdown-header
       :editor-ai-actions="editorAiActions"
       :preview-markdown="previewMarkdown"
@@ -392,11 +399,22 @@ export default {
       :supports-quick-actions="supportsQuickActions"
       data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
+      :immersive="immersive"
       @showPreview="showPreview"
       @hidePreview="hidePreview"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >
-      <template #header-buttons><slot name="header-buttons"></slot></template>
+      <template #header-buttons>
+        <slot name="header-buttons"></slot>
+        <markdown-toolbar
+          v-if="immersive"
+          :markdown-docs-path="markdownDocsPath"
+          :can-attach-file="canAttachFile"
+          :show-comment-tool-bar="showCommentToolBar"
+          :show-content-editor-switcher="showContentEditorSwitcher"
+          @enableContentEditor="$emit('enableContentEditor')"
+        />
+      </template>
     </markdown-header>
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
@@ -410,10 +428,12 @@ export default {
           ><gl-icon variant="subtle" :size="24" name="minimize"
         /></a>
         <markdown-toolbar
+          v-if="!immersive"
           :markdown-docs-path="markdownDocsPath"
           :can-attach-file="canAttachFile"
           :show-comment-tool-bar="showCommentToolBar"
           :show-content-editor-switcher="showContentEditorSwitcher"
+          :class="{ showContentEditorSwitcher: 'gl-border-t' }"
           @enableContentEditor="$emit('enableContentEditor')"
         >
           <template #toolbar><slot name="toolbar"></slot></template>

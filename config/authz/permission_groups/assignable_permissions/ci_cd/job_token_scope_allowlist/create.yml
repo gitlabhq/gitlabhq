@@ -1,0 +1,7 @@
+---
+name: create_job_token_scope_allowlist
+description: Grants the ability to add projects or groups to job token scope allowlist
+boundaries:
+  - project
+permissions:
+  - create_job_token_scope_allowlist

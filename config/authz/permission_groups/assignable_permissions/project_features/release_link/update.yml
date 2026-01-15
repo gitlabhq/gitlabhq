@@ -1,0 +1,7 @@
+---
+name: update_release_link
+description: Grants the ability to update release links
+permissions:
+  - update_release_link
+boundaries:
+  - project

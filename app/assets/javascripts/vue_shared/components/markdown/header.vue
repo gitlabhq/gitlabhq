@@ -129,6 +129,11 @@ export default {
       required: false,
       default: false,
     },
+    immersive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const modifierKey = getModifierKey();
@@ -611,9 +616,10 @@ export default {
       <div
         data-testid="md-header-toolbar"
         class="md-header-toolbar gl-flex gl-grow gl-items-start gl-gap-y-2 gl-py-3"
+        :class="{ 'gl-pt-0': immersive }"
       >
         <div
-          class="gl-flex gl-flex-wrap gl-gap-y-2"
+          class="gl-flex gl-grow gl-flex-wrap gl-gap-y-2"
           role="toolbar"
           :aria-label="$options.i18n.editorToolbar"
         >
@@ -839,7 +845,11 @@ export default {
           </template>
           <slot v-if="!previewMarkdown" name="header-buttons"></slot>
         </div>
-        <div v-if="!previewMarkdown" class="full-screen gl-flex gl-grow gl-justify-end">
+        <div
+          v-if="!previewMarkdown"
+          class="full-screen gl-flex gl-justify-end gl-py-2"
+          :class="{ 'gl-grow': !immersive }"
+        >
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter !gl-mr-0"

@@ -148,7 +148,8 @@ module IntegrationsHelper
 
   def integration_list_data(integrations, group: nil, project: nil)
     {
-      integrations: integrations.map { |i| serialize_integration(i, group: group, project: project) }.to_json
+      integrations: integrations.map { |i| serialize_integration(i, group: group, project: project) }.to_json,
+      is_admin: current_user&.admin.to_s
     }
   end
 

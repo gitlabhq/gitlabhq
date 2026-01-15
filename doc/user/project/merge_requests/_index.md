@@ -56,11 +56,8 @@ found to your merge request:
 | Commit message with an issue closing pattern like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
 | Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-a-number), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
-{{< alert type="note" >}}
-
-Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
-
-{{< /alert >}}
+> [!note]
+> Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
 
 ## View merge requests
 

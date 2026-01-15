@@ -26,11 +26,8 @@ Your users benefit from:
 - Ability to download specific versions with their corresponding assets
 - Simple way to track your project's evolution over time
 
-{{< alert type="warning" >}}
-
-Deleting a Git tag associated with a release also deletes the release.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a Git tag associated with a release also deletes the release.
 
 When you create a release, or after, you can:
 

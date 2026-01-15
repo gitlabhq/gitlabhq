@@ -36,11 +36,8 @@ By understanding the libraries and other dependencies in use, Repository X-Ray h
 tailor suggestions to match the coding patterns, styles, and technologies used in the project. This results
 in code suggestions that integrate more seamlessly and follow best practices for the given stack.
 
-{{< alert type="note" >}}
-
-Repository X-Ray only enhances code generation requests and not code completion requests.
-
-{{< /alert >}}
+> [!note]
+> Repository X-Ray only enhances code generation requests and not code completion requests.
 
 ## How Repository X-Ray works
 

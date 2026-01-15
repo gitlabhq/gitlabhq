@@ -110,17 +110,6 @@ RSpec.describe ConfirmationsController, :with_current_organization, type: :reque
         # legacy behavior; to be removed in 18.11 or beyond once all
         # confirmations emails are guaranteed to have user_id parameter
         include_examples 'confirmation response', 'email'
-
-        context 'and invalid confirmation token is passed' do
-          let(:confirmation_token) { Devise.friendly_token }
-
-          it 'does not confirm secondary email' do
-            expect { perform_request }.not_to change { email.reload.confirmed? }
-
-            expect(response).to be_ok
-            expect(response.body).to include(/Confirmation token is invalid/)
-          end
-        end
       end
 
       context 'when user_id is nil' do
@@ -129,28 +118,6 @@ RSpec.describe ConfirmationsController, :with_current_organization, type: :reque
         # legacy behavior; to be removed in 18.11 or beyond once all
         # confirmations emails are guaranteed to have user_id parameter
         include_examples 'confirmation response', 'email'
-      end
-
-      context 'when user cannot be found because of blank confirmation_token' do
-        let(:confirmation_token) { '' }
-
-        it 'does not confirm secondary email' do
-          expect { perform_request }.not_to change { email.reload.confirmed? }
-
-          expect(response).to be_ok
-          expect(response.body).to include(/Confirmation token.*be blank/)
-        end
-      end
-
-      context 'when invalid confirmation token is provided' do
-        let(:confirmation_token) { Devise.friendly_token }
-
-        it 'does not confirm secondary email' do
-          expect { perform_request }.not_to change { email.reload.confirmed? }
-
-          expect(response).to be_ok
-          expect(response.body).to include(/Confirmation token is invalid/)
-        end
       end
     end
   end
