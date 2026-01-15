@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml[Rails.env].keys
 
 namespace :gitlab do
   namespace :background_migrations do
@@ -9,7 +9,7 @@ namespace :gitlab do
       include Gitlab::Database::BackgroundMigration::RakeTask
 
       migrations = []
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+      databases.each do |database_name|
         next if database_name.to_s == 'geo'
 
         model = Gitlab::Database.database_base_models[database_name]
@@ -139,7 +139,7 @@ namespace :gitlab do
         print_message("Bye.", force_exit: true)
       end
 
-      ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database_name|
+      databases.each do |database_name|
         next if database_name.to_s == 'geo'
 
         model = Gitlab::Database.database_base_models[database_name]

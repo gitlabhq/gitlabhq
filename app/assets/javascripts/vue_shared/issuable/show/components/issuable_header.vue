@@ -1,23 +1,40 @@
 <script>
-import { GlIcon, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlBadge,
+  GlButton,
+  GlLink,
+  GlPopover,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { issuableStatusText, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
+import { issuableStatusText, STATUS_OPEN, STATUS_REOPENED, TYPE_TICKET } from '~/issues/constants';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { fallsBefore } from '~/lib/utils/datetime/date_calculation_utility';
 import { isExternal } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import {
+  TICKET_CALLOUT_DISMISSED_END_DATE,
+  TICKET_CALLOUT_DISMISSED_KEY,
+} from '~/work_items/constants';
 
 export default {
+  iconId: uniqueId(),
   components: {
     ConfidentialityBadge,
     GlIcon,
     GlBadge,
     GlButton,
     GlLink,
+    GlPopover,
     GlSprintf,
     HiddenBadge,
     LockedBadge,
@@ -98,6 +115,11 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      isTicketCalloutDismissed: localStorage.getItem(TICKET_CALLOUT_DISMISSED_KEY) === 'true',
+    };
+  },
   computed: {
     badgeText() {
       return issuableStatusText[this.issuableState];
@@ -126,6 +148,14 @@ export default {
     isAuthorExternal() {
       return isExternal(this.author.webUrl ?? '');
     },
+    showTicketCallout() {
+      return (
+        fallsBefore(Date.now(), TICKET_CALLOUT_DISMISSED_END_DATE) &&
+        this.issuableType === TYPE_TICKET &&
+        !this.isTicketCalloutDismissed &&
+        isLoggedIn()
+      );
+    },
     taskStatusString() {
       const { count, completedCount } = this.taskCompletionStatus;
 
@@ -146,6 +176,10 @@ export default {
     this.toggleSidebarButtonEl = document.querySelector('.js-toggle-right-sidebar-button');
   },
   methods: {
+    dismissTicketCallout() {
+      this.isTicketCalloutDismissed = true;
+      localStorage.setItem(TICKET_CALLOUT_DISMISSED_KEY, 'true');
+    },
     handleRightSidebarToggleClick() {
       this.$emit('toggle');
       if (this.toggleSidebarButtonEl) {
@@ -173,10 +207,27 @@ export default {
 
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"
+        :id="$options.iconId"
         show-text
         :work-item-type="issuableType"
         icon-class="gl-fill-icon-subtle"
       />
+      <gl-popover
+        v-if="showTicketCallout"
+        show
+        show-close-button
+        :target="$options.iconId"
+        :title="s__('WorkItem|Introducing Tickets')"
+        triggers=""
+        @close-button-clicked="dismissTicketCallout"
+      >
+        {{
+          s__(
+            'WorkItem|Issues created from Service Desk are now Tickets. Filter by type "Ticket" to see only these items.',
+          )
+        }}
+      </gl-popover>
+
       <gl-sprintf :message="createdMessage">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />

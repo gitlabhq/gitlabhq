@@ -1,3 +1,4 @@
+import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import { __, s__ } from '~/locale';
 import {
   ENTER_KEY,
@@ -21,6 +22,8 @@ export const STATE_CLOSED = 'CLOSED';
 export const STATE_EVENT_REOPEN = 'REOPEN';
 export const STATE_EVENT_CLOSE = 'CLOSE';
 
+export const TICKET_CALLOUT_DISMISSED_END_DATE = newDate('2026-02-18');
+export const TICKET_CALLOUT_DISMISSED_KEY = 'ticket_callout_dismissed';
 export const TRACKING_CATEGORY_SHOW = 'workItems:show';
 
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';

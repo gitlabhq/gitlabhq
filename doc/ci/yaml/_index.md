@@ -6000,6 +6000,68 @@ In this example, GitLab launches two containers for the job:
 
 ---
 
+#### `services:name`
+
+The full name of the image to use for the service.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: The name of the service image, including the registry path if needed, in one of these formats:
+
+- `<image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `<image-name>:<tag>`
+- `<image-name>@<digest>`
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+**Example of `services:name`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+  - name: registry.example.com/my-org/custom-service:latest
+```
+
+**Additional details**:
+
+- Use [`alias`](#servicesalias) to define unique name aliases when using multiple identical service images, or when the service image name is long.
+- When used with other service options like `entrypoint`, `command`, or `variables`, the `name` keyword is required.
+- For more information, see [accessing the services](../services/_index.md#accessing-the-services).
+
+---
+
+#### `services:alias`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9.
+
+{{< /history >}}
+
+Additional aliases to access the service from the job's container.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: A string with one or more aliases separated by spaces or commas.
+
+**Example of `services:alias`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+    alias: db,postgres,pg
+  - name: mysql:latest
+    alias: mysql-1
+```
+
+**Additional details**:
+
+- Multiple aliases can be separated by spaces or commas.
+- For more information, see [accessing the services](../services/_index.md#accessing-the-services).
+  and [using aliases as service container names for the Kubernetes executor](../services/_index.md#using-aliases-as-service-container-names-for-the-kubernetes-executor).
+
+---
+
 #### `services:docker`
 
 {{< history >}}
@@ -6086,6 +6148,82 @@ arm-sql-job:
       kubernetes:
         user: "1001:1001"
 ```
+
+---
+
+#### `services:entrypoint`
+
+A command or script to execute as the container's entrypoint.
+
+When the Docker container is created, the `entrypoint` is translated to the Docker `--entrypoint` option.
+The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/reference/dockerfile/#entrypoint),
+where each shell token is a separate string in the array.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: An array of strings representing the entrypoint command.
+
+**Example of `services:entrypoint`**:
+
+```yaml
+services:
+  - name: my-postgres:11.7
+    entrypoint: ["/usr/local/bin/db-postgres"]
+```
+
+---
+
+#### `services:command`
+
+Command or script that should be used as the container's command.
+
+It's translated to arguments passed to Docker after the image's name. The syntax is similar to the
+[Dockerfile `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive,
+where each shell token is a separate string in the array.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: An array of strings representing the command.
+
+**Example of `services:command`**:
+
+```yaml
+services:
+  - name: super/sql:latest
+    command: ["/usr/bin/super-sql", "run"]
+```
+
+---
+
+#### `services:variables`
+
+Additional environment variables that are passed exclusively to the service.
+Service variables are passed exclusively to the service container and are not available to the job container.
+
+The syntax is the same as [job variables](../variables/_index.md).
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
+
+**Supported values**: A hash of environment variable names and values.
+
+**Example of `services:variables`**:
+
+```yaml
+services:
+  - name: postgres:11.7
+    alias: db
+    variables:
+      POSTGRES_DB: "my_custom_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "example"
+      PGDATA: "/var/lib/postgresql/data"
+```
+
+**Additional details**:
+
+- Service variables cannot reference themselves, they do not support variable expansion or interpolation.
+- Variables defined at the job or pipeline level are automatically passed to services. See [passing CI/CD variables to services](../services/_index.md#passing-cicd-variables-to-services) for more information.
+- Service variables are only available to the specific service they are defined for.
 
 ---
 

@@ -64361,9 +64361,6 @@ msgstr ""
 msgid "ServiceDesk|Invalid credentials"
 msgstr ""
 
-msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
-msgstr ""
-
 msgid "ServiceDesk|Keep custom email"
 msgstr ""
 
@@ -64485,6 +64482,9 @@ msgid "ServiceDesk|This issue has been reopened because it received a new commen
 msgstr ""
 
 msgid "ServiceDesk|Ticket visibility"
+msgstr ""
+
+msgid "ServiceDesk|Tickets created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
 msgstr ""
 
 msgid "ServiceDesk|To use a custom email address for this Service Desk, you'll need to configure and verify an email address again."
@@ -77917,6 +77917,9 @@ msgstr ""
 msgid "WorkItem|Inherited"
 msgstr ""
 
+msgid "WorkItem|Introducing Tickets"
+msgstr ""
+
 msgid "WorkItem|Issue"
 msgstr ""
 
@@ -77924,6 +77927,9 @@ msgid "WorkItem|Issue has 1 related vulnerability"
 msgid_plural "WorkItem|Issue has %{itemCount} related vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "WorkItem|Issues created from Service Desk are now Tickets. Filter by type \"Ticket\" to see only these items."
+msgstr ""
 
 msgid "WorkItem|Issues settings"
 msgstr ""
