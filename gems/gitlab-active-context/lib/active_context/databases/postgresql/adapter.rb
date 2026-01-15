@@ -23,6 +23,10 @@ module ActiveContext
         def executor_klass
           ActiveContext::Databases::Postgresql::Executor
         end
+
+        def indexer_connection_options
+          Config.build_database_config(options).slice(:host, :port, :user, :password, :database)
+        end
       end
     end
   end

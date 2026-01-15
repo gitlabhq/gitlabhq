@@ -122,21 +122,15 @@ To regenerate recovery codes with the UI:
 1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
 1. In the dialog, enter your current password and select **Regenerate recovery codes**.
 
-{{< alert type="note" >}}
-
-Every time you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
-
-{{< /alert >}}
+> [!note]
+> Every time you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
 
 ### Regenerate recovery codes with SSH
 
 If you added an SSH key to your GitLab account, you can regenerate your recovery codes with SSH:
 
-{{< alert type="note" >}}
-
-- You cannot use `gitlab-sshd` to regenerate recovery codes.
-
-{{< /alert >}}
+> [!note]
+> You cannot use `gitlab-sshd` to regenerate recovery codes.
 
 To regenerate recovery codes with SSH:
 

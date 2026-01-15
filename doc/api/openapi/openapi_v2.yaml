@@ -81,6 +81,8 @@ tags:
   description: Operations about commit_statuses
 - name: draft_notes
   description: Operations about draft_notes
+- name: files
+  description: Operations about files
 - name: issues
   description: Operations about issues
 - name: issue_participants
@@ -101,8 +103,12 @@ tags:
   description: Operations about webhooks
 - name: projects_job_token_scope
   description: Operations about projects_job_token_scopes
+- name: project_snapshots
+  description: Operations about project_snapshots
 - name: project_snippets
   description: Operations about project_snippets
+- name: project_templates
+  description: Operations about project_templates
 - name: project_protected_branches
   description: Operations about project_protected_branches
 - name: protected_tags
@@ -111,6 +117,8 @@ tags:
   description: Operations about remote_mirrors
 - name: repositories
   description: Operations about repositories
+- name: submodules
+  description: Operations about submodules
 - name: attestations
   description: Operations about attestations
 - name: tags
@@ -19733,7 +19741,7 @@ paths:
         '200':
           description: Get blame file metadata from repository
       tags:
-      - projects
+      - files
       operationId: headApiV4ProjectsIdRepositoryFilesFilePathBlame
     get:
       description: Get blame file from the repository
@@ -19773,8 +19781,10 @@ paths:
       responses:
         '200':
           description: Get blame file from the repository
+          schema:
+            "$ref": "#/definitions/API_Entities_BlameRange"
       tags:
-      - projects
+      - files
       operationId: getApiV4ProjectsIdRepositoryFilesFilePathBlame
   "/api/v4/projects/{id}/repository/files/{file_path}/raw":
     get:
@@ -19812,7 +19822,7 @@ paths:
           schema:
             type: file
       tags:
-      - projects
+      - files
       operationId: getApiV4ProjectsIdRepositoryFilesFilePathRaw
   "/api/v4/projects/{id}/repository/files/{file_path}":
     head:
@@ -19842,7 +19852,7 @@ paths:
         '200':
           description: Get file metadata from repository
       tags:
-      - projects
+      - files
       operationId: headApiV4ProjectsIdRepositoryFilesFilePath
     get:
       description: Get a file from the repository
@@ -19871,7 +19881,7 @@ paths:
         '200':
           description: Get a file from the repository
       tags:
-      - projects
+      - files
       operationId: getApiV4ProjectsIdRepositoryFilesFilePath
     post:
       description: Create new file in repository
@@ -19901,7 +19911,7 @@ paths:
         '201':
           description: Create new file in repository
       tags:
-      - projects
+      - files
       operationId: postApiV4ProjectsIdRepositoryFilesFilePath
     put:
       description: Update existing file in repository
@@ -19931,7 +19941,7 @@ paths:
         '200':
           description: Update existing file in repository
       tags:
-      - projects
+      - files
       operationId: putApiV4ProjectsIdRepositoryFilesFilePath
     delete:
       description: Delete an existing file in repository
@@ -19985,7 +19995,7 @@ paths:
         '204':
           description: Delete an existing file in repository
       tags:
-      - projects
+      - files
       operationId: deleteApiV4ProjectsIdRepositoryFilesFilePath
   "/api/v4/projects/{id}/freeze_periods":
     get:
@@ -34429,7 +34439,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - projects
+      - project_snapshots
       operationId: getApiV4ProjectsIdSnapshot
   "/api/v4/projects/{id}/snippets":
     get:
@@ -34757,7 +34767,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - project_templates
       operationId: getApiV4ProjectsIdTemplatesType
   "/api/v4/projects/{id}/templates/{type}/{name}":
     get:
@@ -34822,7 +34832,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - projects
+      - project_templates
       operationId: getApiV4ProjectsIdTemplatesTypeName
   "/api/v4/projects/{id}/custom_attributes":
     get:
@@ -38648,7 +38658,7 @@ paths:
         '400':
           description: The repository is empty
       tags:
-      - projects
+      - submodules
       operationId: putApiV4ProjectsIdRepositorySubmodulesSubmodule
   "/api/v4/projects/{id}/attestations/{subject_digest}":
     get:
@@ -57311,6 +57321,35 @@ definitions:
         type: string
         description: A comma separated list of external user ids
     description: Update a feature flag user list
+  API_Entities_BlameRange:
+    type: object
+    properties:
+      commit:
+        "$ref": "#/definitions/API_Entities_BlameRangeCommit"
+      lines:
+        type: string
+    description: API_Entities_BlameRange model
+  API_Entities_BlameRangeCommit:
+    type: object
+    properties:
+      id:
+        type: string
+      parent_ids:
+        type: string
+      message:
+        type: string
+      authored_date:
+        type: string
+      author_name:
+        type: string
+      author_email:
+        type: string
+      committed_date:
+        type: string
+      committer_name:
+        type: string
+      committer_email:
+        type: string
   postApiV4ProjectsIdRepositoryFilesFilePath:
     type: object
     properties:

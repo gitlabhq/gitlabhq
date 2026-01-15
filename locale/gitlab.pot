@@ -4047,10 +4047,16 @@ msgstr ""
 msgid "AccessTokens|Are you sure you want to revoke the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
+msgid "AccessTokens|Are you sure you want to revoke the token %{tokenName}? This action cannot be undone. Any tools that rely on this token will no longer have access to GitLab."
+msgstr ""
+
 msgid "AccessTokens|Are you sure you want to rotate the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
 msgid "AccessTokens|Are you sure you want to rotate the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
+msgstr ""
+
+msgid "AccessTokens|Are you sure you want to rotate the token %{tokenName}? This action cannot be undone. Any tools that rely on this token will no longer have access to GitLab."
 msgstr ""
 
 msgid "AccessTokens|Are you sure?"
@@ -4388,6 +4394,9 @@ msgstr ""
 msgid "AccessTokens|The token was revoked successfully."
 msgstr ""
 
+msgid "AccessTokens|The token was rotated successfully."
+msgstr ""
+
 msgid "AccessTokens|This token expires soon. If still needed, generate a new token with the same settings."
 msgstr ""
 
@@ -4416,6 +4425,15 @@ msgid "AccessTokens|Token name"
 msgstr ""
 
 msgid "AccessTokens|Token name is required."
+msgstr ""
+
+msgid "AccessTokens|Token revocation unsuccessful. Please try again."
+msgstr ""
+
+msgid "AccessTokens|Token rotated successfully. Make sure you copy your token - you won't be able to access it again."
+msgstr ""
+
+msgid "AccessTokens|Token rotation unsuccessful. Please try again."
 msgstr ""
 
 msgid "AccessTokens|Token scope"

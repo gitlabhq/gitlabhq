@@ -13,12 +13,15 @@ import {
   SORT_OPTIONS,
   DEFAULT_SORT,
   PAGE_SIZE,
+  ACTIONS,
 } from '../constants';
 import { convertFiltersToVariables } from '../utils';
-import CreatePersonalAccessTokenButton from './create_personal_access_token_button.vue';
+import CreatePersonalAccessTokenDropdown from './create_personal_access_token_dropdown.vue';
 import PersonalAccessTokensTable from './personal_access_tokens_table.vue';
 import PersonalAccessTokenDrawer from './personal_access_token_drawer.vue';
 import PersonalAccessTokenStatistics from './personal_access_token_statistics.vue';
+import PersonalAccessTokenActions from './personal_access_token_actions.vue';
+import RotatedPersonalAccessToken from './rotated_personal_access_token.vue';
 
 export default {
   name: 'PersonalAccessTokensApp',
@@ -29,9 +32,11 @@ export default {
     GlKeysetPagination,
     CrudComponent,
     PersonalAccessTokensTable,
-    CreatePersonalAccessTokenButton,
+    CreatePersonalAccessTokenDropdown,
     PersonalAccessTokenDrawer,
     PersonalAccessTokenStatistics,
+    PersonalAccessTokenActions,
+    RotatedPersonalAccessToken,
   },
   data() {
     return {
@@ -43,6 +48,11 @@ export default {
       filterObject: convertFiltersToVariables(DEFAULT_FILTER),
       sort: structuredClone(DEFAULT_SORT),
       selectedToken: null,
+      selectedActionableToken: {
+        token: null,
+        action: null,
+      },
+      rotatedToken: null,
       pagination: {
         first: PAGE_SIZE,
         after: null,
@@ -127,6 +137,20 @@ export default {
     selectToken(token) {
       this.selectedToken = token;
     },
+    clearSelectedToken() {
+      this.selectedToken = null;
+    },
+    selectActionableToken(token, action) {
+      this.selectedActionableToken = { token, action };
+    },
+    clearActionableToken() {
+      this.selectedActionableToken = { token: null, action: null };
+    },
+    handleTokenRotated(token) {
+      this.rotatedToken = token;
+
+      this.clearSelectedToken();
+    },
     handleStatisticsFilter(filter) {
       this.filter = filter;
       this.filterObject = convertFiltersToVariables(this.filter);
@@ -144,6 +168,7 @@ export default {
   },
   FILTER_OPTIONS,
   SORT_OPTIONS,
+  ACTIONS,
 };
 </script>
 
@@ -156,6 +181,8 @@ export default {
     </page-heading>
 
     <personal-access-token-statistics @filter="handleStatisticsFilter" />
+
+    <rotated-personal-access-token v-if="rotatedToken" v-model="rotatedToken" />
 
     <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
       <gl-filtered-search
@@ -182,7 +209,7 @@ export default {
 
     <crud-component :title="$options.i18n.pageTitle">
       <template #actions>
-        <create-personal-access-token-button />
+        <create-personal-access-token-dropdown />
       </template>
 
       <personal-access-tokens-table
@@ -190,6 +217,8 @@ export default {
         :loading="isLoading"
         class="gl-mb-5"
         @select="selectToken"
+        @rotate="selectActionableToken($event, $options.ACTIONS.ROTATE)"
+        @revoke="selectActionableToken($event, $options.ACTIONS.REVOKE)"
       />
 
       <template #pagination>
@@ -202,6 +231,19 @@ export default {
       </template>
     </crud-component>
 
-    <personal-access-token-drawer :token="selectedToken" @close="selectToken(null)" />
+    <personal-access-token-drawer
+      :token="selectedToken"
+      @close="clearSelectedToken"
+      @rotate="selectActionableToken($event, $options.ACTIONS.ROTATE)"
+      @revoke="selectActionableToken($event, $options.ACTIONS.REVOKE)"
+    />
+
+    <personal-access-token-actions
+      :token="selectedActionableToken.token"
+      :action="selectedActionableToken.action"
+      @close="clearActionableToken"
+      @rotated="handleTokenRotated"
+      @revoked="clearSelectedToken"
+    />
   </div>
 </template>

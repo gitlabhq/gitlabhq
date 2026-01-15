@@ -1,0 +1,7 @@
+# @feature_category: system_access
+
+mutation revokePersonalAccessToken($id: PersonalAccessTokenID!) {
+  personalAccessTokenRevoke(input: { id: $id }) {
+    errors
+  }
+}

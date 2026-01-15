@@ -162,11 +162,8 @@ You can also [use the API to delete a secondary email address](../../api/user_em
 
 You can make your user profile visible to only you and GitLab administrators.
 
-{{< alert type="note" >}}
-
-A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
-
-{{< /alert >}}
+> [!note]
+> A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
 
 To make your profile private:
 
@@ -417,11 +414,8 @@ You can disable following and being followed by other users.
 1. Clear the **Enable follow users** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When this feature is being disabled, all current followed/following connections are deleted.
-
-{{< /alert >}}
+> [!note]
+> When this feature is being disabled, all current followed/following connections are deleted.
 
 ## View a user's activity
 

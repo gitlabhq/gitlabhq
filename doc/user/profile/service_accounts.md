@@ -250,11 +250,8 @@ To create a personal access token for a service account:
 
 You can rotate a personal access token to invalidate the current token and generate a new value.
 
-{{< alert type="warning" >}}
-
-This cannot be undone. Any services that rely on the rotated token will stop working.
-
-{{< /alert >}}
+> [!warning]
+> This cannot be undone. Services that rely on the rotated token stop working.
 
 To rotate a personal access token for a service account:
 
@@ -269,11 +266,8 @@ To rotate a personal access token for a service account:
 
 You can rotate a personal access token to invalidate the current token.
 
-{{< alert type="warning" >}}
-
-This cannot be undone. Any services that rely on the revoked token will stop working.
-
-{{< /alert >}}
+> [!warning]
+> This cannot be undone. Services that rely on the revoked token stop working.
 
 To revoke a personal access token for a service account:
 

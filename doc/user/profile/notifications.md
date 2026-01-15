@@ -360,11 +360,8 @@ To toggle notifications on a specific issue, merge request, or epic:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history. Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history. Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 
 When you **turn on** notifications, you start receiving notifications on each update, even if you
 haven't participated in the discussion.

@@ -24,11 +24,8 @@ the issue description. You can link issues in different projects.
 The relationship only shows up in the UI if the user can see both issues. When you try to close an
 issue that has open blockers, a warning is displayed.
 
-{{< alert type="note" >}}
-
-To manage linked issues through our API, see [Issue links API](../../../api/issue_links.md).
-
-{{< /alert >}}
+> [!note]
+> To manage linked issues through our API, see [Issue links API](../../../api/issue_links.md).
 
 ## Add a linked issue
 

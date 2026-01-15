@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::Databases::Postgresql::Client do
+  let(:config_class) { ActiveContext::Databases::Postgresql::Config }
   let(:options) do
     {
       host: 'localhost',
@@ -47,9 +48,9 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
         'host' => 'localhost',
         'port' => 5432,
         'database' => 'test_db',
-        'username' => 'user',
+        'user' => 'user',
         'password' => 'pass',
-        'connect_timeout' => 5,
+        'connect_timeout' => config_class::DEFAULT_CONNECT_TIMEOUT,
         'pool' => 2,
         'prepared_statements' => false,
         'advisory_locks' => false,
@@ -501,24 +502,6 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     end
   end
 
-  describe '#calculate_pool_size' do
-    context 'when pool_size is set in options' do
-      it 'returns the configured pool size' do
-        pool_size = client.send(:calculate_pool_size)
-        expect(pool_size).to eq(2)
-      end
-    end
-
-    context 'when pool_size is not set in options' do
-      let(:options) { { host: 'localhost' } }
-
-      it 'returns the default pool size' do
-        pool_size = client.send(:calculate_pool_size)
-        expect(pool_size).to eq(described_class::DEFAULT_POOL_SIZE)
-      end
-    end
-  end
-
   describe '#setup_connection_pool' do
     let(:model_class) { class_double(ActiveRecord::Base) }
     let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
@@ -550,9 +533,9 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
         host: 'localhost',
         port: 5432,
         database: 'test_db',
-        username: 'user',
+        user: 'user',
         password: 'pass',
-        connect_timeout: 5,
+        connect_timeout: config_class::DEFAULT_CONNECT_TIMEOUT,
         pool: 2,
         prepared_statements: false,
         advisory_locks: false,
@@ -569,14 +552,14 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
         expect(config).to include(
           adapter: 'postgresql',
           host: 'localhost',
-          connect_timeout: described_class::DEFAULT_CONNECT_TIMEOUT,
-          pool: described_class::DEFAULT_POOL_SIZE,
+          connect_timeout: config_class::DEFAULT_CONNECT_TIMEOUT,
+          pool: config_class::DEFAULT_POOL_SIZE,
           prepared_statements: false,
           advisory_locks: false,
           database_tasks: false
         )
 
-        expect(config.keys).not_to include(:port, :database, :username, :password)
+        expect(config.keys).not_to include(:port, :database, :user, :password)
       end
     end
   end

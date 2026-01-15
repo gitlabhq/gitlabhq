@@ -99,11 +99,8 @@ To create a private webhook receiver:
    - -> /
    ```
 
-{{< alert type="note" >}}
-
-To add this receiver, you might need to [allow requests to the local network](../../../security/webhooks.md).
-
-{{< /alert >}}
+> [!note]
+> To add this receiver, you might need to [allow requests to the local network](../../../security/webhooks.md).
 
 ## Resolve SSL certificate verification errors
 

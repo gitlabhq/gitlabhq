@@ -123,7 +123,7 @@ export default {
         this.isDeleting = false;
       }
     },
-    async saveNote({ noteText }) {
+    async saveNote(noteText) {
       const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
 
       if (!confirmSubmit) return;
@@ -134,10 +134,9 @@ export default {
         const {
           data: { note: updatedNote },
         } = await axios.put(this.note.path, {
-          params: {
-            target_id: this.note.noteable_id,
-            note: { note: noteText },
-          },
+          rapid_diffs: true,
+          target_id: this.note.noteable_id,
+          note: { note: noteText },
         });
         this.$emit('cancelEditing');
         this.$emit('noteUpdated', updatedNote);

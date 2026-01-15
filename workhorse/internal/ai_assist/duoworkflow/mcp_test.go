@@ -908,9 +908,19 @@ func TestManager_buildTools(t *testing.T) {
 			w.Header().Set("Content-Type", "application/json")
 
 			var request map[string]any
-			json.NewDecoder(r.Body).Decode(&request)
+			err := json.NewDecoder(r.Body).Decode(&request)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
 
-			switch request["method"].(string) {
+			method, ok := request["method"].(string)
+			if !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			switch method {
 			case "initialize":
 				response := map[string]any{
 					"jsonrpc": "2.0",

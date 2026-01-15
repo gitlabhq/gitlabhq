@@ -41,6 +41,7 @@ module API
     desc 'Get the public key for web commits' do
       detail 'This feature was introduced in GitLab 17.4.'
       success code: 200
+      tags ['web_commits']
       failure [
         { code: 503, message: GITALY_UNAVAILABLE },
         { code: 404, message: PUBLIC_KEY_NOT_FOUND }

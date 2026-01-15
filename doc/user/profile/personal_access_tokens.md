@@ -61,11 +61,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
-
-{{< /alert >}}
+> [!warning]
+> The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
 
 You can create as many personal access tokens as you like.
 
@@ -177,11 +174,8 @@ or the Admin UI to disable personal access tokens.
 
 In GitLab 15.7 and later, you can use the [`disable_personal_access_tokens` attribute in the application settings API](../../api/settings.md#available-settings) to disable personal access tokens.
 
-{{< alert type="note" >}}
-
-After you have used the API to disable personal access tokens, those tokens cannot be used in subsequent API calls to manage this setting. To re-enable personal access tokens, you must use the [GitLab Rails console](../../administration/operations/rails_console.md). You can also upgrade to GitLab 17.3 or later so you can use the Admin UI instead.
-
-{{< /alert >}}
+> [!note]
+> After you have used the API to disable personal access tokens, those tokens cannot be used in subsequent API calls to manage this setting. To re-enable personal access tokens, you must use the [GitLab Rails console](../../administration/operations/rails_console.md). You can also upgrade to GitLab 17.3 or later so you can use the Admin UI instead.
 
 ### Use the Admin UI
 
@@ -223,11 +217,8 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
 
-{{< alert type="warning" >}}
-
-Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
-
-{{< /alert >}}
+> [!warning]
+> Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
 
 To disable the enterprise users' personal access tokens:
 
@@ -298,11 +289,8 @@ A personal access token can perform actions based on the assigned scopes.
 | `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
-{{< alert type="warning" >}}
-
-If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
-
-{{< /alert >}}
+> [!warning]
+> If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
 ## Access token expiration
 
@@ -384,11 +372,8 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
-{{< alert type="note" >}}
-
-Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
-
-{{< /alert >}}
+> [!note]
+> Allowing personal access tokens for service accounts to be created with no expiry date only affects tokens created after you change this setting. It does not affect existing tokens.
 
 #### GitLab.com
 
@@ -629,11 +614,8 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 
-{{< alert type="warning" >}}
-
-Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
 
 1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Unrevoke the token:

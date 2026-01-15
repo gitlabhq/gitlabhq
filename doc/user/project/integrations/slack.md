@@ -171,11 +171,8 @@ the GitLab OpenSSL trust store is incorrect. Typical causes are:
 To disable notifications for all projects that have Slack integration enabled,
 [start a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and use a script similar to the following:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 # Grab all projects that have the Slack notifications enabled

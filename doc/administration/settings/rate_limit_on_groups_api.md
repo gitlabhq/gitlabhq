@@ -63,12 +63,30 @@ exceed a rate of 400 per minute are blocked. Access to the endpoint is restored 
 
 {{< /history >}}
 
-A non-configurable rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-members-of-a-group-including-inherited-and-invited-members).
+A rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-members-of-a-group-including-inherited-and-invited-members).
+
+Both the `GET /projects/:id/members/all` and `GET /groups/:id/members/all` API endpoints
+share the same rate limit configuration. If you set a rate limit on the projects endpoint,
+the rate limit applies also to the groups endpoint.
+
+Prerequisites:
+
+- Administrator access.
+
+To modify this rate limit for both endpoints:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Network**.
+1. Expand **Projects API rate limits**.
+1. In the **Maximum requests to the GET /projects/:id/members/all API per minute per user or IP address** text box, enter a value.
+1. Select **Save changes**.
 
 The rate limit:
 
 - Defaults to 200 requests every minute.
 - Applies for each group and user.
+- Is configured through the Projects API rate limits settings. For more information, see [Configure rate limits on listing project members](rate_limit_on_projects_api.md#configure-rate-limits-on-listing-project-members).
+- Can be set to `0` to disable the rate limit for both endpoints.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -122,7 +140,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute
 - Apply to each authenticated user. If requests are not authenticated, rate limits apply to the IP address.
-- Can be set to 0 to disable rate limits
+- Can be set to `0` to disable rate limits for both endpoints
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -160,7 +178,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute.
 - Applies for each group and user.
-- Can be set to 0 to disable the rate limit.
+- Can be set to `0` to disable the rate limit.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

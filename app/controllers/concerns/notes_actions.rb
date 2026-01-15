@@ -88,7 +88,12 @@ module NotesActions
           render json: { errors: @note.errors.full_messages.to_sentence }, status: :unprocessable_entity
         else
           prepare_notes_for_rendering([@note])
-          render json: note_json(@note)
+
+          if use_rapid_diffs_serializer?
+            render json: { note: RapidDiffs::NoteEntity.represent(@note, rapid_diffs_serializer_options) }
+          else
+            render json: note_json(@note)
+          end
         end
       end
 
@@ -328,6 +333,20 @@ module NotesActions
     return false if params['html']
 
     noteable.discussions_rendered_on_frontend?
+  end
+
+  def use_rapid_diffs_serializer?
+    Gitlab::Utils.to_boolean(params[:rapid_diffs])
+  end
+
+  def rapid_diffs_serializer_options
+    {
+      request: EntityRequest.new(
+        project: project,
+        noteable: noteable,
+        current_user: current_user
+      )
+    }
   end
 
   def errors_on_create(note)

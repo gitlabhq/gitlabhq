@@ -128,11 +128,8 @@ If this is the first time you have set up 2FA, you
 must [download recovery codes](#recovery-codes) so you can recover access to your
 account if you lose access.
 
-{{< alert type="warning" >}}
-
-You can lose access to your account if you clear your browser data.
-
-{{< /alert >}}
+> [!warning]
+> You can lose access to your account if you clear your browser data.
 
 ### Enable email OTP
 
@@ -143,11 +140,8 @@ You can lose access to your account if you clear your browser data.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Email OTP allows you to verify your identity by sending a six-digit verification code to your email address.
 

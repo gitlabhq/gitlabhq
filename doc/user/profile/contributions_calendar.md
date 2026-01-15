@@ -19,11 +19,8 @@ This includes contributions made in forked and [private](#show-private-contribut
 
 The gradient color of the tiles represents the number of contributions made per day. The gradient ranges from blank (0 contributions) to dark blue (more than 30 contributions).
 
-{{< alert type="note" >}}
-
-The contribution calendar only displays contributions from the last 12 months, but issue [24264](https://gitlab.com/gitlab-org/gitlab/-/issues/24264) proposes to change this to more than 12 months. General improvements to the user profile are proposed in issue [8488](https://gitlab.com/groups/gitlab-org/-/epics/8488).
-
-{{< /alert >}}
+> [!note]
+> The contribution calendar only displays contributions from the last 12 months, but issue [24264](https://gitlab.com/gitlab-org/gitlab/-/issues/24264) proposes to change this to more than 12 months. General improvements to the user profile are proposed in issue [8488](https://gitlab.com/groups/gitlab-org/-/epics/8488).
 
 For a comprehensive view of all group members' contribution events, you can use [contribution analytics](../group/contribution_analytics/_index.md).
 

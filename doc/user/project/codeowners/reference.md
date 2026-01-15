@@ -22,11 +22,8 @@ The key elements are:
   Any Code Owners listed in a comment are parsed.
 - Sections: Optional groupings of rules, defined using `[Section name]`.
 
-{{< alert type="note" >}}
-
-If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
-
-{{< /alert >}}
+> [!note]
+> If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
 
 Here are some examples:
 
@@ -337,11 +334,8 @@ In this example:
 
   ![Merge request maintainers.](img/merge_request_maintainers_v17_9.png)
 
-{{< alert type="note" >}}
-
-When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
-
-{{< /alert >}}
+> [!note]
+> When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 
 If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 

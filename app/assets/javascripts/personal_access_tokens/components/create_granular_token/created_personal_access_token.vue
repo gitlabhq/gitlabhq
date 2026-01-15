@@ -17,8 +17,7 @@ export default {
   props: {
     value: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
   },
   data() {
@@ -48,12 +47,12 @@ export default {
     copy: s__('AccessTokens|Copy token'),
     done: __('Done'),
   },
-  inputId: 'created-access-token-field',
+  inputId: 'created-personal-access-token-field',
 };
 </script>
 
 <template>
-  <div v-if="value">
+  <div>
     <page-heading :heading="$options.i18n.heading">
       <template #description>
         {{ $options.i18n.description }}
@@ -70,6 +69,7 @@ export default {
       size="xl"
       class="gl-mb-0"
     />
+
     <div class="gl-mt-4 gl-flex gl-gap-3">
       <clipboard-button :text="value" :title="$options.i18n.copy" @click="handleCopy">
         {{ $options.i18n.copy }}

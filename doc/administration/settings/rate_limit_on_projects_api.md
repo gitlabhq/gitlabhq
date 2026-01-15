@@ -84,7 +84,7 @@ The rate limit:
 
 - Defaults to 60 requests every minute
 - Applies for each project and user.
-- Can be set to 0 to disable the rate limit.
+- Can be set to `0` to disable the rate limit.
 
 Requests over the rate limit are logged into the `auth.log` file.
 
@@ -103,6 +103,10 @@ after one minute.
 Configure the rate limit for requests to the
 [list project members endpoint](../../api/project_members.md#list-all-members-of-a-project).
 
+Both the `GET /projects/:id/members/all` and `GET /groups/:id/members/all`
+API endpoints share the same rate limit configuration. If you set a rate limit on the projects endpoint,
+the rate limit applies also to the groups endpoint.
+
 Prerequisites:
 
 - Administrator access.
@@ -119,7 +123,7 @@ The rate limit:
 
 - Defaults to 200 requests every minute.
 - Applies to each project and user.
-- Can be set to 0 to disable rate limits.
+- Can be set to `0` to disable rate limits.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

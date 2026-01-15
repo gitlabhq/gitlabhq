@@ -1,12 +1,12 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CreatePersonalAccessTokenButton from '~/personal_access_tokens/components/create_personal_access_token_button.vue';
+import CreatePersonalAccessTokenDropdown from '~/personal_access_tokens/components/create_personal_access_token_dropdown.vue';
 
-describe('CreatePersonalAccessTokenButton', () => {
+describe('CreatePersonalAccessTokenDropdown', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(CreatePersonalAccessTokenButton, {
+    wrapper = shallowMountExtended(CreatePersonalAccessTokenDropdown, {
       provide: {
         accessTokenGranularNewUrl: '/granular/new',
       },

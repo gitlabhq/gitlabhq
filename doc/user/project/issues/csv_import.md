@@ -64,11 +64,8 @@ to you if any errors are detected or after the import is complete.
 
 To import issues, GitLab requires CSV files have a specific format.
 
-{{< alert type="note" >}}
-
-For information about CSV parsing requirements that can affect how imported files display when viewed in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsing-considerations).
-
-{{< /alert >}}
+> [!note]
+> For information about CSV parsing requirements that can affect how imported files display when viewed in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsing-considerations).
 
 | Element                | Format |
 | ---------------------- | ------ |

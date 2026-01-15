@@ -12,11 +12,8 @@ title: Mock CI
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This integration is only available in a development environment.
-
-{{< /alert >}}
+> [!note]
+> This integration is only available in a development environment.
 
 To set up the mock CI service server, respond to the following endpoints:
 

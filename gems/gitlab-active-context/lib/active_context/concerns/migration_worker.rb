@@ -46,6 +46,7 @@ module ActiveContext
 
         create_missing_migration_records!(migration_files - migration_records)
         delete_orphaned_migration_records!(migration_records - migration_files)
+        reevaluate_skipped_migrations!
       end
 
       def execute_current_migration
@@ -56,16 +57,27 @@ module ActiveContext
           return true
         end
 
-        process_migration!(migration_record)
+        migration_class = find_migration_class(migration_record.version)
+        migration_instance = migration_class.new
+
+        if migration_instance.skip?
+          mark_migration_as_skipped(migration_record)
+          return true
+        end
+
+        process_migration!(migration_record, migration_instance)
 
         true
       end
 
-      def process_migration!(migration_record)
-        migration_class = find_migration_class(migration_record.version)
+      def mark_migration_as_skipped(migration_record)
+        return if migration_record.skipped?
 
-        migration_instance = migration_class.new
+        log "Skipping migration #{migration_record.version}"
+        migration_record.skipped!
+      end
 
+      def process_migration!(migration_record, migration_instance)
         log "Starting migration #{migration_record.version}"
 
         migration_record.mark_as_started!
@@ -104,6 +116,18 @@ module ActiveContext
         migrations.where(version: versions).delete_all
 
         log "Deleted orphaned migration records for #{versions.join(', ')}"
+      end
+
+      def reevaluate_skipped_migrations!
+        migrations.skipped.each do |migration_record|
+          migration_class = find_migration_class(migration_record.version)
+          migration_instance = migration_class.new
+
+          unless migration_instance.skip?
+            log "Migration #{migration_record.version} no longer skipped, marking as pending"
+            migration_record.pending!
+          end
+        end
       end
 
       def re_enqueue_worker

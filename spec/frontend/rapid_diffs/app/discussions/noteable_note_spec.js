@@ -208,7 +208,7 @@ describe('NoteableNote', () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_OK, { note: updatedNote });
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
+      findNoteBody().props('saveNote')(noteText);
 
       expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: noteText });
 
@@ -222,7 +222,7 @@ describe('NoteableNote', () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_GONE);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
+      findNoteBody().props('saveNote')(noteText);
 
       await axios.waitForAll();
 
@@ -234,7 +234,7 @@ describe('NoteableNote', () => {
       mockAdapter.onPut(defaultProps.note.path).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent({ note: createNote({ isEditing: true }) });
-      findNoteBody().props('saveNote')({ noteText });
+      findNoteBody().props('saveNote')(noteText);
 
       await axios.waitForAll();
 

@@ -23,6 +23,10 @@ module ActiveContext
         raise NotImplementedError, "#{self.class.name} must implement #migrate!"
       end
 
+      def skip?
+        false
+      end
+
       def create_collection(name, **options, &block)
         operation = initialize_operation("create_#{name}")
 

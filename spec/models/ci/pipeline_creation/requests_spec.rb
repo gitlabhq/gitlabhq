@@ -165,4 +165,32 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
       described_class.generate_id
     end
   end
+
+  describe '.merge_request_from_key' do
+    context 'when key is nil' do
+      it 'returns nil' do
+        expect(described_class.merge_request_from_key(nil)).to be_nil
+      end
+    end
+
+    context 'when key does not match the expected format' do
+      it 'returns nil' do
+        expect(described_class.merge_request_from_key('invalid_key')).to be_nil
+      end
+    end
+
+    context 'when key matches format but MR does not exist' do
+      it 'returns nil' do
+        key = "pipeline_creation:projects:{123}:mrs:{999999999}"
+        expect(described_class.merge_request_from_key(key)).to be_nil
+      end
+    end
+
+    context 'when key matches format and MR exists' do
+      it 'returns the merge request' do
+        key = described_class.merge_request_key(merge_request)
+        expect(described_class.merge_request_from_key(key)).to eq(merge_request)
+      end
+    end
+  end
 end

@@ -170,5 +170,19 @@ namespace :gitlab do
         end
       end
     end
+
+    desc "GitLab | DB | Truncate detached partition"
+    task :truncate_partition, [:partition_name] => :environment do |_, args|
+      Gitlab::Database::TruncatePartition.new(args[:partition_name]).execute
+    end
+
+    namespace :truncate_partition do
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Truncate detached partition on the #{database_name} database"
+        task database_name, [:partition_name] => :environment do |_, args|
+          Gitlab::Database::TruncatePartition.new(args[:partition_name], target_database: database_name).execute
+        end
+      end
+    end
   end
 end

@@ -107,6 +107,23 @@ export const mockCreateMutationResponse = {
   },
 };
 
+export const mockRotateMutationResponse = {
+  data: {
+    personalAccessTokenRotate: {
+      errors: [],
+      token: 'xx',
+    },
+  },
+};
+
+export const mockRevokeMutationResponse = {
+  data: {
+    personalAccessTokenRevoke: {
+      errors: [],
+    },
+  },
+};
+
 export const mockGroups = [
   {
     id: 'gid://gitlab/Group/1',

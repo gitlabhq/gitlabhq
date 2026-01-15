@@ -184,7 +184,7 @@ RSpec.describe MergeRequests::Refresh::PipelineService, :sidekiq_inline, feature
 
             expect do
               described_class.new(project: project, current_user: user).execute(oldrev, newrev, 'refs/heads/master')
-            end.not_to change { merge_request.pipelines_for_merge_request.count }
+            end.to raise_error(StandardError, /duplicate pipeline still in progress/)
           end
         end
       end

@@ -26,11 +26,8 @@ To manage applications, use the [Cluster Project Management Template](../../clus
 
 {{< /alert >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster
 is managed by GitLab, resources for your projects are automatically created. See

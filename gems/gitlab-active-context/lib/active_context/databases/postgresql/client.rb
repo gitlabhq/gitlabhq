@@ -10,8 +10,6 @@ module ActiveContext
           attr_accessor :default_connection_pool
         end
 
-        DEFAULT_POOL_SIZE = 5
-        DEFAULT_CONNECT_TIMEOUT = 5
         BULK_OPERATIONS = [:upsert, :delete].freeze
 
         attr_reader :connection_pool, :options
@@ -124,23 +122,7 @@ module ActiveContext
         end
 
         def build_database_config
-          {
-            adapter: 'postgresql',
-            host: options[:host],
-            port: options[:port],
-            database: options[:database],
-            username: options[:username],
-            password: options[:password],
-            connect_timeout: options.fetch(:connect_timeout, DEFAULT_CONNECT_TIMEOUT),
-            pool: calculate_pool_size,
-            prepared_statements: false,
-            advisory_locks: false,
-            database_tasks: false # This signals Rails that this is an auxiliary database
-          }.compact
-        end
-
-        def calculate_pool_size
-          options[:pool_size] || DEFAULT_POOL_SIZE
+          Config.build_database_config(options)
         end
 
         def close

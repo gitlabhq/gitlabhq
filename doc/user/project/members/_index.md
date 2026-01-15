@@ -219,11 +219,8 @@ Instead of adding users one by one, you can [share a project with an entire grou
 You can import another project's direct members to your own project.
 Imported project members retain the same permissions as the project you import them from.
 
-{{< alert type="note" >}}
-
-Only direct members of a project are imported. Inherited or shared members of a project are not imported.
-
-{{< /alert >}}
+> [!note]
+> Only direct members of a project are imported. Inherited or shared members of a project are not imported.
 
 Prerequisites:
 

@@ -1638,12 +1638,6 @@ module Ci
       end
     end
 
-    private
-
-    def add_message(severity, content)
-      messages.build(severity: severity, content: content, project_id: project_id)
-    end
-
     def merge_request_diff_sha
       return unless merge_request?
 
@@ -1652,6 +1646,12 @@ module Ci
       else
         sha
       end
+    end
+
+    private
+
+    def add_message(severity, content)
+      messages.build(severity: severity, content: content, project_id: project_id)
     end
 
     def push_details

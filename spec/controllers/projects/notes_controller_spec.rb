@@ -1007,6 +1007,56 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
         expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
       end
     end
+
+    context 'with rapid_diffs parameter' do
+      let(:request_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: note,
+          format: :json,
+          note: note_params,
+          rapid_diffs: true
+        }
+      end
+
+      it 'returns the note serialized with RapidDiffs::NoteEntity' do
+        update_note
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('note')
+        expect(json_response['note']).to be_a(Hash)
+        expect(json_response['note']['id']).to eq(note.id.to_s)
+      end
+
+      it 'uses RapidDiffs::NoteEntity for serialization' do
+        expect(RapidDiffs::NoteEntity).to receive(:represent).and_call_original
+
+        update_note
+      end
+
+      it 'updates the note content' do
+        expect { update_note }.to change { note.reload.note }.to("New comment")
+      end
+
+      context 'when note update fails' do
+        before do
+          allow(note).to receive_message_chain(:errors, :full_messages)
+            .and_return(['Error occurred'])
+
+          allow_next_instance_of(Notes::UpdateService) do |service|
+            allow(service).to receive(:execute).and_return(note)
+          end
+        end
+
+        it 'returns status 422 with errors' do
+          update_note
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['errors']).to eq('Error occurred')
+        end
+      end
+    end
   end
 
   describe 'DELETE destroy' do
