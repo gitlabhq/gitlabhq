@@ -84,7 +84,7 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
       let_it_be(:diffs) { project.commit(sha).diffs }
 
       before do
-        visit project_commit_path(project, sha, rapid_diffs: true)
+        visit project_commit_path(project, sha)
 
         wait_for_requests
       end

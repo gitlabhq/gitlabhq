@@ -116,7 +116,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       end
 
       it 'can run the same command in parallel',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450483' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18760' do
         parellism = 4
 
         blocks = Array.new(parellism).map do

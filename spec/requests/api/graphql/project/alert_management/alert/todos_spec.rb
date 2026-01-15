@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting Alert Management Alert Todos', feature_category: :team_planning do
+RSpec.describe 'getting Alert Management Alert Todos', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

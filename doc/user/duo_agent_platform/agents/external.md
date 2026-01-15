@@ -50,10 +50,44 @@ The external agent:
 - Runs a CI/CD pipeline and responds inside GitLab with either a ready-to-merge
   change or an inline comment.
 
+## Quickstart for GitLab-managed external agents
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 18.8 on GitLab.com.
+
+{{< /history >}}
+
 The following integrations have been tested by GitLab and are available:
 
 - [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
+
+Before you can create an agent and integrate it with an external AI model
+provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
+
+Managed external agents use GitLab-managed credentials and can be enabled in groups
+without additional agent configuration necessary.
+
+The following agents are available in the AI Catalog:
+
+- [Claude Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/499/)
+- [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/513/)
+
+Required steps to enable and use Claude or Codex:
+
+1. Access the agent in the AI Catalog. Search for `claude` or `codex`, or use the direct URL.
+1. [Enable the agent in a top-level group](#enable-the-agent-in-a-top-level-group).
+1. [Enable the agent in a project](#enable-in-a-project).
+1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
 
 ## Prerequisites
 

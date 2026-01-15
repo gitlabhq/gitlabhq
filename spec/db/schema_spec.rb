@@ -253,6 +253,7 @@ RSpec.describe 'Database schema',
       zoekt_indices: %w[namespace_id], # needed for cells sharding key
       zoekt_tasks: %w[partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
       p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
+      project_secrets_manager_maintenance_tasks: %w[user_id], # small table, for better performance we don't need fk here
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_merge_request_rules: %w[approval_policy_rule_id],
       ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain

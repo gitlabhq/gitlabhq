@@ -100,7 +100,8 @@ RSpec.describe API::GroupExport, feature_category: :importers do
           .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
       end
 
-      it 'throttles the endpoint', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448732' do
+      it 'throttles the endpoint',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24871' do
         get api(download_path, user)
 
         expect(json_response["message"])

@@ -3,7 +3,7 @@
 require 'time'
 
 RSpec.shared_examples 'error tracking index page' do
-  it 'renders the error index page', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'renders the error index page', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     within('[data-testid="breadcrumb-links"]') do
       expect(page).to have_content(project.namespace.name)
       expect(page).to have_content(project.name)
@@ -15,7 +15,7 @@ RSpec.shared_examples 'error tracking index page' do
     expect(page).to have_content('Last seen')
   end
 
-  it 'loads the error show page on click', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'loads the error show page on click', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     click_on issues_response[0]['title']
 
     wait_for_requests
@@ -23,7 +23,7 @@ RSpec.shared_examples 'error tracking index page' do
     expect(page).to have_content('Error Details')
   end
 
-  it 'renders the error index data', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'renders the error index data', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     expect(page).to have_content(issues_response[0]['title'])
     expect(page).to have_content(issues_response[0]['count'].to_s)
     expect(page).to have_content(issues_response[0]['last_seen'])
@@ -31,7 +31,7 @@ RSpec.shared_examples 'error tracking index page' do
 end
 
 RSpec.shared_examples 'expanded stack trace context' do |selected_line: nil, expected_line: 1|
-  it 'expands the stack trace context', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'expands the stack trace context', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     within('div.stacktrace') do
       find("div.file-holder:nth-child(#{selected_line}) svg[data-testid='chevron-right-icon']").click if selected_line
 
@@ -46,7 +46,7 @@ RSpec.shared_examples 'expanded stack trace context' do |selected_line: nil, exp
 end
 
 RSpec.shared_examples 'error tracking show page' do
-  it 'renders the error details', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'renders the error details', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     content = page.find(".content")
     nav = find_by_testid("breadcrumb-links")
     header = page.find(".error-details-header")
@@ -78,11 +78,11 @@ RSpec.shared_examples 'error tracking show page' do
     end
   end
 
-  it 'renders the stack trace heading', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'renders the stack trace heading', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     expect(page).to have_content('Stack trace')
   end
 
-  it 'renders the stack trace', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
+  it 'renders the stack trace', quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24074' } do
     event_response['entries'][0]['data']['values'][0]['stacktrace']['frames'].each do |frame|
       expect(frame['filename']).not_to be_nil
       expect(page).to have_selector("[data-clipboard-text='#{frame['filename']}']", visible: :all)

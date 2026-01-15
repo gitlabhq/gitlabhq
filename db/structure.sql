@@ -26233,6 +26233,24 @@ CREATE SEQUENCE project_saved_replies_id_seq
 
 ALTER SEQUENCE project_saved_replies_id_seq OWNED BY project_saved_replies.id;
 
+CREATE TABLE project_secrets_manager_maintenance_tasks (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    project_secrets_manager_id bigint NOT NULL,
+    last_processed_at timestamp with time zone,
+    action smallint NOT NULL,
+    retry_count smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE project_secrets_manager_maintenance_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_secrets_manager_maintenance_tasks_id_seq OWNED BY project_secrets_manager_maintenance_tasks.id;
+
 CREATE TABLE project_secrets_managers (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -34118,6 +34136,8 @@ ALTER TABLE ONLY project_requirement_compliance_statuses ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY project_saved_replies ALTER COLUMN id SET DEFAULT nextval('project_saved_replies_id_seq'::regclass);
 
+ALTER TABLE ONLY project_secrets_manager_maintenance_tasks ALTER COLUMN id SET DEFAULT nextval('project_secrets_manager_maintenance_tasks_id_seq'::regclass);
+
 ALTER TABLE ONLY project_secrets_managers ALTER COLUMN id SET DEFAULT nextval('project_secrets_managers_id_seq'::regclass);
 
 ALTER TABLE ONLY project_security_exclusions ALTER COLUMN id SET DEFAULT nextval('project_security_exclusions_id_seq'::regclass);
@@ -37905,6 +37925,9 @@ ALTER TABLE ONLY project_requirement_compliance_statuses
 ALTER TABLE ONLY project_saved_replies
     ADD CONSTRAINT project_saved_replies_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_secrets_manager_maintenance_tasks
+    ADD CONSTRAINT project_secrets_manager_maintenance_tasks_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY project_secrets_managers
     ADD CONSTRAINT project_secrets_managers_pkey PRIMARY KEY (id);
 
@@ -41647,6 +41670,8 @@ CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON pr
 CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_names ON protected_branch_merge_access_levels USING btree (protected_branch_namespace_id);
 
 CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_proje ON protected_branch_merge_access_levels USING btree (protected_branch_project_id);
+
+CREATE INDEX idx_psm_maintenance_tasks_on_processed_at_retry_count ON project_secrets_manager_maintenance_tasks USING btree (last_processed_at, retry_count);
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
 
@@ -47349,6 +47374,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_codena
 CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite ON packages_debian_project_distributions USING btree (project_id, suite);
 
 CREATE INDEX uniq_preference_by_user_namespace_and_work_item_type ON work_item_type_user_preferences USING btree (user_id, namespace_id, work_item_type_id);
+
+CREATE UNIQUE INDEX uniq_psm_maintenance_tasks_on_psm_id_and_action ON project_secrets_manager_maintenance_tasks USING btree (project_secrets_manager_id, action);
 
 CREATE UNIQUE INDEX uniq_user_project_member_roles_user_project_shared_with_group ON user_project_member_roles USING btree (user_id, project_id, shared_with_group_id) WHERE (shared_with_group_id IS NOT NULL);
 
@@ -55648,6 +55675,9 @@ ALTER TABLE ONLY packages_dependency_links
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT fk_rails_97194a054e FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_secrets_manager_maintenance_tasks
+    ADD CONSTRAINT fk_rails_97bc2d3973 FOREIGN KEY (project_secrets_manager_id) REFERENCES project_secrets_managers(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_repository_storage_moves
     ADD CONSTRAINT fk_rails_982bb5daf1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

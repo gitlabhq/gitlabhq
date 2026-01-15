@@ -207,7 +207,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             expect(json_response.last['labels'].first).to match_schema('/public_api/v4/label_basic')
           end
 
-          it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
+          it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9318' do
             path = endpoint_path + "?with_labels_details=true"
 
             control = ActiveRecord::QueryRecorder.new do
@@ -1320,7 +1320,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       include_context 'with merge requests'
 
-      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
+      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9318' do
         control = ActiveRecord::QueryRecorder.new do
           get api("/projects/#{project.id}/merge_requests", user)
         end

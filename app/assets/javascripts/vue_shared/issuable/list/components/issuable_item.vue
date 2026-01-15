@@ -540,20 +540,20 @@ export default {
               <span v-if="externalAuthor" data-testid="external-author"
                 >{{ externalAuthor }} {{ __('via') }}</span
               >
-              <slot v-if="hasSlotContents('author')" name="author"></slot>
-              <gl-link
-                v-else
-                :data-user-id="authorId"
-                :data-username="author.username"
-                :data-name="author.name"
-                :data-avatar-url="author.avatarUrl"
-                :href="author.webPath"
-                data-testid="issuable-author"
-                class="author-link js-user-link gl-text-sm !gl-text-subtle"
-                @click.stop
-              >
-                <span class="author">{{ author.name }}</span>
-              </gl-link>
+              <slot name="author">
+                <gl-link
+                  :data-user-id="authorId"
+                  :data-username="author.username"
+                  :data-name="author.name"
+                  :data-avatar-url="author.avatarUrl"
+                  :href="author.webPath"
+                  data-testid="issuable-author"
+                  class="author-link js-user-link gl-text-sm !gl-text-subtle"
+                  @click.stop
+                >
+                  <span class="author">{{ author.name }}</span>
+                </gl-link>
+              </slot>
             </template>
           </gl-sprintf>
           <gl-sprintf v-else :message="__('created %{timeAgo}')">

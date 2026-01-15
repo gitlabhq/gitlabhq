@@ -255,6 +255,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         batched_background_migration_worker_ci_database
         batched_background_migration_worker_sec_database
         batched_git_ref_updates_cleanup_scheduler_worker
+        bbo_users_delete_unconfirmed_secondary
         bulk_imports_stale_import_worker
         ci_archive_traces_cron_worker
         ci_catalog_resources_aggregate_last30_day_usage_worker

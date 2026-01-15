@@ -12,6 +12,7 @@ RSpec.describe 'Thread Comments Commit', :js, feature_category: :source_code_man
   let!(:commit_discussion_note2) { create(:discussion_note_on_commit, in_reply_to: commit_discussion_note1) }
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     project.add_maintainer(user)
     sign_in(user)
 

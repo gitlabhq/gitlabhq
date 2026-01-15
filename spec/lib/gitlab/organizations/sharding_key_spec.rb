@@ -14,7 +14,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'project_secrets_manager_maintenance_tasks' # small queue cron table when project could be nil, https://gitlab.com/gitlab-org/gitlab/-/work_items/584553
     ]
   end
 

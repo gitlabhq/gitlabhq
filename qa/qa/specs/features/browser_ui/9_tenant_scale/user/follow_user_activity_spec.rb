@@ -51,11 +51,39 @@ module QA
         issue
         comment
 
-        Page::Main::Menu.perform(&:click_user_profile_link)
-        Page::User::Show.perform do |show|
-          show.click_following_tab
-          show.click_user_link(followed_user.username)
+        # Waits added to reduce flakiness caused by async activity propagation and intermittent UI timing.
+        # See: https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/12639
+        # Activity feed updates asynchronously. Reload between attempts until the expected event appears.
+        QA::Support::Waiter.wait_until(
+          max_duration: 120,
+          sleep_interval: 3,
+          reload_page: page,
+          message: "Timed out waiting for 'commented on issue' activity to appear"
+        ) do
+          Page::User::Show.perform { |show| show.has_activity?('commented on issue') }
+        end
 
+        QA::Support::Waiter.wait_until(
+          max_duration: 60,
+          sleep_interval: 2,
+          reload_page: false,
+          message: 'Failed to navigate to followed user via Following tab'
+        ) do
+          Page::Main::Menu.perform(&:click_user_profile_link)
+
+          Page::User::Show.perform do |show|
+            show.click_following_tab
+            show.click_user_link(followed_user.username)
+
+            show.has_activity?('commented on issue')
+          end
+        rescue Capybara::ElementNotFound, Selenium::WebDriver::Error::StaleElementReferenceError => e
+          QA::Runtime::Logger.debug("Follow user activity navigation retry: #{e.class} - #{e.message}")
+          page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"
+          false
+        end
+
+        Page::User::Show.perform do |show|
           aggregate_failures do
             expect(show).to have_activity('created project')
             expect(show).to have_activity('opened merge request')

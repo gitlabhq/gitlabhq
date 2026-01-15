@@ -276,12 +276,12 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
           end
 
           context 'when notifications are enabled only for protected branch',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
+            quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17045' do
             it_behaves_like 'sending email', branches_to_be_notified: "protected"
           end
 
           context 'when notifications are enabled only for default and protected branches',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/411331' do
+            quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17045' do
             it_behaves_like 'sending email', branches_to_be_notified: "default_and_protected"
           end
 

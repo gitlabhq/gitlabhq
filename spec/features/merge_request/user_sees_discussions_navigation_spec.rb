@@ -96,7 +96,7 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
         end
 
         it 'excludes resolved threads during navigation',
-          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383687' do
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24863' do
           goto_next_thread
           goto_next_thread
           goto_next_thread

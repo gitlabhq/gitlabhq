@@ -56,11 +56,6 @@ export default {
       required: false,
       default: true,
     },
-    shouldShowConfirmationPopover: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     editTooltip: {
       type: String,
       required: false,
@@ -136,11 +131,6 @@ export default {
       window.removeEventListener('keyup', this.collapseOnEscape);
     },
     toggle({ emitEvent = true } = {}) {
-      if (this.shouldShowConfirmationPopover) {
-        this.$emit('edit-confirm');
-        return;
-      }
-
       if (this.edit) {
         this.collapse({ emitEvent });
       } else {

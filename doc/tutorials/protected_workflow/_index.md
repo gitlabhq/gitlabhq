@@ -76,7 +76,7 @@ First, create the new subgroup:
    ![The engineering group in search results](img/search_engineering_v16_2.png)
 
 1. On the overview page for the `engineering` group, in the upper-right corner,
-   select **New subgroup**.
+   select **Create subgroup**.
 1. For the **Subgroup name**, enter `Managers`.
 1. Set the **Visibility level** to **Private**.
 1. Select **Create subgroup**.

@@ -505,6 +505,18 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
   Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
 end
 
+#
+# Cron Background Operations
+#
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary'] ||= {}
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['job_class'] = 'Database::BackgroundOperation::CronEnqueueWorker'
+Settings.cron_jobs['bbo_users_delete_unconfirmed_secondary']['args'] = {
+  'job_class_name' => 'UsersDeleteUnconfirmedSecondaryEmails',
+  'table_name' => 'emails',
+  'column_name' => 'id'
+}
+
 Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
 Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
 Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
@@ -1025,7 +1037,7 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
   Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '10 * * * *'
   Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
@@ -1118,6 +1130,9 @@ Gitlab.ee do
   Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker'] ||= {}
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['job_class'] = 'SecretsManagement::ProjectSecretsManagerMaintenanceTasksCronWorker'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker'] ||= {}
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['cron'] ||= '40 * * * *'
   Settings.cron_jobs['virtual_registries_cleanup_enqueue_policy_worker']['job_class'] = 'VirtualRegistries::Cleanup::EnqueuePolicyWorker'

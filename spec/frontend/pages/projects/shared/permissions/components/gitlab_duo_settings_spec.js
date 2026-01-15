@@ -36,7 +36,6 @@ describe('GitlabDuoSettings', () => {
       provide: {
         glFeatures: {
           useDuoContextExclusion: true,
-          duoWorkflowInCi: false,
           aiExperimentSastFpDetection: true,
           ...provide,
         },
@@ -166,37 +165,30 @@ describe('GitlabDuoSettings', () => {
 
     describe('Duo Flow settings', () => {
       describe.each`
-        duoWorkflowInCi | amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
-        ${false}        | ${false}         | ${true}            | ${false}     | ${'duoWorkflowInCi flag is disabled'}
-        ${true}         | ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
-        ${true}         | ${false}         | ${false}           | ${false}     | ${'Duo features are not enabled'}
-        ${true}         | ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
-      `(
-        'when $scenario',
-        ({ duoWorkflowInCi, amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
-          beforeEach(() => {
-            wrapper = createWrapper(
-              { amazonQAvailable, duoFeaturesEnabled },
-              { duoWorkflowInCi, duoFoundationalFlows: true },
-            );
-          });
+        amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
+        ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
+        ${false}         | ${false}           | ${false}     | ${'Duo features are not enabled'}
+        ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
+      `('when $scenario', ({ amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
+        beforeEach(() => {
+          wrapper = createWrapper(
+            { amazonQAvailable, duoFeaturesEnabled },
+            { duoFoundationalFlows: true },
+          );
+        });
 
-          it(`${shouldRender ? 'renders' : 'does not render'} the Duo remote flows toggle`, () => {
-            expect(findDuoRemoteFlowsToggle().exists()).toBe(shouldRender);
-          });
+        it(`${shouldRender ? 'renders' : 'does not render'} the Duo remote flows toggle`, () => {
+          expect(findDuoRemoteFlowsToggle().exists()).toBe(shouldRender);
+        });
 
-          it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
-            expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
-          });
-        },
-      );
+        it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
+          expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
+        });
+      });
 
       describe('when Duo remote flows toggle is rendered', () => {
         beforeEach(() => {
-          wrapper = createWrapper(
-            { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { duoWorkflowInCi: true },
-          );
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false }, {});
         });
 
         it('clicking on the remote flows checkbox and submitting passes along the data', async () => {
@@ -220,7 +212,7 @@ describe('GitlabDuoSettings', () => {
               amazonQAvailable: false,
               initialDuoRemoteFlowsAvailability: true,
             },
-            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+            { duoFoundationalFlows: true },
           );
         });
 
@@ -235,7 +227,7 @@ describe('GitlabDuoSettings', () => {
               amazonQAvailable: false,
               initialDuoRemoteFlowsAvailability: false,
             },
-            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+            { duoFoundationalFlows: true },
           );
 
           expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
@@ -276,7 +268,7 @@ describe('GitlabDuoSettings', () => {
               duoFeaturesLocked: true,
               initialDuoRemoteFlowsAvailability: true,
             },
-            { duoFoundationalFlows: true, duoWorkflowInCi: true },
+            { duoFoundationalFlows: true },
           );
 
           expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
@@ -292,7 +284,7 @@ describe('GitlabDuoSettings', () => {
                 lockedByApplicationSetting: false,
               },
             },
-            { duoWorkflowInCi: true, duoFoundationalFlows: true },
+            { duoFoundationalFlows: true },
           );
 
           expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
@@ -304,7 +296,7 @@ describe('GitlabDuoSettings', () => {
         it('shows SAST FP Detection toggle when feature flag is enabled', () => {
           wrapper = createWrapper(
             { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionToggle().exists()).toBe(true);
@@ -314,7 +306,7 @@ describe('GitlabDuoSettings', () => {
         it('does not show SAST FP Detection toggle when feature flag is disabled', () => {
           wrapper = createWrapper(
             { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: false },
+            { aiExperimentSastFpDetection: false },
           );
 
           expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
@@ -327,7 +319,7 @@ describe('GitlabDuoSettings', () => {
               duoFeaturesLocked: true,
               amazonQAvailable: false,
             },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionToggle().props('disabled')).toBe(true);
@@ -339,7 +331,7 @@ describe('GitlabDuoSettings', () => {
               duoFeaturesEnabled: false,
               amazonQAvailable: false,
             },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
@@ -356,7 +348,7 @@ describe('GitlabDuoSettings', () => {
                 ancestorNamespace: { path: 'test-namespace', fullName: 'Test Namespace' },
               },
             },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
@@ -373,7 +365,7 @@ describe('GitlabDuoSettings', () => {
                 lockedByApplicationSetting: true,
               },
             },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(true);
@@ -383,7 +375,7 @@ describe('GitlabDuoSettings', () => {
         it('does not show cascading lock icon when not locked', () => {
           wrapper = createWrapper(
             { duoFeaturesEnabled: true, amazonQAvailable: false },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           expect(findDuoSastFpDetectionCascadingLockIcon().exists()).toBe(false);
@@ -396,7 +388,7 @@ describe('GitlabDuoSettings', () => {
               amazonQAvailable: false,
               initialDuoSastFpDetectionEnabled: true,
             },
-            { duoWorkflowInCi: true, aiExperimentSastFpDetection: true },
+            { aiExperimentSastFpDetection: true },
           );
 
           const findHiddenInput = () =>

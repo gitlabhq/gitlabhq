@@ -12,6 +12,10 @@ RSpec.describe 'Diff file viewer', :js, :with_clean_rails_cache, feature_categor
     "File suppressed by a .gitattributes entry, the file's encoding is unsupported, or the file size exceeds the limit."
   end
 
+  before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
+  end
+
   def visit_commit(sha, anchor: nil)
     visit project_commit_path(project, sha, anchor: anchor)
 

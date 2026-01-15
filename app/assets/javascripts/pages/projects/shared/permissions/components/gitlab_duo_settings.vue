@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     areDuoFlowsAvailable() {
-      return this.duoEnabled && this.glFeatures.duoWorkflowInCi;
+      return this.duoEnabled;
     },
     duoEnabledSetting() {
       if (this.amazonQAvailable) {

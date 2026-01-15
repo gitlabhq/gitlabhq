@@ -105,7 +105,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages'
 
-    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553844'
+    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5999'
   end
 
   describe 'notification type' do
@@ -113,7 +113,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages', :notification
 
-    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553847'
+    it_behaves_like 'a dismissible Broadcast Messages', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/4218'
 
     it 'replaces placeholders' do
       create(:broadcast_message, :notification, message: 'Hi {{name}}')
@@ -128,7 +128,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   context 'with GitLab revision changes', :js, :use_clean_rails_redis_caching do
     it 'properly shows effects of delete from any revision',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553848' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3865' do
       text = 'my_broadcast_message'
       message = create(:broadcast_message, broadcast_type: :banner, message: text)
       new_strategy_value = { revision: 'abc123', version: '_version_' }
@@ -174,7 +174,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
   context 'with omniauth' do
     it_behaves_like 'a dismissible Broadcast Messages',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553850' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5810' do
       let_it_be(:broadcast_message) { create(:broadcast_message, :notification, message: 'SampleMessage') }
       let_it_be(:user) { create(:omniauth_user, extern_uid: 'example-uid', provider: 'saml') }
       let(:sign_in_user) { ->(user) { gitlab_sign_in_via('saml', user, 'example-uid') } }

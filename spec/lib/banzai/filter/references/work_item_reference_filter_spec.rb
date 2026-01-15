@@ -235,7 +235,8 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(work_item.to_reference(project))}</a>\.\)})
     end
 
-    it 'links with adjacent text', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478370' do
+    it 'links with adjacent text',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24869' do
       doc = reference_filter("Fixed (#{reference}.)")
 
       expect(doc.to_html).to match(%r{\(<a.+>#{Regexp.escape(work_item.to_reference(project))} \(comment 123\)</a>\.\)})

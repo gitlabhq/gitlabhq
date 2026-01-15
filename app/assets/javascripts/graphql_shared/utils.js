@@ -1,5 +1,6 @@
 import { isArray } from 'lodash';
 import Visibility from 'visibilityjs';
+import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { QUERY_PARAM_START_CURSOR, QUERY_PARAM_END_CURSOR } from './constants';
 
 /**
@@ -28,10 +29,19 @@ export const parseGid = (gid) => {
  * from the Id path
  *
  * @param {String} gid GraphQL global ID
- * @returns {Number}
+ * @returns {Number|String|null}
  */
 export const getIdFromGraphQLId = (gid = '') => {
-  const rawId = isGid(gid) ? parseGid(gid).id : gid;
+  let rawId = gid;
+
+  if (isGid(gid)) {
+    rawId = parseGid(gid).id;
+
+    if (rawId && !isPositiveInteger(rawId)) {
+      return rawId;
+    }
+  }
+
   const id = parseInt(rawId, 10);
   return Number.isInteger(id) ? id : null;
 };

@@ -17,10 +17,11 @@ RSpec.describe "User deletes comments on a commit", :js, feature_category: :sour
 
   with_them do
     before do
+      stub_feature_flags(rapid_diffs_on_commit_show: rapid_diffs_enabled)
       sign_in(user)
       project.add_developer(user)
 
-      visit(project_commit_path(project, sample_commit.id, rapid_diffs: rapid_diffs_enabled))
+      visit(project_commit_path(project, sample_commit.id))
 
       add_note(comment_text)
     end

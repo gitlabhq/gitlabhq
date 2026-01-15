@@ -13,8 +13,6 @@ The GitLab Duo Agent Platform is a Single Page Application (SPA) built with Vue.
 
 The platform is architected with a flexible namespace system that allows the same frontend infrastructure to be reused across different contexts (projects, groups, etc.) while providing context-specific functionality through a component mapping system.
 
-This page is behind the feature flag `duo_workflow_in_ci`
-
 ## Namespace Architecture
 
 The namespace system is built around a central mapping mechanism that:
@@ -235,8 +233,6 @@ Add the menu item to the `configure_menu_items` method and create the correspond
 ```ruby
 override :configure_menu_items
 def configure_menu_items
-  return false unless Feature.enabled?(:duo_workflow_in_ci, context.current_user)
-
   add_item(duo_agents_runs_menu_item)
   add_item(duo_agents_your_feature_menu_item)  # Add your new menu item
   true

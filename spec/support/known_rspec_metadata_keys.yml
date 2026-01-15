@@ -9,6 +9,7 @@
 - :api
 - :assume_throttled
 - :aws_s3
+- :background_operation
 - :block
 - :broken_storage
 - :capybara_ignore_server_errors

@@ -13,19 +13,20 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
   let(:first_comment_position) { sample_commit.line_code.split('_').drop(1) }
   let(:second_comment_position) { sample_commit.del_line_code.split('_').drop(1) }
 
-  before do
-    sign_in(user)
-    project.add_developer(user)
-  end
-
   where(:rapid_diffs_enabled) do
     [false, true]
   end
 
   with_them do
+    before do
+      stub_feature_flags(rapid_diffs_on_commit_show: rapid_diffs_enabled)
+      sign_in(user)
+      project.add_developer(user)
+    end
+
     context "inline view" do
       before do
-        visit(project_commit_path(project, sample_commit.id, rapid_diffs: rapid_diffs_enabled))
+        visit(project_commit_path(project, sample_commit.id))
       end
 
       it "adds a comment" do
@@ -131,7 +132,7 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
 
     context "side-by-side view" do
       before do
-        visit(project_commit_path(project, sample_commit.id, view: "parallel", rapid_diffs: rapid_diffs_enabled))
+        visit(project_commit_path(project, sample_commit.id, view: "parallel"))
       end
 
       it "adds a comment" do

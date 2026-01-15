@@ -70,7 +70,7 @@ RSpec.shared_examples 'setting project protected branches' do
     end
 
     it "displays the number of matching branches",
-      quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/flaky-tests/-/issues/3459' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24079' do
       project.repository.add_branch(admin, 'production-stable', 'master')
       project.repository.add_branch(admin, 'staging-stable', 'master')
 

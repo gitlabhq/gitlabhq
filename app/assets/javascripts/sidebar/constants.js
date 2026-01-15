@@ -78,22 +78,6 @@ export function dropdowni18nText(issuableAttribute, issuableType) {
       ),
       { issuableAttribute, issuableType },
     ),
-    noPermissionToView: sprintf(
-      s__("DropdownWidget|You don't have permission to view this %{issuableAttribute}."),
-      { issuableAttribute },
-    ),
-    editConfirmation: sprintf(
-      s__(
-        'DropdownWidget|You do not have permission to view the currently assigned %{issuableAttribute} and will not be able to choose it again if you reassign it.',
-      ),
-      {
-        issuableAttribute,
-      },
-    ),
-    editConfirmationCta: sprintf(s__('DropdownWidget|Edit %{issuableAttribute}'), {
-      issuableAttribute,
-    }),
-    editConfirmationCancel: s__('DropdownWidget|Cancel'),
   };
 }
 

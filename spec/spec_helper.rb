@@ -162,6 +162,7 @@ RSpec.configure do |config|
   config.include InspectRequests, :js
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
+  config.include MigrationsHelpers, :background_operation
   config.include RedisHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
   config.include Rails.application.routes.url_helpers, type: :component

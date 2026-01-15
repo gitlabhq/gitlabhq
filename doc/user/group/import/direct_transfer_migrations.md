@@ -149,7 +149,7 @@ On the destination GitLab instance, create the group you want to import to and c
 1. Create either:
    - A new group. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
-     - Select **New subgroup**.
+     - Select **Create subgroup**.
      - In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.

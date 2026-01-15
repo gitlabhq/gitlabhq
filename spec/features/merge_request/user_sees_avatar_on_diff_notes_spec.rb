@@ -28,6 +28,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
   end
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     sign_in user
   end
 

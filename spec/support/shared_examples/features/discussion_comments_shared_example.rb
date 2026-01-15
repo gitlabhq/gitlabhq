@@ -129,7 +129,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
             expect(page).not_to have_selector menu_selector
           end
 
-          it 'has "Comment" selected when opening the menu', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/196825' do
+          it 'has "Comment" selected when opening the menu', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24073' do
             find(toggle_selector).click
 
             find("#{menu_selector} li", match: :first)

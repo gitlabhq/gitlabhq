@@ -1,0 +1,17 @@
+---
+key_path: counts.users_without_group_or_project_membership
+description: "Count of active users without any group or project membership"
+product_group: seat_management
+value_type: number
+status: active
+milestone: "18.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217064
+time_frame: all
+data_source: database
+data_category: operational
+instrumentation_class: CountUsersWithoutGroupOrProjectMembershipMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate

@@ -587,7 +587,7 @@ export default {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
     isDuoWorkflowEnabled() {
-      return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
+      return this.duoRemoteFlowsAvailability;
     },
     duoWorkflowDefinition() {
       return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';

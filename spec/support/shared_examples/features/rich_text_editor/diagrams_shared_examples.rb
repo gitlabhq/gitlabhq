@@ -15,7 +15,7 @@ RSpec.shared_examples 'rich text editor - diagrams' do
     end
 
     it 'renders and updates the diagram correctly in a sandboxed iframe',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480101' do
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24075' do
       iframe = find(content_editor_testid).find('iframe')
       expect(iframe['src']).to include('/-/sandbox/mermaid')
 

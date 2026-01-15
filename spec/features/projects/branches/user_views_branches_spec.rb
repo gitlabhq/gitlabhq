@@ -47,7 +47,7 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
       end
 
       it "passes axe automated accessibility testing",
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/562826' do
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16780' do
         expect(page).to be_axe_clean.within('#content-body')
       end
     end

@@ -116,7 +116,7 @@ RSpec.describe 'layouts/_head', feature_category: :design_system do
     end
   end
 
-  context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
+  context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9307' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }
 

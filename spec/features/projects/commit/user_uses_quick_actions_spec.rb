@@ -11,6 +11,7 @@ RSpec.describe 'Commit > User uses quick actions', :js, feature_category: :sourc
   let(:commit) { project.commit }
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     project.add_maintainer(user)
     sign_in(user)
 

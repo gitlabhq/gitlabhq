@@ -59,10 +59,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:hide_incident_management_features, project)
   end
 
-  before_action only: :show do
-    push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-  end
-
   after_action :log_issue_show, only: :show
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

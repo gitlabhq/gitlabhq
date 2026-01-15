@@ -11,6 +11,7 @@ description: お客様とその組織に最適なサブスクリプションを�
 {{< cards >}}
 
 - [GitLabプラン](choosing_subscription.md)
+- [GitLabクレジット](gitlab_credits.md)
 - [サブスクリプションを管理する](manage_subscription.md)
 - [請求先アカウントを管理する](billing_account.md)
 - [ユーザーとシートを管理する](manage_users_and_seats.md)

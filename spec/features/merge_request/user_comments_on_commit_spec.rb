@@ -11,6 +11,7 @@ RSpec.describe 'User comments on a commit', :js, feature_category: :code_review_
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(rapid_diffs_on_commit_show: false)
     project.add_maintainer(user)
     sign_in(user)
 

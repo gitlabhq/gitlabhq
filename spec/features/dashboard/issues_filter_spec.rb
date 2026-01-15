@@ -106,7 +106,8 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
       visit issues_dashboard_path(assignee_username: user.username)
     end
 
-    it 'remembers last sorting value', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408749' do
+    it 'remembers last sorting value',
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9338' do
       click_button 'Created date'
       click_button 'Updated date'
 

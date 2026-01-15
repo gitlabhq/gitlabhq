@@ -842,7 +842,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           expect(page).to have_selector('[data-testid="pipeline-schedule-description"]', text: 'blocked user schedule')
         end
 
-        it 'does not create a new Pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do
+        it 'does not create a new Pipeline',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24866' do
           visit project_pipelines_path(project)
 
           expect(page).not_to have_selector('.ci-table')

@@ -523,7 +523,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
               end
 
               it 'returns public links, admin area and leave admin mode links',
-                quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/525378' do
+                quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9432' do
                 expect(subject[:context_switcher_links]).to eq([
                   *public_links_for_user,
                   admin_area_link
