@@ -11,6 +11,11 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be_with_reload(:environment) { create(:environment, :auto_stop_always, project: project, description: 'description') }
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
+    it_behaves_like 'authorizing granular token permissions', :read_environment do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/environments", personal_access_token: pat) }
+    end
+
     context 'as member of the project' do
       it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
@@ -133,6 +138,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'POST /projects/:id/environments' do
+    it_behaves_like 'authorizing granular token permissions', :create_environment do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/environments", personal_access_token: pat),
+          params: { name: "new-env-#{SecureRandom.hex(4)}" }
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_environments do
       let(:request) do
         post api("/projects/#{source_project.id}/environments"),
@@ -279,6 +292,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'POST /projects/:id/environments/stop_stale' do
+    it_behaves_like 'authorizing granular token permissions', :stop_stale_environment do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/environments/stop_stale", personal_access_token: pat),
+          params: { before: 1.week.ago.to_date.to_s }
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_environments do
       let(:request) do
         post api("/projects/#{source_project.id}/environments/stop_stale"),
@@ -340,6 +361,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
   describe 'PUT /projects/:id/environments/:environment_id' do
     let_it_be(:url) { 'https://mepmep.whatever.ninja' }
+
+    it_behaves_like 'authorizing granular token permissions', :update_environment do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/environments/#{environment.id}", personal_access_token: pat),
+          params: { tier: 'production' }
+      end
+    end
 
     it_behaves_like 'enforcing job token policies', :admin_environments do
       let(:request) do
@@ -523,6 +552,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'DELETE /projects/:id/environments/:environment_id' do
+    it_behaves_like 'authorizing granular token permissions', :delete_environment do
+      before do
+        environment.stop
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { delete api("/projects/#{project.id}/environments/#{environment.id}", personal_access_token: pat) }
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_environments do
       before do
         environment.stop
@@ -586,6 +624,11 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'POST /projects/:id/environments/:environment_id/stop' do
+    it_behaves_like 'authorizing granular token permissions', :stop_environment do
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/environments/#{environment.id}/stop", personal_access_token: pat) }
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_environments do
       let(:request) do
         post api("/projects/#{source_project.id}/environments/#{environment.id}/stop"),
@@ -698,6 +741,11 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   describe 'GET /projects/:id/environments/:environment_id' do
     let_it_be(:bridge_job) { create(:ci_bridge, :running, project: project, user: user) }
     let_it_be(:build_job) { create(:ci_build, :running, project: project, user: user) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_environment do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/environments/#{environment.id}", personal_access_token: pat) }
+    end
 
     it_behaves_like 'enforcing job token policies', :read_environments,
       allow_public_access_for_enabled_project_features: [:repository, :builds, :environments] do
@@ -861,6 +909,15 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(new_stopped_other_env.reload.auto_delete_at).to be_nil
         expect(old_active_other_env.reload.auto_delete_at).to be_nil
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_environment_review_app do
+      before_all do
+        create(:environment, :with_review_app, :stopped, created_at: 31.days.ago, project: project)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { delete api("/projects/#{project.id}/environments/review_apps", personal_access_token: pat) }
     end
 
     it_behaves_like 'enforcing job token policies', :admin_environments do

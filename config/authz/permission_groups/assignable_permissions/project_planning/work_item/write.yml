@@ -1,0 +1,9 @@
+---
+name: write_work_item
+description: Grants the ability to write work items
+permissions:
+  - create_label
+  - update_label
+boundaries:
+  - group
+  - project

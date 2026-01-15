@@ -257,7 +257,7 @@ include:
     - .use-pg16-clickhouse23
   script:
     - !reference [.clickhouse-setup, script]
-    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
 
 .rspec-base-pg16-clickhouse24:
   extends:
@@ -265,7 +265,7 @@ include:
     - .use-pg16-clickhouse24
   script:
     - !reference [.clickhouse-setup, script]
-    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
 
 .rspec-base-pg16-clickhouse25:
   extends:
@@ -273,7 +273,7 @@ include:
     - .use-pg16-clickhouse25
   script:
     - !reference [.clickhouse-setup, script]
-    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
 
 .rspec-base-pg17:
   extends:

@@ -36833,6 +36833,9 @@ msgstr ""
 msgid "Integrations|Integration details"
 msgstr ""
 
+msgid "Integrations|Integration properties exceed maximum size of %{max_size}"
+msgstr ""
+
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr ""
 
@@ -51910,7 +51913,7 @@ msgstr ""
 msgid "ProfilesAuthentication|Passkeys"
 msgstr ""
 
-msgid "ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. Learn more about passkeys."
+msgid "ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."
 msgstr ""
 
 msgid "ProfilesAuthentication|Passkeys sign-in"
@@ -63462,9 +63465,6 @@ msgid "SecurityReports|Risk score"
 msgstr ""
 
 msgid "SecurityReports|Risk score formula"
-msgstr ""
-
-msgid "SecurityReports|Risk scores are being calculated. Please try again later."
 msgstr ""
 
 msgid "SecurityReports|Scan details"

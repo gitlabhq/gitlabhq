@@ -271,6 +271,7 @@ RSpec.describe 'Database schema',
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
       work_item_related_link_restrictions: %w[source_type_id target_type_id],
       sbom_vulnerability_scans: %w[project_id build_id], # referenced records are in different DB and no LFK as the table contains references to object storage
+      sbom_vulnerability_scan_results: %w[project_id], # referenced records are in different DB and no LFK as the table contains references to object storage
       security_trainings: %w[training_provider_id provider_id], # training_provider_id is a fixed items model reference.
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.

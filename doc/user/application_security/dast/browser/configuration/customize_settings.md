@@ -206,20 +206,20 @@ gantt
     accDescr: Timeline showing when DAST timeout configurations apply during the two phases of page loading.
 
     dateFormat YYYY-MM-DD
-    axisFormat
-    section       Document load
-    DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT  :done, nav1, 2024-01-01, 6d
-    Fetch HTML  :active, nav1, 2024-01-01, 3d
-    Fetch CSS&JS  :active, nav1, 2024-01-04, 3d
-    DocumentReady  :milestone, nav1, 2024-01-07, 0d
+    axisFormat  %d
+    section     Document load
+    DAST_PAGE_READY_AFTER_NAVIGATION_TIMEOUT :done, nav1, 2024-01-01, 6d
+    Fetch HTML :active, nav1, 2024-01-01, 3d
+    Fetch CSS&JS :active, nav1, 2024-01-04, 3d
+    DocumentReady :milestone, nav1, 2024-01-07, 0d
 
-    section       Load Data / Client-side render
-    DAST_PAGE_DOM_STABLE_WAIT  :done, dom1, 2024-01-07, 3d
+    section     Load Data / Client-side render
+    DAST_PAGE_DOM_STABLE_WAIT :done, dom1, 2024-01-07, 3d
     Initial JS Execution :active, dom1, 2024-01-07, 3d
-    DAST_PAGE_DOM_READY_TIMEOUT  :done, ready1, 2024-01-10, 4d
+    DAST_PAGE_DOM_READY_TIMEOUT :done, ready1, 2024-01-10, 4d
     Fetch Data :active, dom1, 2024-01-10, 2d
     Render DOM :active, dom1, 2024-01-10, 2d
-    DAST_PAGE_IS_LOADING_ELEMENT  :milestone, load1, 2024-01-14, 0d
+    DAST_PAGE_IS_LOADING_ELEMENT :milestone, load1, 2024-01-14, 0d
 ```
 
 ## Grouped URLs

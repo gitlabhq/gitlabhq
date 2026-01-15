@@ -1,0 +1,5 @@
+---
+name: stop_stale_environment
+description: Grants the ability to stop stale environments in bulk
+boundaries:
+  - project

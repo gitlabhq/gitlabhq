@@ -36,7 +36,7 @@
         = render Pajamas::ButtonComponent.new(icon: 'soft-wrap', button_options: { class: 'soft-wrap' }) do
           = _("Soft wrap")
   .file-help.gl-px-5.gl-py-3.gl-bg-subtle.gl-border-b
-    = link_to s_('Editor|Editor accessibility guide'), help_page_path('user/project/repository/web_editor.md', anchor: 'editor-accessibility-options')
+    = link_to s_('Editor|Editor accessibility guide'), help_page_path('user/project/repository/web_editor.md', anchor: 'editor-accessibility-options'), target: '_blank', rel: 'noopener noreferrer'
 
   .file-editor.code
     .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container', ref: ref } }<

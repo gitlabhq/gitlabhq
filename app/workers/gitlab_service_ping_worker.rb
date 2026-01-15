@@ -85,7 +85,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
       organization_id: organization.id
     }
 
-    ServicePing::NonSqlServicePing.upsert(record, unique_by: :recorded_at)
+    ServicePing::NonSqlServicePing.upsert(record, unique_by: [:organization_id, :recorded_at])
   rescue StandardError => err
     Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
     nil

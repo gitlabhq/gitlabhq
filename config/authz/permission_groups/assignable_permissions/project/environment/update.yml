@@ -1,0 +1,7 @@
+---
+name: update_environment
+description: Grants the ability to modify environments in a project
+boundaries:
+  - project
+permissions:
+  - update_environment

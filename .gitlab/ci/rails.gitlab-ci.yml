@@ -383,6 +383,18 @@ rspec-ee unit clickhouse25:
     - .rspec-base-pg16-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
 
+rspec integration pg16 clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
+    - .rails:rules:ee-and-foss-integration
+  parallel: 3
+
+rspec-ee integration pg16 clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
+    - .rails:rules:ee-only-integration
+  parallel: 3
+
 rspec ci-config-validation branch-pipelines:
   extends:
     - .ci-config-validation-base
@@ -501,6 +513,8 @@ rspec:artifact-collector part-b:
   needs:
     - job: rspec integration pg16  # 20 jobs
       optional: true
+    - job: rspec integration pg16 clickhouse25  # 3 jobs
+      optional: true
     - job: rspec migration pg16  # 26 jobs
       optional: true
 
@@ -570,6 +584,8 @@ rspec:artifact-collector ee remainder:
     - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
     - job: rspec-ee integration pg16  # 9 jobs
+      optional: true
+    - job: rspec-ee integration pg16 clickhouse25  # 3 jobs
       optional: true
     - job: rspec-ee system pg16  # 16 jobs
       optional: true

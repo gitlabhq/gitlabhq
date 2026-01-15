@@ -100,6 +100,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'packages_package_files.project_id',
       'merge_request_commits_metadata.project_id',
       'sbom_vulnerability_scans.project_id',
+      'sbom_vulnerability_scan_results.project_id',
       'p_duo_workflows_checkpoints.project_id',
       'p_duo_workflows_checkpoints.namespace_id'
     ]

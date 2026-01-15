@@ -1,0 +1,5 @@
+---
+name: delete_environment_review_app
+description: Grants the ability to bulk delete stopped review app environments
+boundaries:
+  - project

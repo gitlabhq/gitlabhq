@@ -3,6 +3,7 @@ name: read_work_item
 description: Grants the ability to read work items
 permissions:
   - read_iteration
+  - read_label
 boundaries:
   - group
   - project

@@ -119,7 +119,8 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
           :non_sql_service_ping,
           payload: { some_metric: 123 },
           metadata: { name: 'some_metric', time_elapsed: 10, error: 'some error' },
-          recorded_at: non_sql_payload[:recorded_at]
+          recorded_at: non_sql_payload[:recorded_at],
+          organization: organization
         )
 
         expect { subject.perform }.to change { record.reload.payload }
@@ -149,7 +150,8 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
         record = create(
           :non_sql_service_ping,
           payload: { some_metric: "SELECT 123" },
-          recorded_at: non_sql_payload[:recorded_at]
+          recorded_at: non_sql_payload[:recorded_at],
+          organization: organization
         )
 
         expect { subject.perform }.to change { record.reload.payload }

@@ -1,0 +1,8 @@
+---
+name: delete_work_item
+description: Grants the ability to delete work items
+permissions:
+  - delete_label
+boundaries:
+  - group
+  - project
