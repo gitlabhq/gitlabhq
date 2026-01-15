@@ -12,6 +12,7 @@ import initConfirmDanger from '~/init_confirm_danger';
 import { initGroupSettingsReadme } from '~/groups/settings/init_group_settings_readme';
 import initArchiveSettings from '~/groups_projects/archive';
 import initUnarchiveSettings from '~/groups_projects/unarchive';
+import { initGroupDeleteButton } from '~/groups/group_delete_button';
 
 initFilePickers();
 initConfirmDanger();
@@ -32,3 +33,4 @@ initCascadingSettingsLockTooltips();
 initGroupSettingsReadme();
 initArchiveSettings();
 initUnarchiveSettings();
+initGroupDeleteButton();

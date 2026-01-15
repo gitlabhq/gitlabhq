@@ -68,7 +68,7 @@ The external agent:
 
 The following integrations have been tested by GitLab and are available:
 
-- [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
+- [Claude Code](https://code.claude.com/docs/en/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
 
 Before you can create an agent and integrate it with an external AI model
@@ -79,7 +79,7 @@ without additional agent configuration necessary.
 
 The following agents are available in the AI Catalog:
 
-- [Claude Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/499/)
+- [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/499/)
 - [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/513/)
 
 Required steps to enable and use Claude or Codex:

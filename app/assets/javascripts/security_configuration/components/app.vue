@@ -52,6 +52,10 @@ export default {
     UserCalloutDismisser,
     TrainingProviderList,
     RefTrackingList,
+    ScanProfileConfiguration: () =>
+      import(
+        'ee_component/security_configuration/components/scan_profiles/scan_profile_configuration.vue'
+      ),
     ContainerScanningForRegistryFeatureCard: () =>
       import(
         'ee_component/security_configuration/components/container_scanning_for_registry_feature_card.vue'
@@ -136,6 +140,9 @@ export default {
         this.glFeatures?.securityContextLabels &&
         this.canReadAttributes
       );
+    },
+    shouldShowScannerProfiles() {
+      return this.glFeatures?.securityScanProfilesFeature;
     },
     trackedRefsHelpPagePath() {
       // Once the help page content is available, we can use the anchor to link to the specific section
@@ -232,6 +239,22 @@ export default {
           class="gl-mt-3"
           @dismiss="dismissAutoDevopsEnabledAlert"
         />
+
+        <section-layout
+          v-if="shouldShowScannerProfiles"
+          stacked
+          class="gl-border-b-0"
+          :heading="$options.i18n.securityProfiles"
+        >
+          <template #description>
+            <p>
+              {{ $options.i18n.securityProfilesDesc }}
+            </p>
+          </template>
+          <template #features>
+            <scan-profile-configuration />
+          </template>
+        </section-layout>
 
         <section-layout stacked class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>

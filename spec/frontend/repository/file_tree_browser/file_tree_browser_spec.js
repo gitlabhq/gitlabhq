@@ -131,6 +131,33 @@ describe('FileTreeBrowser', () => {
       );
     });
 
+    describe('Escape keydown', () => {
+      it('closes the file tree browser when Escape key is pressed in peek mode', () => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(true);
+        createComponent();
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        document.dispatchEvent(event);
+
+        expect(fileTreeBrowserStore.fileTreeBrowserIsPeekOn).toBe(false);
+      });
+
+      it('does not close the file tree browser when Escape key is pressed in expanded mode', () => {
+        pinia = createTestingPinia({ stubActions: false });
+        fileTreeBrowserStore = useFileTreeBrowserVisibility(pinia);
+        fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
+        fileTreeBrowserStore.setFileTreeBrowserIsPeekOn(false);
+        createComponent();
+
+        const event = new KeyboardEvent('keydown', { key: 'Escape' });
+        document.dispatchEvent(event);
+
+        expect(fileTreeBrowserStore.fileTreeBrowserIsExpanded).toBe(true);
+      });
+    });
+
     describe('PanelResizer component', () => {
       it('renders the panel resizer component', () => {
         expect(findPanelResizer().exists()).toBe(true);

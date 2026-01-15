@@ -724,6 +724,7 @@ describe('Pipelines app', () => {
         expect.objectContaining({
           fullPath: 'gitlab-org/gitlab',
           ids: ['gid://gitlab/Ci::Pipeline/701'],
+          first: 1,
         }),
       );
     });

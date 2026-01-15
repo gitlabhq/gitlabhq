@@ -25,6 +25,10 @@ module Authn
           SecureRandom.random_bytes(length)
         end
 
+        def self.crc_of(encoded)
+          Zlib.crc32(encoded).to_s(36).rjust(CRC_BYTES, '0')
+        end
+
         attr_reader :token_owner_record, :routing_payload, :prefix
 
         def initialize(token_owner_record, routing_payload:, prefix: '')
@@ -78,8 +82,7 @@ module Authn
         end
 
         def append_crc(encoded_payload)
-          crc = Zlib.crc32(encoded_payload).to_s(36).rjust(CRC_BYTES, '0')
-          "#{encoded_payload}#{crc}"
+          "#{encoded_payload}#{self.class.crc_of(encoded_payload)}"
         end
 
         def check_required_routing_keys!

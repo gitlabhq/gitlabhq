@@ -6,6 +6,11 @@ description: AI-native features and functionality.
 title: Summary of GitLab Duo features
 ---
 
+GitLab Duo has multiple features, available across different platforms,
+subscriptions, and add-ons.
+
+## GitLab Duo Agent Platform features
+
 The following features are part of the GitLab Duo Agent Platform.
 
 | Feature | Description |

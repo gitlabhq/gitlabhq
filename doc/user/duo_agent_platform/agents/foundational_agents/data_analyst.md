@@ -85,29 +85,29 @@ Prerequisites:
 ## Example prompts
 
 - Volume and counting:
-  - "How many merge requests were merged this month?"
-  - "Count the issues created last week."
-  - "How many bugs are currently open?"
+  - `How many merge requests were merged this month?`
+  - `Count the issues created last week.`
+  - `How many bugs are currently open?`
 - Team performance:
-  - "What has @username worked on this month?"
-  - "Show me merge requests merged by team X in the last two weeks."
-  - "Show me a table of issues with titles and labels assigned to me."
-  - "List open merge requests by author."
+  - `What has @username worked on this month?`
+  - `Show me merge requests merged by team X in the last two weeks.`
+  - `Show me a table of issues with titles and labels assigned to me.`
+  - `List open merge requests by author.`
 - Status and monitoring:
-  - "Show me open issues with ~priority::1 and ~bug labels."
-  - "Show me overdue issues."
-  - "What merge requests are waiting for review?"
-  - "List issues in the current milestone."
+  - `Show me open issues with ~priority::1 and ~bug labels.`
+  - `Show me overdue issues.`
+  - `What merge requests are waiting for review?`
+  - `List issues in the current milestone.`
 - Trend analysis:
-  - "Show me the merge request activity over the last month."
-  - "What's the trend of bug creation this quarter?"
-  - "Compare issue closure rates between this month and last month."
+  - `Show me the merge request activity over the last month.`
+  - `What's the trend of bug creation this quarter?`
+  - `Compare issue closure rates between this month and last month.`
 - GLQL query generation:
-  - "Write a GLQL query for open issues assigned to me."
-  - "Create a table showing all merge requests merged this week."
-  - "Generate a GLQL embedded view for team X's open work."
-  - "What's the GLQL syntax for filtering by multiple labels?"
+  - `Write a GLQL query for open issues assigned to me.`
+  - `Create a table showing all merge requests merged this week.`
+  - `Generate a GLQL embedded view for team X's open work.`
+  - `What's the GLQL syntax for filtering by multiple labels?`
 - Work item discovery:
-  - "List merge requests targeting the main branch."
-  - "Find issues updated in the last 24 hours."
-  - "Show me open bugs assigned to team X."
+  - `List merge requests targeting the main branch.`
+  - `Find issues updated in the last 24 hours.`
+  - `Show me open bugs assigned to team X.`

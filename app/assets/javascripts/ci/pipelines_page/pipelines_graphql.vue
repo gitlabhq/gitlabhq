@@ -530,7 +530,7 @@ export default {
         await this.$apollo.query({
           fetchPolicy: fetchPolicies.NETWORK_ONLY,
           query: getPipelinesQuery,
-          variables: { fullPath: this.fullPath, ids: idsToFetch },
+          variables: { fullPath: this.fullPath, ids: idsToFetch, first: idsToFetch.length },
         });
       } catch (error) {
         createAlert({

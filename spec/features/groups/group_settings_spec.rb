@@ -402,7 +402,7 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   end
 
   describe 'group deletion', :js, :freeze_time do
-    def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
+    def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Yes, delete group')
       click_button button_text
       fill_in 'confirm_name_input', with: confirm_with
       click_button confirm_button_text

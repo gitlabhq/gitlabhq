@@ -1317,8 +1317,6 @@
     - <<: *if-tag
       variables:
         ARCH: amd64,arm64
-      # TODO: Remove once confirmed on a tag pipeline
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64

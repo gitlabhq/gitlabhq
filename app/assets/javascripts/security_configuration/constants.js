@@ -165,4 +165,34 @@ export const i18n = {
     'SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability. Please note that security training is not accessible in an environment that is offline.',
   ),
   securityTrainingDoc: s__('SecurityConfiguration|Learn more about vulnerability training'),
+  securityProfiles: s__('SecurityConfiguration|Profile-based scanner configuration'),
+  securityProfilesDesc: s__(
+    'SecurityConfiguration|Define security settings once, reuse them everywhere. Update a profile and changes automatically apply to every project using it, ensuring consistent, predictable security coverage with minimal effort.',
+  ),
+};
+
+export const SCAN_PROFILE_TYPE_SECRET_DETECTION = 'SECRET_DETECTION';
+export const SCAN_PROFILE_CATEGORIES = {
+  [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
+    name: s__('SecurityProfiles|Secret Push Protection'),
+    label: 'SD',
+    tooltip: s__('SecurityProfiles|Prevents secrets from being pushed to your repository'),
+  },
+};
+export const SCAN_PROFILE_I18N = {
+  noProfile: s__('SecurityProfiles|No profile applied'),
+  notConfigured: s__('SecurityProfiles|Not configured'),
+  applyToEnable: s__('SecurityProfiles|Apply profile to enable'),
+  active: s__('SecurityProfiles|Active'),
+  profilesDefine: s__(
+    'SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects',
+  ),
+  applyDefault: s__('SecurityProfiles|Apply default profile'),
+  previewDefault: s__('SecurityProfiles|Preview default profile'),
+  disable: s__('SecurityProfiles|Disable'),
+  errorLoadingProfiles: s__('SecurityProfiles|Error loading profiles. Please try again.'),
+  errorApplying: s__('SecurityProfiles|Error applying profile. Please try again.'),
+  errorDetaching: s__('SecurityProfiles|Error detaching profile. Please try again.'),
+  successApplying: s__('SecurityProfiles|Profile applied successfully.'),
+  successDetaching: s__('SecurityProfiles|Profile disabled successfully.'),
 };

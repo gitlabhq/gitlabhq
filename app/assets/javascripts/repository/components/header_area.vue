@@ -131,7 +131,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
+    ...mapState(useFileTreeBrowserVisibility, [
+      'fileTreeBrowserIsVisible',
+      'fileTreeBrowserIsExpanded',
+    ]),
     isTreeView() {
       return !['blobPathDecoded', 'blobPathEncoded'].includes(this.$route.name);
     },
@@ -203,7 +206,7 @@ export default {
       return (
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
-        !this.fileTreeBrowserIsVisible
+        !this.fileTreeBrowserIsExpanded
       );
     },
     toggleFileBrowserShortcutKey() {
@@ -281,9 +284,10 @@ export default {
       class="tree-ref-container !gl-mb-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3 @md/panel:!gl-mb-0"
     >
       <file-tree-browser-toggle
-        v-if="showFileTreeBrowserToggle"
+        v-show="showFileTreeBrowserToggle"
         ref="toggle"
         :aria-keyshortcuts="toggleFileBrowserShortcutKey"
+        :inert="fileTreeBrowserIsVisible"
       />
       <ref-selector
         v-if="!isReadmeView"

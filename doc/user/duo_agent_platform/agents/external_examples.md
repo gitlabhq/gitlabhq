@@ -33,13 +33,13 @@ These examples contain the following variables:
 
 The following agents are integrated with GitLab and available on GitLab.com.
 
-### Anthropic Claude
+### Claude Code
 
 ```yaml
 injectGatewayToken: true
 image: node:22-slim
 commands:
-  - echo "Installing claude"
+  - echo "Installing Claude Code"
   - npm install --global @anthropic-ai/claude-code
   - echo "Installing glab"
   - export GITLAB_TOKEN=$GITLAB_TOKEN_CLAUDE
@@ -49,11 +49,11 @@ commands:
   - echo "Configuring git"
   - git config --global user.email "claudecode@gitlab.com"
   - git config --global user.name "Claude Code"
-  - echo "Configuring claude"
+  - echo "Configuring Claude Code"
   - export ANTHROPIC_AUTH_TOKEN=$AI_FLOW_AI_GATEWAY_TOKEN
   - export ANTHROPIC_CUSTOM_HEADERS=$AI_FLOW_AI_GATEWAY_HEADERS
   - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
-  - echo "Running claude"
+  - echo "Running Claude Code"
   - |
     claude --debug --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
     You are an AI assistant helping with GitLab operations.

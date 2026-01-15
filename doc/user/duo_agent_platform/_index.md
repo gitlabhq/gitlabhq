@@ -21,15 +21,19 @@ title: GitLab Duo Agent Platform
 
 {{< /history >}}
 
-With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, helping you create code,
-research results, and perform tasks simultaneously.
-The agents have full context across your entire software development lifecycle.
+The GitLab Duo Agent Platform is an AI-native solution that embeds multiple
+intelligent assistants ("agents")
+throughout the software development lifecycle.
+
+- Instead of following a linear workflow, collaborate asynchronously with AI agents.
+- Delegate routine tasks, from code refactoring and security scans to research,
+  to specialized AI agents.
 
 The Agent Platform is made up of [several features](../gitlab_duo/feature_summary.md),
 which are available in the GitLab UI and IDEs.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Developer Onboarding with GitLab Duo Agent Platform](https://youtu.be/UD8vAAglkY0?si=7AWWDfd-mLGdkBwT).
+For an example of how the Agent Platform can improve a traditionally time-consuming workflow, see [Developer Onboarding with GitLab Duo Agent Platform](https://youtu.be/UD8vAAglkY0?si=7AWWDfd-mLGdkBwT).
 <!-- Video published on 2025-11-20 -->
 
 ## Prerequisites
@@ -51,6 +55,11 @@ In addition, to use the Agent Platform in your IDE:
 
 - You must install an editor extension, like the GitLab Workflow extension for VS Code, and authenticate with GitLab.
 - You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
+
+## Getting started
+
+To get started, see
+[Get started with the GitLab Duo Agent Platform](../get_started/get_started_agent_platform.md).
 
 ## Related topics
 

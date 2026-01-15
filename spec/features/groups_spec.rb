@@ -564,6 +564,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
-    click_button 'Confirm'
+    click_button 'Yes, delete group'
   end
 end

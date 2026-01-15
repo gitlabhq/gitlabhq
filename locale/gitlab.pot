@@ -59072,6 +59072,9 @@ msgstr ""
 msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
 msgstr ""
 
+msgid "ScanProfiles|Currently active"
+msgstr ""
+
 msgid "ScanProfiles|General Details"
 msgstr ""
 
@@ -60726,6 +60729,9 @@ msgstr ""
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
 msgstr ""
 
+msgid "SecurityConfiguration|Define security settings once, reuse them everywhere. Update a profile and changes automatically apply to every project using it, ensuring consistent, predictable security coverage with minimal effort."
+msgstr ""
+
 msgid "SecurityConfiguration|Enable %{feature}"
 msgstr ""
 
@@ -60769,6 +60775,9 @@ msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
 msgid "SecurityConfiguration|Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan. An enabled scanner will not be reflected as such until the pipeline has been successfully executed and it has generated valid artifacts."
+msgstr ""
+
+msgid "SecurityConfiguration|Profile-based scanner configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
@@ -62921,6 +62930,57 @@ msgid "SecurityOrchestration|without exceptions"
 msgstr ""
 
 msgid "SecurityPolicies|Invalid or empty policy"
+msgstr ""
+
+msgid "SecurityProfiles|Active"
+msgstr ""
+
+msgid "SecurityProfiles|Apply default profile"
+msgstr ""
+
+msgid "SecurityProfiles|Apply profile to enable"
+msgstr ""
+
+msgid "SecurityProfiles|Disable"
+msgstr ""
+
+msgid "SecurityProfiles|Disable %{scannerName}"
+msgstr ""
+
+msgid "SecurityProfiles|Error applying profile. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|Error detaching profile. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|Error loading profiles. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|No profile applied"
+msgstr ""
+
+msgid "SecurityProfiles|Not configured"
+msgstr ""
+
+msgid "SecurityProfiles|Prevents secrets from being pushed to your repository"
+msgstr ""
+
+msgid "SecurityProfiles|Preview default profile"
+msgstr ""
+
+msgid "SecurityProfiles|Profile applied successfully."
+msgstr ""
+
+msgid "SecurityProfiles|Profile disabled successfully."
+msgstr ""
+
+msgid "SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects"
+msgstr ""
+
+msgid "SecurityProfiles|Secret Push Protection"
+msgstr ""
+
+msgid "SecurityProfiles|You are about to disable %{scannerName} for this project. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "SecurityReports|%{count} Selected"

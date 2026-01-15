@@ -1,0 +1,3 @@
+---
+name: create_duo_workflow_for_ci
+description: Grants the ability to create Duo AI Workflows for execution in CI

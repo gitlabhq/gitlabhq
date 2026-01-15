@@ -37,6 +37,7 @@ describe('~/security_configuration/components/app', () => {
   const createComponent = ({
     shouldShowCallout = true,
     vulnerabilitiesAcrossContexts = true,
+    glFeatures = {},
     ...propsData
   } = {}) => {
     userCalloutDismissSpy = jest.fn();
@@ -51,6 +52,7 @@ describe('~/security_configuration/components/app', () => {
         ...provideMock,
         glFeatures: {
           vulnerabilitiesAcrossContexts,
+          ...glFeatures,
         },
       },
       stubs: {
