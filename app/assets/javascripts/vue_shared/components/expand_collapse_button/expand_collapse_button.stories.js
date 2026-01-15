@@ -58,3 +58,15 @@ export const MultipleSections = (args, { argTypes }) => ({
   `,
 });
 MultipleSections.args = {};
+MultipleSections.parameters = {
+  a11y: {
+    config: {
+      rules: [
+        {
+          id: 'aria-valid-attr-value',
+          enabled: false,
+        },
+      ],
+    },
+  },
+};

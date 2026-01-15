@@ -13,18 +13,18 @@ import { MR_PIPELINE_TYPE_DETACHED } from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
-import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
+import mrPipelineStatusesUpdatedSubscription from '~/ci/merge_requests/graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
-import { generateMRPipelinesResponse } from '../mock_data';
 import {
+  generateMRPipelinesResponse,
   mockPipelineUpdateResponseEmpty,
   mockPipelineUpdateResponse,
-} from '../../pipelines_page/mock_data';
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -38,7 +38,7 @@ let wrapper;
 let mergeRequestPipelinesRequest;
 let cancelPipelineMutationRequest;
 let retryPipelineMutationRequest;
-let ciPipelineStatusSubscriptionHandler;
+let subscriptionHandler;
 let apolloMock;
 const showMock = jest.fn();
 
@@ -73,7 +73,7 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {}, glFeature
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
     [retryPipelineMutation, retryPipelineMutationRequest],
-    [ciPipelineStatusesUpdatedSubscription, ciPipelineStatusSubscriptionHandler],
+    [mrPipelineStatusesUpdatedSubscription, subscriptionHandler],
   ];
 
   apolloMock = createMockApollo(handlers);
@@ -128,9 +128,7 @@ beforeEach(() => {
   retryPipelineMutationRequest = jest.fn();
   retryPipelineMutationRequest.mockResolvedValue({ data: { pipelineRetry: { errors: [] } } });
 
-  ciPipelineStatusSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(mockPipelineUpdateResponseEmpty);
+  subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineUpdateResponseEmpty);
 });
 
 afterEach(() => {
@@ -534,27 +532,27 @@ describe('PipelinesTableWrapper component', () => {
 
   describe('subscription', () => {
     it('calls subscription with correct variables', async () => {
-      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
       await createComponent();
 
-      expect(ciPipelineStatusSubscriptionHandler).toHaveBeenCalledWith({
+      expect(subscriptionHandler).toHaveBeenCalledWith({
         projectId: 'gid://gitlab/Project/5',
       });
     });
 
     it('skips subscription when feature flag is disabled', async () => {
-      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
       await createComponent({ glFeatures: { ciPipelineStatusesUpdatedSubscription: false } });
 
-      expect(ciPipelineStatusSubscriptionHandler).not.toHaveBeenCalled();
+      expect(subscriptionHandler).not.toHaveBeenCalled();
     });
 
     it('skips subscription when there are no pipelines', async () => {
       mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 0 }));
-      ciPipelineStatusSubscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
       await createComponent();
 
-      expect(ciPipelineStatusSubscriptionHandler).not.toHaveBeenCalled();
+      expect(subscriptionHandler).not.toHaveBeenCalled();
     });
   });
 });

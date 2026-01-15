@@ -1,4 +1,4 @@
-import { updatePipelineNodes } from '~/ci/pipelines_page/utils';
+import { updatePipelineNodes } from '~/ci/merge_requests/utils';
 import { mockPipelineUpdateResponse, mockPipelines } from './mock_data';
 
 describe('Pipelines utility functions', () => {

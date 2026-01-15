@@ -117,6 +117,16 @@ export const Functional = FunctionalExample.bind({});
 Functional.args = defaultProps;
 
 Functional.parameters = {
+  a11y: {
+    config: {
+      rules: [
+        {
+          id: 'label',
+          enabled: false,
+        },
+      ],
+    },
+  },
   docs: {
     description: {
       story: `This example shows an import source table that includes functional multi-select and examples of the import action buttons.

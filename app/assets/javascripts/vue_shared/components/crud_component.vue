@@ -67,13 +67,13 @@ export default {
      * Use `v-show` instead of `v-if` to show/hide collapsed content.
      * This will prevent the content from being removed from the page entirely, which
      * can cause loss of internal state for collapsed components.
-     * The plan is to make this the new default behaviour:
+     * This behaviour defaults to true as of 18.9:
      * https://gitlab.com/gitlab-org/gitlab/-/issues/581227
      */
     keepAliveCollapsedContent: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     containerTag: {
       type: String,

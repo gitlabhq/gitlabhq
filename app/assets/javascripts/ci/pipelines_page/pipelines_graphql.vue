@@ -6,9 +6,11 @@
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
+import { fetchPolicies } from '~/lib/graphql';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -35,7 +37,6 @@ import retryPipelineMutation from './graphql/mutations/retry_pipeline.mutation.g
 import cancelPipelineMutation from './graphql/mutations/cancel_pipeline.mutation.graphql';
 import ciPipelineStatusesUpdatedSubscription from './graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
 import { PIPELINES_PER_PAGE, ANY_TRIGGER_AUTHOR } from './constants';
-import { updatePipelineNodes } from './utils';
 
 const DEFAULT_PAGINATION = {
   first: PIPELINES_PER_PAGE,
@@ -43,6 +44,8 @@ const DEFAULT_PAGINATION = {
   before: null,
   after: null,
 };
+
+const BATCH_DEBOUNCE = 3000;
 
 export default {
   name: 'PipelinesList',
@@ -114,8 +117,8 @@ export default {
       query: getPipelinesQuery,
       // we poll only for new pipeline creation
       // and rely on the subscription for real-time
-      // status updates
-      pollInterval: 10000,
+      // existing status updates via batched ID fetches
+      pollInterval: 15000,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -146,9 +149,13 @@ export default {
           pageInfo: data?.project?.pipelines?.pageInfo || {},
         };
       },
-      result() {
+      result({ data }) {
         if (!this.hasInitiallyLoaded) {
           this.hasInitiallyLoaded = true;
+        }
+
+        if (data?.project?.pipelines?.nodes && this.pendingIds.size > 0) {
+          this.cancelBatch();
         }
       },
       error() {
@@ -176,21 +183,15 @@ export default {
           },
         ) {
           if (ciPipelineStatusesUpdated) {
-            const previousPipelines = previousData?.project?.pipelines?.nodes || [];
-            const updatedPipeline = ciPipelineStatusesUpdated;
+            const { id: updatedId } = ciPipelineStatusesUpdated;
 
-            const updatedNodes = updatePipelineNodes(previousPipelines, updatedPipeline);
+            const isVisible = this.pipelines.list.some((p) => p.id === updatedId);
 
-            return {
-              ...previousData,
-              project: {
-                ...previousData.project,
-                pipelines: {
-                  ...previousData.project.pipelines,
-                  nodes: updatedNodes,
-                },
-              },
-            };
+            // only fetch pipelines that are visible in the list
+            if (isVisible) {
+              this.pendingIds.add(updatedId);
+              this.fetchUpdatedPipelines();
+            }
           }
           return previousData;
         },
@@ -230,6 +231,7 @@ export default {
         ...DEFAULT_PAGINATION,
       },
       filterParams: validateParams(this.params),
+      pendingIds: new Set(),
     };
   },
   computed: {
@@ -322,6 +324,12 @@ export default {
     showControls() {
       return this.hasInitiallyLoaded && !this.showEmptyState;
     },
+  },
+  created() {
+    this.fetchUpdatedPipelines = debounce(this.updatePipelines, BATCH_DEBOUNCE);
+  },
+  beforeDestroy() {
+    this.cancelBatch();
   },
   methods: {
     onChangeTab(scope) {
@@ -503,6 +511,37 @@ export default {
           : filterParams[key];
         return acc;
       }, {});
+    },
+    async updatePipelines() {
+      if (this.pendingIds.size === 0) return;
+
+      // BE limit is 20
+      const MAX_BATCH_SIZE = 15;
+
+      const allIds = Array.from(this.pendingIds);
+      const idsToFetch = allIds.slice(0, MAX_BATCH_SIZE);
+
+      // Only remove the IDs we're actually fetching
+      // If there are more than 15 IDs we fetch
+      // those on the next batched call
+      idsToFetch.forEach((id) => this.pendingIds.delete(id));
+
+      try {
+        await this.$apollo.query({
+          fetchPolicy: fetchPolicies.NETWORK_ONLY,
+          query: getPipelinesQuery,
+          variables: { fullPath: this.fullPath, ids: idsToFetch },
+        });
+      } catch (error) {
+        createAlert({
+          message: s__('Pipelines|Something went wrong while updating pipeline information'),
+        });
+        Sentry.captureException(error);
+      }
+    },
+    cancelBatch() {
+      this.fetchUpdatedPipelines?.cancel();
+      this.pendingIds.clear();
     },
   },
 };

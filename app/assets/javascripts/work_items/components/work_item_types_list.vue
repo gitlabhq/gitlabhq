@@ -1,10 +1,17 @@
 <script>
-import { GlDisclosureDropdown, GlButton, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlButton,
+  GlLoadingIcon,
+  GlAlert,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work_item_type_form.vue';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   name: 'WorkItemTypesList',
@@ -15,6 +22,8 @@ export default {
     WorkItemTypeIcon,
     GlLoadingIcon,
     GlAlert,
+    CreateEditWorkItemTypeForm,
+    GlDisclosureDropdownItem,
   },
   props: {
     fullPath: {
@@ -26,6 +35,8 @@ export default {
     return {
       workItemTypes: [],
       errorMessage: '',
+      createEditWorkItemTypeFormVisible: false,
+      selectedWorkItemType: null,
     };
   },
   apollo: {
@@ -52,24 +63,15 @@ export default {
     isLoading() {
       return this.$apollo.queries.workItemTypes.loading;
     },
-    dropdownItems() {
-      return [
-        {
-          text: s__('WorkItem|Edit name and icon'),
-          action: () => {},
-          extraAttrs: {
-            'data-testid': 'work-item-type-edit-name',
-          },
-        },
-        {
-          text: __('Delete'),
-          action: () => {},
-          variant: 'danger',
-          extraAttrs: {
-            'data-testid': 'work-item-type-delete',
-          },
-        },
-      ];
+  },
+  methods: {
+    editWorkItemType(workItemType) {
+      this.selectedWorkItemType = workItemType;
+      this.createEditWorkItemTypeFormVisible = true;
+    },
+    closeModal() {
+      this.createEditWorkItemTypeFormVisible = false;
+      this.selectedWorkItemType = null;
     },
   },
 };
@@ -80,9 +82,15 @@ export default {
     <gl-alert v-if="errorMessage" variant="danger" class="gl-mb-5" @dismiss="errorMessage = ''">
       {{ errorMessage }}
     </gl-alert>
+    <create-edit-work-item-type-form
+      :is-visible="createEditWorkItemTypeFormVisible"
+      :work-item-type="selectedWorkItemType"
+      :is-edit-mode="!!selectedWorkItemType"
+      @close="closeModal"
+    />
     <crud-component :title="s__('WorkItem|Types')" :count="count">
       <template #actions>
-        <gl-button size="small">
+        <gl-button size="small" @click="createEditWorkItemTypeFormVisible = true">
           {{ s__('WorkItem|New type') }}
         </gl-button>
       </template>
@@ -96,7 +104,6 @@ export default {
           class="gl-border-b gl-flex gl-justify-between gl-gap-4 gl-border-b-subtle gl-py-4 last:gl-border-b-0"
           :data-testid="`work-item-type-row-${item.id}`"
         >
-          <!-- Type Column -->
           <work-item-type-icon
             :work-item-type="item.name"
             class="gl-font-semibold gl-text-default"
@@ -104,17 +111,26 @@ export default {
             show-text
             icon-variant="subtle"
           />
-          <!-- Options Column -->
 
           <gl-disclosure-dropdown
-            :items="dropdownItems"
             :toggle-id="`work-item-type-actions-${item.id}`"
             icon="ellipsis_v"
             no-caret
             text-sr-only
             :toggle-text="__('Actions')"
             category="tertiary"
-          />
+          >
+            <gl-disclosure-dropdown-item @action="editWorkItemType(item)">
+              <template #list-item>
+                {{ s__('WorkItem|Edit name and icon') }}
+              </template>
+            </gl-disclosure-dropdown-item>
+            <gl-disclosure-dropdown-item variant="danger">
+              <template #list-item>
+                {{ __('Delete') }}
+              </template>
+            </gl-disclosure-dropdown-item>
+          </gl-disclosure-dropdown>
         </div>
       </div>
     </crud-component>

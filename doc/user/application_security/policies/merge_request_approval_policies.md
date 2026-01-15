@@ -1164,3 +1164,40 @@ known vulnerabilities.
 If you want to allow merge requests that fix vulnerabilities to proceed without
 any additional approvals due to a detected vulnerability, consider removing the
 `detected` state from your policy configuration.
+
+### Inconsistent policy evaluation between merged results pipelines and branch pipelines
+
+When a project has [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md)
+enabled and also runs branch pipelines with security scans, you might experience
+inconsistencies in the way that merge request approval policies are evaluated in the different pipelines. Consider the following example:
+
+1. Both a merged results pipeline and a branch pipeline run security scans for the same merge request.
+1. The branch pipeline completes after the merged results pipeline.
+1. The policy evaluation selects the branch pipeline for comparison instead of the merged results pipeline.
+
+Merge request approval policies evaluate completed pipelines
+for the latest commit, and the pipeline that completes last is selected for
+comparison. When the branch pipeline completes after the merged results pipeline,
+the policy uses the branch pipeline for evaluation.
+
+To avoid this issue:
+
+- Run security scans only in merged results pipelines: Configure your security
+  scanning jobs to run only in merge request pipelines when merged results
+  pipelines are enabled. Use [`rules`](../../../ci/jobs/job_rules.md) to control
+  when security jobs run:
+
+  ```yaml
+  sast:
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  ```
+
+- Avoid duplicate pipelines: Follow the guidance in
+  [avoid duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines)
+  to ensure security scans run in only one pipeline type per commit.
+- Use consistent scanner configurations: Run the same scanners with the same
+  pipeline type for both source and target branches.
+
+For more information about duplicate pipelines, see
+[two pipelines when pushing to a branch](../../../ci/pipelines/mr_pipeline_troubleshooting.md#two-pipelines-when-pushing-to-a-branch).

@@ -1,3 +1,4 @@
+# @feature_category: continuous_integration
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "~/ci/pipelines_page/graphql/fragments/pipeline_details.fragment.graphql"
@@ -13,6 +14,7 @@ query getPipelines(
   $ref: String
   $username: String
   $status: PipelineStatusEnum
+  $ids: [ID!]
 ) {
   project(fullPath: $fullPath) {
     id
@@ -26,6 +28,7 @@ query getPipelines(
       ref: $ref
       username: $username
       status: $status
+      ids: $ids
     ) {
       nodes {
         ...PipelineDetails

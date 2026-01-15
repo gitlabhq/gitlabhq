@@ -21,10 +21,10 @@ import { TYPENAME_CI_PIPELINE, TYPENAME_PROJECT } from '~/graphql_shared/constan
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { PIPELINES_PER_PAGE } from '~/ci/pipelines_page/constants';
-import ciPipelineStatusesUpdatedSubscription from '~/ci/pipelines_page/graphql/subscriptions/ci_pipeline_statuses_updated.subscription.graphql';
-import { updatePipelineNodes } from '~/ci/pipelines_page/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import mrPipelineStatusesUpdatedSubscription from '../graphql/subscriptions/mr_pipeline_statuses_updated.subscription.graphql';
 import { MR_PIPELINE_TYPE_DETACHED } from '../constants';
+import { updatePipelineNodes } from '../utils';
 
 export default {
   name: 'PipelinesTableWrapper',
@@ -118,7 +118,7 @@ export default {
         this.hasError = true;
       },
       subscribeToMore: {
-        document: ciPipelineStatusesUpdatedSubscription,
+        document: mrPipelineStatusesUpdatedSubscription,
         variables() {
           return {
             projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),

@@ -50228,6 +50228,9 @@ msgstr ""
 msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr ""
 
+msgid "Pipelines|Something went wrong while updating pipeline information"
+msgstr ""
+
 msgid "Pipelines|Start using inputs"
 msgstr ""
 
@@ -77584,6 +77587,9 @@ msgstr ""
 msgid "WorkItem|Browse views"
 msgstr ""
 
+msgid "WorkItem|Bug"
+msgstr ""
+
 msgid "WorkItem|Cancel"
 msgstr ""
 
@@ -77779,6 +77785,9 @@ msgstr ""
 msgid "WorkItem|Edit statuses"
 msgstr ""
 
+msgid "WorkItem|Edit type name and icon"
+msgstr ""
+
 msgid "WorkItem|Edit work item"
 msgstr ""
 
@@ -77881,10 +77890,13 @@ msgstr ""
 msgid "WorkItem|History only"
 msgstr ""
 
-msgid "WorkItem|How do I use configure work item types?"
+msgid "WorkItem|How do I use custom fields?"
 msgstr ""
 
-msgid "WorkItem|How do I use custom fields?"
+msgid "WorkItem|How do I use or configure work item types?"
+msgstr ""
+
+msgid "WorkItem|Icon"
 msgstr ""
 
 msgid "WorkItem|Import CSV"
@@ -78032,7 +78044,13 @@ msgstr ""
 msgid "WorkItem|Must be a valid hex color."
 msgstr ""
 
+msgid "WorkItem|Name"
+msgstr ""
+
 msgid "WorkItem|Name is already taken."
+msgstr ""
+
+msgid "WorkItem|Name is required"
 msgstr ""
 
 msgid "WorkItem|Name is required."
@@ -78258,6 +78276,9 @@ msgid "WorkItem|Resources"
 msgstr ""
 
 msgid "WorkItem|Rose"
+msgstr ""
+
+msgid "WorkItem|Save"
 msgstr ""
 
 msgid "WorkItem|Save and overwrite"

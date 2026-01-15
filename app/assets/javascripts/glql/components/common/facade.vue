@@ -235,7 +235,6 @@ export default {
         :count="itemsCount"
         is-collapsible
         :collapsed="isCollapsed"
-        keep-alive-collapsed-content
         :show-zero-count="!loading"
         persist-collapsed-state
         class="!gl-mt-5"

@@ -263,7 +263,7 @@ describe('RelatedIssuesBlock', () => {
         false,
       );
       expect(toggleButton.attributes('aria-expanded')).toBe('false');
-      expect(findRelatedIssuesBody().exists()).toBe(false);
+      expect(findRelatedIssuesBody().isVisible()).toBe(false);
     });
   });
 

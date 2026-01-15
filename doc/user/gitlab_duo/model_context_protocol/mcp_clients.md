@@ -42,8 +42,7 @@ The same MCP configuration file works across all supported IDEs.
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
 - [GitLab Duo Chat (Agentic)](../../../user/gitlab_duo_chat/agentic_chat.md)
-- [Foundational flows](../../../user/duo_agent_platform/flows/foundational_flows/_index.md)
-- [Custom flows](../../../user/duo_agent_platform/flows/custom.md)
+- The [Software Development Flow](../../../user/duo_agent_platform/flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
 

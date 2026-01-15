@@ -1,10 +1,17 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlButton, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  GlAlert,
+  GlButton,
+  GlDisclosureDropdown,
+  GlLoadingIcon,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTypesList from '~/work_items/components/work_item_types_list.vue';
+import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work_item_type_form.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -34,10 +41,14 @@ describe('WorkItemTypesList', () => {
   const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const mockEmptyResponseHandler = jest.fn().mockResolvedValue(mockEmptyResponse);
 
-  const createWrapper = ({ queryHandler = namespaceQueryHandler, props = {} } = {}) => {
+  const createWrapper = ({
+    queryHandler = namespaceQueryHandler,
+    props = {},
+    mountFn = mountExtended,
+  } = {}) => {
     mockApollo = createMockApollo([[namespaceWorkItemTypesQuery, queryHandler]]);
 
-    wrapper = shallowMountExtended(WorkItemTypesList, {
+    wrapper = mountFn(WorkItemTypesList, {
       apolloProvider: mockApollo,
       propsData: {
         fullPath: 'test-group',
@@ -57,6 +68,7 @@ describe('WorkItemTypesList', () => {
   const findNewTypeButton = () => wrapper.findComponent(GlButton);
   const findDropdownForType = (id) => findWorkItemTypeRow(id).findComponent(GlDisclosureDropdown);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findCreateEditForm = () => wrapper.findComponent(CreateEditWorkItemTypeForm);
 
   describe('default rendering', () => {
     beforeEach(async () => {
@@ -102,9 +114,13 @@ describe('WorkItemTypesList', () => {
     it('renders dropdowns with correct items', () => {
       mockWorkItemTypes.forEach((mockWorkItemType) => {
         const dropdown = findDropdownForType(mockWorkItemType.id);
-        expect(dropdown.props('items')).toHaveLength(2);
-        expect(dropdown.props('items')[0].text).toContain('Edit name and icon');
-        expect(dropdown.props('items')[1].text).toContain('Delete');
+        expect(dropdown.findAllComponents(GlDisclosureDropdownItem)).toHaveLength(2);
+        expect(dropdown.findAllComponents(GlDisclosureDropdownItem).at(0).text()).toContain(
+          'Edit name and icon',
+        );
+        expect(dropdown.findAllComponents(GlDisclosureDropdownItem).at(1).text()).toContain(
+          'Delete',
+        );
       });
     });
 
@@ -180,6 +196,82 @@ describe('WorkItemTypesList', () => {
 
       expect(findErrorAlert().exists()).toBe(true);
       expect(findErrorAlert().text()).toContain('Failed to fetch work item types');
+    });
+  });
+
+  describe('CreateEditWorkItemTypeForm integration', () => {
+    beforeEach(async () => {
+      createWrapper({ mountFn: shallowMountExtended });
+      await waitForPromises();
+    });
+
+    it('form is hidden by default', () => {
+      expect(findCreateEditForm().props('isVisible')).toBe(false);
+    });
+
+    it('opens form when New type button is clicked', async () => {
+      await findNewTypeButton().vm.$emit('click');
+
+      expect(findCreateEditForm().props('isVisible')).toBe(true);
+      expect(findCreateEditForm().props('isEditMode')).toBe(false);
+      expect(findCreateEditForm().props('workItemType')).toBe(null);
+    });
+
+    it('opens form in edit mode when Edit action is clicked', async () => {
+      const firstType = mockWorkItemTypes[0];
+      const dropdown = findDropdownForType(firstType.id);
+      const editItem = dropdown.findAllComponents(GlDisclosureDropdownItem).at(0);
+
+      await editItem.vm.$emit('action');
+
+      expect(findCreateEditForm().props('isVisible')).toBe(true);
+      expect(findCreateEditForm().props('isEditMode')).toBe(true);
+      expect(findCreateEditForm().props('workItemType')).toEqual(
+        expect.objectContaining({ id: firstType.id }),
+      );
+    });
+
+    it('closes form when close event is emitted', async () => {
+      await findNewTypeButton().vm.$emit('click');
+      expect(findCreateEditForm().props('isVisible')).toBe(true);
+
+      await findCreateEditForm().vm.$emit('close');
+
+      expect(findCreateEditForm().props('isVisible')).toBe(false);
+      expect(findCreateEditForm().props('workItemType')).toBe(null);
+    });
+
+    it('clears selected work item type when form closes', async () => {
+      const firstType = mockWorkItemTypes[0];
+      const dropdown = findDropdownForType(firstType.id);
+      const editItem = dropdown.findAllComponents(GlDisclosureDropdownItem).at(0);
+
+      await editItem.vm.$emit('action');
+      expect(findCreateEditForm().props('workItemType')).toEqual(
+        expect.objectContaining({ id: firstType.id }),
+      );
+
+      await findCreateEditForm().vm.$emit('close');
+
+      expect(findCreateEditForm().props('workItemType')).toBe(null);
+    });
+
+    it('opens form in create mode after closing edit mode', async () => {
+      const firstType = mockWorkItemTypes[0];
+      const dropdown = findDropdownForType(firstType.id);
+      const editItem = dropdown.findAllComponents(GlDisclosureDropdownItem).at(0);
+
+      // Open in edit mode
+      await editItem.vm.$emit('action');
+      expect(findCreateEditForm().props('isEditMode')).toBe(true);
+
+      // Close form
+      await findCreateEditForm().vm.$emit('close');
+
+      // Open in create mode
+      await findNewTypeButton().vm.$emit('click');
+      expect(findCreateEditForm().props('isEditMode')).toBe(false);
+      expect(findCreateEditForm().props('workItemType')).toBe(null);
     });
   });
 });

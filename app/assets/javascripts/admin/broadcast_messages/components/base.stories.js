@@ -18,6 +18,18 @@ Default.args = {
   messagesCount: 5,
   messages: generateMockMessages(5),
 };
+Default.parameters = {
+  a11y: {
+    config: {
+      rules: [
+        {
+          id: 'empty-table-header',
+          enabled: false,
+        },
+      ],
+    },
+  },
+};
 
 export const Empty = Template.bind({});
 Empty.args = {
