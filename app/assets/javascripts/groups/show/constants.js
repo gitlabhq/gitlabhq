@@ -142,7 +142,5 @@ export const GROUPS_SHOW_TABS = [
   INACTIVE_TAB,
 ];
 
-export const BASE_ROUTE = '/(groups)?/:group*';
-
 export const FILTERED_SEARCH_TERM_KEY = 'filter';
 export const FILTERED_SEARCH_NAMESPACE = 'groups-show';

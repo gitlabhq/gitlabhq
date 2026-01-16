@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git::Push do
+RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:oldrev) { project.commit('HEAD~2').id }

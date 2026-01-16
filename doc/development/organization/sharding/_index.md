@@ -230,9 +230,15 @@ The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
    ```yaml
    sharding_key:
-   organization_id: organizations
+     organization_id: organizations
+   organization_transfer_support: supported
    ```
 
+1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
+
+   - Set to `supported` if you've implemented the transfer logic in `app/services/organizations/users/transfer_service.rb` or `app/services/organizations/groups/transfer_service.rb`
+   - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
+   
 - Example MR: [Add NOT NULL for sharding key on `subscription_user_add_on_assignments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170136/diffs)
 
 **2. Large tables or tables that exceed runtime**

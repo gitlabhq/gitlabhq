@@ -494,12 +494,36 @@ is automatically turned on.
 
 You can still independently configure [project sharing for the group and its subgroups](../project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
+### Provisioning behavior with SAML, SCIM, and LDAP
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
+
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+When seats become available, they can be promoted to their intended access level.
+Existing users with billable roles are not affected by this behavior.
+
+You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+
 ### Known issues
 
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the [Minimal Access fallback](#provisioning-behavior-with-saml-scim-and-ldap) feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role add members simultaneously.
   - New billable members delay accepting an invitation.
   - You change from using the user cap to restricted access, and have members pending approval

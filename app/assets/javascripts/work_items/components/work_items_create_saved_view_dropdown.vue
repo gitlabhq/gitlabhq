@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-self-center">
     <gl-disclosure-dropdown
       icon="plus"
       category="tertiary"

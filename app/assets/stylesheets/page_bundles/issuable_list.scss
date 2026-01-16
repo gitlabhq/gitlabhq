@@ -151,9 +151,52 @@
   padding-top: 0;
 }
 
-.saved-views-selectors .nav {
-  margin-top: 4px;
+.saved-view-item {
+  background-color: transparent;
+
+  &:hover, &:focus {
+    .added-saved-view {
+      display: none;
+    }
+
+    .added-saved-view-arrow, .add-saved-view {
+      display: flex;
+      align-self: center;
+    }
+  }
 }
+
+/* stylelint-disable gitlab/no-gl-class */
+.default-selector, .saved-view-selector .gl-button {
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0;
+
+  &:hover, &:focus, &:active {
+    border-bottom: 2px solid $gray-200 !important;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--gl-focus-ring-outer-color), inset 0 0 0 3px var(--gl-focus-ring-inner-color);
+    border-radius: 0.5rem;
+    border-bottom: 2px solid transparent !important;
+  }
+}
+
+.saved-view-selector .gl-new-dropdown-panel {
+  max-width: 11rem;
+  min-width: auto;
+}
+
+.default-selector-active, .saved-view-selector-active .gl-button {
+  border-bottom: 2px solid $blue-500 !important;
+  font-weight: $gl-font-weight-bold;
+
+  &:hover, &:focus, &:active {
+    border-bottom-color: $blue-500 !important;
+  }
+}
+/* stylelint-enable gitlab/no-gl-class */
 
 .saved-view-item {
   background-color: transparent;
@@ -166,6 +209,7 @@
     .added-saved-view-arrow, .add-saved-view {
       display: flex;
       align-self: center;
+      font-weight: $gl-font-weight-bold;
     }
   }
 }

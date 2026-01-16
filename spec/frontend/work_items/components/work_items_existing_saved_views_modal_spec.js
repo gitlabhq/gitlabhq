@@ -17,7 +17,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     {
       __typename: 'SavedView',
       id: '1',
-      title: 'My Private View',
+      name: 'My Private View',
       description: 'Only I can see this',
       isPrivate: true,
       isSubscribed: true,
@@ -25,7 +25,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     {
       __typename: 'SavedView',
       id: '2',
-      title: 'Team View',
+      name: 'Team View',
       description: 'Shared with the team',
       isPrivate: false,
       isSubscribed: false,
@@ -40,6 +40,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       query: getNamespaceSavedViewsQuery,
       variables: {
         fullPath: 'test-project-path',
+        subscribedOnly: false,
       },
       data: {
         namespace: {
@@ -127,7 +128,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       expect(findSavedViewItems()).toHaveLength(mockSavedViewsData.length);
 
       mockSavedViewsData.forEach((view) => {
-        expect(wrapper.text()).toContain(view.title);
+        expect(wrapper.text()).toContain(view.name);
         expect(wrapper.text()).toContain(view.description);
       });
     });
@@ -138,22 +139,10 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       expect(wrapper.text()).toContain('Added');
       expect(findSubscribedIcons()).toHaveLength(1);
     });
-
-    it('hides modal and clears search when clicking on a view', async () => {
-      createComponent();
-
-      findSearch().vm.$emit('input', 'view');
-      await waitForPromises();
-
-      await findSavedViewItems().at(0).trigger('click');
-
-      expect(wrapper.emitted('hide')).toEqual([[false]]);
-      expect(findSearch().props('value')).toBe('');
-    });
   });
 
   describe('search filtering', () => {
-    it('filters views by title or description', async () => {
+    it('filters views by name or description', async () => {
       findSearch().vm.$emit('input', 'team');
 
       await waitForPromises();

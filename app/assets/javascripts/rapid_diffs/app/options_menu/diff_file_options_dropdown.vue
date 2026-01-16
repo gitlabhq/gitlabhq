@@ -38,8 +38,10 @@ export default {
       return this.items.length > 0 && this.items[0].items !== undefined;
     },
   },
-  mounted() {
+  async mounted() {
     // We need to refocus the toggle because the original toggle is replaced with this component
+    // In Vue 3, we need to wait for child components to fully render before accessing their DOM
+    await this.$nextTick();
     this.hydrateDropdown();
   },
   methods: {

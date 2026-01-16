@@ -226,3 +226,143 @@ export const workItemBulkEdit = (input) => {
     updatedIssueCount: input.ids.length,
   };
 };
+
+// TODO: remove mock data at integration
+/* eslint-disable @gitlab/require-i18n-strings */
+export const allSavedViews = [
+  {
+    name: 'AI team 1',
+    description: 'Work focusing on chatbot and other AI features',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '1',
+  },
+  {
+    name: 'Backlog 2',
+    description: 'Upcoming work and items to be scheduled',
+    isSubscribed: true,
+    isPrivate: false,
+    id: '2',
+  },
+  {
+    name: 'Current sprint 3',
+    description: 'The things I am focused on for the sprint',
+    isSubscribed: false,
+    isPrivate: true,
+    id: '3',
+  },
+  {
+    name: 'Daily standup 4',
+    description: 'Our daily standup board to review WIP and check status',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '4',
+  },
+  {
+    name: 'Doc site redesign 5',
+    description: 'Redesigning the docs site for improved searching',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '5',
+  },
+  {
+    name: 'Engineering workflow 6',
+    description: 'Various stages of development ongoing items are in',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '6',
+  },
+  {
+    name: 'FY25 OKRs 7',
+    description: 'Objectives and key results for the year',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '7',
+  },
+  {
+    name: 'Daily standup 8',
+    description: 'Our daily standup board to review WIP and check status',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '8',
+  },
+  {
+    name: 'Daily standup 9',
+    description: 'Our daily standup board to review WIP and check status',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '9',
+  },
+  {
+    name: 'Doc site redesign 10',
+    description: 'Redesigning the docs site for improved searching',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '10',
+  },
+  {
+    name: 'Engineering workflow 11',
+    description: 'Various stages of development ongoing items are in',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '11',
+  },
+  {
+    name: 'FY25 OKRs 12',
+    description: 'Objectives and key results for the year',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '12',
+  },
+  {
+    name: 'Daily standup 13',
+    description: 'Our daily standup board to review WIP and check status',
+    isSubscribed: false,
+    isPrivate: false,
+    id: '13',
+  },
+];
+
+export const allSubscribedSavedViews = [
+  {
+    name: 'AI team',
+    description: 'Work focusing on chatbot and other AI features',
+    isPrivate: false,
+  },
+  {
+    name: 'Backlog',
+    description: 'Upcoming work and items to be scheduled',
+    isPrivate: false,
+  },
+  {
+    name: 'Current sprint',
+    description: 'The things I am focused on for the sprint',
+    isPrivate: true,
+  },
+  {
+    name: 'Daily standup',
+    description: 'Our daily standup board to review WIP and check status',
+    isPrivate: false,
+  },
+  {
+    name: 'Doc site redesign',
+    description: 'Redesigning the docs site for improved searching',
+    isPrivate: false,
+  },
+  {
+    name: 'Engineering workflow',
+    description: 'Various stages of development ongoing items are in',
+    isPrivate: false,
+  },
+  {
+    name: 'FY25 OKRs',
+    description: 'Objectives and key results for the year',
+    isPrivate: false,
+  },
+  {
+    name: 'Daily standup',
+    description: 'Our daily standup board to review WIP and check status',
+    isPrivate: false,
+  },
+];
+/* eslint-enable @gitlab/require-i18n-strings */

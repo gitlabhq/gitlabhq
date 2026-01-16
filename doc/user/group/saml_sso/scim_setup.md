@@ -236,6 +236,27 @@ During the synchronization process, all new users:
 - Are welcomed to their groups with an invitation email.
   You can [bypass email confirmation with a verified domain](_index.md#bypass-user-email-confirmation-with-verified-domains).
 
+### Provisioning behavior with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When [restricted access](../manage.md#restricted-access) is enabled and no subscription seats are available, users provisioned through SCIM are assigned the Minimal Access role.
+
+When this happens, users are successfully created with Minimal Access (response `HTTP 201 Created`), and the user's `roles` attribute reflects this assignment. Subsequent role update operations may fail if no seats are available.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+
 The following diagram describes what happens when you add users to your SCIM app:
 
 ```mermaid

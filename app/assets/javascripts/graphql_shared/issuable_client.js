@@ -21,7 +21,12 @@ import {
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
-import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
+import {
+  updateNewWorkItemCache,
+  workItemBulkEdit,
+  allSavedViews,
+  allSubscribedSavedViews,
+} from '~/work_items/graphql/resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
@@ -73,78 +78,12 @@ export const config = {
             },
           },
           savedViews: {
-            read() {
-              return {
-                __typename: 'SavedViewConnection',
-                /* eslint-disable @gitlab/require-i18n-strings */
-                nodes: [
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-1',
-                    title: 'AI team',
-                    description: 'Work focusing on chatbot and other AI features',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-2',
-                    title: 'Backlog',
-                    description: 'Upcoming work and items to be scheduled',
-                    isSubscribed: true,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-3',
-                    title: 'Current sprint',
-                    description: 'The things I am focused on for the sprint',
-                    isSubscribed: false,
-                    isPrivate: true,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-4',
-                    title: 'Daily standup',
-                    description: 'Our daily standup board to review WIP and check status',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-5',
-                    title: 'Doc site redesign',
-                    description: 'Redesigning the docs site for improved searching',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-6',
-                    title: 'Engineering workflow',
-                    description: 'Various stages of development ongoing items are in',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-7',
-                    title: 'FY25 OKRs',
-                    description: 'Objectives and key results for the year',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                  {
-                    __typename: 'SavedView',
-                    id: 'saved-view-8',
-                    title: 'Daily standup',
-                    description: 'Our daily standup board to review WIP and check status',
-                    isSubscribed: false,
-                    isPrivate: false,
-                  },
-                ],
-                /* eslint-enable @gitlab/require-i18n-strings */
-              };
+            read(_, { args }) {
+              const { subscribedOnly } = args;
+
+              const nodes = subscribedOnly ? allSubscribedSavedViews : allSavedViews;
+
+              return { nodes };
             },
           },
         },

@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { optionsMenuAdapter } from '~/rapid_diffs/adapters/options_menu';
 
@@ -67,7 +68,7 @@ describe('Diff File Options Menu Adapter', () => {
     expect(get('serverButton')).not.toBeNull();
   });
 
-  it('replaces the server-rendered button with a Vue GlDisclosureDropdown when the button is clicked', () => {
+  it('replaces the server-rendered button with a Vue GlDisclosureDropdown when the button is clicked', async () => {
     const button = get('serverButton');
 
     expect(get('vueButton')).toBeNull();
@@ -81,6 +82,8 @@ describe('Diff File Options Menu Adapter', () => {
      * happen once (desireable!), so testing that it's no longer present is good
      */
     expect(get('serverButton')).toBeNull();
+    // Wait for Vue 3 to complete child component rendering and focus
+    await nextTick();
     expect(document.activeElement).toEqual(get('vueButton'));
   });
 

@@ -1,10 +1,10 @@
-query savedViews($fullPath: ID!) {
+query savedViews($fullPath: ID!, $subscribedOnly: Boolean) {
   namespace(fullPath: $fullPath) @client {
     id
-    savedViews {
+    savedViews(subscribedOnly: $subscribedOnly) {
       nodes {
         id
-        title
+        name
         description
         isSubscribed
         isPrivate

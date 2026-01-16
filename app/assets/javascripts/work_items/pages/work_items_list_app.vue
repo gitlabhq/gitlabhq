@@ -1413,6 +1413,26 @@ export default {
         },
       });
     },
+    resetToDefaultView() {
+      this.filterTokens = [
+        {
+          type: TOKEN_TYPE_STATE,
+          value: {
+            data: STATUS_OPEN,
+            operator: OPERATOR_IS,
+          },
+        },
+      ];
+      this.state = STATUS_OPEN;
+      this.pageParams = getInitialPageParams(this.pageSize);
+      this.sortKey = CREATED_DESC;
+
+      this.$router.push({ query: this.urlParams }).catch((error) => {
+        if (error.name !== 'NavigationDuplicated') {
+          throw error;
+        }
+      });
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1598,7 +1618,10 @@ export default {
             </template>
 
             <template v-if="workItemsSavedViewsEnabled">
-              <work-items-saved-views-selectors :full-path="rootPageFullPath">
+              <work-items-saved-views-selectors
+                :full-path="rootPageFullPath"
+                @reset-to-default-view="resetToDefaultView"
+              >
                 <template #header-area>
                   <work-item-list-actions
                     :can-export="canExport"

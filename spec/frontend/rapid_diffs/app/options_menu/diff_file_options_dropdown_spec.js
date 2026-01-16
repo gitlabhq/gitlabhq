@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
 
@@ -83,9 +84,10 @@ describe('DiffFileOptionsDropdown', () => {
     expect(wrapper.html()).toContain('View file at foo');
   });
 
-  it('focuses toggle', () => {
+  it('focuses toggle', async () => {
     const spy = jest.spyOn(HTMLButtonElement.prototype, 'focus');
     createComponent({ items: [{ text: 'View file' }] });
+    await nextTick();
     expect(spy).toHaveBeenCalled();
   });
 });

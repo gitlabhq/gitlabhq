@@ -2508,6 +2508,9 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
+msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the flow."
+msgstr ""
+
 msgid "AICatalog|A new version is available"
 msgstr ""
 
@@ -74939,18 +74942,18 @@ msgid_plural "VirtualRegistry|%d artifacts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "VirtualRegistry|%d registry"
+msgid_plural "VirtualRegistry|%d registries"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "VirtualRegistry|%d upstream"
+msgid_plural "VirtualRegistry|%d upstreams"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "VirtualRegistry|%{count} of %{max}"
 msgstr ""
-
-msgid "VirtualRegistry|%{count} registry"
-msgid_plural "VirtualRegistry|%{count} registries"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "VirtualRegistry|%{count} upstream"
-msgid_plural "VirtualRegistry|%{count} upstreams"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "VirtualRegistry|%{hours} hour"
 msgid_plural "VirtualRegistry|%{hours} hours"
@@ -77058,6 +77061,9 @@ msgstr ""
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
+msgid "WikiPage|Add a commit message"
+msgstr ""
+
 msgid "WikiPage|Cancel"
 msgstr ""
 
@@ -77097,7 +77103,16 @@ msgstr ""
 msgid "WikiPage|Path"
 msgstr ""
 
+msgid "WikiPage|Review and write a commit message"
+msgstr ""
+
 msgid "WikiPage|Save changes"
+msgstr ""
+
+msgid "WikiPage|Save changes directly"
+msgstr ""
+
+msgid "WikiPage|Save changes with message"
 msgstr ""
 
 msgid "WikiPage|Template title"
@@ -77119,6 +77134,9 @@ msgid "WikiPage|Update %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Update template %{pageTitle}"
+msgstr ""
+
+msgid "WikiPage|Uses the default commit message"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
@@ -77408,6 +77426,11 @@ msgstr ""
 
 msgid "WorkItem|%d item"
 msgid_plural "WorkItem|%d items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "WorkItem|%d more..."
+msgid_plural "WorkItem|%d more..."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -77752,6 +77775,9 @@ msgstr ""
 msgid "WorkItem|Copy from existing lifecycle"
 msgstr ""
 
+msgid "WorkItem|Copy link to view"
+msgstr ""
+
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
@@ -77809,6 +77835,9 @@ msgstr ""
 msgid "WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed."
 msgstr ""
 
+msgid "WorkItem|Delete view"
+msgstr ""
+
 msgid "WorkItem|Description"
 msgstr ""
 
@@ -77831,6 +77860,9 @@ msgid "WorkItem|Duplicate"
 msgstr ""
 
 msgid "WorkItem|Duplicate default"
+msgstr ""
+
+msgid "WorkItem|Edit"
 msgstr ""
 
 msgid "WorkItem|Edit %{fieldName}"
@@ -78318,6 +78350,9 @@ msgid "WorkItem|Related vulnerabilities"
 msgstr ""
 
 msgid "WorkItem|Remove"
+msgstr ""
+
+msgid "WorkItem|Remove from list"
 msgstr ""
 
 msgid "WorkItem|Remove lifecycle"

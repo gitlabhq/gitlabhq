@@ -1517,3 +1517,7 @@ Gitlab/AvoidDefaultOrganization:
 
 Gitlab/AvoidConstDefaultOrganizationId:
   Enabled: true
+
+Gitlab/UsersInternalOrganization:
+  Description: 'Enforce using Users::Internal.in_organization(organization) for bot methods'
+  Enabled: true

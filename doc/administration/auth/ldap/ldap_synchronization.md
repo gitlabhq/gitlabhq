@@ -736,10 +736,26 @@ For example, if a user has the Owner role in a group and the
 next group sync reveals they should only have the Developer role, their
 access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
-administrative duties. When seat control is set to restricted access and no
-subscription seats remain available, users are automatically assigned the Minimal
-Access role during group synchronization. This way, users can be synchronized
-without consuming a seat.
+administrative duties.
+
+#### Minimal Access role assignment with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When [Restricted Access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../user/group/manage.md#provisioning-behavior-with-saml-scim-and-ldap).
 
 #### Supported LDAP group types/attributes
 

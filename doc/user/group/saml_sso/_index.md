@@ -331,6 +331,25 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
 
+### Provisioning behavior with Restricted Access
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When [restricted access](../manage.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
+
+For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../manage.md#provisioning-behavior-with-saml-scim-and-ldap).
+
 ### Link SAML to your existing GitLab.com account
 
 {{< history >}}

@@ -23402,6 +23402,29 @@ The edge type for [`SecurityPolicyType`](#securitypolicytype).
 | <a id="securitypolicytypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="securitypolicytypeedgenode"></a>`node` | [`SecurityPolicyType`](#securitypolicytype) | The item at the end of the edge. |
 
+#### `SecurityTrackedRefConnection`
+
+The connection type for [`SecurityTrackedRef`](#securitytrackedref).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitytrackedrefconnectionedges"></a>`edges` | [`[SecurityTrackedRefEdge]`](#securitytrackedrefedge) | A list of edges. |
+| <a id="securitytrackedrefconnectionnodes"></a>`nodes` | [`[SecurityTrackedRef]`](#securitytrackedref) | A list of nodes. |
+| <a id="securitytrackedrefconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SecurityTrackedRefEdge`
+
+The edge type for [`SecurityTrackedRef`](#securitytrackedref).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitytrackedrefedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="securitytrackedrefedgenode"></a>`node` | [`SecurityTrackedRef`](#securitytrackedref) | The item at the end of the edge. |
+
 #### `SentryErrorConnection`
 
 The connection type for [`SentryError`](#sentryerror).
@@ -44567,6 +44590,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectsecuritypolicyprojectsuggestionsonlylinked"></a>`onlyLinked` | [`Boolean`](#boolean) | Whether to suggest only projects already linked as security policy projects. |
 | <a id="projectsecuritypolicyprojectsuggestionssearch"></a>`search` | [`String!`](#string) | Search query for projects' full paths. |
 
+##### `Project.securityTrackedRefs`
+
+{{< details >}}
+**Introduced** in GitLab 18.8.
+**Status**: Experiment.
+{{< /details >}}
+
+Refs tracked for security vulnerabilities.
+
+Returns [`SecurityTrackedRefConnection`](#securitytrackedrefconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritytrackedrefsstate"></a>`state` | [`SecurityTrackedRefState`](#securitytrackedrefstate) | Filter by tracking state. Values: "TRACKED", "UNTRACKED". Returns all refs if not specified. |
+
 ##### `Project.securityTrainingProviders`
 
 List of security training providers for the project.
@@ -46872,6 +46916,24 @@ Represents a list of security scanners.
 | <a id="securityscannersavailable"></a>`available` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which are available for the project. |
 | <a id="securityscannersenabled"></a>`enabled` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which are enabled for the project. |
 | <a id="securityscannerspipelinerun"></a>`pipelineRun` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which ran successfully in the latest pipeline. |
+
+### `SecurityTrackedRef`
+
+Represents a ref (branch or tag) tracked for security vulnerabilities.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitytrackedrefcommit"></a>`commit` | [`Commit`](#commit) | Latest commit on the ref. |
+| <a id="securitytrackedrefid"></a>`id` | [`ID!`](#id) | Global ID of the tracked ref. |
+| <a id="securitytrackedrefisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Whether the ref is the default branch. |
+| <a id="securitytrackedrefisprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Whether the ref is protected. |
+| <a id="securitytrackedrefname"></a>`name` | [`String!`](#string) | Name of the ref (branch or tag name). |
+| <a id="securitytrackedrefreftype"></a>`refType` | [`SecurityTrackedRefType!`](#securitytrackedreftype) | Type of the ref being tracked. |
+| <a id="securitytrackedrefstate"></a>`state` | [`SecurityTrackedRefState!`](#securitytrackedrefstate) | Current tracking state of the ref. |
+| <a id="securitytrackedreftrackedat"></a>`trackedAt` | [`Time!`](#time) | When tracking was enabled for the ref. |
+| <a id="securitytrackedrefvulnerabilitiescount"></a>`vulnerabilitiesCount` | [`Int!`](#int) | Count of open vulnerabilities on the ref. |
 
 ### `SecurityTrainingUrl`
 
@@ -54746,6 +54808,24 @@ The type of the security scanner.
 | <a id="securityscannertypesast_advanced"></a>`SAST_ADVANCED` | SAST advanced scanner. |
 | <a id="securityscannertypesast_iac"></a>`SAST_IAC` | SAST IaC scanner. |
 | <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret detection scanner. |
+
+### `SecurityTrackedRefState`
+
+State of security tracked ref.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitytrackedrefstatetracked"></a>`TRACKED` | Ref is being tracked for vulnerabilities. |
+| <a id="securitytrackedrefstateuntracked"></a>`UNTRACKED` | Ref is not being tracked for vulnerabilities. |
+
+### `SecurityTrackedRefType`
+
+Type of ref being tracked for security vulnerabilities.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitytrackedreftypebranch"></a>`BRANCH` | Branch ref. |
+| <a id="securitytrackedreftypetag"></a>`TAG` | Tag ref. |
 
 ### `SentryErrorStatus`
 

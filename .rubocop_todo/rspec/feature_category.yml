@@ -2376,7 +2376,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/git/patches/collection_spec.rb'
     - 'spec/lib/gitlab/git/patches/patch_spec.rb'
     - 'spec/lib/gitlab/git/pre_receive_error_spec.rb'
-    - 'spec/lib/gitlab/git/push_spec.rb'
     - 'spec/lib/gitlab/git/raw_diff_change_spec.rb'
     - 'spec/lib/gitlab/git/remote_mirror_spec.rb'
     - 'spec/lib/gitlab/git/util_spec.rb'

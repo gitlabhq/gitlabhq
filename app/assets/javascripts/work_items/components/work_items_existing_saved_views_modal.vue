@@ -61,6 +61,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
+          subscribedOnly: false,
         };
       },
       update(data) {
@@ -164,9 +165,9 @@ export default {
             @click="hideModal"
           >
             <gl-icon name="list-bulleted" class="gl-mr-3 gl-shrink-0" variant="subtle" />
-            <span class="gl-max-w-[85%] gl-text-start">
+            <span class="gl-text-start">
               <h5 class="gl-m-0">
-                {{ view.title }}
+                {{ view.name }}
                 <gl-icon
                   v-if="view.isPrivate"
                   v-gl-tooltip

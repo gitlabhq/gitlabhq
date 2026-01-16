@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { createPinia, setActivePinia } from 'pinia';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { commitDiffsOptionsMenuAdapter } from '~/rapid_diffs/adapters/commit_diffs_options_menu';
@@ -75,7 +76,7 @@ describe('Commit Diffs File Options Menu Adapter', () => {
     expect(get('serverButton')).not.toBeNull();
   });
 
-  it('replaces the server-rendered button with a Vue CommitDiffsFileOptionsDropdown when the button is clicked', () => {
+  it('replaces the server-rendered button with a Vue CommitDiffsFileOptionsDropdown when the button is clicked', async () => {
     mount();
     const button = get('serverButton');
 
@@ -86,6 +87,8 @@ describe('Commit Diffs File Options Menu Adapter', () => {
 
     expect(get('vueButton')).not.toBeNull();
     expect(get('serverButton')).toBeNull();
+    // Wait for Vue 3 to complete child component rendering and focus
+    await nextTick();
     expect(document.activeElement).toEqual(get('vueButton'));
   });
 

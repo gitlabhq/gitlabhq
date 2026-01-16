@@ -5,6 +5,8 @@ import {
   GlForm,
   GlLink,
   GlButton,
+  GlButtonGroup,
+  GlCollapsibleListbox,
   GlSprintf,
   GlFormGroup,
   GlFormCheckbox,
@@ -12,6 +14,8 @@ import {
   GlFormSelect,
   GlTooltipDirective,
   GlDisclosureDropdown,
+  GlModal,
+  GlFormTextarea,
 } from '@gitlab/ui';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
@@ -22,6 +26,7 @@ import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -41,6 +46,11 @@ const MARKDOWN_LINK_TEXT = {
   rdoc: '{Link title}[link:page-slug]',
   asciidoc: 'link:page-slug[Link title]',
   org: '[[page-slug]]',
+};
+
+const SAVE_MESSAGE = {
+  DEFAULT: 'DEFAULT',
+  CUSTOM: 'CUSTOM',
 };
 
 function getPagePath(pageInfo) {
@@ -123,6 +133,7 @@ export default {
       newTemplate: s__('WikiPage|Create template'),
     },
     cancel: s__('WikiPage|Cancel'),
+    messageModalTitle: s__('WikiPage|Add a commit message'),
   },
   components: {
     GlForm,
@@ -136,6 +147,11 @@ export default {
     MarkdownEditor,
     WikiTemplate,
     DeleteWikiModal,
+    GlButtonGroup,
+    GlCollapsibleListbox,
+    GlModal,
+    GlFormTextarea,
+    LocalStorageSync,
     GlDisclosureDropdown,
   },
   directives: {
@@ -150,6 +166,18 @@ export default {
     'templates',
     'pageHeading',
     'wikiUrl',
+  ],
+  saveOptions: [
+    {
+      text: s__('WikiPage|Save changes directly'),
+      description: s__('WikiPage|Uses the default commit message'),
+      value: SAVE_MESSAGE.DEFAULT,
+    },
+    {
+      text: s__('WikiPage|Save changes with message'),
+      description: s__('WikiPage|Review and write a commit message'),
+      value: SAVE_MESSAGE.CUSTOM,
+    },
   ],
   data() {
     const title = window.location.href.includes('random_title=true')
@@ -181,6 +209,8 @@ export default {
       placeholderText: this.$options.i18n.title.newPagePlaceholder,
       parentPath: '',
       initialTitleValue: '',
+      saveMessageMode: SAVE_MESSAGE.DEFAULT,
+      commitMessageModalOpen: false,
     };
   },
   computed: {
@@ -269,6 +299,12 @@ export default {
 
       return `${serializedFrontMatter}${this.content}`;
     },
+    messageModalAction() {
+      return {
+        primary: { text: this.submitButtonText },
+        cancel: { text: this.$options.i18n.cancel },
+      };
+    },
   },
   watch: {
     title() {
@@ -298,7 +334,7 @@ export default {
     async handleFormSubmit(e) {
       this.isFormDirty = false;
 
-      e.preventDefault();
+      e?.preventDefault();
 
       this.validateTitle();
 
@@ -312,7 +348,7 @@ export default {
       // Wait until form field values are refreshed
       await this.$nextTick();
 
-      e.target.submit();
+      this.$refs.form.$el.submit();
     },
 
     updateFrontMatterTitle() {
@@ -490,6 +526,13 @@ export default {
     validateTitle() {
       this.isTitleValid = Boolean(this.pageTitle.trim().length > 0);
     },
+    handleSave() {
+      if (this.saveMessageMode === SAVE_MESSAGE.CUSTOM) {
+        this.commitMessageModalOpen = true;
+      } else {
+        this.$refs.form.$el.submit();
+      }
+    },
   },
 };
 </script>
@@ -517,6 +560,17 @@ export default {
       type="hidden"
       name="wiki[last_commit_sha]"
       :value="pageInfo.lastCommitSha"
+    />
+    <input
+      v-if="glFeatures.wikiImmersiveEditor"
+      :value="commitMessage"
+      name="wiki[message]"
+      type="hidden"
+    />
+    <local-storage-sync
+      v-if="glFeatures.wikiImmersiveEditor"
+      v-model="saveMessageMode"
+      storage-key="wiki_save_message_mode"
     />
 
     <div v-if="!glFeatures.wikiImmersiveEditor" class="row">
@@ -694,13 +748,29 @@ export default {
                 </div>
                 <div class="gl-flex-grow"></div>
                 <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
-                  <gl-button
-                    category="primary"
-                    variant="confirm"
-                    type="submit"
-                    data-testid="wiki-submit-button"
-                    >{{ submitButtonText }}</gl-button
-                  >
+                  <gl-button-group>
+                    <gl-button
+                      variant="confirm"
+                      type="submit"
+                      data-testid="wiki-submit-button"
+                      @click.prevent="handleSave"
+                      >{{ submitButtonText }}</gl-button
+                    >
+                    <gl-collapsible-listbox
+                      v-model="saveMessageMode"
+                      :items="$options.saveOptions"
+                      toggle-text="s__('Wiki|Save and choose commit message')"
+                      variant="confirm"
+                      data-testid="wiki-submit-message-mode"
+                      text-sr-only
+                      @select="handleSave"
+                    >
+                      <template #list-item="{ item }">
+                        <div class="gl-whitespace-nowrap gl-font-bold">{{ item.text }}</div>
+                        <div class="gl-text-subtle">{{ item.description }}</div>
+                      </template>
+                    </gl-collapsible-listbox>
+                  </gl-button-group>
                   <gl-button
                     data-testid="wiki-cancel-button"
                     :href="cancelFormHref"
@@ -778,5 +848,30 @@ export default {
       </div>
       <delete-wiki-modal />
     </div>
+
+    <gl-modal
+      v-if="glFeatures.wikiImmersiveEditor"
+      v-model="commitMessageModalOpen"
+      modal-id="commit-message-modal"
+      data-testid="commit-message-modal"
+      :title="$options.i18n.messageModalTitle"
+      :action-primary="messageModalAction.primary"
+      :action-cancel="messageModalAction.cancel"
+      @primary="handleFormSubmit"
+    >
+      <gl-form-group
+        :label="$options.i18n.commitMessage.label"
+        label-for="wiki_message"
+        label-sr-only
+      >
+        <gl-form-textarea
+          id="wiki_message"
+          v-model.trim="commitMessage"
+          class="form-control"
+          data-testid="wiki-message-textbox"
+          :placeholder="$options.i18n.commitMessage.label"
+        />
+      </gl-form-group>
+    </gl-modal>
   </gl-form>
 </template>
