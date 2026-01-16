@@ -5,8 +5,6 @@
 # If it turns out that a method you are attempting to remove is in fact in use,
 #   remove it from this file and add it to `excluded_methods.yml`.
 #
-ee/app/helpers/ee/merge_requests_helper.rb:
-- render_items_list
 ee/app/helpers/ee/sorting_titles_values_helper.rb:
 - sort_value_version_asc
 - sort_value_version_desc

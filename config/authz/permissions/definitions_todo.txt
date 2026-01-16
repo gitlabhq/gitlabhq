@@ -337,7 +337,6 @@ edit_incident_management_timeline_event
 edit_on_demand_dast_scan
 enable_container_scanning_for_registry
 enable_continuous_vulnerability_scans
-enable_project_studio
 enable_secret_push_protection
 erase_build
 execute_duo_workflow_in_ci

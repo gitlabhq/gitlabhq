@@ -234,7 +234,7 @@ describe('WorkItemNotes component', () => {
       createComponent();
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
-      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
+      expect(scrollToTargetOnResize).toHaveBeenCalled();
     });
 
     it('skips preview note if modal is open', async () => {

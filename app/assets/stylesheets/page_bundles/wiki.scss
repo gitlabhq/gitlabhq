@@ -267,6 +267,23 @@ ul.wiki-pages-list.content-list {
   --immersive-editor-text-width: #{$wiki-content-default-width};
 }
 
+.wiki-form {
+  .flexible-input-container {
+    @apply gl-w-full;
+  }
+
+  @supports (field-sizing: content) {
+    .flexible-input {
+      // stylelint-disable-next-line property-no-unknown
+      field-sizing: content;
+    }
+
+    .flexible-input-container {
+      @apply gl-w-auto;
+    }
+  }
+}
+
 .wiki-list {
   .wiki-list-create-child-button {
     display: none;

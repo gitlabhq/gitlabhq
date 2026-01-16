@@ -658,10 +658,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
     end
   end
 
-  describe 'enable_project_studio' do
-    it { is_expected.to be_allowed(:enable_project_studio) }
-  end
-
   describe 'log in' do
     context 'project bot' do
       let(:current_user) { project_bot }

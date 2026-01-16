@@ -164,6 +164,9 @@ export default {
     shouldLoadPreviewNote() {
       return this.previewNoteId && !this.isDrawer && !this.isModal;
     },
+    shouldScrollToTargetNote() {
+      return this.targetNoteHash?.startsWith('note_') && !this.isDrawer && !this.isModal;
+    },
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
@@ -284,7 +287,7 @@ export default {
     },
   },
   mounted() {
-    if (this.shouldLoadPreviewNote) {
+    if (this.shouldScrollToTargetNote) {
       this.cleanupScrollListener = scrollToTargetOnResize();
     }
     if (this.canCreateNote) {

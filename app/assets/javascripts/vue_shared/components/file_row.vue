@@ -191,7 +191,7 @@ export default {
       size="small"
       :icon="chevronIcon"
       data-testid="tree-toggle-button"
-      class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0"
+      class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0 hover:!gl-bg-transparent"
       :aria-label="chevronAriaLabel"
       :tabindex="buttonTabindex"
       @click="onChevronClick"

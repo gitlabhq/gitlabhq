@@ -24,7 +24,7 @@ instructions:
          - If CE code needs EE-aware behavior, use `prepend_mod` hooks or `Gitlab.ee?` guards
          - Flag direct references to `EE::` namespaced classes in CE code
          - This prevents FOSS build failures
-         - Reference: https://docs.gitlab.com/development/ee_features/
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"
@@ -59,7 +59,7 @@ instructions:
           - Flag callbacks that have side effects (external API calls, updating other records, complex business logic)
           - Flag bulk operations on associated records in callbacks (performance concern as associations grow)
           - Acceptable uses: data normalization on current model only (trimming whitespace, setting defaults)
-          - Reference: https://docs.gitlab.com/development/backend/ruby_style_guide/#avoid-activerecord-callbacks
+          - Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/backend/ruby_style_guide.md#avoid-activerecord-callbacks
 
   - name: Database Migrations
     fileFilters:
@@ -82,7 +82,7 @@ instructions:
          - Check if an index exists or is being added for the foreign key column
          - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 50 GB total size (including all indexes and column data) after adding a new column with a foreign key on GitLab.com."
          - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
-         - Ask: "Are you following the guidelines for adding foreign keys to existing tables to avoid downtime and migration failures? See: https://docs.gitlab.com/development/database/foreign_keys/#avoiding-downtime-and-migration-failures"
+         - Ask: "Are you following the guidelines for adding foreign keys to existing tables to avoid downtime and migration failures? See: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/foreign_keys.md#avoiding-downtime-and-migration-failures"
       11. For column additions without foreign keys to pre-existing tables (not created in the current merge request):
           - Ask: "What is the current size of this table, and what is the projected size after adding this column? Tables cannot exceed 100 GB total size (including all indexes and column data) after adding a new column on GitLab.com."
           - Remind: "If this table exceeds or will exceed the size limit, you can request an exemption by filing an issue with the Database Frameworks Team: https://docs.gitlab.com/development/database/large_tables_limitations/#requesting-an-exception"
@@ -115,7 +115,7 @@ instructions:
          - Fallback logic (|| operators)
          - Error states
       8. Follow the testing pyramid: most tests at unit level, fewer at integration/system level
-      9. Reference: https://docs.gitlab.com/development/testing_guide/testing_levels/
+      9. Reference: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md
 
   - name: Documentation
     fileFilters:
@@ -130,17 +130,18 @@ instructions:
       7. Avoid sales or marketing language, including words like "easily" or "simply."
       8. Avoid writing about the document itself. Get straight to the point instead of using phrases like "This page shows."
       9. Tend toward lowercase, use sentence case for topic titles, and match UI text capitalization.
-      10. Split long lines at approximately 100 characters and start each new sentence on a new line.
-      11. Use bold for UI elements only.
-      12. Use sentence case for table headers.
-      13. When describing the location of a UI element, use the location first, then action the user must take.
-      14. When linking to GitLab issues, include the GitLab issue number in the link text.
-      15. Start optional steps with "Optional."
-      16. Resize wide or tall screenshots. Compress size on disk to 100 KB or less. Use descriptive lowercase filenames with underscores instead of hyphens. Filenames should include the major and minor version of GitLab in the format "_v18_6".
-      17. Avoid using blockquotes.
-      18. Do not promise work in future milestones. Instead, say work is being proposed.
-      19. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
-      20. Along with the previous instructions, documentation should follow the "GitLab Documentation Style Guide".
+      10. Use bold for UI elements only.
+      11. Use sentence case for table headers.
+      12. When describing the location of a UI element, use the location first, then action the user must take.
+      13. When linking to GitLab issues, include the GitLab issue number in the link text.
+      14. Start optional steps with "Optional."
+      15. Resize wide or tall screenshots. Compress size on disk to 100 KB or less. Use descriptive lowercase filenames with underscores instead of hyphens. Filenames should include the major and minor version of GitLab in the format "_v18_6".
+      16. Avoid using blockquotes.
+      17. Do not promise work in future milestones. Instead, say work is being proposed.
+      18. Along with the previous instructions, documentation should follow:
+          - The GitLab Documentation style guide: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/styleguide/_index.md
+          - The GitLab Documentation recommended word list: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/styleguide/word_list.md
+          - GitLab Flavored Markdown syntax standards: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md
 
   - name: API documentation
     fileFilters:
@@ -153,7 +154,7 @@ instructions:
       5. If endpoints attributes are available only to higher subscription tiers or specific offerings, include this information in the attribute description.
       6. For complex object types, represent sub-attributes with dots, like 'project.name' or 'projects[].name' for arrays.
       7. For curl commands, use long option names ('--header' instead of '-H'), declare URLs with the '--url' parameter in double quotes, and use line breaks with '\' for readability.
-      8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines.
+      8. Along with the previous instructions, API documentation should follow the GitLab "Documenting REST API resources" guidelines: https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/documentation/restful_api_styleguide.md
 
   - name: Localization template files
     fileFilters:

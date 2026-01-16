@@ -26,7 +26,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
 
   let(:mutation) { graphql_mutation(:userPreferencesUpdate, input) }
   let(:mutation_response) { graphql_mutation_response(:userPreferencesUpdate) }
-  let(:project_studio_available) { true }
 
   before do
     Gitlab::CurrentSettings.update!(vscode_extension_marketplace: {
@@ -40,8 +39,6 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
     })
 
     allow(Ability).to receive(:allowed?).and_call_original
-    allow(Ability).to receive(:allowed?).with(current_user, :enable_project_studio,
-      anything).and_return(project_studio_available)
   end
 
   context 'when user has no existing preference' do

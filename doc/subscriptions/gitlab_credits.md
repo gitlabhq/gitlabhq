@@ -229,7 +229,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
-1. Select **Settings** > **Usage**.
+1. Select **Settings** > **GitLab Credits**.
 
 {{< /tab >}}
 
@@ -241,7 +241,7 @@ Prerequisites:
 - Your instance must be able to synchronize your subscription data with GitLab.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring** > **Usage**.
+1. Select **GitLab Credits**.
 
 {{< /tab >}}
 

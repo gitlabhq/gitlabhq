@@ -670,7 +670,8 @@ CREATE TABLE siphon_bulk_import_entities
     `migrate_memberships` Bool DEFAULT true,
     `organization_id` Nullable(Int64),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `source_xid_convert_to_bigint` Nullable(Int64)
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id

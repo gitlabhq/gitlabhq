@@ -10,6 +10,8 @@ import {
   GlFormCheckbox,
   GlFormInput,
   GlFormSelect,
+  GlTooltipDirective,
+  GlDisclosureDropdown,
 } from '@gitlab/ui';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
@@ -134,6 +136,10 @@ export default {
     MarkdownEditor,
     WikiTemplate,
     DeleteWikiModal,
+    GlDisclosureDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: [
@@ -616,11 +622,76 @@ export default {
                 class="gl-sticky gl-top-0 gl-z-3 gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
               >
-                <h1
-                  class="gl-y-3 gl-heading-3 gl-line-clamp-2 gl-overflow-hidden gl-overflow-ellipsis md:gl-heading-2"
+                <div
+                  class="flexible-input-container gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >
-                  {{ pageTitle }}
-                </h1>
+                  <input
+                    id="wiki_title"
+                    ref="titleInput"
+                    v-model="pageTitle"
+                    class="flexible-input gl-heading-3 !gl-mb-0 gl-flex-1 gl-overflow-hidden gl-rounded-md gl-border-none gl-bg-transparent gl-shadow-none md:gl-heading-2"
+                    data-testid="wiki-title-textbox"
+                    required
+                    :autofocus="!pageInfo.persisted"
+                    :placeholder="titlePlaceholder"
+                    :aria-label="titlePlaceholder"
+                    :state="isTitleValid"
+                    @input="handleTitleInput"
+                    @keydown="handleTitleKeydown"
+                    @focus="handleTitleFocus"
+                    @blur="validateTitle"
+                  />
+                  <gl-disclosure-dropdown
+                    icon="chevron-down"
+                    :toggle-text="s__('Wiki|Edit page options')"
+                    text-sr-only
+                    category="tertiary"
+                    no-caret
+                  >
+                    <div class="p-3 gl-min-w-md">
+                      <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
+                        <gl-form-input
+                          id="wiki_path"
+                          v-model="path"
+                          name="wiki[title]"
+                          data-testid="wiki-path-textbox"
+                          class="form-control !gl-font-monospace"
+                          :required="true"
+                          :readonly="generatePathFromTitle"
+                          :placeholder="$options.i18n.path.placeholder"
+                        />
+                        <gl-form-checkbox v-model="generatePathFromTitle" class="gl-mt-3 gl-pt-2">{{
+                          __('Generate page path from title')
+                        }}</gl-form-checkbox>
+                      </gl-form-group>
+                      <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
+                        <gl-form-select
+                          id="wiki_format"
+                          v-model="format"
+                          name="wiki[format]"
+                          :disabled="isContentEditorActive"
+                          :value="formatOptions.Markdown"
+                        >
+                          <option v-for="(key, label) of formatOptions" :key="key" :value="key">
+                            {{ label }}
+                          </option>
+                        </gl-form-select>
+                      </gl-form-group>
+                      <gl-form-group
+                        v-if="!isTemplate"
+                        :label="$options.i18n.template.label"
+                        label-for="wiki_template"
+                        class="gl-mb-0"
+                      >
+                        <wiki-template
+                          :format="format"
+                          :templates="templates"
+                          @input="setTemplate"
+                        />
+                      </gl-form-group>
+                    </div>
+                  </gl-disclosure-dropdown>
+                </div>
                 <div class="gl-flex-grow"></div>
                 <div class="gl-my-3 gl-flex gl-shrink-0 gl-gap-3">
                   <gl-button

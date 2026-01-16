@@ -1040,8 +1040,11 @@ To set a limit on your instance, use the
 
 ### Number of parallel Pages deployments
 
-When using [parallel Pages deployments](../user/project/pages/_index.md#parallel-deployments), the total number
+When using [parallel Pages deployments](../user/project/pages/parallel_deployments.md), the total number
 of parallel Pages deployments permitted for a top-level namespace is 1000.
+
+When a project has a [unique domain](../user/project/pages/_index.md#unique-domains) enabled,
+the project's unique domain is treated as its own top-level namespace with a separate limit of 1000 deployments.
 
 ### Number of registered runners for each scope
 
