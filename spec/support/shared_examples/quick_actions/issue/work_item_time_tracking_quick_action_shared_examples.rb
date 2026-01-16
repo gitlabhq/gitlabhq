@@ -5,7 +5,7 @@ RSpec.shared_examples 'work item time tracker' do
 
   before do
     project.add_maintainer(maintainer)
-    gitlab_sign_in(maintainer)
+    sign_in(maintainer)
     visit project_issue_path(project, issuable)
   end
 

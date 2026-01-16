@@ -75,11 +75,8 @@ Here's an example setup flow from scratch:
 
 ### Show Canary Ingress deployments on deploy boards (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 To view canary deployments you must properly configure deploy boards:
 
@@ -105,11 +102,8 @@ can quickly notice them.
 
 #### How to check the current traffic weight on a Canary Ingress (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 1. Visit the [deploy board](deploy_boards.md).
 1. View the current weights on the right.
@@ -118,11 +112,8 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 
 #### How to change the traffic weight on a Canary Ingress (deprecated)
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 You can change the traffic weight in your environment's deploy board by using [GraphiQL](../../api/graphql/getting_started.md#graphiql),
 or by sending requests to the [GraphQL API](../../api/graphql/getting_started.md#command-line).

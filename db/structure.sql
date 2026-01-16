@@ -24179,6 +24179,28 @@ CREATE TABLE packages_helm_file_metadata (
     CONSTRAINT check_109d878e47 CHECK ((project_id IS NOT NULL))
 );
 
+CREATE TABLE packages_helm_metadata_cache_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    packages_helm_metadata_cache_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_8912e42599 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE packages_helm_metadata_cache_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_helm_metadata_cache_states_id_seq OWNED BY packages_helm_metadata_cache_states.id;
+
 CREATE TABLE packages_helm_metadata_caches (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -34027,6 +34049,8 @@ ALTER TABLE ONLY packages_dependencies ALTER COLUMN id SET DEFAULT nextval('pack
 
 ALTER TABLE ONLY packages_dependency_links ALTER COLUMN id SET DEFAULT nextval('packages_dependency_links_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_helm_metadata_cache_states ALTER COLUMN id SET DEFAULT nextval('packages_helm_metadata_cache_states_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_helm_metadata_caches ALTER COLUMN id SET DEFAULT nextval('packages_helm_metadata_caches_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_maven_metadata ALTER COLUMN id SET DEFAULT nextval('packages_maven_metadata_id_seq'::regclass);
@@ -37692,6 +37716,9 @@ ALTER TABLE ONLY packages_dependency_links
 
 ALTER TABLE ONLY packages_helm_file_metadata
     ADD CONSTRAINT packages_helm_file_metadata_pkey PRIMARY KEY (package_file_id);
+
+ALTER TABLE ONLY packages_helm_metadata_cache_states
+    ADD CONSTRAINT packages_helm_metadata_cache_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_helm_metadata_caches
     ADD CONSTRAINT packages_helm_metadata_caches_pkey PRIMARY KEY (id);
@@ -41555,6 +41582,16 @@ CREATE INDEX idx_packages_debian_project_component_files_on_architecture_id ON p
 
 CREATE INDEX idx_packages_dependencies_on_name_version_pattern_project_id ON packages_dependencies USING btree (name, version_pattern, project_id);
 
+CREATE INDEX idx_packages_helm_metadata_cache_states_failed_verification ON packages_helm_metadata_cache_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX idx_packages_helm_metadata_cache_states_needs_verification_id ON packages_helm_metadata_cache_states USING btree (packages_helm_metadata_cache_id) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX idx_packages_helm_metadata_cache_states_on_verification_started ON packages_helm_metadata_cache_states USING btree (packages_helm_metadata_cache_id, verification_started_at) WHERE (verification_state = 1);
+
+CREATE INDEX idx_packages_helm_metadata_cache_states_on_verification_state ON packages_helm_metadata_cache_states USING btree (verification_state);
+
+CREATE INDEX idx_packages_helm_metadata_cache_states_pending_verification ON packages_helm_metadata_cache_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX idx_packages_nuget_metadata_on_pkg_id_and_normalized_version ON packages_nuget_metadata USING btree (package_id, normalized_version);
 
 CREATE INDEX idx_packages_on_project_id_name_id_version_when_installable_npm ON packages_packages USING btree (project_id, name, id, version) WHERE ((package_type = 2) AND (status = ANY (ARRAY[0, 1])));
@@ -41608,6 +41645,8 @@ CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packa
 CREATE INDEX idx_pkgs_debian_project_distribution_keys_on_distribution_id ON packages_debian_project_distribution_keys USING btree (distribution_id);
 
 CREATE UNIQUE INDEX idx_pkgs_dep_links_on_pkg_id_dependency_id_dependency_type ON packages_dependency_links USING btree (package_id, dependency_id, dependency_type);
+
+CREATE UNIQUE INDEX idx_pkgs_helm_metadata_cache_states_on_helm_metadata_cache_id ON packages_helm_metadata_cache_states USING btree (packages_helm_metadata_cache_id);
 
 CREATE INDEX idx_pkgs_installable_package_files_on_package_id_id_file_name ON packages_package_files USING btree (package_id, id, file_name) WHERE (status = 0);
 
@@ -54740,6 +54779,9 @@ ALTER TABLE ONLY compliance_requirements_controls
 
 ALTER TABLE ONLY user_credit_card_validations
     ADD CONSTRAINT fk_rails_27ebc03cbf FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_helm_metadata_cache_states
+    ADD CONSTRAINT fk_rails_281379b415 FOREIGN KEY (packages_helm_metadata_cache_id) REFERENCES packages_helm_metadata_caches(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_validations
     ADD CONSTRAINT fk_rails_285c617324 FOREIGN KEY (dast_site_token_id) REFERENCES dast_site_tokens(id) ON DELETE CASCADE;

@@ -22,11 +22,8 @@ Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 Project access tokens are similar to passwords, except you can limit access to resources,
 select a limited role, and provide an expiry date.
 
-{{< alert type="note" >}}
-
-Access to a specific project is controlled by a combination of [roles and permissions](../../permissions.md) and token scopes.
-
-{{< /alert >}}
+> [!note]
+> Access to a specific project is controlled by a combination of [roles and permissions](../../permissions.md) and token scopes.
 
 Use a project access token to authenticate:
 
@@ -75,11 +72,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-The ability to create project access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
-
-{{< /alert >}}
+> [!warning]
+> The ability to create project access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
 
 To create a project access token:
 
@@ -140,11 +134,8 @@ To revoke or rotate a project access token:
 
 The scope determines the actions you can perform when you authenticate with a project access token.
 
-{{< alert type="note" >}}
-
-See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.
-
-{{< /alert >}}
+> [!note]
+> See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.
 
 | Scope              | Description                                                                                                                                                                                                                                                                              |
 |:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -260,11 +251,8 @@ When the project access token is [revoked](#revoke-or-rotate-a-project-access-to
 - The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
 - The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the expiration date. After deletion, all existing user records are associated to a system-wide [ghost user](../../profile/account/delete_account.md#associated-records).
 
-{{< alert type="note" >}}
-
-The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
-
-{{< /alert >}}
+> [!note]
+> The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
 
 For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 

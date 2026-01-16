@@ -12,7 +12,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   context 'application setting :admin_mode is enabled', :request_store do
     before do
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-      gitlab_sign_in(admin)
+      sign_in(admin)
       enable_admin_mode!(admin, use_ui: true)
     end
 
@@ -1483,7 +1483,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
-      gitlab_sign_in(admin)
+      sign_in(admin)
       visit general_admin_application_settings_path
     end
 

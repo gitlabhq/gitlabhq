@@ -39,6 +39,14 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
         expect(cluster_ids).to match_array(clusters.pluck(:id))
         expect(cluster_ids).not_to include(project_cluster_id)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster do
+        let(:user) { admin_user }
+        let(:boundary_object) { :instance }
+        let(:request) do
+          get api("/admin/clusters", personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -131,6 +139,14 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
           it 'returns 404' do
             get api("/admin/clusters/#{project_cluster_id}", admin_user, admin_mode: true)
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_cluster do
+          let(:user) { admin_user }
+          let(:boundary_object) { :instance }
+          let(:request) do
+            get api("/admin/clusters/#{cluster.id}", personal_access_token: pat)
           end
         end
       end
@@ -283,6 +299,14 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_cluster do
+      let(:user) { admin_user }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api("/admin/clusters/add", personal_access_token: pat), params: cluster_params
+      end
+    end
   end
 
   describe 'PUT /admin/clusters/:cluster_id' do
@@ -423,6 +447,14 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_cluster do
+        let(:user) { admin_user }
+        let(:boundary_object) { :instance }
+        let(:request) do
+          put api("/admin/clusters/#{cluster.id}", personal_access_token: pat), params: update_params
+        end
+      end
     end
   end
 
@@ -434,6 +466,12 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
     end
 
     let_it_be(:path) { "/admin/clusters/#{cluster.id}" }
+
+    it_behaves_like 'authorizing granular token permissions', :delete_cluster do
+      let(:user) { admin_user }
+      let(:boundary_object) { :instance }
+      let(:request) { delete api(path, personal_access_token: pat) }
+    end
 
     it_behaves_like 'DELETE request permissions for admin mode'
 

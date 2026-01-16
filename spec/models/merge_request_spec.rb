@@ -597,6 +597,105 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to eq(project_setting) }
   end
 
+  describe '#log_approval_deletion_on_merged_or_locked_mr' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    subject(:log_approval_deletion) do
+      merge_request.log_approval_deletion_on_merged_or_locked_mr(
+        source: 'TestSource',
+        current_user: user,
+        cause: 'test_cause'
+      )
+    end
+
+    context 'when feature flag is disabled' do
+      let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+
+      before do
+        stub_feature_flags(log_merged_mr_approval_deletion: false)
+      end
+
+      it 'does not log anything' do
+        expect(Gitlab::AppLogger).not_to receive(:warn)
+
+        log_approval_deletion
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(log_merged_mr_approval_deletion: true)
+      end
+
+      shared_examples 'logs for protected states' do |state_trait|
+        let(:merge_request) { create(:merge_request, state_trait, source_project: project) }
+
+        it 'logs a warning with merge request details' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(
+              message: 'Approvals deleted on merged or locked MR',
+              source: 'TestSource',
+              cause: 'test_cause',
+              merge_request_id: merge_request.id,
+              merge_request_iid: merge_request.iid,
+              merge_request_state: state_trait.to_s,
+              project_id: project.id,
+              current_user_id: user.id
+            )
+          )
+
+          log_approval_deletion
+        end
+      end
+
+      shared_examples 'does not log anything' do |state_trait|
+        let(:merge_request) do
+          state_trait ? create(:merge_request, state_trait, source_project: project) : create(:merge_request, source_project: project)
+        end
+
+        it 'does not log anything' do
+          expect(Gitlab::AppLogger).not_to receive(:warn)
+
+          log_approval_deletion
+        end
+      end
+
+      context 'when merge request is merged' do
+        it_behaves_like 'logs for protected states', :merged
+      end
+
+      context 'when merge request is locked' do
+        it_behaves_like 'logs for protected states', :locked
+      end
+
+      context 'when merge request is opened' do
+        it_behaves_like 'does not log anything', nil
+      end
+
+      context 'when merge request is closed' do
+        it_behaves_like 'does not log anything', :closed
+      end
+
+      context 'when current_user is nil' do
+        let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+
+        it 'logs with nil current_user_id' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(
+            hash_including(
+              current_user_id: nil
+            )
+          )
+
+          merge_request.log_approval_deletion_on_merged_or_locked_mr(
+            source: 'TestSource',
+            current_user: nil
+          )
+        end
+      end
+    end
+  end
+
   describe '#squash?' do
     let(:merge_request) { build(:merge_request, squash: squash) }
 

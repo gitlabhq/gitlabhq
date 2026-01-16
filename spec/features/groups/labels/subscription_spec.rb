@@ -11,7 +11,7 @@ RSpec.describe 'Labels subscription', feature_category: :team_planning do
   context 'when signed in' do
     before do
       group.add_developer(user)
-      gitlab_sign_in user
+      sign_in user
     end
 
     it 'users can subscribe/unsubscribe to group labels', :js do

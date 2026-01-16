@@ -25,11 +25,8 @@ Each rule allows you to match either:
 
 This feature evolved out of [protected branches](repository/branches/protected.md).
 
-{{< alert type="note" >}}
-
-To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
-
-{{< /alert >}}
+> [!note]
+> To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
 
 ## Configure protected tags
 

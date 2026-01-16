@@ -17,11 +17,8 @@ Users can be deleted from a GitLab instance, either by:
 - The user themselves.
 - An administrator.
 
-{{< alert type="note" >}}
-
-Deleting a user deletes all projects in that user namespace.
-
-{{< /alert >}}
+> [!note]
+> Deleting a user deletes all projects in that user namespace.
 
 ## Delete your own account
 
@@ -141,11 +138,8 @@ records are always removed.
 The deleting associated records option can be requested in the [API](../../../api/users.md#delete-a-user) as well as
 the **Admin** area.
 
-{{< alert type="warning" >}}
-
-User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
-
-{{< /alert >}}
+> [!warning]
+> User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
 
 ## Delete the root account on a GitLab Self-Managed instance
 
@@ -155,11 +149,8 @@ User approvals are associated with a user ID. Other user contributions do not ha
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
-
-{{< /alert >}}
+> [!warning]
+> The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
 
 You can delete the root account using either the UI or the [GitLab Rails console](../../../administration/operations/rails_console.md).
 
@@ -182,11 +173,8 @@ To delete the root account:
 
 ### Use the GitLab Rails console
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 Prerequisites:
 

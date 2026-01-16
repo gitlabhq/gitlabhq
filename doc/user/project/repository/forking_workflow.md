@@ -162,11 +162,8 @@ A fork can be configured as a mirror of the upstream if all these conditions are
 This method updates your fork once per hour, with no manual `git pull` required.
 For instructions, read [Configure pull mirroring](mirror/pull.md#configure-pull-mirroring).
 
-{{< alert type="warning" >}}
-
-With mirroring, before approving a merge request, you are asked to sync. You should automate it.
-
-{{< /alert >}}
+> [!warning]
+> With mirroring, before approving a merge request, you are asked to sync. You should automate it.
 
 ## Merge changes back upstream
 

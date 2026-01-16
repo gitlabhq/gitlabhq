@@ -64,11 +64,8 @@ To toggle the availability of individual features in a project:
 
 ## Turn off project analytics
 
-{{< alert type="note" >}}
-
-Turning off project analytics only removes the **Analyze** navigation item, but data is still being computed and available through the respective API endpoints.
-
-{{< /alert >}}
+> [!note]
+> Turning off project analytics only removes the **Analyze** navigation item, but data is still being computed and available through the respective API endpoints.
 
 By default, project analytics are displayed under the **Analyze** item in the left sidebar.
 To turn this feature off and remove the **Analyze** item from the left sidebar:

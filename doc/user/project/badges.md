@@ -91,11 +91,8 @@ The following table shows the default test coverage limits and badge colors:
 | Low           | 0 up to 75%                 | <span style="color: #e05d44">■</span> `#e05d44` |
 | Unknown       | No coverage                 | <span style="color: #9f9f9f">■</span> `#9f9f9f` |
 
-{{< alert type="note" >}}
-
-*Up to* means up to, but not including, the upper bound.
-
-{{< /alert >}}
+> [!note]
+> *Up to* means up to, but not including, the upper bound.
 
 ### Change the default limits
 
@@ -211,11 +208,8 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
 
-{{< alert type="note" >}}
-
-The pipeline status badge is based on specific Git revisions (branches). Ensure you select the appropriate branch to view the correct pipeline status.
-
-{{< /alert >}}
+> [!note]
+> The pipeline status badge is based on specific Git revisions (branches). Ensure you select the appropriate branch to view the correct pipeline status.
 
 ## Customize badges
 
@@ -321,11 +315,8 @@ For example, you can use [placeholders](#placeholders) to create a badge for the
 https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
 ```
 
-{{< alert type="warning" >}}
-
-Placeholders allow badges to expose otherwise-private information, such as the default branch or commit SHA when the project is configured to have a private repository. This behavior is intentional, as badges are intended to be used publicly. Avoid using these placeholders if the information is sensitive.
-
-{{< /alert >}}
+> [!warning]
+> Placeholders allow badges to expose otherwise-private information, such as the default branch or commit SHA when the project is configured to have a private repository. This behavior is intentional, as badges are intended to be used publicly. Avoid using these placeholders if the information is sensitive.
 
 #### Value text
 
@@ -406,11 +397,8 @@ To delete a badge in a project or group:
 1. Next to the badge you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete badge**.
 
-{{< alert type="note" >}}
-
-Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
-
-{{< /alert >}}
+> [!note]
+> Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
 
 ## Placeholders
 

@@ -115,6 +115,11 @@ module API
 
           merge_request.approvals.delete_all
 
+          merge_request.log_approval_deletion_on_merged_or_locked_mr(
+            source: 'API::MergeRequestApprovals#reset_approvals',
+            current_user: current_user
+          )
+
           status :accepted
         end
       end

@@ -189,11 +189,8 @@ Use case: If you have multiple users using their own GitHub credentials to set u
 repository mirroring, mirroring breaks when people leave the company. Use this
 script to migrate disparate mirroring users and tokens into a single service account:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 svc_user = User.find_by(username: 'ourServiceUser')
@@ -330,11 +327,8 @@ To resolve this issue, delete the conflicting tag or branch.
 If you cannot identify the conflicting tag or branch, delete all tags from your mirror repository.
 An alternative option is to [overwrite diverged branches](pull.md#overwrite-diverged-branches).
 
-{{< alert type="note" >}}
-
-Deleting tags could be destructive for any work done in the mirror repository.
-
-{{< /alert >}}
+> [!note]
+> Deleting tags could be destructive for any work done in the mirror repository.
 
 To delete and remove all tags from the mirror repository:
 

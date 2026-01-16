@@ -25,13 +25,28 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
     expect_single_session_with_short_ttl
   end
 
-  it 'increases the TTL when the login succeeds' do
-    user = create(:user)
-    gitlab_sign_in(user)
+  context "with sign_in_form_vue feature flag disabled" do
+    before do
+      stub_feature_flags(sign_in_form_vue: false)
+    end
 
-    expect(find('.js-super-sidebar')['data-sidebar']).to include(user.name)
+    it 'increases the TTL when the login succeeds' do
+      user = create(:user)
+      gitlab_sign_in(user)
 
-    expect_single_session_with_authenticated_ttl
+      expect(find('.js-super-sidebar')['data-sidebar']).to include(user.name)
+
+      expect_single_session_with_authenticated_ttl
+    end
+  end
+
+  context "with sign_in_form_vue feature flag enabled", :js do
+    it 'increases the TTL when the login succeeds' do
+      user = create(:user)
+      gitlab_sign_in(user)
+
+      expect_single_session_with_authenticated_ttl
+    end
   end
 
   context 'with an unauthorized project' do

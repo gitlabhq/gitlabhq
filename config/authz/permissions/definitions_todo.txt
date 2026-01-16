@@ -187,7 +187,6 @@ create_branch_rule
 create_build
 create_build_service_proxy
 create_build_terminal
-create_cluster
 create_commit_status
 create_container_image
 create_container_registry_protection_immutable_tag_rule
@@ -455,7 +454,6 @@ read_ci_cd_analytics
 read_ci_minutes_limited_summary
 read_ci_pipeline_schedules_plan_limit
 read_cloud_connector_status
-read_cluster
 read_cluster_environments
 read_code
 read_code_review_analytics
@@ -746,7 +744,6 @@ update_alert_management_metric_image
 update_approvers
 update_branch_rule
 update_build
-update_cluster
 update_commit_status
 update_container_image
 update_custom_attribute

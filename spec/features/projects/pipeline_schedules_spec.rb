@@ -20,7 +20,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     before do
       project.add_developer(user)
       pipeline_schedule.update!(owner: user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     describe 'GET /projects/pipeline_schedules' do
@@ -101,7 +101,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     before do
       project.add_maintainer(user)
       pipeline_schedule.update!(owner: maintainer)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     describe 'GET /projects/pipeline_schedules' do
@@ -341,7 +341,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
   context 'logged in as non-member' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     it_behaves_like 'user without project access'

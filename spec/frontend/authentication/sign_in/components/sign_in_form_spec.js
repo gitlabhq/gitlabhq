@@ -140,6 +140,15 @@ describe('SignInForm', () => {
     expect(findPasswordInputComponent().props('state')).toBe(false);
   });
 
+  it('renders remember me checkbox', () => {
+    createComponent();
+
+    expect(findRememberMeCheckbox().attributes()).toMatchObject({
+      id: 'user_remember_me',
+      autocomplete: 'off',
+    });
+  });
+
   it('renders hidden remember me input that is controlled by checkbox', async () => {
     createComponent();
 

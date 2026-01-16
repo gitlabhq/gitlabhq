@@ -26,11 +26,8 @@ to add this functionality to the [agent](../clusters/agent/_index.md).
 
 {{< /alert >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
 GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/_index.md) running on [Kubernetes](https://kubernetes.io), displaying the status

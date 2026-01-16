@@ -57,11 +57,8 @@ If you use AWS, you can use our OpenTofu tutorial. For more information, see
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Create a workspace only from trusted projects.
-
-{{< /alert >}}
+> [!warning]
+> Create a workspace only from trusted projects.
 
 Prerequisites:
 

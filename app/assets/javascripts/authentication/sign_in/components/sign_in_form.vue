@@ -168,7 +168,13 @@ export default {
 
       <div v-if="isRememberMeEnabled" class="gl-mb-3">
         <input type="hidden" :name="rememberMeNameAttr" :value="rememberMe" />
-        <gl-form-checkbox v-model="rememberMe" value="1" unchecked-value="0">
+        <gl-form-checkbox
+          id="user_remember_me"
+          v-model="rememberMe"
+          value="1"
+          unchecked-value="0"
+          autocomplete="off"
+        >
           {{ __('Remember me') }}
         </gl-form-checkbox>
       </div>

@@ -127,11 +127,8 @@ The configured agent is not visible until you
 When you allow an agent in a group, the group, its subgroups, and all projects in those groups can
 use that agent.
 
-{{< alert type="note" >}}
-
-Only one agent is required. You can create workspaces from all projects in a group with the same agent.
-
-{{< /alert >}}
+> [!note]
+> Only one agent is required. You can create workspaces from all projects in a group with the same agent.
 
 To allow your GitLab agent for Kubernetes in a group and make it available to all projects in that group:
 

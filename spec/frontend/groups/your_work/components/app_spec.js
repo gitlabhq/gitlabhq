@@ -29,7 +29,7 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { resolvers } from '~/groups/your_work/graphql/resolvers';
+import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 

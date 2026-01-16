@@ -360,11 +360,8 @@ If other projects in the same group have a label with the same title, they are a
 merged with the new group label. If a group label with the same title exists, it is
 also merged.
 
-{{< alert type="warning" >}}
-
-Promoting a label is a permanent action and cannot be reversed.
-
-{{< /alert >}}
+> [!warning]
+> Promoting a label is a permanent action and cannot be reversed.
 
 Prerequisites:
 
@@ -486,11 +483,8 @@ To filter issue, merge request, or epic lists by a given scope, enter
 For example, filtering by the `platform::*` label returns issues that have `platform::iOS`,
 `platform::Android`, or `platform::Linux` labels.
 
-{{< alert type="note" >}}
-
-Filtering by scoped labels not available on the issues or merge requests dashboard pages.
-
-{{< /alert >}}
+> [!note]
+> Filtering by scoped labels not available on the issues or merge requests dashboard pages.
 
 ### Scoped labels examples
 
@@ -644,11 +638,8 @@ Prerequisites:
 
 - You must have at least the Planner role for the project or group.
 
-{{< alert type="warning" >}}
-
-After you set a label as locked, nobody can undo it or delete the label.
-
-{{< /alert >}}
+> [!warning]
+> After you set a label as locked, nobody can undo it or delete the label.
 
 To set a label to get locked on merge:
 

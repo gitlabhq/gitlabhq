@@ -5,9 +5,9 @@ import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
+import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import routes from './routes';
 import YourWorkGroupsApp from './components/app.vue';
-import { resolvers } from './graphql/resolvers';
 
 Vue.use(VueRouter);
 

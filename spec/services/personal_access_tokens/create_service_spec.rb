@@ -38,10 +38,23 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     it { expect(subject.success?).to be false }
     it { expect(subject.message).to eq('Not permitted to create') }
     it { expect(token).to be_nil }
+
+    it 'does not track the creation event' do
+      expect { execute }.not_to trigger_internal_events('create_pat')
+    end
+  end
+
+  shared_examples_for 'tracks the creation event' do
+    it 'tracks the creation event' do
+      expect { execute }.to trigger_internal_events('create_pat')
+        .with(user: user, additional_properties: { type: 'legacy', scopes: params[:scopes].join(', ') })
+        .and increment_usage_metrics('counts.count_total_personal_access_token_created_legacy')
+        .and not_increment_usage_metrics('counts.count_total_personal_access_token_created_granular')
+    end
   end
 
   describe '#execute' do
-    subject { service.execute }
+    subject(:execute) { service.execute }
 
     let(:current_user) { create(:user) }
     let(:organization) { create(:organization) }
@@ -54,7 +67,9 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:current_user) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it_behaves_like 'a successfully created token'
+        it_behaves_like 'a successfully created token' do
+          it_behaves_like 'tracks the creation event'
+        end
       end
 
       context 'when admin mode is disabled' do
@@ -70,7 +85,9 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       context 'target_user is same as current_user' do
         let(:current_user) { user }
 
-        it_behaves_like 'a successfully created token'
+        it_behaves_like 'a successfully created token' do
+          it_behaves_like 'tracks the creation event'
+        end
       end
     end
 
@@ -130,7 +147,12 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:current_user) { user }
       let(:params) { { name: 'gPAT', impersonation: false, granular: true, scopes: [:granular], expires_at: Date.today + 1.month } }
 
-      it_behaves_like 'a successfully created token'
+      it_behaves_like 'a successfully created token' do
+        # Granular PATs created event are tracked in Authn::PersonalAccessTokens::CreateGranularService
+        it 'does not track the creation event' do
+          expect { execute }.not_to trigger_internal_events('create_pat')
+        end
+      end
     end
   end
 end

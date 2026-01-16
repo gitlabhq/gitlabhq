@@ -131,11 +131,8 @@ these tools to create a deployment:
 - GitLab CI/CD pipelines.
 - The AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 
-{{< alert type="note" >}}
-
-GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
-
-{{< /alert >}}
+> [!note]
+> GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
 
 To set up a mirror from GitLab to AWS CodeCommit:
 

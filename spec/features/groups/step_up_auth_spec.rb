@@ -128,12 +128,14 @@ RSpec.describe 'Group step-up authentication', :with_current_organization, :js, 
           it_behaves_like 'user can access group page successfully'
         end
 
-        context 'when user signed in initially with username and password' do
-          before do
-            gitlab_sign_in(user)
-          end
+        with_and_without_sign_in_form_vue do
+          context 'when user signed in initially with username and password' do
+            before do
+              gitlab_sign_in(user)
+            end
 
-          it_behaves_like 'successful group step-up auth process'
+            it_behaves_like 'successful group step-up auth process'
+          end
         end
 
         context 'when user signed in initially with same omniauth provider (openid_connect)' do

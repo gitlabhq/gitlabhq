@@ -99,11 +99,8 @@ see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](htt
 
 For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
-{{< alert type="note" >}}
-
-Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/_index.md) to write code more efficiently.
-
-{{< /alert >}}
+> [!note]
+> Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/_index.md) to write code more efficiently.
 
 ## Storage analysis
 
@@ -351,11 +348,8 @@ The script outputs the project job artifacts in a JSON formatted list:
 Job artifacts consume most of the pipeline storage, and job logs can also generate several hundreds of kilobytes.
 You should delete the unnecessary job artifacts first and then clean up job logs after analysis.
 
-{{< alert type="warning" >}}
-
-Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
-
-{{< /alert >}}
+> [!warning]
+> Deleting job log and artifacts is a destructive action that cannot be reverted. Use with caution. Deleting certain files, including report artifacts, job logs, and metadata files, affects GitLab features that use these files as data sources.
 
 ### List job artifacts
 

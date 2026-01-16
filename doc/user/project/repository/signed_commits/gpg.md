@@ -308,8 +308,5 @@ If the password entry prompt doesn't appear:
    - Restart your terminal.
    - Run `source ~/.bashrc` or `source ~/.zshrc`.
 
-{{< alert type="note" >}}
-
-The exact steps may vary depending on your operating system and shell configuration.
-
-{{< /alert >}}
+> [!note]
+> The exact steps may vary depending on your operating system and shell configuration.

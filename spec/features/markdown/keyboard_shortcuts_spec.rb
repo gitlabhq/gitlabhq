@@ -13,7 +13,7 @@ RSpec.describe 'Markdown keyboard shortcuts', :js, feature_category: :team_plann
   before do
     project.add_developer(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit path_to_visit
 

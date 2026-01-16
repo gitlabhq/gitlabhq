@@ -35,7 +35,7 @@ To view CI/CD analytics:
 You can view the history of your pipeline successes and failures, and how long each pipeline ran.
 Pipeline statistics are gathered by collecting all available pipelines for the
 project, regardless of status. The data available for each individual day is based
-on when the pipeline was created.
+on when the pipeline started.
 
 CI/CD analytics displays key metrics about your pipelines:
 

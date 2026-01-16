@@ -171,6 +171,27 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           expect(response).to have_gitlab_http_status(:unauthorized)
           expect(merge_request.approvals.pluck(:user_id)).to contain_exactly(user2.id)
         end
+
+        it 'does not call log_approval_deletion_on_merged_or_locked_mr' do
+          expect_next_found_instance_of(MergeRequest) do |mr|
+            expect(mr).not_to receive(:log_approval_deletion_on_merged_or_locked_mr)
+          end
+
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+        end
+      end
+
+      context 'when the MR is open' do
+        it 'calls log_approval_deletion_on_merged_or_locked_mr after authorization' do
+          expect_next_found_instance_of(MergeRequest) do |mr|
+            expect(mr).to receive(:log_approval_deletion_on_merged_or_locked_mr).with(
+              source: 'API::MergeRequestApprovals#reset_approvals',
+              current_user: bot
+            )
+          end
+
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+        end
       end
 
       it 'clears approvals of the merge_request' do

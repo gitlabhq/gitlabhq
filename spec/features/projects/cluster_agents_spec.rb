@@ -15,7 +15,7 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
       allow(client).to receive(:get_connected_agentks_by_agent_ids).and_return([])
     end
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when user does not have any agents and visits the index page' do

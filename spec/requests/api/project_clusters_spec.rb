@@ -46,6 +46,14 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
         expect(cluster_ids).to match_array(clusters.pluck(:id))
         expect(cluster_ids).not_to include(extra_cluster.id)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster do
+        let(:user) { developer_user }
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/clusters", personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -149,6 +157,14 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
 
         it 'returns 404' do
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_cluster do
+        let(:user) { developer_user }
+        let(:boundary_object) { project }
+        let(:request) do
+          get api("/projects/#{project.id}/clusters/#{cluster.id}", personal_access_token: pat)
         end
       end
     end
@@ -298,6 +314,14 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
       it 'responds with 403' do
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response['message']).to eq('403 Forbidden')
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_cluster do
+      let(:user) { maintainer_user }
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/clusters/user", personal_access_token: pat), params: cluster_params
       end
     end
   end
@@ -489,6 +513,14 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_cluster do
+        let(:user) { maintainer_user }
+        let(:boundary_object) { project }
+        let(:request) do
+          put api("/projects/#{project.id}/clusters/#{cluster.id}", personal_access_token: pat), params: update_params
+        end
+      end
     end
   end
 
@@ -527,6 +559,14 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
         it 'responds with 404' do
           expect(response).to have_gitlab_http_status(:not_found)
         end
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_cluster do
+      let(:user) { maintainer_user }
+      let(:boundary_object) { project }
+      let(:request) do
+        delete api("/projects/#{project.id}/clusters/#{cluster.id}", personal_access_token: pat)
       end
     end
   end

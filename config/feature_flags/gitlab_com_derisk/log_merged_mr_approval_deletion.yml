@@ -1,0 +1,10 @@
+---
+name: log_merged_mr_approval_deletion
+description: Logs when approvals will be removed for a merging or merged MR
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584803
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217440
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584829
+milestone: '18.9'
+type: gitlab_com_derisk
+group: group::code review
+default_enabled: false

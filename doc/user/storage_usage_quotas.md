@@ -187,11 +187,8 @@ In addition to managing your storage usage you can consider these options for in
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-To exceed the free tier 10 GiB limit on your Free GitLab.com namespace, you can purchase more storage for your personal or group namespace.
-
-{{< /alert >}}
+> [!note]
+> To exceed the free tier 10 GiB limit on your Free GitLab.com namespace, you can purchase more storage for your personal or group namespace.
 
 Prerequisites:
 

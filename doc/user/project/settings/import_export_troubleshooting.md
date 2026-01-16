@@ -124,11 +124,8 @@ reduce the repository size for another import attempt:
 
 ### Workaround option 2
 
-{{< alert type="note" >}}
-
-This workaround does not account for LFS objects.
-
-{{< /alert >}}
+> [!note]
+> This workaround does not account for LFS objects.
 
 Rather than attempting to push all changes at once, this workaround:
 

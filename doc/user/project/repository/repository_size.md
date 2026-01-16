@@ -294,11 +294,8 @@ Permanently delete sensitive or confidential information that was accidentally c
 it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
-{{< alert type="warning" >}}
-
-This action is irreversible. After rewriting history and running housekeeping, the changes are permanent.
-
-{{< /alert >}}
+> [!warning]
+> This action is irreversible. After rewriting history and running housekeeping, the changes are permanent.
 
 While redacting files in GitLab removes exposed secrets, it also:
 

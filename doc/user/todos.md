@@ -46,11 +46,8 @@ To sort the To-Do List:
 
 1. Optional. Select the sort direction.
 
-{{< alert type="note" >}}
-
-On the **Snoozed** and **Done** tabs, **Recommended** sorts items by their creation date only.
-
-{{< /alert >}}
+> [!note]
+> On the **Snoozed** and **Done** tabs, **Recommended** sorts items by their creation date only.
 
 ## Actions that create to-do items
 

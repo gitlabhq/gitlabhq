@@ -50,11 +50,8 @@ company_namespace/artifact_management/ # top-level group
 └── generic-packages/        # Generic file packages
 ```
 
-{{< alert type="note" >}}
-
-Some organizations prefer additional separation based on package lifecycle or stability. For example, you might create separate projects for `java-releases/` and `java-snapshots/`. This way, you can apply different cleanup policies, access controls, or approval workflows for stable packages and development packages.
-
-{{< /alert >}}
+> [!note]
+> Some organizations prefer additional separation based on package lifecycle or stability. For example, you might create separate projects for `java-releases/` and `java-snapshots/`. This way, you can apply different cleanup policies, access controls, or approval workflows for stable packages and development packages.
 
 ### Create the group and projects
 

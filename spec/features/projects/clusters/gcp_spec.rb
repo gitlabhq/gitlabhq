@@ -10,7 +10,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
 
   before do
     project.add_maintainer(user)
-    gitlab_sign_in(user)
+    sign_in(user)
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
 

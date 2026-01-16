@@ -669,11 +669,8 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This operation deletes all data in the wiki.
-
-{{< /alert >}}
+> [!warning]
+> This operation deletes all data in the wiki.
 
 {{< alert type="warning" >}}
 

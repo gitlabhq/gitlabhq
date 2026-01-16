@@ -109,11 +109,8 @@ the global settings. Projects do not automatically inherit changes to global pus
 
 Use these rules to validate users who make commits.
 
-{{< alert type="note" >}}
-
-These push rules apply only to commits and not [tags](tags/_index.md).
-
-{{< /alert >}}
+> [!note]
+> These push rules apply only to commits and not [tags](tags/_index.md).
 
 - **Reject unverified users**: The committer email must match one of the user's [verified email addresses](../../profile/_index.md#add-emails-to-your-user-profile) or [private commit email address](../../profile/_index.md#use-an-automatically-generated-private-commit-email).
 - **Reject inconsistent user name**: The commit author name must match the user's GitLab account name.
@@ -426,11 +423,8 @@ or write a script to update each project using the [push rules API endpoint](../
 For example, to enable **Check whether the commit author is a GitLab user** and **Do not allow users to remove Git tags with `git push`** checkboxes,
 and create a filter for allowing commits from a specific email domain only through rails console:
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ``` ruby
 Project.find_each do |p|

@@ -401,11 +401,8 @@ events:
     - setup-database
 ```
 
-{{< alert type="note" >}}
-
-This container `image` is for demonstration purposes only.
-
-{{< /alert >}}
+> [!note]
+> This container `image` is for demonstration purposes only.
 
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 

@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { formatGroupForGraphQLResolver } from '~/groups/your_work/graphql/utils';
+import { formatGroupForGraphQLResolver } from '~/vue_shared/components/groups_list/formatter';
 
 export const resolvers = (endpoint) => ({
   Query: {

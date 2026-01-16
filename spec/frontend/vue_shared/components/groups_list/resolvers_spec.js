@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { resolvers } from '~/groups/your_work/graphql/resolvers';
+import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
 import groupsQuery from '~/groups/your_work/graphql/queries/groups.query.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';

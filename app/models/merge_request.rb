@@ -2678,6 +2678,22 @@ class MergeRequest < ApplicationRecord
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
 
+  def log_approval_deletion_on_merged_or_locked_mr(source:, current_user:, cause: nil)
+    return unless Feature.enabled?(:log_merged_mr_approval_deletion, target_project)
+    return unless merged? || locked?
+
+    Gitlab::AppLogger.warn(
+      message: 'Approvals deleted on merged or locked MR',
+      source: source,
+      cause: cause,
+      merge_request_id: id,
+      merge_request_iid: iid,
+      merge_request_state: state,
+      project_id: target_project_id,
+      current_user_id: current_user&.id
+    )
+  end
+
   def reached_versions_limit?
     return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
 

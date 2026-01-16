@@ -60,11 +60,8 @@ You can access a project by using its ID instead of its name at `https://gitlab.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
-{{< alert type="note" >}}
-
-In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
 
 ## Find the Project ID
 
@@ -358,11 +355,8 @@ the deletion job instead restores the project, and the project is no longer sche
 
 When a project is marked for deletion, scheduled CI/CD pipelines stop running.
 
-{{< alert type="warning" >}}
-
-If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
-
-{{< /alert >}}
+> [!warning]
+> If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
 
 You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
 
@@ -473,11 +467,8 @@ When you unarchive a project:
 Projects that were archived as part of group archiving cannot be unarchived individually.
 You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
 
-{{< alert type="note" >}}
-
-Deployed Pages are not automatically restored. You must rerun the pipeline to restore Pages.
-
-{{< /alert >}}
+> [!note]
+> Deployed Pages are not automatically restored. You must rerun the pipeline to restore Pages.
 
 Prerequisites:
 

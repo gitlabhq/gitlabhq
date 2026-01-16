@@ -219,11 +219,8 @@ Convert a task into another item type, such as:
 - Objective
 - Key result
 
-{{< alert type="warning" >}}
-
-Changing the type might result in data loss if the target type does not support all fields from the original type.
-
-{{< /alert >}}
+> [!warning]
+> Changing the type might result in data loss if the target type does not support all fields from the original type.
 
 Prerequisites:
 
