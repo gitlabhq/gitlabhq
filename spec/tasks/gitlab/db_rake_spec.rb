@@ -448,6 +448,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
 
           it 'loads the schema, seeds all the databases and alter cell sequences range' do
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:reenable)
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:reenable)
+
             expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
 
@@ -515,6 +520,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
 
           it 'loads the schema, seeds the database but skips altering cell sequences range' do
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:reenable)
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:reenable)
+
             expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
 
@@ -545,6 +555,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
 
           it 'loads the schema, seeds all the databases but does not alter cell sequences range' do
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:reenable)
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:reenable)
+
             expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
 
@@ -569,6 +584,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
 
           it 'migrates the databases without seeding them and skip altering cell sequences range' do
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:main']).to receive(:reenable)
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:invoke).twice
+            expect(Rake::Task['gitlab:db:create_dynamic_partitions:ci']).to receive(:reenable)
+
             expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
             expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
 

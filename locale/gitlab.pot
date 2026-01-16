@@ -25291,6 +25291,9 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable %{name}"
+msgstr ""
+
 msgid "Disable 2FA"
 msgstr ""
 
@@ -60980,6 +60983,12 @@ msgstr ""
 msgid "SecurityInventoryFilter|Search projects…"
 msgstr ""
 
+msgid "SecurityInventory|%{name} applied"
+msgstr ""
+
+msgid "SecurityInventory|%{name} disabled"
+msgstr ""
+
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr ""
 
@@ -60987,6 +60996,12 @@ msgid "SecurityInventory|Advanced SAST"
 msgstr ""
 
 msgid "SecurityInventory|Advanced SAST (SAST)"
+msgstr ""
+
+msgid "SecurityInventory|An error has occurred while applying the scan profile."
+msgstr ""
+
+msgid "SecurityInventory|An error has occurred while disabling the scan profile."
 msgstr ""
 
 msgid "SecurityInventory|An error occurred while fetching subgroups and projects. Please try again."
@@ -61173,6 +61188,11 @@ msgstr ""
 
 msgid "SecurityInventory|Vulnerability count unknown"
 msgstr ""
+
+msgid "SecurityInventory|You are about to disable %{name} for %{count} item. Are you sure you want to proceed?"
+msgid_plural "SecurityInventory|You are about to disable %{name} for %{count} items. Are you sure you want to proceed?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityInventory|You're already viewing this subgroup"
 msgstr ""

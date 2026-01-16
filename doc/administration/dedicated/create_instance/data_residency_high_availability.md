@@ -101,11 +101,7 @@ The following regions are available only as secondary regions and don't support 
 | ------------------------ | ---- |
 | Asia Pacific (Hong Kong) | `ap-east-1` |
 | Asia Pacific (Melbourne) | `ap-southeast-4` |
-| Asia Pacific (Malaysia)  | `ap-southeast-5` |
-| Asia Pacific (Thailand)  | `ap-southeast-7` |
-| Canada West (Calgary)    | `ca-west-1` |
 | Europe (Spain)           | `eu-south-2` |
-| Mexico (Central)         | `mx-central-1` |
 
 Without SES support, you cannot send email notifications using the default configuration.
 To maintain email functionality in these regions,

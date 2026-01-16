@@ -64,54 +64,6 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  describe 'webUrl with ai workflow token' do
-    let_it_be(:other_project) { create(:project, :repository, :public, group: group) }
-    let_it_be(:related_item) { create(:work_item, project: other_project) }
-
-    let_it_be(:ai_workflows_oauth_token) do
-      create(:oauth_access_token, user: current_user, scopes: [:ai_workflows])
-    end
-
-    let(:items_data) { graphql_data['project']['workItems']['nodes'] }
-    let(:item1_response) { items_data.find { |item| item['id'] == item1.to_global_id.to_s } }
-    let(:linked_items_widget) { item1_response['widgets'].find { |x| x.keys == ['linkedItems'] }['linkedItems'] }
-    let(:related_item_response) { linked_items_widget['nodes'].first['workItem'] }
-
-    let(:item1_url) { Gitlab::Routing.url_helpers.project_work_item_url(project, item1) }
-    let(:related_item_url) { Gitlab::Routing.url_helpers.project_work_item_url(other_project, related_item) }
-
-    let(:fields) do
-      <<~GRAPHQL
-      nodes {
-        id
-        webUrl
-        widgets {
-          ... on WorkItemWidgetLinkedItems {
-            linkedItems {
-              nodes {
-                workItem {
-                  webUrl
-                }
-              }
-            }
-          }
-        }
-      }
-      GRAPHQL
-    end
-
-    before do
-      create(:work_item_link, source: item1, target: related_item, link_type: 'relates_to')
-    end
-
-    it 'returns webUrl' do
-      post_graphql(query, token: { oauth_access_token: ai_workflows_oauth_token })
-
-      expect(item1_response['webUrl']).to eq(item1_url)
-      expect(related_item_response['webUrl']).to eq(related_item_url)
-    end
-  end
-
   it_behaves_like 'graphql work item list request spec' do
     let_it_be(:container_build_params) { { project: project } }
     let(:work_item_node_path) { %w[project workItems nodes] }

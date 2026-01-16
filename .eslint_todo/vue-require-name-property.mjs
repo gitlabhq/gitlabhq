@@ -1850,8 +1850,6 @@ export default {
     'ee/app/assets/javascripts/security_dashboard/components/shared/filters/tool_with_vendor_filter.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/issues_badge.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/merge_request_badge.vue',
-    'ee/app/assets/javascripts/security_dashboard/components/shared/over_time_group_by.vue',
-    'ee/app/assets/javascripts/security_dashboard/components/shared/over_time_severity_filter.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/pipeline_status_badge.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/policy_violation_badge.vue',
     'ee/app/assets/javascripts/security_dashboard/components/shared/project_pipeline_status.vue',

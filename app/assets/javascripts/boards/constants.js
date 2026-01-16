@@ -101,6 +101,7 @@ export const listIssuablesQueries = {
     moveMutation: issueMoveListMutation,
     createMutation: issueCreateMutation,
     optimisticResponse: {
+      author: { id: 'gid://gitlab/User/-1', username: '', __typename: 'UserCore' },
       assignees: { nodes: [], __typename: 'UserCoreConnection' },
       confidential: false,
       closedAt: null,

@@ -550,6 +550,18 @@ You can omit **CI/CD** when the context is clear, especially after the first use
 
 Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
 
+## classic
+
+Some GitLab Duo features are non-agentic. These features should be described in the documentation
+with **(Classic)** after the feature name. For example:
+
+- GitLab Duo Chat (Classic)
+- GitLab Duo Vulnerability Resolution (Classic)
+
+You can also use a phrase that includes **classic** as lowercase. For example:
+
+- This new agentic feature is different from the classic version.
+
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
@@ -1251,8 +1263,8 @@ Do not use **Dedicated for Government** by itself. Always use **GitLab Dedicated
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.
 
-On first use on a page, use **GitLab Duo `<featurename>`**. As of Aug, 2024,
-the following are the names of GitLab Duo features:
+On first use on a page, use **GitLab Duo `<featurename>`**. As of Jan, 2026,
+the following are the names of classic GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
@@ -1274,6 +1286,9 @@ the following are the names of GitLab Duo features:
 
 Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
 without **GitLab Duo**.
+
+You can add **(Classic)** after the feature name when comparing it to an agentic version.
+For more information, see [classic](#classic).
 
 ## GitLab Duo Agent Platform
 

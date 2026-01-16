@@ -4,6 +4,10 @@
 fragment IssueNode on Issue {
   id
   iid
+  author {
+    id
+    username
+  }
   title
   referencePath: reference(full: true)
   closedAt
