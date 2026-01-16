@@ -75,12 +75,13 @@ for details on managing SSL certificates and configuring NGINX.
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../ci/environments/_index.md#web-terminals-deprecated) support requires
-  your load balancer to correctly handle WebSocket connections. When using
-  HTTP or HTTPS proxying, this means your load balancer must be configured
-  to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
-  [web terminal](integration/terminal.md) integration guide for
-  more details.
+- (*1*): Your load balancer must support WebSocket connections for features
+  like [Duo Chat (Classic)](../user/gitlab_duo_chat/_index.md), real-time label
+  updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
+  Load balancers that do not support WebSockets (for example, AWS Classic Load
+  Balancers) are not compatible with GitLab for these features. When using HTTP
+  or HTTPS proxying, your load balancer must be configured to pass through the
+  `Connection` and `Upgrade` hop-by-hop headers.
 - (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.

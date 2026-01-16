@@ -37,6 +37,10 @@ An external user counts as a billable user and consumes a license seat.
 
 ## Create an external user
 
+Prerequisites:
+
+- Administrator access.
+
 To create a new external user:
 
 1. In the upper-right corner, select **Admin**.

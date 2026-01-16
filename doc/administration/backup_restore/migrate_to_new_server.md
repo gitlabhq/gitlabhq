@@ -24,11 +24,11 @@ a non-packaged Redis instance, or non-packaged Sidekiq.
 
 Prerequisites:
 
-- Some time before your migration, consider notifying your users of upcoming
-  scheduled maintenance with a [broadcast message banner](../broadcast_messages.md).
-- Ensure your backups are complete and current. Create a complete system-level backup, or
+- A [broadcast message banner](../broadcast_messages.md) published in advance to notify your users of the upcoming migration.
+- Complete and current backups. Create a complete system-level backup, or
   take a snapshot of all servers involved in the migration, in case destructive commands
   (like `rm`) are run incorrectly.
+- Administrator access.
 
 ## Prepare the new server
 

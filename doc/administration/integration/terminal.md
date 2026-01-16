@@ -131,8 +131,13 @@ they receive a `Connection failed` message.
 
 ## Limiting WebSocket connection time
 
-By default, terminal sessions do not expire. To limit the terminal session
-lifetime in your GitLab instance:
+By default, terminal sessions do not expire.
+
+Prerequisites:
+
+- Administrator access.
+
+To limit the terminal session lifetime in your GitLab instance:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Web terminal**.

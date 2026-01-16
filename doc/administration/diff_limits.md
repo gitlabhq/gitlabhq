@@ -43,6 +43,10 @@ consumption of your instance. Keep this in mind when adjusting the maximum.
 
 {{< /alert >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To set maximum values for diff display in merge requests:
 
 1. In the upper-right corner, select **Admin**.

@@ -33,6 +33,12 @@ You must turn on [composite identity](../../../user/duo_agent_platform/composite
 so that the `@duo-developer` service account can perform actions
 on behalf of users.
 
+Prerequisites:
+
+- Administrator access.
+
+To turn on composite identity:
+
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
 1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.

@@ -20,9 +20,10 @@ your instance with an activation code.
 
 Prerequisites:
 
-- You must [purchase a subscription](https://about.gitlab.com/pricing/).
-- You must be running GitLab Enterprise Edition (EE).
-- Your instance must be connected to the internet.
+- [A subscription](https://about.gitlab.com/pricing/).
+- GitLab Enterprise Edition (EE).
+- Your instance is connected to the internet.
+- Administrator access.
 
 To activate your instance with an activation code:
 

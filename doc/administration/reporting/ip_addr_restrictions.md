@@ -28,6 +28,10 @@ unique IP addresses. Therefore, the IP addresses per user limit should take into
 
 ## Configure IP address restrictions
 
+Prerequisites:
+
+- Administrator access.
+
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Reporting**.
 1. Expand **Spam and Anti-bot Protection**.

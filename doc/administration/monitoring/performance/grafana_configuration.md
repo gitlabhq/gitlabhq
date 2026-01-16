@@ -25,6 +25,10 @@ and Grafana allows you to query the data to display graphs.
 
 ## Integrate with GitLab UI
 
+Prerequisites:
+
+- Administrator access.
+
 After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 

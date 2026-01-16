@@ -15,6 +15,10 @@ title: Customize the Help page message
 In large organizations, it is useful to have information about who to contact or where
 to go for help. You can customize and display this information on the GitLab `/help` page.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Add a help message to the Help page
 
 You can add a help message, which is shown at the top of the GitLab `/help` page (for example,

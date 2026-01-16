@@ -69,6 +69,10 @@ Notifications support these placeholders:
 
 If the user is not signed in, user-related values are empty.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Add a broadcast message
 
 To display messages to users on your GitLab instance, add a broadcast message.

@@ -17,6 +17,10 @@ description: Configure Geo sites.
 You can configure various settings for GitLab Geo sites. For more information, see
 [Geo documentation](geo/_index.md).
 
+Prerequisites:
+
+- Administrator access.
+
 On either the primary or secondary site:
 
 1. In the upper-right corner, select **Admin**.

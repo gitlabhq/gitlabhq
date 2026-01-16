@@ -73,6 +73,10 @@ However, commits are never displayed.
 
 {{< /history >}}
 
+Prerequisites:
+
+- Administrator access.
+
 To create a system hook:
 
 1. In the upper-right corner, select **Admin**.

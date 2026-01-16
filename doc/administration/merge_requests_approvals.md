@@ -35,7 +35,11 @@ The following are also affected by rules for the entire instance:
 
 ## Enable merge request approval settings for an instance
 
-To do this:
+Prerequisites:
+
+- Administrator access.
+
+To enable merge request approval settings:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Push rules**.

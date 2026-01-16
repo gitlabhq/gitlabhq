@@ -488,6 +488,10 @@ are stored.
 
 The default for the maximum size of unpacked archives per project is 100 MB.
 
+Prerequisites:
+
+- Administrator access.
+
 To change this value:
 
 1. In the upper-right corner, select **Admin**.

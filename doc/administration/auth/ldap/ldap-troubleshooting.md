@@ -189,7 +189,11 @@ may affect users with [Auditor level access](../../auditor_users.md). When
 downgrading from Premium/Ultimate, Auditor users who try to sign in
 may see the following message: `Access denied for your LDAP account`.
 
-We have a workaround, based on toggling the access level of affected users:
+The workaround is to change the access level of affected users.
+
+Prerequisites:
+
+- Administrator access.
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.

@@ -16,6 +16,12 @@ title: GitLab appearance
 
 You can update your settings to change the look and feel of your instance.
 
+## Prerequisites
+
+You must have administrator access.
+
+## Access appearance settings
+
 To open the **Appearance** settings:
 
 1. In the upper-right corner, select **Admin**.

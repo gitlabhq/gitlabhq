@@ -42,6 +42,10 @@ An auditor user counts as a billable user and consumes a license seat.
 
 ## Create an auditor user
 
+Prerequisites:
+
+- Administrator access.
+
 To create a new auditor user:
 
 1. In the upper-right corner, select **Admin**.

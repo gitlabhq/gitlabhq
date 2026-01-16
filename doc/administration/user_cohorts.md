@@ -38,6 +38,10 @@ How do we measure the activity of users? GitLab considers a user active if:
 
 ## View user cohorts
 
+Prerequisites:
+
+- Administrator access.
+
 To view user cohorts:
 
 1. In the upper-right corner, select **Admin**.

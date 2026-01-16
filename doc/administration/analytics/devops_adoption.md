@@ -45,6 +45,10 @@ before this feature becomes available.
 
 ## View DevOps adoption
 
+Prerequisites:
+
+- Administrator access.
+
 To view DevOps adoption for your instance:
 
 1. In the upper-right corner, select **Admin**.

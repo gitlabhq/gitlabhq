@@ -29,6 +29,10 @@ the security and durability of your web application.
 
 {{< /alert >}}
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Configure unauthenticated Git HTTP rate limits
 
 GitLab disables rate limits on unauthenticated Git HTTP requests by default.

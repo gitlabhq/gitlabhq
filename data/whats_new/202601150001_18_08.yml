@@ -1,0 +1,82 @@
+- name: "GitLab Duo Agent Platform now generally available"
+  description: |
+    GitLab Duo Agent Platform is now generally available, bringing agentic AI orchestration
+    across your entire software development lifecycle. The platform provides a central
+    AI Catalog where teams can discover, manage, and share agents and flows. Built-in
+    foundational agents like Planner, Security Analyst, and Data Analyst handle structured
+    work at key decision points, while customizable flows automate multi-step tasks from
+    issue to merge request, CI/CD migration, and code reviews. GitLab Premium and Ultimate
+    users can start using the Agent Platform today with promotional
+    [GitLab Credits](https://docs.gitlab.com/subscriptions/gitlab_credits/).
+  stage: AI-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
+  image_url: https://img.youtube.com/vi/UD8vAAglkY0/hqdefault.jpg
+  published_at: 2026-01-15
+  release: 18.8
+
+- name: "GitLab Duo Planner Agent now generally available"
+  description: |
+    The Planner Agent is now generally available. Use the Planner Agent to create, edit,
+    and analyze GitLab work items. Instead of manually chasing updates or prioritizing work,
+    the Planner Agent helps you analyze backlogs, apply frameworks like RICE or MoSCoW,
+    and surface what needs your attention. Provide your feedback in [issue 583008](https://gitlab.com/gitlab-org/gitlab/-/work_items/583008).
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/planner/
+  image_url: https://img.youtube.com/vi/k2-ZsMRX-YI/hqdefault.jpg
+  published_at: 2026-01-15
+  release: 18.8
+
+- name: "GitLab Duo Security Analyst Agent now generally available"
+  description: |
+    The GitLab Duo Security Analyst Agent,
+    [introduced as beta in GitLab 18.5](https://about.gitlab.com/releases/2025/10/16/gitlab-18-5-released/#gitlab-security-analyst-agent-for-duo-agent-catalog-beta),
+    is now generally available. The Security Analyst Agent enables engineers to manage
+    vulnerabilities through natural language commands in GitLab Duo Agentic Chat. Security
+    teams can triage, assess, and remediate vulnerabilities in Chat conversations. As a
+    foundational agent, it is available by default with no manual setup required.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/agents/foundational_agents/security_analyst_agent/
+  image_url: https://about.gitlab.com/images/18_8/security_analyst_agent.png
+  published_at: 2026-01-15
+  release: 18.8
+
+- name: "Auto-dismiss irrelevant vulnerabilities with vulnerability management policies"
+  description: |
+    Security teams can now automatically dismiss vulnerabilities that don't apply to their
+    organization using vulnerability management policies. Create policies to auto-dismiss
+    vulnerabilities based on file path, directory, or identifier (CVE, CWE, or OWASP).
+    Auto-dismissed vulnerabilities appear in the merge request's security widget with an
+    **Auto-dismissed** label and are tracked in the vulnerability report for audit purposes.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/policies/vulnerability_management_policy/#auto-dismiss-policies
+  image_url: https://about.gitlab.com/images/18_8/auto-dismiss.png
+  published_at: 2026-01-15
+  release: 18.8
+
+- name: "GitLab Duo Agent Platform Prompt Library"
+  description: |
+    Browse the Prompt Library to find ready-to-use prompts for the GitLab Duo
+    Agent Platform across the entire software lifecycle.
+    The library includes prompts organized by category, complexity, and DevSecOps
+    stage, covering use cases from code review and debugging to security analysis
+    and architecture planning.
+  stage: AI-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://about.gitlab.com/gitlab-duo/prompt-library/
+  image_url: https://res.cloudinary.com/about-gitlab-com/image/upload/v1768499345/mc9emd5szlpv11t7ntzg.png
+  published_at: 2026-01-15
+  release: 18.8
