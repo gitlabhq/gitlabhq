@@ -9,6 +9,7 @@ module Types
     field :web_url,
       GraphQL::Types::String,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'URL of the object.'
 
     field :name,

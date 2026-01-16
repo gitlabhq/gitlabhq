@@ -615,7 +615,6 @@ read_release_evidence
 read_repository_graphs
 read_requirement
 read_resource_access_tokens
-read_resource_group
 read_resource_iteration_event
 read_resource_label_event
 read_resource_milestone_event
@@ -792,7 +791,6 @@ update_project_secrets
 update_protected_tags
 update_release
 update_requirement
-update_resource_group
 update_runner
 update_runners_registration_token
 update_saved_replies

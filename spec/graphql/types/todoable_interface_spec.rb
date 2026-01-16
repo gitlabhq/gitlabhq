@@ -34,4 +34,22 @@ RSpec.describe Types::TodoableInterface, feature_category: :notifications do
       expect { described_class.resolve_type(pipeline, {}) }.to raise_error("Unknown GraphQL type for #{pipeline}")
     end
   end
+
+  describe 'fields scope' do
+    describe 'web_url' do
+      let(:scopes) { described_class.fields['webUrl'].instance_variable_get(:@scopes) }
+
+      it "includes expected scopes for the web_url field" do
+        expect(scopes).to contain_exactly(:api, :read_api, :ai_workflows)
+      end
+    end
+
+    describe 'name' do
+      let(:scopes) { described_class.fields['name'].instance_variable_get(:@scopes) }
+
+      it "includes expected scopes for the name field" do
+        expect(scopes).to contain_exactly(:api, :read_api)
+      end
+    end
+  end
 end

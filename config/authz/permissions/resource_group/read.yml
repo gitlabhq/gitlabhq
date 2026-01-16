@@ -1,0 +1,5 @@
+---
+name: read_resource_group
+description: Grants the ability to read CI resource groups
+boundaries:
+  - project

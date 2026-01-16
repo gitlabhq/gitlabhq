@@ -33,6 +33,7 @@ module API
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_resource_group, boundary_type: :project
         get ':id/resource_groups' do
           authorize! :read_resource_group, user_project
 
@@ -50,6 +51,7 @@ module API
         params do
           requires :key, type: String, desc: 'The key of the resource group'
         end
+        route_setting :authorization, permissions: :read_resource_group, boundary_type: :project
         get ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
 
@@ -67,6 +69,7 @@ module API
         params do
           requires :key, type: String, desc: 'The key of the resource group'
         end
+        route_setting :authorization, permissions: [:read_resource_group, :read_job], boundary_type: :project
         get ':id/resource_groups/:key/current_job', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
           authorize! :read_build, user_project
@@ -91,6 +94,7 @@ module API
 
           use :pagination
         end
+        route_setting :authorization, permissions: [:read_resource_group, :read_job], boundary_type: :project
         get ':id/resource_groups/:key/upcoming_jobs', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
           authorize! :read_build, user_project
@@ -120,6 +124,7 @@ module API
             desc: 'The process mode of the resource group',
             values: ::Ci::ResourceGroup.process_modes.keys
         end
+        route_setting :authorization, permissions: :update_resource_group, boundary_type: :project
         put ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :update_resource_group, resource_group
 
