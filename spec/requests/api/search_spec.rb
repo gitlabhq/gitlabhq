@@ -169,7 +169,9 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
     end
 
     describe 'include_archived filter' do
-      let_it_be(:archived_project) { create(:project, :public, :archived, name: 'archived project', group: group) }
+      let_it_be(:archived_project) do
+        create(:project, :public, :archived, name: 'archived project', group: group)
+      end
 
       it 'excludes archived projects by default' do
         get api(endpoint, user), params: { scope: 'projects', search: 'project' }
@@ -185,20 +187,6 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         expect(response).to have_gitlab_http_status(:success)
         project_ids = json_response.pluck('id')
         expect(project_ids).to include(archived_project.id)
-      end
-
-      context 'when search_api_fork_archived_filters feature flag is disabled' do
-        before do
-          stub_feature_flags(search_api_fork_archived_filters: false)
-        end
-
-        it 'ignores include_archived parameter' do
-          get api(endpoint, user), params: { scope: 'projects', search: 'project', include_archived: true }
-
-          expect(response).to have_gitlab_http_status(:success)
-          project_ids = json_response.pluck('id')
-          expect(project_ids).not_to include(archived_project.id)
-        end
       end
     end
 

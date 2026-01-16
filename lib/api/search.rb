@@ -54,15 +54,8 @@ module API
         end
       end
 
-      # temporary method to allow using a feature flag
-      def search_params_keys
-        Helpers::SearchHelpers.search_param_keys.tap do |keys|
-          keys << :include_archived if ::Feature.enabled?(:search_api_fork_archived_filters, current_user)
-        end
-      end
-
       def search_params
-        keys = search_params_keys
+        keys = Helpers::SearchHelpers.search_param_keys
         params_hash = keys.filter_map do |key|
           [key, params[key]] if params.key?(key)
         end.to_h
@@ -174,7 +167,7 @@ module API
 
       params :search_params_archived_filter do
         optional :include_archived, type: Boolean, default: false,
-          desc: 'Includes archived projects in the search. Gated by the :search_api_fork_archived_filters feature flag'
+          desc: 'Includes archived projects in the search. Introduced in GitLab 18.9.'
       end
 
       params :search_params_common_ee do

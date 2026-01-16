@@ -11,6 +11,8 @@ title: Fix CI/CD Pipeline Flow
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
+This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
+
 {{< /details >}}
 
 {{< history >}}

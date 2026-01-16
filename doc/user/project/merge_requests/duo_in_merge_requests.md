@@ -130,6 +130,8 @@ Data usage: When you use this feature, the following data is sent to the large l
 - Add-on: GitLab Duo Core or Pro
 - Offering: GitLab.com, GitLab Self-Managed
 
+This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
+
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}

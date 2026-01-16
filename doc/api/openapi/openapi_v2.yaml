@@ -9092,8 +9092,8 @@ paths:
         required: false
       - in: query
         name: include_archived
-        description: Includes archived projects in the search. Gated by the :search_api_fork_archived_filters
-          feature flag
+        description: Includes archived projects in the search. Introduced in GitLab
+          18.9.
         type: boolean
         default: false
         required: false
@@ -9109,7 +9109,7 @@ paths:
       - in: query
         name: exclude_forks
         description: Excludes forked projects in the search. Available with exact
-          code search. Gated by the :search_api_fork_archived_filters feature flag
+          code search. Introduced in GitLab 18.9.
         type: boolean
         default: true
         required: false
@@ -45802,8 +45802,8 @@ paths:
         required: false
       - in: query
         name: include_archived
-        description: Includes archived projects in the search. Gated by the :search_api_fork_archived_filters
-          feature flag
+        description: Includes archived projects in the search. Introduced in GitLab
+          18.9.
         type: boolean
         default: false
         required: false
@@ -45819,7 +45819,7 @@ paths:
       - in: query
         name: exclude_forks
         description: Excludes forked projects in the search. Available with exact
-          code search. Gated by the :search_api_fork_archived_filters feature flag
+          code search. Introduced in GitLab 18.9.
         type: boolean
         default: true
         required: false

@@ -506,63 +506,29 @@ This action is also available on other list pages.
 
 {{< history >}}
 
-- Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
-- Support for transferring projects with container images within the same top-level namespace [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
 
 {{< /history >}}
 
-Transfer a project to move it to a different group.
-A project transfer includes:
+Transfer a project to move it to a different group. Project transfers
+move individual projects between any namespace in the same GitLab
+instance.
 
-- Project components:
-  - Issues
-  - Merge requests
-  - Pipelines
-  - Dashboards
-- Project members:
-  - Direct members
-  - Membership invitations
+You can transfer a project from:
 
-   {{< alert type="note" >}}
-
-   Members with [inherited membership](members/_index.md#membership-types)
-   in the project lose access unless they are also members of the target group.
-   The project inherits new member permissions from the group you transfer it to.
-
-   {{< /alert >}}
-
-The project's [path also changes](repository/_index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
-
-New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
-
-If a project contains issues assigned to an epic, and that epic is not available in the target
-group, GitLab creates a copy of the epic in the target group. When you transfer multiple projects
-with issues assigned to the same epic, GitLab creates a separate copy of that epic in the target
-group for each project.
-
-{{< alert type="warning" >}}
-
-Errors during the transfer process may lead to data loss of the project's components or dependencies of end users.
-
-{{< /alert >}}
+- A personal namespace to a group
+- A group to another group
+- A group to a personal namespace
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../group/_index.md#create-a-group) you are transferring to.
-- You must be the Owner of the project you transfer.
-- The group must allow creation of new projects.
-- For projects where the container registry is enabled:
-  - On GitLab.com: You can only transfer projects within the same top-level namespace.
-    Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
-  - On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
-- The project must not have a security policy.
-  If a security policy is assigned to the project, it is automatically unassigned during the transfer.
-- If the root namespace changes, you must remove npm packages that follow the [naming convention](../packages/npm_registry/_index.md#naming-convention) from the project.
-  After you transfer the project you can either:
+- The Maintainer or Owner role for the target group.
+- The Owner role of the project you want to transfer.
+- Enable project creation for the target group.
 
-  - Update the package scope with the new root namespace path, and publish it again to the project.
-  - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
-    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../packages/npm_registry/_index.md#install-from-an-instance).
+> [!note]
+> You cannot transfer a project if it's archived or pending deletion.
 
 To transfer a project:
 
@@ -573,12 +539,71 @@ To transfer a project:
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [repository path changes](repository/_index.md#repository-path-changes).
+You are directed to the new project page and the previous
+URL is redirected to the new project URL.
 
-{{< alert type="note" >}}
-Administrators can also transfer projects from the [Admin area](../../administration/admin_area.md#administering-projects).
+After you transfer a project, make sure you:
 
-{{< /alert >}}
+- Update local repository remotes to the new URLs.
+- Verify project member access and permissions.
+- Update package configurations and republish if necessary.
+- Test CI/CD pipelines and integrations.
+- Review and reassign security policies if necessary.
+
+Administrators can transfer projects from the [Admin area](../../administration/admin_area.md#administering-projects).
+
+### What data gets transferred
+
+A project transfer includes:
+
+- Project components:
+  - Issues, merge requests, and issue threads
+  - CI/CD pipelines and configurations
+  - Dashboards and wikis
+  - Repository code and Git history
+- Project members:
+  - Direct project members and their roles
+  - Pending membership invitations
+- Automated adjustments:
+  - New project labels are created if matching group labels do not exist
+  - Epic copies are created in the target group if necessary, with separate copies per project
+    - When you transfer multiple projects
+with issues assigned to the same epic, separate copies of that epic are created in the target
+group for each project.
+
+> [!warning]
+> Errors during the transfer process might cause data loss of project components or dependencies of end users.
+
+### Known issues
+
+When transferring a project, keep the
+following restrictions in mind.
+
+For projects with inherited memberships:
+
+- Members with [inherited membership](members/_index.md#membership-types)
+in the project lose access unless they are also members of the target group.
+- The project inherits new member permissions from the target group.
+
+For projects where the container registry is enabled:
+
+- On GitLab.com: You can only transfer projects within the same top-level group.
+- On GitLab Self-Managed: The project must not contain [container images](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
+- Projects with more than 1,000 container repositories cannot be transferred. For more information, see [Move or rename container registry repositories](../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
+
+For projects that use the package registry:
+
+- If the root namespace changes, you must remove npm packages that follow the [naming convention](../packages/npm_registry/_index.md#naming-convention) from the project. After you transfer the project, you can either:
+  - Update the package scope with the new root namespace path, and publish it again to the project.
+  - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention. If you republish the package without updating the root namespace path, it is not available for the [instance endpoint](../packages/npm_registry/_index.md#install-from-an-instance).
+
+For projects with a security policy:
+
+- The project must not have a security policy. If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+
+When you transfer a project:
+
+- The project [path changes](repository/_index.md#repository-path-changes). Make sure you change the URLs to the project components where necessary.
 
 ### Transfer a GitLab.com project to a different subscription tier
 

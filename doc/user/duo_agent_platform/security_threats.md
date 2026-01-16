@@ -6,14 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Security threats in agentic systems
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 Common security threats can affect agentic systems.
 To improve your security posture, you should familiarize yourself with these threats and follow
 security best practices when deploying and using agents and flows.

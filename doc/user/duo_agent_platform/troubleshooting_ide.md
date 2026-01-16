@@ -5,14 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting the Agent Platform in your IDE
 ---
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 If you are working with the GitLab Duo Agent Platform in your IDE,
 you might encounter the following issues.
 

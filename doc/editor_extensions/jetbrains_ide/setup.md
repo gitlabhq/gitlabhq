@@ -67,7 +67,7 @@ Prerequisites:
 
 - You have the GitLab Duo add-on and a seat assigned.
 - You open a project that is linked to a remote repository on GitLab, or you set a
-  [default GitLab Duo namespace](../../user/gitlab_duo/model_selection.md#assign-a-default-gitlab-duo-namespace).
+  [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To enable GitLab Duo Chat and GitLab Duo Code Suggestions, review the prerequisites and
 setup steps for each feature:

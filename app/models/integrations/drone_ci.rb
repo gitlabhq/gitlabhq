@@ -42,10 +42,6 @@ module Integrations
       end
     end
 
-    def allow_target_ci?
-      true
-    end
-
     def self.supported_events
       %w[push merge_request tag_push]
     end

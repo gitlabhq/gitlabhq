@@ -221,6 +221,21 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION clusters_kubernetes_namespaces_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.organization_id, NEW.group_id, NEW.sharding_project_id) != 1 THEN
+    SELECT "organization_id", "group_id", "project_id"
+    INTO NEW."organization_id", NEW."group_id", NEW."sharding_project_id"
+    FROM "clusters"
+    WHERE "clusters"."id" = NEW."cluster_id";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION custom_dashboard_search_vector_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16861,7 +16876,10 @@ CREATE TABLE clusters_kubernetes_namespaces (
     encrypted_service_account_token_iv character varying,
     namespace character varying NOT NULL,
     service_account_name character varying,
-    environment_id bigint
+    environment_id bigint,
+    organization_id bigint,
+    group_id bigint,
+    sharding_project_id bigint
 );
 
 CREATE SEQUENCE clusters_kubernetes_namespaces_id_seq
@@ -29930,7 +29948,6 @@ CREATE TABLE user_preferences (
     duo_default_namespace_id bigint,
     policy_advanced_editor boolean DEFAULT false NOT NULL,
     early_access_studio_participant boolean DEFAULT false NOT NULL,
-    new_ui_enabled boolean,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -36293,6 +36310,9 @@ ALTER TABLE note_metadata
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
+ALTER TABLE clusters_kubernetes_namespaces
+    ADD CONSTRAINT check_8556b17a2a CHECK ((num_nonnulls(group_id, organization_id, sharding_project_id) = 1)) NOT VALID;
+
 ALTER TABLE award_emoji
     ADD CONSTRAINT check_8ef14b7067 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
 
@@ -41264,6 +41284,12 @@ CREATE INDEX idx_ci_runner_taggings_instance_type_on_runner_id_and_type ON ci_ru
 CREATE UNIQUE INDEX idx_ci_runner_taggings_proj_type_on_tag_id_runner_id_and_type ON ci_runner_taggings_project_type USING btree (tag_id, runner_id, runner_type);
 
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
+
+CREATE INDEX idx_clusters_kubernetes_namespaces_on_group_id ON clusters_kubernetes_namespaces USING btree (group_id);
+
+CREATE INDEX idx_clusters_kubernetes_namespaces_on_organization_id ON clusters_kubernetes_namespaces USING btree (organization_id);
+
+CREATE INDEX idx_clusters_kubernetes_namespaces_on_sharding_project_id ON clusters_kubernetes_namespaces USING btree (sharding_project_id);
 
 CREATE INDEX idx_compliance_requirements_controls_on_namespace_id ON compliance_requirements_controls USING btree (namespace_id);
 
@@ -51475,6 +51501,8 @@ CREATE TRIGGER trigger_cfbec3f07e2b BEFORE INSERT OR UPDATE ON deployment_merge_
 
 CREATE TRIGGER trigger_cleanup_pipeline_iid_after_delete AFTER DELETE ON p_ci_pipelines FOR EACH ROW EXECUTE FUNCTION cleanup_pipeline_iid_after_delete();
 
+CREATE TRIGGER trigger_clusters_kubernetes_namespaces_sharding_key BEFORE INSERT OR UPDATE ON clusters_kubernetes_namespaces FOR EACH ROW EXECUTE FUNCTION clusters_kubernetes_namespaces_sharding_key();
+
 CREATE TRIGGER trigger_d32ff9d5c63d BEFORE INSERT OR UPDATE ON bulk_import_export_upload_uploads FOR EACH ROW EXECUTE FUNCTION trigger_d32ff9d5c63d();
 
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
@@ -52409,6 +52437,9 @@ ALTER TABLE ONLY alert_management_alert_assignees
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY clusters_kubernetes_namespaces
+    ADD CONSTRAINT fk_41cea9ce28 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT fk_4275fbb1d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -53207,6 +53238,9 @@ ALTER TABLE ONLY packages_debian_group_architectures
 ALTER TABLE ONLY secret_detection_token_statuses
     ADD CONSTRAINT fk_928017ddbc FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY clusters_kubernetes_namespaces
+    ADD CONSTRAINT fk_9329325324 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT fk_933bdff476 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -53710,6 +53744,9 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY sbom_graph_paths
     ADD CONSTRAINT fk_c4c7d16f3e FOREIGN KEY (ancestor_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY clusters_kubernetes_namespaces
+    ADD CONSTRAINT fk_c4feab64ff FOREIGN KEY (sharding_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_repository_states
     ADD CONSTRAINT fk_c558ca51b8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

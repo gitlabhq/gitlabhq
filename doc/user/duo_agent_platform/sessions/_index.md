@@ -11,6 +11,8 @@ title: Sessions
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
+This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
+
 {{< /details >}}
 
 Sessions show the status and execution data for the agents and flows you've run.

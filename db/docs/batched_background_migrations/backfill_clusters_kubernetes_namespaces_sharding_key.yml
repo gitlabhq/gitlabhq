@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillClustersKubernetesNamespacesShardingKey
+description: Backfill sharding key columns for clusters_kubernetes_namespaces
+feature_category: deployment_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216886
+milestone: '18.9'
+queued_migration_version: 20260108175623
+finalized_by: # version of the migration that finalized this BBM

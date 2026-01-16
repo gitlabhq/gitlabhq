@@ -11,6 +11,8 @@ title: Custom agents
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
+This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
+
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
