@@ -5,7 +5,7 @@ module Resolvers
     type Types::LabelType.connection_type, null: true
 
     def resolve
-      bulk_load_labels
+      handle_bulk_loading_labels
     end
 
     def object
@@ -19,7 +19,11 @@ module Resolvers
 
     private
 
-    def bulk_load_labels
+    def handle_bulk_loading_labels
+      bulk_load_labels_for_object(object)
+    end
+
+    def bulk_load_labels_for_object(object)
       BatchLoader::GraphQL.for(object.id).batch(key: object.class.name, cache: false) do |ids, loader, _args|
         labels = Label.for_targets(object.class.id_in(ids)).group_by(&:target_id)
 

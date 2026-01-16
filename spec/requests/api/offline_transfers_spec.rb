@@ -30,7 +30,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       }
     end
 
-    let(:minio_credentials) do
+    let(:s3_compatible_credentials) do
       {
         'aws_access_key_id' => 'minio-user-access-key',
         'aws_secret_access_key' => 'minio-secret-access-key',
@@ -142,9 +142,9 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:path_style_default) { false }
     end
 
-    it_behaves_like 'starting a new export', :minio do
-      let(:configuration_key) { :minio_configuration }
-      let(:credentials) { minio_credentials }
+    it_behaves_like 'starting a new export', :s3_compatible do
+      let(:configuration_key) { :s3_compatible_configuration }
+      let(:credentials) { s3_compatible_credentials }
       let(:path_style_default) { true }
     end
 
@@ -166,7 +166,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
           bucket: bucket,
           source_hostname: source_hostname,
           aws_s3_configuration: aws_s3_credentials,
-          minio_configuration: minio_credentials,
+          s3_compatible_configuration: s3_compatible_credentials,
           entities: entity_params
         }
       end

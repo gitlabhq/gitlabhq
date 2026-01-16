@@ -8,13 +8,7 @@ class FinalizeBackfillGoogleInstanceAuditEventDestinations < Gitlab::Database::M
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillGoogleInstanceAuditEventDestinations',
-      table_name: :audit_events_instance_google_cloud_logging_configurations,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op
   end
 
   def down

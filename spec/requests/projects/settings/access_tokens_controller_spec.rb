@@ -8,6 +8,9 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   let_it_be(:resource) { create(:project, group: group, maintainers: user) }
   let_it_be(:access_token_user) { create(:user, :project_bot, maintainer_of: resource) }
 
+  let_it_be(:another_resource) { create(:project, group: create(:group)) }
+  let_it_be(:access_token_user_from_another_resource) { create(:user, :project_bot, maintainer_of: another_resource) }
+
   before do
     sign_in(user)
   end

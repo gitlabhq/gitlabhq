@@ -1176,15 +1176,33 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           "response-content-disposition=attachment%3B%20filename%3D%22#{package_file.file_name}"
         end
 
+        let(:content_type_param) { 'response-content-type=application%2Fgzip' }
+
         before do
           stub_package_file_object_storage
         end
 
-        it 'includes response-content-disposition and filename in the redirect file URL' do
+        it 'includes response-content-disposition, response-content-type and filename in the redirect file URL' do
           download
 
-          expect(response.parsed_body).to include(disposition_param)
+          expect(response.parsed_body).to include(disposition_param, content_type_param)
           expect(response).to have_gitlab_http_status(:redirect)
+        end
+
+        context 'when feature :packages_generic_package_content_type_allowlist is disabled' do
+          before do
+            stub_feature_flags(packages_generic_package_content_type_allowlist: false)
+          end
+
+          it 'includes disposition_param URL but not content_type param in the redirect file', :aggregate_failures do
+            download
+
+            expect(response).to have_gitlab_http_status(:redirect)
+
+            parsed_body = response.parsed_body
+            expect(parsed_body).to include(disposition_param)
+            expect(parsed_body).not_to include(content_type_param)
+          end
         end
       end
 
@@ -1199,7 +1217,8 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             allowed_endpoints: [],
             response_headers: {
               'Content-Disposition' => disposition_header,
-              'X-Checksum-SHA256' => package_file.file_sha256
+              'X-Checksum-SHA256' => package_file.file_sha256,
+              'Content-Type' => 'application/gzip'
             },
             ssrf_filter: true
           }
@@ -1209,10 +1228,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           stub_package_file_object_storage(proxy_download: true)
         end
 
-        it 'sends a file with response-content-disposition, filename, and X-Checksum-SHA256 header' do
+        it 'sends a file with expected headers' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
-            .with(instance_of(String), expected_headers)
-            .and_call_original
+            .with(instance_of(String), expected_headers).and_call_original
 
           download
 
@@ -1220,6 +1238,33 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'package registry SSRF protection'
+
+        context 'when feature :packages_generic_package_content_type_allowlist is disabled' do
+          let(:expected_headers) do
+            {
+              allow_localhost: true,
+              allowed_endpoints: [],
+              response_headers: {
+                'Content-Disposition' => disposition_header,
+                'X-Checksum-SHA256' => package_file.file_sha256
+              },
+              ssrf_filter: true
+            }
+          end
+
+          before do
+            stub_feature_flags(packages_generic_package_content_type_allowlist: false)
+          end
+
+          it 'sends a file with response-content-disposition and filename' do
+            expect(::Gitlab::Workhorse).to receive(:send_url)
+              .with(instance_of(String), expected_headers).and_call_original
+
+            download
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
     end
 

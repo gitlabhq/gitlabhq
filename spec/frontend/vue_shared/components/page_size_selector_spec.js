@@ -5,9 +5,9 @@ import PageSizeSelector, { PAGE_SIZES } from '~/vue_shared/components/page_size_
 describe('Page size selector component', () => {
   let wrapper;
 
-  const createWrapper = ({ pageSize = 20, excludeLargePageSize } = {}) => {
+  const createWrapper = ({ pageSize = 20, excludePageSizes = [] } = {}) => {
     wrapper = shallowMount(PageSizeSelector, {
-      propsData: { value: pageSize, excludeLargePageSize },
+      propsData: { value: pageSize, excludePageSizes },
     });
   };
 
@@ -38,17 +38,19 @@ describe('Page size selector component', () => {
     });
   });
 
-  describe('when excludeLargePageSize is true', () => {
-    beforeEach(() => {
-      createWrapper({ excludeLargePageSize: true });
-    });
+  describe('when excludePageSizes is set', () => {
+    it.each([
+      [100, 20],
+      [50, 20],
+      [20, 100],
+    ])('does not show page size %s item', (excludedPageSize, selectedPageSize) => {
+      createWrapper({ excludePageSizes: [excludedPageSize], pageSize: selectedPageSize });
 
-    it('does not show page size 100 item', () => {
       expect(
         findListbox()
           .props('items')
           .map((option) => option.value),
-      ).toMatchObject([20, 50]);
+      ).not.toContain(excludedPageSize);
     });
   });
 });

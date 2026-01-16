@@ -22,10 +22,6 @@ module Mutations
       authorize :admin_label
 
       def resolve(id:, **args)
-        if args.key?(:archived) && Feature.disabled?(:labels_archive, :instance)
-          raise_resource_not_available_error!("'labels_archive' feature flag is disabled")
-        end
-
         label = Gitlab::Graphql::Lazy.force(find_object(id))
         raise_resource_not_available_error! unless label
 
@@ -34,6 +30,11 @@ module Mutations
         end
 
         authorize!(label)
+
+        group_actor = label.group || label.project.group
+        if args.key?(:archived) && Feature.disabled?(:labels_archive, group_actor)
+          raise_resource_not_available_error!("'labels_archive' feature flag is disabled")
+        end
 
         updated_label = ::Labels::UpdateService.new(args).execute(label)
 

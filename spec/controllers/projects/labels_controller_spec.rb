@@ -386,6 +386,12 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         it_behaves_like 'allows setting lock_on_merge'
       end
     end
+
+    it_behaves_like 'updating archived status' do
+      let_it_be_with_reload(:label) { create(:label, project: project) }
+      let(:update_params) { { namespace_id: project.namespace, project_id: project, id: label.to_param } }
+      let(:expected_redirect_path) { project_labels_path(project) }
+    end
   end
 
   describe 'DELETE #destroy' do

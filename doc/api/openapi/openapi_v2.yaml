@@ -70734,7 +70734,7 @@ definitions:
         - aws_access_key_id
         - aws_secret_access_key
         - region
-      minio_configuration:
+      s3_compatible_configuration:
         type: object
         description: MinIO or other S3-compatible object storage configuration
         properties:

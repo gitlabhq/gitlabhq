@@ -20,8 +20,8 @@ FactoryBot.define do
       end
     end
 
-    trait :minio do
-      provider { :minio }
+    trait :s3_compatible do
+      provider { :s3_compatible }
       object_storage_credentials do
         {
           aws_access_key_id: 'minio-user-access-key',

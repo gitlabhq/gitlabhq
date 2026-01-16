@@ -21960,9 +21960,6 @@ msgstr ""
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
-msgid "DORA4Metrics|DORA metrics have moved to %{dashboardsLinkStart}Analytics dashboards%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}DORA metrics%{doraMetricsLinkEnd}."
-msgstr ""
-
 msgid "DORA4Metrics|Deployment frequency"
 msgstr ""
 
@@ -22023,9 +22020,6 @@ msgid "DORA4Metrics|Lead time for changes (median days)"
 msgstr ""
 
 msgid "DORA4Metrics|Learn more"
-msgstr ""
-
-msgid "DORA4Metrics|Looking for DORA metrics?"
 msgstr ""
 
 msgid "DORA4Metrics|Low"

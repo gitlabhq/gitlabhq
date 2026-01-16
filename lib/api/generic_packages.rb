@@ -153,8 +153,12 @@ module API
 
             # Prepare extra response headers including checksum
             extra_response_headers = { SHA256_CHECKSUM_HEADER => package_file.file_sha256 }.compact_blank
-
-            present_package_file!(package_file, content_disposition: :attachment, extra_response_headers: extra_response_headers)
+            present_package_file!(
+              package_file,
+              content_disposition: :attachment,
+              content_type: determine_content_type(package_file, project),
+              extra_response_headers: extra_response_headers
+            )
           end
         end
       end
@@ -181,6 +185,14 @@ module API
       def encoded_file_name
         file_name = [declared_params[:path], declared_params[:file_name]].compact.join('/')
         declared_params[:path].present? ? URI.encode_uri_component(file_name) : file_name
+      end
+
+      def determine_content_type(package_file, project)
+        return unless Feature.enabled?(:packages_generic_package_content_type_allowlist, project)
+
+        content_type = ::Gitlab::Utils::MimeType.from_filename(package_file.file_name)
+
+        ::Gitlab::ContentTypes.sanitize_content_type(content_type)
       end
     end
   end

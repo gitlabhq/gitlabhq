@@ -64,7 +64,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :expired_after, ->(date) { expired.where(arel_table[:expires_at].gteq(date)) }
   scope :expires_before, ->(date) { where(arel_table[:expires_at].lt(date)) }
   scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
-  scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
+  scope :inactive, -> { revoked.or(expired) }
   scope :last_used_before_or_unused, ->(date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }

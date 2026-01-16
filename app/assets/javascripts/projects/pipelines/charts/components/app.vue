@@ -1,10 +1,8 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import MigrationAlert from 'ee_component/analytics/dora/components/migration_alert.vue';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelinesDashboard from './pipelines_dashboard.vue';
 import PipelinesDashboardClickhouse from './pipelines_dashboard_clickhouse.vue';
 
@@ -15,14 +13,9 @@ export default {
   components: {
     GlTabs,
     GlTab,
-    MigrationAlert,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
+  mixins: [InternalEvents.mixin()],
   inject: {
-    projectPath: {
-      type: String,
-      default: '',
-    },
     shouldRenderQualitySummary: {
       type: Boolean,
       default: false,
@@ -84,8 +77,6 @@ export default {
 </script>
 <template>
   <div>
-    <migration-alert :namespace-path="projectPath" is-project />
-
     <gl-tabs v-if="tabs.length > 1" :value="activeTabIndex" @input="onTabInput">
       <gl-tab
         v-for="tab in tabs"

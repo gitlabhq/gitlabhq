@@ -105,8 +105,8 @@ module Users
       pipeline_new_inputs_adoption_banner: 101,
       pipeline_schedules_inputs_adoption_banner: 102,
       product_usage_data_collection_changes: 103,
-      dora_dashboard_migration_group: 104,
-      dora_dashboard_migration_project: 105,
+      # 104 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
+      # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       # 107 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       explore_duo_core_banner: 108, # EE-only

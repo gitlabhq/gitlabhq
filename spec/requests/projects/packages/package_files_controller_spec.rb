@@ -10,7 +10,7 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
   let(:package_file) { create(:package_file, package: package, file_name: filename) }
 
   describe 'GET download' do
-    subject do
+    subject(:download) do
       get download_namespace_project_package_file_url(
         id: package_file.id,
         namespace_id: project.namespace,
@@ -19,10 +19,30 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
     end
 
     it 'sends the package file' do
-      subject
+      download
 
       expect(response.headers['Content-Disposition'])
         .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
+    end
+
+    context 'when package is generic' do
+      it 'sanitize content type' do
+        expect(Gitlab::ContentTypes).to receive(:sanitize_content_type).and_call_original
+
+        download
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(packages_generic_package_content_type_allowlist: false)
+        end
+
+        it 'does not sanitize content type' do
+          expect(Gitlab::ContentTypes).not_to receive(:sanitize_content_type).and_call_original
+
+          download
+        end
+      end
     end
 
     context 'with remote object storage' do
@@ -41,7 +61,7 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
         end
 
         it 'send the correct headers' do
-          subject
+          download
 
           command, encoded_params = response.headers[::Gitlab::Workhorse::SEND_DATA_HEADER].split(':')
           params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
@@ -69,7 +89,7 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
       let(:filename) { 'dir%2Ffile.zip' }
 
       it 'sends the package file only with the last component of the name' do
-        subject
+        download
 
         expect(response.headers['Content-Disposition'])
           .to eq(%(attachment; filename="file.zip"; filename*=UTF-8''file.zip))

@@ -280,6 +280,7 @@ To delete a **group** label:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4233) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `labels_archive`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211744) flag `labels_archive` so it can be turned on and off for a group in GitLab 18.7.
 
 {{< /history >}}
 

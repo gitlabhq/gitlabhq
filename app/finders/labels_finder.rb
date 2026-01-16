@@ -25,7 +25,7 @@ class LabelsFinder < UnionFinder
     items = by_subscription(items)
     items = by_search(items)
     items = by_locked_labels(items)
-    items = by_archived(items) if Feature.enabled?(:labels_archive, :instance)
+    items = by_archived(items)
 
     items = items.with_preloaded_container if @preload_parent_association
     sort(items)
@@ -95,6 +95,9 @@ class LabelsFinder < UnionFinder
   end
 
   def by_archived(labels)
+    group_actor = group? ? group : project&.group
+
+    return labels unless Feature.enabled?(:labels_archive, group_actor)
     return labels unless filter_by_archived?
 
     # When called from GraphQL, :archived will be boolean.

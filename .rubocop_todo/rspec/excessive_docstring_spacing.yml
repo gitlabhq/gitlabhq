@@ -5,7 +5,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'ee/spec/controllers/ee/groups/usage_quotas_controller_spec.rb'
     - 'ee/spec/features/projects_spec.rb'
     - 'ee/spec/features/protected_branches_spec.rb'
-    - 'ee/spec/finders/ee/issuables/label_filter_spec.rb'
     - 'ee/spec/finders/ee/namespaces/projects_finder_spec.rb'
     - 'ee/spec/graphql/mutations/ai/action_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/bridge_spec.rb'

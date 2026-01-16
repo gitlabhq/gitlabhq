@@ -89,3 +89,27 @@ RSpec.shared_examples 'handles archived labels' do
     end
   end
 end
+
+RSpec.shared_examples 'updating archived status' do
+  context 'when updating archived status' do
+    it 'allows setting archived parameter' do
+      put :update, params: update_params.merge(label: { archived: true })
+
+      expect(response).to redirect_to(expected_redirect_path)
+      expect(label.reload.archived).to be_truthy
+    end
+
+    context 'when labels_archive feature flag is disabled' do
+      before do
+        stub_feature_flags(labels_archive: false)
+      end
+
+      it 'does not allow setting archived parameter' do
+        put :update, params: update_params.merge(label: { archived: true })
+
+        expect(response).to redirect_to(expected_redirect_path)
+        expect(label.reload.archived).to be_falsey
+      end
+    end
+  end
+end

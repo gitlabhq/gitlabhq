@@ -141,6 +141,7 @@ module API
         package_file,
         supports_direct_download: true,
         content_disposition: nil,
+        content_type: nil,
         extra_response_headers: {}
       )
         package_file.package.touch_last_downloaded_at unless request.head?
@@ -149,6 +150,7 @@ module API
           package_file.file,
           supports_direct_download: supports_direct_download,
           content_disposition: content_disposition,
+          content_type: content_type,
           extra_response_headers: extra_response_headers,
           extra_send_url_params: ::Packages::SsrfProtection.params_for(package_file.package)
         )
