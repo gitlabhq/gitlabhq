@@ -1,0 +1,7 @@
+---
+name: start_group_export
+description: Grants the ability to start a group export.
+boundaries:
+  - group
+permissions:
+  - start_group_export

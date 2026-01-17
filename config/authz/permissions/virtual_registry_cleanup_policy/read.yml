@@ -1,0 +1,5 @@
+---
+name: read_virtual_registry_cleanup_policy
+description: Grants the ability to read virtual registry cleanup policies
+boundaries:
+  - group

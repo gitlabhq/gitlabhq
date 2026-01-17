@@ -50,5 +50,10 @@ RSpec.describe API::UserCounts, feature_category: :service_ping do
         expect(json_response['todos']).to eq(1)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_user_counts do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/user_counts', personal_access_token: pat) }
+    end
   end
 end

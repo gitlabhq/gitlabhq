@@ -79,6 +79,11 @@ RSpec.describe API::GroupExport, feature_category: :importers do
           expect(json_response['message']).to eq('The group export file is not available yet')
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :download_group_export do
+        let(:boundary_object) { group }
+        let(:request) { get api(download_path, personal_access_token: pat) }
+      end
     end
 
     context 'when export file does not exist' do
@@ -149,6 +154,11 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
           post api(path, user)
         end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :start_group_export do
+        let(:boundary_object) { group }
+        let(:request) { post api(path, personal_access_token: pat) }
       end
     end
 

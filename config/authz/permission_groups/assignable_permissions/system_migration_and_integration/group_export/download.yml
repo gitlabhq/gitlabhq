@@ -1,0 +1,7 @@
+---
+name: download_group_export
+description: Grants the ability to download a group export.
+boundaries:
+  - group
+permissions:
+  - download_group_export

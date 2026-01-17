@@ -52,6 +52,12 @@ RSpec.describe API::UserRunners, :aggregate_failures, feature_category: :fleet_v
           expect(response).to have_gitlab_http_status(:created)
         end.to change { Ci::Runner.count }.by(1)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :create_runner do
+        let(:user) { current_user || token_user }
+        let(:boundary_object) { :user }
+        let(:request) { post api('/user/runners', personal_access_token: pat), params: runner_attrs }
+      end
     end
 
     shared_examples 'fails to create runner with expected_status_code' do

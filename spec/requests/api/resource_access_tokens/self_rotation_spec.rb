@@ -18,6 +18,12 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
       expect(json_response['expires_at']).to eq(expiry_date.to_date.iso8601)
       expect(token.reload).to be_revoked
     end
+
+    it_behaves_like 'authorizing granular token permissions', :rotate_resource_access_token do
+      let(:user) { current_user }
+      let(:boundary_object) { resource }
+      let(:request) { post api(path, personal_access_token: pat), params: params }
+    end
   end
 
   shared_examples 'rotating token denied' do |status|

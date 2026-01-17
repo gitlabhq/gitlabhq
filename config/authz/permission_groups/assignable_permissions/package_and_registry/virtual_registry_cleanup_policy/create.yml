@@ -1,0 +1,7 @@
+---
+name: create_virtual_registry_cleanup_policy
+description: Grants the ability to create virtual registry cleanup policies
+permissions:
+  - create_virtual_registry_cleanup_policy
+boundaries:
+  - group

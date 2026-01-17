@@ -27,6 +27,7 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :download_group_export, boundary_type: :group
       get ':id/export/download' do
         check_rate_limit! :group_download_export, scope: [current_user, user_group]
 
@@ -53,6 +54,7 @@ module API
           { code: 503, message: 'Service unavailable' }
         ]
       end
+      route_setting :authorization, permissions: :start_group_export, boundary_type: :group
       post ':id/export' do
         check_rate_limit! :group_export, scope: current_user
 
