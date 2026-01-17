@@ -163,7 +163,11 @@ module CommitsHelper
   end
 
   def cherry_pick_projects_data(project)
-    [project, project.forked_from_project].compact.map do |project|
+    available_projects = [project, project.forked_from_project].compact.select do |project|
+      can?(current_user, :push_code, project)
+    end
+
+    available_projects.map do |project|
       {
         id: project.id.to_s,
         name: project.full_path,

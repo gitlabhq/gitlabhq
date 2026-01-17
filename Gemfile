@@ -605,7 +605,7 @@ gem 'octokit', '~> 9.0', feature_category: :importers
 # Needed by octokit: https://github.com/octokit/octokit.rb/pull/1688
 gem 'faraday-multipart', '~> 1.0', feature_category: :importers
 
-gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'gitlab-mail_room', '~> 0.1.0', require: 'mail_room', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'email_reply_trimmer', '~> 0.1', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'html2text', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
