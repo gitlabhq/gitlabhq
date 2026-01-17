@@ -1,0 +1,7 @@
+---
+name: read_go_module
+description: Grants the ability to read Go modules
+permissions:
+  - read_go_module
+boundaries:
+  - project

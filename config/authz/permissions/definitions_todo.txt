@@ -143,7 +143,6 @@ admin_work_item
 admin_work_item_lifecycle
 admin_work_item_link
 apply_suggestion
-approve_merge_request
 approve_user
 archive_group
 assign_default_duo_group

@@ -186,6 +186,13 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       let(:resource) { 'list' }
       let(:request) { get_resource(job_token: target_job.token) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_go_module do
+      let(:boundary_object) { project }
+      let(:module_name) { base }
+      let(:resource) { 'list' }
+      let(:request) { get_resource(personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/packages/go/*module_name/@v/:module_version.info' do
@@ -247,6 +254,13 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       let(:resource) { 'v1.0.1.info' }
       let(:request) { get_resource(job_token: target_job.token) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_go_module do
+      let(:boundary_object) { project }
+      let(:module_name) { base }
+      let(:resource) { 'v1.0.1.info' }
+      let(:request) { get_resource(personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/packages/go/*module_name/@v/:module_version.mod' do
@@ -276,6 +290,13 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       let(:resource) { 'v1.0.1.mod' }
       let(:request) { get_resource(job_token: target_job.token) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :download_go_module do
+      let(:boundary_object) { project }
+      let(:module_name) { base }
+      let(:resource) { 'v1.0.1.mod' }
+      let(:request) { get_resource(personal_access_token: pat) }
+    end
   end
 
   describe 'GET /projects/:id/packages/go/*module_name/@v/:module_version.zip' do
@@ -304,6 +325,13 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       let(:module_name) { base }
       let(:resource) { 'v1.0.1.zip' }
       let(:request) { get_resource(job_token: target_job.token) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_go_module do
+      let(:boundary_object) { project }
+      let(:module_name) { base }
+      let(:resource) { 'v1.0.1.zip' }
+      let(:request) { get_resource(personal_access_token: pat) }
     end
   end
 

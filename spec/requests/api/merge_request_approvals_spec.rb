@@ -22,6 +22,13 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_merge_request_approval_state do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", personal_access_token: pat)
+      end
+    end
+
     context 'when merge request author has only guest access' do
       it_behaves_like 'rejects user from accessing merge request info' do
         let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals" }
@@ -49,6 +56,13 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           approve
 
           expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :approve_merge_request do
+          let(:boundary_object) { project }
+          let(:request) do
+            post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", personal_access_token: pat)
+          end
         end
       end
 
@@ -130,6 +144,19 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         expect(response).to have_gitlab_http_status(:created)
       end
 
+      it_behaves_like 'authorizing granular token permissions', :unapprove_merge_request do
+        let(:boundary_object) { project }
+
+        before do
+          project.add_developer(user)
+          create(:approval, user: user, merge_request: merge_request)
+        end
+
+        let(:request) do
+          post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", personal_access_token: pat)
+        end
+      end
+
       it 'calls MergeRequests::UpdateReviewerStateService' do
         unapprover = create(:user)
 
@@ -200,6 +227,15 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
         merge_request.reload
         expect(response).to have_gitlab_http_status(:accepted)
         expect(merge_request.approvals).to be_empty
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :reset_approvals_merge_request do
+        let(:boundary_object) { project }
+        let(:user) { bot }
+        let(:request) do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals",
+            personal_access_token: pat)
+        end
       end
 
       context 'when bot user approved the merge request' do

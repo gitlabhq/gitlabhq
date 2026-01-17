@@ -123,6 +123,20 @@ CREATE TABLE ci_finished_builds
             pipeline_id,
             name,
             stage_name
+    ),
+    PROJECTION by_project_pipeline_finished_at_name
+    (
+        SELECT
+            *,
+            duration,
+            queueing_duration
+        ORDER BY
+            project_id,
+            pipeline_id,
+            finished_at,
+            name,
+            id,
+            version
     )
 )
 ENGINE = ReplacingMergeTree(version, deleted)

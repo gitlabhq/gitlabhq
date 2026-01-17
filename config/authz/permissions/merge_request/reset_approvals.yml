@@ -1,0 +1,5 @@
+---
+name: reset_approvals_merge_request
+description: Grants the ability to reset approvals on merge requests
+boundaries:
+  - project

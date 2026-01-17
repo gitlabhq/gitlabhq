@@ -1,0 +1,5 @@
+---
+name: download_go_module
+description: Grants the ability to download Go modules
+boundaries:
+  - project
