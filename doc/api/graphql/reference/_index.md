@@ -6369,6 +6369,33 @@ Input type: `DeletePagesDeploymentInput`
 | <a id="mutationdeletepagesdeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationdeletepagesdeploymentpagesdeployment"></a>`pagesDeployment` | [`PagesDeployment!`](#pagesdeployment) | Deleted Pages Deployment. |
 
+### `Mutation.deleteProjectCustomAttribute`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Deletes a custom attribute from a project. Only available to admins.
+
+Input type: `DeleteProjectCustomAttributeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteprojectcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteprojectcustomattributekey"></a>`key` | [`String!`](#string) | Key of the custom attribute to delete. |
+| <a id="mutationdeleteprojectcustomattributeprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteprojectcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteprojectcustomattributecustomattribute"></a>`customAttribute` | [`CustomAttribute`](#customattribute) | Deleted custom attribute. |
+| <a id="mutationdeleteprojectcustomattributeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.designManagementDelete`
 
 Input type: `DesignManagementDeleteInput`

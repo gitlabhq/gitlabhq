@@ -19412,7 +19412,8 @@ CREATE TABLE gpg_key_subkeys (
     gpg_key_id bigint NOT NULL,
     keyid bytea,
     fingerprint bytea,
-    user_id bigint
+    user_id bigint,
+    CONSTRAINT check_f6590fe2c1 CHECK ((user_id IS NOT NULL))
 );
 
 CREATE SEQUENCE gpg_key_subkeys_id_seq
@@ -36411,9 +36412,6 @@ ALTER TABLE suggestions
 
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE gpg_key_subkeys
-    ADD CONSTRAINT check_f6590fe2c1 CHECK ((user_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE vulnerability_statistics
     ADD CONSTRAINT check_vulnerability_statistics_traversal_ids_not_empty CHECK ((cardinality(traversal_ids) > 0)) NOT VALID;

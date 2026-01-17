@@ -113,6 +113,7 @@ module Gitlab
         gitlab_redis_queues = Gitlab::Redis::Queues.new(rails_env)
 
         config = { redis_url: gitlab_redis_queues.url, redis_db: gitlab_redis_queues.db }
+        config[:redis_ssl_params] = gitlab_redis_queues.ssl_params if gitlab_redis_queues.ssl_params
 
         if gitlab_redis_queues.sentinels?
           config[:sentinels] = gitlab_redis_queues.sentinels

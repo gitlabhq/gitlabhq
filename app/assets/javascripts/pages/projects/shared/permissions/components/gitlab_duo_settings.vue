@@ -108,9 +108,6 @@ export default {
     };
   },
   computed: {
-    areDuoFlowsAvailable() {
-      return this.duoEnabled;
-    },
     duoEnabledSetting() {
       if (this.amazonQAvailable) {
         return {
@@ -244,7 +241,7 @@ export default {
         </project-setting-row>
       </div>
       <div
-        v-else-if="areDuoFlowsAvailable"
+        v-else-if="duoEnabled"
         class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5"
       >
         <project-setting-row

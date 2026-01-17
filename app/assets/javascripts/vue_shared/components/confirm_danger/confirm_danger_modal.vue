@@ -107,7 +107,9 @@ export default {
       return a.trim().toLowerCase() === b.trim().toLowerCase();
     },
     focusConfirmInput() {
-      this.$refs.confirmInput.$el.focus();
+      this.$nextTick(() => {
+        this.$refs.confirmInput.focus();
+      });
     },
   },
   i18n: {

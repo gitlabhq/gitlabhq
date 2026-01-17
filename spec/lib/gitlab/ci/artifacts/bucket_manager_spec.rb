@@ -108,8 +108,7 @@ RSpec.describe Gitlab::Ci::Artifacts::BucketManager, :clean_gitlab_redis_shared_
     end
 
     it 'recovers stale buckets and moves them to available' do
-      described_class.recover_stale_buckets
-
+      expect(described_class.recover_stale_buckets).to eq(['3'])
       Gitlab::Redis::SharedState.with do |redis|
         available = redis.smembers(described_class::AVAILABLE_BUCKETS_KEY).map(&:to_i)
         occupied = redis.zrange(described_class::OCCUPIED_BUCKETS_KEY, 0, -1).map(&:to_i)
@@ -125,7 +124,13 @@ RSpec.describe Gitlab::Ci::Artifacts::BucketManager, :clean_gitlab_redis_shared_
     let(:max_buckets) { 5 }
 
     it 'enqueues all buckets when none exist' do
-      described_class.enqueue_missing_buckets(max_buckets: max_buckets)
+      expect(described_class.enqueue_missing_buckets(max_buckets: max_buckets)).to eq(
+        {
+          available: [],
+          missing: [0, 1, 2, 3, 4],
+          occupied: []
+        }
+      )
 
       Gitlab::Redis::SharedState.with do |redis|
         buckets = redis.smembers(described_class::AVAILABLE_BUCKETS_KEY).map(&:to_i)

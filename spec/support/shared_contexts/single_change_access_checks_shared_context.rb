@@ -11,6 +11,7 @@ RSpec.shared_context 'change access checks context' do
   let(:protocol) { 'ssh' }
   let(:timeout) { Gitlab::GitAccess::INTERNAL_TIMEOUT }
   let(:logger) { Gitlab::Checks::TimedLogger.new(timeout: timeout) }
+  let(:gitaly_context) { nil }
   let(:change_access) do
     Gitlab::Checks::SingleChangeAccess.new(
       changes,
@@ -18,7 +19,8 @@ RSpec.shared_context 'change access checks context' do
       user_access: user_access,
       protocol: protocol,
       logger: logger,
-      push_options: Gitlab::PushOptions.new([])
+      push_options: Gitlab::PushOptions.new([]),
+      gitaly_context: gitaly_context
     )
   end
 

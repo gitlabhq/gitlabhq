@@ -77,8 +77,8 @@ RSpec.shared_examples 'show and render proper snippet blob' do
         # shows highlighted Ruby code
         expect(page).to have_content("require 'fileutils'")
 
-        # does not show a viewer switcher
-        expect(page).not_to have_selector('.js-blob-viewer-switcher')
+        # does not show viewer switcher buttons
+        expect(page).not_to have_selector('.js-blob-viewer-switcher button')
 
         # shows an enabled copy button
         expect(page).to have_button('Copy file contents', disabled: false)

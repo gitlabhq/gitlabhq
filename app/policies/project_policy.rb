@@ -341,6 +341,7 @@ class ProjectPolicy < BasePolicy
     enable :update_max_artifacts_size
     enable :read_storage_disk_path
     enable :read_custom_attribute
+    enable :delete_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.enable :read_confidential_issues

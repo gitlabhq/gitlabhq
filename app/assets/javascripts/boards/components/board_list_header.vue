@@ -425,7 +425,7 @@ export default {
         </span>
         <!-- EE end -->
         <gl-label
-          v-if="listType === 'label'"
+          v-if="listType === 'label' && list.label"
           v-gl-tooltip.bottom
           :background-color="list.label.color"
           :description="list.label.description"

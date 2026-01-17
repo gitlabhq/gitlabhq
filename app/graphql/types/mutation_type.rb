@@ -130,6 +130,7 @@ module Types
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }

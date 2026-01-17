@@ -50,14 +50,18 @@ Prerequisites:
 - Ensure you meet [the other prerequisites](../_index.md#prerequisites).
 - Ensure that the Code Review Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
 
-To trigger a Code Review Flow on a merge request:
+To use the Code Review Flow on a merge request:
 
 1. On the left sidebar, select **Code** > **Merge requests** and find your merge request.
-1. Use one of these methods to trigger the review:
-   - Assign GitLab Duo as a reviewer.
+1. Use one of these methods to request a review:
+   - Assign `@GitLabDuo` as a reviewer.
    - In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`.
 
-You can interact with GitLab Duo by:
+After you request a review, Code Review Flow starts a [session](../../sessions/_index.md) that you
+can monitor until the review is complete.
+
+In addition to assigning GitLab Duo as a reviewer, you can interact with GitLab Duo
+by:
 
 - Replying to its review comments to ask for clarification or alternative approaches.
 - Mentioning `@GitLabDuo` in any discussion thread to ask follow-up questions.

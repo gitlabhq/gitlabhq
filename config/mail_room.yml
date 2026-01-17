@@ -30,6 +30,9 @@
       :delivery_method: sidekiq
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
+        <% if config[:redis_ssl_params] %>
+        :redis_ssl_params: <%= config[:redis_ssl_params].to_json %>
+        <% end %>
         :redis_db: <%= config[:redis_db] %>
         :queue: <%= config[:queue] %>
         :worker: <%= config[:worker] %>
@@ -39,6 +42,12 @@
           -
             :host: <%= sentinel[:host] %>
             :port: <%= sentinel[:port] %>
+            <% if sentinel[:ssl] %>
+            :ssl: <%= sentinel[:ssl] %>
+            <% end %>
+            <% if sentinel[:ssl_params] %>
+            :ssl_params: <%= sentinel[:ssl_params].to_json %>
+            <% end %>
             <% if sentinel[:password] && !sentinel[:password].empty? %>
             :password: <%= sentinel[:password] %>
             <% end %>
@@ -58,6 +67,9 @@
       :arbitration_method: redis
       :arbitration_options:
         :redis_url: <%= config[:redis_url].to_json %>
+        <% if config[:redis_ssl_params] %>
+        :redis_ssl_params: <%= config[:redis_ssl_params].to_json %>
+        <% end %>
         :namespace: <%= Gitlab::Redis::Queues::MAILROOM_NAMESPACE %>
         <% if config[:sentinels] %>
         :sentinels:
@@ -65,6 +77,12 @@
           -
             :host: <%= sentinel[:host] %>
             :port: <%= sentinel[:port] %>
+            <% if sentinel[:ssl] %>
+            :ssl: <%= sentinel[:ssl] %>
+            <% end %>
+            <% if sentinel[:ssl_params] %>
+            :ssl_params: <%= sentinel[:ssl_params].to_json %>
+            <% end %>
             <% if sentinel[:password] && !sentinel[:password].empty? %>
             :password: <%= sentinel[:password] %>
             <% end %>

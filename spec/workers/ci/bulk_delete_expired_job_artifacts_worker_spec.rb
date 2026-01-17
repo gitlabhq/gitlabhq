@@ -33,6 +33,10 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
 
       it 'claims a bucket from BucketManager' do
         expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:claim_bucket)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
 
         worker.perform_work
       end
@@ -40,7 +44,10 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
       it 'releases the bucket after processing' do
         expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:release_bucket)
           .with(bucket, max_buckets: max_running_jobs)
-
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
         worker.perform_work
       end
 
@@ -70,7 +77,8 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
         it 'logs the destroyed count' do
           expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 1)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
-
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
           worker.perform_work
         end
       end
@@ -89,7 +97,8 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
           expect(worker).to receive(:log_extra_metadata_on_done).with(:terminated_early_due_to_scale_down, true)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
-
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
           worker.perform_work
         end
       end
@@ -102,7 +111,7 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
 
       it 'returns early without processing' do
         expect(Gitlab::Ci::Artifacts::BucketManager).not_to receive(:release_bucket)
-        expect(worker).not_to receive(:log_extra_metadata_on_done)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, nil)
         expect(worker).not_to receive(:get_artifacts)
 
         worker.perform_work

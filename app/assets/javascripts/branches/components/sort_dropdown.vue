@@ -72,7 +72,7 @@ export default {
       :toggle-text="selectedSortMethodName"
       class="gl-mr-3"
       data-testid="branches-dropdown"
-      @select="visitUrlFromOption(selectedKey)"
+      @select="visitUrlFromOption"
     />
   </div>
 </template>

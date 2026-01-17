@@ -126,6 +126,11 @@ When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md).
 The user experience for these two features [have not been unified](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 
+## Important considerations
+
+> ![warning]
+> Do not enable [pipeline execution policies](../application_security/policies/pipeline_execution_policies.md) until you have migrated existing compliance pipelines in the same project. When both are configured, compliance pipelines replace the standard project pipeline but the pipeline execution policies apply based on the original project pipeline. This creates unpredictable behavior that varies depending on the pipeline execution policy strategy and CI/CD configurations, and can result in duplicated jobs, pipeline failures, or missing critical security and compliance checks. Compliance pipelines are [deprecated](../../update/deprecations.md#compliance-pipelines). You should migrate existing compliance pipelines as soon as possible, and use pipeline execution policies for all new implementations.
+
 ### Example configuration
 
 The following example `.compliance-gitlab-ci.yml` includes the `include` keyword to ensure labeled project pipeline

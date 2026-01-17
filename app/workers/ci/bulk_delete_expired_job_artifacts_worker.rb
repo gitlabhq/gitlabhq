@@ -24,6 +24,7 @@ module Ci
 
     def perform_work
       @mod_bucket = Gitlab::Ci::Artifacts::BucketManager.claim_bucket
+      log_extra_metadata_on_done(:mod_bucket, @mod_bucket)
       return unless @mod_bucket
 
       @bucket_claimed = true
@@ -31,16 +32,19 @@ module Ci
 
       loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
         artifacts = get_artifacts
-        break if artifacts.empty?
+        if artifacts.empty?
+          log_extra_metadata_on_done(:artifacts_empty, true)
+          break
+        end
 
         service_response = destroy_batch(artifacts)
         removed_artifacts_count += service_response[:destroyed_artifacts_count]
       end
 
       log_extra_metadata_on_done(:destroyed_job_artifacts_count, removed_artifacts_count)
-      log_extra_metadata_on_done(:mod_bucket, @mod_bucket)
 
       Gitlab::Ci::Artifacts::BucketManager.release_bucket(@mod_bucket, max_buckets: max_running_jobs)
+      log_extra_metadata_on_done(:mod_bucket_released, @mod_bucket)
     end
 
     def remaining_work_count

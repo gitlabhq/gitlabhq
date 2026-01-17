@@ -49,6 +49,14 @@ RSpec.describe Gitlab::Checks::CommitsCheck, feature_category: :source_code_mana
           context 'when protocol is web' do
             let(:protocol) { 'web' }
 
+            context 'and not in a context that requires commits check' do
+              let(:gitaly_context) { { 'skip_commits_check' => true } }
+
+              it 'does not raise an error' do
+                expect { change_check.validate! }.not_to raise_error
+              end
+            end
+
             it 'raises an error' do
               expect(change_check).to receive(:check_signed_commit_authorship!).and_call_original
               expect { change_check.validate! }.to raise_error(

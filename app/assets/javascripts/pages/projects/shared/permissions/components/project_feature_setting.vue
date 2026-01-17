@@ -55,9 +55,10 @@ export default {
   },
   data() {
     return {
-      valueWhenFeatureLastEnabled: this.isFeatureEnabled(this.value)
-        ? this.value
-        : this.lastOptionValue(),
+      valueWhenFeatureLastEnabled:
+        this.isFeatureEnabled(this.value) || this.options.length === 0
+          ? this.value
+          : this.lastOptionValue(),
     };
   },
   computed: {
@@ -87,6 +88,9 @@ export default {
       );
     },
     valueWhenFeatureEnabled() {
+      if (this.options.length === 0) {
+        return this.valueWhenFeatureLastEnabled;
+      }
       return this.isValueInOptions(this.valueWhenFeatureLastEnabled)
         ? this.valueWhenFeatureLastEnabled
         : this.lastOptionValue();

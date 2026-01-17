@@ -47,6 +47,7 @@ module Gitlab
                   transaction.sadd(AVAILABLE_BUCKETS_KEY, bucket)
                 end
               end
+              stale_buckets
             end
           end
 
@@ -59,6 +60,11 @@ module Gitlab
               missing = (0...max_buckets).to_a - available - occupied
 
               redis.sadd(AVAILABLE_BUCKETS_KEY, missing) if missing.any?
+              {
+                available: available,
+                missing: missing,
+                occupied: occupied
+              }
             end
           end
 

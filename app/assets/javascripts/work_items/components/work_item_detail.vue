@@ -586,9 +586,6 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
-    isDuoWorkflowEnabled() {
-      return this.duoRemoteFlowsAvailability;
-    },
     duoWorkflowDefinition() {
       return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';
     },
@@ -1237,7 +1234,7 @@ export default {
                     />
                     <div>
                       <duo-workflow-action
-                        v-if="isDuoWorkflowEnabled"
+                        v-if="duoRemoteFlowsAvailability"
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
