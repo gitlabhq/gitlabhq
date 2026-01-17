@@ -16,7 +16,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
         'label' => 'group::tenant scale',
         'extra_labels' => [],
         'slack_channel' => 'g_tenant_scale',
-        'backend_engineers' => %w[be1 be2 be3 be4 be5],
+        'engineers' => %w[be1 be2 be3 be4 be5],
         'triage_ops_config' => nil
       },
       'group_b' => {
@@ -27,7 +27,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
         'label' => 'group::group b',
         'extra_labels' => [],
         'slack_channel' => 'g_group_b',
-        'backend_engineers' => %w[],
+        'engineers' => %w[],
         'triage_ops_config' => nil
       }
     }
@@ -128,7 +128,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
       expect(reviewer).to eq(available_reviewers[expected_index])
     end
 
-    context 'when the matching group does not have available backend_engineers' do
+    context 'when the matching group does not have available engineers' do
       let(:category) { 'category_b' }
 
       it { is_expected.to be_nil }

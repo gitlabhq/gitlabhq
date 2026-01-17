@@ -9,8 +9,9 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
   subject(:keep) { described_class.new }
 
   describe '#initialize_change_details' do
-    let(:migration) { { 'feature_category' => 'shared' } }
+    let(:migration) { { 'feature_category' => 'shared', 'introduced_by_url' => introduced_by_url } }
     let(:feature_category) { migration['feature_category'] }
+    let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12345' }
     let(:migration_record) do
       MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01", gitlab_schema: 'gitlab_main')
     end
@@ -37,6 +38,9 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
         .and_return("random-engineer")
 
       allow(keep).to receive(:groups_helper).and_return(groups_helper)
+      allow(keep).to receive(:assignees_from_introduced_by_mr)
+                       .with(introduced_by_url)
+                       .and_return(['original-author'])
     end
 
     it 'returns a Gitlab::Housekeeper::Change', :aggregate_failures do
@@ -45,6 +49,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       expect(change.identifiers).to eq(identifiers)
       expect(change.labels).to eq(['maintenance::removal'])
       expect(change.reviewers).to eq(['random-engineer'])
+      expect(change.assignees).to eq(['original-author'])
     end
   end
 
@@ -143,6 +148,108 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
         it 'returns the database name' do
           expect(database_name).to eq('ci')
+        end
+      end
+    end
+  end
+
+  describe '#assignees_from_introduced_by_mr' do
+    subject(:assignees) { keep.send(:assignees_from_introduced_by_mr, introduced_by_url) }
+
+    context 'when introduced_by_url is nil' do
+      let(:introduced_by_url) { nil }
+
+      it 'returns nil' do
+        expect(assignees).to be_nil
+      end
+    end
+
+    context 'when introduced_by_url is present' do
+      let(:introduced_by_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12345' }
+      let(:merge_request_response) do
+        {
+          assignees: [
+            { username: 'user1' },
+            { username: 'user2' }
+          ]
+        }
+      end
+
+      before do
+        allow(keep).to receive(:get_merge_request)
+                         .with(introduced_by_url)
+                         .and_return(merge_request_response)
+      end
+
+      it 'returns the assignee usernames' do
+        expect(assignees).to eq(%w[user1 user2])
+      end
+
+      context 'when merge request has no assignees' do
+        let(:merge_request_response) { { assignees: nil } }
+
+        it 'returns nil' do
+          expect(assignees).to be_nil
+        end
+      end
+
+      context 'when get_merge_request returns nil' do
+        before do
+          allow(keep).to receive(:get_merge_request)
+                           .with(introduced_by_url)
+                           .and_return(nil)
+        end
+
+        it 'returns nil' do
+          expect(assignees).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#get_merge_request' do
+    subject(:merge_request) { keep.send(:get_merge_request, merge_request_url) }
+
+    context 'when URL does not match the expected pattern' do
+      let(:merge_request_url) { 'https://example.com/invalid/url' }
+
+      it 'returns nil' do
+        expect(merge_request).to be_nil
+      end
+    end
+
+    context 'when URL matches the expected pattern' do
+      let(:merge_request_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12345' }
+      let(:api_url) { 'https://gitlab.com/api/v4/projects/278964/merge_requests/12345' }
+      let(:response_body) do
+        {
+          id: 12345,
+          iid: 12345,
+          assignees: [{ username: 'user1' }]
+        }.to_json
+      end
+
+      let(:response) { instance_double(HTTParty::Response, success?: true, body: response_body) }
+
+      before do
+        allow(Gitlab::HTTP_V2).to receive(:try_get)
+                                    .with(api_url)
+                                    .and_return(response)
+      end
+
+      it 'returns the parsed merge request data' do
+        expect(merge_request).to eq({
+          id: 12345,
+          iid: 12345,
+          assignees: [{ username: 'user1' }]
+        })
+      end
+
+      context 'when the API request fails' do
+        let(:response) { instance_double(HTTParty::Response, success?: false, code: 404, body: 'Not found') }
+
+        it 'returns nil' do
+          expect(merge_request).to be_nil
         end
       end
     end

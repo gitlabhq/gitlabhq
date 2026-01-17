@@ -21,7 +21,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         visit general_admin_application_settings_path
       end
 
-      it 'change visibility settings' do
+      it 'change visibility settings',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-visibility-access-settings') do
           choose "application_setting_default_project_visibility_20"
           click_button 'Save changes'
@@ -30,7 +31,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(page).to have_content 'Application settings saved successfully'
       end
 
-      it 'uncheck all restricted visibility levels' do
+      it 'uncheck all restricted visibility levels',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('restricted-visibility-levels') do
           uncheck s_('VisibilityLevel|Public')
           uncheck s_('VisibilityLevel|Internal')
@@ -50,7 +52,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
-      it 'change deletion settings', :js do
+      it 'change deletion settings', :js,
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-visibility-access-settings') do
           fill_in 'Retention period', with: 30
           uncheck 'Allow immediate deletion'
@@ -65,7 +68,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
-      it 'modify import sources' do
+      it 'modify import sources',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         expect(current_settings.import_sources).to be_empty
 
         within_testid('admin-import-export-settings') do
@@ -77,7 +81,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.import_sources).to eq(['git'])
       end
 
-      it 'change Visibility and Access Controls' do
+      it 'change Visibility and Access Controls',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         expect(current_settings.project_export_enabled).to be(true)
         expect(current_settings.bulk_import_enabled).to be(false)
         expect(current_settings.silent_admin_exports_enabled).to be(false)
@@ -104,7 +109,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.silent_admin_exports_enabled).to be(true)
       end
 
-      it 'change Keys settings' do
+      it 'change Keys settings',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-visibility-access-settings') do
           select 'Are forbidden', from: 'RSA SSH keys'
           select 'Are allowed', from: 'DSA SSH keys'
@@ -126,7 +132,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(find_field('ED25519_SK SSH keys').value).to eq(forbidden)
       end
 
-      it 'change Account and Limit Settings' do
+      it 'change Account and Limit Settings',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('account-and-limit-settings-content') do
           uncheck 'Gravatar enabled'
           click_button 'Save changes'
@@ -136,7 +143,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.gravatar_enabled).to be_falsey
       end
 
-      it 'change Maximum export size' do
+      it 'change Maximum export size',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-import-export-settings') do
           fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
@@ -146,7 +154,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.max_export_size).to eq 25
       end
 
-      it 'change Maximum import size' do
+      it 'change Maximum import size',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-import-export-settings') do
           fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
@@ -156,7 +165,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.max_import_size).to eq 15
       end
 
-      it 'change New users set to external', :js do
+      it 'change New users set to external', :js,
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
 
         expect(user_internal_regex).to be_readonly
@@ -170,7 +180,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       context 'Dormant users', feature_category: :user_management do
         context 'when Gitlab.com', :saas do
-          it 'does not expose the setting section' do
+          it 'does not expose the setting section',
+            quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
             # NOTE: not_to have_content may have false positives for content
             #       that might not load instantly, so before checking that
             #       `Dormant users` subsection has _not_ loaded, we check that the
@@ -183,13 +194,15 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
 
         context 'when not Gitlab.com' do
-          it 'exposes the setting section' do
+          it 'exposes the setting section',
+            quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
             expect(page).to have_content('Dormant users')
             expect(page).to have_field('Deactivate dormant users after a period of inactivity')
             expect(page).to have_field('Days of inactivity before deactivation')
           end
 
-          it 'changes dormant users', :js do
+          it 'changes dormant users', :js,
+            quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
             expect(page).to have_unchecked_field(_('Deactivate dormant users after a period of inactivity'))
             expect(current_settings.deactivate_dormant_users).to be_falsey
 
@@ -206,7 +219,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(current_settings.deactivate_dormant_users).to be_truthy
           end
 
-          it 'change dormant users period', :js do
+          it 'change dormant users period', :js,
+            quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: true)
 
             within_testid('account-and-limit-settings-content') do
@@ -222,7 +236,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             expect(page).to have_field(_('Days of inactivity before deactivation'), disabled: false, with: '180')
           end
 
-          it 'displays dormant users period field validation error', :js do
+          it 'displays dormant users period field validation error', :js,
+            quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
             selector = '#application_setting_deactivate_dormant_users_period_error'
             expect(page).not_to have_selector(selector, visible: :visible)
 
@@ -275,7 +290,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
-      it 'change Sign-in restrictions' do
+      it 'change Sign-in restrictions',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('signin-settings') do
           fill_in 'Home page URL', with: 'https://about.gitlab.com/'
           click_button 'Save changes'
@@ -285,7 +301,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.home_page_url).to eq "https://about.gitlab.com/"
       end
 
-      it 'terms of Service', :js do
+      it 'terms of Service', :js,
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         # Already have the admin accept terms, so they don't need to accept in this spec.
         _existing_terms = create(:term)
         accept_terms(admin)

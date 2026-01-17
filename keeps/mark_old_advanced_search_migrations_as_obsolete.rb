@@ -25,7 +25,7 @@ module Keeps
 
     def initialize(...)
       @migrations_to_be_marked_obsolete = {}
-      @search_team_map = group_data['backend_engineers'].index_with(0)
+      @search_team_map = group_data['engineers'].index_with(0)
 
       load_migrations_to_process
 

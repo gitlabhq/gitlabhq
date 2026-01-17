@@ -24,6 +24,9 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
+    MERGE_REQUEST_URL_REGEX = %r{/-/merge_requests/(?<mr_iid>\d+)}
+    API_MERGE_REQUEST_URL = "https://gitlab.com/api/v4/projects/278964/merge_requests/%<mr_iid>s"
+
     def each_identified_change
       batched_background_migrations.each do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
@@ -93,6 +96,8 @@ module Keeps
       change.labels = groups_helper.labels_for_feature_category(feature_category) + [
         'maintenance::removal'
       ]
+
+      change.assignees = assignees_from_introduced_by_mr(migration['introduced_by_url'])
 
       change.reviewers = groups_helper.pick_reviewer_for_feature_category(
         feature_category,
@@ -298,6 +303,35 @@ module Keeps
       gitlab_schema = migration_record.gitlab_schema
       connection = Gitlab::Database.schemas_to_base_models[gitlab_schema].first.connection
       Gitlab::Database.db_config_name(connection)
+    end
+
+    def assignees_from_introduced_by_mr(introduced_by_url)
+      return unless introduced_by_url
+
+      merge_request = get_merge_request(introduced_by_url)
+      return unless merge_request && merge_request[:assignees]
+
+      merge_request[:assignees].pluck(:username) # rubocop:disable CodeReuse/ActiveRecord -- outside the rails app
+    end
+
+    def get_merge_request(merge_request_url)
+      matches = MERGE_REQUEST_URL_REGEX.match(merge_request_url)
+      return unless matches
+
+      # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
+      response = Gitlab::HTTP_V2.try_get(
+        format(API_MERGE_REQUEST_URL, mr_iid: matches[:mr_iid])
+      )
+      # rubocop:enable Gitlab/HttpV2
+
+      unless response.success?
+        @logger&.puts(
+          "Get URL: #{merge_request_url} Failed with response code: #{response.code} and body:\n#{response.body}"
+        )
+        return
+      end
+
+      Gitlab::Json.safe_parse(response.body, symbolize_names: true)
     end
   end
 end

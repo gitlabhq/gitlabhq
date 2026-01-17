@@ -54,7 +54,9 @@ module Keeps
       private
 
       def available_reviewers_for_group(group)
-        group['backend_engineers'].select do |username|
+        return [] unless group['engineers'].present?
+
+        group['engineers'].select do |username|
           roulette.reviewer_available?(username)
         end
       end
