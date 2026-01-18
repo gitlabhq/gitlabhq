@@ -767,6 +767,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
             .with(a_hash_including(pagination_params: { page_token: 'page_token', limit: 1000 }))
         end
       end
+
+      context 'when there are more pages' do
+        it 'returns next_cursor' do
+          expect(repository.list_commits(ref: 'master', pagination_params: { limit: 10 }).next_cursor).to eq('54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
+        end
+      end
     end
 
     describe 'when storage is broken', :broken_storage do

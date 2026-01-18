@@ -204,11 +204,11 @@ class Repository
     committed_after: nil,
     pagination_params: { page_token: nil, limit: 1000 }
   )
-    return [] unless exists? && has_visible_content? && ref.present?
+    return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
     pagination_params[:limit] ||= 1000
 
-    raw_commits = raw_repository.list_commits(
+    response = raw_repository.list_commits(
       ref: ref,
       query: query,
       author: author,
@@ -216,8 +216,13 @@ class Repository
       committed_after: committed_after,
       pagination_params: pagination_params
     )
-    commits = raw_commits.map { |c| commit(c) }
-    CommitCollection.new(container, commits, ref)
+
+    Repositories::CommitCollectionWithNextCursor.new(
+      container,
+      response.map { |c| commit(c) },
+      ref,
+      next_cursor: response.next_cursor
+    )
   end
 
   def find_branch(name)
@@ -1415,6 +1420,10 @@ class Repository
   end
 
   private
+
+  def empty_commit_collection_with_next_cursor
+    Repositories::CommitCollectionWithNextCursor.new(container, [], nil)
+  end
 
   # Increase the limit by number of excluded refs
   # to prevent a situation when we return less refs than requested

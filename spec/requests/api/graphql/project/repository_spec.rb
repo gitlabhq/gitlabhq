@@ -188,9 +188,9 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
         expect(commit_nodes.pluck('sha')).to eq(repository.list_commits(ref: ref).commits.map(&:sha))
       end
 
-      it 'includes start_cursor and end_cursor for pagination' do
+      it 'includes end_cursor for pagination' do
         expect(page_info['hasNextPage']).to be(true)
-        expect(page_info['startCursor']).to eq(Base64.encode64(commit_nodes.first['sha']))
+        expect(page_info['startCursor']).to be_nil
         expect(page_info['endCursor']).to eq(Base64.encode64(commit_nodes.last['sha']))
       end
 

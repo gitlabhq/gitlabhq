@@ -58,9 +58,9 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
         is_expected.to be_a(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
       end
 
-      it 'includes start_cursor and end_cursor for pagination' do
-        expect(resolved.start_cursor).to eq(Base64.encode64(resolved.items.first.sha))
-        expect(resolved.end_cursor).to eq(Base64.encode64(resolved.items.last.sha))
+      it 'includes end_cursor for pagination' do
+        expect(resolved.start_cursor).to be_nil
+        expect(resolved.end_cursor).to eq(Base64.encode64(repository.list_commits(ref: ref).next_cursor))
       end
 
       describe 'query' do
@@ -81,7 +81,7 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
 
       describe 'pagination params' do
         before do
-          allow(repository).to receive(:list_commits).and_return([])
+          allow(repository).to receive(:list_commits).and_call_original
         end
 
         context 'and field defines a max_page_size' do

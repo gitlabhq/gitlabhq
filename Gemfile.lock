@@ -926,7 +926,7 @@ GEM
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
     google-logging-utils (0.1.0)
-    google-protobuf (4.33.2)
+    google-protobuf (4.33.4)
       bigdecimal
       rake (>= 13)
     googleapis-common-protos (1.7.0)
@@ -2184,7 +2184,7 @@ DEPENDENCIES
   gettext (~> 3.5, >= 3.5.1)
   gettext_i18n_rails (~> 1.13.0)
   git (~> 1.8)
-  gitaly (~> 18.7.0.pre.rc1)
+  gitaly (~> 18.7.0)
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)

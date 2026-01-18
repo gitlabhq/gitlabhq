@@ -317,7 +317,7 @@ module Gitlab
           timeout: GitalyClient.medium_timeout
         )
 
-        consume_commits_response(response)
+        CommitCollectionWithNextCursor.new(response, @repository)
       end
 
       # List all commits which are new in the repository. If commits have been pushed into the repo

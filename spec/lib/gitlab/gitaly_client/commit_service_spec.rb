@@ -861,6 +861,21 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
       it_behaves_like 'a ListCommits request'
     end
+
+    describe 'pagination' do
+      it 'returns next_cursor and accepts it in the following request', :aggregate_failures do
+        response_1 = client.list_commits('master', { pagination_params: { limit: 1 } })
+        expect(response_1).to be_a Gitlab::GitalyClient::CommitCollectionWithNextCursor
+        expect(response_1.next_cursor).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        expect(response_1.count).to eq 1
+        expect(response_1.first.id).to eq 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+        response_2 = client.list_commits('master', { pagination_params: { limit: 1, page_token: response_1.next_cursor } })
+        expect(response_2).to be_a Gitlab::GitalyClient::CommitCollectionWithNextCursor
+        expect(response_2.next_cursor).to eq '498214de67004b1da3d820901307bed2a68a8ef6'
+        expect(response_2.count).to eq 1
+        expect(response_2.first.id).to eq '498214de67004b1da3d820901307bed2a68a8ef6'
+      end
+    end
   end
 
   describe '#list_new_commits' do
