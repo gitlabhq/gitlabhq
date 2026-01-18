@@ -18,7 +18,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
   before_action :apply_diff_view_cookie!, only: [:show, :diffs, :rapid_diffs]
-  before_action :disable_query_limiting, only: [:assign_related_issues, :update]
+  before_action :disable_query_limiting, only: [:assign_related_issues, :update, :show]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :authorize_read_diff_head_pipeline!, only: [
     :test_reports,
