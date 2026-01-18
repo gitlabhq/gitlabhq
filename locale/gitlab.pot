@@ -79720,6 +79720,9 @@ msgstr ""
 msgid "You do not have permission to approve a member"
 msgstr ""
 
+msgid "You do not have permission to create saved views in this namespace."
+msgstr ""
+
 msgid "You do not have permission to leave this %{namespaceType}."
 msgstr ""
 

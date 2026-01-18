@@ -81,6 +81,55 @@ RSpec.describe WorkItems::SavedViews::CreateService, feature_category: :portfoli
           expect(result.message).to eq('Invalid filter')
         end
       end
+
+      describe 'auto subscription' do
+        it 'automatically subscribes the creator to the saved view' do
+          result = nil
+
+          expect { result = service.execute }.to change { WorkItems::SavedViews::UserSavedView.count }.by(1)
+
+          saved_view = result.payload[:saved_view]
+          expect(WorkItems::SavedViews::UserSavedView.exists?(user: current_user, saved_view: saved_view)).to be true
+        end
+
+        context 'when user is at subscription limit' do
+          before do
+            stub_licensed_features(increased_saved_views_limit: false)
+          end
+
+          let!(:existing_saved_views) do
+            create_list(:saved_view, 5, namespace: project.project_namespace).map.with_index do |saved_view, index|
+              create(:user_saved_view, user: current_user, saved_view: saved_view, namespace: project.project_namespace,
+                relative_position: (index + 1) * 100)
+            end
+          end
+
+          it 'unsubscribes from the oldest saved view and subscribes to the new one' do
+            last_subscription = existing_saved_views.last
+            expect(last_subscription.relative_position).to eq(500)
+
+            result = nil
+
+            expect { result = service.execute }.to not_change { WorkItems::SavedViews::UserSavedView.count }
+
+            expect(result).to be_success
+
+            expect(WorkItems::SavedViews::UserSavedView.exists?(last_subscription.id)).to be false
+
+            new_saved_view = result.payload[:saved_view]
+
+            expect(WorkItems::SavedViews::UserSavedView.exists?(user: current_user, saved_view: new_saved_view))
+              .to be true
+          end
+
+          it 'creates the saved view successfully' do
+            result = service.execute
+
+            expect(result).to be_success
+            expect(result.payload[:saved_view]).to be_persisted
+          end
+        end
+      end
     end
 
     context 'when saved views are not enabled' do

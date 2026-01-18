@@ -90,4 +90,41 @@ RSpec.describe WorkItems::SavedViews::UserSavedView, feature_category: :portfoli
       end
     end
   end
+
+  describe '.unsubscribe_last_saved_view' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:saved_view_1) { create(:saved_view, namespace: group) }
+    let_it_be(:saved_view_2) { create(:saved_view, namespace: group) }
+    let_it_be(:saved_view_3) { create(:saved_view, namespace: group) }
+
+    context 'when a user has subscribed saved views' do
+      let_it_be(:user_saved_view_1) do
+        create(:user_saved_view, user: user, saved_view: saved_view_1, namespace: group, relative_position: 100)
+      end
+
+      let_it_be(:user_saved_view_2) do
+        create(:user_saved_view, user: user, saved_view: saved_view_2, namespace: group, relative_position: 200)
+      end
+
+      let_it_be(:user_saved_view_3) do
+        create(:user_saved_view, user: user, saved_view: saved_view_3, namespace: group, relative_position: 300)
+      end
+
+      it 'unsubscribes the last saved view by relative position' do
+        expect { described_class.unsubscribe_last_saved_view(user: user, namespace: group) }
+          .to change { described_class.where(user: user, namespace: group).count }.by(-1)
+
+        expect(described_class.exists?(id: user_saved_view_3.id)).to be false
+        expect(described_class.exists?(id: user_saved_view_1.id)).to be true
+        expect(described_class.exists?(id: user_saved_view_2.id)).to be true
+      end
+    end
+
+    context 'when user has no subscribed saved views in namespace' do
+      it 'does not raise an error' do
+        expect { described_class.unsubscribe_last_saved_view(user: user, namespace: group) }.not_to raise_error
+      end
+    end
+  end
 end

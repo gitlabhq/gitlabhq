@@ -19,15 +19,20 @@ module WorkItems
       before_create :set_initial_position
 
       class << self
-        def subscribe(user:, saved_view:)
+        def subscribe(user:, saved_view:, auto_unsubscribe: false)
+          namespace = saved_view.namespace
+
           user.with_lock do
-            namespace = saved_view.namespace
-            if UserSavedView.where(user: user, namespace: namespace).count >= user_saved_view_limit(namespace)
-              false
-            else
-              find_or_create_by!(user: user, saved_view: saved_view, namespace: namespace)
-              true
+            if at_subscription_limit?(user: user, namespace: namespace)
+              next false unless auto_unsubscribe
+
+              # If the user is at the subscribed saved view limit, unsubscribe them from the last subscribed saved view
+              # in their list
+              unsubscribe_last_saved_view(user: user, namespace: namespace)
             end
+
+            find_or_create_by!(user: user, saved_view: saved_view, namespace: namespace)
+            true
           end
         end
 
@@ -35,6 +40,18 @@ module WorkItems
           find_by(user: user, saved_view: saved_view, namespace: saved_view.namespace)&.destroy
 
           true
+        end
+
+        def unsubscribe_last_saved_view(user:, namespace:)
+          last_user_saved_view = where(user: user, namespace: namespace).order(:relative_position).last
+
+          return true unless last_user_saved_view
+
+          unsubscribe(user: user, saved_view: last_user_saved_view.saved_view)
+        end
+
+        def at_subscription_limit?(user:, namespace:)
+          where(user: user, namespace: namespace).count >= user_saved_view_limit(namespace)
         end
 
         def relative_positioning_query_base(user_saved_view)
