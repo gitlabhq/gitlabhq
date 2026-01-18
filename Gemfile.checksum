@@ -109,7 +109,7 @@
 {"name":"date","version":"3.4.1","platform":"java","checksum":"74740d914c65a922a15657c25ff0e203c16f1d0f7aa910a9ebed712afe9819c4"},
 {"name":"date","version":"3.4.1","platform":"ruby","checksum":"bf268e14ef7158009bfeaec40b5fa3c7271906e88b196d958a89d4b408abe64f"},
 {"name":"deb_version","version":"1.0.2","platform":"ruby","checksum":"c21f911d7f2fd1d61219caae254fc078e6598e477fdff8a05a18bec6c72ee713"},
-{"name":"debug","version":"1.11.0","platform":"ruby","checksum":"1425db64cfa0130c952684e3dc974985be201dd62899bf4bbe3f8b5d6cf1aef2"},
+{"name":"debug","version":"1.11.1","platform":"ruby","checksum":"2e0b0ac6119f2207a6f8ac7d4a73ca8eb4e440f64da0a3136c30343146e952b6"},
 {"name":"debug_inspector","version":"1.1.0","platform":"ruby","checksum":"eaa5a2d0195e1d65fb4164e8e7e466cca2e7eb53bc5e608cf12b8bf02c3a8606"},
 {"name":"declarative","version":"0.0.20","platform":"ruby","checksum":"8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9"},
 {"name":"declarative_policy","version":"2.0.1","platform":"ruby","checksum":"5ac5a67fc87edad6ef89b12ff8916520c8d11cb95e16529c259c93ef0ec3e6e8"},

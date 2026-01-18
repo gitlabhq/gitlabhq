@@ -497,7 +497,7 @@ GEM
     database_cleaner-core (2.0.1)
     date (3.4.1)
     deb_version (1.0.2)
-    debug (1.11.0)
+    debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     debug_inspector (1.1.0)
