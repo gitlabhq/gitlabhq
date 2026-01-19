@@ -106,7 +106,6 @@ Gitlab/JsonSafeParse:
     - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/gitlab/spdx/catalogue_gateway.rb'
     - 'ee/lib/secrets_management/secrets_manager_client.rb'
-    - 'ee/lib/security/secret_detection/partner_tokens/base_client.rb'
     - 'ee/lib/tasks/gitlab/duo_chat/seed_failed_ci_jobs.rake'
     - 'ee/lib/tasks/gitlab/spdx.rake'
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_enterprise/trial_form_component_spec.rb'

@@ -400,7 +400,7 @@ end
 Where the `initialize` parameters are:
 
 - `texts` - the array of text contents to generate embeddings for
-- `unit_primitive` - a tracking identifier representing a specific operation for billing purposes
+- `unit_primitive` - a tracking identifier representing a specific operation
 - `tracking_context` - additional information used for analytics and observability
 - `user` - the user requesting the embeddings generation
 - `model` - the specific model name and version, e.g. `voyage-code-3`

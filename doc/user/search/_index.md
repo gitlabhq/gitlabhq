@@ -92,6 +92,8 @@ To restrict `/search` to authenticated users only, do one of the following:
 
 - [Restrict visibility levels](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels)
   for the project or group.
+  If public projects are restricted, anonymous global search
+  is redirected to the GitLab sign-in page.
 - Restrict access in the **Admin** area:
 
   1. In the upper-right corner, select **Admin**.

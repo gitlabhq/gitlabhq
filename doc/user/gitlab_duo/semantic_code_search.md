@@ -33,8 +33,6 @@ This approach finds relevant code even when keywords do not match.
 Improvements to this feature are proposed in [epic 18018](https://gitlab.com/groups/gitlab-org/-/epics/18018)
 and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
-GitLab Dedicated support is coming soon.
-
 ## Prerequisites
 
 - One of these configured:

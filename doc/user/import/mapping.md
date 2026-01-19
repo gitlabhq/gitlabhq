@@ -29,73 +29,56 @@ title: Post-migration contribution and membership mapping
 
 {{< /history >}}
 
-> [!note]
-> To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
+With post-migration mapping, user contributions and memberships from source instances are initially assigned to
+placeholder users rather than real users on the destination instance.
 
-When you import groups or projects into GitLab with post-migration mapping, user contributions and memberships from the
-source instance are initially assigned to placeholder users rather than real users on the destination instance. This
-gives you time to review the import and reassign contributions to the correct users, ensuring accurate attribution while
-maintaining control over the mapping process.
+Because you can defer assigning to real users, you have time to review the import and reassign contributions to the
+correct users. This process ensures accurate attribution while maintaining control over the mapping process.
 
-With post-migration mapping, you can:
+Post-migration user contribution and membership mapping is available by default for migrations from:
 
-- Reassign contributions and memberships from placeholder users to existing users.
-- Create new users for reassignment.
-- Keep certain contributions assigned to placeholder users to preserve historical context.
-
-Post-migration user contribution and membership mapping is available on GitLab.com and GitLab Self-Managed by default for
-migrations from:
-
-- [GitLab by direct transfer](../group/import/_index.md)
+- [GitLab when using direct transfer](../group/import/_index.md)
 - [GitHub](../project/import/github.md)
 - [Bitbucket Server](bitbucket_server.md)
 - [Gitea](gitea.md)
 
+When you import projects to a [personal namespace](../namespace/_index.md#types-of-namespaces), user contribution mapping
+and membership mapping is not supported and all contributions are assigned to the personal namespace owner. These
+contributions cannot be reassigned.
+
 ## Post-migration mapping workflow
 
-Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
-These placeholders are created on the destination instance even if
-users with the same email addresses exist on the source instance.
-Until you reassign contributions on the destination instance,
-all contributions display as associated with placeholders.
+When using post-migration mapping, GitLab maps any memberships and contributions you import to
+[placeholder users](#placeholder-users). Placeholder users are created on the destination instance even if users with
+the same email addresses exist on the source instance. Until you reassign contributions on the destination instance, all
+contributions are associated with placeholder users.
 
-{{< alert type="note" >}}
+After the import is complete and you've reviewed the results, you can update the mappings as follows:
 
-Contributions from a deleted user on the source instance are
-mapped automatically to that user on the destination instance.
+- Reassign memberships and contributions to existing users on the destination instance.
+  You can map memberships and contributions for users with different email addresses on source and destination instances.
+- Create new users on the destination instance and reassign memberships and contributions to them.
 
-{{< /alert >}}
+You can also keep certain contributions assigned to placeholder users to preserve historical context.
 
-After the import has completed, you can:
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group has at least
+one [enterprise user](../enterprise_user/_index.md), you can reassign contributions only to enterprise users in your
+organization. This feature is meant to prevent accidental reassignment to users outside your organization.
 
-- Reassign memberships and contributions to existing users on the destination instance
-  after you review the results.
-  You can map memberships and contributions for users with different email addresses
-  on source and destination instances.
-- Create new users on the destination instance to reassign memberships and contributions to.
+When you reassign contributions to a user on the destination instance, the user can either:
 
-When you reassign contributions to a user on the destination instance, the user can
-[accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
-When the user accepts the reassignment:
+- Accept the reassignment. The reassignment process might take a few minutes. In subsequent imports from the same source
+  instance to the same top-level group or subgroup on the destination instance, contributions are mapped automatically
+  to the user.
+- Reject the reassignment.
 
-- Contributions are reassigned. This process might take a few minutes.
-- In subsequent imports from the same source instance to the same top-level group or subgroup
-  on the destination instance, contributions are mapped automatically to the user.
+### Deleted users
 
-[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group
-has at least one [enterprise user](../enterprise_user/_index.md), you can reassign contributions
-only to enterprise users in your organization in the UI or by using a CSV file.
-This feature is meant to prevent accidental reassignment to users outside your organization.
+Contributions on the source instance that were made by a now deleted user are mapped on the destination instance to
+the ["Ghost User"](../../administration/internal_users.md), except when:
 
-{{< alert type="note" >}}
-
-When you use a supported method to import projects to a
-[personal namespace](../namespace/_index.md#types-of-namespaces),
-user contribution mapping is not supported.
-When you import to a personal namespace, all contributions are assigned to the
-personal namespace owner and they cannot be reassigned.
-
-{{< /alert >}}
+- The contribution was never properly detached from the deleted user on the source instance.
+- Migrating from Bitbucket Server.
 
 ## Requirements
 
@@ -109,10 +92,6 @@ personal namespace owner and they cannot be reassigned.
 
 Instead of immediately assigning contributions and memberships to users on the destination instance, a
 placeholder user is created for any active, inactive, or bot user with imported contributions or memberships.
-For deleted users on the source instance, placeholders are created
-without all [placeholder user attributes](#placeholder-user-attributes).
-You should [keep these users as placeholders](#keep-as-placeholder).
-For more information, see [issue 506432](https://gitlab.com/gitlab-org/gitlab/-/issues/506432).
 
 Both contributions and memberships are first assigned to these placeholder users and can be reassigned after import
 to existing users on the destination instance.

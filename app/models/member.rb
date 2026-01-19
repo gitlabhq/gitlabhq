@@ -755,10 +755,6 @@ class Member < ApplicationRecord
       run_after_commit { send_access_level_updated_notification }
     end
 
-    if pipeline_schedule_ownership_revoked?
-      run_after_commit { notify_unavailable_owned_pipeline_schedules(user.id, source) }
-    end
-
     if saved_change_to_expires_at?
       run_after_commit { Members::ExpirationDateUpdatedMailer.with(member: self, member_source_type: real_source_type).email.deliver_later }
     end
@@ -767,10 +763,6 @@ class Member < ApplicationRecord
   end
 
   def post_destroy_member_hook
-    if access_level&.>=(Gitlab::Access::DEVELOPER)
-      run_after_commit { notify_unavailable_owned_pipeline_schedules(user.id, source) }
-    end
-
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 

@@ -523,7 +523,7 @@ command = [
     "--storage-driver=overlay2"
 ]
 entrypoint = ["dockerd"]
-name = "docker:20.10.12-dind"
+name = "docker:29.1.4-dind"
 ```
 
 {{< alert type="note" >}}
@@ -599,7 +599,7 @@ command = [
     "--storage-driver=overlay2"
 ]
 entrypoint = ["dockerd"]
-name = "docker:20.10.12-dind"
+name = "docker:29.1.4-dind"
 ```
 
 1. [Set the custom configuration to your runner](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template).

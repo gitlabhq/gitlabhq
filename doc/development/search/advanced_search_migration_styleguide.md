@@ -205,6 +205,14 @@ Requirements:
 - For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
 - For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
 
+{{< alert type="note" >}}
+
+This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
+result limit. This constraint significantly impacts performance when backfilling large datasets,
+as the migration must iterate slowly through the data in smaller batches.
+
+{{< /alert >}}
+
 Single field example:
 
 ```ruby
@@ -471,6 +479,10 @@ Reindexes all documents in the index that stores the specified document type and
 
 Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
 The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+
+This migration helper uses the scroll API to handle larger batches (potentially >10,000 records)
+more efficiently, while the queue threshold prevents overwhelming downstream processing by pausing
+the migration when the bookkeeping queue exceeds capacity.
 
 {{< alert type="note" >}}
 

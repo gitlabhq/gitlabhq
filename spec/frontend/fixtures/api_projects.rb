@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request do
+RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request, feature_category: :groups_and_projects do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 

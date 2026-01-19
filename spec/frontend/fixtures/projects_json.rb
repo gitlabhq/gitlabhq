@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects JSON endpoints (JavaScript fixtures)', type: :controller do
+RSpec.describe 'Projects JSON endpoints (JavaScript fixtures)', type: :controller, feature_category: :groups_and_projects do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin, name: 'root') }

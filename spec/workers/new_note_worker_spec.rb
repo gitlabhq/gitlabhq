@@ -14,7 +14,8 @@ RSpec.describe NewNoteWorker, feature_category: :team_planning do
       described_class.new.perform(note.id)
     end
 
-    it "calls Notes::PostProcessService#execute" do
+    it "calls Notes::PostProcessService#execute",
+      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24563' do
       expect_next_instance_of(Notes::PostProcessService) do |service|
         expect(service).to receive(:execute)
       end

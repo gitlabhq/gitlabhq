@@ -68,6 +68,11 @@ module Gitlab
         store.subscribe ::Pages::ResetPagesDefaultDomainRedirectWorker, to: ::Pages::Domains::PagesDomainDeletedEvent
         store.subscribe ::MergeRequests::ProcessDraftNotePublishedWorker, to: ::MergeRequests::DraftNotePublishedEvent
 
+        store.subscribe ::Ci::PipelineSchedules::DeactivateSchedulesWorker,
+          to: ::ProjectAuthorizations::AuthorizationsRemovedEvent
+        store.subscribe ::Ci::PipelineSchedules::DeactivateSchedulesWorker,
+          to: ::ProjectAuthorizations::AuthorizationsAddedEvent
+
         subscribe_to_member_destroyed_events(store)
         subscribe_to_namespace_transfered_events(store)
       end
