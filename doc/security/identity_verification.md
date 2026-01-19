@@ -28,7 +28,10 @@ three stages of verification to register an account:
 - **Medium-risk users** - Phone number verification.
 - **High-risk users** - Credit card verification.
 
-Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md) are exempt from identity verification.
+By default, users provisioned with SAML or SCIM must complete email verification. You
+can [bypass email verification](../user/group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains)
+by adding a custom domain. GitLab automatically confirms user accounts when their email
+domain matches.
 
 ## Email verification
 

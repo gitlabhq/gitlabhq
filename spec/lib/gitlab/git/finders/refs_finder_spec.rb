@@ -117,6 +117,81 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
       end
     end
 
+    describe 'Wildcard search' do
+      context 'when searching tags with wildcard' do
+        let(:params) do
+          { search: 'v*', ref_type: :tags }
+        end
+
+        it 'matches only tags starting with the pattern' do
+          expect(subject.map(&:name)).to match_array(['v1.0.0', 'v1.1.0', 'v1.1.1'])
+        end
+      end
+
+      context 'when searching branches with wildcard' do
+        before do
+          project.repository.create_branch('feature-123')
+          project.repository.create_branch('my-feature-789')
+        end
+
+        after do
+          project.repository.delete_branch('feature-123')
+          project.repository.delete_branch('my-feature-789')
+        end
+
+        let(:params) do
+          { search: 'feature*', ref_type: :branches }
+        end
+
+        it 'matches only branches starting with the pattern' do
+          expect(subject.map(&:name)).to include('feature-123')
+          expect(subject.map(&:name)).not_to include('my-feature-789')
+        end
+      end
+
+      context 'when wildcard is at the beginning' do
+        before do
+          project.repository.create_branch('test-branch')
+          project.repository.create_branch('my-test')
+        end
+
+        after do
+          project.repository.delete_branch('test-branch')
+          project.repository.delete_branch('my-test')
+        end
+
+        let(:params) do
+          { search: '*test', ref_type: :branches }
+        end
+
+        it 'uses wildcard pattern' do
+          expect(subject.map(&:name)).to include('my-test')
+          expect(subject.map(&:name)).not_to include('test-branch')
+        end
+      end
+
+      context 'when wildcard is in the middle' do
+        before do
+          project.repository.create_branch('v1-rc1')
+          project.repository.create_branch('v1-beta')
+        end
+
+        after do
+          project.repository.delete_branch('v1-rc1')
+          project.repository.delete_branch('v1-beta')
+        end
+
+        let(:params) do
+          { search: 'v1*rc1', ref_type: :branches }
+        end
+
+        it 'uses wildcard pattern' do
+          expect(subject.map(&:name)).to include('v1-rc1')
+          expect(subject.map(&:name)).not_to include('v1-beta')
+        end
+      end
+    end
+
     describe 'Sort' do
       context 'without sort' do
         let(:params) do

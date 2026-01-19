@@ -484,8 +484,7 @@ export default [
             '^router-link$',
             '^router-view$',
             '^gl-emoji$',
-            'fe-island-duo-next',
-            'fe-island-visual-ci-editor',
+            'fe-island-duo-next'
           ],
         },
       ],
