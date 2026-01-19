@@ -29,6 +29,7 @@ The following Rake tasks are available for use with GitLab:
 | Tasks                                                                                                 | Description |
 |:------------------------------------------------------------------------------------------------------|:------------|
 | [Access token expiration tasks](tokens/_index.md)                                                     | Bulk extend or remove expiration dates for access tokens. |
+| [AI Catalog external agents](ai_catalog.md)                                                           | Seed AI Catalog external agents. |
 | [Back up and restore](../backup_restore/_index.md)                                                    | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                                                                | Clean up unneeded items from GitLab instances. |
 | Development                                                                                           | Tasks for GitLab contributors. For more information, see the development documentation. |
