@@ -6,7 +6,6 @@ Style/EmptyElse:
     - 'app/controllers/google_api/authorizations_controller.rb'
     - 'app/finders/group_finder.rb'
     - 'app/models/legacy_diff_discussion.rb'
-    - 'app/models/resource_state_event.rb'
     - 'app/models/resource_timebox_event.rb'
     - 'app/services/award_emojis/add_service.rb'
     - 'config/initializers/doorkeeper_openid_connect.rb'

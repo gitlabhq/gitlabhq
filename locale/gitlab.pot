@@ -54013,6 +54013,9 @@ msgstr ""
 msgid "Projects contributed to"
 msgstr ""
 
+msgid "Projects could not be loaded. Refresh the page to try again."
+msgstr ""
+
 msgid "Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more."
 msgstr ""
 
@@ -54351,10 +54354,22 @@ msgstr ""
 msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
 msgstr ""
 
+msgid "Projects|Browse projects to learn from and contribute to."
+msgstr ""
+
 msgid "Projects|Copy project ID: %{id}"
 msgstr ""
 
+msgid "Projects|Explore and collaborate on open-source projects"
+msgstr ""
+
+msgid "Projects|No inactive projects found"
+msgstr ""
+
 msgid "Projects|No projects found."
+msgstr ""
+
+msgid "Projects|No trending projects found"
 msgstr ""
 
 msgid "Projects|Project ID copied to clipboard."
@@ -54364,6 +54379,12 @@ msgid "Projects|Projects that are archived or pending deletion will appear here.
 msgstr ""
 
 msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
+msgstr ""
+
+msgid "Projects|View projects that are archived or pending deletion."
+msgstr ""
+
+msgid "Projects|View projects that are trending."
 msgstr ""
 
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
@@ -61852,6 +61873,9 @@ msgstr ""
 msgid "SecurityOrchestration|Inherited policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Input only one value. Wildcards are supported."
+msgstr ""
+
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
 msgstr ""
 
@@ -62299,6 +62323,9 @@ msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|Select list type"
+msgstr ""
+
+msgid "SecurityOrchestration|Select one of the criteria"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policies"

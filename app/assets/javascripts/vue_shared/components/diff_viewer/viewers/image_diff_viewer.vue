@@ -16,11 +16,13 @@ export default {
     },
     newPath: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     oldPath: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     newSize: {
       type: Number,
@@ -81,8 +83,10 @@ export default {
     <div v-if="diffMode === $options.diffModes.replaced" class="diff-viewer">
       <div class="image js-replaced-image">
         <component :is="imageViewComponent" v-bind="$props">
-          <template #image-overlay="{ renderedWidth, renderedHeight }">
+          <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
             <slot
+              :width="width"
+              :height="height"
               :rendered-width="renderedWidth"
               :rendered-height="renderedHeight"
               name="image-overlay"
@@ -133,8 +137,13 @@ export default {
           ]"
           :encode-path="encodePath"
         >
-          <template v-if="isNew || isRenamed" #image-overlay="{ renderedWidth, renderedHeight }">
+          <template
+            v-if="isNew || isRenamed"
+            #image-overlay="{ width, height, renderedWidth, renderedHeight }"
+          >
             <slot
+              :width="width"
+              :height="height"
               :rendered-width="renderedWidth"
               :rendered-height="renderedHeight"
               name="image-overlay"

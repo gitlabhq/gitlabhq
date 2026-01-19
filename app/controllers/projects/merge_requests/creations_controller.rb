@@ -36,10 +36,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @rapid_diffs_presenter = ::RapidDiffs::MergeRequestCreationPresenter.new(
       @merge_request,
-      project,
-      diff_view,
-      diff_options,
-      { merge_request: merge_request_params }
+      project: project,
+      diff_view: diff_view,
+      diff_options: diff_options,
+      request_params: { merge_request: merge_request_params }
     )
   end
 

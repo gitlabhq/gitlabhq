@@ -95,7 +95,8 @@ describe('SetStatusForm', () => {
             },
           });
 
-          expect(wrapper.findByRole('button', { name: '11:00 AM' }).exists()).toBe(true);
+          // Combobox is named externally by the parent GlFormGroup <label>
+          expect(wrapper.findByRole('combobox').text()).toBe('11:00 AM');
         });
       });
 
@@ -107,9 +108,8 @@ describe('SetStatusForm', () => {
             },
           });
 
-          expect(wrapper.findByRole('button', { name: 'Dec 6, 2022, 11:00 AM' }).exists()).toBe(
-            true,
-          );
+          // Combobox is named externally by the parent GlFormGroup <label>
+          expect(wrapper.findByRole('combobox').text()).toBe('Dec 6, 2022, 11:00 AM');
         });
       });
 
@@ -123,7 +123,8 @@ describe('SetStatusForm', () => {
               },
             });
 
-            expect(wrapper.findByRole('button', { name: '12:30 AM' }).exists()).toBe(true);
+            // Combobox is named externally by the parent GlFormGroup <label>
+            expect(wrapper.findByRole('combobox').text()).toBe('12:30 AM');
           });
         });
 
@@ -136,9 +137,8 @@ describe('SetStatusForm', () => {
               },
             });
 
-            expect(wrapper.findByRole('button', { name: 'Dec 6, 2022, 12:00 AM' }).exists()).toBe(
-              true,
-            );
+            // Combobox is named externally by the parent GlFormGroup <label>
+            expect(wrapper.findByRole('combobox').text()).toBe('Dec 6, 2022, 12:00 AM');
           });
         });
       });
@@ -148,7 +148,8 @@ describe('SetStatusForm', () => {
       it('displays `Never`', async () => {
         await createComponent();
 
-        expect(wrapper.findByRole('button', { name: NEVER_TIME_RANGE.label }).exists()).toBe(true);
+        // Combobox is named externally by the parent GlFormGroup <label>
+        expect(wrapper.findByRole('combobox').text()).toBe(NEVER_TIME_RANGE.label);
       });
     });
   });

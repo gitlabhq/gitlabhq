@@ -34,38 +34,6 @@
     }
   }
 
-  // Increased border radii for GlModal
-  .gl-modal .modal-content {
-    @apply gl-rounded-[1rem] #{!important};
-  }
-
-  // Increased border radii for drawers
-  .gl-drawer {
-    @apply gl-rounded-l-[1rem];
-
-    .gl-drawer-body-scrim::after {
-      @apply gl-rounded-bl-[1rem];
-    }
-  }
-
-  // Increased border radii for GlAlert
-  .gl-alert {
-    @apply gl-rounded-lg;
-  }
-
-  // Increased border radii for GlCard
-  .gl-card {
-    @apply gl-rounded-lg;
-  }
-
-  .gl-card-header {
-    @apply gl-rounded-t-lg;
-  }
-
-  .gl-card-footer {
-    @apply gl-rounded-b-lg;
-  }
-
   // Discussion file comment
   .discussion-body .diff-file .file-title.file-title-flex-parent {
     @apply gl-rounded-none #{!important};

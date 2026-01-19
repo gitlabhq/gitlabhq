@@ -233,7 +233,11 @@ export default {
             :is-internal-note="note.internal"
             :is-imported="note.imported"
             :show-avatar="!timelineLayout"
-          />
+          >
+            <template #avatar-badge>
+              <slot name="avatar-badge"></slot>
+            </template>
+          </note-header>
           <note-actions
             :author-id="authorId"
             :note-url="note.noteable_note_url"

@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, unionBy } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
@@ -40,6 +40,7 @@ export default {
   },
   data() {
     return {
+      assigneeToggleId: uniqueId('wi-assignee-toggle-'),
       currentUser: undefined,
       searchStarted: false,
       searchTerm: '',
@@ -175,7 +176,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="__('Assignee')">
+  <gl-form-group :label="__('Assignee')" :label-for="assigneeToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -187,6 +188,7 @@ export default {
       searchable
       :searching="isLoading"
       :selected="selectedId"
+      :toggle-id="assigneeToggleId"
       :toggle-text="toggleText"
       :disabled="disabled"
       @reset="reset"

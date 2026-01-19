@@ -137,7 +137,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/ci/parsers/test/junit_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/command_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
-    - 'spec/lib/gitlab/ci/status/build/failed_spec.rb'
     - 'spec/lib/gitlab/ci/trace/remote_checksum_spec.rb'
     - 'spec/lib/gitlab/cleanup/orphan_lfs_file_references_spec.rb'
     - 'spec/lib/gitlab/cleanup/project_uploads_spec.rb'

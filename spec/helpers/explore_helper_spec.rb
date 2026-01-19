@@ -46,4 +46,14 @@ RSpec.describe ExploreHelper do
       end
     end
   end
+
+  describe '#explore_projects_app_data' do
+    it 'returns the correct data hash' do
+      expect(helper.explore_projects_app_data).to eq({
+        initial_sort: 'created_desc',
+        programming_languages: ProgrammingLanguage.most_popular.to_json,
+        base_path: '/explore/projects'
+      })
+    end
+  end
 end

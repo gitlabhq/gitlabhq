@@ -518,10 +518,6 @@ module QA
         ENV['QA_EE_ACTIVATION_CODE']
       end
 
-      def quarantine_disabled?
-        enabled?(ENV['DISABLE_QUARANTINE'], default: false)
-      end
-
       def validate_resource_reuse?
         enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
       end

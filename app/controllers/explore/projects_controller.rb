@@ -17,6 +17,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   before_action only: [:index, :trending, :starred] do
     push_frontend_feature_flag(:explore_projects_vue, current_user)
+    push_frontend_feature_flag(:retire_trending_projects, current_user)
 
     # For background information on the limit, see:
     #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357

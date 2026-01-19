@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup, GlButton } from '@gitlab/ui';
-import { debounce, unionBy } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, n__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -35,6 +35,7 @@ export default {
   },
   data() {
     return {
+      moveToggleId: uniqueId('wi-move-toggle-'),
       searchStarted: false,
       selectedId: undefined,
       searchTerm: '',
@@ -197,7 +198,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="__('Move')">
+  <gl-form-group :label="__('Move')" :label-for="moveToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -209,6 +210,7 @@ export default {
       searchable
       :searching="isLoading"
       :selected="selectedId"
+      :toggle-id="moveToggleId"
       :toggle-text="toggleText"
       :disabled="disabled || isMoving || hasNoItems"
       @reset="reset"

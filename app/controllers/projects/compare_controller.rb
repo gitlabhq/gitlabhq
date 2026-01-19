@@ -35,9 +35,9 @@ class Projects::CompareController < Projects::ApplicationController
         apply_diff_view_cookie!
         @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(
           compare,
-          diff_view,
-          diff_options,
-          compare_params
+          diff_view: diff_view,
+          diff_options: diff_options,
+          request_params: compare_params
         )
       end
 

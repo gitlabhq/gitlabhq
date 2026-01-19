@@ -6,8 +6,8 @@ module RapidDiffs
 
     presents ::MergeRequest, as: :resource
 
-    def initialize(subject, project, diff_view, diff_options, request_params = nil)
-      super(subject, diff_view, diff_options, request_params)
+    def initialize(subject, project:, diff_view:, diff_options:, request_params: nil)
+      super(subject, diff_view:, diff_options:, request_params:)
       @project = project
     end
 

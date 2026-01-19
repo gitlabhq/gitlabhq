@@ -1,7 +1,11 @@
 @use 'constants';
 
-.rd-discussion-timeline {
+.rd-discussion-timeline,
+.rd-image-with-discussions {
   --content-border-radius: 0 0 #{$gl-border-radius-lg} #{$gl-border-radius-lg};
+}
+
+.rd-discussion-timeline {
   @apply gl-max-w-limited;
 }
 

@@ -18,11 +18,11 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 end
 
-RSpec.shared_examples 'pipelines on packages list' do
+RSpec.shared_examples 'pipelines on packages list' do |is_group_page: false|
   let_it_be(:pipelines) do
     %w[c83d6e391c22777fca1ed3012fce84f633d7fed0
       d83d6e391c22777fca1ed3012fce84f633d7fed0].map do |sha|
-      create(:ci_pipeline, project: project, sha: sha)
+      create(:ci_pipeline, project: project, user: user, sha: sha)
     end
   end
 
@@ -32,13 +32,17 @@ RSpec.shared_examples 'pipelines on packages list' do
     end
   end
 
-  it 'shows the latest pipeline' do
+  it 'shows the latest pipeline and user details' do
     # Test after reload
     page.evaluate_script 'window.location.reload()'
 
     wait_for_requests
 
     expect(page).to have_content('d83d6e39')
+
+    publish_message = is_group_page ? "Published to #{project.name} by #{user.name}" : "Published by #{user.name}"
+
+    expect(page).to have_content(publish_message)
   end
 end
 

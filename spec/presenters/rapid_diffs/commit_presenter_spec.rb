@@ -12,7 +12,10 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/commit/#{commit.sha}" }
 
-  subject(:presenter) { described_class.new(commit, diff_view, diff_options, nil, current_user) }
+  subject(:presenter) do
+    described_class.new(commit, diff_view: diff_view, diff_options: diff_options, request_params: nil,
+      current_user: current_user)
+  end
 
   before do
     allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)

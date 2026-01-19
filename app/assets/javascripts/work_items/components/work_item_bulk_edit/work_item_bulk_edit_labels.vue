@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, intersectionBy, unionBy } from 'lodash';
+import { debounce, intersectionBy, unionBy, uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, createListFormat, s__, sprintf } from '~/locale';
@@ -48,6 +48,7 @@ export default {
   data() {
     return {
       labelsCache: [],
+      labelsToggleId: uniqueId('wi-labels-toggle-'),
       searchLabels: [],
       searchStarted: false,
       searchTerm: '',
@@ -168,7 +169,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="formLabel">
+  <gl-form-group :label="formLabel" :label-for="labelsToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -181,6 +182,7 @@ export default {
       searchable
       :searching="isLoading"
       :selected="selectedIds"
+      :toggle-id="labelsToggleId"
       :toggle-text="toggleText"
       :disabled="disabled"
       @reset="handleSelect([])"

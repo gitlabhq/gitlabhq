@@ -1,5 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 
@@ -36,6 +37,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      dropdownToggleId: uniqueId('wi-dropdown-toggle-'),
+    };
   },
   computed: {
     listboxItems() {
@@ -74,7 +80,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="label">
+  <gl-form-group :label="label" :label-for="dropdownToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -83,6 +89,7 @@ export default {
       :items="listboxItems"
       :reset-button-label="__('Reset')"
       :selected="value"
+      :toggle-id="dropdownToggleId"
       :toggle-text="toggleText"
       :disabled="disabled"
       @reset="reset"

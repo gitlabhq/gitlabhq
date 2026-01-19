@@ -303,9 +303,10 @@ export default {
           @shown="onShowDropdown"
           @hidden="onHideDropdown"
         >
-          <template #toggle>
+          <template #toggle="{ accessibilityAttributes }">
             <div class="gl-min-h-7 gl-w-full">
               <gl-button
+                v-bind="accessibilityAttributes"
                 class="gl-new-dropdown-toggle gl-w-full @sm/panel:!gl-hidden"
                 button-text-classes="gl-flex gl-justify-between gl-w-full"
                 category="secondary"

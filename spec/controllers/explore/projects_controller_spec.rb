@@ -6,10 +6,15 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
   shared_examples 'pushes feature flag' do |action|
     render_views
 
-    it 'pushes explore_projects_vue feature flag' do
+    it 'pushes expected feature flag to the frontend' do
+      stub_feature_flags(explore_projects_vue: false, retire_trending_projects: false)
+
       get action
 
-      expect(response.body).to have_pushed_frontend_feature_flags(exploreProjectsVue: true)
+      expect(response.body).to have_pushed_frontend_feature_flags(
+        exploreProjectsVue: false,
+        retireTrendingProjects: false
+      ), response.body
     end
   end
 

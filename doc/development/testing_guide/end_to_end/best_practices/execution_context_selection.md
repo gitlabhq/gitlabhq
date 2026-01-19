@@ -132,4 +132,4 @@ test only when it runs against a specific environment. The syntax is exactly the
 hash is nested in the [`quarantine: { ... }`](https://handbook.gitlab.com/handbook/engineering/testing/pipeline-triage/#quarantining-tests) hash.
 For example, `quarantine: { only: { subdomain: :staging } }` only quarantines the test when run against `staging`.
 
-The quarantine feature can be explicitly disabled with the `DISABLE_QUARANTINE` environment variable. This can be useful when running tests locally.
+The quarantine feature can be explicitly disabled with the `GLCI_DISABLE_QUARANTINE` environment variable. This can be useful when running tests locally.

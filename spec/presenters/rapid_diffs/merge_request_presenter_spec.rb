@@ -11,7 +11,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
 
-  subject(:presenter) { described_class.new(merge_request, diff_view, diff_options) }
+  subject(:presenter) { described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options) }
 
   before do
     allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)

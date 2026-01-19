@@ -156,6 +156,17 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     getDiscussionById() {
       return (id) => this.discussions.find((discussion) => discussion.id === id);
     },
+    getImageDiscussions() {
+      return (oldPath, newPath) =>
+        this.discussions.filter((discussion) => {
+          const position = discussion.notes[0].position || {};
+          return (
+            position.position_type === 'image' &&
+            position.old_path === oldPath &&
+            position.new_path === newPath
+          );
+        });
+    },
     allNotesById() {
       return this.discussions.reduce((acc, discussion) => {
         discussion.notes.forEach((note) => Object.assign(acc, { [note.id]: note }));

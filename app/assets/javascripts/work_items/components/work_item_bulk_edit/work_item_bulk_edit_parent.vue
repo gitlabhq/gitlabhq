@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, unionBy } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      parentToggleId: uniqueId('wi-parent-toggle-'),
       searchStarted: false,
       searchTerm: '',
       selectedId: this.value,
@@ -287,7 +288,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="__('Parent')">
+  <gl-form-group :label="__('Parent')" :label-for="parentToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -299,6 +300,7 @@ export default {
       searchable
       :searching="isLoading"
       :selected="selectedId"
+      :toggle-id="parentToggleId"
       :toggle-text="toggleText"
       :disabled="disabled"
       @reset="reset"

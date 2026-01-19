@@ -2,7 +2,7 @@
 
 = render 'explore/projects/head'
 - if Feature.enabled?(:explore_projects_vue, current_user)
-  #js-explore-projects
+  #js-explore-projects{ data: explore_projects_app_data }
 - else
   = render 'explore/projects/nav'
   = render 'projects', projects: @projects

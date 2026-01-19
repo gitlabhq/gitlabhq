@@ -605,4 +605,30 @@ describe('diffDiscussions store', () => {
       expect(discussions).toHaveLength(0);
     });
   });
+
+  describe('getImageDiscussions', () => {
+    it('returns discussions with matching image position type', () => {
+      useDiffDiscussions().discussions = [
+        {
+          id: 1,
+          notes: [{ note: 'text note' }],
+        },
+        {
+          id: 2,
+          notes: [
+            {
+              position: {
+                position_type: 'image',
+                old_path: 'old.png',
+                new_path: 'new.png',
+              },
+            },
+          ],
+        },
+      ];
+      expect(useDiffDiscussions().getImageDiscussions('old.png', 'new.png')).toMatchObject([
+        useDiffDiscussions().discussions[1],
+      ]);
+    });
+  });
 });

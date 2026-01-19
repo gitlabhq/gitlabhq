@@ -215,6 +215,32 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         expect(discussion['notes'].first['note']).to eq('This is a positioned discussion')
       end
 
+      context 'with image comment' do
+        let(:position_data) do
+          {
+            new_path: diff_file.new_path,
+            old_path: diff_file.old_path,
+            position_type: 'image',
+            width: 10,
+            height: 10,
+            x: 5,
+            y: 2
+          }
+        end
+
+        it 'creates a positioned discussion successfully' do
+          expect { send_request }.to change { Note.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          json_response = Gitlab::Json.parse(response.body)
+
+          discussion = json_response['discussion']
+          expect(discussion['diff_discussion']).to be true
+          expect(discussion['notes'].first['note']).to eq('This is a positioned discussion')
+          expect(discussion['notes'].first['position']['position_type']).to eq('image')
+        end
+      end
+
       context 'on a deleted line' do
         let_it_be(:sha) { "d59c60028b053793cecfb4022de34602e1a9218e" }
         let(:diff_file) { commit.diffs.diff_files.find { |f| f.old_path == 'files/js/commit.js.coffee' } }

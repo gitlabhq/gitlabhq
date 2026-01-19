@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumn from '~/boards/components/board_add_new_column.vue';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
@@ -48,7 +48,7 @@ describe('BoardAddNewColumn', () => {
       [createBoardListMutation, createHandler],
     ]);
 
-    wrapper = shallowMountExtended(BoardAddNewColumn, {
+    wrapper = mountExtended(BoardAddNewColumn, {
       apolloProvider: mockApollo,
       propsData: {
         listQueryVariables: {

@@ -99,6 +99,8 @@ export default {
       <img ref="contentImg" :src="safePath" @load="onImgLoad" />
       <slot
         name="image-overlay"
+        :width="width"
+        :height="height"
         :rendered-width="renderedWidth"
         :rendered-height="renderedHeight"
       ></slot>

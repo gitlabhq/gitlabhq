@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 
 describe('DiffDiscussions', () => {
@@ -138,6 +139,16 @@ describe('DiffDiscussions', () => {
     it('passes isLastDiscussion as true for single discussion', () => {
       createComponent({ discussions: [{ id: '1' }] });
       expect(wrapper.findComponent(NoteableDiscussion).props('isLastDiscussion')).toBe(true);
+    });
+  });
+
+  it('shows counter badge', () => {
+    createComponent({ discussions: [{ id: '1' }], counterBadgeVisible: true });
+    expect(wrapper.findComponent(DesignNotePin).exists()).toBe(true);
+    expect(wrapper.findComponent(DesignNotePin).props()).toMatchObject({
+      label: 1,
+      size: 'sm',
+      clickable: false,
     });
   });
 });

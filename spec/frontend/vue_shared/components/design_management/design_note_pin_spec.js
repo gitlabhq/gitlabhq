@@ -17,26 +17,6 @@ describe('Design note pin component', () => {
     });
   }
 
-  it('should match the snapshot of note without index', () => {
-    createComponent();
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
-  it('should match the snapshot of note with index', () => {
-    createComponent({ label: 1 });
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
-  it('should match the snapshot when pin is resolved', () => {
-    createComponent({ isResolved: true });
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
-  it('should match the snapshot when position is absent', () => {
-    createComponent({ position: null });
-    expect(wrapper.element).toMatchSnapshot();
-  });
-
   it('applies `on-image` class when isOnImage is true', () => {
     createComponent({ isOnImage: true });
 
@@ -47,6 +27,11 @@ describe('Design note pin component', () => {
     createComponent({ isDraft: true });
 
     expect(wrapper.find('.draft').exists()).toBe(true);
+  });
+
+  it('becomes non clickable', () => {
+    createComponent({ clickable: false });
+    expect(wrapper.find('button').exists()).toBe(false);
   });
 
   describe('size', () => {

@@ -261,11 +261,16 @@ export default {
       </template>
     </gl-form-checkbox>
 
-    <gl-form-group :label="$options.i18n.clearStatusAfterDropdownLabel" class="gl-mb-0">
+    <gl-form-group
+      :label="$options.i18n.clearStatusAfterDropdownLabel"
+      label-for="clear-status-after-value-listbox"
+      class="gl-mb-0"
+    >
       <gl-collapsible-listbox
         :selected="clearStatusAfterValue"
         :toggle-text="clearStatusAfterDropdownText"
         :items="clearStatusAfterDropdownItems"
+        toggle-id="clear-status-after-value-listbox"
         data-testid="clear-status-at-dropdown"
         @select="onClearStatusAfterValueChange"
       />

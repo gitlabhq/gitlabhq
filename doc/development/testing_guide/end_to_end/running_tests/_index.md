@@ -153,10 +153,10 @@ Tests can be put in quarantine by assigning `:quarantine` metadata. This means t
 bundle exec rspec --tag quarantine
 ```
 
-Alternatively, the `DISABLE_QUARATINE` variable can be used
+Alternatively, the `GLCI_DISABLE_QUARANTINE` variable can be used
 
 ```shell
-DISABLE_QUARANTINE=true bundle exec bin/qa Test::Instance::All http://localhost:3000
+GLCI_DISABLE_QUARANTINE=true bundle exec bin/qa Test::Instance::All http://localhost:3000
 ```
 
 ### Custom `bin/qa` test runner

@@ -137,7 +137,7 @@ describe('SetStatusModalWrapper', () => {
     });
 
     it('displays date and time that status will expire in dropdown toggle button', () => {
-      expect(wrapper.findByRole('button', { name: 'Dec 6, 2022, 11:00 AM' }).exists()).toBe(true);
+      expect(wrapper.findByRole('combobox').text()).toBe('Dec 6, 2022, 11:00 AM');
     });
   });
 

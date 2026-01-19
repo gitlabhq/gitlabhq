@@ -40,16 +40,72 @@ RSpec.describe Gitlab::TreeSummary, feature_category: :source_code_management do
 
     subject(:entries) { summary.summarize }
 
-    it 'returns an array of entries' do
-      expect(entries).to be_a(Array)
-      expect(entries.size).to eq(1)
+    context 'without LFS' do
+      before do
+        project.update!(lfs_enabled: false)
+      end
 
-      aggregate_failures do
-        expect(entries).to contain_exactly(
-          a_hash_including(file_name: 'a.txt', commit: have_attributes(id: commit.id))
-        )
+      it 'returns an array of entries without lock labels' do
+        expect(entries).to be_a(Array)
+        expect(entries.size).to eq(1)
 
-        expect(summary.resolved_commits.values).to match_array(entries.map { |entry| entry[:commit] })
+        aggregate_failures do
+          expect(entries).to contain_exactly(
+            a_hash_including(
+              file_name: 'a.txt',
+              commit: have_attributes(id: commit.id)
+            )
+          )
+          expect(project.lfs_enabled?).to be false
+          expect(entries.first).not_to have_key(:lock_label)
+          expect(summary.resolved_commits.values).to match_array(entries.map { |entry| entry[:commit] })
+        end
+      end
+    end
+
+    context 'with LFS enabled' do
+      before do
+        project.update!(lfs_enabled: true)
+        stub_lfs_setting(enabled: true)
+      end
+
+      context 'when file has LFS lock' do
+        let!(:lfs_file_lock) { create(:lfs_file_lock, project: project, path: 'a.txt') }
+
+        it 'returns an array of entries with lock labels' do
+          expect(entries).to be_a(Array)
+          expect(entries.size).to eq(1)
+
+          aggregate_failures do
+            expect(entries).to contain_exactly(
+              a_hash_including(
+                file_name: 'a.txt',
+                commit: have_attributes(id: commit.id),
+                lock_label: "Locked by #{lfs_file_lock.user.username}"
+              )
+            )
+            expect(project.lfs_enabled?).to be true
+            expect(summary.resolved_commits.values).to match_array(entries.map { |entry| entry[:commit] })
+          end
+        end
+      end
+
+      context 'when file has no LFS lock' do
+        it 'returns an array of entries without lock labels' do
+          expect(entries).to be_a(Array)
+          expect(entries.size).to eq(1)
+
+          aggregate_failures do
+            expect(entries).to contain_exactly(
+              a_hash_including(
+                file_name: 'a.txt',
+                commit: have_attributes(id: commit.id)
+              )
+            )
+
+            expect(entries.first).not_to have_key(:lock_label)
+          end
+        end
       end
     end
 

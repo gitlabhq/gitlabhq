@@ -12,6 +12,13 @@ fragment PackageData on Package {
       name
     }
   }
+  metadata {
+    ... on ConanMetadata {
+      id
+      packageChannel
+      packageUsername
+    }
+  }
   pipelines(first: 1) {
     nodes {
       id

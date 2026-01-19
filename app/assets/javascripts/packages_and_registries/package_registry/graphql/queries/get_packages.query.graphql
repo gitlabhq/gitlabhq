@@ -31,13 +31,6 @@ query getPackages(
       count
       nodes {
         ...PackageData
-        metadata {
-          ... on ConanMetadata {
-            id
-            packageChannel
-            packageUsername
-          }
-        }
       }
       pageInfo {
         ...PageInfo
@@ -64,13 +57,6 @@ query getPackages(
           id
           name
           webUrl
-        }
-        metadata {
-          ... on ConanMetadata {
-            id
-            packageChannel
-            packageUsername
-          }
         }
       }
       pageInfo {

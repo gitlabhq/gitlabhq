@@ -148,8 +148,10 @@ export default {
           :encode-path="encodePath"
           @imgLoaded="onionNewImgLoaded"
         >
-          <template #image-overlay="{ renderedWidth, renderedHeight }">
+          <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
             <slot
+              :width="width"
+              :height="height"
               :rendered-width="renderedWidth"
               :rendered-height="renderedHeight"
               name="image-overlay"

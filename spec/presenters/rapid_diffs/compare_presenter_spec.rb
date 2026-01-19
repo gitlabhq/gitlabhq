@@ -12,7 +12,9 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/compare" }
   let(:url_params) { '?from=a&to=b' }
 
-  subject(:presenter) { described_class.new(compare, diff_view, diff_options, request_params) }
+  subject(:presenter) do
+    described_class.new(compare, diff_view: diff_view, diff_options: diff_options, request_params: request_params)
+  end
 
   describe '#diffs_slice' do
     subject(:diffs_slice) { presenter.diffs_slice }

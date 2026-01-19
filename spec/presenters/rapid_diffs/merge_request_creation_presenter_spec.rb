@@ -12,7 +12,10 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/new" }
   let(:url_params) { '?source_branch=a&target_branch=b' }
 
-  subject(:presenter) { described_class.new(merge_request, project, diff_view, diff_options, request_params) }
+  subject(:presenter) do
+    described_class.new(merge_request, project: project, diff_view: diff_view, diff_options: diff_options,
+      request_params: request_params)
+  end
 
   describe '#diffs_slice' do
     subject(:diffs_slice) { presenter.diffs_slice }

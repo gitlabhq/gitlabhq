@@ -160,9 +160,10 @@ export default {
       @shown="onShow"
       @hidden="onHide"
     >
-      <template #toggle>
+      <template #toggle="{ accessibilityAttributes }">
         <gl-button
           v-gl-tooltip
+          v-bind="accessibilityAttributes"
           :title="buttonTitle || $options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
           :category="toggleCategory"

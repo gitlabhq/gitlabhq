@@ -147,9 +147,10 @@ export default {
     @hidden="onHideDropdown"
     @shown="onShowDropdown"
   >
-    <template #toggle>
+    <template #toggle="{ accessibilityAttributes }">
       <gl-button
         v-gl-tooltip.hover="dropdownTooltipTitle"
+        v-bind="accessibilityAttributes"
         data-testid="pipeline-mini-graph-dropdown-toggle"
         :title="dropdownTooltipTitle"
         class="!gl-rounded-full"

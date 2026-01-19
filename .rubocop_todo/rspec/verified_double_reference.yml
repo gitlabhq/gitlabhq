@@ -122,7 +122,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/lib/gitlab/bitbucket_import/importers/issues_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importers/pull_requests_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/parallel_scheduling_spec.rb'
-    - 'spec/lib/gitlab/ci/variables/downstream/generator_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_wrapper_spec.rb'
     - 'spec/lib/gitlab/database/health_status/signals_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing/session_map_spec.rb'

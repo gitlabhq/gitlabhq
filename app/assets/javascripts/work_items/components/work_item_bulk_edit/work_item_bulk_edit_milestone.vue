@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, unionBy } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash';
 import { createAlert } from '~/alert';
 import { MILESTONE_STATE } from '~/sidebar/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
@@ -37,6 +37,7 @@ export default {
   },
   data() {
     return {
+      milestoneToggleId: uniqueId('wi-milestone-toggle-'),
       searchStarted: false,
       searchTerm: '',
       selectedId: this.value,
@@ -157,7 +158,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="__('Milestone')">
+  <gl-form-group :label="__('Milestone')" :label-for="milestoneToggleId">
     <gl-collapsible-listbox
       ref="listbox"
       block
@@ -169,6 +170,7 @@ export default {
       searchable
       :searching="isLoading"
       :selected="selectedId"
+      :toggle-id="milestoneToggleId"
       :toggle-text="toggleText"
       :disabled="disabled"
       @reset="reset"

@@ -107,11 +107,7 @@ export default {
                   @startEditing="$emit('startEditing', note)"
                   @cancelEditing="$emit('cancelEditing', note)"
                   @toggleAward="$emit('toggleAward', { note, award: $event })"
-                >
-                  <template #avatar-badge>
-                    <slot name="avatar-badge"></slot>
-                  </template>
-                </noteable-note>
+                />
               </template>
               <slot name="footer" :has-replies="hasReplies"></slot>
             </template>

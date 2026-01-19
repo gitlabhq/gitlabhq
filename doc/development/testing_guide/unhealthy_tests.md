@@ -247,17 +247,7 @@ describe '#flaky-method', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/is
 end
 ```
 
-This means it will be skipped in CI. By default, the quarantined tests will run locally.
-
-We can skip them in local development as well by running with `--tag ~quarantine`:
-
-```shell
-# Bash
-bin/rspec --tag ~quarantine
-
-# ZSH
-bin/rspec --tag \~quarantine
-```
+This means it will be [skipped as pending by the QuarantineFormatter](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling/-/blob/main/lib/gitlab_quality/test_tooling/test_quarantine/quarantine_helper.rb#L34).
 
 Also, ensure that:
 

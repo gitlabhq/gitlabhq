@@ -42,6 +42,14 @@ module ExploreHelper
     visibility_level.present? ? visibility_level_label(visibility_level.to_i) : _('Any')
   end
 
+  def explore_projects_app_data
+    {
+      initial_sort: project_list_sort_by,
+      programming_languages: programming_languages.to_json,
+      base_path: explore_projects_path
+    }
+  end
+
   private
 
   def request_path_with_options(options = {})

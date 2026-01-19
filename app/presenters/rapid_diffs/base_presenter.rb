@@ -2,7 +2,7 @@
 
 module RapidDiffs
   class BasePresenter < Gitlab::View::Presenter::Delegated
-    def initialize(subject, diff_view, diff_options, request_params = nil, environment = nil)
+    def initialize(subject, diff_view:, diff_options:, request_params: nil, environment: nil)
       super(subject)
       @diff_view = diff_view
       @diff_options = diff_options
