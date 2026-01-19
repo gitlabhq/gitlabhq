@@ -229,14 +229,6 @@ to match your username.
 
 ## Add external accounts to your user profile page
 
-{{< history >}}
-
-- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
-- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
-- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
-
-{{< /history >}}
-
 You can add links to certain other external accounts you might have, like Discord and X (formerly Twitter).
 They can help other users connect with you on other platforms.
 
@@ -246,15 +238,48 @@ To add links to other accounts:
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
-   - LinkedIn profile name.
    - BlueSky [`did:plc` identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
-   - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
-   - Discord username.
-   - X (formerly Twitter) @username.
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - GitHub username.
+   - LinkedIn profile name.
+   - [Mastodon handle](#add-a-mastodon-handle).
    - [ORCID](https://orcid.org/).
+   - X (formerly Twitter) @username.
 
    Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
+
+### Add a Mastodon handle
+
+{{< history >}}
+
+- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
+- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
+- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
+- Ability to verify Mastodon account using your GitLab user profile [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/504194) in GitLab 18.8. Feature flag `verify_mastodon_user` removed.
+
+{{< /history >}}
+
+To add a Mastodon handle:
+
+1. Add Mastodon handle to your GitLab profile.
+   1. Sign in to GitLab.
+   1. In the upper-right corner, select your avatar.
+   1. Select **Edit profile**.
+   1. In the **Social accounts** section, go to **Mastodon** and enter your handle. For example: `@alex.garcia@exampleServer`.
+   1. Select **Update profile settings**.
+1. Get the verification URI.
+   1. In the upper-right corner, select your avatar.
+   1. Select your name or username.
+   1. On the right side, select your Mastodon handle.
+   1, Copy the URI from the page that opens.
+1. Add verification to Mastodon.
+   1. Go to your Mastodon profile settings.
+   1. In the **Extra fields** section, enter the URI from earlier.
+   1. Save your Mastodon profile changes.
+
+Verify that a green checkmark is displayed next to your GitLab site's extra field in Mastodon.
+If a green checkmark is not displayed, you may need to perform additional troubleshooting.
 
 ## Show private contributions on your user profile page
 

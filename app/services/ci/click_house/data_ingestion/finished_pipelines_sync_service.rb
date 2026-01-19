@@ -30,7 +30,7 @@ module Ci
 
         INSERT_FINISHED_PIPELINES_QUERY = <<~SQL.squish
           INSERT INTO ci_finished_pipelines (#{CSV_MAPPING.keys.join(',')})
-          SETTINGS async_insert=1, wait_for_async_insert=1 FORMAT CSV
+          FORMAT CSV
         SQL
 
         def self.enabled?

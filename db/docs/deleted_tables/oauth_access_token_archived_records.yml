@@ -15,6 +15,7 @@ milestone: '18.5'
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
+organization_transfer_support: todo
 notes: |
   Temporary table for archiving oauth access tokens during retention implementation.
   Will be dropped after verification period.

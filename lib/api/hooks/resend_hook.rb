@@ -14,6 +14,7 @@ module API
         ]
         tags ['webhooks']
       end
+      route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do
         hook = find_hook
         if Feature.enabled?(:web_hook_event_resend_api_endpoint_rate_limit, Feature.current_request)

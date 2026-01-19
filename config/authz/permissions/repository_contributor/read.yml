@@ -1,0 +1,5 @@
+---
+name: read_repository_contributor
+description: Grants the ability to read repository contributors
+boundaries:
+  - project

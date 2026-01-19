@@ -54,4 +54,41 @@ RSpec.describe Types::PermissionTypes::Project do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#can_leave' do
+    let(:project) { nil }
+    let(:current_user) { nil }
+
+    subject { resolve_field(:can_leave, project, current_user: current_user) }
+
+    context 'when authenticated' do
+      let_it_be(:user) { create(:user, :with_namespace) }
+
+      let(:current_user) { user }
+
+      context 'when user is a member' do
+        let(:project) { create(:project, owners: user) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user is not a member' do
+        let(:project) { create(:project) }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when project is a personal project' do
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when unauthenticated' do
+      let(:project) { create(:project) }
+
+      it { is_expected.to be(false) }
+    end
+  end
 end

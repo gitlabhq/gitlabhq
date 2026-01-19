@@ -1,0 +1,14 @@
+---
+name: read_repository
+description: Grants the ability to read repositories contents and metadata
+permissions:
+  - read_repository_archive
+  - read_repository_blob
+  - read_repository_changelog
+  - read_repository_comparison
+  - read_repository_contributor
+  - read_repository_health
+  - read_repository_merge_base
+  - read_repository_tree
+boundaries:
+  - project

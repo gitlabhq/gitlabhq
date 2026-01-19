@@ -36,17 +36,18 @@ table_size: small
 
 ### Schema
 
-| Attribute                  | Type          | Required | Description |
-|----------------------------|---------------|----------|-------------|
-| `table_name`               | String        | yes      | Database table name. |
-| `classes`                  | Array(String) | no       | List of classes that are associated to this table. |
-| `feature_categories`       | Array(String) | yes      | List of feature categories using this table. |
-| `description`              | String        | no       | Text description of the information stored in the table, and its purpose. |
-| `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table. |
-| `milestone`                | String        | yes      | The milestone that introduced this table. |
-| `gitlab_schema`            | String        | yes      | GitLab schema name. |
-| `notes`                    | String        | no       | Use for comments, as Psych cannot parse YAML comments. |
-| `table_size`               | String        | yes      | Classification of current table size on GitLab.com[^1]. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
+| Attribute                       | Type          | Required    | Description |
+|---------------------------------|---------------|-------------|-------------|
+| `table_name`                    | String        | yes         | Database table name. |
+| `classes`                       | Array(String) | no          | List of classes that are associated to this table. |
+| `feature_categories`            | Array(String) | yes         | List of feature categories using this table. |
+| `description`                   | String        | no          | Text description of the information stored in the table, and its purpose. |
+| `introduced_by_url`             | URL           | no          | URL to the merge request or commit which introduced this table. |
+| `milestone`                     | String        | yes         | The milestone that introduced this table. |
+| `gitlab_schema`                 | String        | yes         | GitLab schema name. |
+| `notes`                         | String        | no          | Use for comments, as Psych cannot parse YAML comments. |
+| `table_size`                    | String        | yes         | Classification of current table size on GitLab.com[^1]. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
+| `organization_transfer_support` | String        | conditional | Required when `sharding_key` includes `organization_id`. See [Organization transfer support](#organization-transfer-support). |
 
 [^1] New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
 
@@ -151,3 +152,27 @@ When dropping a view, you should:
    - `gitlab_geo` view: `ee/db/geo/docs/deleted_views/`
 1. Add the fields `removed_by_url` and `removed_in_milestone` to the dictionary file.
 1. Include this change in the commit with the migration that drops the view.
+
+## Organization transfer support
+
+Tables sharded by `organization_id` must be properly handled when transferring users or groups between organizations. The `organization_transfer_support` field tracks whether this support has been implemented.
+
+### When required
+
+The `organization_transfer_support` field is **required** when a table's `sharding_key` includes `organization_id`.
+
+### Schema
+
+```yaml
+organization_transfer_support: <status_value>
+```
+
+The value must be either `supported` or `todo`.
+
+### Status values
+
+- **`supported`**: The table is properly handled in the organization transfer services.
+  - Required for all **new** tables sharded by `organization_id`.
+  - The table must be referenced in `app/services/organizations/users/transfer_service.rb` or `app/services/organizations/groups/transfer_service.rb`.
+- **`todo`**: The table needs organization transfer support but doesn't have it yet.
+  - Used for **existing** tables that were sharded by `organization_id` previously.

@@ -51,11 +51,17 @@ the top of the vulnerability's page.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
 
 {{< /history >}}
 
-GitLab Duo automatically analyzes Critical and High severity SAST vulnerabilities to identify potential false positives. This reduces noise in your vulnerability report by flagging findings that are likely not actual security risks.
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+GitLab Duo automatically analyzes critical and high severity SAST vulnerabilities to identify
+potential false positives. This reduces noise in your vulnerability report by flagging findings that
+are likely not actual security risks.
 
 For each analyzed vulnerability, GitLab Duo provides:
 
@@ -78,9 +84,13 @@ For more information, see [SAST false positive detection](false_positive_detecti
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17889) in GitLab 18.9 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_resolution` and `agentic_sast_vr_ui`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17889) in GitLab 18.9 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_resolution` and `agentic_sast_vr_ui`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab Duo automatically analyzes SAST vulnerabilities and generates merge requests with context-aware code fixes. This agentic approach uses multi-shot reasoning to resolve vulnerabilities with minimal human intervention.
 

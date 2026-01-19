@@ -25,6 +25,7 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         notes
         table_size
         partition_detach_info
+        organization_transfer_support
       ]
     end
 

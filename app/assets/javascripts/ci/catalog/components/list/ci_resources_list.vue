@@ -3,13 +3,13 @@ import { GlKeysetPagination } from '@gitlab/ui';
 
 import { TAB_NAME } from '~/ci/catalog/constants';
 import CiResourcesListItem from './ci_resources_list_item.vue';
-import CiResourcesAnalytics from './ci_analytics_list.vue';
+import CiAnalyticsList from './ci_analytics_list.vue';
 
 export default {
   name: 'CiResourcesList',
   components: {
     CiResourcesListItem,
-    CiResourcesAnalytics,
+    CiAnalyticsList,
     GlKeysetPagination,
   },
   props: {
@@ -36,7 +36,7 @@ export default {
 </script>
 <template>
   <div>
-    <ci-resources-analytics v-if="isAnalyticsTab" :resources="resources" />
+    <ci-analytics-list v-if="isAnalyticsTab" :resources="resources" />
     <ul v-else class="gl-p-0" data-testId="catalog-list-container">
       <ci-resources-list-item
         v-for="resource in resources"

@@ -1,0 +1,7 @@
+---
+name: revoke_cluster_agent_token
+description: Grants the ability to revoke cluster agent tokens
+boundaries:
+  - project
+permissions:
+  - revoke_cluster_agent_token

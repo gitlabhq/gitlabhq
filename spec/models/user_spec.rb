@@ -10001,6 +10001,50 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#can_leave_project?' do
+    let_it_be(:user) { create :user, :with_namespace }
+    let_it_be(:user_namespace_project) { create(:project, namespace: user.namespace) }
+    let_it_be(:user_member_project) { create(:project, :in_group, developers: [user]) }
+
+    subject(:can_leave_project) { user.can_leave_project?(member_or_project) }
+
+    context 'when passing a Project' do
+      context "when the project is in the user's namespace" do
+        let(:member_or_project) { user_namespace_project }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the user is a member of the project' do
+        let(:member_or_project) { user_member_project }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when passing a ProjectMember' do
+      context "when member is for a user namespace project" do
+        let(:member_or_project) { user_namespace_project.member(user) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when member is for a group namespace project' do
+        let(:member_or_project) { user_member_project.member(user) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when passing a type other than Project or ProjectMember' do
+      let_it_be(:group) { create(:group) }
+
+      let(:member_or_project) { group }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   context 'normalized email reuse check' do
     let(:error_message) { 'Email is not allowed. Please enter a different email address and try again.' }
     let(:new_user) { build(:user, email: tumbled_email) }

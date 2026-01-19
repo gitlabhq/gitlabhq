@@ -8,6 +8,7 @@ RSpec.describe API::SystemHooks, feature_category: :webhooks do
   let_it_be_with_refind(:hook) { create(:system_hook, url: "http://example.com") }
 
   it_behaves_like 'web-hook API endpoints', '' do
+    let(:resource) { :instance }
     let(:user) { admin }
     let(:unauthorized_user) { non_admin }
 

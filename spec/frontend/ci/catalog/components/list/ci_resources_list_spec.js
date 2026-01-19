@@ -3,7 +3,7 @@ import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourcesList from '~/ci/catalog/components/list/ci_resources_list.vue';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
-import CiResourcesAnalytics from '~/ci/catalog/components/list/ci_analytics_list.vue';
+import CiAnalyticsList from '~/ci/catalog/components/list/ci_analytics_list.vue';
 import { catalogResponseBody, catalogSinglePageResponse } from '../../mock';
 
 describe('CiResourcesList', () => {
@@ -31,7 +31,7 @@ describe('CiResourcesList', () => {
   };
 
   const findResourcesListContainer = () => wrapper.findByTestId('catalog-list-container');
-  const findResourcesAnalytics = () => wrapper.findComponent(CiResourcesAnalytics);
+  const findResourcesAnalytics = () => wrapper.findComponent(CiAnalyticsList);
   const findResourcesListItems = () => wrapper.findAllComponents(CiResourcesListItem);
   const findPrevBtn = () => wrapper.findByTestId('prevButton');
   const findNextBtn = () => wrapper.findByTestId('nextButton');

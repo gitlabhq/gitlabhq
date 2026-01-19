@@ -129,9 +129,15 @@ If you do not have an existing SSH key pair, generate a new one:
    ```
 
    A confirmation is displayed, including information about where your files are stored.
+   A public and private key are generated.
 
-A public and private key are generated. [Add the public SSH key to your GitLab account](#add-an-ssh-key-to-your-gitlab-account)
-and keep the private key secure.
+1. Add the private SSH key to `ssh-agent`.
+
+   For example, for ED25519:
+
+   ```shell
+   ssh-add ~/.ssh/id_ed25519
+   ```
 
 ## Add an SSH key to your GitLab account
 

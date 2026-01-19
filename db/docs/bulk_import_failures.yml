@@ -13,3 +13,4 @@ sharding_key:
   project_id: projects
   namespace_id: namespaces
   organization_id: organizations
+organization_transfer_support: todo

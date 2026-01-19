@@ -1,0 +1,9 @@
+---
+name: update_webhook
+description: Grants the ability to update webhooks
+boundaries:
+  - group
+  - project
+  - instance
+permissions:
+  - update_webhook

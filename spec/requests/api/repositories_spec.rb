@@ -166,6 +166,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response).to be_an(Array)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_tree do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /projects/:id/repository/blobs/:sha" do
@@ -239,6 +246,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         let(:request) { get api(route, guest) }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_blob do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /projects/:id/repository/blobs/:sha/raw" do
@@ -310,6 +324,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route, guest) }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_blob do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
       end
     end
   end
@@ -499,6 +520,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route, guest) }
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_archive do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
       end
     end
   end
@@ -725,6 +753,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         let(:request) { get api(route, guest) }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_comparison do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat), params: { from: 'master', to: 'feature' }
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/contributors' do
@@ -839,6 +874,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(first_link_url).to include('sort=asc')
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_contributor do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET :id/repository/health' do
@@ -920,6 +962,14 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         let(:current_user) { guest }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_health do
+      let(:params) { { generate: true } }
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/repository/health", personal_access_token: pat), params: params
+      end
+    end
   end
 
   describe 'GET :id/repository/merge_base' do
@@ -991,6 +1041,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Provide at least 2 refs')
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_merge_base do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/repository/merge_base", personal_access_token: pat), params: { refs: refs }
       end
     end
   end
@@ -1200,6 +1257,25 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         let(:message) { 'Failed to generate the changelog: The commit start range is unspecified, and no previous tag could be found to use instead' }
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_changelog do
+      let(:boundary_object) { project }
+
+      before do
+        spy = instance_spy(::Repositories::ChangelogService, execute: 'Release notes')
+
+        allow(::Repositories::ChangelogService)
+          .to receive(:new)
+          .and_return(spy)
+      end
+
+      let(:request) do
+        get api("/projects/#{project.id}/repository/changelog", personal_access_token: pat),
+          params: {
+            version: '1.0.0'
+          }
+      end
+    end
   end
 
   describe 'POST /projects/:id/repository/changelog' do
@@ -1399,6 +1475,27 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       )
 
       expect(response).to have_gitlab_http_status(:too_many_requests)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_repository_changelog do
+      let(:boundary_object) { project }
+
+      before do
+        spy = instance_spy(::Repositories::ChangelogService)
+
+        allow(::Repositories::ChangelogService)
+          .to receive(:new)
+          .and_return(spy)
+
+        allow(spy).to receive(:execute).with(commit_to_changelog: true)
+      end
+
+      let(:request) do
+        post api("/projects/#{project.id}/repository/changelog", personal_access_token: pat),
+          params: {
+            version: '1.0.0'
+          }
+      end
     end
   end
 end

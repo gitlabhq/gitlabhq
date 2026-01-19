@@ -33,6 +33,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_container_repository, boundary_type: :group
       get ':id/registry/repositories' do
         repositories = ContainerRepositoriesFinder.new(
           user: current_user, subject: user_group

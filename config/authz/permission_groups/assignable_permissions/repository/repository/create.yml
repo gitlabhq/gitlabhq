@@ -1,0 +1,7 @@
+---
+name: create_repository
+description: Grants the ability to create and manage repositories
+permissions:
+  - create_repository_changelog
+boundaries:
+  - project

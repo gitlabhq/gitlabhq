@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationHelper do
+RSpec.describe ApplicationHelper, feature_category: :shared do
   include Devise::Test::ControllerHelpers
 
   # This spec targets CI environment with precompiled assets to trigger
@@ -655,19 +655,11 @@ RSpec.describe ApplicationHelper do
       end
     end
 
-    context 'when mastodon is set' do
+    describe '#mastodon_url' do
       let(:user) { build(:user) }
       let(:mastodon) { mastodon_url(user) }
 
-      it 'returns an empty string if mastodon username is not set' do
-        expect(mastodon).to eq('')
-      end
-
-      context 'when verify_mastodon_user FF is enabled' do
-        before do
-          stub_feature_flags(verify_mastodon_user: true)
-        end
-
+      context 'when a valid handle is set' do
         it 'returns mastodon url with relme when user handle is set' do
           user.mastodon = '@robin@example.com'
 
@@ -675,14 +667,15 @@ RSpec.describe ApplicationHelper do
         end
       end
 
-      context 'when verify_mastodon_user FF is disabled' do
-        before do
-          stub_feature_flags(verify_mastodon_user: false)
+      context 'when an invalid handle is set' do
+        it 'returns an empty string when the mastodon handle is blank' do
+          expect(mastodon).to eq('')
         end
 
-        it 'returns mastodon url when user handle is set' do
-          user.mastodon = '@robin@example.com'
-          expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
+        it 'returns an empty string when mastodon handle doesn`t match the validation regex' do
+          user.mastodon = 'invalid-mastodon_handle-format'
+
+          expect(mastodon).to eq('')
         end
       end
     end

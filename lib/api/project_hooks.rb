@@ -58,8 +58,8 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
-        mount ::API::Hooks::UrlVariables
-        mount ::API::Hooks::CustomHeaders
+        mount ::API::Hooks::UrlVariables, with: { boundary_type: :project }
+        mount ::API::Hooks::CustomHeaders, with: { boundary_type: :project }
       end
 
       desc 'List project hooks' do
@@ -71,6 +71,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_webhook, boundary_type: :project
       get ":id/hooks" do
         present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false, with_custom_headers: false
       end
@@ -87,6 +88,7 @@ module API
         params do
           requires :hook_id, type: Integer, desc: 'The ID of a project hook'
         end
+        route_setting :authorization, permissions: :read_webhook, boundary_type: :project
         get do
           hook = user_project.hooks.find(params[:hook_id])
           present hook, with: Entities::ProjectHook
@@ -107,6 +109,7 @@ module API
           use :optional_url
           use :common_hook_parameters
         end
+        route_setting :authorization, permissions: :update_webhook, boundary_type: :project
         put do
           update_hook(entity: Entities::ProjectHook)
         end
@@ -122,6 +125,7 @@ module API
         params do
           requires :hook_id, type: Integer, desc: 'The ID of the project hook'
         end
+        route_setting :authorization, permissions: :delete_webhook, boundary_type: :project
         delete do
           hook = find_hook
 
@@ -130,7 +134,7 @@ module API
           end
         end
 
-        mount ::API::Hooks::Events
+        mount ::API::Hooks::Events, with: { boundary_type: :project }
       end
 
       desc 'Add project hook' do
@@ -147,6 +151,7 @@ module API
         use :requires_url
         use :common_hook_parameters
       end
+      route_setting :authorization, permissions: :create_webhook, boundary_type: :project
       post ":id/hooks" do
         hook_params = create_hook_params
 
@@ -161,9 +166,10 @@ module API
 
       namespace ':id/hooks/' do
         mount ::API::Hooks::TriggerTest, with: {
-          entity: ProjectHook
+          entity: ProjectHook,
+          boundary_type: :project
         }
-        mount ::API::Hooks::ResendHook
+        mount ::API::Hooks::ResendHook, with: { boundary_type: :project }
       end
     end
   end

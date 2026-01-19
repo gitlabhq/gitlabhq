@@ -45430,6 +45430,7 @@ Returns [`String`](#string).
 | <a id="projectpermissionsadminwiki"></a>`adminWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_wiki` on this resource. |
 | <a id="projectpermissionsadminworkitemlifecycle"></a>`adminWorkItemLifecycle` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_lifecycle` on this resource. |
 | <a id="projectpermissionsarchiveproject"></a>`archiveProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `archive_project` on this resource. |
+| <a id="projectpermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this project. |
 | <a id="projectpermissionschangenamespace"></a>`changeNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_namespace` on this resource. |
 | <a id="projectpermissionschangevisibilitylevel"></a>`changeVisibilityLevel` | [`Boolean!`](#boolean) | If `true`, the user can perform `change_visibility_level` on this resource. |
 | <a id="projectpermissionscreatedeployment"></a>`createDeployment` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_deployment` on this resource. |

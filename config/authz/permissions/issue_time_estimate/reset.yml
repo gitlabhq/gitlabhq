@@ -1,0 +1,5 @@
+---
+name: reset_issue_time_estimate
+description: Grants the ability to reset time estimates for issues
+boundaries:
+  - project

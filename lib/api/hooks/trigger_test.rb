@@ -28,6 +28,7 @@ module API
           desc: 'The type of trigger hook',
           values: ProjectHook.triggers.values.map(&:to_s)
       end
+      route_setting :authorization, permissions: :test_webhook, boundary_type: configuration[:boundary_type]
       post ":hook_id/test/:trigger" do
         hook = find_hook
 

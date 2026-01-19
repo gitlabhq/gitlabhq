@@ -26,6 +26,7 @@ module API
             params do
               use :pagination
             end
+            route_setting :authorization, permissions: :read_cluster_agent_token, boundary_type: :project
             get do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
               agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).execute
@@ -41,6 +42,7 @@ module API
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'
             end
+            route_setting :authorization, permissions: :read_cluster_agent_token, boundary_type: :project
             get ':token_id' do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
               token = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).find(params[:token_id])
@@ -57,6 +59,7 @@ module API
               requires :name, type: String, desc: 'The name for the token'
               optional :description, type: String, desc: 'The description for the token'
             end
+            route_setting :authorization, permissions: :create_cluster_agent_token, boundary_type: :project
             post do
               authorize! :create_cluster, user_project
 
@@ -82,6 +85,7 @@ module API
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'
             end
+            route_setting :authorization, permissions: :revoke_cluster_agent_token, boundary_type: :project
             delete ':token_id' do
               authorize! :admin_cluster, user_project
 

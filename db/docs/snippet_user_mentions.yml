@@ -13,3 +13,4 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   snippet_project_id: projects
   snippet_organization_id: organizations
+organization_transfer_support: todo

@@ -5,7 +5,7 @@ import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '~/ci/catalog/router/constants';
 
 export default {
-  name: 'CiResourcesAnalytics',
+  name: 'CiAnalyticsList',
   components: {
     GlTableLite,
     GlBadge,
@@ -42,7 +42,7 @@ export default {
       };
     },
     getLatestVersion(item) {
-      const latestVersion = item?.versions?.nodes[0] || [];
+      const latestVersion = item?.versions?.nodes[0] || {};
       return latestVersion?.name || s__('CiCatalog|Unreleased');
     },
     getUsageStatistics(item) {
@@ -51,10 +51,7 @@ export default {
     },
     getComponents(item) {
       const components = item?.versions?.nodes[0]?.components?.nodes || [];
-      const componentNames = components.map((component) => {
-        return component.name;
-      });
-      return componentNames.join(', ');
+      return components.map((component) => component.name).join(', ');
     },
   },
   fields: [

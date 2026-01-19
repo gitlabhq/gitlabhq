@@ -4,9 +4,11 @@ description: Grants the ability to read work items
 permissions:
   - read_epic_board
   - read_epic_board_list
+  - read_issue_link
+  - read_issue_time_statistic
   - read_iteration
   - read_label
-  - read_issue_link
+  - read_merge_request_time_statistic
 boundaries:
   - group
   - project

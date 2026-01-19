@@ -1,0 +1,5 @@
+---
+name: add_issue_spent_time
+description: Grants the ability to add spent time for issues
+boundaries:
+  - project

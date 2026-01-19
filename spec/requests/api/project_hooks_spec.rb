@@ -21,6 +21,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
   end
 
   it_behaves_like 'web-hook API endpoints', '/projects/:id' do
+    let(:resource) { project }
     let(:unauthorized_user) { user2 }
 
     def scope

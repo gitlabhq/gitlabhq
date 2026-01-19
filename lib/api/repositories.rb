@@ -139,6 +139,7 @@ module API
           end
         end
       end
+      route_setting :authorization, permissions: :read_repository_tree, boundary_type: :project
       get ':id/repository/tree', urgency: :low do
         tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: false))
 
@@ -152,6 +153,7 @@ module API
         not_found!(e.message)
       end
 
+      route_setting :authorization, permissions: :read_repository_blob, boundary_type: :project
       desc 'Get raw blob contents from the repository' do
         tags ['repositories']
       end
@@ -174,6 +176,7 @@ module API
         requires :sha, type: String,
           desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
+      route_setting :authorization, permissions: :read_repository_blob, boundary_type: :project
       get ':id/repository/blobs/:sha' do
         # Load metadata for @blob, but not not the actual data
         #
@@ -210,6 +213,7 @@ module API
           default: [],
           desc: 'Comma-separated list of paths to exclude from the archive'
       end
+      route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
           render_api_error!({ error: _('This archive has been requested too many times. Try again later.') }, 429)
@@ -237,6 +241,7 @@ module API
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
         use :with_unidiff
       end
+      route_setting :authorization, permissions: :read_repository_comparison, boundary_type: :project
       get ':id/repository/compare', urgency: :low do
         target_project = fetch_target_project(current_user, user_project, params)
 
@@ -268,6 +273,7 @@ module API
       params do
         optional :generate, type: Boolean, default: false, desc: 'Triggers a new health report to be generated'
       end
+      route_setting :authorization, permissions: :read_repository_health, boundary_type: :project
       get ':id/repository/health', urgency: :low do
         authorize! :push_code, user_project
 
@@ -299,6 +305,7 @@ module API
         optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Return contributors ordered by `name` or `email` or `commits`'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
+      route_setting :authorization, permissions: :read_repository_contributor, boundary_type: :project
       get ':id/repository/contributors' do
         contributors = ::Kaminari.paginate_array(user_project.repository.contributors(ref: params[:ref], order_by: params[:order_by], sort: params[:sort]))
         present paginate(contributors), with: Entities::Contributor
@@ -316,6 +323,7 @@ module API
           desc: 'The refs to find the common ancestor of, multiple refs can be passed',
           documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_merge_base, boundary_type: :project
       get ':id/repository/merge_base' do
         refs = params[:refs]
 
@@ -347,7 +355,7 @@ module API
         use :release_params
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_releases,
+      route_setting :authorization, permissions: :read_repository_changelog, boundary_type: :project, job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/changelog' do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
@@ -390,6 +398,7 @@ module API
           desc: 'The commit message to use when committing the changelog',
           documentation: { example: 'Initial commit' }
       end
+      route_setting :authorization, permissions: :create_repository_changelog, boundary_type: :project
       post ':id/repository/changelog' do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)

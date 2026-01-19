@@ -153,7 +153,18 @@ class InstanceConfiguration
       user_projects_api: application_setting_limit_per_minute(:user_projects_api_limit),
       user_contributed_projects_api: application_setting_limit_per_minute(:user_contributed_projects_api_limit),
       user_starred_projects_api: application_setting_limit_per_minute(:user_starred_projects_api_limit),
-      project_members_api: application_setting_limit_per_minute(:project_members_api_limit)
+      project_members_api: application_setting_limit_per_minute(:project_members_api_limit),
+      git_ssh_operations: application_setting_limit_per_minute(:gitlab_shell_operation_limit),
+      files_api_unauthenticated: {
+        enabled: application_settings[:throttle_unauthenticated_files_api_enabled],
+        requests_per_period: application_settings[:throttle_unauthenticated_files_api_requests_per_period],
+        period_in_seconds: application_settings[:throttle_unauthenticated_files_api_period_in_seconds]
+      },
+      files_api_authenticated: {
+        enabled: application_settings[:throttle_authenticated_files_api_enabled],
+        requests_per_period: application_settings[:throttle_authenticated_files_api_requests_per_period],
+        period_in_seconds: application_settings[:throttle_authenticated_files_api_period_in_seconds]
+      }
     }
   end
 

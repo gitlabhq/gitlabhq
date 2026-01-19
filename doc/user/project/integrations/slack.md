@@ -77,23 +77,23 @@ Your Slack team now starts receiving GitLab event notifications as configured.
 
 The following triggers are available for Slack notifications:
 
-| Trigger name                                                             | Trigger event                                        |
-|--------------------------------------------------------------------------|------------------------------------------------------|
-| **Push**                                                                 | A push to the repository.                            |
-| **Issue**                                                                | An issue is created, closed, or reopened.            |
-| **Incident**                                                             | An incident is created, closed, or reopened.         |
-| **Confidential issue**                                                   | A confidential issue is created, closed, or reopened.|
-| **Merge request**                                                        | A merge request is created, merged, closed, or reopened.|
-| **Note**                                                                 | A comment is added.                                  |
-| **Confidential note**                                                    | An internal note or comment on a confidential issue is added.|
-| **Tag push**                                                             | A new tag is pushed to the repository or removed.    |
-| **Pipeline**                                                             | A pipeline status changed.                           |
-| **Wiki page**                                                            | A wiki page is created or updated.                   |
-| **Deployment**                                                           | A deployment starts or finishes.                     |
-| **Alert**                                                                | A new, unique alert is recorded.                     |
-| **[Group mention](#trigger-notifications-for-group-mentions) in public**                                              | A group is mentioned in a public context.            |
-| **[Group mention](#trigger-notifications-for-group-mentions) in private**                                             | A group is mentioned in a confidential context.      |
-| [**Vulnerability**](../../application_security/vulnerabilities/_index.md) | A new, unique vulnerability is recorded.             |
+| Trigger name                                                              | Trigger event |
+| ------------------------------------------------------------------------- | ------------- |
+| **Push**                                                                  | A push to the repository. |
+| **Issue**                                                                 | An issue is created, closed, or reopened. |
+| **Incident**                                                              | An incident is created, closed, or reopened. |
+| **Confidential issue**                                                    | A confidential issue is created, closed, or reopened. |
+| **Merge request**                                                         | A merge request is created, merged, approved, closed, or reopened. |
+| **Note**                                                                  | A comment is added. |
+| **Confidential note**                                                     | An internal note or comment on a confidential issue is added. |
+| **Tag push**                                                              | A new tag is pushed to the repository or removed. |
+| **Pipeline**                                                              | A pipeline status changed. |
+| **Wiki page**                                                             | A wiki page is created or updated. |
+| **Deployment**                                                            | A deployment starts or finishes. |
+| **Alert**                                                                 | A new, unique alert is recorded. |
+| **[Group mention](#trigger-notifications-for-group-mentions) in public**  | A group is mentioned in a public context. |
+| **[Group mention](#trigger-notifications-for-group-mentions) in private** | A group is mentioned in a confidential context. |
+| [**Vulnerability**](../../application_security/vulnerabilities/_index.md) | A new, unique vulnerability is recorded. |
 
 ## Trigger notifications for group mentions
 

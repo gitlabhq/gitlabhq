@@ -9,6 +9,7 @@ import SignInForm from '~/authentication/sign_in/components/sign_in_form.vue';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
 import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 const csrfToken = 'mock-csrf-token';
@@ -74,10 +75,31 @@ describe('SignInForm', () => {
   const findPasswordInputComponent = () => wrapper.findComponent(PasswordInput);
   const findRememberMeCheckbox = () => wrapper.findByLabelText('Remember me');
   const findPasskeysForm = () => wrapper.findByTestId('passkey-form');
+  const findSignInForm = () => wrapper.findByTestId('sign-in-form');
 
   const submitForm = async () => {
     await wrapper.find('form').trigger('submit');
   };
+
+  it('renders form with correct action and method', () => {
+    createComponent();
+
+    expect(findSignInForm().attributes()).toMatchObject({
+      action: defaultPropsData.signInPath,
+      method: 'post',
+    });
+  });
+
+  describe('when URL has a fragment', () => {
+    beforeEach(() => {
+      setWindowLocation('https://gitlab.test/users/sign_in#foo');
+      createComponent();
+    });
+
+    it('add fragment to form action', () => {
+      expect(findSignInForm().attributes('action')).toBe(`${defaultPropsData.signInPath}#foo`);
+    });
+  });
 
   it('renders authenticity_token hidden input', () => {
     createComponent();

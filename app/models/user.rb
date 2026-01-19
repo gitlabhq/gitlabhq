@@ -1932,6 +1932,14 @@ class User < ApplicationRecord
     organization_users.many?
   end
 
+  def can_leave_project?(member_or_project)
+    return can?(:destroy_project_member, member_or_project) if member_or_project.is_a?(ProjectMember)
+
+    return can?(:destroy_project_member, member_or_project.member(self)) if member_or_project.is_a?(Project)
+
+    false
+  end
+
   def full_website_url
     return "http://#{website_url}" unless %r{\Ahttps?://}.match?(website_url)
 

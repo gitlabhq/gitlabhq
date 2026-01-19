@@ -95,19 +95,19 @@ after each security scan when vulnerabilities meet specific conditions.
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                                            | In Free & Premium | In Ultimate |
-|:-------------------------------------------------------------------------------------------------------------------|:------------------|:------------|
-| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)                                   | {{< yes >}}       | {{< yes >}} |
-| Downloadable [SAST JSON report](#download-a-sast-report)                                                           | {{< yes >}}       | {{< yes >}} |
-| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md)                           | {{< no >}}        | {{< yes >}} |
-| New findings in [merge request widget](#merge-request-widget)                                                      | {{< no >}}        | {{< yes >}} |
-| New findings in [merge request changes view](#merge-request-changes-view)                                          | {{< no >}}        | {{< yes >}} |
-| [Vulnerability Management](../vulnerabilities/_index.md)                                                           | {{< no >}}        | {{< yes >}} |
-| [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on) | {{< no >}}        | {{< yes >}} |
+| Feature                                                                                                                          | In Free & Premium | In Ultimate |
+|:---------------------------------------------------------------------------------------------------------------------------------|:------------------|:------------|
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)                                                 | {{< yes >}}       | {{< yes >}} |
+| Downloadable [SAST JSON report](#download-a-sast-report)                                                                         | {{< yes >}}       | {{< yes >}} |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md)                                         | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request widget](#merge-request-widget)                                                                    | {{< no >}}        | {{< yes >}} |
+| New findings in [merge request changes view](#merge-request-changes-view)                                                        | {{< no >}}        | {{< yes >}} |
+| [Vulnerability Management](../vulnerabilities/_index.md)                                                                         | {{< no >}}        | {{< yes >}} |
+| [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on)               | {{< no >}}        | {{< yes >}} |
 | [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) (requires GitLab Duo Enterprise) | {{< no >}}        | {{< yes >}} |
-| [UI-based scanner configuration](#enable-sast-by-using-the-ui)                                                     | {{< no >}}        | {{< yes >}} |
-| [Ruleset customization](customize_rulesets.md)                                                                     | {{< no >}}        | {{< yes >}} |
-| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                                                | {{< no >}}        | {{< yes >}} |
+| [UI-based scanner configuration](#enable-sast-by-using-the-ui)                                                                   | {{< no >}}        | {{< yes >}} |
+| [Ruleset customization](customize_rulesets.md)                                                                                   | {{< no >}}        | {{< yes >}} |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                                                              | {{< no >}}        | {{< yes >}} |
 
 ## Getting started
 

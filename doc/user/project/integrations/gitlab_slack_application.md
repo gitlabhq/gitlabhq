@@ -216,23 +216,23 @@ To receive notifications to a private Slack channel, you must add the GitLab for
 
 The following GitLab events can trigger notifications in Slack:
 
-| Event                                                                 | Description                                                   |
-|-----------------------------------------------------------------------|---------------------------------------------------------------|
-| Push                                                                  | A push is made to the repository.                             |
-| Issue                                                                 | An issue is created, closed, or reopened.                     |
-| Confidential issue                                                    | A confidential issue is created, closed, or reopened.         |
-| Merge request                                                         | A merge request is created, merged, closed, or reopened.      |
-| Note                                                                  | A comment is added.                                           |
+| Event                                                                 | Description |
+| --------------------------------------------------------------------- | ----------- |
+| Push                                                                  | A push is made to the repository. |
+| Issue                                                                 | An issue is created, closed, or reopened. |
+| Confidential issue                                                    | A confidential issue is created, closed, or reopened. |
+| Merge request                                                         | A merge request is created, merged, approved, closed, or reopened. |
+| Note                                                                  | A comment is added. |
 | Confidential note                                                     | An internal note or comment on a confidential issue is added. |
-| Tag push                                                              | A tag is pushed to the repository or removed.                 |
-| Pipeline                                                              | A pipeline status changes.                                    |
-| Wiki page                                                             | A wiki page is created or updated.                            |
-| Deployment                                                            | A deployment is started or finished.                          |
-| [Group mention](#trigger-notifications-for-group-mentions) in public  | A group is mentioned in a public channel.                     |
-| [Group mention](#trigger-notifications-for-group-mentions) in private | A group is mentioned in a private channel.                    |
-| [Incident](../../../operations/incident_management/slack.md)          | An incident is created, closed, or reopened.                  |
-| [Vulnerability](../../application_security/vulnerabilities/_index.md)  | A new, unique vulnerability is recorded on the default branch.|
-| Alert                                                                 | A new, unique alert is recorded.                              |
+| Tag push                                                              | A tag is pushed to the repository or removed. |
+| Pipeline                                                              | A pipeline status changes. |
+| Wiki page                                                             | A wiki page is created or updated. |
+| Deployment                                                            | A deployment is started or finished. |
+| [Group mention](#trigger-notifications-for-group-mentions) in public  | A group is mentioned in a public channel. |
+| [Group mention](#trigger-notifications-for-group-mentions) in private | A group is mentioned in a private channel. |
+| [Incident](../../../operations/incident_management/slack.md)          | An incident is created, closed, or reopened. |
+| [Vulnerability](../../application_security/vulnerabilities/_index.md) | A new, unique vulnerability is recorded on the default branch. |
+| Alert                                                                 | A new, unique alert is recorded. |
 
 ### Trigger notifications for group mentions
 

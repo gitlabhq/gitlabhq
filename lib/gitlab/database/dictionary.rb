@@ -159,6 +159,10 @@ module Gitlab
           data['partition_detach_info']
         end
 
+        def organization_transfer_support
+          data['organization_transfer_support']
+        end
+
         def validate!
           return true unless gitlab_schema.nil?
 

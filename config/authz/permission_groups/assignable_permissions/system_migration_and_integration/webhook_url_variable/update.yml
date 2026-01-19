@@ -1,0 +1,9 @@
+---
+name: update_webhook_url_variable
+description: Grants the ability to update webhook URL variables
+boundaries:
+  - group
+  - project
+  - instance
+permissions:
+  - update_webhook_url_variable

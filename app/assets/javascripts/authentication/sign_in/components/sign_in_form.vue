@@ -7,6 +7,7 @@ import { initRecaptchaScript } from '~/captcha/init_recaptcha_script';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import PasswordInput from '~/authentication/password/components/password_input.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { setUrlFragment } from '~/lib/utils/url_utility';
 
 export default {
   name: 'SignInForm',
@@ -98,6 +99,15 @@ export default {
     isPasskeysEnabled() {
       return this.glFeatures.passkeys ?? false;
     },
+    formAction() {
+      const fragment = document.location.hash;
+
+      if (!fragment) {
+        return this.signInPath;
+      }
+
+      return setUrlFragment(this.signInPath, fragment);
+    },
   },
   async mounted() {
     if (!this.showCaptcha) return;
@@ -125,7 +135,7 @@ export default {
   <div>
     <gl-form
       :id="$options.formId"
-      :action="signInPath"
+      :action="formAction"
       method="post"
       aria-live="assertive"
       novalidate

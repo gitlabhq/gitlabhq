@@ -1,0 +1,6 @@
+---
+name: read_webhook_event
+description: Grants the ability to read webhook events
+boundaries:
+  - group
+  - project

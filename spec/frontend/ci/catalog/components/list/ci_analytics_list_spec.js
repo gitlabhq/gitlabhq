@@ -1,9 +1,9 @@
 import { GlTableLite } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CiResourcesAnalytics from '~/ci/catalog/components/list/ci_analytics_list.vue';
+import CiAnalyticsList from '~/ci/catalog/components/list/ci_analytics_list.vue';
 import { catalogResponseBody } from '../../mock';
 
-describe('CiResourcesAnalytics', () => {
+describe('CiAnalyticsList', () => {
   let wrapper;
 
   const { nodes } = catalogResponseBody.data.ciCatalogResources;
@@ -14,7 +14,7 @@ describe('CiResourcesAnalytics', () => {
   const findTable = () => wrapper.findComponent(GlTableLite);
 
   const createComponent = ({ props } = {}) => {
-    wrapper = shallowMount(CiResourcesAnalytics, {
+    wrapper = shallowMount(CiAnalyticsList, {
       propsData: {
         ...defaultProps,
         ...props,

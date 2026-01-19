@@ -1,0 +1,5 @@
+---
+name: delete_container_repository_tag
+description: Grants the ability to delete container repository tags
+boundaries:
+  - project

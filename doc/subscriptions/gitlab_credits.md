@@ -246,3 +246,6 @@ Prerequisites:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+By default, individual user data is not displayed in the GitLab Credits dashboard.
+To display it, you must enable this setting for your [group](../user/group/manage.md#display-gitlab-credits-user-data) or [instance](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).

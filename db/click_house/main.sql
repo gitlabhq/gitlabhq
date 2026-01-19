@@ -103,6 +103,7 @@ CREATE TABLE ci_finished_builds
     `stage_name` String DEFAULT '',
     `version` DateTime64(6, 'UTC') DEFAULT now(),
     `deleted` Bool DEFAULT false,
+    `group_name` String DEFAULT '',
     PROJECTION build_stats_by_project_pipeline_name_stage_name
     (
         SELECT

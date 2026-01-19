@@ -6,7 +6,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :with_namespace) }
 
   let(:request) { double('request') }
   let(:entity) { described_class.new(object, request: request) }
@@ -456,6 +456,68 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
         it 'returns is_self_archived as false' do
           expect(json[:is_self_archived]).to be(false)
         end
+      end
+    end
+  end
+
+  describe 'can_leave' do
+    subject { json[:can_leave] }
+
+    context 'for a group' do
+      context 'when authenticated' do
+        context 'when group has multiple owners' do
+          let(:object) { create(:group, owners: [user, create(:user)]) }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'when user is the only owner in the group' do
+          let(:object) { create(:group, owners: [user]) }
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'when unauthenticated' do
+        let(:object) { create(:group) }
+
+        before do
+          allow(request).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'for a project' do
+      context 'when authenticated' do
+        context 'when user is a member' do
+          let(:object) { create(:project, owners: user) }
+
+          it { is_expected.to be(true) }
+        end
+
+        context 'when user is not a member' do
+          let(:object) { create(:project) }
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'when project is a personal project' do
+          let(:object) { create(:project, namespace: user.namespace) }
+
+          it { is_expected.to be(false) }
+        end
+      end
+
+      context 'when unauthenticated' do
+        let(:object) { create(:project) }
+
+        before do
+          allow(request).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to be(false) }
       end
     end
   end
