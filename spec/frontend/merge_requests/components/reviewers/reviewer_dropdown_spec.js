@@ -432,7 +432,7 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('tracks which position any selected users were in as a telemetry event', async () => {
-        findDropdown().vm.$emit('select', ['root']);
+        findDropdown().vm.$emit('select', 'root');
         findDropdown().vm.$emit('hidden');
 
         await waitForPromises();
@@ -459,7 +459,7 @@ describe('Reviewer dropdown component', () => {
 
         await waitForPromises();
 
-        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('select', 'bob');
         findDropdown().vm.$emit('hidden');
 
         await waitForPromises();
@@ -477,7 +477,7 @@ describe('Reviewer dropdown component', () => {
 
       it('tracks which position any selected users were in after a search as a telemetry event', async () => {
         findDropdown().vm.$emit('search', 'bob');
-        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('select', 'bob');
         findDropdown().vm.$emit('hidden');
 
         await waitForPromises();
@@ -494,7 +494,7 @@ describe('Reviewer dropdown component', () => {
       });
 
       it('does not send the "simple sidebar" tracking event when used "normally" (in complex mode)', async () => {
-        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('select', 'bob');
         findDropdown().vm.$emit('hidden');
 
         await waitForPromises();
@@ -521,7 +521,7 @@ describe('Reviewer dropdown component', () => {
 
           await waitForPromises();
 
-          findDropdown().vm.$emit('select', ['bob']);
+          findDropdown().vm.$emit('select', 'bob');
           findDropdown().vm.$emit('hidden');
 
           await waitForPromises();
@@ -892,7 +892,7 @@ describe('Reviewer dropdown component', () => {
     });
 
     it('updates reviewers from selected user', async () => {
-      findDropdown().vm.$emit('select', ['root']);
+      findDropdown().vm.$emit('select', 'root');
 
       findDropdown().vm.$emit('hidden');
 
@@ -925,6 +925,7 @@ describe('Reviewer dropdown component', () => {
           adminMergeRequest: true,
           propsData: {
             selectedReviewers: [],
+            multipleSelectionEnabled: true,
             users: [createMockUser(), disabledUser],
           },
         });

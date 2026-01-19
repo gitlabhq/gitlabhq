@@ -155,7 +155,7 @@ export default {
         return this.currentSelectedReviewers[0] || '';
       },
       set(value) {
-        this.currentSelectedReviewers = value;
+        this.currentSelectedReviewers = [].concat(value);
       },
     },
     unassignLabel() {
