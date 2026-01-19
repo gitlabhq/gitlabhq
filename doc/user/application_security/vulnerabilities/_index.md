@@ -65,6 +65,27 @@ For each analyzed vulnerability, GitLab Duo provides:
 
 For more information, see [SAST false positive detection](false_positive_detection.md).
 
+## Agentic SAST vulnerability resolution
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17889) in GitLab 18.9 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_resolution` and `agentic_sast_vr_ui`. Disabled by default.
+
+{{< /history >}}
+
+GitLab Duo automatically analyzes SAST vulnerabilities and generates merge requests with context-aware code fixes. This agentic approach uses multi-shot reasoning to resolve vulnerabilities with minimal human intervention.
+
+For more information, see [Agentic SAST vulnerability resolution](agentic_vulnerability_resolution.md).
+
 ## Vulnerability Explanation
 
 {{< details >}}

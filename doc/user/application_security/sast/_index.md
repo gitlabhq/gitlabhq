@@ -58,15 +58,38 @@ Security vulnerabilities found late in development create costly delays and pote
 scans happen automatically with each commit, giving you immediate feedback without disrupting
 your workflow.
 
-## Reducing false positives with GitLab Duo
+## Reducing false positives and resolving vulnerabilities with GitLab Duo
 
-SAST scanners can generate false positives that create noise in your vulnerability reports. The
-[GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) feature automatically
-analyzes Critical and High severity SAST vulnerabilities to identify likely false positives. This helps your
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+
+{{< /details >}}
+
+SAST scanners can generate false positives that create noise in your vulnerability reports. GitLab Duo assists with vulnerability management.
+
+### False positive detection
+
+[GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) automatically
+analyzes critical and high severity SAST vulnerabilities to identify likely false positives. This helps your
 security team focus on genuine vulnerabilities and reduces time spent on manual triage.
 
 For Ultimate tier customers with a GitLab Duo add-on, false positive detection runs automatically
 after each security scan and provides confidence scores with explanations for each assessment.
+
+### Agentic SAST vulnerability resolution
+
+{{< details >}}
+
+- Add-on: GitLab Duo Enterprise
+
+{{< /details >}}
+
+[Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) automatically generates merge requests with context-aware code fixes for High and Critical severity SAST vulnerabilities. This agentic approach uses multi-shot reasoning to resolve vulnerabilities with minimal human intervention.
+
+For Ultimate tier customers with GitLab Duo Enterprise, agentic vulnerability resolution runs automatically
+after each security scan when vulnerabilities meet specific conditions.
 
 ## Features
 
@@ -81,6 +104,7 @@ The following table lists the GitLab tiers in which each feature is available.
 | New findings in [merge request changes view](#merge-request-changes-view)                                          | {{< no >}}        | {{< yes >}} |
 | [Vulnerability Management](../vulnerabilities/_index.md)                                                           | {{< no >}}        | {{< yes >}} |
 | [GitLab Duo false positive detection](../vulnerabilities/false_positive_detection.md) (requires GitLab Duo add-on) | {{< no >}}        | {{< yes >}} |
+| [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) (requires GitLab Duo Enterprise) | {{< no >}}        | {{< yes >}} |
 | [UI-based scanner configuration](#enable-sast-by-using-the-ui)                                                     | {{< no >}}        | {{< yes >}} |
 | [Ruleset customization](customize_rulesets.md)                                                                     | {{< no >}}        | {{< yes >}} |
 | [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                                                | {{< no >}}        | {{< yes >}} |
