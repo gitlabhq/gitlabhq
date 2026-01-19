@@ -3,6 +3,7 @@ name: delete_work_item
 description: Grants the ability to delete work items
 permissions:
   - delete_label
+  - delete_issue_link
 boundaries:
   - group
   - project

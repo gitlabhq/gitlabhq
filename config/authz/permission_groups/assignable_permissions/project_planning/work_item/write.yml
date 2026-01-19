@@ -4,6 +4,7 @@ description: Grants the ability to write work items
 permissions:
   - create_label
   - update_label
+  - create_issue_link
 boundaries:
   - group
   - project

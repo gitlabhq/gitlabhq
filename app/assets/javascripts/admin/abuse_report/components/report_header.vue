@@ -72,7 +72,7 @@ export default {
         :user="user"
         :report="report"
         class="gl-mt-3 @sm/panel:gl-ml-3 @sm/panel:gl-mt-0"
-        @closeReport="closeReport"
+        @close-report="closeReport"
         v-on="$listeners"
       />
     </nav>

@@ -1,0 +1,5 @@
+---
+name: create_issue_link
+description: Grants the ability to create issue links
+boundaries:
+  - project

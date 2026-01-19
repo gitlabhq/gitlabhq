@@ -5060,6 +5060,30 @@ Input type: `ContainerUpstreamUpdateInput`
 | <a id="mutationcontainerupstreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainerupstreamupdateupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Container upstream after the mutation. |
 
+### `Mutation.containerVirtualRegistryDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerVirtualRegistryDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistrydeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistrydeleteid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | ID of the container virtual registry to be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistrydeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistrydeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainervirtualregistrydeleteregistry"></a>`registry` | [`ContainerRegistry`](#containerregistry) | Deleted container virtual registry. |
+
 ### `Mutation.corpusCreate`
 
 Input type: `CorpusCreateInput`

@@ -598,7 +598,7 @@
 {"name":"rb-inotify","version":"0.10.1","platform":"ruby","checksum":"050062d4f31d307cca52c3f6a7f4b946df8de25fc4bd373e1a5142e41034a7ca"},
 {"name":"rb_sys","version":"0.9.110","platform":"ruby","checksum":"8993fd1f49b5f6b394b49dafda77fb5c635458637f8effe508cca78ebc03427d"},
 {"name":"rbs","version":"3.9.5","platform":"ruby","checksum":"eabaaf60aee84e38cbf94839c6e1b9cd145c7295fc3cc0e88c92e4069b1119b0"},
-{"name":"rbtrace","version":"0.5.2","platform":"ruby","checksum":"a2d7d222ab81363aaa0e91337ddbf70df834885d401a80ea0339d86c71f31895"},
+{"name":"rbtrace","version":"0.5.3","platform":"ruby","checksum":"c432292f305d9ab12fd47d9722e0d5210d983758a951fe6107c36cc955cb923f"},
 {"name":"rchardet","version":"1.8.0","platform":"ruby","checksum":"693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7"},
 {"name":"rdoc","version":"6.13.0","platform":"ruby","checksum":"32c2139ae43ed91b7c43032fe5423d21d57718829cc5a11e5c9710d2aa5e0329"},
 {"name":"re2","version":"2.21.0","platform":"aarch64-linux-gnu","checksum":"202037703907b4b53c6ea7a7f40134da6c6ba64c92643fb4936fab8abad384f1"},

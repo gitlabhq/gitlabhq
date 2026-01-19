@@ -63,7 +63,7 @@ export default {
       v-if="abuseReport.user"
       :user="abuseReport.user"
       :report="abuseReport.report"
-      @showAlert="showAlert"
+      @show-alert="showAlert"
     />
     <user-details v-if="abuseReport.user" :user="abuseReport.user" />
 

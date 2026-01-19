@@ -215,9 +215,15 @@ Users can download an archive in formats such as `.zip` or `.tar.gz` of a reposi
 
 GitLab stores this archive in a cache in a directory on the GitLab server.
 
+The location of the cache depends on your installation method:
+
+- For Linux package instances, the default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can configure this with
+  the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
+- For Helm chart instances, the cache is stored in `/srv/gitlab/shared/cache/archive`. The directory cannot be configured.
+
 A background job running on Sidekiq periodically cleans out stale
 archives from this directory. For this reason, this directory must be
-accessible by both the Sidekiq and GitLab Workhorse services. If Sidekiq
+accessible by all Sidekiq and GitLab Workhorse nodes. If Sidekiq
 can't access the same directory used by GitLab Workhorse, the [disk containing the directory fills up](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6005).
 
 If you don't want to use a shared mount for Sidekiq and GitLab
@@ -229,9 +235,6 @@ Alternatively, you can disable the cache entirely:
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}
-
-The default directory for the file archive cache is `/var/opt/gitlab/gitlab-rails/shared/cache/archive`. You can
-configure this with the `gitlab_rails['gitlab_repository_downloads_path']` setting in `/etc/gitlab/gitlab.rb`.
 
 To disable the cache:
 
@@ -254,9 +257,6 @@ To disable the cache:
 {{< /tab >}}
 
 {{< tab title="Helm chart (Kubernetes)" >}}
-
-The Helm chart stores the cache in `/srv/gitlab/shared/cache/archive`.
-The directory cannot be configured.
 
 To disable the cache, you can use `--set gitlab.webservice.extraEnv.WORKHORSE_ARCHIVE_CACHE_DISABLED="1"`, or
 specify the following in your values file:
