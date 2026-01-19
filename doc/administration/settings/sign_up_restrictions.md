@@ -20,6 +20,10 @@ You can enforce the following restrictions on sign ups:
 - Require user email confirmation.
 - Allow or deny sign ups using specific email domains.
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Disable new sign ups
 
 By default, any user visiting your GitLab domain can sign up for an account. For customers running

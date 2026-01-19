@@ -17,6 +17,10 @@ The following sections provide possible solutions to Gitaly errors.
 See also [Gitaly timeout](../settings/gitaly_timeouts.md) settings,
 and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#parsing-gitalycurrent).
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Check versions when using standalone Gitaly servers
 
 When using standalone Gitaly servers, you must make sure they are the same version

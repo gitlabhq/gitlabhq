@@ -80,8 +80,9 @@ for details on managing SSL certificates and configuring NGINX.
   updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
   Load balancers that do not support WebSockets (for example, AWS Classic Load
   Balancers) are not compatible with GitLab for these features. When using HTTP
-  or HTTPS proxying, your load balancer must be configured to pass through the
-  `Connection` and `Upgrade` hop-by-hop headers.
+  or HTTPS proxying, your load balancer must be configured to forward the
+  `Connection` and `Upgrade` hop-by-hop headers to the backend servers. This
+  refers to HTTP header forwarding, not Direct Server Return (DSR) mode.
 - (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.

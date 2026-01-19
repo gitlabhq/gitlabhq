@@ -45,6 +45,10 @@ The app host returned HTTP response code 401 when we tried to contact it during 
 
 To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
+Prerequisites:
+
+- Administrator access.
+
 - In GitLab 15.7:
 
   1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).

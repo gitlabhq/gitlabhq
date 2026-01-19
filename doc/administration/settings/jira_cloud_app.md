@@ -47,6 +47,10 @@ For Jira Data Center or Jira Server, use the [Jira DVCS connector](../../integra
 
 Whether you want to install the GitLab for Jira Cloud app [from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace) or [manually](#install-the-gitlab-for-jira-cloud-app-manually), you must create an OAuth application.
 
+Prerequisites:
+
+- Administrator access.
+
 To create an OAuth application on your GitLab Self-Managed instance:
 
 1. In the upper-right corner, select **Admin**.

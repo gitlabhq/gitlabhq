@@ -80,8 +80,9 @@ to use fast lookup automatically.
 
 Prerequisites:
 
-- OpenSSH 6.9 or later is required because `AuthorizedKeysCommand` must
+- OpenSSH 6.9 or later, because `AuthorizedKeysCommand` must
   accept a fingerprint. To check your version, run `sshd -V`.
+- Administrator access.
 
 To set up fast lookup with OpenSSH:
 

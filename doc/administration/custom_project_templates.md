@@ -29,6 +29,10 @@ might edit the template projects without understanding the side effects.
 
 ## Select a group to manage template projects
 
+Prerequisites:
+
+- Administrator access.
+
 To select the group to manage the project templates for your instance:
 
 1. In the upper-right corner, select **Admin**.

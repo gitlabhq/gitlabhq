@@ -32,6 +32,10 @@ By default, GitLab overrides the email address in notification emails with the e
 of the issue, merge request, or comment author. Enable this setting to include the author's email
 address in the body of the email instead.
 
+Prerequisites:
+
+- Administrator access.
+
 To include the author's email address in the email body:
 
 1. In the upper-right corner, select **Admin**.

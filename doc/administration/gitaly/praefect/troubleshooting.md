@@ -15,6 +15,10 @@ title: Troubleshooting Gitaly Cluster (Praefect)
 Refer to the information below when troubleshooting Gitaly Cluster (Praefect). For information on troubleshooting Gitaly,
 see [Troubleshooting Gitaly](../troubleshooting.md).
 
+## Prerequisites
+
+You must have administrator access.
+
 ## Check cluster health
 
 The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster (Praefect).

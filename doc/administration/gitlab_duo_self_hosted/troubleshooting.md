@@ -173,6 +173,10 @@ This missing configuration might be because of either of the following:
 
 ## Check if GitLab instance is configured to use self-hosted models
 
+Prerequisites:
+
+- Administrator access.
+
 To check if GitLab Duo was configured correctly:
 
 1. In the upper-right corner, select **Admin**.
