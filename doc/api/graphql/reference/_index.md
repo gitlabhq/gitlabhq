@@ -40745,9 +40745,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceavailablefeatureshasqualitymanagementfeature"></a>`hasQualityManagementFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether quality management is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasscopedlabelsfeature"></a>`hasScopedLabelsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether scoped labels are enabled for the namespace. |
 | <a id="namespaceavailablefeatureshassubepicsfeature"></a>`hasSubepicsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Whether subepics are enabled for the namespace. |
-| <a id="namespaceavailablefeatureshasworkitemplanningviewfeature"></a>`hasWorkItemPlanningViewFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Whether work item planning view is enabled for the namespace. |
 | <a id="namespaceavailablefeatureshasworkitemstatusfeature"></a>`hasWorkItemStatusFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether work item statuses are enabled for the namespace. |
-| <a id="namespaceavailablefeatureshasworkitemssavedviewsfeature"></a>`hasWorkItemsSavedViewsFeature` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.8. **Status**: Experiment. Whether work item saved views are enabled for the namespace. |
 
 ### `NamespaceBan`
 
@@ -49964,6 +49962,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemduplicatedtoworkitemurl"></a>`duplicatedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item is marked as a duplicate of. |
 | <a id="workitemexternalauthor"></a>`externalAuthor` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.8. **Status**: Experiment. Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
+| <a id="workitemfeatures"></a>`features` {{< icon name="warning-solid" >}} | [`WorkItemFeatures!`](#workitemfeatures) | **Introduced** in GitLab 18.9. **Status**: Experiment. Features of the work item. |
 | <a id="workitemhidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the work item is hidden because the author has been banned. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
@@ -50041,6 +50040,43 @@ Returns [`[WorkItemWidget!]`](#workitemwidget).
 | <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String`](#string) | Content of Description Template. |
 | <a id="workitemdescriptiontemplatename"></a>`name` | [`String`](#string) | Name of Description Template. |
 | <a id="workitemdescriptiontemplateprojectid"></a>`projectId` | [`Int`](#int) | ID of the description template project. |
+
+### `WorkItemFeatures`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemfeaturesassignees"></a>`assignees` | [`WorkItemWidgetAssignees`](#workitemwidgetassignees) | Assignees widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesawardemoji"></a>`awardEmoji` | [`WorkItemWidgetAwardEmoji`](#workitemwidgetawardemoji) | Award emoji widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturescolor"></a>`color` | [`WorkItemWidgetColor`](#workitemwidgetcolor) | Color widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturescrmcontacts"></a>`crmContacts` | [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts) | Crm contacts widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturescurrentusertodos"></a>`currentUserTodos` | [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos) | Current user todos widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturescustomfields"></a>`customFields` | [`WorkItemWidgetCustomFields`](#workitemwidgetcustomfields) | Custom fields widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesdescription"></a>`description` | [`WorkItemWidgetDescription`](#workitemwidgetdescription) | Description widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesdesigns"></a>`designs` | [`WorkItemWidgetDesigns`](#workitemwidgetdesigns) | Designs widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesdevelopment"></a>`development` | [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment) | Development widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesemailparticipants"></a>`emailParticipants` | [`WorkItemWidgetEmailParticipants`](#workitemwidgetemailparticipants) | Email participants widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureserrortracking"></a>`errorTracking` | [`WorkItemWidgetErrorTracking`](#workitemwidgeterrortracking) | Error tracking widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureshealthstatus"></a>`healthStatus` | [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus) | Health status widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureshierarchy"></a>`hierarchy` | [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy) | Hierarchy widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesiteration"></a>`iteration` | [`WorkItemWidgetIteration`](#workitemwidgetiteration) | Iteration widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureslabels"></a>`labels` | [`WorkItemWidgetLabels`](#workitemwidgetlabels) | Labels widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureslinkeditems"></a>`linkedItems` | [`WorkItemWidgetLinkedItems`](#workitemwidgetlinkeditems) | Linked items widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeatureslinkedresources"></a>`linkedResources` | [`WorkItemWidgetLinkedResources`](#workitemwidgetlinkedresources) | Linked resources widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesmilestone"></a>`milestone` | [`WorkItemWidgetMilestone`](#workitemwidgetmilestone) | Milestone widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesnotes"></a>`notes` | [`WorkItemWidgetNotes`](#workitemwidgetnotes) | Notes widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesnotifications"></a>`notifications` | [`WorkItemWidgetNotifications`](#workitemwidgetnotifications) | Notifications widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesparticipants"></a>`participants` | [`WorkItemWidgetParticipants`](#workitemwidgetparticipants) | Participants widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesprogress"></a>`progress` | [`WorkItemWidgetProgress`](#workitemwidgetprogress) | Progress widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesrequirementlegacy"></a>`requirementLegacy` | [`WorkItemWidgetRequirementLegacy`](#workitemwidgetrequirementlegacy) | Requirement legacy widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesstartandduedate"></a>`startAndDueDate` | [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate) | Start and due date widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesstatus"></a>`status` | [`WorkItemWidgetStatus`](#workitemwidgetstatus) | Status widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturestestreports"></a>`testReports` | [`WorkItemWidgetTestReports`](#workitemwidgettestreports) | Test reports widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturestimetracking"></a>`timeTracking` | [`WorkItemWidgetTimeTracking`](#workitemwidgettimetracking) | Time tracking widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesverificationstatus"></a>`verificationStatus` | [`WorkItemWidgetVerificationStatus`](#workitemwidgetverificationstatus) | Verification status widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesvulnerabilities"></a>`vulnerabilities` | [`WorkItemWidgetVulnerabilities`](#workitemwidgetvulnerabilities) | Vulnerabilities widget of the work item. Returns `null` if the widget is not available for the work item. |
+| <a id="workitemfeaturesweight"></a>`weight` | [`WorkItemWidgetWeight`](#workitemwidgetweight) | Weight widget of the work item. Returns `null` if the widget is not available for the work item. |
 
 ### `WorkItemLifecycle`
 

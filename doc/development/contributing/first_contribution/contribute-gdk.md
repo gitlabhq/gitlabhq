@@ -26,12 +26,12 @@ Use your local IDE to make changes to the code in the GDK directory.
    git checkout -b ui-updates
    ```
 
-1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting theme`.
+1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting`.
    The results show one `.haml` file and several `.po` files.
 
 1. Open the `app/views/profiles/preferences/show.html.haml` file.
-1. Update the string from `Syntax highlighting theme` to
-   `Code syntax highlighting theme`.
+1. Update the string from `Syntax highlighting` to
+   `Code syntax highlighting`.
 1. Save the file.
 1. You can check that you were successful:
 

@@ -2116,34 +2116,94 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#show_as_work_item?' do
     subject(:issue_as_work_item) { issue.show_as_work_item? }
 
-    context 'with a service desk issue' do
-      let(:issue) { build_stubbed(:issue, project: reusable_project, author: support_bot) }
-
-      it { is_expected.to be false }
+    where(:factory, :work_item_planning_view, :result) do
+      :issue                  | false | false
+      [:issue, :task]         | false | true
+      [:issue, :group_level]  | false | true
+      [:issue, :incident]     | false | false
+      [:issue, :service_desk] | false | false
+      :issue                  | true | true
+      [:issue, :task]         | true | true
+      [:issue, :group_level]  | true | true
+      [:issue, :incident]     | true | false
+      [:issue, :service_desk] | true | false
     end
 
-    context 'with an incident' do
-      let(:issue) { build_stubbed(:incident, project: reusable_project) }
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
 
-      it { is_expected.to be false }
+      before do
+        stub_feature_flags(work_item_planning_view: work_item_planning_view)
+      end
+
+      it { is_expected.to be result }
     end
 
-    context 'when work_item_type is not set' do
-      let(:issue) { build_stubbed(:issue, work_item_type: nil) }
+    context 'when work_item_type is nil' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: true)
+      end
+
+      it 'returns true when planning view is enabled' do
+        expect(issue_as_work_item).to be true
+      end
+    end
+  end
+
+  describe '#use_work_item_url?' do
+    subject(:use_work_item_url) { issue.use_work_item_url? }
+
+    where(:factory, :work_item_planning_view, :result) do
+      :issue                  | false | false
+      [:issue, :task]         | false | true
+      [:issue, :incident]     | false | false
+      [:issue, :service_desk] | false | false
+      :issue                  | true  | true
+      [:issue, :task]         | true  | true
+      [:issue, :incident]     | true  | false
+      [:issue, :service_desk] | true  | false
     end
 
-    context 'with a regular issue' do
-      let(:issue) { build_stubbed(:issue, project: reusable_project) }
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: work_item_planning_view)
+      end
+
+      it { is_expected.to be result }
     end
 
-    context 'with a task' do
-      let(:issue) { build_stubbed(:issue, :task, project: reusable_project) }
+    context 'when work_item_type is nil' do
+      let(:issue) { build_stubbed(:issue, work_item_type: nil, project: reusable_project) }
 
-      it { is_expected.to be true }
+      before do
+        stub_feature_flags(work_item_planning_view: true)
+      end
+
+      it 'returns true when planning view is enabled' do
+        expect(use_work_item_url).to be true
+      end
+    end
+  end
+
+  describe '#require_legacy_views?' do
+    subject(:require_legacy_views) { issue.require_legacy_views? }
+
+    where(:factory, :result) do
+      :issue                  | false
+      [:issue, :task]         | false
+      [:issue, :group_level]  | false
+      [:issue, :incident]     | true
+      [:issue, :service_desk] | true
+    end
+
+    with_them do
+      let(:issue) { build_stubbed(*Array(factory)) }
+
+      it { is_expected.to be result }
     end
   end
 

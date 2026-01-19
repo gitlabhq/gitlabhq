@@ -20,7 +20,7 @@ Prerequisites:
 To delete a merge request:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find the merge request you want to delete.
+1. In the left sidebar, select **Code** > **Merge requests** and find the merge request you want to delete.
 1. Select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 

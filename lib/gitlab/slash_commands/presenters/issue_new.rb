@@ -17,13 +17,17 @@ module Gitlab
         end
 
         def issue_link
-          "[#{issue.to_reference}](#{project_issue_url(issue.project, issue)})"
+          "[#{issue.to_reference}](#{issue_url})"
         end
 
         def response_message(custom_pretext: pretext)
           {
             text: pretext
           }
+        end
+
+        def issue_url
+          ::Gitlab::UrlBuilder.build(issue)
         end
       end
     end

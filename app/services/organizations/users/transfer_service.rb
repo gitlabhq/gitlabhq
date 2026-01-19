@@ -4,6 +4,7 @@ module Organizations
   module Users
     class TransferService
       include Gitlab::Utils::StrongMemoize
+      include Organizations::Concerns::OrganizationUpdater
 
       BATCH_SIZE = 50
 
@@ -79,7 +80,17 @@ module Organizations
           update_users(user_ids)
           update_user_projects(user_ids)
           update_todos(user_ids)
+
+          update_associated_organization_ids(user_ids)
         end
+      end
+
+      # Add simple associated organization_id updates here.
+      # Use a block to define the where clause/scopes for the query.
+      # `.where(organization_id: old_organization.id)` is automatically added to all queries.
+      # See Organizations::Concerns::OrganizationUpdater#update_organization_id_for for more details.
+      def update_associated_organization_ids(user_ids)
+        update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
       end
 
       def update_users(user_ids)

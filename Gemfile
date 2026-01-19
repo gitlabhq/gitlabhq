@@ -354,7 +354,7 @@ gem 'sanitize', '~> 6.0.2', feature_category: :shared # rubocop:todo Gemfile/Mis
 gem 'babosa', '~> 2.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.24.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'loofah', '~> 2.25.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Used to provide license templates
 gem 'licensee', '~> 9.16', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

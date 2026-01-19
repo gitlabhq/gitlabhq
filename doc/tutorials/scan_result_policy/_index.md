@@ -76,7 +76,7 @@ Next, you'll add a merge request approval policy to your test project:
 Nice work, you've created a merge request approval policy. To test it, create some vulnerabilities and check the result:
 
 1. On the top bar, select **Search or go to** and find the `sast-scan-result-policy` project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. From the **Add** ({{< icon name="plus" >}}) dropdown list, select **New file**.
 1. In the **Filename** field enter `main.ts`.
 1. In the file's content, copy the following:

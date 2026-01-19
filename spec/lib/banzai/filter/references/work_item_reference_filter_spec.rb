@@ -10,7 +10,8 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   let_it_be(:project)         { create(:project, :public, namespace: namespace, path: 'main-project') }
   let_it_be(:cross_namespace) { create(:namespace, name: 'cross-namespace') }
   let_it_be(:cross_project)   { create(:project, :public, namespace: cross_namespace, path: 'cross-project') }
-  let_it_be(:work_item)       { create(:work_item, project: project) }
+
+  let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
   def item_url(item)
     work_item_path = if item.project_id.present?
@@ -52,6 +53,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
     end
 
     it 'includes a title attribute' do
+      work_item.update_attribute(:title, "My Title")
       doc = reference_filter("Issue #{written_reference}")
 
       expect(doc.css('a').first.attr('title')).to eq work_item.title
@@ -59,7 +61,6 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
 
     it 'escapes the title attribute' do
       work_item.update_attribute(:title, %("></a>whatever<a title="))
-
       doc = reference_filter("Issue #{written_reference}")
 
       expect(doc.text).not_to include 'whatever'
@@ -166,7 +167,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
     let_it_be(:reference)                 { written_reference }
     let_it_be(:inner_text)                { written_reference }
     let_it_be(:work_item_link_reference)  { item_url(work_item) }
-    let_it_be(:work_item_url)             { work_item_link_reference.gsub('work_items', 'issues') }
+    let_it_be(:work_item_url)             { work_item_link_reference }
 
     it_behaves_like 'a work item reference'
   end
@@ -174,7 +175,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   context 'on cross project [work_item:project/path/XXX] reference' do
     let_it_be(:work_item, reload: true)   { create(:work_item, project: cross_project) }
     let_it_be(:work_item_link_reference)  { item_url(work_item) }
-    let_it_be(:work_item_url)             { work_item_link_reference.gsub('work_items', 'issues') }
+    let_it_be(:work_item_url)             { work_item_link_reference }
     let_it_be(:written_reference)         { "[work_item:#{cross_project.full_path}/#{work_item.iid}]" }
     let_it_be(:reference)                 { written_reference }
     let_it_be(:inner_text)                { written_reference }

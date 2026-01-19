@@ -4,6 +4,7 @@ module Organizations
   module Groups
     class TransferService
       include Gitlab::Utils::StrongMemoize
+      include Organizations::Concerns::OrganizationUpdater
 
       TransferError = Class.new(StandardError)
       BATCH_SIZE = 50

@@ -11,6 +11,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_legacy_url: true)
     # create AI Setting singleton record to prevent N+1
     Ai::Setting.instance if Gitlab.ee?
   end
@@ -325,7 +326,11 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           issue_ids += create_list(:issue, 3).map(&:id)
           expect(recent_issues).to receive(:search).with(search_term).and_return(Issue.id_in_ordered(issue_ids))
 
-          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control)
+          # Threshold of 6 allows for 2 additional queries per new issue (3 new issues = 6 queries)
+          # These queries are needed for URL determination logic (work_item_type, namespace checks)
+          # introduced by the URL centralization in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213411
+          # and temparory until full migration to Work Items URLs
+          expect { search_autocomplete_opts(search_term) }.to issue_same_number_of_queries_as(control).with_threshold(6)
         end
 
         it 'does not have an N+1 for recently viewed merge_requests' do

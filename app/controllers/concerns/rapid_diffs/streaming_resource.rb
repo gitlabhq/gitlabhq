@@ -6,7 +6,7 @@ module RapidDiffs
     include ActionController::Live
     include DiffHelper
 
-    def diffs
+    def diffs_stream
       streaming_start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
       stream_headers

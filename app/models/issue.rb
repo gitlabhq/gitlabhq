@@ -883,18 +883,22 @@ class Issue < ApplicationRecord
     epic_work_item? && group_level?
   end
 
+  def use_work_item_url?
+    return false if require_legacy_views?
+    return true if work_item_type&.task?
+
+    resource_parent.use_work_item_url?
+  end
+
   # Some Issues types/conditions were not fully migrated to WorkItems UI/workflows yet.
   # On the other hand some other Issue types/conditions are only available through
   # WorkItems UI/workflows.
   #
   # Overriden on EE (For OKRs and Epics)
   def show_as_work_item?
-    # WorkItems only views
-    return true if work_item_type&.task?
-    return true if project.blank? && namespace.present?
-
-    # Legacy only views
     return false if require_legacy_views?
+    return true if group_level?
+    return true if work_item_type&.task?
 
     resource_parent.work_items_consolidated_list_enabled?
   end

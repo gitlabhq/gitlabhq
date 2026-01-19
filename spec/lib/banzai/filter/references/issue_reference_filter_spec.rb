@@ -15,6 +15,10 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
   let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
   let(:issue_url) { ::Gitlab::UrlBuilder.instance.issue_url(issue) }
 
+  before do
+    stub_feature_flags(work_item_legacy_url: true)
+  end
+
   shared_examples 'a reference with issue type information' do
     it 'contains issue-type as a data attribute' do
       doc = reference_filter("Fixed #{reference}")

@@ -8,6 +8,11 @@ RSpec.describe MergeRequestPresenter do
 
   let_it_be(:user) { create(:user) }
 
+  before do
+    # required for the issues/work_items URLs
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#mergeable_discussions_state' do
     subject { described_class.new(resource).mergeable_discussions_state }
 

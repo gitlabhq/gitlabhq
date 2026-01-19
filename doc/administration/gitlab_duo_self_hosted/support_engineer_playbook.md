@@ -183,7 +183,8 @@ docker logs <ai-gateway-container> | grep -E "(model_name|model_endpoint|litellm
 ```shell
 # Test model directly from AI Gateway container
 docker exec -it <ai-gateway-container> sh
-curl --request POST "<model_endpoint>/v1/chat/completions" \
+curl --request POST \
+     --url "<model_endpoint>/v1/chat/completions" \
      --header 'Content-Type: application/json' \
      --data '{"model": "<model_name>", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
@@ -242,7 +243,11 @@ docker logs -f <ai-gateway-container>
 **1. Test AI Gateway health:**
 
 ```shell
-curl --silent --output /dev/null --write-out "%{http_code}" "<ai-gateway-url>/monitoring/healthz"
+curl --request GET \
+     --silent \
+     --output /dev/null \
+     --write-out "%{http_code}" \
+     --url "<ai-gateway-url>/monitoring/healthz"
 ```
 
 **2. Check AI Gateway environment variables:**
@@ -292,7 +297,9 @@ Feature.enabled?(:expanded_ai_logging)
 **7. Test connectivity from GitLab to AI Gateway:**
 
 ```shell
-curl --verbose "<ai-gateway-url>/monitoring/healthz"
+curl --request GET \
+     --verbose \
+     --url "<ai-gateway-url>/monitoring/healthz"
 ```
 
 ### Emergency Diagnostic One-liner
@@ -302,7 +309,7 @@ For quick issue identification:
 ```shell
 # Check all critical components at once
 docker exec <ai-gateway-container> env | grep AIGW_CUSTOM_MODELS__ENABLED && \
-curl --silent "<ai-gateway-url>/monitoring/healthz" && \
+curl --request GET --silent --url "<ai-gateway-url>/monitoring/healthz" && \
 sudo tail --lines=10 /var/log/gitlab/gitlab-rails/llm.log | jq '.level'
 ```
 

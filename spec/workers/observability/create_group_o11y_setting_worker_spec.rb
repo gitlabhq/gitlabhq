@@ -123,6 +123,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         include_examples 'logs status', :success
 
+        it 'schedules GroupExportWorker to backfill existing pipelines' do
+          expect(Ci::Observability::GroupExportWorker).to receive(:perform_in).with(1.hour, group.id)
+
+          perform
+        end
+
         context 'when CI variable creation fails' do
           before do
             create(:ci_group_variable, group: group, key: 'GITLAB_OBSERVABILITY_EXPORT')
@@ -139,6 +145,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
             initial_count = group.reload.variables.count
             expect { perform }.not_to change { group.reload.variables.count }
             expect(group.reload.variables.count).to eq(initial_count)
+          end
+
+          it 'does not schedule GroupExportWorker when CI variable creation fails' do
+            expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+            perform
           end
 
           include_examples 'logs error', 'Failed to create CI variable for observability export'
@@ -170,6 +182,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         it 'does not create an observability setting when API fails' do
           expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
+        end
+
+        it 'does not schedule GroupExportWorker when API fails' do
+          expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+          perform
         end
 
         include_examples 'logs status', :api_failed
@@ -221,6 +239,12 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
 
         it 'does not create setting when database save fails' do
           expect { perform }.not_to change { group.reload.observability_group_o11y_setting }
+        end
+
+        it 'does not schedule GroupExportWorker when database save fails' do
+          expect(Ci::Observability::GroupExportWorker).not_to receive(:perform_in)
+
+          perform
         end
       end
 

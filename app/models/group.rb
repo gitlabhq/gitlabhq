@@ -1176,8 +1176,9 @@ class Group < Namespace
   end
 
   def use_work_item_url?
-    work_items_consolidated_list_enabled? &&
-      !feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
+    return false if feature_flag_enabled_for_self_or_ancestor?(:work_item_legacy_url, type: :gitlab_com_derisk)
+
+    work_items_consolidated_list_enabled?
   end
 
   # overriden in EE

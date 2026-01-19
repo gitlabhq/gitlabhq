@@ -97,7 +97,7 @@ If the lock option is not available or is disabled, you don't have the required 
 To view locked files:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Locked files**.
+1. In the left sidebar, select **Code** > **Locked files**.
 
 The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
 
@@ -125,7 +125,7 @@ To remove a lock:
 {{< tab title="From the Locked file page" >}}
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Locked files**.
+1. In the left sidebar, select **Code** > **Locked files**.
 1. To the right of the file you want to unlock, select **Unlock**.
 1. On the confirmation dialog, select **OK**.
 

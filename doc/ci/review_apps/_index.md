@@ -347,7 +347,7 @@ To view a mapped page from a file:
 To view mapped pages from a commit:
 
 1. Go to a commit that has a review app deployment:
-   - For branch pipelines: Select **Code** > **Commits** and select a commit with a pipeline badge.
+   - For branch pipelines: In the left sidebar, select **Code** > **Commits** and select a commit with a pipeline badge.
    - For merge request pipelines: In your merge request, select the **Commits** tab and select a commit.
    - For merged results pipelines: In your merge request, select the **Pipelines** tab and select the pipeline commit.
 1. Select the review app icon ({{< icon name="external-link" >}}) next to a filename that matches your route map.

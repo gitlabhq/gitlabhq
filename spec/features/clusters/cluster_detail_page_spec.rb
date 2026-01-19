@@ -11,6 +11,7 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
 
   before do
     sign_in(current_user)
+    stub_feature_flags(work_item_legacy_url: true)
   end
 
   shared_examples 'show page' do

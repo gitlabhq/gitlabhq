@@ -909,22 +909,43 @@ Merge request events can be triggered even if the `changes` field is empty.
 Webhook receivers should always inspect the content of the `changes` field for the
 actual changes in a merge request.
 
+The JSON structure of the webhook payload is consistent across all action types.
+The differences are in which fields contain data and whether conditional fields such as `oldrev`,
+`system`, and `system_action` are present.
+
 The available values for `object_attributes.action` in the payload are:
 
-- `open`
-- `close`
-- `reopen`
-- `update`: Includes general updates and re-request review actions. Check the `changes` field to determine the specific type of update.
-- `approval`: An individual user has added their approval.
-- `approved`: A merge request has been fully approved by all required approvers.
-- `unapproval`: An individual user has removed their approval, either manually or by the system.
-- `unapproved`: A previously-approved merge request has lost its approved status, either manually or by the system.
-- `merge`
+- `open`: A merge request is created.
+- `close`: A merge request is closed.
+- `reopen`: A closed merge request is reopened.
+- `update`: A merge request is updated. This includes general updates and re-request
+  review actions. Check the `changes` field to determine the specific type of update.
+- `approval`: A user adds their approval.
+- `approved`: A merge request is fully approved by all required approvers.
+- `unapproval`: A user removes their approval, either manually or by the system.
+- `unapproved`: A previously approved merge request loses its approved status,
+  either manually or by the system.
+- `merge`: A merge request is merged.
 
-The field `object_attributes.oldrev` is only available when there are actual code changes, like:
+### Merge request action-specific fields
 
-- New code is pushed.
+The `object_attributes.oldrev` field is only available for the `update` action when there are actual code changes, such as:
+
+- New code is pushed to the source branch.
 - A [suggestion](../merge_requests/reviews/suggestions.md) is applied.
+
+The following example shows an `update` event with `oldrev` (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update",
+    "oldrev": "e59094b8de0f2f91abbe4760a52d9137260252d8"
+  }
+}
+```
 
 ### System-initiated merge request events
 
@@ -932,9 +953,9 @@ Some merge request events are triggered automatically by the system, such as whe
 due to new commit pushes. These system-initiated webhook events are only triggered by push events,
 and include more fields in the payload:
 
-- `system`: A boolean field. If `true`, the event was triggered by the system. If `false`, a user action
+- `object_attributes.system`: A boolean field. If `true`, the event was triggered by the system. If `false`, a user action
   triggered the event.
-- `system_action`: A string field, present only when `system` is `true`. Provides more context about
+- `object_attributes.system_action`: A string field, present only when `system` is `true`. Provides more context about
   the system action. Available values are:
 
   - `approvals_reset_on_push`: The project has enabled **Reset approvals on push**, and new commits were pushed.
@@ -942,6 +963,20 @@ and include more fields in the payload:
     and Code Owner approvals were reset due to changes in files matching CODEOWNERS rules.
 
 Other approval reset scenarios do not trigger webhooks.
+
+The following example shows a system-initiated event (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update",
+    "system": true,
+    "system_action": "approvals_reset_on_push"
+  }
+}
+```
 
 ### Reviewer state tracking
 
@@ -954,7 +989,7 @@ The `reviewers` array in merge request webhook payloads includes a `state` field
 - `approved`: Reviewer has approved the merge request
 - `unapproved`: Reviewer had previously approved but their approval was removed
 
-**Example reviewers array (partial payload):**
+The following example shows a reviewers array (partial payload):
 
 ```json
 {
@@ -979,7 +1014,7 @@ When a reviewer is re-requested for a merge request, a webhook is triggered with
 - **Current state** (second array): Shows the reviewer's updated state after the re-request, with `re_requested: true` for re-requested reviewers
 - **State transitions**: Demonstrates how the reviewer's state changed (for example, from `approved` to `unreviewed`)
 
-**Example re-request review changes (partial payload):**
+The following example shows re-request review changes (partial payload):
 
 ```json
 {
@@ -1025,7 +1060,7 @@ Request header:
 X-Gitlab-Event: Merge Request Hook
 ```
 
-Complete merge request webhook payload:
+The following example shows a complete merge request webhook payload for an `open` action:
 
 ```json
 {
@@ -1033,200 +1068,219 @@ Complete merge request webhook payload:
   "event_type": "merge_request",
   "user": {
     "id": 1,
-    "name": "Administrator",
-    "username": "root",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon",
-    "email": "admin@example.com"
+    "name": "Alex Garcia",
+    "username": "agarcia",
+    "avatar_url": "https://www.gravatar.com/avatar/1a29da0ccd099482194440fac762f5ccb4ec53227761d1859979367644a889a5?s=80&d=identicon",
+    "email": "agarcia@example.com"
   },
   "project": {
-    "id": 1,
-    "name":"Gitlab Test",
-    "description":"Aut reprehenderit ut est.",
-    "web_url":"http://example.com/gitlabhq/gitlab-test",
-    "avatar_url":null,
-    "git_ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
-    "git_http_url":"http://example.com/gitlabhq/gitlab-test.git",
-    "namespace":"GitlabHQ",
-    "visibility_level":20,
-    "path_with_namespace":"gitlabhq/gitlab-test",
-    "default_branch":"master",
-    "ci_config_path":"",
-    "homepage":"http://example.com/gitlabhq/gitlab-test",
-    "url":"http://example.com/gitlabhq/gitlab-test.git",
-    "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
-    "http_url":"http://example.com/gitlabhq/gitlab-test.git"
-  },
-  "repository": {
-    "name": "Gitlab Test",
-    "url": "http://example.com/gitlabhq/gitlab-test.git",
-    "description": "Aut reprehenderit ut est.",
-    "homepage": "http://example.com/gitlabhq/gitlab-test"
+    "id": 2,
+    "name": "Flight Management",
+    "description": "Flight management application for tracking aircraft status.",
+    "web_url": "http://gitlab.example.com/flightjs/flight-management",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+    "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+    "namespace": "Flightjs",
+    "visibility_level": 0,
+    "path_with_namespace": "flightjs/flight-management",
+    "default_branch": "main",
+    "ci_config_path": null,
+    "homepage": "http://gitlab.example.com/flightjs/flight-management",
+    "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+    "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+    "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
   },
   "object_attributes": {
-    "id": 99,
-    "iid": 1,
-    "target_branch": "master",
-    "source_branch": "ms-viewport",
-    "source_project_id": 14,
-    "author_id": 51,
-    "assignee_ids": [6],
-    "assignee_id": 6,
-    "reviewer_ids": [6],
-    "title": "MS-Viewport",
-    "created_at": "2013-12-03T17:23:34Z",
-    "updated_at": "2013-12-03T17:23:34Z",
-    "last_edited_at": "2013-12-03T17:23:34Z",
-    "last_edited_by_id": 1,
-    "milestone_id": null,
-    "state_id": 1,
-    "state": "opened",
-    "blocking_discussions_resolved": true,
-    "work_in_progress": false,
+    "assignee_id": 1,
+    "author_id": 1,
+    "created_at": "2026-01-16 05:56:22 UTC",
+    "description": "This merge request adds input validation to the booking form.",
     "draft": false,
+    "head_pipeline_id": null,
+    "id": 93,
+    "iid": 16,
+    "last_edited_at": null,
+    "last_edited_by_id": null,
+    "merge_commit_sha": null,
+    "merge_error": null,
+    "merge_params": {
+      "force_remove_source_branch": "1"
+    },
+    "merge_status": "checking",
+    "merge_user_id": null,
+    "merge_when_pipeline_succeeds": false,
+    "milestone_id": 8,
+    "source_branch": "feature/booking-validation",
+    "source_project_id": 2,
+    "state_id": 1,
+    "target_branch": "main",
+    "target_project_id": 2,
+    "time_estimate": 0,
+    "title": "Add input validation to booking form",
+    "updated_at": "2026-01-16 05:56:25 UTC",
+    "updated_by_id": null,
+    "prepared_at": "2026-01-16 05:56:25 UTC",
+    "assignee_ids": [
+      1
+    ],
+    "blocking_discussions_resolved": true,
+    "detailed_merge_status": "checking",
     "first_contribution": true,
-    "merge_status": "unchecked",
-    "target_project_id": 14,
-    "description": "",
-    "prepared_at": "2013-12-03T19:23:34Z",
-    "total_time_spent": 1800,
-    "time_change": 30,
-    "human_total_time_spent": "30m",
-    "human_time_change": "30s",
-    "human_time_estimate": "30m",
-    "url": "http://example.com/diaspora/merge_requests/1",
-    "source": {
-      "name":"Awesome Project",
-      "description":"Aut reprehenderit ut est.",
-      "web_url":"http://example.com/awesome_space/awesome_project",
-      "avatar_url":null,
-      "git_ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "git_http_url":"http://example.com/awesome_space/awesome_project.git",
-      "namespace":"Awesome Space",
-      "visibility_level":20,
-      "path_with_namespace":"awesome_space/awesome_project",
-      "default_branch":"master",
-      "homepage":"http://example.com/awesome_space/awesome_project",
-      "url":"http://example.com/awesome_space/awesome_project.git",
-      "ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "http_url":"http://example.com/awesome_space/awesome_project.git"
-    },
-    "target": {
-      "name":"Awesome Project",
-      "description":"Aut reprehenderit ut est.",
-      "web_url":"http://example.com/awesome_space/awesome_project",
-      "avatar_url":null,
-      "git_ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "git_http_url":"http://example.com/awesome_space/awesome_project.git",
-      "namespace":"Awesome Space",
-      "visibility_level":20,
-      "path_with_namespace":"awesome_space/awesome_project",
-      "default_branch":"master",
-      "homepage":"http://example.com/awesome_space/awesome_project",
-      "url":"http://example.com/awesome_space/awesome_project.git",
-      "ssh_url":"git@example.com:awesome_space/awesome_project.git",
-      "http_url":"http://example.com/awesome_space/awesome_project.git"
-    },
+    "human_time_change": null,
+    "human_time_estimate": null,
+    "human_total_time_spent": null,
+    "labels": [
+      {
+        "id": 19,
+        "title": "enhancement",
+        "color": "#adb21a",
+        "project_id": null,
+        "created_at": "2026-01-07 00:03:52 UTC",
+        "updated_at": "2026-01-07 00:03:52 UTC",
+        "template": false,
+        "description": null,
+        "type": "GroupLabel",
+        "group_id": 24
+      }
+    ],
     "last_commit": {
-      "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
-      "message": "fixed readme",
-      "title": "Update file README.md",
-      "timestamp": "2012-01-03T23:36:29+02:00",
-      "url": "http://example.com/awesome_space/awesome_project/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "id": "e59094b8de0f2f91abbe4760a52d9137260252d8",
+      "message": "Add email format validation",
+      "title": "Add email format validation",
+      "timestamp": "2026-01-16T05:01:10+00:00",
+      "url": "http://gitlab.example.com/flightjs/flight-management/-/commit/e59094b8de0f2f91abbe4760a52d9137260252d8",
       "author": {
-        "name": "GitLab dev user",
-        "email": "gitlabdev@dv6700.(none)"
+        "name": "Alex Garcia",
+        "email": "agarcia@example.com"
       }
     },
-    "labels": [{
-      "id": 206,
-      "title": "API",
-      "color": "#ffffff",
-      "project_id": 14,
-      "created_at": "2013-12-03T17:15:43Z",
-      "updated_at": "2013-12-03T17:15:43Z",
-      "template": false,
-      "description": "API related issues",
-      "type": "ProjectLabel",
-      "group_id": 41
-    }],
-    "action": "open",
-    "detailed_merge_status": "mergeable"
-  },
-  "labels": [{
-    "id": 206,
-    "title": "API",
-    "color": "#ffffff",
-    "project_id": 14,
-    "created_at": "2013-12-03T17:15:43Z",
-    "updated_at": "2013-12-03T17:15:43Z",
-    "template": false,
-    "description": "API related issues",
-    "type": "ProjectLabel",
-    "group_id": 41
-  }],
-  "changes": {
-    "updated_by_id": {
-      "previous": null,
-      "current": 1
+    "reviewer_ids": [
+      25
+    ],
+    "source": {
+      "id": 2,
+      "name": "Flight Management",
+      "description": "Flight management application for tracking aircraft status.",
+      "web_url": "http://gitlab.example.com/flightjs/flight-management",
+      "avatar_url": null,
+      "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+      "namespace": "Flightjs",
+      "visibility_level": 0,
+      "path_with_namespace": "flightjs/flight-management",
+      "default_branch": "main",
+      "ci_config_path": null,
+      "homepage": "http://gitlab.example.com/flightjs/flight-management",
+      "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
     },
-    "draft": {
-      "previous": true,
-      "current": false
+    "state": "opened",
+    "system": false,
+    "target": {
+      "id": 2,
+      "name": "Flight Management",
+      "description": "Flight management application for tracking aircraft status.",
+      "web_url": "http://gitlab.example.com/flightjs/flight-management",
+      "avatar_url": null,
+      "git_ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "git_http_url": "http://gitlab.example.com/flightjs/flight-management.git",
+      "namespace": "Flightjs",
+      "visibility_level": 0,
+      "path_with_namespace": "flightjs/flight-management",
+      "default_branch": "main",
+      "ci_config_path": null,
+      "homepage": "http://gitlab.example.com/flightjs/flight-management",
+      "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+      "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
+    },
+    "time_change": 0,
+    "total_time_spent": 0,
+    "url": "http://gitlab.example.com/flightjs/flight-management/-/merge_requests/16",
+    "work_in_progress": false,
+    "approval_rules": [
+      {
+        "id": 4,
+        "approvals_required": 0,
+        "name": "All Members",
+        "rule_type": "any_approver",
+        "report_type": null,
+        "merge_request_id": 93,
+        "section": null,
+        "modified_from_project_rule": false,
+        "orchestration_policy_idx": null,
+        "vulnerabilities_allowed": 0,
+        "scanners": [],
+        "severity_levels": [],
+        "vulnerability_states": [
+          "new_needs_triage",
+          "new_dismissed"
+        ],
+        "security_orchestration_policy_configuration_id": null,
+        "scan_result_policy_id": null,
+        "applicable_post_merge": null,
+        "project_id": 2,
+        "approval_policy_rule_id": null,
+        "updated_at": "2026-01-16 05:56:22 UTC",
+        "created_at": "2026-01-16 05:56:22 UTC"
+      }
+    ],
+    "action": "open"
+  },
+  "labels": [
+    {
+      "id": 19,
+      "title": "enhancement",
+      "color": "#adb21a",
+      "project_id": null,
+      "created_at": "2026-01-07 00:03:52 UTC",
+      "updated_at": "2026-01-07 00:03:52 UTC",
+      "template": false,
+      "description": null,
+      "type": "GroupLabel",
+      "group_id": 24
+    }
+  ],
+  "changes": {
+    "merge_status": {
+      "previous": "preparing",
+      "current": "checking"
     },
     "updated_at": {
-      "previous": "2017-09-15 16:50:55 UTC",
-      "current":"2017-09-15 16:52:00 UTC"
+      "previous": "2026-01-16 05:56:22 UTC",
+      "current": "2026-01-16 05:56:25 UTC"
     },
-    "labels": {
-      "previous": [{
-        "id": 206,
-        "title": "API",
-        "color": "#ffffff",
-        "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
-        "template": false,
-        "description": "API related issues",
-        "type": "ProjectLabel",
-        "group_id": 41
-      }],
-      "current": [{
-        "id": 205,
-        "title": "Platform",
-        "color": "#123123",
-        "project_id": 14,
-        "created_at": "2013-12-03T17:15:43Z",
-        "updated_at": "2013-12-03T17:15:43Z",
-        "template": false,
-        "description": "Platform related issues",
-        "type": "ProjectLabel",
-        "group_id": 41
-      }]
-    },
-    "last_edited_at": {
+    "prepared_at": {
       "previous": null,
-      "current": "2023-03-15 00:00:10 UTC"
-    },
-    "last_edited_by_id": {
-      "previous": null,
-      "current": 3278533
+      "current": "2026-01-16 05:56:25 UTC"
     }
+  },
+  "repository": {
+    "name": "Flight Management",
+    "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
+    "description": "Flight management application for tracking aircraft status.",
+    "homepage": "http://gitlab.example.com/flightjs/flight-management"
   },
   "assignees": [
     {
-      "id": 6,
-      "name": "User1",
-      "username": "user1",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+      "id": 1,
+      "name": "Alex Garcia",
+      "username": "agarcia",
+      "avatar_url": "https://www.gravatar.com/avatar/1a29da0ccd099482194440fac762f5ccb4ec53227761d1859979367644a889a5?s=80&d=identicon",
+      "email": "[REDACTED]"
     }
   ],
   "reviewers": [
     {
-      "id": 6,
-      "name": "User1",
-      "username": "user1",
+      "id": 25,
+      "name": "Sidney Jones",
+      "username": "sjones",
+      "avatar_url": "https://www.gravatar.com/avatar/1be419860e7f852e20ca2691e6b55949f7809177e7765181da42e4448491e367?s=80&d=identicon",
+      "email": "[REDACTED]",
       "state": "unreviewed",
-      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+      "re_requested": false
     }
   ]
 }

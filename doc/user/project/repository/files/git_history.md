@@ -41,7 +41,7 @@ of the contributor when the user creates a commit.
 To see a file's Git history in the UI:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Go to your desired file in the repository.
 1. In the last commit block, select **History**.
 

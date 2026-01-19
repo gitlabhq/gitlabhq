@@ -37,7 +37,7 @@ To view participants of a work item:
 To view participants in a merge request:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. On the right sidebar, in the **Participants** section, view all users who
    participated in the merge request.
 

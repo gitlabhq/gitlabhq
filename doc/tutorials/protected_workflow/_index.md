@@ -288,7 +288,7 @@ Now that all branch protections in place, you're ready to create your 1.0.0 rele
 
 1. On the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 

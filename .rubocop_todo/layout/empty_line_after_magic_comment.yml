@@ -94,7 +94,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/graphql/types/vulnerability_scanner_vendor_input_type.rb'
     - 'ee/app/helpers/ee/admin/identities_helper.rb'
     - 'ee/app/helpers/ee/hooks_helper.rb'
-    - 'ee/app/helpers/ee/routing/projects_helper.rb'
     - 'ee/app/helpers/ee/sorting_helper.rb'
     - 'ee/app/helpers/ee/sorting_titles_values_helper.rb'
     - 'ee/app/models/analytics/devops_adoption.rb'

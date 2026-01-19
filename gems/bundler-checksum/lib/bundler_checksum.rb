@@ -2,7 +2,6 @@
 
 require 'bundler'
 require 'bundler_checksum/version'
-require 'json'
 
 module Bundler
   module Patches
@@ -87,6 +86,17 @@ module BundlerChecksum
     end
 
     def checksums_from_file
+      # JSON is lazy loaded because when `require 'json'` is top-of-file,
+      #   it executes while the Gemfile is still being evaluated.
+      # That eagerly activates whatever json gem *RubyGems* finds first (e.g., 2.15.2),
+      #   and when multiple json versions are installed,
+      #   it may choose a version that conflicts with Gemfile.lock.
+      # When Bundler later tries to activate the locked json version (e.g., 2.13.1)
+      #   check_for_activated_spec! raises Gem::LoadError,
+      #   because a different version is already activated.
+      # Mitigated by postponing `require 'json'` until after Bundler finishes setup
+      #   (i.e., right before parsing the checksum file).
+      require 'json'
       @checksums_from_file ||= JSON.parse(File.open(checksum_file).read, symbolize_names: true)
     rescue JSON::ParserError => e
       raise "Invalid checksum file: #{e.message}"

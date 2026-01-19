@@ -16,6 +16,8 @@ module Observability
     sidekiq_options retry: 3
     worker_has_external_dependencies!
 
+    HOURS_TO_WAIT_FOR_BACKFILL = 1
+
     def perform(user_id, group_id)
       user = User.find_by_id(user_id)
       group = Group.find_by_id(group_id)
@@ -48,7 +50,7 @@ module Observability
       result = ::Observability::GroupO11ySettingsUpdateService.new.execute(setting, settings_params)
 
       if result.success?
-        add_ci_variable(group, user)
+        backfill_existing_pipelines(group) if add_ci_variable(group, user)
         log_completion(:success, group_id)
       else
         log_completion(:database_failed, group_id, result.message)
@@ -77,14 +79,21 @@ module Observability
         params: params
       ).execute
 
-      return if result
+      if result
+        true
+      else
+        log_error(
+          'Failed to create CI variable for observability export',
+          group.id,
+          user.id,
+          group.errors.full_messages.join(', ')
+        )
+        false
+      end
+    end
 
-      log_error(
-        'Failed to create CI variable for observability export',
-        group.id,
-        user.id,
-        group.errors.full_messages.join(', ')
-      )
+    def backfill_existing_pipelines(group)
+      Ci::Observability::GroupExportWorker.perform_in(HOURS_TO_WAIT_FOR_BACKFILL.hour, group.id)
     end
 
     def log_completion(status, group_id, error_message = nil)

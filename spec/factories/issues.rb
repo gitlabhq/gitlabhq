@@ -127,6 +127,10 @@ FactoryBot.define do
       association :work_item_type, :ticket
     end
 
+    trait :service_desk do
+      association :author, :support_bot
+    end
+
     factory :incident do
       association :work_item_type, :incident
 

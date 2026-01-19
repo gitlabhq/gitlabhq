@@ -148,6 +148,12 @@ Secret push protection does not check a file in a commit when:
 Secret push protection scans only the diffs of commits pushed over HTTP(S) and SSH.
 If a secret is already present in a file and not part of the changes, it is not detected.
 
+## Push size threshold
+
+Secret push protection is skipped when a push changes more than 3,150 paths. The threshold applies
+only to files that secret push protection scans (after excluding paths defined in [exclusions](../exclusions.md)).
+This threshold prevents push timeouts when you push large changesets.
+
 ## Understanding the results
 
 Secret push protection can identify various categories of secrets:

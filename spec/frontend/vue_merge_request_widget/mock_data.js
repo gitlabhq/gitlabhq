@@ -374,8 +374,6 @@ export default {
   merge_trains_count: 3,
   merge_train_index: 1,
   security_reports_docs_path: 'security-reports-docs-path',
-  sast_comparison_path: '/sast_comparison_path',
-  secret_detection_comparison_path: '/secret_detection_comparison_path',
   gitpod_enabled: true,
   show_gitpod_button: true,
   gitpod_url: 'http://ona.localhost',

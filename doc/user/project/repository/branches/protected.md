@@ -499,7 +499,7 @@ Prerequisites:
 To create a new branch with protections:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Select **New branch**.
 1. Fill in the branch name and select an existing branch, tag, or commit to
    base the new branch on. If you require everyone to submit merge requests for a protected branch,
@@ -515,7 +515,7 @@ Users with at least the Maintainer role can manually delete protected
 branches by using the GitLab web interface:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Next to the branch you want to delete, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete protected branch**.
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.

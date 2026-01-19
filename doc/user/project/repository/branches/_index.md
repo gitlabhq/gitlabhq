@@ -70,7 +70,7 @@ Prerequisites:
 To create a new branch from the GitLab UI:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
@@ -322,7 +322,7 @@ Prerequisites:
 To do this:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
@@ -474,7 +474,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 To fix this problem:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Branches**.
+1. In the left sidebar, select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.
 1. Select **Delete branch**, then **Yes, delete branch**.

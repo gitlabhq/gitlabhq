@@ -94,7 +94,7 @@ class ProjectsController < Projects::ApplicationController
     @namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
     return access_denied! if @namespace && !can?(current_user, :create_projects, @namespace)
 
-    @parent_group = Group.find_by(id: params[:namespace_id])
+    @parent_group = @namespace if @namespace&.group_namespace?
 
     manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 

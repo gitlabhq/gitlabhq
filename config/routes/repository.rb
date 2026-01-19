@@ -13,7 +13,7 @@ scope format: false do
     collection do
       get :diff_for_path
       get :signatures
-      get :diffs_stream, to: 'compare_diffs_stream#diffs'
+      get :diffs_stream, controller: 'compare_diffs_stream'
       get :diff_files_metadata
       get :diffs_stats
       get :diff_file
@@ -109,7 +109,7 @@ end
 
 resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PATTERN } do
   member do
-    get :diffs_stream, to: 'commit_diffs_stream#diffs'
+    get :diffs_stream, controller: 'commit_diffs_stream'
     get :pipelines
     post :revert
     post :cherry_pick

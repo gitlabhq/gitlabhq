@@ -691,6 +691,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains an introduction' do
           issuable_url = "project_#{note.noteable_type.underscore}_url"
           issuable_url = "project_wiki_url" if note.for_wiki_page?
+          issuable_url = "project_work_item_url" if note.noteable.try(:use_work_item_url?)
           anchor = "note_#{note.id}"
 
           is_expected.to have_body_text(

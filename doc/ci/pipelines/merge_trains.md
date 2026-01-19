@@ -154,7 +154,7 @@ The merge train details page shows active merge requests in the queue and merged
 To access the merge train details from the list of merge requests:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Merge trains**.
 1. Optional. Filter the merge trains by target branch.
 

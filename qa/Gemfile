@@ -37,7 +37,7 @@ gem 'warning', '~> 1.5'
 gem 'nokogiri', '~> 1.18', '>= 1.18.9'
 
 group :development do
-  gem 'pry-byebug', '~> 3.11.0', platform: :mri
+  gem 'pry-byebug', '~> 3.12.0', platform: :mri
   gem 'ruby-debug-ide', '~> 0.7.5'
 end
 

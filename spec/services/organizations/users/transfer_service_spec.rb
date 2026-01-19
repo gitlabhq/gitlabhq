@@ -399,6 +399,35 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
       end
     end
 
+    context 'with associated organization_id updates' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_developer(user1)
+        group.add_developer(user2)
+      end
+
+      context 'for personal access tokens' do
+        it 'updates organization_id for personal access tokens of transferred users' do
+          token1 = create(:personal_access_token, user: user1, organization: old_organization)
+          token2 = create(:personal_access_token, user: user2, organization: old_organization)
+
+          service.execute
+
+          expect(token1.reload.organization_id).to eq(new_organization.id)
+          expect(token2.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it 'does not update personal access tokens for users not in the group' do
+          non_group_token = create(:personal_access_token, user: non_group_user, organization: old_organization)
+
+          expect { service.execute }.not_to change { non_group_token.reload.organization_id }
+        end
+      end
+    end
+
     context 'with nested groups' do
       let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
       let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }

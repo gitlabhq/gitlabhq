@@ -16,16 +16,54 @@ RSpec.describe Gitlab::UrlBuilder do
   describe '.build' do
     using RSpec::Parameterized::TableSyntax
 
+    context 'when work_item_legacy_url: true', feature_category: :team_planning do
+      before do
+        stub_feature_flags(work_item_legacy_url: true)
+      end
+
+      where(:factory, :path_generator) do
+        :issue                     | ->(issue)     { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
+        [:issue, :task]            | ->(issue)     { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
+        [:issue, :group_level]     | ->(issue)     { "/groups/#{issue.namespace.full_path}/-/work_items/#{issue.iid}" }
+        [:work_item, :issue]       | ->(work_item) { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+        [:work_item, :incident]    | ->(work_item) { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+        [:work_item, :task]        | ->(work_item) { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+        [:work_item, :group_level] | ->(work_item) { "/groups/#{work_item.namespace.full_path}/-/work_items/#{work_item.iid}" }
+        :note_on_issue             | ->(note)      { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
+        :discussion_note_on_issue  | ->(note)      { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
+      end
+
+      with_them do
+        let(:object) { build_stubbed(*Array(factory)) }
+        let(:path) { path_generator.call(object) }
+
+        it 'returns the full URL' do
+          expect(subject.build(object)).to eq("#{Gitlab.config.gitlab.url}#{path}")
+        end
+
+        it 'returns only the path if only_path is given' do
+          expect(subject.build(object, only_path: true)).to eq(path)
+        end
+      end
+    end
+
     where(:factory, :path_generator) do
       :project           | ->(project)       { "/#{project.full_path}" }
       :board             | ->(board)         { "/#{board.project.full_path}/-/boards/#{board.id}" }
       :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
-      :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
-      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
-      [:work_item, :task]     | ->(work_item)    { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
-      [:work_item, :issue]    | ->(work_item)    { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
-      [:work_item, :incident] | ->(work_item)    { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+
+      # WorkItems/Issues
+      :issue                     | ->(work_item) { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :issue]       | ->(work_item) { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :incident]    | ->(work_item) { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+      [:work_item, :task]        | ->(work_item) { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:issue, :task]            | ->(work_item) { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:issue, :group_level]     | ->(work_item) { "/groups/#{work_item.namespace.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :group_level] | ->(work_item) { "/groups/#{work_item.namespace.full_path}/-/work_items/#{work_item.iid}" }
+      :note_on_issue             | ->(note)      { "/#{note.project.full_path}/-/work_items/#{note.noteable.iid}#note_#{note.id}" }
+      :discussion_note_on_issue  | ->(note)      { "/#{note.project.full_path}/-/work_items/#{note.noteable.iid}#note_#{note.id}" }
+
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -35,9 +73,6 @@ RSpec.describe Gitlab::UrlBuilder do
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
       :ci_pipeline       | ->(pipeline)      { "/#{pipeline.project.full_path}/-/pipelines/#{pipeline.id}" }
       :design            | ->(design)        { "/#{design.project.full_path}/-/design_management/designs/#{design.id}/raw_image" }
-
-      [:issue, :group_level]     | ->(issue)     { "/groups/#{issue.namespace.full_path}/-/work_items/#{issue.iid}" }
-      [:work_item, :group_level] | ->(work_item) { "/groups/#{work_item.namespace.full_path}/-/work_items/#{work_item.iid}" }
 
       :group             | ->(group)         { "/groups/#{group.full_path}" }
       :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
@@ -50,9 +85,6 @@ RSpec.describe Gitlab::UrlBuilder do
       :diff_note_on_commit                 | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
       :discussion_note_on_commit           | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
       :legacy_diff_note_on_commit          | ->(note) { "/#{note.project.full_path}/-/commit/#{note.commit_id}#note_#{note.id}" }
-
-      :note_on_issue                       | ->(note) { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
-      :discussion_note_on_issue            | ->(note) { "/#{note.project.full_path}/-/issues/#{note.noteable.iid}#note_#{note.id}" }
 
       :note_on_merge_request               | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }
       :diff_note_on_merge_request          | ->(note) { "/#{note.project.full_path}/-/merge_requests/#{note.noteable.iid}#note_#{note.id}" }

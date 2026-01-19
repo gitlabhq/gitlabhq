@@ -57,7 +57,7 @@ To use this flow, you must:
 To fix the CI/CD pipeline in a merge request:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and open your merge request.
+1. In the left sidebar, select **Code** > **Merge requests** and open your merge request.
 1. To fix the pipeline, you can either:
    - Select the **Overview** tab and under the failing pipeline, select **Fix pipeline with Duo**.
    - Select the **Pipelines** tab and in the rightmost column, select **Fix pipeline with Duo** ({{< icon name="tanuki-ai" >}}).

@@ -194,11 +194,27 @@ end
 RSpec.shared_examples 'it should show Gmail Actions View Issue link' do |group_level = false|
   it_behaves_like 'it should have Gmail Actions links'
 
-  it 'show the correct view action text' do
-    if group_level
+  context 'when work_item_planning_view: false' do
+    before do
+      stub_feature_flags(work_item_planning_view: false)
+    end
+
+    it 'show the correct view action text' do
+      if group_level
+        is_expected.to have_body_text('View Work item')
+      else
+        is_expected.to have_body_text('View Issue')
+      end
+    end
+  end
+
+  context 'when work_item_planning_view: true' do
+    before do
+      stub_feature_flags(work_item_planning_view: true)
+    end
+
+    it 'show the correct view action text' do
       is_expected.to have_body_text('View Work item')
-    else
-      is_expected.to have_body_text('View Issue')
     end
   end
 end

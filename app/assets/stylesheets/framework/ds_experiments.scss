@@ -66,32 +66,6 @@
     @apply gl-rounded-b-lg;
   }
 
-  // Increased border radii for more components
-  .info-well,
-  .file-holder,
-  .table-holder {
-    @apply gl-rounded-lg #{!important};
-  }
-
-  // Tree
-  table.tree-table tbody tr:last-child {
-    td, th {
-      &:first-child {
-        border-bottom-left-radius: $gl-border-radius-lg-inner !important;
-      }
-
-      &:last-child {
-        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
-      }
-    }
-  }
-
-  // File title
-  .file-title-flex-parent, .file-holder .file-title-flex-parent {
-    border-top-left-radius: $gl-border-radius-lg-inner !important;
-    border-top-right-radius: $gl-border-radius-lg-inner !important;
-  }
-
   // Discussion file comment
   .discussion-body .diff-file .file-title.file-title-flex-parent {
     @apply gl-rounded-none #{!important};

@@ -115,7 +115,7 @@ When you add comments to a merge request diff, these comments persist, even when
 To add a commit diff comment:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests**, and find your merge request.
+1. In the left sidebar, select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
    - To comment on an entire file, find the file you want to comment on and,

@@ -63451,6 +63451,9 @@ msgstr ""
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
 
+msgid "SecurityReports|Open vulnerabilities by the amount of time since they were opened."
+msgstr ""
+
 msgid "SecurityReports|Open vulnerability trends over time. To interact with a link in a chart popover, click to pin the popover first."
 msgstr ""
 

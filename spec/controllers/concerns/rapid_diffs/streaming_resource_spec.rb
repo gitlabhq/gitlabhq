@@ -193,7 +193,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
   end
 
-  describe '#diffs' do
+  describe '#diffs_stream' do
     let(:controller_instance) { controller.new }
     let(:mock_resource) { instance_double(::Commit) }
     let(:mock_diffs) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
@@ -224,7 +224,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
 
     it 'renders diffs' do
-      controller_instance.send(:diffs)
+      controller_instance.send(:diffs_stream)
       expect(response.stream).to have_received(:write).with(diff_html)
       # ensure we're not doing double work when checking for empty state
       expect(mock_resource).to have_received(:diffs_for_streaming).once
@@ -240,7 +240,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders diffs' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(diff_html).exactly(diff_files.count).times
         # ensure we're not doing double work when checking for empty state
         expect(mock_resource).to have_received(:diffs_for_streaming).once
@@ -257,7 +257,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders empty state' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(empty_state_html)
       end
     end
@@ -268,7 +268,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'renders diffs' do
-        controller_instance.send(:diffs)
+        controller_instance.send(:diffs_stream)
         expect(response.stream).to have_received(:write).with(diff_html)
       end
     end
@@ -282,7 +282,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
 
       it 'does not raise an IOError when closing the stream' do
-        expect { controller_instance.send(:diffs) }.not_to raise_error
+        expect { controller_instance.send(:diffs_stream) }.not_to raise_error
         expect(stream).not_to have_received(:close)
       end
     end
@@ -301,7 +301,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
         end
 
         it 'silently handles the disconnection' do
-          expect { controller_instance.send(:diffs) }.not_to raise_error
+          expect { controller_instance.send(:diffs_stream) }.not_to raise_error
           expect(Gitlab::AppLogger).not_to receive(:error)
         end
       end

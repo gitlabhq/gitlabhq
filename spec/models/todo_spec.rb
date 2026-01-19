@@ -433,7 +433,7 @@ RSpec.describe Todo, feature_category: :notifications do
 
     context 'when the todo is coming from an issue' do
       let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
+      let(:issue_path) { ::Gitlab::UrlBuilder.instance.issue_path(issue) }
 
       context 'when coming from the issue itself' do
         let_it_be(:todo) { create(:todo, project: project, user: user, target: issue) }
