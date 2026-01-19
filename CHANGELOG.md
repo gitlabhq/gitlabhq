@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.1 (2026-01-19)
+
+### Fixed (1 change)
+
+- [Fix incorrectly shown limited experience alert on pipeline security tab](https://gitlab.com/gitlab-org/gitlab/-/commit/c8f4d95a3da0d6ed7705058a809f55f87697745a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218899)) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Disallow creation of new external agents](https://gitlab.com/gitlab-org/gitlab/-/commit/f44382e9baff074d0495678e82447442944832aa) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218920)) **GitLab Enterprise Edition**
+- [Release AI Catalog External Agents](https://gitlab.com/gitlab-org/gitlab/-/commit/74685605a678ec099f4b082188b90a41b27b80c2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218867)) **GitLab Enterprise Edition**
+
 ## 18.8.0 (2026-01-14)
 
 ### Added (95 changes)
