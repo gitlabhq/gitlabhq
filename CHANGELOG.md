@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.7.2 (2026-01-20)
+
+### Fixed (8 changes)
+
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8e5a7028c64d134fcca7b2a6ba89cbff0320bf64)
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3469cf61ffc33a5186c5c0dc108d90b521737c61)
+- [Allow user namespaces to be indexed in Zoekt for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d1ce678b06a2d599481a90084e9fa31088eee8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218904)) **GitLab Enterprise Edition**
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e96f86cc5bcdbe0a22468dfc07ef39ef8a903fc2)
+- [Fix migration health check endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/35813c8895bc080d7d72d7c69716a374c084da6f)
+- [Recreate p_sent_notifications.reply_key index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02c0a479af12c482f0237c967981614d800a0ac7)
+- [Fix git push error for remote flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0be85e3a2c0fdcc4113185be9a32f6ef52f8460b) **GitLab Enterprise Edition**
+- [Fix container_repositories index repair to handle 1-to-1 relationship](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9aa8d96cd9245a97828d65162251ce194958b7da)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0504a0a8a3e437a535d2664e2f5819a7bf9a9c3d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5615))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef78fca8bb6823bedd59cd8d2ebc7158335dfb3f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5661))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7005dd1d9df8f429e4c633048ce6d53f0aec8e2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5611))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f74981ae0e3abd03584ed4a2acf3dcb25461a694) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5623))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0e071e78f995a6aa0253c69ee9f224fdc0c3ddc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5643))
+
 ## 18.7.1 (2026-01-07)
 
 ### Fixed (1 change)
