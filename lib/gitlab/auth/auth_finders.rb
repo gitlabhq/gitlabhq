@@ -4,6 +4,7 @@ module Gitlab
   module Auth
     AuthenticationError = Class.new(StandardError)
     MissingTokenError = Class.new(AuthenticationError)
+    InvalidTokenError = Class.new(AuthenticationError)
     TokenNotFoundError = Class.new(AuthenticationError)
     ExpiredError = Class.new(AuthenticationError)
     RevokedError = Class.new(AuthenticationError)
@@ -55,6 +56,8 @@ module Gitlab
         JOB_TOKEN_HEADER,
         DEPLOY_TOKEN_HEADER
       ].freeze
+
+      MAX_JOB_TOKEN_SIZE_BYTES = 8192
 
       attr_accessor :current_token
 
@@ -195,6 +198,8 @@ module Gitlab
 
         self.current_token = get_job_token_from_query_param_or_header
         return unless current_token
+
+        validate_job_token_size!(current_token)
 
         find_valid_running_job_by_token!(current_token)
       end
@@ -411,6 +416,8 @@ module Gitlab
         self.current_token = get_job_token_from_query_param_or_header
         return unless current_token
 
+        validate_job_token_size!(current_token.to_s)
+
         job = find_valid_running_job_by_token!(current_token.to_s)
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -421,6 +428,7 @@ module Gitlab
         return unless has_basic_credentials?(current_request)
 
         login, self.current_token = user_name_and_password(current_request)
+
         return unless login.present? && current_token.present?
         return unless ::Gitlab::Auth::CI_JOB_USER == login
 
@@ -579,6 +587,10 @@ module Gitlab
 
       def dependency_proxy_request?
         Gitlab::PathRegex.dependency_proxy_route_regex.match?(current_request.path)
+      end
+
+      def validate_job_token_size!(token)
+        raise InvalidTokenError, 'Token exceeds maximum size' if token.bytesize > MAX_JOB_TOKEN_SIZE_BYTES
       end
     end
   end

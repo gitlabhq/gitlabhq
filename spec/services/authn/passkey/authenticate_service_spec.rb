@@ -172,6 +172,16 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
 
         it_behaves_like 'returns authentication failure'
       end
+
+      context 'when webauthn verification returns false' do
+        before do
+          allow_next_instance_of(WebAuthn::AuthenticatorAssertionResponse) do |instance|
+            allow(instance).to receive(:verify).and_return(false)
+          end
+        end
+
+        it_behaves_like 'returns authentication failure'
+      end
     end
   end
 end
