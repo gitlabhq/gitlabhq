@@ -37,12 +37,9 @@ runner authentication, which is described in more detail in the following
 sections. After resetting the tokens, you should be able to visit your project
 and the jobs begin running again.
 
-{{< alert type="warning" >}}
-
-The steps in this section can potentially lead to data loss on the previously listed items.
-Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
-
-{{< /alert >}}
+> [!warning]
+> The steps in this section can potentially lead to data loss on the previously listed items.
+> Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 ### Verify that all values can be decrypted
 
@@ -278,12 +275,9 @@ Problem: <class 'OSError: [Errno 36] File name too long:
 
 This problem stops the backup script from completing. To fix this problem, you must truncate the filenames causing the problem. A maximum of 246 characters, including the file extension, is permitted.
 
-{{< alert type="warning" >}}
-
-The steps in this section can potentially lead to data loss. All steps must be followed strictly in the order given.
-Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
-
-{{< /alert >}}
+> [!warning]
+> The steps in this section can potentially lead to data loss. All steps must be followed strictly in the order given.
+> Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 Truncating filenames to resolve the error involves:
 

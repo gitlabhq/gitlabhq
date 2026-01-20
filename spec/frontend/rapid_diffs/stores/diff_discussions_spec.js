@@ -104,6 +104,16 @@ describe('diffDiscussions store', () => {
     });
   });
 
+  describe('updateNoteTextById', () => {
+    it('updates note text by id', () => {
+      useDiffDiscussions().discussions = [
+        { id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc', note: 'Hello!' }] },
+      ];
+      useDiffDiscussions().updateNoteTextById('foo', 'Updated text');
+      expect(useDiffDiscussions().discussions[0].notes[0].note).toBe('Updated text');
+    });
+  });
+
   describe('editNote', () => {
     it('updates existing note', () => {
       const value = 'edit';

@@ -114,6 +114,12 @@ module Import
 
     attr_accessor :import_source_user, :reassigned_by_user, :sleep_time, :execution_tracker, :reassignment_throttling
 
+    def transaction(model_class, _contributions)
+      model_class.transaction do
+        yield
+      end
+    end
+
     # @param model [String] - Model name as string
     # @param column [String] - Model attribute/db column
     def direct_reassign_model_user_references(model, column)
@@ -124,7 +130,7 @@ module Import
 
         begin
           # First, try to update user references in batches
-          update_count = model_class.transaction do
+          update_count = transaction(model_class, contributions) do
             contributions.update_all(column => import_source_user.reassign_to_user_id)
           end
 
@@ -154,7 +160,7 @@ module Import
     # rubocop:enable CodeReuse/ActiveRecord
 
     def reassign_single_contribution(model_class, contribution, column)
-      model_class.transaction do
+      transaction(model_class, contribution) do
         contribution.update_column(column, import_source_user.reassign_to_user_id)
       end
     rescue ActiveRecord::RecordNotUnique

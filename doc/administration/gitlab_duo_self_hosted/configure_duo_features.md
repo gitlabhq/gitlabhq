@@ -99,12 +99,9 @@ For more information on troubleshooting timeout errors, see [Error A1000](troubl
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -214,12 +211,9 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 
    ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
-{{< alert type="note" >}}
-
-If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
-This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
-
-{{< /alert >}}
+> [!note]
+> If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
+> This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
 
 ### Configure a feature to use a GitLab AI vendor model
 

@@ -295,7 +295,7 @@ const mountComponent = ({
   });
 };
 
-const mountComponentWithShowParam = async (issue) => {
+const mountComponentWithShowParam = async (issue, mountOptions = {}) => {
   const showParams = {
     id: getIdFromGraphQLId(issue.id),
     iid: issue.iid,
@@ -305,10 +305,13 @@ const mountComponentWithShowParam = async (issue) => {
   setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
   getParameterByName.mockReturnValue(show);
 
+  const { provide = {}, ...restOptions } = mountOptions;
   mountComponent({
     provide: {
       workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      ...provide,
     },
+    ...restOptions,
   });
   await waitForPromises();
   await nextTick();
@@ -2113,12 +2116,18 @@ describe('iid filter search', () => {
 
   it('closes the drawer if there is no `show` param', async () => {
     const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
-    await mountComponentWithShowParam(issue);
+    await mountComponentWithShowParam(issue, {
+      queryHandler: jest.fn().mockResolvedValue(workItemsQueryResponseCombined),
+    });
     await waitForPromises();
     expect(findDrawer().props('open')).toBe(true);
-    expect(findDrawer().props('activeItem')).toMatchObject(issue);
+    expect(findDrawer().props('activeItem')).toMatchObject({
+      id: issue.id,
+      iid: issue.iid,
+    });
 
     setWindowLocation('?');
+    getParameterByName.mockReturnValue(null);
     window.dispatchEvent(new Event('popstate'));
 
     await waitForPromises();

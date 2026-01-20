@@ -696,12 +696,9 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-{{< alert type="warning" >}}
-
-The following instructions are included for completeness, but only use symmetric key
-encryption if absolutely necessary.
-
-{{< /alert >}}
+> [!warning]
+> The following instructions are included for completeness, but only use symmetric key
+> encryption if absolutely necessary.
 
 To use symmetric key encryption:
 

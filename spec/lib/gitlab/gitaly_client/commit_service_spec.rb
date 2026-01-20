@@ -707,16 +707,70 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   end
 
   describe '#commit_count' do
-    before do
+    it 'sends a commit_count message' do
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:count_commits)
         .with(gitaly_request_with_path(storage_name, relative_path),
           kind_of(Hash))
-        .and_return([])
+        .and_return(double(count: 0))
+
+      client.commit_count(revision)
     end
 
-    it 'sends a commit_count message' do
-      client.commit_count(revision)
+    context 'with revisions parameter' do
+      let(:response) { double(count: 42) }
+
+      it 'sends revisions field for single revision' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['master'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, revisions: ['master'])).to eq(42)
+      end
+
+      it 'sends revisions field for multiple revisions' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-1'.b, 'branch-2'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, revisions: %w[branch-1 branch-2])).to eq(42)
+      end
+
+      it 'takes precedence over revision parameter' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-2'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count('branch-1', revisions: ['branch-2'])).to eq(42)
+      end
+
+      it 'takes precedence over all parameter' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_params(
+            repository: repository_message,
+            revisions: ['branch-1'.b],
+            first_parent: false
+          ), kind_of(Hash))
+          .and_return(response)
+
+        expect(client.commit_count(nil, all: true, revisions: ['branch-1'])).to eq(42)
+      end
     end
 
     context 'with UTF-8 params strings' do
@@ -724,6 +778,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       let(:path) { "foo/\u011F.txt" }
 
       it 'handles string encodings correctly' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:count_commits)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_return(double(count: 0))
+
         client.commit_count(revision, path: path)
       end
     end

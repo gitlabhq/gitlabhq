@@ -16,12 +16,9 @@ title: Disaster Recovery (Geo) promotion runbooks
 
 Disaster Recovery (Geo) promotion runbooks.
 
-{{< alert type="warning" >}}
-
-This runbook is an [experiment](../../../../policy/development_stages_support.md#experiment). For complete, production-ready documentation, see the
-[disaster recovery documentation](../_index.md).
-
-{{< /alert >}}
+> [!warning]
+> This runbook is an [experiment](../../../../policy/development_stages_support.md#experiment). For complete, production-ready documentation, see the
+> [disaster recovery documentation](../_index.md).
 
 ## Geo planned failover for a multi-node configuration
 

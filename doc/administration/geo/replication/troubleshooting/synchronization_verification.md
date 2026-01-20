@@ -90,12 +90,9 @@ replication or verification for individual records synchronously or asynchronous
 
 #### Obtaining a Replicator instance
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
 
 Before you can perform any sync or verify operations, you need to obtain a Replicator instance.
 
@@ -358,21 +355,15 @@ You can recalculate the primary site's checksum from the UI:
 1. Select the desired component in the dropdown list.
 1. Select **Checksum all**.
 
-{{< alert type="warning" >}}
-
-**Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
-It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
-
-{{< /alert >}}
+> [!warning]
+> **Resync all**, **Reverify all** and **Checksum all** trigger an update of all resources, regardless of whether they are already synced or verified.
+> It should not be executed when there are thousands of an object type in the instance (for example, CI Job Artifacts).
 
 #### From the Rails console
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions.
-Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions.
+> Always run commands in a test environment first and have a backup instance ready to restore.
 
 The following sections describe how to use internal application commands in the
 [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause bulk
@@ -441,12 +432,9 @@ remain and can cause frictions. Geo secondaries might continue to try
 replicating those files as they are still referenced in the database but no
 longer exist.
 
-{{< alert type="note" >}}
-
-In case of a recent migration from local to object storage, see the dedicated
-[object storage troubleshooting section](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
-
-{{< /alert >}}
+> [!note]
+> In case of a recent migration from local to object storage, see the dedicated
+> [object storage troubleshooting section](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
 
 #### Identify inconsistencies
 
@@ -780,12 +768,9 @@ specific to GitLab Geo or Gitaly. For more information, see
    - Fix the URLs in the `.gitmodules` file
    - Push a commit with valid URLs
 
-{{< alert type="warning" >}}
-
-After the fix, all developers working on the affected projects must remove their current local copies
-and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
-
-{{< /alert >}}
+> [!warning]
+> After the fix, all developers working on the affected projects must remove their current local copies
+> and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
 
 ### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
 

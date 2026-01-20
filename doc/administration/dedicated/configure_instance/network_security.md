@@ -48,12 +48,9 @@ With this configuration, your domain connects directly to your GitLab instance u
 GitLab automatically manages SSL certificates using Let's Encrypt,
 which verifies domain ownership through public DNS lookups and renews certificates automatically every 90 days.
 
-{{< alert type="note" >}}
-
-Your custom domain must be accessible from the public internet for SSL certificate management,
-even if you access your instance through private networks.
-
-{{< /alert >}}
+> [!note]
+> Your custom domain must be accessible from the public internet for SSL certificate management,
+> even if you access your instance through private networks.
 
 For instances configured with private networking (such as AWS PrivateLink),
 public DNS access ensures certificate management works properly,

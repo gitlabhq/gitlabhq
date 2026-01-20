@@ -14,12 +14,9 @@ title: CI/CD maintenance console commands
 
 The following commands are run in the [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
-We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
+> We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 ## Cancel all running pipelines and their jobs
 

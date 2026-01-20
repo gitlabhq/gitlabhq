@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { computed } from 'vue';
 import {
   createRouter,
   createMemoryHistory,
@@ -44,6 +44,11 @@ const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: tru
     };
     if (route.children) {
       newRoute.children = transformRoutes(route.children, _routerOptions, { isRoot: false }).routes;
+    }
+    // Vue Router 4 requires a component for catchall routes, even when using redirect.
+    // Add a dummy component to suppress the warning.
+    if (route.path === '*' && route.redirect && !route.component) {
+      newRoute.component = { render: () => null };
     }
     return newRoute;
   });
@@ -106,10 +111,75 @@ export const getMatchedComponents = (instance, path) => {
   return route.matched.flatMap((record) => Object.values(record.components));
 };
 
+// Strip trailing slash from path (except for root '/'), handling query strings and hashes
+const stripTrailingSlash = (fullPath) => {
+  const queryIndex = fullPath.indexOf('?');
+  const hashIndex = fullPath.indexOf('#');
+  let pathEnd = fullPath.length;
+
+  if (queryIndex !== -1) pathEnd = queryIndex;
+  else if (hashIndex !== -1) pathEnd = hashIndex;
+
+  const path = fullPath.slice(0, pathEnd);
+  const rest = fullPath.slice(pathEnd);
+
+  if (path.length > 1 && path.endsWith('/')) {
+    return path.slice(0, -1) + rest;
+  }
+  return fullPath;
+};
+
 export default class VueRouterCompat {
   constructor(options) {
+    const router = createRouter(transformOptions(options));
+
+    // Patch history to strip trailing slashes (mimic Vue Router 3 behavior)
+    const { history } = router.options;
+    if (history) {
+      const originalPush = history.push.bind(history);
+      const originalReplace = history.replace.bind(history);
+
+      history.push = (to, ...args) => {
+        const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
+        return originalPush(normalizedTo, ...args);
+      };
+
+      history.replace = (to, ...args) => {
+        const normalizedTo = typeof to === 'string' ? stripTrailingSlash(to) : to;
+        return originalReplace(normalizedTo, ...args);
+      };
+    }
+
+    // Synchronously resolve initial route to match Vue Router 3 behavior.
+    // Vue Router 4's initial navigation is async, but components that read
+    // $route in data() need it available immediately.
+    try {
+      // Get the base path from the history object and strip it from the current path.
+      // Vue Router 4's resolve() expects paths relative to the base, not absolute paths.
+      const historyBase = router.options.history.base || '';
+      let { pathname } = window.location;
+
+      // Strip trailing slash from initial URL to match Vue Router 3 behavior
+      const fullUrl = pathname + window.location.search + window.location.hash;
+      const normalizedUrl = stripTrailingSlash(fullUrl);
+      if (normalizedUrl !== fullUrl) {
+        window.history.replaceState(window.history.state, '', normalizedUrl);
+        pathname = window.location.pathname;
+      }
+
+      if (historyBase && pathname.startsWith(historyBase)) {
+        pathname = pathname.slice(historyBase.length) || '/';
+      }
+      const currentLocation = pathname + window.location.search + window.location.hash;
+      const resolved = router.resolve(currentLocation);
+
+      router.currentRoute.value = resolved;
+    } catch {
+      // If resolution fails, let the async navigation handle it
+    }
+
     // eslint-disable-next-line no-constructor-return
-    return new Proxy(createRouter(transformOptions(options)), {
+    return new Proxy(router, {
       get(target, prop) {
         const result = target[prop];
         // eslint-disable-next-line no-underscore-dangle
@@ -149,23 +219,31 @@ export default class VueRouterCompat {
             this.$.appContext.components.RouterLink = originalRouterLink;
           }
 
+          // Use a computed ref to maintain Vue 3 reactivity.
+          const $routeComputed = computed(() => {
+            const originalValue = fakeGlobalProperties.$route;
+            if (!originalValue) return originalValue;
+            const { params } = originalValue;
+            if (!params) {
+              return originalValue;
+            }
+            // Vue Router 4 returns arrays for repeatable params (e.g., /:id+),
+            // but Vue Router 3 returned strings. Convert all array params to strings.
+            const normalizedParams = Object.fromEntries(
+              Object.entries(params).map(([key, value]) => [
+                key,
+                Array.isArray(value) ? value.join('/') : value,
+              ]),
+            );
+            return {
+              ...originalValue,
+              params: normalizedParams,
+            };
+          });
+
           Object.defineProperty(app.config.globalProperties, '$route', {
             enumerable: true,
-            get: () => {
-              const originalValue = fakeGlobalProperties.$route;
-              if (!originalValue) return originalValue;
-              const { params } = originalValue;
-              return {
-                ...originalValue,
-                params: params
-                  ? {
-                      ...params,
-                      // Vue-router 3 returns path as string
-                      path: Array.isArray(params.path) ? params.path.join('/') : params.path,
-                    }
-                  : params,
-              };
-            },
+            get: () => $routeComputed.value,
           });
         }
       },

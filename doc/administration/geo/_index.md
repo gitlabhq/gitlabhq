@@ -225,30 +225,17 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
-{{< alert type="warning" >}}
+> [!warning]
+> For PostgreSQL replication between Geo sites, you must use private network connections, such as internal VPC peering.
+> Never expose PostgreSQL ports to the internet. Exposing PostgreSQL ports to the internet can result in unauthorized access with full write permissions to your GitLab database, potentially compromising your entire GitLab instance and all associated data.
 
-For PostgreSQL replication between Geo sites, you must use private network connections, such as internal VPC peering.
-Never expose PostgreSQL ports to the internet. Exposing PostgreSQL ports to the internet can result in unauthorized access with full write permissions to your GitLab database, potentially compromising your entire GitLab instance and all associated data.
+Additionally:
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-[Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
-When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
-If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
-{{< /alert >}}
+- [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
+  When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
+- When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
+  If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
+- If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
 
 #### Internal URL
 

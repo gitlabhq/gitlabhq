@@ -127,12 +127,9 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab AI vendor models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 

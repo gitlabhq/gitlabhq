@@ -190,12 +190,9 @@ If you configure GitLab to store artifacts on object storage, you may also want 
 [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage).
 In both cases, job logs are archived and moved to object storage when the job completes.
 
-{{< alert type="warning" >}}
-
-In a multi-server setup you must use one of the options to
-[eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
-
-{{< /alert >}}
+> [!warning]
+> In a multi-server setup you must use one of the options to
+> [eliminate local disk usage for job logs](job_logs.md#prevent-local-disk-usage), or job logs could be lost.
 
 You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 

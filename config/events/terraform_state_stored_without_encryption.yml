@@ -1,0 +1,18 @@
+---
+description: Terraform state file is stored without encryption
+internal_events: true
+status: active
+action: terraform_state_stored_without_encryption
+identifiers:
+- project
+- namespace
+- user
+product_group: environments
+product_categories:
+- deployment_management
+milestone: '18.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219381
+tiers:
+- free
+- premium
+- ultimate

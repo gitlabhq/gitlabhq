@@ -387,12 +387,9 @@ sudo gitlab-backup create STRATEGY=copy
 
 #### Backup filename
 
-{{< alert type="warning" >}}
-
-If you use a custom backup filename, you can't
-[limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
-
-{{< /alert >}}
+> [!warning]
+> If you use a custom backup filename, you can't
+> [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
 Backup files are created with filenames according to [specific defaults](backup_archive_process.md#backup-id). However, you can
 override the `<backup-id>` portion of the filename by setting the `BACKUP`

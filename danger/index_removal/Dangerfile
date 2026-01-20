@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+# Only check migration files
+migration_files = helper.all_changed_files.select do |filename|
+  filename.match?(%r{\A(ee/)?db/(geo/)?(post_)?migrate/.*\.rb\z})
+end
+
+migration_files.each do |filename|
+  index_removal.add_suggestions_for(filename)
+end

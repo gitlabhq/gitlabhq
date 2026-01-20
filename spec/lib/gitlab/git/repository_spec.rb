@@ -1601,6 +1601,20 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         end
       end
 
+      context 'with revisions parameter' do
+        it 'returns the number of commits for a single revision' do
+          options = { revisions: ['master'] }
+
+          expect(repository.count_commits(options)).to eq(37)
+        end
+
+        it 'returns the number of commits for multiple revisions' do
+          options = { revisions: %w[feature master] }
+
+          expect(repository.count_commits(options)).to eq(38)
+        end
+      end
+
       context 'without all or ref being specified' do
         it "raises an ArgumentError" do
           expect { repository.count_commits({}) }.to raise_error(ArgumentError)

@@ -153,7 +153,10 @@ export const initSharedAccessTokenApp = () => {
     accessTokenShow,
   } = el.dataset;
 
-  const router = new VueRouter({ mode: 'history' });
+  const router = new VueRouter({
+    mode: 'history',
+    routes: [{ path: '*', component: { render: () => null } }],
+  });
 
   return new Vue({
     el,

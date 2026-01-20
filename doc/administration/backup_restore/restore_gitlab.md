@@ -206,12 +206,9 @@ GitLab version mismatch:
 
 Install the correct GitLab version, and then try again.
 
-{{< alert type="warning" >}}
-
-The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
-your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
-
-{{< /alert >}}
+> [!warning]
+> The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
+> your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Run reconfigure on the PostgreSQL node:
 

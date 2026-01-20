@@ -139,12 +139,9 @@ documentation:
 - [Gitaly](../../gitaly/_index.md), which stores data that is
   synchronized from the Geo **primary** site.
 
-{{< alert type="note" >}}
-
-[NFS](../../nfs.md) can be used in place of Gitaly but is not
-recommended.
-
-{{< /alert >}}
+> [!note]
+> [NFS](../../nfs.md) can be used in place of Gitaly but is not
+> recommended.
 
 ### Step 2: Configure the Geo tracking database on the Geo **secondary** site
 

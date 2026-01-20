@@ -141,12 +141,9 @@ After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
 in the `running` state before enabling Maintenance Mode resume and their logs start
 updating again.
 
-{{< alert type="note" >}}
-
-You should restart previously `running` pipelines after Maintenance Mode
-is turned off.
-
-{{< /alert >}}
+> [!note]
+> You should restart previously `running` pipelines after Maintenance Mode
+> is turned off.
 
 ### Deployments
 

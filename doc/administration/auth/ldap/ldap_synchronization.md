@@ -200,12 +200,9 @@ A blocked user is unblocked when they sign in with LDAP if all of the following 
 
 **All users** are blocked if the LDAP server is unavailable when an LDAP user synchronization is run.
 
-{{< alert type="note" >}}
-
-If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
-a subsequent LDAP user synchronization does not automatically unblock those users.
-
-{{< /alert >}}
+> [!note]
+> If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
+> a subsequent LDAP user synchronization does not automatically unblock those users.
 
 ## Group sync
 
@@ -330,12 +327,9 @@ following.
 To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
 [create one or more LDAP group links](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
-{{< alert type="note" >}}
-
-If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
-setting the group sync worker interval to be greater than the 1 hour default.
-
-{{< /alert >}}
+> [!note]
+> If you frequently experience connection issues between your LDAP server and GitLab instance, try reducing the frequency with which GitLab performs an LDAP group sync by
+> setting the group sync worker interval to be greater than the 1 hour default.
 
 ### Add group links
 
@@ -746,12 +740,9 @@ administrative duties.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When [Restricted Access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
 

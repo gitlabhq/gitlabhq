@@ -256,12 +256,9 @@ services.
 | Amazon RDS (PostgreSQL) | Uses SSL/TLS (minimum TLS 1.2) to encrypt database connections. |
 | AWS KMS | Uses TLS to encrypt API requests. |
 
-{{< alert type="note" >}}
-
-Encryption for data in transit is performed with TLS using keys generated and managed by GitLab
-Dedicated components, and is not covered by BYOK.
-
-{{< /alert >}}
+> [!note]
+> Encryption for data in transit is performed with TLS using keys generated and managed by GitLab
+> Dedicated components, and is not covered by BYOK.
 
 ### Custom TLS certificates
 

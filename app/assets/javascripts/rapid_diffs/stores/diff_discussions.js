@@ -54,6 +54,10 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     updateNote(note) {
       merge(this.allNotesById[note.id], note);
     },
+    updateNoteTextById(noteId, noteBody) {
+      const note = this.allNotesById[noteId];
+      note.note = noteBody;
+    },
     editNote({ note, value }) {
       note.editedNote = value;
     },

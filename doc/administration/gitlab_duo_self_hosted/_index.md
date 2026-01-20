@@ -133,12 +133,9 @@ For more information, see:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 In this hybrid configuration, you deploy your own AI Gateway and self-hosted models for most features, but configure specific features to use GitLab AI vendor models. When a feature is configured to use a GitLab AI vendor model, requests for that feature are sent to the GitLab-hosted AI Gateway instead of your self-hosted AI Gateway.
 

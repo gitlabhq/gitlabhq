@@ -549,12 +549,9 @@ only. For example:
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-GitLab Free tracks a small number of different audit events.
-GitLab Premium tracks many more.
-
-{{< /alert >}}
+> [!note]
+> GitLab Free tracks a small number of different audit events.
+> GitLab Premium tracks many more.
 
 This log is located:
 

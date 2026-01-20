@@ -12,12 +12,9 @@ title: PostgreSQL versions shipped with the Linux package
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This table lists only GitLab versions where a significant change happened in the
-package regarding PostgreSQL versions, not all.
-
-{{< /alert >}}
+> [!note]
+> This table lists only GitLab versions where a significant change happened in the
+> package regarding PostgreSQL versions, not all.
 
 Usually, PostgreSQL versions change with major or minor GitLab releases. However, patch versions
 of the Linux package sometimes update the patch level of PostgreSQL. We've established a

@@ -12,6 +12,7 @@ import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { initTimeline } from '~/rapid_diffs/app/init_timeline';
+import TaskList from '~/task_list';
 
 jest.mock('~/alert');
 jest.mock('~/lib/graphql');
@@ -22,6 +23,7 @@ jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
 jest.mock('~/rapid_diffs/app/init_new_discussions_toggle');
 jest.mock('~/rapid_diffs/app/init_timeline');
+jest.mock('~/task_list');
 
 describe('Commit Rapid Diffs app', () => {
   let axiosMock;
@@ -121,5 +123,57 @@ describe('Commit Rapid Diffs app', () => {
         discussionsEndpoint: appData.discussionsEndpoint,
       }),
     );
+  });
+
+  describe('TaskList integration', () => {
+    it('initializes TaskList with correct configuration', async () => {
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+      createApp();
+      await app.init();
+
+      expect(TaskList).toHaveBeenCalledWith({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '[data-rapid-diffs]',
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      });
+    });
+
+    it('updates note text on TaskList success', async () => {
+      const noteId = 'note-123';
+      const discussions = [
+        {
+          id: 'discussion-1',
+          notes: [{ id: noteId, note: 'Original note text' }],
+        },
+      ];
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
+      createApp();
+      await app.init();
+
+      const taskListConfig = TaskList.mock.calls[0][0];
+      const updatedNote = 'Updated note text';
+
+      taskListConfig.onSuccess({ id: noteId, note: updatedNote });
+
+      expect(useDiffDiscussions().updateNoteTextById).toHaveBeenCalledWith(noteId, updatedNote);
+    });
+
+    it('shows alert on TaskList error', async () => {
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions: [] });
+      createApp();
+      await app.init();
+
+      const taskListConfig = TaskList.mock.calls[0][0];
+      const error = new Error('TaskList failed');
+
+      taskListConfig.onError(error);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while editing your comment. Please try again.',
+        error,
+      });
+    });
   });
 });

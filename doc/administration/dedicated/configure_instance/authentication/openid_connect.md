@@ -23,12 +23,9 @@ Use OIDC SSO when you want to:
 - Implement consistent access controls across your organization's applications.
 - Use a modern authentication protocol with broad industry support.
 
-{{< alert type="note" >}}
-
-This configures OIDC for end users of your GitLab Dedicated instance.
-To configure SSO for Switchboard administrators, see [configure Switchboard SSO](_index.md#configure-switchboard-sso).
-
-{{< /alert >}}
+> [!note]
+> This configures OIDC for end users of your GitLab Dedicated instance.
+> To configure SSO for Switchboard administrators, see [configure Switchboard SSO](_index.md#configure-switchboard-sso).
 
 ## Configure OpenID Connect
 

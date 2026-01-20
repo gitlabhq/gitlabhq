@@ -297,12 +297,9 @@ processing is done in the background and requires no downtime.
 
 ### Migrating back to local storage
 
-{{< alert type="note" >}}
-
-For the Helm chart, you should use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For the Helm chart, you should use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 To migrate back to local storage:
 

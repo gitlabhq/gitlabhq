@@ -173,12 +173,9 @@ Elasticsearch is not supported in Geo.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 #### Enable or disable replication (for some data types)
 

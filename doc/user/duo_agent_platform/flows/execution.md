@@ -33,6 +33,20 @@ This separate environment protects from unintended consequences of running shell
 
 To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](../../gitlab_duo/turn_on_off.md).
 
+## Executor architecture
+
+When a flow runs in CI/CD, the runner:
+
+1. Downloads the `@gitlab/duo-cli` package from the npm registry.
+1. Runs the CLI, which uses WebSocket to connect to the GitLab Duo Workflow Service.
+1. Executes tools (file operations, Git commands) as directed by the AI model.
+
+The executor version is managed by GitLab and updated as part of regular releases.
+
+> [!note]
+> The `@gitlab/duo-cli` npm package is labeled "Experimental" for standalone CLI usage.
+> When used within flows, the relevant capabilities are covered by the same support level as flows.
+
 ## Configure CI/CD execution
 
 You can customize how flows are executed in CI/CD by creating an agent configuration file in your project.

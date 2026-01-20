@@ -13,6 +13,12 @@ import createAchievementMutation from '~/achievements/components/graphql/create_
 import getGroupAchievementsQuery from '~/achievements/components/graphql/get_group_achievements.query.graphql';
 import routes from '~/achievements/routes';
 
+const EmptyComponent = { template: '<div></div>' };
+const testRoutes = routes.map((route) => ({
+  ...route,
+  component: route.component || EmptyComponent,
+}));
+
 jest.mock('~/lib/logger');
 
 Vue.use(VueApollo);
@@ -44,7 +50,7 @@ const mountComponent = async ({ mutationHandler = successMutationHandler } = {})
   const router = new VueRouter({
     base: '',
     mode: 'history',
-    routes,
+    routes: testRoutes,
   });
   router.replace = jest.fn();
   await router.push('/new');

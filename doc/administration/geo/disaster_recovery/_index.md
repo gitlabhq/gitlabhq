@@ -16,12 +16,9 @@ description: Recover from a disaster, using a Geo instance.
 Geo replicates your database, your Git repositories, and other assets.
 Some [known issues](../_index.md#known-issues) exist.
 
-{{< alert type="warning" >}}
-
-Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-causes downtime.
-
-{{< /alert >}}
+> [!warning]
+> Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
+> causes downtime.
 
 ## Promoting a **secondary** Geo site in single-secondary configurations
 

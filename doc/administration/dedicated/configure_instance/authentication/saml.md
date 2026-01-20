@@ -21,12 +21,9 @@ The following SAML SSO options are available:
 - [SAML SSO for groups](#saml-groups)
 - [Group sync](#group-sync)
 
-{{< alert type="note" >}}
-
-This configures SAML SSO for end users of your GitLab Dedicated instance.
-To configure SSO for Switchboard administrators, see [configure Switchboard SSO](_index.md#configure-switchboard-sso).
-
-{{< /alert >}}
+> [!note]
+> This configures SAML SSO for end users of your GitLab Dedicated instance.
+> To configure SSO for Switchboard administrators, see [configure Switchboard SSO](_index.md#configure-switchboard-sso).
 
 ## Prerequisites
 

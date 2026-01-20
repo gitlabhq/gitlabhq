@@ -2715,19 +2715,13 @@ msgstr ""
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr ""
 
-msgid "AICatalog|Could not update agent in the %{target}."
+msgid "AICatalog|Could not update %{itemType} in the %{target}."
 msgstr ""
 
-msgid "AICatalog|Could not update agent."
+msgid "AICatalog|Could not update %{itemType}."
 msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."
-msgstr ""
-
-msgid "AICatalog|Could not update flow in the %{target}."
-msgstr ""
-
-msgid "AICatalog|Could not update flow."
 msgstr ""
 
 msgid "AICatalog|Could not update flow. Try again."

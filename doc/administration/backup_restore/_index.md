@@ -22,12 +22,9 @@ It is important to have a disaster recovery plan that includes regular backups f
 - Migration: Facilitate moving GitLab to new servers or environments.
 - Testing and development: Create copies for testing upgrades or new features without risk to production data.
 
-{{< alert type="note" >}}
-
-This documentation applies to GitLab Community and Enterprise Edition.
-While data security is ensured for GitLab.com, you can't use these methods to export or back up your data from GitLab.com.
-
-{{< /alert >}}
+> [!note]
+> This documentation applies to GitLab Community and Enterprise Edition.
+> While data security is ensured for GitLab.com, you can't use these methods to export or back up your data from GitLab.com.
 
 ## Back up GitLab
 

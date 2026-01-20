@@ -21,11 +21,11 @@ module Keeps
     MIGRATIONS_SPECS_PATH = 'ee/spec/elastic/migrate/'
     MIGRATION_DOCS_PATH = 'ee/elastic/docs'
 
-    GROUP_LABEL = 'group::global search'
+    DEFAULT_GROUP_LABEL = 'group::global search'
 
     def initialize(...)
       @migrations_to_be_marked_obsolete = {}
-      @search_team_map = group_data['engineers'].index_with(0)
+      @group_team_maps = {}
 
       load_migrations_to_process
 
@@ -40,12 +40,15 @@ module Keeps
         change = ::Gitlab::Housekeeper::Change.new
         change.title = "Mark #{version} as obsolete"
         change.identifiers = ['mark_obsolete', version, migration_name]
+        group_label = migration_data[:yaml_content]['group'] || DEFAULT_GROUP_LABEL
         change.labels = [
           'maintenance::refactor',
-          GROUP_LABEL
+          group_label
         ]
-        assignee = search_team_map.min_by { |_k, v| v }.first
+        group_team_map = get_group_team_map(group_label)
+        assignee = group_team_map.min_by { |_k, v| v }.first
         change.assignees = assignee
+        group_team_map[assignee] += 1
         change.changelog_ee = true
 
         # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
@@ -56,7 +59,7 @@ module Keeps
 
           At the moment, the `gitlab-housekeeper` is not always capable of removing all references so
           you must check the diff and pipeline failures to confirm if there are any issues.
-          It is the responsibility of the assignee (picked from ~"group::global search") to push those changes to this branch.
+          It is the responsibility of the assignee to push those changes to this branch.
 
           [Read more](https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#cleaning-up-advanced-search-migrations)
           about the process for marking Advanced search migrations as obsolete.
@@ -70,7 +73,6 @@ module Keeps
 
         change.context = { version: version, migration_data: migration_data }
 
-        search_team_map[change.assignees.first] += 1
         yield(change)
       end
 
@@ -100,7 +102,7 @@ module Keeps
 
     private
 
-    attr_reader :migrations_to_be_marked_obsolete, :search_team_map
+    attr_reader :migrations_to_be_marked_obsolete, :group_team_maps
 
     def load_migrations_to_process
       each_advanced_search_migration do |migration_filename, spec_filename, yaml_filename, yaml_content|
@@ -186,12 +188,12 @@ module Keeps
       milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
     end
 
-    def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+    def get_group_team_map(group_label)
+      @group_team_maps[group_label] ||= groups_helper.group_for_group_label(group_label)['engineers'].index_with(0)
     end
 
-    def group_data
-      @group_data ||= groups_helper.group_for_group_label(GROUP_LABEL)
+    def groups_helper
+      @groups_helper ||= ::Keeps::Helpers::Groups.new
     end
 
     def cutoff_milestone

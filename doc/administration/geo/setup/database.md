@@ -25,12 +25,9 @@ the roles cannot perform all necessary configuration steps. In this case, use th
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-The stages of the setup process must be completed in the documented order.
-If not, [complete all prior stages](_index.md#using-linux-package-installations) before proceeding.
-
-{{< /alert >}}
+> [!note]
+> The stages of the setup process must be completed in the documented order.
+> If not, [complete all prior stages](_index.md#using-linux-package-installations) before proceeding.
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
@@ -518,12 +515,9 @@ needed files for streaming replication.
 The directories used are the defaults that are set up in a Linux package installation. If you have
 changed any defaults, configure the script accordingly (replacing any directories and paths).
 
-{{< alert type="warning" >}}
-
-Make sure to run this on the **secondary** site as it removes all PostgreSQL's
-data before running `pg_basebackup`.
-
-{{< /alert >}}
+> [!warning]
+> Make sure to run this on the **secondary** site as it removes all PostgreSQL's
+> data before running `pg_basebackup`.
 
 1. SSH into your GitLab **secondary** site and sign in as root:
 
@@ -991,12 +985,9 @@ On each node running a PgBouncer instance on the **secondary** site:
 
 ##### Step 4. Configure a Standby cluster on the secondary site
 
-{{< alert type="note" >}}
-
-If you are converting a secondary site with a single PostgreSQL instance to a Patroni Cluster, you must start on the PostgreSQL instance. It becomes the Patroni Standby Leader instance,
-and then you can switch over to another replica if you need to.
-
-{{< /alert >}}
+> [!note]
+> If you are converting a secondary site with a single PostgreSQL instance to a Patroni Cluster, you must start on the PostgreSQL instance. It becomes the Patroni Standby Leader instance,
+> and then you can switch over to another replica if you need to.
 
 For each node running a Patroni instance on the secondary site:
 
