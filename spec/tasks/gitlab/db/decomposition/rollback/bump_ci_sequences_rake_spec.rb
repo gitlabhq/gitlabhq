@@ -28,14 +28,14 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
   end
 
   context 'when passing wrong argument' do
-    it 'will print an error message and exit when passing no argument' do
+    it 'prints an error message and exit when passing no argument' do
       expect do
         run_rake_task('gitlab:db:decomposition:rollback:bump_ci_sequences')
       end.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
       .and output(expected_error_message).to_stdout
     end
 
-    it 'will print an error message and exit when passing a non positive integer value' do
+    it 'prints an error message and exit when passing a non positive integer value' do
       expect do
         run_rake_task('gitlab:db:decomposition:rollback:bump_ci_sequences', '-5')
       end.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
@@ -55,7 +55,7 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
       }.by(16) # the +1 is because the sequence has is_called = true
     end
 
-    it 'will still increase the value of sequences that have is_called = False' do
+    it 'stills increase the value of sequences that have is_called = False' do
       # see `is_called`: https://www.postgresql.org/docs/12/functions-sequence.html
       # choosing a new arbitrary value for the sequence
       new_value = last_value_of_sequence(ApplicationRecord.connection, ci_sequence_name) + 1000

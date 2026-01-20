@@ -1,0 +1,4 @@
+name: associate_maven_virtual_registry_upstream
+description: Grants the ability to associate an existing upstream registry with a Maven virtual registry.
+boundaries:
+  - instance

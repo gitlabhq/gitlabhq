@@ -36,13 +36,13 @@ RSpec.describe FileStoreMounter, :aggregate_failures, feature_category: :shared 
         expect(test_class).to receive(:define_method).with("store_#{file_field}_now!")
 
         if skip_store_file
-          expect(test_class).to receive(:skip_callback).with(:save, :after, "store_#{file_field}!".to_sym)
+          expect(test_class).to receive(:skip_callback).with(:save, :after, :"store_#{file_field}!")
           expect(test_class).not_to receive(:after_save)
         else
           expect(test_class).not_to receive(:skip_callback)
           expect(test_class)
             .to receive(:after_save)
-                  .with("update_#{file_field}_store".to_sym, if: "saved_change_to_#{file_field}?".to_sym)
+                  .with(:"update_#{file_field}_store", if: :"saved_change_to_#{file_field}?")
         end
 
         mount_file_store_uploader

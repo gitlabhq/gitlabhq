@@ -33,6 +33,7 @@ describe('File row component', () => {
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
+  const findFileRowContainer = () => wrapper.findByTestId('file-row-container');
   const findFileButton = () => wrapper.findByTestId('file-row');
 
   it('renders name', () => {
@@ -326,6 +327,18 @@ describe('File row component', () => {
       expect(findChevronButton().props('icon')).toBe('chevron-down');
       expect(findChevronButton().attributes('aria-label')).toBe(
         'Collapse path/to/folder directory',
+      );
+    });
+
+    it('aligns the chevron icon correctly with indentation line', () => {
+      expect(findFileRowContainer().classes()).toContain('before:!gl-left-[calc(0.75rem-0.5px)]');
+    });
+
+    it('does not apply alignment class when showTreeToggle is false', () => {
+      createComponent({ file: mockFile, level: 0, showTreeToggle: false });
+
+      expect(findFileRowContainer().classes()).not.toContain(
+        'before:!gl-left-[calc(0.75rem-0.5px)]',
       );
     });
 

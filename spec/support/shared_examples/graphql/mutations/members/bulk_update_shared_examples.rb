@@ -112,7 +112,7 @@ RSpec.shared_examples 'members bulk update mutation' do
         end
       end
 
-      it 'will pass through the error' do
+      it 'passes through the error' do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response[response_member_field].first['id']).to eq(member1.to_global_id.to_s)

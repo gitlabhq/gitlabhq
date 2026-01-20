@@ -31,23 +31,23 @@ RSpec.describe API::Entities::Nuget::SearchResult, feature_category: :package_re
   let(:expected) do
     {
       '@type': 'Package',
-      'authors': 'Author',
-      'id': 'PackageTest',
-      'title': 'PackageTest',
-      'description': 'Description',
-      'summary': 'Description',
-      'totalDownloads': 100,
-      'verified': true,
-      'version': '1.2.3',
-      'tags': 'tag1 tag2 tag3',
-      'projectUrl': 'http://sandbox.com/project',
-      'licenseUrl': 'http://sandbox.com/license',
-      'iconUrl': 'http://sandbox.com/icon',
-      'versions': [
+      authors: 'Author',
+      id: 'PackageTest',
+      title: 'PackageTest',
+      description: 'Description',
+      summary: 'Description',
+      totalDownloads: 100,
+      verified: true,
+      version: '1.2.3',
+      tags: 'tag1 tag2 tag3',
+      projectUrl: 'http://sandbox.com/project',
+      licenseUrl: 'http://sandbox.com/license',
+      iconUrl: 'http://sandbox.com/icon',
+      versions: [
         {
           '@id': 'http://sandbox.com/json/package',
-          'downloads': 100,
-          'version': '1.2.3'
+          downloads: 100,
+          version: '1.2.3'
         }
       ]
     }

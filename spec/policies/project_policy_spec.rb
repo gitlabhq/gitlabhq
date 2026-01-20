@@ -2959,9 +2959,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         it "enforces the expected permissions" do
           if result
-            is_expected.to be_allowed("#{user_role}_access".to_sym)
+            is_expected.to be_allowed(:"#{user_role}_access")
           else
-            is_expected.to be_disallowed("#{user_role}_access".to_sym)
+            is_expected.to be_disallowed(:"#{user_role}_access")
           end
         end
       end
@@ -3041,12 +3041,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         def update_access_level(project, feature, state)
           # builds require repository access level to the same level:
-          project.project_feature.update!('repository_access_level': state) if feature == :builds
+          project.project_feature.update!(repository_access_level: state) if feature == :builds
 
           # environments require repository and builds to be set to the same state if enabled:
           if feature == :environments
-            project.project_feature.update!('repository_access_level': state)
-            project.project_feature.update!('builds_access_level': state)
+            project.project_feature.update!(repository_access_level: state)
+            project.project_feature.update!(builds_access_level: state)
           end
 
           project.project_feature.update!("#{feature}_access_level": state)

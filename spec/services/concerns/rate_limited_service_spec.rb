@@ -25,7 +25,7 @@ RSpec.describe RateLimitedService, feature_category: :rate_limiting do
         request = instance_double(Grape::Request)
         user = instance_double(User)
 
-        expect(rate_limiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+        expect(rate_limiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
 
         subject.log_request(request, user)
       end

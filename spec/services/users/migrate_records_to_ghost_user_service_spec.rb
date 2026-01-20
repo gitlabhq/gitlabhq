@@ -417,7 +417,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
     end
 
     context 'when hard_delete option is given' do
-      it 'will not ghost certain records' do
+      it 'does not ghost certain records' do
         issue = create(:issue, author: user)
 
         service.execute(hard_delete: true)

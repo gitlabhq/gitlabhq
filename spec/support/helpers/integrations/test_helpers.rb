@@ -5,7 +5,7 @@ module Integrations
     def factory_for(integration)
       return :integrations_slack if integration.is_a?(Integrations::Slack)
 
-      "#{integration.to_param}_integration".to_sym
+      :"#{integration.to_param}_integration"
     end
 
     def integration_factory(integration_name)

@@ -1,0 +1,7 @@
+---
+name: read_application_appearance
+description: Grants the ability to view the application appearance settings
+boundaries:
+  - instance
+permissions:
+  - read_application_appearance

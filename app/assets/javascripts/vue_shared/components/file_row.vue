@@ -100,6 +100,10 @@ export default {
         return false;
       }
     },
+    fileRowContainerClassList() {
+      // Left position: (1.5rem button / 2) - (1px line / 2)
+      return { 'before:!gl-left-[calc(0.75rem-0.5px)]': this.showTreeToggle };
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -184,7 +188,12 @@ export default {
     {{ __('Show more') }}
   </gl-button>
 
-  <div v-else class="gl-flex gl-items-center">
+  <div
+    v-else
+    data-testid="file-row-container"
+    class="gl-flex gl-items-center"
+    :class="fileRowContainerClassList"
+  >
     <gl-button
       v-if="isTree && showTreeToggle"
       category="tertiary"

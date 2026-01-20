@@ -33,7 +33,7 @@ RSpec.shared_examples 'a redis usage counter with totals' do |prefix, events|
     end
 
     let(:expected_totals) do
-      events.transform_keys { |k| "#{prefix}_#{k}".to_sym }
+      events.transform_keys { |k| :"#{prefix}_#{k}" }
     end
 
     it 'can report all totals' do

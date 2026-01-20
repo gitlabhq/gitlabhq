@@ -451,7 +451,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with invalid date' do
-      it 'will not create any note and timelog' do
+      it 'does not create any note and timelog' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})
@@ -459,7 +459,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with future date' do
-      it 'will not create any note and timelog' do
+      it 'does not create any note and timelog' do
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})

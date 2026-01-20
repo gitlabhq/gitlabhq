@@ -71,7 +71,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
 
       context 'and the value is nil' do
         before do
-          group_settings.update!(settings_attribute_name => nil, "lock_#{settings_attribute_name}".to_sym => false)
+          group_settings.update!(settings_attribute_name => nil, :"lock_#{settings_attribute_name}" => false)
           subgroup_settings.update!(settings_attribute_name => nil)
 
           subgroup_settings.clear_memoization(settings_attribute_name)
@@ -263,7 +263,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
 
     context 'when parent locks the attribute' do
       before do
-        group_settings.update!("lock_#{settings_attribute_name}".to_sym => true, settings_attribute_name => false)
+        group_settings.update!(:"lock_#{settings_attribute_name}" => true, settings_attribute_name => false)
 
         subgroup_settings.clear_memoization(settings_attribute_name)
         subgroup_settings.clear_memoization("#{settings_attribute_name}_locked_ancestor")
@@ -313,7 +313,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
   describe "#lock_#{settings_attribute_name}=" do
     context 'when parent locks the attribute' do
       before do
-        group_settings.update!("lock_#{settings_attribute_name}".to_sym => true, settings_attribute_name => false)
+        group_settings.update!(:"lock_#{settings_attribute_name}" => true, settings_attribute_name => false)
 
         subgroup_settings.clear_memoization(settings_attribute_name)
         subgroup_settings.clear_memoization("#{settings_attribute_name}_locked_ancestor")
@@ -361,7 +361,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
 
     context 'when application settings locks the attribute' do
       before do
-        stub_application_setting("lock_#{settings_attribute_name}".to_sym => true)
+        stub_application_setting("lock_#{settings_attribute_name}": true)
       end
 
       it 'does not allow the attribute to be saved' do
@@ -376,7 +376,7 @@ RSpec.shared_examples 'a cascading namespace setting boolean attribute' do
 
     context 'when application_settings does not lock the attribute' do
       before do
-        stub_application_setting("lock_#{settings_attribute_name}".to_sym => false)
+        stub_application_setting("lock_#{settings_attribute_name}": false)
       end
 
       it 'allows the attribute to be saved' do

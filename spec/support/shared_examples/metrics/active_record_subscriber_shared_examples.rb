@@ -133,10 +133,10 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
   it 'increments only db counters' do
     if record_query
       expect(transaction).to receive(:increment).with(:gitlab_transaction_db_count_total, 1, { db_config_name: db_config_name })
-      expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
+      expect(transaction).to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_count_total", 1, { db_config_name: db_config_name }) if db_role
     else
       expect(transaction).not_to receive(:increment).with(:gitlab_transaction_db_count_total, 1, { db_config_name: db_config_name })
-      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
+      expect(transaction).not_to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_count_total", 1, { db_config_name: db_config_name }) if db_role
     end
 
     if record_write_query && db_role != :replica
@@ -147,19 +147,19 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
 
     if record_cached_query
       expect(transaction).to receive(:increment).with(:gitlab_transaction_db_cached_count_total, 1, { db_config_name: db_config_name })
-      expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_cached_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
+      expect(transaction).to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_cached_count_total", 1, { db_config_name: db_config_name }) if db_role
     else
       expect(transaction).not_to receive(:increment).with(:gitlab_transaction_db_cached_count_total, 1, { db_config_name: db_config_name })
-      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_cached_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
+      expect(transaction).not_to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_cached_count_total", 1, { db_config_name: db_config_name }) if db_role
     end
 
     if record_wal_query
       if db_role
-        expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1, { db_config_name: db_config_name })
-        expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_cached_count_total".to_sym, 1, { db_config_name: db_config_name }) if record_cached_query
+        expect(transaction).to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_wal_count_total", 1, { db_config_name: db_config_name })
+        expect(transaction).to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_wal_cached_count_total", 1, { db_config_name: db_config_name }) if record_cached_query
       end
     elsif db_role
-      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1, { db_config_name: db_config_name })
+      expect(transaction).not_to receive(:increment).with(:"gitlab_transaction_db_#{db_role}_wal_count_total", 1, { db_config_name: db_config_name })
     end
 
     subscriber.sql(event)
@@ -168,7 +168,7 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
   it 'observes sql_duration metric' do
     if record_query
       expect(transaction).to receive(:observe).with(:gitlab_sql_duration_seconds, 0.002, { db_config_name: db_config_name })
-      expect(transaction).to receive(:observe).with("gitlab_sql_#{db_role}_duration_seconds".to_sym, 0.002, { db_config_name: db_config_name }) if db_role
+      expect(transaction).to receive(:observe).with(:"gitlab_sql_#{db_role}_duration_seconds", 0.002, { db_config_name: db_config_name }) if db_role
     else
       expect(transaction).not_to receive(:observe)
     end

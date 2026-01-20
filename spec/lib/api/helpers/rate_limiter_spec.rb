@@ -42,7 +42,7 @@ RSpec.describe API::Helpers::RateLimiter do
 
     it 'calls too_many_requests! with correct retry_after when throttled' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
-      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
       expect(::Gitlab::ApplicationRateLimiter).to receive(:interval).with(key).and_return(5.minutes)
       expect(rate_limiter).to receive(:too_many_requests!).with(
         { error: _('This endpoint has been requested too many times. Try again later.') },
@@ -217,7 +217,7 @@ RSpec.describe API::Helpers::RateLimiter do
 
     it 'executes both the block and standard response' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
-      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
       expect(::Gitlab::ApplicationRateLimiter).to receive(:interval).with(key).and_return(5.minutes)
       expect(rate_limiter).to receive(:too_many_requests!).with(
         { error: _('This endpoint has been requested too many times. Try again later.') },

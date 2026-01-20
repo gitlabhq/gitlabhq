@@ -6008,7 +6008,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
       # We sanity check that we don't get:
       #   ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  each UNION query must have the same number of columns
-      it 'will not raise errors' do
+      it 'does not raise errors' do
         expect { subject.count }.not_to raise_error
       end
     end
@@ -8403,7 +8403,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         let(:group) { create(:group) }
 
         context 'when group has no ancestors' do
-          it 'will be a default Global notification setting' do
+          it 'is a default Global notification setting' do
             expect(subject.notification_email).to eq(nil)
             expect(subject.level).to eq('global')
           end

@@ -30,6 +30,8 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       discussion
       external_author
       id
+      noteable_type
+      noteable_id
       position
       project
       resolvable

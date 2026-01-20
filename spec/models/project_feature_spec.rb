@@ -58,7 +58,7 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
       project_feature = project.project_feature
 
       features.each do |feature|
-        field = "#{feature}_access_level".to_sym
+        field = :"#{feature}_access_level"
         project_feature.update_attribute(field, ProjectFeature::ENABLED)
         expect(project_feature.valid?).to be_falsy, "#{field} failed"
       end

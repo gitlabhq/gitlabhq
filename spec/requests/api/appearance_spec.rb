@@ -10,6 +10,12 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
   describe "GET /application/appearance" do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_application_appearance do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { get api(path, personal_access_token: pat) }
+    end
+
     context 'as an admin user' do
       it "returns appearance" do
         get api(path, admin, admin_mode: true)
@@ -39,6 +45,12 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
   describe "PUT /application/appearance" do
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { title: "Test" } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_application_appearance do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) { put api(path, personal_access_token: pat), params: { title: "Test" } }
     end
 
     context 'as an admin user' do

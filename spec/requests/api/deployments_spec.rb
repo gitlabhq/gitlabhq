@@ -731,7 +731,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(response).to have_gitlab_http_status(:no_content)
       end
 
-      it 'will not delete a running deployment' do
+      it 'does not delete a running deployment' do
         delete api("/projects/#{project.id}/deployments/#{running_deploy.id}", user)
 
         expect(response).to have_gitlab_http_status(:bad_request)

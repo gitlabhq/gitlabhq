@@ -26,7 +26,7 @@ module StubConfiguration
     stub_application_setting(setting.to_sym => value)
 
     ApplicationSetting.send(setting.pluralize.to_sym).each_key do |key|
-      stub_application_setting("#{setting}_#{key}".to_sym => key == value)
+      stub_application_setting("#{setting}_#{key}": key == value)
     end
 
     Gitlab::CurrentSettings.send(setting)

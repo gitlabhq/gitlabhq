@@ -84,6 +84,11 @@ RSpec.configure do |config|
     end
   end
 
+  # If no formatter is specified at the command line, config.formatters will be empty.
+  # In this case, we need to explicitly add the default, as adding any other formatter
+  # will cause it not to be added by RSpec itself.
+  config.add_formatter config.default_formatter if config.formatters.empty?
+
   config.add_formatter GitlabQuality::TestTooling::TestQuarantine::QuarantineFormatter
 
   Gitlab::Rspec::Configurations::TestMetrics.configure!('backend-rspec-tests') do |exporter_config|

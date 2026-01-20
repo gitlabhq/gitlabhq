@@ -40904,6 +40904,8 @@ Describes where code is deployed for a project organized by folder.
 | <a id="notelasteditedat"></a>`lastEditedAt` | [`Time`](#time) | Timestamp when note was last edited. |
 | <a id="notelasteditedby"></a>`lastEditedBy` | [`UserCore`](#usercore) | User who last edited the note. |
 | <a id="notemaxaccesslevelofauthor"></a>`maxAccessLevelOfAuthor` | [`String`](#string) | Max access level of the note author in the project. |
+| <a id="notenoteableid"></a>`noteableId` | [`Int`](#int) | Noteable ID which the note belongs to. |
+| <a id="notenoteabletype"></a>`noteableType` | [`String!`](#string) | Noteable type which the note belongs to. |
 | <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of the note on a diff. |
 | <a id="noteproject"></a>`project` | [`Project`](#project) | Project associated with the note. |
 | <a id="noteresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |

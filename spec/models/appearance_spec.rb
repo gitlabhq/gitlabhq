@@ -50,7 +50,7 @@ RSpec.describe Appearance do
   end
 
   shared_examples 'logo paths' do |logo_type|
-    let(:appearance) { create(:appearance, "with_#{logo_type}".to_sym) }
+    let(:appearance) { create(:appearance, :"with_#{logo_type}") }
     let(:filename) { 'dk.png' }
     let(:expected_path) { "/uploads/-/system/appearance/#{logo_type}/#{appearance.id}/#{filename}" }
 

@@ -1,0 +1,7 @@
+name: test_maven_virtual_registry_upstream
+description: Grants the ability to test Maven virtual registry upstreams
+boundaries:
+  - group
+  - instance
+permissions:
+  - test_maven_virtual_registry_upstream

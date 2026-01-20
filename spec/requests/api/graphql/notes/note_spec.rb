@@ -53,6 +53,8 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
       post_graphql(query, current_user: current_user)
 
       expect(note_data['id']).to eq(global_id_of(note).to_s)
+      expect(note_data['noteableType']).to eq(note.noteable_type)
+      expect(note_data['noteableId']).to eq(note.noteable_id)
     end
 
     context 'when it is a system note' do

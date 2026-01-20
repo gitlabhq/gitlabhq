@@ -25,11 +25,11 @@ module GitLab
       end
 
       def file_path
-        "ee/db/active_context/migrate/#{file_name}.rb"
+        "ee/active_context/migrate/#{file_name}.rb"
       end
 
       def spec_file_path
-        "ee/spec/db/active_context/migrate/#{file_name}_spec.rb"
+        "ee/spec/active_context/migrate/#{file_name}_spec.rb"
       end
 
       def file_contents

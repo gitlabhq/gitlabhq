@@ -2926,7 +2926,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         let(:maintainer) { create(:user) }
 
         describe '#approve_mr' do
-          it 'will notify the author, subscribers, and assigned users' do
+          it 'notifies the author, subscribers, and assigned users' do
             notification.approve_mr(merge_request, maintainer)
 
             merge_request.assignees.each { |assignee| should_email(assignee) }
@@ -2951,7 +2951,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
 
         describe '#unapprove_mr' do
-          it 'will notify the author, subscribers, and assigned users' do
+          it 'notifies the author, subscribers, and assigned users' do
             notification.unapprove_mr(merge_request, maintainer)
 
             merge_request.assignees.each { |assignee| should_email(assignee) }

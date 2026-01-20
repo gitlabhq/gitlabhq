@@ -8,6 +8,7 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
   describe 'TEST_LEVEL_FOLDERS constant' do
     it 'ensures all directories it refers to exists', :aggregate_failures do
       ee_only_directories = %w[
+        active_context
         lib/ee/gitlab/background_migration
         elastic
         elastic_integration
@@ -46,7 +47,7 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
-          .to eq("spec/{bin,cells,channels,components,config,constraints,contracts,db,dependencies,elastic,elastic_integration,experiments,facades,factories,factories_specs,finders,frontend,graphql,haml_lint,helpers,initializers,keeps,lib,metrics_server,models,policies,presenters,rack_servers,replicators,routing,rubocop,scripts,serializers,services,sidekiq,sidekiq_cluster,spam,support_specs,tasks,uploaders,validators,views,workers,tooling,dot_gitlab_ci}{,/**/}*_spec.rb")
+          .to eq("spec/{active_context,bin,cells,channels,components,config,constraints,contracts,db,dependencies,elastic,elastic_integration,experiments,facades,factories,factories_specs,finders,frontend,graphql,haml_lint,helpers,initializers,keeps,lib,metrics_server,models,policies,presenters,rack_servers,replicators,routing,rubocop,scripts,serializers,services,sidekiq,sidekiq_cluster,spam,support_specs,tasks,uploaders,validators,views,workers,tooling,dot_gitlab_ci}{,/**/}*_spec.rb")
       end
     end
 
@@ -121,7 +122,7 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))
-          .to eq(%r{spec/(bin|cells|channels|components|config|constraints|contracts|db|dependencies|elastic|elastic_integration|experiments|facades|factories|factories_specs|finders|frontend|graphql|haml_lint|helpers|initializers|keeps|lib|metrics_server|models|policies|presenters|rack_servers|replicators|routing|rubocop|scripts|serializers|services|sidekiq|sidekiq_cluster|spam|support_specs|tasks|uploaders|validators|views|workers|tooling|dot_gitlab_ci)/})
+          .to eq(%r{spec/(active_context|bin|cells|channels|components|config|constraints|contracts|db|dependencies|elastic|elastic_integration|experiments|facades|factories|factories_specs|finders|frontend|graphql|haml_lint|helpers|initializers|keeps|lib|metrics_server|models|policies|presenters|rack_servers|replicators|routing|rubocop|scripts|serializers|services|sidekiq|sidekiq_cluster|spam|support_specs|tasks|uploaders|validators|views|workers|tooling|dot_gitlab_ci)/})
       end
     end
 

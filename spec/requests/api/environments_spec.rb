@@ -535,7 +535,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
-    it "won't allow slug to be changed" do
+    it "does not allow slug to be changed" do
       slug = environment.slug
       api_url = api("/projects/#{project.id}/environments/#{environment.id}", user)
       put api_url, params: { slug: slug + "-foo" }

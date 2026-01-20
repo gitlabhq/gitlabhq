@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, feature_category: :importers do
+  RSpec.describe 'Manage', :requires_admin, :skip_live_env, feature_category: :code_testing do
     describe 'Jenkins integration' do
       let(:jenkins_server) { Service::DockerRun::Jenkins.new }
 

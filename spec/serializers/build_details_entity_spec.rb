@@ -105,7 +105,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     context 'when the user can only read the build' do
       let(:user) { create(:user) }
 
-      it "won't display the paths to issues and merge requests" do
+      it "does not display the paths to issues and merge requests" do
         expect(subject['new_issue_path']).to be_nil
         expect(subject['merge_request_path']).to be_nil
       end

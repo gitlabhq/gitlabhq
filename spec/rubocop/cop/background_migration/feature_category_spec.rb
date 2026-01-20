@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::FeatureCategory, feature_categ
       RUBY
     end
 
-    it 'will not throw offense on defining a valid feature_category' do
+    it 'does not throw offense on defining a valid feature_category' do
       expect_no_offenses(<<~RUBY)
         module Gitlab
           module BackgroundMigration

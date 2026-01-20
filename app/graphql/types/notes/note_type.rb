@@ -33,6 +33,14 @@ module Types
         null: true,
         description: 'Project associated with the note.'
 
+      field :noteable_type, GraphQL::Types::String,
+        null: false,
+        description: 'Noteable type which the note belongs to.'
+
+      field :noteable_id, GraphQL::Types::Int,
+        null: true,
+        description: 'Noteable ID which the note belongs to.'
+
       field :system, GraphQL::Types::Boolean,
         null: false,
         description: 'Indicates whether the note was created by the system or by a user.'

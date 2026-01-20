@@ -1,0 +1,6 @@
+name: update_maven_virtual_registry_upstream
+description: Grants the ability to update Maven virtual registry upstreams
+boundaries:
+  - instance
+permissions:
+  - update_maven_virtual_registry_upstream

@@ -1553,35 +1553,6 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_40ecbfb353() IS 'Partitioning migration: table sync for uploads table';
 
-CREATE FUNCTION table_sync_function_c237afdf68() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF (TG_OP = 'DELETE') THEN
-  DELETE FROM project_daily_statistics_archived where "id" = OLD."id";
-ELSIF (TG_OP = 'UPDATE') THEN
-  UPDATE project_daily_statistics_archived
-  SET "project_id" = NEW."project_id",
-    "fetch_count" = NEW."fetch_count",
-    "date" = NEW."date"
-  WHERE project_daily_statistics_archived."id" = NEW."id";
-ELSIF (TG_OP = 'INSERT') THEN
-  INSERT INTO project_daily_statistics_archived ("id",
-    "project_id",
-    "fetch_count",
-    "date")
-  VALUES (NEW."id",
-    NEW."project_id",
-    NEW."fetch_count",
-    NEW."date");
-END IF;
-RETURN NULL;
-
-END
-$$;
-
-COMMENT ON FUNCTION table_sync_function_c237afdf68() IS 'Partitioning migration: table sync for project_daily_statistics table';
-
 CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
     LANGUAGE plpgsql IMMUTABLE
     AS $$
@@ -25865,13 +25836,6 @@ CREATE SEQUENCE project_custom_attributes_id_seq
 
 ALTER SEQUENCE project_custom_attributes_id_seq OWNED BY project_custom_attributes.id;
 
-CREATE TABLE project_daily_statistics_archived (
-    id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    fetch_count integer NOT NULL,
-    date date
-);
-
 CREATE SEQUENCE project_daily_statistics_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -37937,9 +37901,6 @@ ALTER TABLE ONLY project_control_compliance_statuses
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT project_custom_attributes_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_daily_statistics_archived
-    ADD CONSTRAINT project_daily_statistics_archived_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY project_daily_statistics
     ADD CONSTRAINT project_daily_statistics_pkey PRIMARY KEY (id, date);
 
@@ -45330,10 +45291,6 @@ CREATE INDEX index_project_custom_attributes_on_key_and_value ON project_custom_
 
 CREATE UNIQUE INDEX index_project_custom_attributes_on_project_id_and_key ON project_custom_attributes USING btree (project_id, key);
 
-CREATE INDEX index_project_daily_statistics_on_date_and_id ON project_daily_statistics_archived USING btree (date, id);
-
-CREATE UNIQUE INDEX index_project_daily_statistics_on_project_id_and_date ON project_daily_statistics_archived USING btree (project_id, date DESC);
-
 CREATE INDEX index_project_data_transfers_on_namespace_id ON project_data_transfers USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_project_data_transfers_on_project_and_namespace_and_date ON project_data_transfers USING btree (project_id, namespace_id, date);
@@ -51188,8 +51145,6 @@ CREATE TRIGGER slsa_attestations_loose_fk_trigger AFTER DELETE ON slsa_attestati
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 
-CREATE TRIGGER table_sync_trigger_3104e56c7b AFTER INSERT OR DELETE OR UPDATE ON project_daily_statistics FOR EACH ROW EXECUTE FUNCTION table_sync_function_c237afdf68();
-
 CREATE TRIGGER table_sync_trigger_4ea4473e79 AFTER INSERT OR DELETE OR UPDATE ON uploads FOR EACH ROW EXECUTE FUNCTION table_sync_function_40ecbfb353();
 
 CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
@@ -55753,9 +55708,6 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 
 ALTER TABLE ONLY alert_management_alert_user_mentions
     ADD CONSTRAINT fk_rails_8e48eca0fe FOREIGN KEY (alert_management_alert_id) REFERENCES alert_management_alerts(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_daily_statistics_archived
-    ADD CONSTRAINT fk_rails_8e549b272d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY organization_details
     ADD CONSTRAINT fk_rails_8facb04bef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

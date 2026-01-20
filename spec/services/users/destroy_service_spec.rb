@@ -20,7 +20,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
             end.from(false).to(true))
       end
 
-      it 'will delete the personal project' do
+      it 'deletes the personal project' do
         expect_next_instance_of(Projects::DestroyService) do |destroy_service|
           expect(destroy_service).to receive(:execute).once.and_return(true)
         end

@@ -44,7 +44,7 @@ RSpec.shared_examples "migrating a deleted user's associated records to the ghos
       end
     end
 
-    it 'will only migrate specific records during a hard_delete' do
+    it 'only migrates specific records during a hard_delete' do
       service.execute(hard_delete: true)
 
       migrated_record = record_class.find_by_id(record.id)

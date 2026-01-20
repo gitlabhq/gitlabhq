@@ -19,28 +19,28 @@ RSpec.describe ProjectFeaturesCompatibility do
 
   it "converts fields from 'true' to ProjectFeature::ENABLED" do
     features_enabled.each do |feature|
-      project.update_attribute("#{feature}_enabled".to_sym, "true")
+      project.update_attribute(:"#{feature}_enabled", "true")
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::ENABLED)
     end
   end
 
   it "converts fields from 'false' to ProjectFeature::DISABLED" do
     features_enabled.each do |feature|
-      project.update_attribute("#{feature}_enabled".to_sym, "false")
+      project.update_attribute(:"#{feature}_enabled", "false")
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
     end
   end
 
   it "converts fields from true to ProjectFeature::ENABLED" do
     features_enabled.each do |feature|
-      project.update_attribute("#{feature}_enabled".to_sym, true)
+      project.update_attribute(:"#{feature}_enabled", true)
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::ENABLED)
     end
   end
 
   it "converts fields from false to ProjectFeature::DISABLED" do
     features_enabled.each do |feature|
-      project.update_attribute("#{feature}_enabled".to_sym, false)
+      project.update_attribute(:"#{feature}_enabled", false)
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe ProjectFeaturesCompatibility do
           # Only pages as public access level
           next if feature != 'pages' && access_level == 'public'
 
-          project.update!("#{feature}_access_level".to_sym => access_level)
+          project.update!("#{feature}_access_level": access_level)
           expect(project.project_feature.public_send("#{feature}_access_level")).to eq(expected_result)
         end
       end
