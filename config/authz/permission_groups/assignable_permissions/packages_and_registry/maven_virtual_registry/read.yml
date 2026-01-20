@@ -2,5 +2,6 @@ name: read_maven_virtual_registry
 description: Grants the ability to read Maven virtual registries
 boundaries:
   - group
+  - instance
 permissions:
   - read_maven_virtual_registry

@@ -1,0 +1,4 @@
+name: update_maven_virtual_registry
+description: Grants the ability to update Maven virtual registries
+boundaries:
+  - instance

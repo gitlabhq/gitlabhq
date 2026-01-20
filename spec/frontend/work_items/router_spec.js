@@ -66,6 +66,7 @@ describe('Work items router', () => {
       apolloProvider: createMockApollo(handlers),
       router,
       provide: {
+        getWorkItemTypeConfiguration: jest.fn(),
         canAdminLabel: true,
         duoRemoteFlowsAvailability: false,
         fullPath: 'full-path',

@@ -8,15 +8,8 @@ describe('Panels utils', () => {
   const findDynamicPanelInner = () => document.querySelector('.js-dynamic-panel-inner');
   const findDocumentScrollingElement = () => document.scrollingElement;
 
-  const setupEnvironment = ({
-    projectStudioEnabled = false,
-    getBoundingClientRect,
-    ...getters
-  } = {}) => {
-    if (projectStudioEnabled) {
-      window.gon = { features: { projectStudioEnabled: true } };
-
-      setHTMLFixture(`
+  const setupEnvironment = ({ getBoundingClientRect, ...getters } = {}) => {
+    setHTMLFixture(`
         <div>
           <div class="js-static-panel-inner">
             <div id="element"></div>
@@ -27,19 +20,11 @@ describe('Panels utils', () => {
         </div>
       `);
 
-      Object.entries(getters).forEach(([name, value]) => {
-        jest.spyOn(findStaticPanelInner(), name, 'get').mockReturnValue(value);
-        jest.spyOn(findDynamicPanelInner(), name, 'get').mockReturnValue(value);
-      });
-    } else {
-      window.gon = { features: {} };
-
-      setHTMLFixture('<div id="scroller"><div id="element" /></div>');
-
-      Object.entries(getters).forEach(([name, value]) => {
-        jest.spyOn(findDocumentScrollingElement(), name, 'get').mockReturnValue(value);
-      });
-    }
+    Object.entries(getters).forEach(([name, value]) => {
+      jest.spyOn(findStaticPanelInner(), name, 'get').mockReturnValue(value);
+      jest.spyOn(findDynamicPanelInner(), name, 'get').mockReturnValue(value);
+      jest.spyOn(findDocumentScrollingElement(), name, 'get').mockReturnValue(value);
+    });
 
     if (getBoundingClientRect) {
       if (findElem()) {
@@ -55,7 +40,6 @@ describe('Panels utils', () => {
 
   afterEach(() => {
     getScrollingElement.cache.clear(); // clear lodash's memoize cache
-    window.gon = { features: null };
     resetHTMLFixture();
   });
 
@@ -74,11 +58,11 @@ describe('Panels utils', () => {
   });
 
   describe('getScrollingElement', () => {
-    it('handles null/undefined elements', () => {
-      setupEnvironment({ projectStudioEnabled: false });
+    it('handles null/undefined elements by defaulting to default panel', () => {
+      setupEnvironment();
 
-      expect(getScrollingElement(null)).toBe(document.scrollingElement);
-      expect(getScrollingElement(undefined)).toBe(document.scrollingElement);
+      expect(getScrollingElement(null)).toBe(findStaticPanelInner());
+      expect(getScrollingElement(undefined)).toBe(findStaticPanelInner());
     });
 
     describe('when element is inside a panel', () => {
@@ -87,7 +71,7 @@ describe('Panels utils', () => {
         ${'static'}  | ${findElem}               | ${'js-static-panel-inner'}
         ${'dynamic'} | ${findElemInDynamicPanel} | ${'js-dynamic-panel-inner'}
       `('returns $panelType panel inner element', ({ elementFinder, innerClass }) => {
-        setupEnvironment({ projectStudioEnabled: true });
+        setupEnvironment();
 
         const element = elementFinder();
         const container = document.querySelector(`.${innerClass}`);
@@ -103,7 +87,6 @@ describe('Panels utils', () => {
         ${'no inner'}            | ${'<div class="js-static-panel"><div id="element"></div></div>'}
         ${'no inner in dynamic'} | ${'<div class="js-dynamic-panel"><div id="element"></div></div>'}
       `('returns window as fallback for $scenario', ({ html }) => {
-        window.gon = { features: { projectStudioEnabled: true } };
         setHTMLFixture(html);
 
         const element = document.getElementById('element');

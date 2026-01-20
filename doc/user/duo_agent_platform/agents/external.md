@@ -79,8 +79,8 @@ without additional agent configuration necessary.
 
 The following agents are available in the AI Catalog:
 
-- [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/499/)
-- [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/513/)
+- [Claude Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337)
+- [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/)
 
 Required steps to enable and use Claude or Codex:
 

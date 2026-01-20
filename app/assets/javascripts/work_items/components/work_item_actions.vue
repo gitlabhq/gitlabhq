@@ -81,7 +81,7 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  inject: ['hasOkrsFeature'],
+  inject: ['hasOkrsFeature', 'getWorkItemTypeConfiguration'],
   props: {
     fullPath: {
       type: String,
@@ -325,8 +325,17 @@ export default {
         workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
       });
     },
+    workItemTypeConfiguration() {
+      return this.getWorkItemTypeConfiguration(this.workItemType);
+    },
     canPromoteToObjective() {
-      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
+      // User permissions
+      if (!this.canUpdateMetadata) return false;
+
+      return (
+        this.workItemTypeConfiguration?.canPromoteToObjective ||
+        this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT
+      );
     },
     confidentialItem() {
       return {

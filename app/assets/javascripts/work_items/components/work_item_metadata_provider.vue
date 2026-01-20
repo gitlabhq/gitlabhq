@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 
 export default normalizeRender({
   name: 'WorkItemMetadataProvider',
@@ -74,6 +75,9 @@ export default normalizeRender({
       canReadCrmOrganization: computed(() => Boolean(this.metadata?.readCrmOrganization)),
       canReadCrmContact: computed(() => Boolean(this.metadata?.readCrmContact)),
       projectNamespaceFullPath: computed(() => this.metadata?.namespaceFullPath),
+      getWorkItemTypeConfiguration: computed(() => (typeName) => {
+        return this.workItemTypesConfiguration[typeName];
+      }),
     };
   },
   props: {
@@ -85,6 +89,7 @@ export default normalizeRender({
   data() {
     return {
       metadata: {},
+      workItemTypesConfiguration: {},
     };
   },
   apollo: {
@@ -104,6 +109,21 @@ export default normalizeRender({
           ...(namespace.metadata || {}),
           id: namespace.id,
         };
+      },
+    },
+    workItemTypesConfiguration: {
+      query: workItemTypesConfigurationQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        const nodes = data?.namespace?.workItemTypes?.nodes || [];
+        // Transform array to hash keyed by type name
+        return nodes.reduce((acc, type) => {
+          return { ...acc, [type.name]: type };
+        }, {});
       },
     },
   },

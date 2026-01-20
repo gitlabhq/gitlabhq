@@ -1,0 +1,13 @@
+#import "./work_item_types_configuration.fragment.graphql"
+# @feature_category: team_planning
+
+query workItemTypesConfiguration($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItemTypes {
+      nodes {
+        ...WorkItemTypesConfiguration
+      }
+    }
+  }
+}

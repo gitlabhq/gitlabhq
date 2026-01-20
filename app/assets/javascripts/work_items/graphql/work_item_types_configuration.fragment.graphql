@@ -1,0 +1,30 @@
+fragment WorkItemTypesConfiguration on WorkItemType {
+  id
+  name
+  archived
+  canPromoteToObjective
+  canUserCreateItems
+  isConfigurable
+  isFilterable
+  isGroupWorkItemType
+  isIncidentManagement
+  isServiceDesk
+  showProjectSelector
+  supportsMoveAction
+  supportsRoadmapView
+  useIssueView
+  visibleInSettings
+  widgetDefinitions {
+    type
+    ... on WorkItemWidgetDefinitionHierarchy {
+      propagatesMilestone
+      autoExpandTreeOnMove
+    }
+    ... on WorkItemWidgetDefinitionProgress {
+      showPopover
+    }
+    ... on WorkItemWidgetDefinitionStartAndDueDate {
+      canRollUp
+    }
+  }
+}

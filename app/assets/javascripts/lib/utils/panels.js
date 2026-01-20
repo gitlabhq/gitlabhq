@@ -21,11 +21,8 @@ const getPanelScrollingElement = (contextElement) => {
 };
 
 const getApplicationScrollingElement = (contextElement) => {
-  if (window.gon?.features?.projectStudioEnabled) {
-    // We still return `document.scrollingElement` for pages that don't have panels, like login or error pages
-    return getPanelScrollingElement(contextElement) || document.scrollingElement;
-  }
-  return document.scrollingElement;
+  // We return `document.scrollingElement` for pages that don't have panels, like login or error pages
+  return getPanelScrollingElement(contextElement) || document.scrollingElement;
 };
 
 /**
@@ -33,7 +30,6 @@ const getApplicationScrollingElement = (contextElement) => {
  * If the element is not provided, it defaults to the default panel.
  *
  * If no panel is found, it returns document.scrollingElement.
- * If `projectStudioEnabled` is disabled, it returns the document.scrollingElement.
  *
  * It is memoized for results with the same element.
  *

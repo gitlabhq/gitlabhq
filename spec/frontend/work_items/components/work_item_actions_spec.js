@@ -49,6 +49,7 @@ describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
+  const getTypeMock = jest.fn();
   const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
   const mockWorkItemCreateNoteEmail =
     'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
@@ -205,6 +206,7 @@ describe('WorkItemActions component', () => {
           okrsMvc,
         },
         hasOkrsFeature,
+        getWorkItemTypeConfiguration: getTypeMock,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -516,47 +518,73 @@ describe('WorkItemActions component', () => {
     });
   });
 
-  describe('promote action', () => {
-    it.each`
-      workItemType                     | show
-      ${WORK_ITEM_TYPE_NAME_TASK}      | ${false}
-      ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${false}
-    `('does not show promote button for $workItemType', ({ workItemType, show }) => {
-      createComponent({ workItemType });
+  describe('promote actions', () => {
+    describe('button visibility', () => {
+      it.each`
+        canUpdateMetadata | mockConfig                         | shouldExist | expectationText
+        ${true}           | ${{ canPromoteToObjective: true }} | ${true}     | ${'has permissions'}
+        ${false}          | ${{ canPromoteToObjective: true }} | ${false}    | ${'does not have permissions'}
+      `('when user $expectationText', ({ canUpdateMetadata, mockConfig, shouldExist }) => {
+        getTypeMock.mockReturnValue(mockConfig);
+        createComponent({ canUpdateMetadata, workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
 
-      expect(findPromoteButton().exists()).toBe(show);
-    });
-
-    it('promote key result to objective', async () => {
-      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
-      await waitForPromises();
-
-      expect(findPromoteButton().exists()).toBe(true);
-
-      findPromoteButton().vm.$emit('action');
-      await waitForPromises();
-
-      expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
-      expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
-      expect(wrapper.emitted('promotedToObjective')).toEqual([[]]);
-    });
-
-    it('emits error when promote mutation fails', async () => {
-      createComponent({
-        workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
-        convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
+        expect(findChangeTypeButton().exists()).toBe(shouldExist);
       });
-      await waitForPromises();
 
-      expect(findPromoteButton().exists()).toBe(true);
+      describe.each`
+        description                                             | workItemType                      | mockConfig                          | shouldShowButton
+        ${'when config is `null` and type is OKR'}              | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${undefined}                        | ${true}
+        ${'when config is `null` and type is not OKR'}          | ${WORK_ITEM_TYPE_NAME_TASK}       | ${undefined}                        | ${false}
+        ${'when config has canPromote `false` and type is OKR'} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${{ canPromoteToObjective: false }} | ${true}
+        ${'when config has canPromote `true` and type is OKR'}  | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${{ canPromoteToObjective: true }}  | ${true}
+      `('$description', ({ workItemType, mockConfig, shouldShowButton }) => {
+        it('shows promote button correctly', async () => {
+          getTypeMock.mockReturnValue(mockConfig);
+          createComponent({ workItemType });
+          await waitForPromises();
 
-      findPromoteButton().vm.$emit('action');
-      await waitForPromises();
+          expect(findPromoteButton().exists()).toBe(shouldShowButton);
+        });
+      });
+    });
 
-      expect(convertWorkItemMutationErrorHandler).toHaveBeenCalled();
-      expect(wrapper.emitted('error')).toEqual([
-        ['Something went wrong while promoting the key result. Please try again.'],
-      ]);
+    describe('when button is clicked', () => {
+      beforeEach(async () => {
+        createComponent({ workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
+        await waitForPromises();
+
+        findPromoteButton().vm.$emit('action');
+        await waitForPromises();
+      });
+
+      it('promotes key result to objective', () => {
+        expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
+        expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+        expect(wrapper.emitted('promotedToObjective')).toEqual([[]]);
+      });
+    });
+
+    describe('when promote mutation fails', () => {
+      beforeEach(async () => {
+        createComponent({
+          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
+        });
+
+        await waitForPromises();
+      });
+
+      it('emits error', async () => {
+        expect(findPromoteButton().exists()).toBe(true);
+
+        findPromoteButton().vm.$emit('action');
+        await waitForPromises();
+
+        expect(convertWorkItemMutationErrorHandler).toHaveBeenCalled();
+        expect(wrapper.emitted('error')).toEqual([
+          ['Something went wrong while promoting the key result. Please try again.'],
+        ]);
+      });
     });
   });
 
