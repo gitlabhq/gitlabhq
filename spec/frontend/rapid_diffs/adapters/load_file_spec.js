@@ -19,6 +19,7 @@ describe('loadFileAdapter', () => {
   let mockAdapter;
 
   const getDiffFile = () => document.querySelector('diff-file');
+  const getDiffElement = () => document.querySelector('[data-diff-element]');
   const getChangesButton = () => document.querySelector('button[data-click="showChanges"]');
   const getRichViewButton = () => document.querySelector('button[data-click="toggleRichView"]');
   const getShowFullFileButton = () => document.querySelector('button[data-click="showFullFile"]');
@@ -36,7 +37,9 @@ describe('loadFileAdapter', () => {
 
   const createComponentHtml = (name, content) => `
       <${name} data-file-data='${JSON.stringify({ viewer, old_path: 'foo', new_path: 'bar' })}'>
-        ${content}
+        <div data-diff-element>
+          ${content}
+        </div>
       </${name}>
     `;
 
@@ -143,6 +146,10 @@ describe('loadFileAdapter', () => {
     expect(getChangesButton().disabled).toBe(true);
     await waitForPromises();
     expect(getChangesButton().disabled).toBe(false);
-    expect(createAlert).toHaveBeenCalled();
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'Failed to load changes, please try again.',
+      parent: getDiffElement(),
+      error: expect.any(Object),
+    });
   });
 });

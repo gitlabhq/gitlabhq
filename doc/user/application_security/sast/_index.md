@@ -63,7 +63,6 @@ your workflow.
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 
 {{< /details >}}
 
@@ -79,12 +78,6 @@ For Ultimate tier customers with a GitLab Duo add-on, false positive detection r
 after each security scan and provides confidence scores with explanations for each assessment.
 
 ### Agentic SAST vulnerability resolution
-
-{{< details >}}
-
-- Add-on: GitLab Duo Enterprise
-
-{{< /details >}}
 
 [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md) automatically generates merge requests with context-aware code fixes for High and Critical severity SAST vulnerabilities. This agentic approach uses multi-shot reasoning to resolve vulnerabilities with minimal human intervention.
 

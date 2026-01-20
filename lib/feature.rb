@@ -397,18 +397,12 @@ module Feature
         gate_class: FlipperGate)
       # Redis L2 cache
       redis_cache_adapter =
-        ActiveSupportCacheStoreAdapter.new(
-          active_record_adapter,
-          l2_cache_backend,
-          expires_in: 1.hour,
-          write_through: true)
+        ActiveSupportCacheStoreAdapter.new(active_record_adapter, l2_cache_backend, 1.hour, write_through: true)
 
       # Thread-local L1 cache: use a short timeout since we don't have a
       # way to expire this cache all at once
-      flipper_adapter = Flipper::Adapters::ActiveSupportCacheStore.new(
-        redis_cache_adapter,
-        l1_cache_backend,
-        expires_in: 1.minute)
+      flipper_adapter =
+        Flipper::Adapters::ActiveSupportCacheStore.new(redis_cache_adapter, l1_cache_backend, 1.minute)
 
       Flipper.new(flipper_adapter).tap do |flip|
         flip.memoize = memoize

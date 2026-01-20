@@ -103,11 +103,7 @@ module Gitlab
 
             def descriptor_fields(descriptor)
               strong_memoize_with(:descriptor_fields, descriptor) do
-                keys = []
-                descriptor.each do |field|
-                  keys << field.name.to_sym
-                end
-                keys
+                descriptor.map { |field| field.name.to_sym }
               end
             end
           end

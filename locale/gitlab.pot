@@ -2580,6 +2580,9 @@ msgstr ""
 msgid "AICatalog|Agent enabled in %{targetType}."
 msgstr ""
 
+msgid "AICatalog|Agent hidden."
+msgstr ""
+
 msgid "AICatalog|Agent is now at version %{newVersion}."
 msgstr ""
 
@@ -2629,6 +2632,9 @@ msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow will al
 msgstr ""
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow, its service account, and any associated triggers will no longer work in this project."
+msgstr ""
+
+msgid "AICatalog|Are you sure you want to hide %{itemType} %{name}?"
 msgstr ""
 
 msgid "AICatalog|Basic information"
@@ -2895,6 +2901,9 @@ msgstr ""
 msgid "AICatalog|Flow enabled in %{targetType}."
 msgstr ""
 
+msgid "AICatalog|Flow hidden."
+msgstr ""
+
 msgid "AICatalog|Flow is now at version %{newVersion}."
 msgstr ""
 
@@ -2938,6 +2947,9 @@ msgid "AICatalog|Get started with the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|Group is required."
+msgstr ""
+
+msgid "AICatalog|Hide %{itemType}"
 msgstr ""
 
 msgid "AICatalog|Hide from the AI Catalog"
@@ -21541,9 +21553,6 @@ msgid "CsvViewer|View raw data"
 msgstr ""
 
 msgid "Current"
-msgstr ""
-
-msgid "Current Chat"
 msgstr ""
 
 msgid "Current GitLab Duo Chat"

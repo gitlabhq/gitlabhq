@@ -8,7 +8,6 @@ title: Convert to GitLab CI/CD Flow
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 
 This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).

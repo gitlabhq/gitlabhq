@@ -28476,6 +28476,7 @@ CREATE TABLE slack_integrations (
     organization_id bigint,
     group_id bigint,
     project_id bigint,
+    CONSTRAINT check_260dd1c83b CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)),
     CONSTRAINT check_bc553aea8a CHECK ((char_length(bot_user_id) <= 255)),
     CONSTRAINT check_c9ca9ae80d CHECK ((integration_id IS NOT NULL))
 );

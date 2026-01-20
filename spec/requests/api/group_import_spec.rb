@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupImport, :with_current_organization, feature_category: :importers do
+RSpec.describe API::GroupImport, feature_category: :importers do
   include WorkhorseHelpers
 
   include_context 'workhorse headers'

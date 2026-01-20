@@ -53,18 +53,11 @@ module GoogleApi
       end
 
       def list_projects
-        result = []
-
         response = cloud_resource_manager_service.fetch_all(items: :projects) do |token|
           cloud_resource_manager_service.list_projects
         end
 
-        # Google API results are paged by default, so we need to iterate through
-        response.each do |project|
-          result.append(project)
-        end
-
-        result.sort_by(&:project_id)
+        response.sort_by(&:project_id)
       end
 
       def create_service_account(gcp_project_id, display_name, description)

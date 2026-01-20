@@ -43,10 +43,8 @@ module Packages
       end
 
       def extract_dependencies
-        dependencies = []
-
-        doc.xpath(XPATH_DEPENDENCIES).each do |node|
-          dependencies << extract_dependency(node)
+        dependencies = doc.xpath(XPATH_DEPENDENCIES).map do |node|
+          extract_dependency(node)
         end
 
         doc.xpath(XPATH_DEPENDENCY_GROUPS).each do |group_node|

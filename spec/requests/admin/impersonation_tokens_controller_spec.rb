@@ -56,7 +56,7 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
     end
   end
 
-  describe '#create', :with_current_organization do
+  describe '#create' do
     # Replace to `it_behaves_like 'create access token'` once we migrate the legacy UI to use initSharedAccessTokenApp.
     it_behaves_like 'create access token - legacy' do
       let(:url) { admin_user_impersonation_tokens_path(user_id: user.username) }
@@ -64,7 +64,7 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
     end
   end
 
-  describe '#index', :with_current_organization do
+  describe '#index' do
     let(:dependency_proxy_enabled) { true }
 
     before do

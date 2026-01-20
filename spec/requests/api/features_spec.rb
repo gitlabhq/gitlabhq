@@ -39,6 +39,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
           'state' => 'on',
           'gates' => [
             { 'key' => 'boolean', 'value' => true },
+            { 'key' => 'expression', 'value' => nil },
             { 'key' => 'actors', 'value' => ["#{opted_out.flipper_id}:opt_out"] }
           ],
           'definition' => nil
@@ -46,7 +47,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
         {
           'name' => 'feature_2',
           'state' => 'off',
-          'gates' => [{ 'key' => 'boolean', 'value' => false }],
+          'gates' => [{ 'key' => 'boolean', 'value' => false }, { 'key' => 'expression', 'value' => nil }],
           'definition' => nil
         },
         {
@@ -54,6 +55,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
           'state' => 'conditional',
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'expression', 'value' => nil },
             { 'key' => 'groups', 'value' => ['perf_team'] }
           ],
           'definition' => nil
@@ -61,7 +63,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
         {
           'name' => known_feature_flag.name,
           'state' => 'on',
-          'gates' => [{ 'key' => 'boolean', 'value' => true }],
+          'gates' => [{ 'key' => 'boolean', 'value' => true }, { 'key' => 'expression', 'value' => nil }],
           'definition' => known_feature_flag_definition_hash
         }
       ]
@@ -130,6 +132,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
           'state' => 'conditional',
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'expression', 'value' => nil },
             { 'key' => 'actors', 'value' => [actor.flipper_id] }
           ],
           'definition' => known_feature_flag_definition_hash

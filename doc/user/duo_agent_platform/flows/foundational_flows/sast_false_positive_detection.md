@@ -8,7 +8,6 @@ title: SAST false positive detection
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 

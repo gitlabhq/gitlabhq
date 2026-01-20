@@ -4376,6 +4376,26 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe ':update_custom_attribute' do
+    context 'when user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:update_custom_attribute) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.not_to be_allowed(:update_custom_attribute) }
+      end
+    end
+
+    context 'when user is not an admin' do
+      let(:current_user) { guest }
+
+      it { is_expected.not_to be_allowed(:update_custom_attribute) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

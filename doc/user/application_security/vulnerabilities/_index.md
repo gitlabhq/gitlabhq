@@ -43,7 +43,6 @@ the top of the vulnerability's page.
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 

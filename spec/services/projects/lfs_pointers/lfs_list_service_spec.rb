@@ -65,22 +65,6 @@ RSpec.describe Projects::LfsPointers::LfsListService, feature_category: :source_
           expect(result).to eq(expected_hash)
         end
       end
-
-      context 'with mirroring_lfs_optimization feature flag disabled' do
-        before do
-          stub_feature_flags(mirroring_lfs_optimization: false)
-        end
-
-        it 'returns hash of lfs pointers from all_pointers' do
-          expect_next_instance_of(Gitlab::Git::LfsChanges, project.repository) do |lfs_changes|
-            expect(lfs_changes).to receive(:all_pointers)
-              .and_return(mock_blobs)
-          end
-
-          result = lfs_list_service.execute
-          expect(result).to eq(expected_hash)
-        end
-      end
     end
 
     context 'when LFS is disabled' do

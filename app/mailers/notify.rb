@@ -137,6 +137,8 @@ class Notify < ApplicationMailer
     add_unsubscription_headers_and_links
     add_model_headers(model)
 
+    headers['X-Origin-Message-Id'] = headers['Message-ID']
+
     headers['X-GitLab-Reply-Key'] = reply_key
 
     @reason = headers['X-GitLab-NotificationReason']
@@ -170,6 +172,7 @@ class Notify < ApplicationMailer
   # See: mail_answer_thread
   def mail_new_thread(model, headers = {})
     headers['Message-ID'] = message_id(model)
+    headers['References'] = [headers['Message-ID']]
 
     mail_thread(model, headers)
   end

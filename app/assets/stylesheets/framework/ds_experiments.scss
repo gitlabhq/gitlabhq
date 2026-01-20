@@ -5,33 +5,10 @@
  // Increased border radii
 
  .application-chrome {
-  // Remove input border radius if next to button
-  .input-group:not(.has-validation) > .form-control:not(:last-child) {
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-  }
-
   // Decrease spacing between buttons
   // to align with optical spacing
   .gl-gap-3:has(> .gl-button) {
     @apply gl-gap-[0.375rem]; // 6px
-  }
-
-  // Filtered search button
-  .input-group-prepend > div,
-  .filtered-search-box,
-  .filtered-search-history-dropdown-toggle-button.gl-button,
-  .input-group-prepend .btn:not([class*="emoji-picker-"]) {
-    @apply gl-rounded-l-lg #{!important};
-  }
-
-  .input-group-append .btn:not(.gl-rounded-full):not(.\!gl-rounded-full) {
-    @apply gl-rounded-r-lg #{!important};
-
-    // Only add border radius to last child in input/button group
-    &:not(:last-child) {
-      @apply gl-rounded-none #{!important};
-    }
   }
 
   // Discussion file comment

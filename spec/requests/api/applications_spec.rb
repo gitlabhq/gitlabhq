@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :aggregate_failures, :api, :with_current_organization, feature_category: :system_access do
+RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scopes) { 'api' }

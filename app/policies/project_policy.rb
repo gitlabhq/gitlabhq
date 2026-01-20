@@ -342,6 +342,7 @@ class ProjectPolicy < BasePolicy
     enable :read_storage_disk_path
     enable :read_custom_attribute
     enable :delete_custom_attribute
+    enable :update_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.enable :read_confidential_issues

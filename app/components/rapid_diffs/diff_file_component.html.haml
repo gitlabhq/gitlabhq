@@ -3,6 +3,7 @@
 %diff-file.rd-diff-file-component{ id: id, data: {  testid: 'rd-diff-file', file_data: file_data.to_json } }
   %article.rd-diff-file{ data: { virtual: (viewer_component.viewer_name if virtual?) }, style: (virtual_rendering_styles if virtual?), aria: { labelledby: heading_id } }
     = header || default_header
+    .flash-container.rd-diff-file-error
     -# extra wrapper needed so hidden state doesn't require removing border or other styles
     %details.rd-diff-file-details{ open: true, data: { file_body: '' } }
       %summary>

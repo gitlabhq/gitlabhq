@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RegistrationsController, :with_current_organization, type: :request, feature_category: :system_access do
+RSpec.describe RegistrationsController, type: :request, feature_category: :system_access do
   describe '#create' do
     let_it_be(:user_attrs) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
     let(:expected_context) do

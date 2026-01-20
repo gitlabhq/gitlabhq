@@ -123,6 +123,23 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSlackIntegrationsShardingKey
     )
   end
 
+  # Now that we're constraining this table, we need to temporarily remove the
+  # constraint to generate invalid rows for the backfill spec.
+  before(:context) do
+    ApplicationRecord.connection.execute(
+      'ALTER TABLE slack_integrations DROP CONSTRAINT IF EXISTS check_260dd1c83b;'
+    )
+  end
+
+  after(:context) do
+    ApplicationRecord
+      .connection
+      .execute(
+        'ALTER TABLE slack_integrations ADD CONSTRAINT check_260dd1c83b ' \
+          'CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1));'
+      )
+  end
+
   describe "#perform" do
     it 'sets slack_integrations sharding key for records that do not have it' do
       expect(org_slack_integration.project_id).to be_nil

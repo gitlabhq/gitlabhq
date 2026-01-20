@@ -37,7 +37,10 @@ module QA
             result = ''
 
             wait_until(reload: false, max_duration: wait, sleep_interval: 1) do
-              result = job_log.include?('Job') ? job_log : ''
+              next false unless has_job_log?
+
+              text = job_log
+              result = text.include?('Job') ? text : ''
               result.present?
             end
 

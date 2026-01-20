@@ -19,8 +19,8 @@ FactoryBot.define do
 
     trait :instance do
       organization { association :common_organization }
-      group { nil }
-      project { nil }
+      group_id { nil }
+      project_id { nil }
       integration do
         association(
           :gitlab_slack_application_integration, :instance, slack_integration: instance, organization: organization
@@ -29,17 +29,17 @@ FactoryBot.define do
     end
 
     trait :group do
-      organization { nil }
+      organization_id { nil }
       group
-      project { nil }
+      project_id { nil }
       integration do
         association(:gitlab_slack_application_integration, :group, slack_integration: instance, group: group)
       end
     end
 
     trait :project do
-      organization { nil }
-      group { nil }
+      organization_id { nil }
+      group_id { nil }
       project
       integration { association :gitlab_slack_application_integration, slack_integration: instance, project: project }
     end
@@ -48,6 +48,14 @@ FactoryBot.define do
       after(:build) do |slack_integration, _evaluator|
         slack_integration.authorized_scope_names = %w[commands chat:write chat:write.public]
       end
+    end
+
+    # Ensure the correct sharding key is set at build time, before the instance
+    # is passed to the :gitlab_slack_application_integration factory.
+    after(:build) do |slack_integration, _evaluator|
+      slack_integration.organization_id = slack_integration.organization.id if slack_integration.organization
+      slack_integration.group_id = slack_integration.group.id if slack_integration.group
+      slack_integration.project_id = slack_integration.project.id if slack_integration.project
     end
   end
 end

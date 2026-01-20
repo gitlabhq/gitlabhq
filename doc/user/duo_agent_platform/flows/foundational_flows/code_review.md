@@ -8,7 +8,6 @@ title: Code Review Flow
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core or Pro
 - Offering: GitLab.com, GitLab Self-Managed
 
 This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).

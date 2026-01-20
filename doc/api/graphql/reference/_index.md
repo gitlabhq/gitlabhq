@@ -10964,6 +10964,34 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectcicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.projectCustomAttributeSet`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Sets (creates or updates) a custom attribute on a project. Only available to admins.
+
+Input type: `ProjectCustomAttributeSetInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectcustomattributesetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectcustomattributesetkey"></a>`key` | [`String!`](#string) | Key of the custom attribute. |
+| <a id="mutationprojectcustomattributesetprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="mutationprojectcustomattributesetvalue"></a>`value` | [`String!`](#string) | Value of the custom attribute. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectcustomattributesetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectcustomattributesetcustomattribute"></a>`customAttribute` | [`CustomAttribute`](#customattribute) | Custom attribute after mutation. |
+| <a id="mutationprojectcustomattributeseterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.projectInitializeProductAnalytics`
 
 Input type: `ProjectInitializeProductAnalyticsInput`

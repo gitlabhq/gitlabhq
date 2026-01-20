@@ -2171,10 +2171,8 @@ describe('when service desk list', () => {
   describe('nav actions', () => {
     it('does not render the bulk edit button, create work item modal, or actions dropdown', async () => {
       mountComponent({
-        provide: {
-          isServiceDeskSupported: true,
-          workItemType: WORK_ITEM_TYPE_NAME_TICKET,
-        },
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        workItemPlanningView: true,
       });
       await waitForPromises();
 
@@ -2203,6 +2201,18 @@ describe('when service desk list', () => {
       await waitForPromises();
 
       expect(findServiceDeskEmptyStateWithoutAnyIssues().exists()).toBe(true);
+    });
+  });
+
+  describe('document title', () => {
+    it('renders "Service Desk"', async () => {
+      mountComponent({
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+        workItemPlanningView: true,
+      });
+      await waitForPromises();
+
+      expect(document.title).toBe('Service Desk · Test · GitLab');
     });
   });
 });

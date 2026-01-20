@@ -52,7 +52,6 @@ module Gitlab
       def process_raw_blame(output)
         start_line = nil
         lines = []
-        final = []
         info = {}
         commits = {}
         commit_id = nil
@@ -85,8 +84,8 @@ module Gitlab
         end
 
         # get it together
-        info.sort.each do |lineno, (commit_id, old_lineno, span)|
-          final << BlameLine.new(
+        final = info.sort.map do |lineno, (commit_id, old_lineno, span)|
+          BlameLine.new(
             lineno,
             old_lineno,
             commits[commit_id],

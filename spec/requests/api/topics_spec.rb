@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, feature_category: :groups_and_projects do
+RSpec.describe API::Topics, :aggregate_failures, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
   let_it_be(:file) { fixture_file_upload('spec/fixtures/dk.png') }
@@ -170,7 +170,7 @@ RSpec.describe API::Topics, :aggregate_failures, :with_current_organization, fea
         expect(json_response['error']).to eql('name is missing')
       end
 
-      it 'returns 400 if name is not unique (case insensitive)', :with_current_organization do
+      it 'returns 400 if name is not unique (case insensitive)' do
         post api('/topics/', admin, admin_mode: true), params: { name: topic_1.name.downcase, title: 'My Topic' }
 
         expect(response).to have_gitlab_http_status(:bad_request)

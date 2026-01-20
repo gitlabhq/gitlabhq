@@ -12,9 +12,11 @@ RSpec.describe Gitlab::Git::Blame, feature_category: :source_code_management do
 
   let(:result) do
     [].tap do |data|
+      # rubocop:disable Style/MapIntoArray -- each is a custom method, it doesn't iterate on an array
       blame.each do |commit, line, previous_path, span|
         data << { commit: commit, line: line, previous_path: previous_path, span: span }
       end
+      # rubocop:enable Style/MapIntoArray
     end
   end
 

@@ -221,6 +221,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           alias: 'group_alias',
           bot_access_token: 'group_bot_access_token',
           authorized_scope_names: %w[group_scope1 group_scope2],
+          organization: nil,
           group: group
         )
       )

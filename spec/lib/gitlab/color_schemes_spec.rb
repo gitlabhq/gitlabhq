@@ -30,7 +30,7 @@ RSpec.describe Gitlab::ColorSchemes do
   describe '.each' do
     it 'passes the block to the SCHEMES Array' do
       ids = []
-      described_class.each { |scheme| ids << scheme.id }
+      described_class.each { |scheme| ids << scheme.id } # rubocop:disable Style/MapIntoArray -- each is a custom method for ColorSchemes
       expect(ids).not_to be_empty
     end
   end
