@@ -12,7 +12,10 @@ title: Runners API
 
 {{< /details >}}
 
-Use this API to manage [runners](../ci/runners/_index.md) registered to an instance. To create a runner linked to the current user, see [create a runner](users.md#create-a-runner-linked-to-a-user).
+Use this API to manage [runners](../ci/runners/_index.md) registered to an instance.
+
+To create new instance, group, or project runners, use the [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) endpoint.
+Use this API to manage existing runners.
 
 [Pagination](rest/_index.md#pagination) is available on the following API endpoints (they return 20 items by default):
 
@@ -911,6 +914,14 @@ Example response:
 ```
 
 ## Create a runner
+
+{{< alert type="warning" >}}
+
+The endpoint uses registration tokens ([deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)),
+which are disabled by default in GitLab 17.0 and later.
+Use [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) instead to create runners with the recommended workflow.
+
+{{< /alert >}}
 
 {{< alert type="warning" >}}
 

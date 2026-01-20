@@ -1132,3 +1132,41 @@ export const mockGroupIssuesResponse = (
 });
 
 export const DEFAULT_COLOR = '#1068bf';
+
+export const mockMilestoneQueryResponse = {
+  data: {
+    milestone: {
+      id: 'gid://gitlab/Milestone/1',
+      title: 'v1.0',
+      expired: false,
+      upcoming: false,
+      startDate: '2023-01-01',
+      dueDate: '2023-12-31',
+      groupMilestone: true,
+      group: {
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'test-group',
+        __typename: 'Group',
+      },
+      projectMilestone: false,
+      project: null,
+      state: 'active',
+      stats: {
+        closedIssuesCount: 5,
+        totalIssuesCount: 10,
+        __typename: 'MilestoneStats',
+      },
+      __typename: 'Milestone',
+    },
+  },
+};
+
+export const mockMilestoneQueryList = {
+  ...mockLabelList,
+  listType: 'milestone',
+  title: 'v1.0',
+  milestone: {
+    id: 'gid://gitlab/Milestone/1',
+    title: 'v1.0',
+  },
+};

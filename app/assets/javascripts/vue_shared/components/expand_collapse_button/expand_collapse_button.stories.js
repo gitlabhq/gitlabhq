@@ -41,7 +41,6 @@ export const MultipleSections = (args, { argTypes }) => ({
             <h4 class="gl-m-0 gl-flex-1">{{ section.title }}</h4>
             <expand-collapse-button
               :is-collapsed="section.collapsed"
-              :anchor-id="section.id + '-content'"
               size="small"
               @click="section.collapsed = !section.collapsed"
             />
@@ -58,15 +57,3 @@ export const MultipleSections = (args, { argTypes }) => ({
   `,
 });
 MultipleSections.args = {};
-MultipleSections.parameters = {
-  a11y: {
-    config: {
-      rules: [
-        {
-          id: 'aria-valid-attr-value',
-          enabled: false,
-        },
-      ],
-    },
-  },
-};
