@@ -448,6 +448,42 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['key']).to include("#{key.user_name} (#{Gitlab.config.gitlab.host})")
       end
+
+      context 'when the key is expired' do
+        let(:key) do
+          key = create(:key, user: user)
+          key.update_column(:expires_at, 2.days.ago)
+          key
+        end
+
+        it 'returns 404' do
+          get(api('/internal/authorized_keys'), params: { key: key.key.split[1] }, headers: gitlab_shell_internal_api_request_header)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the key has no associated user' do
+        let(:key) { create(:key, user: nil) }
+
+        it 'returns the key successfully' do
+          get(api('/internal/authorized_keys'), params: { key: key.key.split[1] }, headers: gitlab_shell_internal_api_request_header)
+
+          expect(response).to have_gitlab_http_status(:server_error)
+        end
+      end
+
+      context 'when the user is blocked' do
+        before do
+          user.block!
+        end
+
+        it 'returns 401' do
+          get(api('/internal/authorized_keys'), params: { key: key.key.split[1] }, headers: gitlab_shell_internal_api_request_header)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
 
     it "returns 404 with a partial key" do

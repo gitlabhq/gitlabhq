@@ -20,6 +20,7 @@ class JiraConnect::ApplicationController < ApplicationController
   end
 
   def verify_qsh_claim!
+    # JWT exists here because verify_atlassian_jwt! runs before this method
     return if request.format.json? && jwt.verify_context_qsh_claim
 
     # Make sure `qsh` claim matches the current request
@@ -30,11 +31,13 @@ class JiraConnect::ApplicationController < ApplicationController
     return false unless installation_from_jwt
 
     # Verify JWT signature with our stored `shared_secret`
+    # JWT is expected to exist since installation lookup succeeded
     jwt.valid?(installation_from_jwt.shared_secret)
   end
 
   def installation_from_jwt
     strong_memoize(:installation_from_jwt) do
+      next unless jwt
       next unless jwt.iss_claim
 
       JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
@@ -44,6 +47,7 @@ class JiraConnect::ApplicationController < ApplicationController
   def jira_user
     strong_memoize(:jira_user) do
       next unless installation_from_jwt
+      # JWT exists here since installation_from_jwt succeeded with jwt.iss_claim
       next unless jwt.sub_claim
 
       # This only works for Jira Cloud installations.
@@ -53,8 +57,15 @@ class JiraConnect::ApplicationController < ApplicationController
 
   def jwt
     strong_memoize(:jwt) do
-      Atlassian::JiraConnect::Jwt::Symmetric.new(auth_token)
+      token = auth_token
+      next unless valid_token_size?(token)
+
+      Atlassian::JiraConnect::Jwt::Symmetric.new(token)
     end
+  end
+
+  def valid_token_size?(token)
+    Atlassian::JiraConnect::JwtValidator.valid_token_size?(token)
   end
 
   def auth_token
