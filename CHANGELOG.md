@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.2 (2026-01-20)
+
+### Added (1 change)
+
+- [Rake task to seed AI Catalogs with external agents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d55d15507ac1dae272cfc5230616d2ce0e57e3cd) **GitLab Enterprise Edition**
+
+### Fixed (3 changes)
+
+- [Fix beta status of foundational flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7aeb7139f08add55324fe431a4bc4cf9c7d15cd5) **GitLab Enterprise Edition**
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c50eb4c11294b9e368bd3a82854d4756177ea76c) **GitLab Enterprise Edition**
+- [Ensure currentSelectedReviewers is always an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5236c50c2566011f4fa533f2315fcc7bbcefa69b)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/11f2df99940e349369021bb7613afebd7665c6af) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5652))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/51480b19ab4e87c7128927e0cb620eca79bb8ca8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5659))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a68318f350f598c97781e9bc9568e886a16505b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5658))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae827a88f454dcc0f4b21c7db522ea530966cee2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5654))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec6f16d7b95fe87d61d97ecf9a16e8784c172bec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5653))
+
 ## 18.8.1 (2026-01-19)
 
 ### Fixed (1 change)
