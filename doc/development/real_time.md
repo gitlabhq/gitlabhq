@@ -593,12 +593,9 @@ It simplifies:
 - Client-side state management and response caching.
 - Integrating GraphQL with view components using a bridge module.
 
-{{< alert type="note" >}}
-
-When reading the Apollo Client documentation, it assumes that React.js is used for view rendering. We do not use React.js
-at GitLab. We use Vue.js, which integrates with Apollo using the [Vue.js adapter](https://apollo.vuejs.org/).
-
-{{< /alert >}}
+> [!note]
+> When reading the Apollo Client documentation, it assumes that React.js is used for view rendering. We do not use React.js
+> at GitLab. We use Vue.js, which integrates with Apollo using the [Vue.js adapter](https://apollo.vuejs.org/).
 
 Apollo provides functions and hooks with which you define how:
 

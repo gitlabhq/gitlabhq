@@ -418,12 +418,9 @@ it 'allows admin_project ability' do
 end
 ```
 
-{{< alert type="note" >}}
-
-Refrain from using this stub helper if the test code relies on persisting
-`project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
-
-{{< /alert >}}
+> [!note]
+> Refrain from using this stub helper if the test code relies on persisting
+> `project_authorizations` or `Member` records. Use `Project#add_member` or `Group#add_member` instead.
 
 #### Additional profiling metrics
 
@@ -580,12 +577,9 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 ### System / Feature tests
 
-{{< alert type="note" >}}
-
-Before writing a new system test,
-[consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
-
-{{< /alert >}}
+> [!note]
+> Before writing a new system test,
+> [consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -930,12 +924,9 @@ so we need to set some guidelines for their use going forward:
 
 ### Common test setup
 
-{{< alert type="note" >}}
-
-`let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
-For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
-
-{{< /alert >}}
+> [!note]
+> `let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
+> For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
 
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project

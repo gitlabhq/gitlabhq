@@ -320,11 +320,8 @@ class SomeType < BaseObject
 end
 ```
 
-{{< alert type="note" >}}
-
-We can optimize the authorization calls with `skip_type_authorization` in this case, because:
-
-{{< /alert >}}
+> [!note]
+> We can optimize the authorization calls with `skip_type_authorization` in this case, because:
 
 - We already authorize the discussions in `SomeResolver`
 - Permissions to read one note or all notes are the same for a discussion

@@ -472,7 +472,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         with_them do
           let(:redirect_route) { 'new/project/location' }
           let(:route) { "/projects/#{CGI.escape(redirect_route)}/#{url_suffix}" }
-          let(:location) { "#{request.base_url}/api/v4/projects/#{project.id}/#{url_suffix}" }
+          let(:location) { "#{::Settings.gitlab.url}/api/v4/projects/#{project.id}/#{url_suffix}" }
 
           before do
             project.route.create_redirect(redirect_route)

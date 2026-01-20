@@ -1,0 +1,7 @@
+---
+name: authorize_group_import
+description: Grants the ability to authorize a group import
+boundaries:
+  - instance
+permissions:
+  - authorize_group_import

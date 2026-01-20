@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module Bitbucket
-  class AppPasswordConnection
+module Bitbucket # rubocop:disable Gitlab:BoundedContexts -- existing module
+  class ApiConnection
     include Bitbucket::ExponentialBackoff
 
-    attr_reader :username, :app_password
+    attr_reader :username, :app_password, :email, :api_token
 
     def initialize(options = {})
       @api_version = options.fetch(:api_version, Bitbucket::Connection::DEFAULT_API_VERSION)
@@ -13,6 +13,8 @@ module Bitbucket
 
       @username = options[:username]
       @app_password = options[:app_password]
+      @email = options[:email]
+      @api_token = options[:api_token]
     end
 
     def get(path, extra_query = {})
@@ -40,10 +42,11 @@ module Bitbucket
     end
 
     def basic_auth
-      {
-        username: username,
-        password: app_password
-      }
+      if username.present? && app_password.present?
+        { username: username, password: app_password }
+      elsif email.present? && api_token.present?
+        { username: email, password: api_token }
+      end
     end
 
     def headers

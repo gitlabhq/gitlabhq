@@ -221,6 +221,21 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION cluster_providers_aws_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.organization_id, NEW.group_id, NEW.project_id) != 1 THEN
+    SELECT "organization_id", "group_id", "project_id"
+    INTO NEW."organization_id", NEW."group_id", NEW."project_id"
+    FROM "clusters"
+    WHERE "clusters"."id" = NEW."cluster_id";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION cluster_providers_gcp_sharding_key() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16793,6 +16808,9 @@ CREATE TABLE cluster_providers_aws (
     session_token text,
     status_reason text,
     kubernetes_version text DEFAULT '1.14'::text NOT NULL,
+    organization_id bigint,
+    group_id bigint,
+    project_id bigint,
     CONSTRAINT check_f1f42cd85e CHECK ((char_length(kubernetes_version) <= 30))
 );
 
@@ -36330,6 +36348,9 @@ ALTER TABLE ONLY project_type_ci_runners
 ALTER TABLE note_metadata
     ADD CONSTRAINT check_67a890ebba CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE cluster_providers_aws
+    ADD CONSTRAINT check_6d49cca3b0 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
@@ -41307,6 +41328,12 @@ CREATE INDEX idx_ci_runner_taggings_instance_type_on_runner_id_and_type ON ci_ru
 CREATE UNIQUE INDEX idx_ci_runner_taggings_proj_type_on_tag_id_runner_id_and_type ON ci_runner_taggings_project_type USING btree (tag_id, runner_id, runner_type);
 
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
+
+CREATE INDEX idx_cluster_providers_aws_on_group_id ON cluster_providers_aws USING btree (group_id);
+
+CREATE INDEX idx_cluster_providers_aws_on_organization_id ON cluster_providers_aws USING btree (organization_id);
+
+CREATE INDEX idx_cluster_providers_aws_on_project_id ON cluster_providers_aws USING btree (project_id);
 
 CREATE INDEX idx_cluster_providers_gcp_on_group_id ON cluster_providers_gcp USING btree (group_id);
 
@@ -51538,6 +51565,8 @@ CREATE TRIGGER trigger_cfbec3f07e2b BEFORE INSERT OR UPDATE ON deployment_merge_
 
 CREATE TRIGGER trigger_cleanup_pipeline_iid_after_delete AFTER DELETE ON p_ci_pipelines FOR EACH ROW EXECUTE FUNCTION cleanup_pipeline_iid_after_delete();
 
+CREATE TRIGGER trigger_cluster_providers_aws_sharding_key BEFORE INSERT OR UPDATE ON cluster_providers_aws FOR EACH ROW EXECUTE FUNCTION cluster_providers_aws_sharding_key();
+
 CREATE TRIGGER trigger_cluster_providers_gcp_sharding_key BEFORE INSERT OR UPDATE ON cluster_providers_gcp FOR EACH ROW EXECUTE FUNCTION cluster_providers_gcp_sharding_key();
 
 CREATE TRIGGER trigger_clusters_kubernetes_namespaces_sharding_key BEFORE INSERT OR UPDATE ON clusters_kubernetes_namespaces FOR EACH ROW EXECUTE FUNCTION clusters_kubernetes_namespaces_sharding_key();
@@ -52124,6 +52153,9 @@ ALTER TABLE ONLY security_pipeline_execution_project_schedules
 
 ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_providers_aws
+    ADD CONSTRAINT fk_22b9b8f491 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY users_star_projects
     ADD CONSTRAINT fk_22cd27ddfc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -53880,6 +53912,9 @@ ALTER TABLE ONLY todos
 ALTER TABLE ONLY packages_debian_project_architectures
     ADD CONSTRAINT fk_cd96fce0a1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_providers_aws
+    ADD CONSTRAINT fk_cdbcadde6d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_cdfc40b861 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -54257,6 +54292,9 @@ ALTER TABLE ONLY epic_user_mentions
 
 ALTER TABLE ONLY board_user_preferences
     ADD CONSTRAINT fk_f1c3e9b710 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_providers_aws
+    ADD CONSTRAINT fk_f1c5a1b10f FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT fk_f218d84a14 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

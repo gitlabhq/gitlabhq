@@ -405,12 +405,9 @@ it('does something', () => {
 
 ### Mocking the current location in Jest
 
-{{< alert type="note" >}}
-
-The value of `window.location.href` is reset before every test to avoid earlier
-tests affecting later ones.
-
-{{< /alert >}}
+> [!note]
+> The value of `window.location.href` is reset before every test to avoid earlier
+> tests affecting later ones.
 
 If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
@@ -1915,12 +1912,9 @@ RSpec.describe 'Pipeline', :js do
 end
 ```
 
-{{< alert type="note" >}}
-
-`expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
-using the Chrome driver.
-
-{{< /alert >}}
+> [!note]
+> `expect_page_to_have_no_console_errors` will not work on `WEBDRIVER=firefox`. Logs are only captured when
+> using the Chrome driver.
 
 Sometimes, there are known console errors that we want to ignore. To ignore a set of messages, such that the test
 **will not** fail if the message is observed, you can pass an `allow:` parameter to

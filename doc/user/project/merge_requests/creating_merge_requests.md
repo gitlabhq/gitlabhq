@@ -3,7 +3,7 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: How to create merge requests in GitLab.
-title: Creating merge requests
+title: Create merge requests
 ---
 
 {{< details >}}
@@ -46,7 +46,9 @@ If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
 After merging the merge request, the issue is closed automatically, unless
-[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing):
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+
+### New branch from an issue
 
 To create a branch and a merge request at the same time:
 
@@ -60,6 +62,30 @@ To create a branch and a merge request at the same time:
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
+### Existing branch from an issue
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/525989) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- A branch must already be linked to the issue.
+- You must have permission to create merge requests in the project.
+
+To create a merge request when a branch is already linked in Development:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Issues** and find your issue.
+1. In the **Development** section, find the linked branch.
+1. Select the branch actions menu ({{< icon name="ellipsis_v" >}}).
+1. Select **Create merge request**.
+1. Complete the fields on the **New merge request** page, then select **Create merge request**.
+
+The merge request form is pre-filled with the appropriate keywords to link it back to the issue.
+
 ## From a task
 
 {{< history >}}
@@ -71,17 +97,19 @@ To create a branch and a merge request at the same time:
 If your team breaks issues into tasks, you can create a branch directly from the task to speed the process up.
 The new branch, and later its merge request, are marked as related to this task.
 After merging the merge request, the task is closed automatically, unless
-[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing):
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+
+### New branch from a task
 
 Prerequisites:
 
-- You must have at least a Developer role for the project containing the task.
+- You must have the Developer, Maintainer, or Owner role for the project containing the task.
 
 To create a branch and a merge request at the same time:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
-1. In the issue list, find your task.
+1. In the list, find and select your task.
 1. Go to the bottom of the task description.
 1. Select **Create merge request**.
 1. On the dialog, review the suggested branch name.
@@ -90,22 +118,51 @@ To create a branch and a merge request at the same time:
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
-If your Git repository is empty, GitLab:
+### Existing branch from a task
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/525989) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- A branch must already be linked to the task.
+- You must have permission to create merge requests in the project.
+
+To create a merge request when a branch is already linked in Development:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Issues**.
+1. In the list, find and select your task.
+1. In the **Development** section, find the linked branch.
+1. Select the branch actions menu ({{< icon name="ellipsis_v" >}}).
+1. Select **Create merge request**.
+1. Complete the fields on the **New merge request** page, then select **Create merge request**.
+
+The merge request form is pre-filled with the appropriate keywords to link it back to the task.
+
+## When your Git repository is empty
+
+If your Git repository is empty when you create a merge request from an issue or task, GitLab:
 
 - Creates a default branch.
 - Commits a blank `README.md` file to it.
-- Creates and redirects you to a new branch based on the issue title.
+- Creates and redirects you to a new branch based on the issue or task title.
 - If your project is configured with a deployment service like Kubernetes,
   prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
   by helping you create a `.gitlab-ci.yml` file.
 
+## Automatic issue and task closing
+
 If the name of the branch you create is
-[prefixed with the task number](../repository/branches/_index.md#prefix-branch-names-with-a-number),
-GitLab cross-links the issue and merge request, and adds the
+[prefixed with the issue or task number](../repository/branches/_index.md#prefix-branch-names-with-a-number),
+GitLab cross-links the issue or task and merge request, and adds the
 [closing pattern](../issues/managing_issues.md#closing-issues-automatically)
 to the description of the merge request. In most cases, this looks like `Closes #ID`,
-where `ID` is the ID of the task. If your project is configured with a closing pattern,
-the task closes when the merge request merges.
+where `ID` is the ID of the issue or task. If your project is configured with a
+closing pattern, the issue or task closes when the merge request merges.
 
 ## From the Web Editor
 
@@ -141,17 +198,16 @@ You can create a merge request from your fork to contribute back to the main pro
 
       ![Selecting branches](img/forking_workflow_branch_select_v15_9.png)
 
-   {{< alert type="note" >}}
-
-   If your fork's visibility is more restricted than the parent repository, the target branch defaults
-   to your fork's default branch. This prevents potential exposure of private information in your fork.
-
-   {{< /alert >}}
+   > [!note]
+   > If your fork's visibility is more restricted than the parent repository, the target branch
+   > defaults to your fork's default branch. This prevents potential exposure of private
+   > information in your fork.
 
 1. Select **Compare branches and continue**.
 1. Select **Create merge request**. The merge request is created in the target repository,
    not your fork.
-1. If you have Developer role or higher, add your desired assignees, reviewers, labels, and milestones.
+1. If you are assigned the Developer, Maintainer, or Owner role, add your desired assignees, reviewers, labels,
+   and milestones.
 1. Select **Submit merge request**.
 
 If the merge request targets another repository, it uses:

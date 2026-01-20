@@ -873,11 +873,8 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities in groups.
 
-{{< alert type="note" >}}
-
-This API does not require the `Gitlab-Shell-Api-Request` header.
-
-{{< /alert >}}
+> [!note]
+> This API does not require the `Gitlab-Shell-Api-Request` header.
 
 ### Get a list of SCIM provisioned users
 
@@ -896,11 +893,8 @@ Parameters:
 | `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one is interpreted as 1. |
 | `count` | integer | no    | Desired maximum number of query results. |
 
-{{< alert type="note" >}}
-
-Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
-
-{{< /alert >}}
+> [!note]
+> Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
 
 Example request filtering on a specific identifier:
 
@@ -1032,11 +1026,8 @@ Example response:
 
 Returns a `201` status code if successful.
 
-{{< alert type="note" >}}
-
-After you create a group SCIM identity for a user, you can see that SCIM identity in the **Admin** area.
-
-{{< /alert >}}
+> [!note]
+> After you create a group SCIM identity for a user, you can see that SCIM identity in the **Admin** area.
 
 ### Update a single SCIM provisioned user
 
@@ -1141,11 +1132,8 @@ This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SC
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
 
-{{< alert type="note" >}}
-
-This API does not require the `Gitlab-Shell-Api-Request` header.
-
-{{< /alert >}}
+> [!note]
+> This API does not require the `Gitlab-Shell-Api-Request` header.
 
 ### User endpoints
 
@@ -1167,11 +1155,8 @@ Parameters:
 | `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one is interpreted as 1. |
 | `count` | integer | no    | Desired maximum number of query results. |
 
-{{< alert type="note" >}}
-
-Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
-
-{{< /alert >}}
+> [!note]
+> Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
 
 Example request:
 
@@ -1380,11 +1365,8 @@ Parameters:
 | `count` | integer | no    | Desired maximum number of query results. |
 | `excludedAttributes` | string | no | Comma-separated list of attributes to exclude from the response. |
 
-{{< alert type="note" >}}
-
-Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4), not the GitLab pagination.
-
-{{< /alert >}}
+> [!note]
+> Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4), not the GitLab pagination.
 
 Example request:
 
@@ -1496,11 +1478,8 @@ Example response:
 
 Returns a `201` status code if successful.
 
-{{< alert type="note" >}}
-
-This endpoint does not create GitLab groups. It only associates a SCIM ID with existing SAML group links that have the specified display name.
-
-{{< /alert >}}
+> [!note]
+> This endpoint does not create GitLab groups. It only associates a SCIM ID with existing SAML group links that have the specified display name.
 
 #### Update a SCIM group
 
@@ -1567,11 +1546,8 @@ curl --verbose --request PUT "https://gitlab.example.com/api/scim/v2/application
 
 Response includes the updated group information.
 
-{{< alert type="warning" >}}
-
-The `PUT` operation replaces all group members. Any existing members not included in the request are removed from all GitLab groups associated with this SCIM group.
-
-{{< /alert >}}
+> [!warning]
+> The `PUT` operation replaces all group members. Any existing members not included in the request are removed from all GitLab groups associated with this SCIM group.
 
 #### Delete a SCIM group
 
@@ -1596,11 +1572,8 @@ curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/applicat
 
 Returns an empty response with a `204` status code if successful.
 
-{{< alert type="note" >}}
-
-This endpoint does not delete GitLab groups. It only removes SCIM management from SAML group links with the specified SCIM group ID, allowing identity providers to deprovision unneeded SCIM groups.
-
-{{< /alert >}}
+> [!note]
+> This endpoint does not delete GitLab groups. It only removes SCIM management from SAML group links with the specified SCIM group ID, allowing identity providers to deprovision unneeded SCIM groups.
 
 ### Available filters
 

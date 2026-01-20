@@ -110,11 +110,8 @@ Tailwind CSS autocomplete lists all available classes in your code editor.
 
 ##### VS Code
 
-{{< alert type="note" >}}
-
-If you are having trouble with slow autocomplete you may need to [increase the amount of memory the TS server is allowed to use](../type_hinting.md#vs-code-settings).
-
-{{< /alert >}}
+> [!note]
+> If you are having trouble with slow autocomplete you may need to [increase the amount of memory the TS server is allowed to use](../type_hinting.md#vs-code-settings).
 
 Install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 extension. For HAML and custom `*-class` prop support these are the recommended settings:

@@ -279,12 +279,9 @@ Pay attention to the name of the flag and the one used in the Rails console. The
 between them (dashes replaced by underscores and name prefix is changed). Make sure to prefix all
 flags with `gitaly_`.
 
-{{< alert type="note" >}}
-
-If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
-default value. The default value depends on the GitLab version.
-
-{{< /alert >}}
+> [!note]
+> If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
+> default value. The default value depends on the GitLab version.
 
 ### Testing with GDK
 

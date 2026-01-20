@@ -197,12 +197,9 @@ Write commands are defined in the [`Gitlab::Redis::MultiStore::WRITE_COMMANDS` c
 
 ##### `pipelined` commands
 
-{{< alert type="note" >}}
-
-The Ruby block passed to these commands will be executed twice, once per each store.
-Thus, excluding the Redis operations performed, the block should be idempotent.
-
-{{< /alert >}}
+> [!note]
+> The Ruby block passed to these commands will be executed twice, once per each store.
+> Thus, excluding the Redis operations performed, the block should be idempotent.
 
 - `pipelined`
 - `multi`
@@ -211,12 +208,9 @@ When a command outside of the supported list is used, `method_missing` will pass
 This ensures that anything unexpected behaves like it would before. In development or test environment, an error would be raised for early
 detection.
 
-{{< alert type="note" >}}
-
-By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
-a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
-
-{{< /alert >}}
+> [!note]
+> By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
+> a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
 
 {{< alert type="note" >}}
 

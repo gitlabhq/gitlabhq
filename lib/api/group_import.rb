@@ -38,6 +38,7 @@ module API
         detail 'This feature was introduced in GitLab 12.8'
         tags ['group_import']
       end
+      route_setting :authorization, permissions: :authorize_group_import, boundary_type: :instance
       post 'import/authorize' do
         require_gitlab_workhorse!
 
@@ -69,6 +70,7 @@ module API
         optional :parent_id, type: Integer, desc: "The ID of the parent group that the group will be imported into. Defaults to the current user's namespace."
         optional :organization_id, type: Integer, default: -> { Current.organization.id }, desc: "The ID of the organization that the group will be part of. "
       end
+      route_setting :authorization, permissions: :create_group_import, boundary_type: :instance
       post 'import' do
         authorize_create_group!
         require_gitlab_workhorse!

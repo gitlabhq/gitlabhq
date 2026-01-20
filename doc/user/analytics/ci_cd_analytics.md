@@ -44,6 +44,7 @@ CI/CD analytics displays key metrics about your pipelines:
 - **Median duration**: The median time it takes for pipelines to complete.
 - **Failure rate**: The percentage of pipelines that failed.
 - **Success rate**: The percentage of pipelines that completed successfully.
+- **Other rate**: The percentage of pipelines that were skipped or canceled.
 
 ## Filter your results
 

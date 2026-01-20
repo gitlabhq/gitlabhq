@@ -452,7 +452,7 @@ RSpec.describe API::Files, feature_category: :source_code_management do
 
           expect(response).to have_gitlab_http_status(:moved_permanently)
           expect(response.headers['Location']).to start_with(
-            "#{request.base_url}/api/v4/projects/#{project.id}/repository/files/#{file_path}"
+            "#{::Settings.gitlab.url}/api/v4/projects/#{project.id}/repository/files/#{file_path}"
           )
         end
       end

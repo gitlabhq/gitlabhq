@@ -125,12 +125,9 @@ projects:
 
 ### Automatic linting
 
-{{< alert type="warning" >}}
-
-The use of `registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine` has been
-[deprecated as of 16.10](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues/131).
-
-{{< /alert >}}
+> [!warning]
+> The use of `registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine` has been
+> [deprecated as of 16.10](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues/131).
 
 Use the upstream version of [golangci-lint](https://golangci-lint.run/).
 See the list of linters [enabled/disabled by default](https://golangci-lint.run/usage/linters/#enabled-by-default).

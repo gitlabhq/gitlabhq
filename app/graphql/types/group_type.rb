@@ -41,6 +41,11 @@ module Types
       description: 'Admin path of the group. Only available to admins.',
       authorize: :admin_all_resources
 
+    field :custom_attributes, [Types::CustomAttributeType],
+      null: true,
+      description: 'Custom attributes of the group. Only available to admins.',
+      authorize: :read_custom_attribute
+
     field :avatar_url,
       type: GraphQL::Types::String,
       null: true,

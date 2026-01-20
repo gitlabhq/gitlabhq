@@ -154,12 +154,9 @@ Prerequisites:
 
 - You must have administrator access for the instance.
 
-{{< alert type="note" >}}
-
-These instance-level settings are required to enable product analytics on GitLab Self-Managed,
-and cascade to all projects by default.
-
-{{< /alert >}}
+> [!note]
+> These instance-level settings are required to enable product analytics on GitLab Self-Managed,
+> and cascade to all projects by default.
 
 To enable product analytics on your instance:
 

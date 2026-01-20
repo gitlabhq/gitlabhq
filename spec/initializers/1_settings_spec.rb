@@ -74,6 +74,42 @@ RSpec.describe '1_settings', feature_category: :settings do
         expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
       end
     end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED is set to false' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = nil
+        load_settings
+      end
+
+      it 'disables product usage data' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
+      end
+    end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED is set to true' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'true')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = nil
+        load_settings
+      end
+
+      it 'enables product usage data' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(true)
+      end
+    end
+
+    context 'when GITLAB_PRODUCT_USAGE_DATA_ENABLED overrides configured value' do
+      before do
+        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
+        Settings.gitlab['initial_gitlab_product_usage_data'] = true
+        load_settings
+      end
+
+      it 'uses the environment variable value' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
+      end
+    end
   end
 
   describe 'cell configuration' do

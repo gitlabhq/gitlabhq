@@ -847,7 +847,7 @@ export default {
         </div>
         <div
           v-if="!previewMarkdown"
-          class="full-screen gl-flex gl-justify-end gl-py-2"
+          class="full-screen gl-flex gl-justify-end"
           :class="{ 'gl-grow': !immersive }"
         >
           <toolbar-button

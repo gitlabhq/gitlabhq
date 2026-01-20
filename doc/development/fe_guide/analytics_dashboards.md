@@ -16,11 +16,8 @@ title: Analytics dashboards
 Analytics dashboards provide a configuration-based [dashboard](https://design.gitlab.com/patterns/dashboards)
 structure, which is used to render and modify dashboard configurations created by GitLab or users.
 
-{{< alert type="note" >}}
-
-Analytics dashboards is intended for Premium and Ultimate subscriptions.
-
-{{< /alert >}}
+> [!note]
+> Analytics dashboards is intended for Premium and Ultimate subscriptions.
 
 ## Overview
 
@@ -249,11 +246,8 @@ To add a new data source:
 1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js).
 1. Add your data source to the schema's list of `Data` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
-{{< alert type="note" >}}
-
-Your data source must respect the filters so that all panels shows the same filtered data.
-
-{{< /alert >}}
+> [!note]
+> Your data source must respect the filters so that all panels shows the same filtered data.
 
 ### Adding a new visualization render type
 

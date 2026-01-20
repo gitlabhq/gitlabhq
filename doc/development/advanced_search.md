@@ -2222,12 +2222,9 @@ Requires `search_level` field and at least one of `use_group_authorization` or `
 
 Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
 
-{{< alert type="warning" >}}
-
-Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this filter must be used with the
-`by_knn` query.
-
-{{< /alert >}}
+> [!warning]
+> Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this filter must be used with the
+> `by_knn` query.
 
 #### `by_noteable_type`
 

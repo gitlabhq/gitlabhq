@@ -34,6 +34,12 @@ RSpec.describe AccessTokenValidationService, feature_category: :system_access do
       expect(described_class.new(token, request: request).include_any_scope?(scopes)).to be(true)
     end
 
+    it 'returns false when token is nil' do
+      scopes = [:api, :read_user]
+
+      expect(described_class.new(nil, request: request).include_any_scope?(scopes)).to be(false)
+    end
+
     it 'returns true if the list of required scopes is blank' do
       token = double("token", scopes: [])
       scopes = []

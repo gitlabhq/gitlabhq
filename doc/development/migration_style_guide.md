@@ -330,12 +330,9 @@ depending on [how long a migration takes](#how-long-a-migration-should-take)
     they automatically turn off the statement timeout as needed.
     In rare cases, you might need to set the timeout limit yourself by [using `disable_statement_timeout`](#temporarily-turn-off-the-statement-timeout-limit).
 
-{{< alert type="note" >}}
-
-To run migrations, we directly connect to the primary database, bypassing PgBouncer
-to control settings like `statement_timeout` and `lock_wait_timeout`.
-
-{{< /alert >}}
+> [!note]
+> To run migrations, we directly connect to the primary database, bypassing PgBouncer
+> to control settings like `statement_timeout` and `lock_wait_timeout`.
 
 #### Temporarily turn off the statement timeout limit
 
@@ -941,12 +938,9 @@ In this particular case, the default value exists and we're just changing the me
 `request_access_enabled` column, which does not imply a rewrite of all the existing records
 in the `namespaces` table. Only when creating a new column with a default, all the records are going be rewritten.
 
-{{< alert type="note" >}}
-
-A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
-was introduced on PostgreSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
-
-{{< /alert >}}
+> [!note]
+> A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
+> was introduced on PostgreSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
 
 For the reasons mentioned above, it's safe to use `change_column_default` in a single-transaction migration
 without requiring `disable_ddl_transaction!`.
@@ -1013,12 +1007,9 @@ end
 
 ## Dropping a database table
 
-{{< alert type="note" >}}
-
-After a table has been dropped, it should be added to the database dictionary, following the
-steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
-
-{{< /alert >}}
+> [!note]
+> After a table has been dropped, it should be added to the database dictionary, following the
+> steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
 
 Dropping a database table is uncommon, and the `drop_table` method
 provided by Rails is generally considered safe. Before dropping the table,
@@ -1146,12 +1137,9 @@ class DropSequenceTest < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-`add_sequence` should be avoided for columns with foreign keys.
-Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
-
-{{< /alert >}}
+> [!note]
+> `add_sequence` should be avoided for columns with foreign keys.
+> Adding sequence to these columns is **only allowed** in the down method (restore previous schema state).
 
 ## Truncate a table
 
@@ -1210,12 +1198,9 @@ class SwapPrimaryKey < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-Make sure to introduce the new index beforehand in a separate migration in order
-to swap the primary key.
-
-{{< /alert >}}
+> [!note]
+> Make sure to introduce the new index beforehand in a separate migration in order
+> to swap the primary key.
 
 ## Integer column type
 

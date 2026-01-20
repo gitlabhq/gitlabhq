@@ -10,6 +10,8 @@ module Import
     # @param [Hash] params
     # @option params [String] bitbucket_username - Bitbucket Cloud username
     # @option params [String] bitbucket_app_password - Bitbucket Cloud user app password
+    # @option params [String] bitbucket_email - Bitbucket Cloud email (if username/app password not used)
+    # @option params [String] bitbucket_api_token - Bitbucket Cloud API token
     def initialize(current_user, params)
       @current_user = current_user
       @params = params
@@ -34,6 +36,13 @@ module Import
 
       project = create_project
 
+      unless project
+        return log_and_return_error(
+          Kernel.format("Project %{repo_path} could not be found or is invalid", repo_path: normalized_repo_path),
+          :unprocessable_entity
+        )
+      end
+
       track_access_level('bitbucket')
 
       if project.persisted?
@@ -55,10 +64,17 @@ module Import
     end
 
     def credentials
-      {
-        username: params[:bitbucket_username],
-        app_password: params[:bitbucket_app_password]
-      }
+      if params[:bitbucket_email].present? && params[:bitbucket_api_token].present?
+        {
+          email: params[:bitbucket_email],
+          api_token: params[:bitbucket_api_token]
+        }
+      else
+        {
+          username: params[:bitbucket_username],
+          app_password: params[:bitbucket_app_password]
+        }
+      end
     end
 
     def create_project

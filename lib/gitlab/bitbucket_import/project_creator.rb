@@ -14,6 +14,10 @@ module Gitlab
       end
 
       def execute
+        url = clone_url
+
+        return unless url
+
         ::Projects::CreateService.new(
           current_user,
           name: name,
@@ -24,7 +28,7 @@ module Gitlab
           visibility_level: repo.visibility_level,
           import_type: 'bitbucket',
           import_source: repo.full_name,
-          import_url: clone_url,
+          import_url: url,
           import_data: { credentials: credentials },
           skip_wiki: skip_wiki
         ).execute
@@ -39,6 +43,10 @@ module Gitlab
       def clone_url
         if credentials[:username].present? && credentials[:app_password].present?
           token = "#{credentials[:username]}:#{credentials[:app_password]}"
+
+          return repo.clone_url(token, auth_type: :basic)
+        elsif credentials[:email].present? && credentials[:api_token].present?
+          token = "x-bitbucket-api-token-auth:#{credentials[:api_token]}"
 
           return repo.clone_url(token, auth_type: :basic)
         end

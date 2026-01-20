@@ -269,7 +269,7 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
         .to eq reference
     end
 
-    it 'commit ref tag is valid' do
+    it 'commit ref tag is valid', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6683' do
       doc = reference_filter("See #{reference}")
       commit_ref_tag = doc.css('a').first.css('span.gfm.gfm-commit')
 

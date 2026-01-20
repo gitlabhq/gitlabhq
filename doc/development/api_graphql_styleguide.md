@@ -1196,12 +1196,9 @@ An item marked as an experiment is
 removed at any time without notice. Mark an item as an experiment when it is subject to
 change and not ready for public use.
 
-{{< alert type="note" >}}
-
-Only mark new items as an experiment. Never mark existing items
-as an experiment because they're already public.
-
-{{< /alert >}}
+> [!note]
+> Only mark new items as an experiment. Never mark existing items
+> as an experiment because they're already public.
 
 To mark a schema item as an experiment, use the `experiment:` keyword.
 You must provide the `milestone:` that introduced the experimental item.

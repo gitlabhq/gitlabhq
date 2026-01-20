@@ -8,12 +8,9 @@ title: GitLab CycloneDX property taxonomy
 This document defines the namespaces and properties used by the `gitlab` namespace
 in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-property-taxonomy).
 
-{{< alert type="note" >}}
-
-Before making changes to this file, reach out to the threat insights engineering team,
-`@gitlab-org/govern/threat-insights`.
-
-{{< /alert >}}
+> [!note]
+> Before making changes to this file, reach out to the threat insights engineering team,
+> `@gitlab-org/govern/threat-insights`.
 
 ## Where properties should be located
 

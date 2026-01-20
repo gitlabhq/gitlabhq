@@ -24,12 +24,9 @@ Extensions from [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/)
 Various [extensions](../../user/markdown.md#differences-with-standard-markdown), such as math and multiline
 blockquotes are then added, creating GLFM.
 
-{{< alert type="note" >}}
-
-In many places in the code, we use `gfm` or `GFM`. In those cases, we're usually
-referring to the Markdown in general, not specifically GLFM.
-
-{{< /alert >}}
+> [!note]
+> In many places in the code, we use `gfm` or `GFM`. In those cases, we're usually
+> referring to the Markdown in general, not specifically GLFM.
 
 ## Basic flow
 

@@ -1,0 +1,10 @@
+---
+name: async_mr_pipeline_creation
+description: Enable async pipeline creation for new merge requests to improve NewMergeRequestWorker performance
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/10991
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217381
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584801
+milestone: '18.8'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

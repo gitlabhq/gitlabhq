@@ -37,6 +37,8 @@ class AccessTokenValidationService
 
   # True if the token's scope contains any of the passed scopes.
   def include_any_scope?(required_scopes)
+    return false if token.nil?
+
     if required_scopes.blank?
       true
     else

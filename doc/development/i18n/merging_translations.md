@@ -67,11 +67,8 @@ have been fixed on the default branch.
 
 ## Recreate the GitLab integration in Crowdin
 
-{{< alert type="note" >}}
-
-These instructions work only for GitLab Team Members.
-
-{{< /alert >}}
+> [!note]
+> These instructions work only for GitLab Team Members.
 
 If for some reason the GitLab integration in Crowdin doesn't exist, you can
 recreate it with the following steps:

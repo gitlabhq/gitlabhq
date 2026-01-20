@@ -211,11 +211,8 @@ with the `MATERIALIZED` keyword. By default CTEs are inlined then [optimized by 
 When building CTE statements, use the `Gitlab::SQL::CTE` class.
 By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword.
 
-{{< alert type="warning" >}}
-
-Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
-
-{{< /alert >}}
+> [!warning]
+> Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 ## Cached Queries
 

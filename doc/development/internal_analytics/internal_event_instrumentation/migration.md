@@ -9,12 +9,9 @@ GitLab Internal Events Tracking exposes a unified API on top of the deprecated S
 
 This page describes how you can switch from one of the previous methods to using Internal Events Tracking.
 
-{{< alert type="note" >}}
-
-Tracking events directly via Snowplow, Redis/RedisHLL is deprecated but won't be removed in the foreseeable future.
-While we encourage you to migrate to Internal Event tracking the deprecated methods will continue to work for existing events and metrics.
-
-{{< /alert >}}
+> [!note]
+> Tracking events directly via Snowplow, Redis/RedisHLL is deprecated but won't be removed in the foreseeable future.
+> While we encourage you to migrate to Internal Event tracking the deprecated methods will continue to work for existing events and metrics.
 
 ## Migrating from existing Snowplow tracking
 

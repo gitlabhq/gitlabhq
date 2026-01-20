@@ -111,11 +111,8 @@ You can reference the [instructions for running the demo app](https://openteleme
             exporters: [otlphttp/gitlab]
    ```
 
-{{< alert type="note" >}}
-
-For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/#create-loopback-interface).
-
-{{< /alert >}}
+> [!note]
+> For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/#create-loopback-interface).
 
 1. Save the configuration and start the demo app:
 

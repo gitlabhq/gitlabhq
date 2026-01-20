@@ -1392,7 +1392,9 @@ Returns:
 
 {{< /details >}}
 
-Create a runner linked to the current user.
+Creates a runner linked to the current user. The user is listed as the owner for audit
+purposes, but runner availability is based on `runner_type`. For more information,
+see [Manage runners](../ci/runners/runners_scope.md).
 
 Prerequisites:
 

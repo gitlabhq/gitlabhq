@@ -14,12 +14,9 @@ designed, as code can change often. To understand how a specific part of the
 feature works, view the code and the specs. The details here explain how the
 major components of the Code Owners feature work.
 
-{{< alert type="note" >}}
-
-This document should be updated when parts of the codebase referenced in this
-document are updated, removed, or new parts are added.
-
-{{< /alert >}}
+> [!note]
+> This document should be updated when parts of the codebase referenced in this
+> document are updated, removed, or new parts are added.
 
 ## Business logic
 

@@ -3611,7 +3611,6 @@ Gitlab/BoundedContexts:
     - 'lib/atlassian/jira_issue_key_extractor.rb'
     - 'lib/atlassian/jira_issue_key_extractors/branch.rb'
     - 'lib/aws/s3_client.rb'
-    - 'lib/bitbucket/app_password_connection.rb'
     - 'lib/bitbucket/client.rb'
     - 'lib/bitbucket/collection.rb'
     - 'lib/bitbucket/connection.rb'

@@ -35,12 +35,9 @@ Using an instrumentation class ensures that metrics can fail safe individually, 
 
 ## Database metrics
 
-{{< alert type="note" >}}
-
-Whenever possible we recommend using [internal event tracking](../internal_event_instrumentation/quick_start.md) instead of database metrics.
-Database metrics can create unnecessary load on the database of bigger GitLab instances and potential optimisations can affect instance performance.
-
-{{< /alert >}}
+> [!note]
+> Whenever possible we recommend using [internal event tracking](../internal_event_instrumentation/quick_start.md) instead of database metrics.
+> Database metrics can create unnecessary load on the database of bigger GitLab instances and potential optimisations can affect instance performance.
 
 You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
 

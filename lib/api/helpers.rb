@@ -1039,8 +1039,9 @@ module API
       path_values = params.merge(id: project.id).transform_values { |v| v.is_a?(String) ? CGI.escape(v) : v }
       path = GrapePathHelpers::DecoratedRoute.new(route).path_segments_with_values(path_values).join('/')
       extension = File.extname(request.path_info)
+      query_string = "?#{request.query_string}" if request.query_string.present?
 
-      Rack::Request.new(env).tap { |r| r.path_info = "/#{path}#{extension}" }.url
+      Gitlab::Utils.append_path(Gitlab.config.gitlab.url, "#{path}#{extension}#{query_string}")
     end
 
     def handle_job_token_failure!(project)

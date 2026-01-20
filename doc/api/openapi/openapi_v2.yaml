@@ -72016,10 +72016,16 @@ definitions:
     properties:
       bitbucket_username:
         type: string
-        description: BitBucket username
+        description: BitBucket username (for app passwords)
       bitbucket_app_password:
         type: string
         description: BitBucket app password
+      bitbucket_email:
+        type: string
+        description: BitBucket email (for API tokens)
+      bitbucket_api_token:
+        type: string
+        description: BitBucket API token
       repo_path:
         type: string
         description: Repository path
@@ -72030,8 +72036,6 @@ definitions:
         type: string
         description: New repository name
     required:
-    - bitbucket_username
-    - bitbucket_app_password
     - repo_path
     - target_namespace
     description: Import a BitBucket Cloud repository

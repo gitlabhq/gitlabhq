@@ -5,7 +5,7 @@ module Gitlab
     class EventEligibilityChecker
       def self.only_send_duo_events?
         snowplow_disabled = !Gitlab::CurrentSettings.snowplow_enabled?
-        product_usage_data_disabled = !Gitlab::CurrentSettings.gitlab_product_usage_data_enabled?
+        product_usage_data_disabled = !Gitlab::Usage::ProductUsageDataSetting.enabled?
 
         snowplow_disabled && product_usage_data_disabled
       end
@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def send_usage_data?
-        Gitlab::CurrentSettings.gitlab_product_usage_data_enabled?
+        Gitlab::Usage::ProductUsageDataSetting.enabled?
       end
     end
   end

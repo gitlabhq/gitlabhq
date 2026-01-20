@@ -3068,7 +3068,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(response).to have_gitlab_http_status(:moved_permanently)
 
           url = response.headers['Location']
-          expect(url).to start_with("#{request.base_url}/api/v4/projects/#{project.id}")
+          expect(url).to start_with("#{::Settings.gitlab.url}/api/v4/projects/#{project.id}")
           expect(CGI.parse(URI(url).query)).to include({ 'license' => ['true'] })
         end
 

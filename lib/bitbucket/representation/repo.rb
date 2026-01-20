@@ -16,7 +16,15 @@ module Bitbucket
       end
 
       def clone_url(token = nil, auth_type: nil)
-        url = raw['links']['clone'].find { |link| link['name'] == 'https' }.fetch('href')
+        links = raw.dig('links', 'clone')
+
+        return unless links
+
+        https_link = links.find { |link| link['name'] == 'https' }
+
+        return unless https_link
+
+        url = https_link.fetch('href')
 
         if token.present?
           clone_url = URI.parse(url)

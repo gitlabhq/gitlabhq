@@ -24,11 +24,17 @@ module API
     end
 
     params do
-      requires :bitbucket_username, type: String, desc: 'BitBucket username'
-      requires :bitbucket_app_password, type: String, desc: 'BitBucket app password'
+      optional :bitbucket_username, type: String, desc: 'BitBucket username (for app passwords)'
+      optional :bitbucket_app_password, type: String, desc: 'BitBucket app password'
+      optional :bitbucket_email, type: String, desc: 'BitBucket email (for API tokens)'
+      optional :bitbucket_api_token, type: String, desc: 'BitBucket API token'
       requires :repo_path, type: String, desc: 'Repository path'
       requires :target_namespace, type: String, desc: 'Target namespace'
       optional :new_name, type: String, desc: 'New repository name'
+      all_or_none_of :bitbucket_username, :bitbucket_app_password
+      all_or_none_of :bitbucket_email, :bitbucket_api_token
+      mutually_exclusive :bitbucket_app_password, :bitbucket_api_token
+      at_least_one_of :bitbucket_app_password, :bitbucket_api_token
     end
 
     post 'import/bitbucket' do

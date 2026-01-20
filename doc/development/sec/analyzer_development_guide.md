@@ -293,12 +293,9 @@ After the above steps have been completed, the automatic release process execute
 | Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
 | Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
 
-{{< alert type="warning" >}}
-
-Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
-variable permissions should be announced in the section's Slack channel.
-
-{{< /alert >}}
+> [!warning]
+> Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
+> variable permissions should be announced in the section's Slack channel.
 
 ### Token rotation for service account
 

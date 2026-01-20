@@ -292,11 +292,8 @@ We have dedicated jobs for each [testing level](../testing_guide/testing_levels.
 changes made in your merge request.
 If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
 
-{{< alert type="warning" >}}
-
-Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
-
-{{< /alert >}}
+> [!warning]
+> Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
 ### End-to-end jobs
 
@@ -423,11 +420,8 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 as-if-jh pipeline grabs files from the respective branch, rather than from the
 default branch `main-jh`.
 
-{{< alert type="note" >}}
-
-For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
-
-{{< /alert >}}
+> [!note]
+> For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
 {{< alert type="note" >}}
 
@@ -442,11 +436,8 @@ from the main mirror, rather than the validation project.
 
 The whole process looks like this:
 
-{{< alert type="note" >}}
-
-We only run `sync-as-if-jh-branch` when there are dependencies changes.
-
-{{< /alert >}}
+> [!note]
+> We only run `sync-as-if-jh-branch` when there are dependencies changes.
 
 ```mermaid
 flowchart TD

@@ -304,6 +304,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { admin }.policy do
     enable :update_max_artifacts_size
     enable :create_projects
+    enable :read_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.policy do

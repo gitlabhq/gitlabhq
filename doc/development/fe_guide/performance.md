@@ -202,11 +202,8 @@ All the marks and measures should be instantiated with the constants from
 `app/assets/javascripts/performance/constants.js`. When you're ready to add a new mark's or
 measurement's label, you can follow the pattern.
 
-{{< alert type="note" >}}
-
-This pattern is a recommendation and not a hard rule.
-
-{{< /alert >}}
+> [!note]
+> This pattern is a recommendation and not a hard rule.
 
 ```javascript
 app-*-start // for a start 'mark'

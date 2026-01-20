@@ -187,9 +187,6 @@ To configure PAT settings in GitLab Shell:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-These settings only affect PAT generation with SSH and do not
-impact PATs created through the web interface.
-
-{{< /alert >}}
+> [!note]
+> These settings only affect PAT generation with SSH and do not
+> impact PATs created through the web interface.

@@ -15,8 +15,8 @@ module Bitbucket
     end
 
     def connection
-      @connection ||= if app_password_connection?
-                        Bitbucket::AppPasswordConnection.new(options)
+      @connection ||= if api_connection?
+                        Bitbucket::ApiConnection.new(options)
                       else
                         Bitbucket::OauthConnection.new(options)
                       end
@@ -24,8 +24,16 @@ module Bitbucket
 
     private
 
+    def api_connection?
+      app_password_connection? || api_token_connection?
+    end
+
     def app_password_connection?
       options.key?(:username) && options.key?(:app_password)
+    end
+
+    def api_token_connection?
+      options.key?(:email) && options.key?(:api_token)
     end
   end
 end

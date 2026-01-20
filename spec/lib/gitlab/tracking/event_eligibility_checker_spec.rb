@@ -19,10 +19,8 @@ RSpec.describe Gitlab::Tracking::EventEligibilityChecker, feature_category: :ser
     end
 
     before do
-      stub_application_setting(
-        snowplow_enabled: snowplow_enabled,
-        gitlab_product_usage_data_enabled?: product_usage_data_enabled
-      )
+      stub_application_setting(snowplow_enabled: snowplow_enabled)
+      allow(Gitlab::Usage::ProductUsageDataSetting).to receive(:enabled?).and_return(product_usage_data_enabled)
     end
 
     with_them do
@@ -41,9 +39,8 @@ RSpec.describe Gitlab::Tracking::EventEligibilityChecker, feature_category: :ser
     end
 
     before do
-      stub_application_setting(
-        snowplow_enabled?: snowplow_enabled, gitlab_product_usage_data_enabled?: product_usage_data_enabled
-      )
+      stub_application_setting(snowplow_enabled: snowplow_enabled)
+      allow(Gitlab::Usage::ProductUsageDataSetting).to receive(:enabled?).and_return(product_usage_data_enabled)
     end
 
     with_them do

@@ -450,6 +450,47 @@ After collecting the relevant queries, you can then obtain [EXPLAIN plans](under
 relies on the index in question. For this process, it's necessary to have a good understanding of how indexes support queries and how
 their usage is affected by data distribution changes. We recommend seeking guidance from a database domain expert to help with your assessment.
 
+### Composite index column order
+
+When dropping or replacing an index, developers sometimes assume that an existing composite index can serve as a replacement.
+However, PostgreSQL B-tree indexes are most efficient when queries filter on the leading (leftmost) columns of the index.
+A composite index cannot efficiently support queries that filter only on non-leading columns.
+
+For example, consider the `ssh_signatures` table with the following indexes:
+
+- Single-column index: `index_ssh_signatures_on_commit_sha` on `(commit_sha)`
+- Composite index: `index_ssh_signatures_on_project_id_and_commit_sha` on `(project_id, commit_sha)`
+
+The composite index `(project_id, commit_sha)` can efficiently support:
+
+- Queries filtering on both `project_id` and `commit_sha`:
+
+  ```sql
+  SELECT * FROM ssh_signatures WHERE project_id = 1 AND commit_sha = 'abc123';
+  ```
+
+- Queries filtering only on `project_id` (the leading column):
+
+  ```sql
+  SELECT * FROM ssh_signatures WHERE project_id = 1;
+  ```
+
+However, the composite index **cannot** efficiently support queries filtering only on `commit_sha`:
+
+```sql
+SELECT * FROM ssh_signatures WHERE commit_sha = 'abc123';
+```
+
+For this query, the single-column index `index_ssh_signatures_on_commit_sha` is required. Dropping it would
+cause the query to perform poorly, potentially leading to timeouts or incidents in production.
+
+Before dropping any index, you must verify that all queries using that index can be efficiently served by other
+existing indexes. Pay special attention to composite index column ordering and ensure that queries filter on
+the leading columns. For more information on how PostgreSQL uses composite indexes, see the
+[PostgreSQL documentation on multicolumn indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html#INDEXES-MULTICOLUMN).
+
+If you're dropping an index that you think it's unused, check [the index usage stats](#dropping-unused-indexes).
+
 ## Requirements for naming indexes
 
 Indexes with complex definitions must be explicitly named rather than

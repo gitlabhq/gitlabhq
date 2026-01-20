@@ -783,12 +783,9 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 ### Community contributions
 
-{{< alert type="warning" >}}
-
-**Review all changes thoroughly for malicious code before starting a
-[merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
-
-{{< /alert >}}
+> [!warning]
+> **Review all changes thoroughly for malicious code before starting a
+> [merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
 
 When reviewing merge requests added by wider community contributors:
 

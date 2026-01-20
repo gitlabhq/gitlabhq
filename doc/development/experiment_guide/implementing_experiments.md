@@ -403,8 +403,5 @@ export default {
 </template>
 ```
 
-{{< alert type="note" >}}
-
-When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.
-
-{{< /alert >}}
+> [!note]
+> When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.

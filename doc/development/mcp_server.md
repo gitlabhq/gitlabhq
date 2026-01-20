@@ -152,6 +152,81 @@ route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
 
+#### Implement an aggregated API tool
+
+Aggregated API tools combine multiple related API tools into a single unified interface, reducing
+tool count and improving the user experience.
+The [search tool](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208526) demonstrates
+this pattern by consolidating global, group, and project search into one tool.
+
+**When to use aggregated tools:**
+
+Use aggregated tools when you have multiple API endpoints that serve similar purposes but operate at
+different scopes (global, group, project). This reduces cognitive load on the LLM by presenting one
+tool instead of three.
+
+**Implementation steps:**
+
+1. Create an aggregated service class that inherits from `Mcp::Tools::AggregatedService`:
+
+```ruby
+module Mcp
+  module Tools
+    class ExampleAggregatedService < AggregatedService
+      include Gitlab::Utils::StrongMemoize
+      extend ::Gitlab::Utils::Override
+
+      register_version '0.1.0', {
+        description: 'My example aggregated tool',
+        input_schema: {
+          type: 'object',
+          properties: {},
+          required: []
+        }
+      }
+
+      override :tool_name
+      def self.tool_name
+        'new_tool'
+      end
+
+      override :select_tool
+      def select_tool(args)
+        tool_name = if args[:group_id]
+                      :example_tool_for_group
+                    elsif args[:project_id]
+                      :example_tool_for_project
+                    end
+
+        tools.find { |tool| tool.name.to_sym == tool_name }
+      end
+
+      override :transform_arguments
+      def transform_arguments(args)
+        if args[:group_id]
+          args.merge(id: args[:group_id])
+        elsif args[:project_id]
+          args.merge(id: args[:project_id])
+        else
+          args
+        end
+      end
+    end
+  end
+end
+```
+
+1. Register the underlying API tools with the aggregator in their route definitions:
+
+```ruby
+route_setting :mcp, tool_name: :example_tool_for_group, params: [:id], aggregators: [::Mcp::Tools::ExampleAggregatedService]
+
+route_setting :mcp, tool_name: :example_tool_for_project, params: [:id], aggregators: [::Mcp::Tools::ExampleAggregatedService]
+```
+
+1. The `Mcp::Tools::Manager` automatically discovers aggregated tools by scanning routes with
+   `aggregators` specified and instantiates the aggregator class with the collected tools.
+
 #### Implement a custom tool
 
 For tools with distinct functionality that should remain separate from API exposure, you can define a standalone class (see [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/5d394a38c3dc20a247473d5334d71dab15d26a4b/app/services/mcp/tools/manager.rb#L7) for reference).
@@ -198,3 +273,177 @@ eventually lead to performance degradation. Consider tool consolidation, special
 instead of continuously expanding your toolset.
 
 {{< /alert >}}
+
+### Modifying an existing tool
+
+MCP tools use semantic versioning to avoid breaking changes for consumers. When modifying a tool,
+use the versioning system introduced
+in [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205914).
+
+**Why versioning matters:**
+
+LLMs and AI agents cache tool schemas and build workflows around specific tool behaviors. Changes to
+tool parameters, descriptions, or output formats can break existing integrations. Versioning allows
+safe evolution while maintaining backward compatibility.
+
+**Version registration pattern:**
+
+For aggregated API, custom, and graphQL tools, register versions using `register_version`:
+
+```ruby
+module Mcp
+  module Tools
+    class GetServerVersionService < CustomService
+      register_version '0.1.0', {
+        description: 'Get the current version of MCP server.',
+        input_schema: {
+          type: 'object',
+          properties: {},
+          required: []
+        }
+      }
+
+      def perform_0_1_0(_arguments = {})
+        data = { version: Gitlab::VERSION, revision: Gitlab.revision }
+        formatted_content = [{ type: 'text', text: data[:version] }]
+        ::Mcp::Tools::Response.success(formatted_content, data)
+      end
+
+      override :perform_default
+      def perform_default(arguments = {})
+        perform_0_1_0(arguments)
+      end
+    end
+  end
+end
+```
+
+**Adding a new version:**
+
+When you need to modify a tool's behavior:
+
+1. Register the new version with updated metadata:
+
+```ruby
+register_version '0.2.0', {
+  description: 'Get version with additional metadata.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      include_metadata: {
+        type: 'boolean',
+        description: 'Include additional metadata'
+      }
+    },
+    required: []
+  }
+}
+```
+
+1. Implement the version-specific method:
+
+```ruby
+def perform_0_2_0(arguments = {})
+  data = {
+    version: Gitlab::VERSION,
+    revision: Gitlab.revision
+  }
+
+  if arguments[:include_metadata]
+    data[:metadata] = { build_date: Time.current }
+  end
+
+  formatted_content = [{ type: 'text', text: data[:version] }]
+  ::Mcp::Tools::Response.success(formatted_content, data)
+end
+```
+
+1. Update `perform_default` to use the latest version:
+
+```ruby
+override :perform_default
+def perform_default(arguments = {})
+  perform_0_2_0(arguments)
+end
+```
+
+**For API tools:**
+
+API tools automatically default to version `0.1.0`. The version can be specified in the route
+setting if needed:
+
+```ruby
+route_setting :mcp, tool_name: :get_merge_request,
+  params: [:id, :merge_request_iid],
+  version: '1.0.0'
+```
+
+Note: API tools from routes use a single version per tool. For tools requiring multiple
+versions, consider implementing as a custom tool instead.
+
+**Version support policy:**
+
+The framework automatically uses the latest version when no version is specified. Consumers can
+request specific versions during tool calls.
+Follow [multi-version compatibility guidelines](multi_version_compatibility.md)
+when deprecating versions.
+
+### Renaming a tool
+
+Renaming a tool requires using tool aliases to maintain backward compatibility. Connected clients
+cache tool names and do not automatically refresh when tools are renamed. The alias system introduced
+in [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214734) allows
+graceful renames without breaking existing integrations.
+
+**Why aliases are necessary:**
+
+MCP clients cache the tool list from `tools/list` and don't automatically re-fetch when tools
+change. Renaming a tool causes clients to call a non-existent tool name, resulting in errors
+or indefinite hangs. The MCP specification supports `notifications/tools/list_changed` to notify
+clients of changes, but GitLab MCP server doesn't implement this (tracked
+in [this issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/582750)).
+
+**Implementation steps:**
+
+1. Override `tool_aliases` in your tool class to include the old name:
+
+```ruby
+module Mcp
+  module Tools
+    class RenamedService < AggregatedService
+      override :tool_name
+      def self.tool_name
+        'new_name'
+      end
+
+      override :tool_aliases
+      def self.tool_aliases
+        ['old_name']
+      end
+    end
+  end
+end
+```
+
+1. Update all references to use the new tool name:
+   - Route settings with `tool_name:`
+   - Test files
+   - Documentation
+   - Any hardcoded tool name references
+
+1. The `Mcp::Tools::Manager` automatically resolves aliases during `get_tool` calls, so clients
+   using the old name continue to work.
+
+**Important notes:**
+
+- `list_tools` only returns the canonical tool name, not aliases
+- Aliases work for all tool types: custom, GraphQL, API, and aggregated tools
+- The alias resolution happens in `Manager#resolve_alias` which checks all tool registries
+- Plan to remove aliases in a future release after sufficient time for clients to update
+
+**Deprecation timeline:**
+
+Release M: Add alias and rename tool
+Release M+1: Remove alias (after clients have had time to refresh their tool lists)
+
+This approach ensures zero downtime for connected clients during tool renames.

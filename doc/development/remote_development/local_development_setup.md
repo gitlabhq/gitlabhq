@@ -395,22 +395,16 @@ To upgrade your subscription from GitLab Duo Pro to GitLab Duo Enterprise, submi
 If configured correctly, in the **Admin** > **GitLab Duo Pro** settings, the message,
 **No health problems detected.** is displayed.
 
-{{< alert type="note" >}}
-
-While using GitLab Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
-It is a common error response from the GitLab Duo API when using the staging gateway.
-
-{{< /alert >}}
+> [!note]
+> While using GitLab Duo Chat, if you see the `Error code: A9999` response, clear and reset the chat until it succeeds.
+> It is a common error response from the GitLab Duo API when using the staging gateway.
 
 ## IDE Setup
 
 ### RubyMine
 
-{{< alert type="note" >}}
-
-It is planned to move some of the information in this section to the [RubyMine](https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/individual-ides/rubymine/) handbook section, or ideally shared with SCM.
-
-{{< /alert >}}
+> [!note]
+> It is planned to move some of the information in this section to the [RubyMine](https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/individual-ides/rubymine/) handbook section, or ideally shared with SCM.
 
 #### Scopes
 
@@ -577,11 +571,8 @@ To do this:
 | Get pod details             | `kubectl -n NAMESPACE get pods POD_NAME -o yaml` |
 | List API resources          | `kubectl api-resources` |
 
-{{< alert type="note" >}}
-
-If you omit `-n NAMESPACE` from commands, `kubectl` uses the current namespace.
-
-{{< /alert >}}
+> [!note]
+> If you omit `-n NAMESPACE` from commands, `kubectl` uses the current namespace.
 
 #### Logs and debugging
 
@@ -623,12 +614,9 @@ Run commands in the workspace container (example with log tailing):
 PODNAME=$(kubectl get po -o name | cut -d/ -f2) && CONTAINER_NAME=$(kubectl get pod $PODNAME -o jsonpath='{range .spec.containers[*]}{.name}{"\t"}{range .env[*]}{.name}{","}{end}{"\n"}{end}' | grep GL_TOOLS_DIR | cut -f 1) && kubectl exec $PODNAME -c $CONTAINER_NAME -it -- /bin/bash -c "tail -n 100 -f /tmp/*.log"
 ```
 
-{{< alert type="note" >}}
-
-These commands run in the current namespace. Use `kubens` to switch to the workspace namespace before
-running them.
-
-{{< /alert >}}
+> [!note]
+> These commands run in the current namespace. Use `kubens` to switch to the workspace namespace before
+> running them.
 
 #### Cleanup operations
 
@@ -650,11 +638,8 @@ Delete all workspace namespaces:
 kubectl get namespace | grep gl- | cut -f1 -d" " | xargs -I {} kubectl delete namespace {}
 ```
 
-{{< alert type="note" >}}
-
-This cleanup may take time. If it stalls, restart Rancher Desktop and try again.
-
-{{< /alert >}}
+> [!note]
+> This cleanup may take time. If it stalls, restart Rancher Desktop and try again.
 
 #### Additional resources
 

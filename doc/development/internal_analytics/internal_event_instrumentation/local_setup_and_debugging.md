@@ -5,12 +5,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Local setup and debugging
 ---
 
-{{< alert type="note" >}}
-
-To track user interactions in the browser, browser settings, such as privacy filters (for example,
-AdBlock, uBlock) and Do-Not-Track (DNT). For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
-
-{{< /alert >}}
+> [!note]
+> To track user interactions in the browser, browser settings, such as privacy filters (for example,
+> AdBlock, uBlock) and Do-Not-Track (DNT). For more information, see [settings that affect tracking](https://snowplow.io/blog/how-many-of-your-visitors-block-your-snowplow-tracking).
 
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools to test frontend and backend events:
 

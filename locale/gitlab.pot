@@ -13473,6 +13473,9 @@ msgstr ""
 msgid "CICDAnalytics|Median duration"
 msgstr ""
 
+msgid "CICDAnalytics|Other pipelines rate"
+msgstr ""
+
 msgid "CICDAnalytics|Projects with releases"
 msgstr ""
 
@@ -13500,6 +13503,9 @@ msgid "CICDAnalytics|The percentage of pipelines that completed successfully."
 msgstr ""
 
 msgid "CICDAnalytics|The percentage of pipelines that failed."
+msgstr ""
+
+msgid "CICDAnalytics|The percentage of pipelines that were skipped or canceled."
 msgstr ""
 
 msgid "CICDAnalytics|The total number of pipelines that have run in the selected time period."

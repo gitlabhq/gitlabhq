@@ -190,11 +190,8 @@ Each widget reports:
 When adding new widgets, the above events must be marked as `known`, and have metrics
 created, to be reportable.
 
-{{< alert type="note" >}}
-
-Events that are only for EE should include `--ee` at the end of both shell commands below.
-
-{{< /alert >}}
+> [!note]
+> Events that are only for EE should include `--ee` at the end of both shell commands below.
 
 To generate these known events for a single widget:
 

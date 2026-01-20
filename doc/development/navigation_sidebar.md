@@ -23,12 +23,9 @@ Pages can render arbitrary content into the sidebar using the `SidebarPortal`
 component. Content passed to its default slot is rendered below that
 page's navigation items in the sidebar.
 
-{{< alert type="note" >}}
-
-Only one instance of this component on a given page is supported. This is to
-avoid ordering issues and cluttering the sidebar.
-
-{{< /alert >}}
+> [!note]
+> Only one instance of this component on a given page is supported. This is to
+> avoid ordering issues and cluttering the sidebar.
 
 {{< alert type="note" >}}
 

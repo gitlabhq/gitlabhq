@@ -61,12 +61,23 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
-    it 'creates a pipeline and updates the HEAD pipeline' do
+    it 'creates a pipeline asynchronously' do
       expect(after_create_service)
-        .to receive(:create_pipeline_for).with(merge_request, merge_request.author)
-      expect(merge_request).to receive(:update_head_pipeline)
+        .to receive(:create_pipeline_for).with(merge_request, merge_request.author, async: true)
 
       execute_service
+    end
+
+    context 'when async_mr_pipeline_creation feature flag is disabled' do
+      it 'creates a pipeline synchronously and updates the HEAD pipeline' do
+        stub_feature_flags(async_mr_pipeline_creation: false)
+
+        expect(after_create_service)
+          .to receive(:create_pipeline_for).with(merge_request, merge_request.author, async: false)
+        expect(merge_request).to receive(:update_head_pipeline)
+
+        execute_service
+      end
     end
 
     it 'executes hooks and integrations' do
@@ -128,8 +139,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         before do
           # This is only one of the possible cases that can fail. This is to
           # simulate a failure that happens during the service call.
-          allow(merge_request)
-            .to receive(:update_head_pipeline)
+          allow(after_create_service)
+            .to receive(:create_pipeline_for)
             .and_raise(StandardError)
         end
 
@@ -263,8 +274,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         [
           'Executing hooks',
           'Executed hooks',
-          'Creating pipeline',
-          'Pipeline created'
+          'Creating pipeline async',
+          'Pipeline creating async'
         ].each do |message|
           expect(Gitlab::AppLogger).to receive(:info).with(
             hash_including(
@@ -276,6 +287,35 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         end
 
         execute_service
+      end
+
+      context 'when async_mr_pipeline_creation feature flag is disabled' do
+        before do
+          stub_feature_flags(async_mr_pipeline_creation: false)
+        end
+
+        it 'logs specific events' do
+          ::Gitlab::ApplicationContext.push(caller_id: 'NewMergeRequestWorker')
+
+          allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+          [
+            'Executing hooks',
+            'Executed hooks',
+            'Creating pipeline',
+            'Pipeline created'
+          ].each do |message|
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              hash_including(
+                'meta.caller_id' => 'NewMergeRequestWorker',
+                message: message,
+                merge_request_id: merge_request.id
+              )
+            ).and_call_original
+          end
+
+          execute_service
+        end
       end
     end
   end
