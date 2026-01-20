@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqMiddleware::QueryAnalyzer, query_analyzers: false do
+RSpec.describe Gitlab::SidekiqMiddleware::QueryAnalyzer, query_analyzers: false, feature_category: :database do
   describe 'the PreventCrossDatabaseModification' do
     describe '#call' do
       let(:worker) { double(:worker) }

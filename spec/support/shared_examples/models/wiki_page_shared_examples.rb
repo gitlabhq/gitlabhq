@@ -214,189 +214,163 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     end
   end
 
-  describe "validations" do
+  describe 'validations' do
     subject { build_wiki_page(container) }
 
-    it "validates presence of title" do
-      subject.attributes.delete(:title)
+    describe '#content' do
+      it 'does not validate presence of content' do
+        subject.attributes.delete(:content)
 
-      expect(subject).not_to be_valid
-      expect(subject.errors.messages).to eq(title: ["can't be blank"])
-    end
-
-    it "does not validate presence of content" do
-      subject.attributes.delete(:content)
-
-      expect(subject).to be_valid
-    end
-
-    describe '#validate_content_size_limit' do
-      context 'with a new page' do
-        before do
-          stub_application_setting(wiki_page_max_content_bytes: 10)
-        end
-
-        it 'accepts content below the limit' do
-          subject.attributes[:content] = 'a' * 10
-
-          expect(subject).to be_valid
-        end
-
-        it 'rejects content exceeding the limit' do
-          subject.attributes[:content] = 'a' * 11
-
-          expect(subject).not_to be_valid
-          expect(subject.errors.messages).to eq(
-            content: ['is too long (11 B). The maximum size is 10 B.']
-          )
-        end
-
-        it 'counts content size in bytes rather than characters' do
-          subject.attributes[:content] = '💩💩💩'
-
-          expect(subject).not_to be_valid
-          expect(subject.errors.messages).to eq(
-            content: ['is too long (12 B). The maximum size is 10 B.']
-          )
-        end
+        expect(subject).to be_valid
       end
 
-      context 'with an existing page exceeding the limit' do
-        include_context 'when subject is a persisted page'
+      context 'for long content size' do
+        context 'with a new page' do
+          before do
+            stub_application_setting(wiki_page_max_content_bytes: 10)
+          end
 
-        before do
-          subject
-          stub_application_setting(wiki_page_max_content_bytes: 11)
+          it 'accepts content below the limit' do
+            subject.attributes[:content] = 'a' * 10
+
+            expect(subject).to be_valid
+          end
+
+          it 'rejects content exceeding the limit' do
+            subject.attributes[:content] = 'a' * 11
+
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages).to eq(content: ['is too long (11 B). The maximum size is 10 B.'])
+          end
+
+          it 'counts content size in bytes rather than characters' do
+            subject.attributes[:content] = '💩💩💩'
+
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages).to eq(content: ['is too long (12 B). The maximum size is 10 B.'])
+          end
         end
 
-        it 'accepts content when it has not changed' do
-          expect(subject).to be_valid
-        end
+        context 'with an existing page exceeding the limit' do
+          include_context 'when subject is a persisted page'
 
-        it 'rejects content when it has changed' do
-          subject.attributes[:content] = 'a' * 12
+          before do
+            subject
+            stub_application_setting(wiki_page_max_content_bytes: 11)
+          end
 
-          expect(subject).not_to be_valid
-          expect(subject.errors.messages).to eq(
-            content: ['is too long (12 B). The maximum size is 11 B.']
-          )
+          it 'accepts content when it has not changed' do
+            expect(subject).to be_valid
+          end
+
+          it 'rejects content when it has changed' do
+            subject.attributes[:content] = 'a' * 12
+
+            expect(subject).not_to be_valid
+            expect(subject.errors.messages).to eq(content: ['is too long (12 B). The maximum size is 11 B.'])
+          end
         end
       end
     end
 
-    describe '#validate_path_limits' do
-      let(:max_title) { Gitlab::WikiPages::MAX_TITLE_BYTES }
-      let(:max_directory) { Gitlab::WikiPages::MAX_DIRECTORY_BYTES }
+    describe '#title' do
+      # Combined strings with emojis (4 bytes), umlauts (2 bytes), and ASCII (1 byte)
+      # to verify byte counting works correctly for all character types
+      let(:max_title) { "#{'🙈' * 5}#{'ä' * 5}#{'a' * 215}" } # 20 + 10 + 215 = 245 bytes
+      let(:max_directory_name) { "#{'🙈' * 5}#{'ä' * 5}#{'a' * 225}" } # 20 + 10 + 225 = 255 bytes
 
-      where(:character) do
-        ['a', 'ä', '🙈']
-      end
+      it { is_expected.to validate_presence_of(:title) }
 
-      with_them do
-        let(:size) { character.bytesize.to_f }
-        let(:valid_title) { character * (max_title / size).floor }
-        let(:valid_directory) { character * (max_directory / size).floor }
-        let(:invalid_title) { character * ((max_title + 1) / size).ceil }
-        let(:invalid_directory) { character * ((max_directory + 1) / size).ceil }
+      it { is_expected.to allow_value(max_title).for(:title) }
+      it { is_expected.to allow_value("#{max_directory_name}/foo").for(:title) }
+      it { is_expected.to allow_value("#{max_directory_name}/#{max_title}").for(:title) }
 
-        it 'accepts page titles below the limit' do
-          subject.title = valid_title
-
-          expect(subject).to be_valid
+      context 'for title length limits' do
+        it 'rejects title exceeding the limit' do
+          is_expected.not_to allow_value("#{max_title}_too_long").for(:title)
+            .with_message('exceeds the limit of 245 bytes')
         end
 
-        it 'accepts directories below the limit' do
-          subject.title = "#{valid_directory}/foo"
-
-          expect(subject).to be_valid
+        it 'rejects directory exceeding the limit' do
+          is_expected.not_to allow_value("#{max_directory_name}_too_long/foo").for(:title)
+            .with_message(/exceeds the limit of 255 bytes for directory name/)
         end
 
-        it 'accepts a path with page title and directory below the limit' do
-          subject.title = "#{valid_directory}/#{valid_title}"
-
-          expect(subject).to be_valid
+        it 'rejects at least one directory exceeding the limit' do
+          is_expected.not_to allow_value("#{max_directory_name}/#{max_directory_name}_too_long/foo").for(:title)
+            .with_message(/exceeds the limit of 255 bytes for directory name/)
         end
 
-        it 'rejects page titles exceeding the limit' do
-          subject.title = invalid_title
+        it 'rejects multiple directories exceeding the limit' do
+          is_expected.not_to allow_value("#{max_directory_name}_too_long/#{max_directory_name}_too_long/foo")
+            .for(:title)
 
-          expect(subject).not_to be_valid
           expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_title} bytes"
+            /exceeds the limit of 255 bytes for directory name /,
+            /exceeds the limit of 255 bytes for directory name /
           )
         end
 
-        it 'rejects directories exceeding the limit' do
-          subject.title = "#{invalid_directory}/#{invalid_directory}2/foo"
+        it 'reports both title and directory errors when both exceed their limits' do
+          is_expected.not_to allow_value("#{max_directory_name}_too_long/#{max_title}_too_long").for(:title)
 
-          expect(subject).not_to be_valid
           expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}\"",
-            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}2\""
+            /exceeds the limit of 245 bytes/,
+            /exceeds the limit of 255 bytes for directory name /
           )
         end
 
-        it 'rejects a page with both title and directory exceeding the limit' do
-          subject.title = "#{invalid_directory}/#{invalid_title}"
+        context 'with an existing page title exceeding the limit' do
+          let(:max_title) { 245 }
 
-          expect(subject).not_to be_valid
-          expect(subject.errors[:title]).to contain_exactly(
-            "exceeds the limit of #{max_title} bytes",
-            "exceeds the limit of #{max_directory} bytes for directory name \"#{invalid_directory}\""
-          )
+          subject do
+            title = 'a' * (max_title + 1)
+            wiki.create_page(title, 'content')
+            wiki.find_page(title)
+          end
+
+          it 'accepts the exceeding title length when unchanged' do
+            expect(subject).to be_valid
+          end
+
+          it 'rejects the exceeding title length when changed' do
+            subject.title = 'b' * (max_title + 1)
+
+            expect(subject).not_to be_valid
+            expect(subject.errors).to include(:title)
+          end
         end
       end
 
-      context 'with an existing page title exceeding the limit' do
-        subject do
-          title = 'a' * (max_title + 1)
-          wiki.create_page(title, 'content')
-          wiki.find_page(title)
+      context 'for reserved slugs' do
+        # Reserved slugs that conflict with wiki routes (see config/routes/wiki.rb)
+        # E.g. 'pages', 'templates', 'new', 'git_access', '-'
+        WikiPage::RESERVED_SLUGS.each do |reserved_slug|
+          it { is_expected.not_to allow_value(reserved_slug).for(:title) }
+          it { is_expected.not_to allow_value(reserved_slug.upcase).for(:title) }
+          it { is_expected.not_to allow_value(reserved_slug.capitalize).for(:title) }
+          it { is_expected.not_to allow_value(reserved_slug.downcase).for(:title) }
+
+          # Subdirectories under reserved slugs are allowed
+          it { is_expected.to allow_value("#{reserved_slug}/subpage").for(:title) }
+          it { is_expected.to allow_value("#{reserved_slug}/#{reserved_slug}").for(:title) }
+
+          # Non-reserved slugs are allowed
+          it { is_expected.to allow_value("non_#{reserved_slug}-page").for(:title) }
         end
 
-        it 'accepts the exceeding title length when unchanged' do
-          expect(subject).to be_valid
-        end
+        context 'when updating an existing page' do
+          let!(:existing_page) { create_wiki_page(container, title: 'allowed-title') }
 
-        it 'rejects the exceeding title length when changed' do
-          subject.title = 'b' * (max_title + 1)
+          subject { wiki.find_page('allowed-title') }
 
-          expect(subject).not_to be_valid
-          expect(subject.errors).to include(:title)
-        end
-      end
-    end
+          it { is_expected.not_to allow_value('pages').for(:title) }
 
-    describe '#validate_reserved_slug' do
-      subject { build_wiki_page(container) }
+          it 'allows updating content without changing title' do
+            subject.attributes[:content] = 'new content'
 
-      # Reserved slugs that conflict with wiki routes (see config/routes/wiki.rb)
-      # E.g. 'pages', 'templates', 'new', 'git_access', '-'
-      WikiPage::RESERVED_SLUGS.each do |reserved_slug|
-        it { is_expected.not_to allow_value(reserved_slug).for(:title) }
-        it { is_expected.not_to allow_value(reserved_slug.upcase).for(:title) }
-        it { is_expected.not_to allow_value(reserved_slug.capitalize).for(:title) }
-        it { is_expected.not_to allow_value(reserved_slug.downcase).for(:title) }
-
-        # Subdirectories under reserved slugs are allowed
-        it { is_expected.to allow_value("#{reserved_slug}/subpage").for(:title) }
-        it { is_expected.to allow_value("#{reserved_slug}/#{reserved_slug}").for(:title) }
-
-        # Non-reserved slugs are allowed
-        it { is_expected.to allow_value("non_#{reserved_slug}-page").for(:title) }
-      end
-
-      context 'when updating an existing page' do
-        let!(:existing_page) { create_wiki_page(container, title: 'allowed-title') }
-
-        subject { wiki.find_page('allowed-title') }
-
-        it { is_expected.not_to allow_value('pages').for(:title) }
-
-        it 'allows updating content without changing title' do
-          subject.attributes[:content] = 'new content'
-
-          expect(subject).to be_valid
+            expect(subject).to be_valid
+          end
         end
       end
     end

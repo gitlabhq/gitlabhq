@@ -1,10 +1,8 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
-import { createAlert } from '~/alert';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { createNoteErrorMessages } from '~/notes/utils';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import DiffDiscussions from './diff_discussions.vue';
 import NoteForm from './note_form.vue';
@@ -42,20 +40,10 @@ export default {
       const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
       if (!confirmSubmit) return;
 
-      try {
-        const {
-          data: { discussion },
-        } = await axios.post(this.endpoints.discussions, { note: { note: noteText } });
-        this.addDiscussion(discussion);
-      } catch (error) {
-        if (error.response) {
-          createAlert({
-            message: createNoteErrorMessages(error.response.data, error.response.status)[0],
-            parent: this.$el,
-          });
-        }
-        throw error;
-      }
+      const {
+        data: { discussion },
+      } = await axios.post(this.endpoints.discussions, { note: { note: noteText } });
+      this.addDiscussion(discussion);
     },
   },
 };

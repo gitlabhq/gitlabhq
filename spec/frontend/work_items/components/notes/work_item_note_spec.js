@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { GlAvatarLink } from '@gitlab/ui';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -141,11 +141,24 @@ describe('Work Item Note', () => {
       expect(findNoteBody().exists()).toBe(false);
     });
 
-    it('updates saved draft with current note text', () => {
+    it('updates saved draft with current note text when draft is empty', () => {
+      getDraft.mockReturnValue('');
+      createComponent();
+      findNoteActions().vm.$emit('startEditing');
+
       expect(updateDraft).toHaveBeenCalledWith(
         `${mockWorkItemCommentNote.id}-comment`,
         mockWorkItemCommentNote.body,
       );
+    });
+
+    it('does not update draft when existing draft is present', () => {
+      updateDraft.mockClear();
+      getDraft.mockReturnValue('existing draft');
+      createComponent();
+      findNoteActions().vm.$emit('startEditing');
+
+      expect(updateDraft).not.toHaveBeenCalled();
     });
 
     it('passes correct autosave key prop to comment form component', () => {

@@ -8,8 +8,14 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { ARROW_UP_KEY, ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
 import { stubComponent } from 'helpers/stub_component';
+import { createAlert } from '~/alert';
+import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { COMMENT_FORM } from '~/notes/i18n';
+import { clearDraft } from '~/lib/utils/autosave';
 
 jest.mock('~/vue_shared/components/markdown/tracking');
+jest.mock('~/lib/utils/autosave');
+jest.mock('~/alert');
 
 describe('NoteForm', () => {
   let pinia;
@@ -121,7 +127,7 @@ describe('NoteForm', () => {
     it('cancels form on escape keydown', () => {
       createComponent();
       findEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: ESC_KEY }));
-      expect(wrapper.emitted('cancel')).toStrictEqual([[true, false]]);
+      expect(wrapper.emitted('cancel')).toStrictEqual([[false]]);
     });
 
     it('propagates handleSuggestDismissed event', () => {
@@ -143,7 +149,7 @@ describe('NoteForm', () => {
         createComponent({ requestLastNoteEditing });
         findEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: ARROW_UP_KEY }));
         expect(requestLastNoteEditing).toHaveBeenCalled();
-        expect(wrapper.emitted('cancel')).toStrictEqual([[false, false]]);
+        expect(wrapper.emitted('cancel')).toStrictEqual([[false]]);
       });
 
       it('does not call for last note edit when has edits', () => {
@@ -191,17 +197,18 @@ describe('NoteForm', () => {
       expect(findSaveButton().props('disabled')).toBe(true);
     });
 
-    it('cancels form', () => {
-      createComponent();
+    it('cancels form without confirmation', () => {
+      createComponent({ autosaveKey: 'key' });
       findCancelButton().vm.$emit('click');
-      expect(wrapper.emitted('cancel')).toStrictEqual([[true, false]]);
+      expect(clearDraft).toHaveBeenCalledWith('key');
+      expect(wrapper.emitted('cancel')).toStrictEqual([[false]]);
     });
 
-    it('cancels form with edited text', () => {
+    it('cancels form with confirmation when text is edited', () => {
       createComponent();
       findEditor().vm.$emit('input', 'edit');
       findCancelButton().vm.$emit('click');
-      expect(wrapper.emitted('cancel')).toStrictEqual([[true, true]]);
+      expect(wrapper.emitted('cancel')).toStrictEqual([[true]]);
     });
 
     it('skips form cancel when at-who is active', () => {
@@ -241,6 +248,91 @@ describe('NoteForm', () => {
       expect(wrapper.html()).toContain(
         'This comment changed after you started editing it. Review the updated comment to ensure information is not lost.',
       );
+    });
+  });
+
+  describe('error handling', () => {
+    it('shows alert with error messages on save failure', async () => {
+      const saveNote = jest.fn().mockRejectedValue({
+        response: {
+          status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+          data: { errors: 'Validation failed' },
+        },
+      });
+      createComponent({ saveNote, noteBody: 'test' });
+
+      await findSaveButton().vm.$emit('click');
+      await nextTick();
+      await nextTick();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: ['Comment could not be submitted: validation failed.'],
+        parent: wrapper.element,
+        error: expect.any(Object),
+      });
+    });
+
+    it('uses custom error messages when provided', async () => {
+      const saveNote = jest.fn().mockRejectedValue({
+        response: {
+          status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+          data: { errors: 'Custom error' },
+        },
+      });
+      const saveNoteErrorMessages = {
+        error: 'Update failed: %{reason}',
+        defaultError: 'Update error',
+      };
+      createComponent({ saveNote, noteBody: 'test', saveNoteErrorMessages });
+
+      await findSaveButton().vm.$emit('click');
+      await nextTick();
+      await nextTick();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: ['Update failed: custom error'],
+        parent: wrapper.element,
+        error: expect.any(Object),
+      });
+    });
+
+    it('shows quick actions error messages', async () => {
+      const saveNote = jest.fn().mockRejectedValue({
+        response: {
+          status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+          data: {
+            quick_actions_status: {
+              error_messages: ['Quick action error 1', 'Quick action error 2'],
+            },
+          },
+        },
+      });
+      createComponent({ saveNote, noteBody: 'test' });
+
+      await findSaveButton().vm.$emit('click');
+      await nextTick();
+      await nextTick();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: ['Quick action error 1', 'Quick action error 2'],
+        parent: wrapper.element,
+        error: expect.any(Object),
+      });
+    });
+
+    it('shows default error when no specific error message', async () => {
+      const saveNote = jest.fn().mockRejectedValue({ response: null });
+      createComponent({ saveNote, noteBody: 'test' });
+
+      await findSaveButton().vm.$emit('click');
+      await nextTick();
+      await nextTick();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: [COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK],
+        parent: wrapper.element,
+        error: expect.any(Object),
+      });
     });
   });
 });

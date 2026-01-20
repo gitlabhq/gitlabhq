@@ -489,12 +489,6 @@ class Environment < ApplicationRecord
     end
   end
 
-  def knative_services_finder
-    if last_deployment&.cluster
-      Clusters::KnativeServicesFinder.new(last_deployment.cluster, self)
-    end
-  end
-
   def auto_stop_in
     auto_stop_at - Time.current if auto_stop_at
   end

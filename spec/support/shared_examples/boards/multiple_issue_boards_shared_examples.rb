@@ -50,7 +50,7 @@ RSpec.shared_examples 'multiple issue boards' do
       expect(page).to have_button('This is a new board')
     end
 
-    it 'deletes board', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/280554' do
+    it 'deletes board', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24072' do
       in_boards_switcher_dropdown do
         click_button 'Delete board'
       end

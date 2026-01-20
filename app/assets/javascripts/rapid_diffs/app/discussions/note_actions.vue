@@ -131,7 +131,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-1 gl-items-center gl-justify-end">
+  <div class="gl-flex gl-min-h-7 gl-flex-1 gl-items-center gl-justify-end">
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip

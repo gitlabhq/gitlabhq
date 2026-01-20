@@ -146,12 +146,21 @@ describe('diffDiscussions store', () => {
   });
 
   describe('setEditingMode', () => {
-    it('sets editing mode', () => {
+    it('sets editing mode to true', () => {
       const note = { id: 'foo', isEditing: false };
       const discussion = { id: 'efg', notes: [note] };
       useDiffDiscussions().discussions = [discussion];
       useDiffDiscussions().setEditingMode(useDiffDiscussions().discussions[0].notes[0], true);
       expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(true);
+    });
+
+    it('clears editedNote when setting editing mode to false', () => {
+      const note = { id: 'foo', isEditing: true, editedNote: 'some text' };
+      const discussion = { id: 'efg', notes: [note] };
+      useDiffDiscussions().discussions = [discussion];
+      useDiffDiscussions().setEditingMode(useDiffDiscussions().discussions[0].notes[0], false);
+      expect(useDiffDiscussions().discussions[0].notes[0].isEditing).toBe(false);
+      expect(useDiffDiscussions().discussions[0].notes[0].editedNote).toBeUndefined();
     });
   });
 

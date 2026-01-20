@@ -60,6 +60,68 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
     end
 
     context 'for admin users' do
+      shared_examples '2FA sign-in with passkeys' do
+        context 'with passkeys' do
+          let!(:passkey) { create_passkey(user) }
+
+          let(:device_response) { device_response_after_authentication(user, passkey) }
+
+          let(:session_params) { { otp_user_id: user.id, challenge: challenge } }
+          let(:user_params) { { device_response: device_response } }
+
+          def authenticate_2fa_with_passkeys
+            controller.store_location_for(:redirect, admin_root_path)
+            controller.current_user_mode.request_admin_mode!
+
+            post(:create, params: { user: user_params }, session: session_params)
+          end
+
+          it 'allows a passkey to be used for 2FA' do
+            expect(user).to receive(:get_all_webauthn_credential_ids)
+
+            controller.send(:setup_webauthn_authentication, user)
+          end
+
+          context 'when authenticated with a passkey' do
+            it 'authenticates successfully' do
+              authenticate_2fa_with_passkeys
+
+              expect(response).to redirect_to(admin_root_path)
+              expect(controller.current_user_mode.admin_mode?).to be_truthy
+            end
+          end
+
+          context 'when failed to authenticate with a passkey' do
+            let(:device_response) { 'invalid_response' }
+
+            it 'shows a flash alert from the authenticate service' do
+              authenticate_2fa_with_passkeys
+
+              expect(controller.current_user_mode.admin_mode?).to be_falsy
+              expect(flash[:alert]).to be_present
+            end
+          end
+
+          context 'when the :passkeys Feature Flag is disabled' do
+            before do
+              stub_feature_flags(passkeys: false)
+            end
+
+            it 'does not allow passkeys to be used for 2FA' do
+              expect(user).not_to receive(:get_all_webauthn_credential_ids)
+
+              controller.send(:setup_webauthn_authentication, user)
+            end
+
+            it 'does not call a passkey interval event' do
+              expect(controller).not_to receive(:track_passkey_internal_event)
+
+              authenticate_2fa_with_passkeys
+            end
+          end
+        end
+      end
+
       let(:user) { create(:admin) }
 
       it 'sets admin mode with a valid password' do
@@ -220,6 +282,8 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
             expect(controller.current_user_mode.admin_mode?).to be(false)
           end
         end
+
+        it_behaves_like '2FA sign-in with passkeys'
       end
 
       context 'when using two-factor authentication via WebAuthn' do
@@ -274,70 +338,7 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
           expect(controller.current_user_mode.admin_mode?).to be(false)
         end
 
-        context 'with passkeys' do
-          let(:user) { create(:admin, :two_factor_via_webauthn) }
-
-          let!(:passkey) { create_passkey(user) }
-
-          let(:device_response) { device_response_after_authentication(user, passkey) }
-
-          let(:session_params) { { otp_user_id: user.id, challenge: challenge } }
-          let(:user_params) { { device_response: device_response } }
-
-          def authenticate_2fa_with_passkeys
-            controller.store_location_for(:redirect, admin_root_path)
-            controller.current_user_mode.request_admin_mode!
-
-            post(:create, params: { user: user_params }, session: session_params)
-          end
-
-          context 'when the :passkeys Feature Flag is enabled' do
-            it 'allows both passkeys & second_factor_authenticators to be used for 2FA' do
-              expect(user).to receive(:get_all_webauthn_credential_ids)
-
-              controller.send(:setup_webauthn_authentication, user)
-            end
-
-            context 'when authenticated with a passkey' do
-              it 'authenticates successfully' do
-                authenticate_2fa_with_passkeys
-
-                expect(response).to redirect_to(admin_root_path)
-                expect(controller.current_user_mode.admin_mode?).to be_truthy
-              end
-            end
-
-            context 'when failed to authenticate with a passkey' do
-              let(:device_response) { 'invalid_response' }
-
-              it 'shows a flash alert from the authenticate service' do
-                authenticate_2fa_with_passkeys
-
-                expect(controller.current_user_mode.admin_mode?).to be_falsy
-                expect(flash[:alert]).to be_present
-              end
-            end
-          end
-
-          context 'when the :passkeys Feature Flag is disabled' do
-            before do
-              stub_feature_flags(passkeys: false)
-            end
-
-            it 'allows for only second_factor_authenticators to be used for 2FA' do
-              expect(user).not_to receive(:get_all_webauthn_credential_ids)
-              expect(user).to receive(:second_factor_webauthn_registrations)
-
-              controller.send(:setup_webauthn_authentication, user)
-            end
-
-            it 'does not call a passkey interval event' do
-              expect(controller).not_to receive(:track_passkey_internal_event)
-
-              authenticate_2fa_with_passkeys
-            end
-          end
-        end
+        it_behaves_like '2FA sign-in with passkeys'
       end
     end
   end

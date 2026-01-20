@@ -118,7 +118,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def authenticate_with_two_factor_via_webauthn(user)
-    if passkey_via_2fa_enabled?(user)
+    if user.passkey_via_2fa_enabled?
       # Passkeys would be the default 2FA option so we can reasonably assume it'll be used
       track_passkey_internal_event(
         event_name: 'authenticate_passkey',
@@ -158,9 +158,9 @@ module AuthenticatesWithTwoFactor
 
   # rubocop: disable CodeReuse/ActiveRecord
   def setup_webauthn_authentication(user)
-    if user.second_factor_webauthn_registrations.present?
+    if user.can_use_existing_webauthn_authenticator_for_2fa?
 
-      webauthn_registration_ids = if passkey_via_2fa_enabled?(user)
+      webauthn_registration_ids = if user.passkey_via_2fa_enabled?
                                     user.get_all_webauthn_credential_ids
                                   else
                                     user.second_factor_webauthn_registrations.pluck(:credential_xid)
@@ -188,7 +188,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def handle_two_factor_success(user)
-    if passkey_via_2fa_enabled?(user)
+    if user.passkey_via_2fa_enabled?
       # Passkeys would be the default 2FA option so we can reasonably assume it'll be used
       track_passkey_internal_event(
         event_name: 'authenticate_passkey',
@@ -205,7 +205,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def handle_two_factor_failure(user, method, message)
-    if passkey_via_2fa_enabled?(user)
+    if user.passkey_via_2fa_enabled?
       # Passkeys would be the default 2FA option so we can reasonably assume it'll be used
       track_passkey_internal_event(
         event_name: 'authenticate_passkey',
@@ -273,10 +273,6 @@ module AuthenticatesWithTwoFactor
     return false unless session[:user_password_hash]
 
     Digest::SHA256.hexdigest(user.encrypted_password) != session[:user_password_hash]
-  end
-
-  def passkey_via_2fa_enabled?(user)
-    Feature.enabled?(:passkeys, user) && user.two_factor_enabled? && user.passkeys_enabled?
   end
 
   def destroy_all_but_current_user_session!(user, session)

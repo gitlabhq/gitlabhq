@@ -8,8 +8,8 @@ import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { updateNoteErrorMessage } from '~/notes/utils';
 import { isCurrentUser } from '~/lib/utils/common_utils';
+import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -17,6 +17,7 @@ import TimelineEntryItem from './timeline_entry_item.vue';
 
 export default {
   name: 'NoteableNote',
+  UPDATE_COMMENT_FORM,
   components: {
     NoteHeader,
     NoteActions,
@@ -144,18 +145,14 @@ export default {
         if (error.response && error.response.status === HTTP_STATUS_GONE) {
           this.$emit('noteDeleted');
         } else {
-          createAlert({
-            message: updateNoteErrorMessage(error),
-            error,
-            parent: this.$el,
-          });
+          throw error;
         }
       } finally {
         this.isSaving = false;
       }
     },
-    onCancelEditing: ignoreWhilePending(async function cancel({ shouldConfirm, isDirty }) {
-      if (shouldConfirm && isDirty) {
+    onCancelEditing: ignoreWhilePending(async function cancel(shouldConfirm) {
+      if (shouldConfirm) {
         const msg = sprintf(__('Are you sure you want to cancel editing this %{commentType}?'), {
           commentType: this.commentType,
         });
@@ -203,7 +200,7 @@ export default {
         :href="author.path"
         :data-user-id="authorId"
         :data-username="author.username"
-        class="js-user-link gl-mt-3"
+        class="js-user-link gl-mt-2"
       >
         <gl-avatar
           :src="author.avatar_url"
@@ -265,6 +262,7 @@ export default {
             :autosave-key="autosaveKey"
             :restore-from-autosave="restoreFromAutosave"
             :save-note="saveNote"
+            :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             @cancelEditing="onCancelEditing"
             @input="$emit('noteEdited', $event)"
             @award="toggleAward"

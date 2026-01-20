@@ -3264,6 +3264,58 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#passkey_via_2fa_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:two_factor_enabled?, :passkeys_enabled?, :passkeys_ff_enabled?, :expected) do
+      false | false | true  | false
+      true  | false | true  | false
+      true  | false | false | false
+      true  | true  | true  | true
+      true  | true  | false | false
+    end
+
+    with_them do
+      let(:user) do
+        two_factor_enabled? ? create(:user, :two_factor_via_otp) : create(:user)
+      end
+
+      before do
+        create(:webauthn_registration, :passkey, user: user) if passkeys_enabled?
+        stub_feature_flags(passkeys: passkeys_ff_enabled?)
+      end
+
+      it 'returns the expected value' do
+        expect(user.passkey_via_2fa_enabled?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#can_use_existing_webauthn_authenticator_for_2fa?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:two_factor_webauthn_enabled?, :passkey_via_2fa_enabled?, :expected) do
+      false | false | false
+      false | true  | true
+      true  | false | true
+      true  | true  | true
+    end
+
+    with_them do
+      let(:user) do
+        two_factor_webauthn_enabled? ? create(:user, :two_factor_via_webauthn) : create(:user)
+      end
+
+      before do
+        allow(user).to receive(:passkey_via_2fa_enabled?).and_return(passkey_via_2fa_enabled?)
+      end
+
+      it 'returns the expected value' do
+        expect(user.can_use_existing_webauthn_authenticator_for_2fa?).to eq(expected)
+      end
+    end
+  end
+
   describe '#recently_sent_password_reset?' do
     it 'is false when reset_password_sent_at is nil' do
       user = build_stubbed(:user, reset_password_sent_at: nil)

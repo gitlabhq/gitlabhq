@@ -44,7 +44,7 @@
 
   .file-content.code {
     border: $border-style;
-    border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
+    border-radius: 0 0 $gl-border-radius-lg $gl-border-radius-lg;
     display: flex;
     box-shadow: none;
     margin: 0;
@@ -110,7 +110,7 @@
     border-bottom: 0;
     padding: $gl-padding;
     margin: 0;
-    border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
+    border-radius: $gl-border-radius-lg $gl-border-radius-lg 0 0;
 
     .file-header-content {
       max-width: 75%;
@@ -169,11 +169,11 @@
       }
 
       &:first-child {
-        border-radius: $gl-border-radius-base 0 0 $gl-border-radius-base;
+        border-radius: $gl-border-radius-lg 0 0 $gl-border-radius-lg;
       }
 
       &:last-child {
-        border-radius: 0 $gl-border-radius-base $gl-border-radius-base 0;
+        border-radius: 0 $gl-border-radius-lg $gl-border-radius-lg 0;
         border-right: $border-style;
       }
     }

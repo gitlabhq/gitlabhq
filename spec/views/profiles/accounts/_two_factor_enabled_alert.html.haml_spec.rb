@@ -19,7 +19,7 @@ RSpec.describe 'profiles/accounts/_two_factor_enabled_alert.html.haml', feature_
 
     context 'when user has passkeys' do
       before do
-        allow(view).to receive(:passkey_via_2fa_enabled?).and_return(true)
+        allow(user).to receive(:passkey_via_2fa_enabled?).and_return(true)
         render
       end
 
@@ -35,7 +35,7 @@ RSpec.describe 'profiles/accounts/_two_factor_enabled_alert.html.haml', feature_
 
     context 'when user does not have passkeys' do
       before do
-        allow(view).to receive(:passkey_via_2fa_enabled?).and_return(false)
+        allow(user).to receive(:passkey_via_2fa_enabled?).and_return(false)
         render
       end
 

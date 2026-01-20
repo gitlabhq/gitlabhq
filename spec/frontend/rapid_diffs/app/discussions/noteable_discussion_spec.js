@@ -4,7 +4,6 @@ import { nextTick } from 'vue';
 import { merge } from 'lodash';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
@@ -15,7 +14,6 @@ import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue'
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { clearDraft } from '~/lib/utils/autosave';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -206,21 +204,12 @@ describe('NoteableDiscussion', () => {
       detectAndConfirmSensitiveTokens.mockResolvedValue(true);
     });
 
-    it('adds reply', async () => {
+    it('adds reply and closes form', async () => {
       const discussion = {};
       axiosMock.onPost(defaultProvide.endpoints.discussions).reply(HTTP_STATUS_OK, { discussion });
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      expect(clearDraft).toHaveBeenCalled();
       expect(wrapper.emitted('discussionUpdated')).toStrictEqual([[discussion]]);
-    });
-
-    it('hides note form after successful save', async () => {
-      const discussion = {};
-      axiosMock.onPost(defaultProvide.endpoints.discussions).reply(HTTP_STATUS_OK, { discussion });
-      createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
-      await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      await nextTick();
       expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
     });
 
@@ -231,17 +220,16 @@ describe('NoteableDiscussion', () => {
       expect(wrapper.emitted('discussionUpdated')).toBe(undefined);
     });
 
-    it('shows alert when save fails', async () => {
+    it('throws error when save fails', async () => {
       axiosMock
         .onPost(defaultProvide.endpoints.discussions)
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent({ props: { discussion: createDiscussion({ isReplying: true }) } });
-      try {
-        await wrapper.findComponent(NoteForm).props('saveNote')('test note');
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-      expect(createAlert).toHaveBeenCalled();
+
+      await expect(
+        wrapper.findComponent(NoteForm).props('saveNote')('test note'),
+      ).rejects.toThrow();
+
       expect(wrapper.emitted('discussionUpdated')).toBe(undefined);
     });
   });

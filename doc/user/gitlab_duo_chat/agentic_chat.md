@@ -37,6 +37,7 @@ This feature uses [GitLab Credits](../../subscriptions/gitlab_credits.md).
 - Feature flag `self_hosted_agent_platform` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Updated default LLM](https://gitlab.com/groups/gitlab-org/-/epics/19998) to Claude Haiku 4.5 in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/581872) in GitLab 18.8 with [flags](../../administration/feature_flags/_index.md) named `agentic_chat_ga` and `ai_duo_agent_platform_ga_rollout_self_managed`. Both flags are enabled by default. Feature flag `duo_agentic_chat` removed.
+- Feature flag `self_hosted_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589) in GitLab 18.9.
 
 {{< /history >}}
 

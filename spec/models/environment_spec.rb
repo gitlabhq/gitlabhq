@@ -1772,35 +1772,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
-  describe '#knative_services_finder' do
-    let(:environment) { create(:environment) }
-
-    subject { environment.knative_services_finder }
-
-    context 'environment has no deployments' do
-      it { is_expected.to be_nil }
-    end
-
-    context 'environment has a deployment' do
-      context 'with no cluster associated' do
-        let!(:deployment) { create(:deployment, :success, environment: environment) }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'with a cluster associated' do
-        let!(:deployment) { create(:deployment, :success, :on_cluster, environment: environment) }
-
-        it 'calls the service finder' do
-          expect(Clusters::KnativeServicesFinder).to receive(:new)
-            .with(deployment.cluster, environment).and_return(:finder)
-
-          is_expected.to eq :finder
-        end
-      end
-    end
-  end
-
   describe '#auto_stop_in' do
     subject { environment.auto_stop_in }
 

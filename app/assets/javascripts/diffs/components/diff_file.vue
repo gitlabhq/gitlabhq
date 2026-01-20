@@ -183,16 +183,15 @@ export default {
     },
     hasBodyClasses() {
       const domParts = {
-        header: '!gl-rounded-base',
+        header: '!gl-rounded-lg',
         contentByHash: '',
         content: '',
       };
 
       if (this.showBody) {
         domParts.header = 'gl-rounded-bl-none gl-rounded-br-none';
-        domParts.contentByHash =
-          'gl-rounded-none gl-rounded-bl-base gl-rounded-br-base gl-border-0';
-        domParts.content = 'gl-rounded-bl-base gl-rounded-br-base';
+        domParts.contentByHash = 'gl-rounded-none gl-rounded-bl-lg gl-rounded-br-lg gl-border-0';
+        domParts.content = 'gl-rounded-bl-lg gl-rounded-br-lg';
       }
 
       return domParts;
@@ -450,7 +449,7 @@ export default {
   },
   warningClasses: [
     'collapsed-file-warning',
-    'gl-rounded-b-base',
+    'gl-rounded-b-lg',
     'gl-px-5',
     'gl-py-4',
     'gl-flex',
@@ -485,7 +484,7 @@ export default {
       variant="danger"
       :dismissible="false"
       data-testid="conflictsAlert"
-      class="gl-rounded-b-none gl-rounded-t-base"
+      class="gl-rounded-b-none gl-rounded-t-lg"
     >
       {{ $options.CONFLICT_TEXT[file.conflict_type] }}
       <template v-if="!canMerge">

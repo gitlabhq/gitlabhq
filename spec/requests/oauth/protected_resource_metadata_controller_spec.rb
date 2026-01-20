@@ -12,6 +12,9 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         ],
         'authorization_servers' => [
           Gitlab.config.gitlab.url
+        ],
+        'scopes_supported' => [
+          Gitlab::Auth::MCP_SCOPE.to_s
         ]
       }
     end
@@ -56,6 +59,9 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
           ],
           'authorization_servers' => [
             custom_host
+          ],
+          'scopes_supported' => [
+            Gitlab::Auth::MCP_SCOPE.to_s
           ]
         }
 
@@ -90,6 +96,7 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
         expect(response_body).to have_key('resource')
         expect(response_body).to have_key('authorization_servers')
+        expect(response_body).to have_key('scopes_supported')
       end
 
       it 'has correct resource format' do
@@ -109,6 +116,14 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         expect(auth_servers.length).to eq(1)
         expect(auth_servers.first).to be_a(String)
         expect(auth_servers.first).to match(%r{\Ahttps?://})
+      end
+
+      it 'has correct scopes_supported format' do
+        scopes = response.parsed_body['scopes_supported']
+
+        expect(scopes).to be_a(Array)
+        expect(scopes.length).to eq(1)
+        expect(scopes).to contain_exactly(Gitlab::Auth::MCP_SCOPE.to_s)
       end
 
       it 'authorization_servers contains the same base URL as resource' do

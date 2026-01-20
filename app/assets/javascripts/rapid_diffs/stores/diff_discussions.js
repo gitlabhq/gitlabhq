@@ -70,6 +70,7 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     },
     setEditingMode(note, value) {
       note.isEditing = value;
+      if (!value) note.editedNote = undefined;
     },
     requestLastNoteEditing(discussion) {
       const editableNote = discussion.notes.findLast((note) => {

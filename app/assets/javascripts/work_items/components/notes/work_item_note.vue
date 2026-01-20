@@ -5,7 +5,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { updateDraft, clearDraft } from '~/lib/utils/autosave';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -267,7 +267,12 @@ export default {
     startEditing() {
       this.$emit('startEditing');
       this.isEditing = true;
-      updateDraft(this.autosaveKey, this.note.body);
+      const currentDraft = getDraft(this.autosaveKey);
+      // Prevent accidental overwriting of
+      // draft in case it is already present.
+      if (!currentDraft) {
+        updateDraft(this.autosaveKey, this.note.body);
+      }
     },
     handleEditNote({ note }) {
       if (this.hasAdminPermission && note.id === this.note.id) {

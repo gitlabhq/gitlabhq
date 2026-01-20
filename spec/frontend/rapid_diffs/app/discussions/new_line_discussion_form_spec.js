@@ -3,7 +3,6 @@ import { merge } from 'lodash';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { clearDraft } from '~/lib/utils/autosave';
@@ -108,7 +107,7 @@ describe('NewLineDiscussionForm', () => {
 
   describe('saving note', () => {
     const noteBody = 'Test note body';
-    const newDiscussion = { id: 'new-discussion' };
+    const newDiscussion = { id: 'new-discussion', notes: [] };
 
     it('submits discussion and replaces form', async () => {
       const oldDiscussion = createDiscussion();
@@ -124,27 +123,20 @@ describe('NewLineDiscussionForm', () => {
 
       await findNoteForm().props('saveNote')(noteBody);
 
-      expect(clearDraft).toHaveBeenCalled();
       expect(useDiffDiscussions().replaceDiscussion).toHaveBeenCalledWith(
         oldDiscussion,
         newDiscussion,
       );
     });
 
-    it('shows alert on submission failure', async () => {
+    it('throws error on submission failure', async () => {
       mockAdapter
         .onPost(defaultProvisions.endpoints.discussions)
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       createComponent();
 
-      await findNoteForm().props('saveNote')(noteBody);
+      await expect(findNoteForm().props('saveNote')(noteBody)).rejects.toThrow();
 
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Failed to submit your comment. Please try again.',
-        parent: expect.any(Object),
-        error: expect.any(Object),
-      });
-      expect(clearDraft).not.toHaveBeenCalled();
       expect(useDiffDiscussions().replaceDiscussion).not.toHaveBeenCalled();
     });
   });

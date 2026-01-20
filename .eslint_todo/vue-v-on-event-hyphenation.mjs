@@ -368,8 +368,6 @@ export default {
     'ee/app/assets/javascripts/workspaces/common/components/workspaces_list/workspaces_list.vue',
     'ee/app/assets/javascripts/workspaces/common/components/workspaces_list/workspaces_table.vue',
     'ee/app/assets/javascripts/workspaces/dropdown_group/components/workspaces_dropdown_group.vue',
-    'ee/app/assets/javascripts/workspaces/user/pages/create.vue',
-    'ee/app/assets/javascripts/workspaces/user/pages/list.vue',
   ],
   rules: {
     'vue/v-on-event-hyphenation': 'off',

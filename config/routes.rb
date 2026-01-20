@@ -60,6 +60,7 @@ InitializerConnections.raise_if_new_database_connection do
       # https://github.com/mcp-auth/mcp-typescript-sdk/blob/31acdcbb189056ec83d14a4f7a37ae2b1c67680e/src/client/auth.ts#L697-L702
       get '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider'
       get '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider'
+      get '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show'
 
       use_doorkeeper_device_authorization_grant do
         controller device_authorizations: 'oauth/device_authorizations'
@@ -73,6 +74,7 @@ InitializerConnections.raise_if_new_database_connection do
       match '/.well-known/webfinger' => 'jwks#webfinger', via: :options
       match '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider', via: :options
       match '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider', via: :options
+      match '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show', via: :options
 
       match '/oauth/token' => 'oauth/tokens#create', via: :options
       match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options

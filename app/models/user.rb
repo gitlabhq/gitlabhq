@@ -1451,6 +1451,20 @@ class User < ApplicationRecord
     passkeys.any?
   end
 
+  def passkey_via_2fa_enabled?
+    Feature.enabled?(:passkeys, self) && self.two_factor_enabled? && self.passkeys_enabled?
+  end
+
+  # This predicate allows either passkeys or second_factor_webauthn_registrations
+  # to be used as a 2FA method without breaking existing 2FA implementations.
+  #
+  # Once passkeys are fully rolled out with adequate recovery options,
+  # #two_factor_webauthn_enabled? will become
+  # second_factor_webauthn_registrations.any? || passkeys_enabled?
+  def can_use_existing_webauthn_authenticator_for_2fa?
+    two_factor_webauthn_enabled? || passkey_via_2fa_enabled?
+  end
+
   def needs_new_otp_secret?
     !two_factor_otp_enabled? && otp_secret_expired?
   end

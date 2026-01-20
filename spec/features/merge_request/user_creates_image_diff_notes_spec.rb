@@ -89,7 +89,8 @@ RSpec.describe 'Merge request > User creates image diff notes', :js, feature_cat
           create_image_diff_note
         end
 
-        it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27950' do
+        it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes',
+          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/16776' do
           indicator = find('.js-image-badge', match: :first)
           badge = find('.user-avatar-link .badge', match: :first)
 

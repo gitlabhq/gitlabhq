@@ -563,34 +563,25 @@ spec:
 ---
 ```
 
-### Override inputs from an external file
+### Duplicate input keys
 
-If you define an input in both an included input file, and the `inputs:` section in the `.gitlab-ci.yml` configuration,
-the inputs from the file are overridden.
+{{< history >}}
 
-For example, in a `shared-inputs.yml` file:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557867) in GitLab 18.9.
 
-```yaml
-inputs:
-  environment:
-    options: ['staging', 'production']
-  region:
-    default: 'us-east-1'
+{{< /history >}}
+
+Input keys must be unique across all included files and inline specifications.
+If you define an input with the same key in multiple included files, or in both
+an included file and the `inputs:` section in the `.gitlab-ci.yml` configuration,
+the following error is returned:
+
+```plaintext
+Duplicate input keys found: environment. Input keys must be unique across all included files and inline specifications.
 ```
 
-Then then you include the file in your `.gitlab-ci.yml`:
-
-```yaml
-spec:
-  include:
-    - local: /shared-inputs.yml
-  inputs:
-    environment: 'canary'
----
-```
-
-In this case, the `environment` input options in the file are overridden by the
-`inputs: environment` configuration in the `.gitlab-ci.yml` file.
+To fix this error, ensure each input key is defined only once, either in an included
+file or in the inline `inputs:` section, but not both.
 
 ## Specify functions to manipulate input values
 

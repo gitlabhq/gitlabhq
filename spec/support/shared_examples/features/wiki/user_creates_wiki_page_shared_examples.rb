@@ -116,7 +116,7 @@ RSpec.shared_examples 'User creates wiki page' do
     end
 
     it "creates ASCII wiki with LaTeX blocks", :js, quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584363',
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24078',
       type: :flaky
     } do
       stub_application_setting(plantuml_url: "http://localhost", plantuml_enabled: true)

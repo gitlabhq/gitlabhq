@@ -265,7 +265,7 @@ RSpec.shared_examples 'User views a wiki page' do
     end
 
     it 'displays the table of contents for the page', quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/584363',
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24078',
       type: :flaky
     } do
       visit(wiki_page_path(wiki, wiki_page))

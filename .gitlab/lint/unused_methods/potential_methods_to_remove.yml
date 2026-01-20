@@ -279,8 +279,6 @@ app/models/concerns/user_mention_behaviour.rb:
 - has_mentions?
 - mentioned_groups
 - mentioned_projects
-app/models/environment.rb:
-- knative_services_finder
 app/models/event.rb:
 - find_sti_class
 - created_target?

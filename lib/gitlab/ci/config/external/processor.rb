@@ -6,6 +6,7 @@ module Gitlab
       module External
         class Processor
           IncludeError = Class.new(StandardError)
+          DuplicateInputError = Class.new(IncludeError)
 
           attr_reader :context, :logger
 
@@ -27,6 +28,9 @@ module Gitlab
             merge_external_files!
             append_inline_content!
             remove_include_keyword!
+            validate!
+
+            @content
           end
 
           private
@@ -55,6 +59,10 @@ module Gitlab
 
           def remove_include_keyword!
             @content.tap { @content.delete(:include) }
+          end
+
+          def validate!
+            # no-op: override in subclasses for custom validation
           end
         end
       end

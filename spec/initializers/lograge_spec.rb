@@ -150,7 +150,8 @@ RSpec.describe 'lograge', type: :request, feature_category: :observability do
         event.payload[:exception_object] = exception
       end
 
-      it 'adds exception data to log', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446202' do
+      it 'adds exception data to log',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25597' do
         subscriber.process_action(event)
 
         expect(log_data['exception.class']).to eq('RuntimeError')

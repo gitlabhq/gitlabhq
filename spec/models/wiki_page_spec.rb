@@ -7,7 +7,7 @@ RSpec.describe WikiPage, feature_category: :wiki do
 
   describe 'wiki page references' do
     describe '#reference_pattern' do
-      let(:match_data) { described_class.reference_pattern.match(link_reference_url) }
+      subject(:match_data) { described_class.reference_pattern.match(link_reference_url) }
 
       context 'with full namespace with project' do
         let(:link_reference_url) { '[wiki_page:namespace/project:foobar/qux]' }
@@ -29,7 +29,7 @@ RSpec.describe WikiPage, feature_category: :wiki do
     end
 
     describe '#link_reference_pattern' do
-      let(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
+      subject(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
 
       context 'with project wiki page url' do
         let(:link_reference_url) { 'http://localhost/namespace/project/-/wikis/foobar/qux' }

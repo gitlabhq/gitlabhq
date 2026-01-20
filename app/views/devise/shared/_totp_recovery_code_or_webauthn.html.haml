@@ -2,7 +2,7 @@
 - render_remember_me = admin_mode ? false : remember_me_enabled?
 - user_params = params[:user].presence || params
 
-= gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_webauthn_enabled?}", aria: { live: 'assertive' }}) do |f|
+= gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.can_use_existing_webauthn_authenticator_for_2fa?}", aria: { live: 'assertive' }}) do |f|
   .form-group
     = f.label :otp_attempt, _('Enter verification code')
     -# Note: we use inputmode="numeric", because TOTP. However, recovery codes are alphanumeric.
@@ -20,5 +20,5 @@
   - verification_data_hash = verification_data(@user)
   #js-2fa-email-verification-data{ data: { send_email_otp_path: users_fallback_to_email_otp_path, username: @user.username, email_verification_data: verification_data_hash.to_json } }
 
-- if @user.two_factor_webauthn_enabled?
+- if @user.can_use_existing_webauthn_authenticator_for_2fa?
   #js-authentication-webauthn{ data: webauthn_authentication_data(user: @user, params: params, admin_mode: admin_mode) }
