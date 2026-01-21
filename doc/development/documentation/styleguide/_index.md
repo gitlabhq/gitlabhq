@@ -1784,13 +1784,6 @@ To create a diagram for GitLab documentation with Mermaid:
 1. In the [Mermaid Live Editor](https://mermaid.live/), create the diagram.
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
-1. To add GitLab font styling to your diagram, between the Mermaid code block declaration
-   and the type of diagram, add the following line:
-
-   ```plaintext
-   %%{init: { "fontFamily": "GitLab Sans" }}%%
-   ```
-
 1. On the next line after declaring the type of diagram
   (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
 
@@ -1801,11 +1794,10 @@ To create a diagram for GitLab documentation with Mermaid:
 
    Make sure the title and description follow the [alternative text guidelines](#alternative-text).
 
-For example, this flowchart contains both accessibility and font information:
+For example, this flowchart contains accessibility information:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
     accTitle: Example diagram title
     accDescr: A description of your diagram

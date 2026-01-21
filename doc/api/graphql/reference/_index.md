@@ -1822,6 +1822,18 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="querysecretpermissionsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secret permission belong to. |
 
+### `Query.securityConfiguration`
+
+Security configuration for the project.
+
+Returns [`SecurityConfiguration`](#securityconfiguration).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysecurityconfigurationprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project to get the security configuration for. |
+
 ### `Query.securityPoliciesSyncStatus`
 
 {{< details >}}
@@ -46789,6 +46801,19 @@ JSON structure of each line in a matched chunk.
 | <a id="searchbloblinelinenumber"></a>`lineNumber` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
 | <a id="searchbloblinetext"></a>`text` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |
 
+### `SecondarySecurityFeature`
+
+Secondary security feature information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secondarysecurityfeatureconfigurationtext"></a>`configurationText` | [`String!`](#string) | Display text for configuring the secondary feature. |
+| <a id="secondarysecurityfeaturedescription"></a>`description` | [`String!`](#string) | Description of what the secondary feature does. |
+| <a id="secondarysecurityfeaturename"></a>`name` | [`String!`](#string) | Name of the secondary feature. |
+| <a id="secondarysecurityfeaturetype"></a>`type` | [`String!`](#string) | Type identifier for the secondary feature. |
+
 ### `SecretPermission`
 
 Representation of a secret permission.
@@ -46849,6 +46874,60 @@ A security category.
 | <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
 | <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |
 | <a id="securitycategorytemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. |
+
+### `SecurityConfiguration`
+
+Security configuration data for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityconfigurationautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Whether Auto DevOps is enabled for the project. |
+| <a id="securityconfigurationautodevopshelppagepath"></a>`autoDevopsHelpPagePath` | [`String`](#string) | Path to Auto DevOps help documentation. |
+| <a id="securityconfigurationautodevopspath"></a>`autoDevopsPath` | [`String`](#string) | Path to Auto DevOps settings. |
+| <a id="securityconfigurationcanenableautodevops"></a>`canEnableAutoDevops` | [`Boolean!`](#boolean) | Whether the current user can enable Auto DevOps. |
+| <a id="securityconfigurationcanenablespp"></a>`canEnableSpp` | [`Boolean!`](#boolean) | Whether the current user can enable secret push protection. |
+| <a id="securityconfigurationcanmanageattributes"></a>`canManageAttributes` | [`Boolean!`](#boolean) | Whether the current user can manage security attributes. |
+| <a id="securityconfigurationcanreadattributes"></a>`canReadAttributes` | [`Boolean!`](#boolean) | Whether the current user can read security attributes. |
+| <a id="securityconfigurationcontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Whether container scanning for registry is enabled. |
+| <a id="securityconfigurationfeatures"></a>`features` | [`[SecurityScanFeature!]!`](#securityscanfeature) | List of security scan features and their configuration status. |
+| <a id="securityconfigurationgitlabcihistorypath"></a>`gitlabCiHistoryPath` | [`String`](#string) | Path to the GitLab CI configuration file history. |
+| <a id="securityconfigurationgitlabcipresent"></a>`gitlabCiPresent` | [`Boolean!`](#boolean) | Whether a GitLab CI configuration file exists in the project. |
+| <a id="securityconfigurationgroupfullpath"></a>`groupFullPath` | [`String`](#string) | Full path of the root ancestor group. |
+| <a id="securityconfigurationgroupmanageattributespath"></a>`groupManageAttributesPath` | [`String`](#string) | Path to manage group security attributes. |
+| <a id="securityconfigurationhelppagepath"></a>`helpPagePath` | [`String`](#string) | Path to application security help documentation. |
+| <a id="securityconfigurationisgitlabcom"></a>`isGitlabCom` | [`Boolean`](#boolean) | Whether the instance is GitLab.com. |
+| <a id="securityconfigurationlatestpipelinepath"></a>`latestPipelinePath` | [`String`](#string) | Path to the latest pipeline on the default branch. |
+| <a id="securityconfigurationlicenseconfigurationsource"></a>`licenseConfigurationSource` | [`String`](#string) | Source of license configuration. |
+| <a id="securityconfigurationsecretdetectionconfigurationpath"></a>`secretDetectionConfigurationPath` | [`String`](#string) | Path to secret detection configuration. |
+| <a id="securityconfigurationsecretpushprotectionavailable"></a>`secretPushProtectionAvailable` | [`Boolean!`](#boolean) | Whether secret push protection is available at the instance level. |
+| <a id="securityconfigurationsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Whether secret push protection is enabled for the project. |
+| <a id="securityconfigurationsecretpushprotectionlicensed"></a>`secretPushProtectionLicensed` | [`Boolean!`](#boolean) | Whether the project has a license for secret push protection. |
+| <a id="securityconfigurationsecuritytrainingenabled"></a>`securityTrainingEnabled` | [`Boolean!`](#boolean) | Whether security training is available for the project. |
+| <a id="securityconfigurationupgradepath"></a>`upgradePath` | [`String`](#string) | Path to upgrade security features. |
+| <a id="securityconfigurationuserisprojectadmin"></a>`userIsProjectAdmin` | [`Boolean!`](#boolean) | Whether the current user has admin permissions for security testing. |
+| <a id="securityconfigurationvaliditychecksavailable"></a>`validityChecksAvailable` | [`Boolean`](#boolean) | Whether secret detection validity checks are available. |
+| <a id="securityconfigurationvaliditychecksenabled"></a>`validityChecksEnabled` | [`Boolean`](#boolean) | Whether secret detection validity checks are enabled. |
+| <a id="securityconfigurationvulnerabilityarchiveexportpath"></a>`vulnerabilityArchiveExportPath` | [`String`](#string) | Path to export vulnerability archives via API. |
+| <a id="securityconfigurationvulnerabilitytrainingdocspath"></a>`vulnerabilityTrainingDocsPath` | [`String`](#string) | Path to vulnerability training documentation. |
+
+### `SecurityFeature`
+
+Security feature information for a scan type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityfeatureanchor"></a>`anchor` | [`String`](#string) | Anchor link for the security feature. |
+| <a id="securityfeatureconfigurationhelppath"></a>`configurationHelpPath` | [`String`](#string) | Path to configuration help documentation. |
+| <a id="securityfeaturedescription"></a>`description` | [`String!`](#string) | Description of what the security feature does. |
+| <a id="securityfeaturehelppath"></a>`helpPath` | [`String!`](#string) | Path to help documentation for the security feature. |
+| <a id="securityfeaturename"></a>`name` | [`String!`](#string) | Full name of the security feature. |
+| <a id="securityfeaturesecondary"></a>`secondary` | [`SecondarySecurityFeature`](#secondarysecurityfeature) | Secondary feature information. |
+| <a id="securityfeatureshortname"></a>`shortName` | [`String`](#string) | Short name of the security feature. |
+| <a id="securityfeaturetype"></a>`type` | [`String!`](#string) | Type identifier for the security feature. |
 
 ### `SecurityFindingTokenStatus`
 
@@ -46985,6 +47064,23 @@ Represents a section of a summary of a security report.
 | <a id="securityreportsummarysectionscannedresourcescsvpath"></a>`scannedResourcesCsvPath` | [`String`](#string) | Path to download all the scanned resources in CSV format. |
 | <a id="securityreportsummarysectionscans"></a>`scans` | [`ScanConnection!`](#scanconnection) | List of security scans ran for the type. (see [Connections](#connections)) |
 | <a id="securityreportsummarysectionvulnerabilitiescount"></a>`vulnerabilitiesCount` | [`Int`](#int) | Total number of vulnerabilities. |
+
+### `SecurityScanFeature`
+
+Security scan feature configuration.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanfeatureavailable"></a>`available` | [`Boolean!`](#boolean) | Whether the security scan is available for the project. |
+| <a id="securityscanfeaturecanenablebymergerequest"></a>`canEnableByMergeRequest` | [`Boolean!`](#boolean) | Whether the security scan can be enabled via merge request. |
+| <a id="securityscanfeatureconfigurationpath"></a>`configurationPath` | [`String`](#string) | Path to configure the security scan. |
+| <a id="securityscanfeatureconfigured"></a>`configured` | [`Boolean!`](#boolean) | Whether the security scan is configured for the project. |
+| <a id="securityscanfeaturemetainfopath"></a>`metaInfoPath` | [`String`](#string) | Path to additional information about the security scan. |
+| <a id="securityscanfeatureondemandavailable"></a>`onDemandAvailable` | [`Boolean!`](#boolean) | Whether on-demand scanning is available for the scan type. |
+| <a id="securityscanfeaturesecurityfeatures"></a>`securityFeatures` | [`SecurityFeature`](#securityfeature) | Additional security features specific to the scan type. |
+| <a id="securityscanfeaturetype"></a>`type` | [`String!`](#string) | Type of security scan (e.g., sast, dast, secret_detection). |
 
 ### `SecurityScanners`
 

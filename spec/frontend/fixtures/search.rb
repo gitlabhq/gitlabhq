@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller, feature_category: :global_search do
   include JavaScriptFixturesHelpers
 
   render_views

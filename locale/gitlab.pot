@@ -14504,7 +14504,7 @@ msgstr ""
 msgid "CiCatalogComponent|Name"
 msgstr ""
 
-msgid "CiCatalogComponent|The number of projects that used the component in the last 30 days."
+msgid "CiCatalogComponent|The number of projects that used this version of the component in the last 30 days."
 msgstr ""
 
 msgid "CiCatalogComponent|There was an error fetching this resource's components"

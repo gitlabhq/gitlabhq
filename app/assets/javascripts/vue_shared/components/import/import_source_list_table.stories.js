@@ -96,10 +96,14 @@ const FunctionalExample = (args, { argTypes }) => ({
   </div>
   <import-source-list-table v-bind="$props">
     <template #select-all-checkbox="{ items }">
-      <gl-form-checkbox class="gl-min-h-5 gl-w-0" @change="selectAll" :indeterminate="selectAllIndeterminate" :checked="allSelected" />
+      <gl-form-checkbox class="gl-min-h-5 gl-w-0" @change="selectAll" :indeterminate="selectAllIndeterminate" :checked="allSelected">
+        <span class="gl-sr-only">Select all</span>
+      </gl-form-checkbox>
     </template>
     <template #row-checkbox="{ item }">
-      <gl-form-checkbox class="gl-min-h-5 gl-w-0" :checked="isSelected(item.id)" @change="toggleSelect(item.id)" />
+      <gl-form-checkbox class="gl-min-h-5 gl-w-0" :checked="isSelected(item.id)" @change="toggleSelect(item.id)">
+        <span class="gl-sr-only">{{ item.source_full_path }}</span>
+      </gl-form-checkbox>
     </template>
     <template #destination-input="{ item }">
       <div :class="$options.placeholderClasses">DESTINATION INPUT GOES HERE</div>
@@ -117,20 +121,10 @@ export const Functional = FunctionalExample.bind({});
 Functional.args = defaultProps;
 
 Functional.parameters = {
-  a11y: {
-    config: {
-      rules: [
-        {
-          id: 'label',
-          enabled: false,
-        },
-      ],
-    },
-  },
   docs: {
     description: {
       story: `This example shows an import source table that includes functional multi-select and examples of the import action buttons.
-      
+
 Note that the top bar with an Import button was added separately and is not part of the table.`,
     },
   },

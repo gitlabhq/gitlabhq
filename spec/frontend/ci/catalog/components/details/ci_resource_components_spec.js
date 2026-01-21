@@ -177,7 +177,7 @@ describe('CiResourceComponents', () => {
           findUsageCounts().wrappers.forEach((usageCount) => {
             const tooltip = usageCount.attributes('title');
             expect(tooltip).toBe(
-              'The number of projects that used the component in the last 30 days.',
+              'The number of projects that used this version of the component in the last 30 days.',
             );
           });
         });

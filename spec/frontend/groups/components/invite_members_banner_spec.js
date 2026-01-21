@@ -73,7 +73,7 @@ describe('InviteMembersBanner', () => {
       });
 
       it('calls openModal through the eventHub', () => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('openModal', {
+        expect(eventHub.$emit).toHaveBeenCalledWith('open-modal', {
           source: 'invite_members_banner',
         });
       });

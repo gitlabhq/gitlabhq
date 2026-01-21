@@ -30,7 +30,13 @@ module Projects
           can_enable_spp: can_enable_spp?,
           is_gitlab_com: gitlab_com?,
           secret_detection_configuration_path: secret_detection_configuration_path,
-          license_configuration_source: license_configuration_source
+          license_configuration_source: license_configuration_source,
+          vulnerability_training_docs_path: vulnerability_training_docs_path,
+          upgrade_path: upgrade_path,
+          group_full_path: group_full_path,
+          can_read_attributes: can_read_attributes?,
+          can_manage_attributes: can_manage_attributes?,
+          group_manage_attributes_path: group_manage_attributes_path
         }
       end
 
@@ -118,6 +124,37 @@ module Projects
         project.security_setting
       end
 
+      def vulnerability_training_docs_path
+        help_page_path(
+          'user/application_security/vulnerabilities/_index.md',
+          anchor: 'enable-security-training-for-vulnerabilities'
+        )
+      end
+
+      def upgrade_path
+        promo_pricing_url
+      end
+
+      def group_full_path
+        root_group.full_path if root_group
+      end
+
+      def can_read_attributes?
+        return false unless root_group
+
+        can?(current_user, :read_security_attribute, root_group)
+      end
+
+      def can_manage_attributes?
+        return false unless root_group
+
+        can?(current_user, :admin_security_attributes, root_group)
+      end
+
+      def root_group
+        @root_group ||= project.root_ancestor if project.root_ancestor.is_a?(Group)
+      end
+
       def gitlab_com?; end
       def validity_checks_available; end
       def validity_checks_enabled; end
@@ -125,6 +162,7 @@ module Projects
       def secret_push_protection_enabled; end
       def secret_detection_configuration_path; end
       def license_configuration_source; end
+      def group_manage_attributes_path; end
     end
   end
 end

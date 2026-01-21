@@ -225,7 +225,7 @@ export default {
       displaySuccessfulInvitationAlert();
     }
 
-    eventHub.$on('openModal', (options) => {
+    eventHub.$on('open-modal', (options) => {
       this.openModal(options);
     });
   },

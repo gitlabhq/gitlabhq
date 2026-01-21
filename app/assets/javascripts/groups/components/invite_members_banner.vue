@@ -46,7 +46,7 @@ export default {
       });
     },
     openModal() {
-      eventHub.$emit('openModal', { source: this.$options.openModalSource });
+      eventHub.$emit('open-modal', { source: this.$options.openModalSource });
     },
   },
   i18n: {
