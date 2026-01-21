@@ -122,7 +122,8 @@ module Users
       work_item_consolidated_list_feedback: 118,
       ai_experiment_sast_fp_detection: 119, # EE-only
       vulnerability_report_limited_experience: 120, # EE-only
-      file_tree_browser_popover: 121
+      file_tree_browser_popover: 121,
+      virtual_registry_permission_change_alert: 122 # EE-only
     }
 
     validates :feature_name,

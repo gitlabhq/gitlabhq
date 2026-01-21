@@ -168,6 +168,7 @@ Gitlab/BoundedContexts:
     - 'app/graphql/mutations/custom_emoji/destroy.rb'
     - 'app/graphql/mutations/discussions/toggle_resolve.rb'
     - 'app/graphql/mutations/echo.rb'
+    - 'app/graphql/mutations/groups/custom_attributes/delete.rb'
     - 'app/graphql/mutations/groups/update.rb'
     - 'app/graphql/mutations/incident_management/timeline_event/base.rb'
     - 'app/graphql/mutations/incident_management/timeline_event/create.rb'

@@ -26,7 +26,7 @@ The runner fleet dashboard shows:
 - Compute minutes used by instance runners
 - Job queue times
 
-![Runner fleet dashboard](img/runner_fleet_dashboard_v17_1.png)
+![Runner fleet dashboard displaying status, usage, and performance metrics.](img/runner_fleet_dashboard_v17_1.png)
 
 ## Dashboard metrics
 

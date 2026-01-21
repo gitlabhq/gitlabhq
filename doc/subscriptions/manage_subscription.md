@@ -542,11 +542,15 @@ You cannot transfer:
 
 GitLab Enterprise Agile Planning is an add-on that helps bring non-technical users into the same
 DevSecOps platform where engineers build, test, secure, and deploy code.
-The add-on enables cross-team collaboration between developers and non-developers without having to
-purchase full GitLab licenses for non-engineering team members.
+The add-on enables cross-team collaboration between developers and non-developers
+without having to purchase GitLab Ultimate licenses for non-engineering team members.
+
+If you have an active Ultimate license, you can purchase additional
+Enterprise Agile Planning seats for non-engineering team members.
+
 With Enterprise Agile Planning seats, non-engineering team members can participate in planning
 workflows, measure software delivery velocity and impact with Value Stream Analytics, and use
 executive dashboards to drive organizational visibility.
 
-To purchase additional Enterprise Agile Planning seats, contact your
-[GitLab sales representative](https://customers.gitlab.com/contact_us) for more information.
+For more information about Enterprise Agile Planning seats and how to purchase them,
+contact your [GitLab sales representative](https://customers.gitlab.com/contact_us).

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
+RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success|
   shared_examples 'granting access' do
     it 'grants access' do
       request
 
-      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to have_gitlab_http_status(expected_success_status)
     end
   end
 

@@ -27,6 +27,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       let(:params) { { job_token: target_job.token } }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_package do
+      before_all { project.add_developer(user) }
+
+      let(:boundary_object) { project }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
+
     context 'without the need for a license' do
       context 'project is public' do
         it_behaves_like 'returns packages', :project, :no_type
@@ -294,6 +301,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       let(:request) { get api(package_url), params: { job_token: target_job.token } }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_package do
+      before_all { project.add_developer(user) }
+
+      let(:boundary_object) { project }
+      let(:request) { get api(package_url, personal_access_token: pat) }
+    end
+
     shared_examples 'no destroy url' do
       it 'returns no destroy url' do
         subject
@@ -554,6 +568,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
     it_behaves_like 'enforcing job token policies', :read_pipelines,
       allow_public_access_for_enabled_project_features: :package_registry do
       let(:request) { get api(package_pipelines_url), params: { job_token: target_job.token } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_package_pipeline do
+      before_all { project.add_developer(user) }
+
+      let(:boundary_object) { project }
+      let(:request) { get api(package_pipelines_url, personal_access_token: pat) }
     end
 
     context 'without the need for a license' do
@@ -834,6 +855,13 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       let(:request) { delete api(package_url), params: { job_token: target_job.token } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_package do
+      before_all { project.add_maintainer(user) }
+
+      let(:boundary_object) { project }
+      let(:request) { delete api(package_url, personal_access_token: pat) }
     end
 
     context 'without the need for a license' do

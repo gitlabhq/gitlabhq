@@ -17,6 +17,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:extra_app_data) { nil }
   let(:extra_prefetch_endpoints) { [] }
 
+  let(:linked_file) { nil }
+
   let(:diff_presenter) do
     instance_double(
       ::RapidDiffs::BasePresenter,
@@ -28,7 +30,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       diff_file_endpoint: diff_file_endpoint,
       should_sort_metadata_files?: should_sort_metadata_files,
       environment: nil,
-      lazy?: lazy
+      lazy?: lazy,
+      linked_file: linked_file
     )
   end
 
@@ -237,6 +240,31 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
         render_component
         expect(page).not_to have_text("There are no changes")
       end
+    end
+  end
+
+  context "with linked file" do
+    let(:linked_diff_file) do
+      build(:diff_file).tap do |file|
+        file.diff.old_path = 'old.txt'
+        file.diff.new_path = 'new.txt'
+        file.linked = true
+      end
+    end
+
+    let(:diffs_slice) { nil }
+    let(:linked_file) { linked_diff_file }
+
+    it "renders only the linked file" do
+      render_component
+      expect(page.all('diff-file').size).to eq(1)
+    end
+
+    it "includes linked file data in app data" do
+      render_component
+      app = page.find('[data-rapid-diffs]')
+      data = Gitlab::Json.parse(app['data-app-data'])
+      expect(data['linked_file_data']).to eq({ 'old_path' => 'old.txt', 'new_path' => 'new.txt' })
     end
   end
 

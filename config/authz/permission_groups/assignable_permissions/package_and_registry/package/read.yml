@@ -1,0 +1,8 @@
+---
+name: read_package
+description: Grants the ability to read packages
+permissions:
+  - read_package
+boundaries:
+  - group
+  - project

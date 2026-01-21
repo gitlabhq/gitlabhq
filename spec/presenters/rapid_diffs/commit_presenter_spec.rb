@@ -11,10 +11,11 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   let(:diff_options) { { ignore_whitespace_changes: true } }
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/commit/#{commit.sha}" }
+  let(:request_params) { {} }
 
   subject(:presenter) do
-    described_class.new(commit, diff_view: diff_view, diff_options: diff_options, request_params: nil,
-      current_user: current_user)
+    described_class.new(commit, diff_view: diff_view, diff_options: diff_options,
+      request_params: request_params, current_user: current_user)
   end
 
   before do
@@ -66,6 +67,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
       subject(:url) { presenter.reload_stream_url }
 
       it { is_expected.to eq("#{base_path}/diffs_stream") }
+
+      context 'with skip parameters' do
+        subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }
+
+        it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=new.txt&skip_old_path=old.txt") }
+      end
     end
   end
 
@@ -139,5 +146,44 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     subject(:method) { presenter.sign_in_path }
 
     it { is_expected.to eq('/users/sign_in?redirect_to_referer=yes') }
+  end
+
+  describe '#linked_file' do
+    let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
+    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+
+    context 'when file_path is provided' do
+      let(:request_params) { { file_path: 'new.txt' } }
+
+      before do
+        allow(commit).to receive(:diffs).and_return(diff_files)
+      end
+
+      it 'returns the linked file' do
+        result = presenter.linked_file
+        expect(result).to eq(diff_file)
+        expect(result.linked).to be(true)
+      end
+    end
+
+    context 'when old_path and new_path are provided' do
+      let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
+
+      before do
+        allow(commit).to receive(:diffs).and_return(diff_files)
+      end
+
+      it 'returns the linked file' do
+        result = presenter.linked_file
+        expect(result).to eq(diff_file)
+        expect(result.linked).to be(true)
+      end
+    end
+
+    context 'when no path parameters are provided' do
+      it 'returns nil' do
+        expect(presenter.linked_file).to be_nil
+      end
+    end
   end
 end

@@ -32,6 +32,8 @@
   background-color: var(--gl-background-color-subtle);
   border-radius: var(--content-border-radius);
   border: 1px solid var(--rd-line-border-color);
+  border-left: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color));
+  border-right: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color));
   container: discussion-row / inline-size;
 }
 
@@ -56,6 +58,7 @@
 .rd-discussion-row > td:only-child {
   @container discussion-row (min-width: theme('maxWidth.limited')) {
     border-bottom-right-radius: 0;
+    border-right-color: var(--rd-line-border-color);
   }
 }
 

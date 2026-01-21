@@ -37,10 +37,10 @@ export default {
 </script>
 <template>
   <li
-    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
+    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-lg gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
   >
     <button
-      class="board-card-button gl-block gl-h-full gl-w-full gl-rounded-base gl-border-0 gl-bg-transparent gl-p-4 gl-text-left gl-outline-none focus:gl-focus"
+      class="board-card-button gl-block gl-h-full gl-w-full gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-4 gl-text-left gl-outline-none focus:gl-focus"
     >
       <div class="gl-flex" dir="auto">
         <h4

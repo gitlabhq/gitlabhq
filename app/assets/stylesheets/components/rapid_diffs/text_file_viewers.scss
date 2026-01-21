@@ -29,11 +29,11 @@
 }
 
 .rd-text-view-content td:first-child {
-  border-left: 1px solid var(--rd-line-border-color, var(--rd-line-theme-border-color));
+  border-left: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color, var(--rd-line-theme-border-color)));
 }
 
 .rd-text-view-content td:last-child {
-  border-right: 1px solid var(--rd-line-border-color, var(--rd-line-theme-border-color));
+  border-right: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-line-border-color, var(--rd-line-theme-border-color)));
 }
 
 .rd-text-view-root:has(.rd-new-discussion-toggle) {

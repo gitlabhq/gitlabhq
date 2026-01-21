@@ -39,7 +39,12 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       project: project,
       diff_view: diff_view,
       diff_options: diff_options,
-      request_params: { merge_request: merge_request_params }
+      request_params: {
+        merge_request: merge_request_params,
+        file_path: params[:file_path],
+        old_path: params[:old_path],
+        new_path: params[:new_path]
+      }
     )
   end
 

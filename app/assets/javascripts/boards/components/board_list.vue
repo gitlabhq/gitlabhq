@@ -807,7 +807,7 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-rounded-bl-base gl-rounded-br-base gl-bg-red-50': boardLimitExceeded,
+        'gl-rounded-bl-lg gl-rounded-br-lg gl-bg-red-50': boardLimitExceeded,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
         'list-empty': !listItemsCount,

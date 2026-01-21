@@ -49233,6 +49233,9 @@ msgstr ""
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 
+msgid "PerformanceBar|GDK running in SaaS mode"
+msgstr ""
+
 msgid "PerformanceBar|Gitaly calls"
 msgstr ""
 
@@ -49258,6 +49261,9 @@ msgid "PerformanceBar|Request made from Canary"
 msgstr ""
 
 msgid "PerformanceBar|SQL queries"
+msgstr ""
+
+msgid "PerformanceBar|SaaS"
 msgstr ""
 
 msgid "PerformanceBar|Show stats"

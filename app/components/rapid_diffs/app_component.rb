@@ -9,7 +9,7 @@ module RapidDiffs
     attr_reader :presenter
 
     delegate :diffs_stream_url, :reload_stream_url, :diffs_stats_endpoint, :diff_files_endpoint, :diff_file_endpoint,
-      :should_sort_metadata_files?, :diffs_slice, :lazy?, :environment, to: :presenter
+      :should_sort_metadata_files?, :diffs_slice, :lazy?, :environment, :linked_file, to: :presenter
 
     delegate :diff_view, :current_user, to: :helpers
 
@@ -17,6 +17,12 @@ module RapidDiffs
       @presenter = presenter
       @extra_app_data = extra_app_data
       @extra_prefetch_endpoints = extra_prefetch_endpoints
+    end
+
+    def diff_collection
+      return [linked_file] if linked_file
+
+      diffs_slice || []
     end
 
     protected
@@ -32,8 +38,18 @@ module RapidDiffs
         diff_view_type: diff_view,
         diff_file_endpoint: diff_file_endpoint,
         update_user_endpoint: update_user_endpoint,
+        linked_file_data: linked_file_data,
         lazy: lazy?
       }.merge(@extra_app_data || {})
+    end
+
+    def linked_file_data
+      return unless linked_file
+
+      {
+        old_path: linked_file.old_path,
+        new_path: linked_file.new_path
+      }
     end
 
     def prefetch_endpoints
@@ -53,7 +69,7 @@ module RapidDiffs
     end
 
     def empty_state_visible?
-      !diffs_stream_url && !lazy? && (diffs_slice.nil? || diffs_slice.empty?)
+      !diffs_stream_url && !lazy? && diff_collection.empty?
     end
 
     def browser_visible?

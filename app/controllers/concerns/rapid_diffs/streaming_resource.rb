@@ -69,8 +69,13 @@ module RapidDiffs
 
       return render_empty_state if diff_files.empty?
 
+      old_path = params.permit(:skip_old_path)[:skip_old_path]
+      new_path = params.permit(:skip_new_path)[:skip_new_path]
+
       skipped = []
       diff_files.each do |diff_file|
+        next if old_path && new_path && diff_file.old_path == old_path && diff_file.new_path == new_path
+
         if diff_file.no_preview?
           skipped << diff_file
         else

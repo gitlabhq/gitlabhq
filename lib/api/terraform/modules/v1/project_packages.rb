@@ -93,6 +93,7 @@ module API
               params do
                 use :terraform_get
               end
+              route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
               get do
                 present_package_file
               end
@@ -115,6 +116,7 @@ module API
                 params do
                   use :terraform_get
                 end
+                route_setting :authorization, permissions: :download_terraform_module, boundary_type: :project
                 get format: false do
                   present_package_file
                 end
@@ -135,6 +137,7 @@ module API
                     tags %w[terraform_registry]
                   end
 
+                  route_setting :authorization, permissions: :authorize_terraform_module, boundary_type: :project
                   put :authorize do
                     authorize_workhorse!(**authorize_workhorse_params)
                   end
@@ -158,6 +161,7 @@ module API
                       documentation: { type: 'file' }
                   end
 
+                  route_setting :authorization, permissions: :upload_terraform_module, boundary_type: :project
                   put do
                     authorize_upload!(authorized_user_project)
 

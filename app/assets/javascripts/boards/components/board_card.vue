@@ -223,7 +223,7 @@ export default {
     :data-item-iid="item.iid"
     :data-item-path="item.referencePath"
     data-testid="board-card"
-    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
+    class="board-card gl-border gl-relative gl-mb-3 gl-rounded-lg gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
   >
     <div @click="toggleIssue">
       <a
@@ -240,7 +240,7 @@ export default {
         :data-row-index="rowIndex"
         :style="cardStyle"
         data-testid="board-card-button"
-        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-base gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
+        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
         @keydown.left.exact.prevent="focusLeft"
         @keydown.right.exact.prevent="focusRight"
         @keydown.down.exact.prevent="focusNext"

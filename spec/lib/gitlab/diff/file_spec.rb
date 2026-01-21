@@ -53,6 +53,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     project.commit(branch_name).diffs.diff_files.first
   end
 
+  describe 'linked attribute' do
+    it 'defaults to false' do
+      expect(diff_file.linked).to be(false)
+    end
+
+    it 'can be set to true' do
+      diff_file.linked = true
+      expect(diff_file.linked).to be(true)
+    end
+
+    it 'can be set to false' do
+      diff_file.linked = false
+      expect(diff_file.linked).to be(false)
+    end
+  end
+
   describe 'delegated methods' do
     subject { diff_file }
 

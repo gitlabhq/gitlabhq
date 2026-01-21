@@ -84,6 +84,16 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :authorize_terraform_module do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => pat.token) }
+      let(:request) { api_request }
+    end
+
     context 'for use_final_store_path' do
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
 
@@ -285,6 +295,16 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
 
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => personal_access_token.token) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_terraform_module do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:headers) { workhorse_headers.merge('PRIVATE-TOKEN' => pat.token) }
+      let(:request) { api_request }
     end
   end
 end

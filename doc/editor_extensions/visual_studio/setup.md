@@ -82,3 +82,16 @@ You can access the extension's custom commands with keyboard shortcuts, which yo
 1. On the top bar, go to **Tools** > **Options**.
 1. Go to **Environment** > **Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.
+
+### Configure GitLab Duo
+
+GitLab Duo Chat and GitLab Duo Code Suggestions are enabled by default when you meet the
+prerequisites:
+
+- You have the GitLab Duo add-on and a seat assigned.
+- You open a project that is linked to a remote repository on GitLab, or you set a
+  [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
+  prerequisites:
+  - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-visual-studio)
+  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)

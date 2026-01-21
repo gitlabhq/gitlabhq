@@ -6,6 +6,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier, :max_blob_size
+      attr_accessor :linked
 
       delegate :new_file?, :deleted_file?, :renamed_file?, :unidiff,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
@@ -46,6 +47,7 @@ module Gitlab
         @unique_identifier = unique_identifier
         @max_blob_size = max_blob_size
         @unfolded = false
+        @linked = false
 
         # Ensure items are collected in the the batch
         add_blobs_to_batch_loader

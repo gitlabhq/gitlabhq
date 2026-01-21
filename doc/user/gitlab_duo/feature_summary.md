@@ -3,27 +3,8 @@ stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: AI-native features and functionality.
-title: Summary of GitLab Duo features
+title: GitLab Duo (Classic) features
 ---
-
-GitLab Duo has multiple features, available across different platforms,
-subscriptions, and add-ons.
-
-## GitLab Duo Agent Platform features
-
-The following features are part of the GitLab Duo Agent Platform.
-
-| Feature | Description |
-|---------|-------------|
-| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | Enhanced Chat that autonomously performs actions, searches multiple sources, and can create and edit files to answer complex questions. |
-| [AI Catalog](../duo_agent_platform/ai_catalog.md) | Central list of agents and flows where you can discover, create, and enable them in your projects. |
-| [Agents](../duo_agent_platform/agents/_index.md) | AI-powered assistants that help accomplish specific tasks. Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations). |
-| [Flows](../duo_agent_platform/flows/_index.md) | One or more agents working together to solve complex problems and automate development tasks. |
-| [MCP clients](model_context_protocol/mcp_clients.md) | Standardized way for GitLab Duo features to securely connect to external data sources and tools. |
-| [MCP server](model_context_protocol/mcp_server.md) | Enables AI tools like Claude Desktop and Cursor to securely connect to your GitLab instance. |
-| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Framework that creates structured, queryable representations of code repositories to power AI features. |
-
-## GitLab Duo classic features
 
 {{< history >}}
 

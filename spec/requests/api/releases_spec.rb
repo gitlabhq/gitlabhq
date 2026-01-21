@@ -19,6 +19,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   end
 
   describe 'GET /projects/:id/releases', :use_clean_rails_redis_caching do
+    it_behaves_like 'authorizing granular token permissions', :read_release do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api("/projects/#{project.id}/releases", personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :read_releases,
       allow_public_access_for_enabled_project_features: [:repository, :releases] do
       let(:user) { developer }
@@ -327,6 +335,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         )
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_release do
+        let(:boundary_object) { project }
+        let(:user) { maintainer }
+        let(:request) do
+          get api("/projects/#{project.id}/releases/v0.1", personal_access_token: pat)
+        end
+      end
+
       it_behaves_like 'enforcing job token policies', :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases] do
         let(:user) { developer }
@@ -597,6 +613,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     context 'with a valid release tag' do
       context 'when filepath is provided' do
         context 'when filepath exists' do
+          it_behaves_like 'authorizing granular token permissions', :read_release, expected_success_status: :redirect do
+            let(:boundary_object) { project }
+            let(:user) { developer }
+            let(:request) do
+              get api("/projects/#{project.id}/releases/v0.1/downloads#{filepath}", personal_access_token: pat)
+            end
+          end
+
           it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect,
             allow_public_access_for_enabled_project_features: [:repository, :releases] do
             let(:user) { developer }
@@ -734,6 +758,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         )
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_release, expected_success_status: :redirect do
+        let(:boundary_object) { project }
+        let(:user) { developer }
+        let(:request) do
+          get api("/projects/#{project.id}/releases/permalink/latest", personal_access_token: pat)
+        end
+      end
+
       it_behaves_like 'enforcing job token policies', :read_releases, expected_success_status: :redirect,
         allow_public_access_for_enabled_project_features: [:repository, :releases] do
         let(:user) { developer }
@@ -865,6 +897,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     before do
       initialize_tags
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_release do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{project.id}/releases", personal_access_token: pat), params: params
+      end
     end
 
     it_behaves_like 'enforcing job token policies', :admin_releases do
@@ -1428,6 +1468,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       initialize_tags
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_release do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        put api("/projects/#{project.id}/releases/v0.1", personal_access_token: pat), params: params
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_releases do
       let(:user) { developer }
       let(:request) do
@@ -1676,6 +1724,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       )
     end
 
+    it_behaves_like 'authorizing granular token permissions', :delete_release do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{project.id}/releases/v0.1", personal_access_token: pat)
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_releases do
       let(:user) { developer }
       let(:request) do
@@ -1853,6 +1909,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     context 'when authenticated as guest' do
       before do
         group1.add_guest(guest)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_release do
+        let(:boundary_object) { group1 }
+        let(:user) { guest }
+        let(:request) do
+          get api("/groups/#{group1.id}/releases", personal_access_token: pat)
+        end
       end
 
       it "does not expose tag, commit, source code or helper paths" do

@@ -209,7 +209,16 @@ class Projects::CompareController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def compare_params
-    @compare_params ||= params.permit(:from, :to, :from_project_id, :straight, :to_project_id)
+    @compare_params ||= params.permit(
+      :from,
+      :to,
+      :from_project_id,
+      :straight,
+      :to_project_id,
+      :old_path,
+      :new_path,
+      :file_path
+    )
   end
 
   def diffs_resource(options = {})

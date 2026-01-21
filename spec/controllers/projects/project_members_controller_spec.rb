@@ -200,6 +200,113 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
           end
         end
       end
+
+      context 'group members' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, :public, group: group) }
+
+        let_it_be(:inherited_group_member) do
+          create(:group_group_link, shared_group: group, shared_with_group: create(:group, name: 'foo'))
+        end
+
+        let_it_be(:direct_group_member) do
+          create(:project_group_link, :reporter, project: project, group: shared_group)
+        end
+
+        let(:params) { {} }
+
+        subject(:make_request) do
+          get :index, params: { namespace_id: project.namespace, project_id: project }.merge(params)
+        end
+
+        it 'lists all group members' do
+          make_request
+
+          expected = ::Members::GroupLinksCollection.new([direct_group_member, inherited_group_member])
+          expect(assigns(:group_member_links)).to eq(expected)
+        end
+
+        context 'when group is both a direct and inherited members' do
+          context 'when inherited access is higher' do
+            let_it_be(:inherited_maintainer_member) do
+              create(:group_group_link, :maintainer, shared_group: group, shared_with_group: shared_group)
+            end
+
+            it 'lists membership with highest access level' do
+              make_request
+
+              expected = ::Members::GroupLinksCollection.new([inherited_maintainer_member, inherited_group_member])
+              expect(assigns(:group_member_links)).to eq(expected)
+            end
+          end
+
+          context 'when direct project access is higher' do
+            let_it_be(:inherited_guest_member) do
+              create(:group_group_link, :guest, shared_group: group, shared_with_group: shared_group)
+            end
+
+            it 'lists membership with highest access level' do
+              make_request
+
+              expected = ::Members::GroupLinksCollection.new([direct_group_member, inherited_group_member])
+              expect(assigns(:group_member_links)).to eq(expected)
+            end
+          end
+        end
+
+        context 'when `search_groups` is provided' do
+          let(:params) { { search_groups: 'foo' } }
+
+          it 'filters results' do
+            make_request
+
+            expected = ::Members::GroupLinksCollection.new([inherited_group_member])
+            expect(assigns(:group_member_links)).to eq(expected)
+          end
+        end
+
+        context 'when groups_with_inherited_permissions is `exclude`' do
+          let(:params) { { groups_with_inherited_permissions: 'exclude' } }
+
+          it 'lists direct group members' do
+            make_request
+
+            expected = ::Members::GroupLinksCollection.new([direct_group_member])
+            expect(assigns(:group_member_links)).to eq(expected)
+          end
+        end
+
+        context 'when groups_with_inherited_permissions is `only`' do
+          let(:params) { { groups_with_inherited_permissions: 'only' } }
+
+          it 'lists inherited group members' do
+            make_request
+
+            expected = ::Members::GroupLinksCollection.new([inherited_group_member])
+            expect(assigns(:group_member_links)).to eq(expected)
+          end
+        end
+
+        it 'sets pagination parameters', :aggregate_failures do
+          make_request
+
+          expect(assigns(:group_member_links).current_page).to be(1)
+          expect(assigns(:group_member_links).limit_value).to be(20)
+          expect(assigns(:group_member_links).total_count).to be(2)
+        end
+
+        context 'when `paginate_group_members` flag is disabled' do
+          before do
+            stub_feature_flags(paginate_group_members: false)
+          end
+
+          it 'does not assign `group_member_links`' do
+            make_request
+
+            expect(assigns(:group_member_links)).to be_nil
+          end
+        end
+      end
     end
 
     describe 'PUT update' do

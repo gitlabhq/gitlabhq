@@ -51,6 +51,17 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
       subject(:url) { presenter.reload_stream_url }
 
       it { is_expected.to eq("#{base_path}/diffs_stream#{url_params}") }
+
+      context 'with skip parameters' do
+        subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }
+
+        it 'includes skip parameters' do
+          expect(url).to include('skip_new_path=new.txt')
+          expect(url).to include('skip_old_path=old.txt')
+          expect(url).to include('from=a')
+          expect(url).to include('to=b')
+        end
+      end
     end
   end
 
@@ -71,5 +82,21 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
     subject(:method) { presenter.send(:offset) }
 
     it { is_expected.to eq(0) }
+  end
+
+  describe '#linked_file' do
+    let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
+
+    before do
+      allow(compare).to receive(:diffs).and_return(diff_files)
+    end
+
+    it 'returns the linked file' do
+      result = presenter.linked_file
+      expect(result).to eq(diff_file)
+      expect(result.linked).to be(true)
+    end
   end
 end

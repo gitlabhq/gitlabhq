@@ -1,9 +1,16 @@
 @use 'constants';
 
 .rd-diff-file-component {
+  --rd-diff-file-header-background-color: var(--gl-background-color-subtle);
+  --rd-diff-file-border-color: var(--gl-border-color-default);
   display: block;
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
   margin-bottom: var(--rd-diff-file-bottom-margin);
+}
+
+.rd-diff-file-component-linked {
+  --rd-diff-file-header-background-color: var(--gl-highlight-target-background-color);
+  --rd-diff-file-outer-border-color: var(--gl-highlight-target-border-color);
 }
 
 .rd-diff-file {
@@ -96,8 +103,8 @@
   --rd-diff-file-header-vertical-padding: #{$gl-spacing-scale-3};
   @apply gl-text-default;
   display: flex;
-  background-color: var(--gl-background-color-subtle);
-  border: 1px solid var(--gl-border-color-default);
+  background-color: var(--rd-diff-file-header-background-color);
+  border: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-diff-file-border-color));
   padding: #{constants.$diff-file-header-padding-y} var(--rd-diff-file-header-horizontal-padding);
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
@@ -215,8 +222,8 @@
 
 .rd-diff-file-body {
   --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-  --rd-content-border-color: var(--gl-border-color-default);
-  border: constants.$diff-file-border-width solid var(--rd-content-border-color);
+  --rd-content-border-color: var(--rd-diff-file-border-color, var(--gl-border-color-default));
+  border: constants.$diff-file-border-width solid var(--rd-diff-file-outer-border-color, var(--rd-content-border-color));
   border-top: 0;
   border-radius: var(--rd-content-border-radius);
 }

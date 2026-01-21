@@ -1,0 +1,6 @@
+---
+name: read_release
+description: Grants the ability to read releases
+boundaries:
+  - project
+  - group

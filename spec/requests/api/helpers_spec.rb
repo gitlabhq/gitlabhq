@@ -340,9 +340,11 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       context 'when authorization permissions are defined for an endpoint' do
         before do
           env['PATH_INFO'] = "/api/v4/#{boundary_segment}/endpoint"
-          allow(self).to receive(:route_setting).with(:authorization).and_return(permissions:, boundary_type:)
 
-          allow(self).to receive(:params).and_return(boundary_parameter => boundary_object.id) if boundary_parameter
+          allow(self).to receive(:route_setting).with(:authorization)
+            .and_return(permissions:, boundary_type:, boundary_param:)
+
+          allow(self).to receive(:params).and_return(param => boundary_object.id) if param
         end
 
         let_it_be(:permissions) { :create_issue }
@@ -350,13 +352,15 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         let_it_be(:project_resource) { create(:project, organization: user.organization, namespace: group_resource) }
         let(:boundary) { ::Authz::Boundary.for(boundary_object) }
 
-        where(:boundary_type, :boundary_object, :boundary_segment, :boundary_parameter) do
-          :project    | ref(:project_resource) | 'projects' | :project_id
-          :project    | ref(:project_resource) | 'projects' | :id
-          :group      | ref(:group_resource)   | 'groups'   | :group_id
-          :group      | ref(:group_resource)   | 'groups'   | :id
-          :user       | :user                  | ''         | nil
-          :instance   | :instance              | ''         | nil
+        where(:boundary_type, :boundary_param, :boundary_object, :boundary_segment, :param) do
+          :project  | nil               | ref(:project_resource) | 'projects'         | :project_id
+          :project  | nil               | ref(:project_resource) | 'projects'         | :id
+          :project  | :repo_id          | ref(:project_resource) | 'import/bitbucket' | :repo_id
+          :group    | nil               | ref(:group_resource)   | 'groups'           | :group_id
+          :group    | nil               | ref(:group_resource)   | 'groups'           | :id
+          :group    | :target_namespace | ref(:group_resource)   | 'import/bitbucket' | :target_namespace
+          :user     | nil               | :user                  | ''                 | nil
+          :instance | nil               | :instance              | ''                 | nil
         end
 
         with_them do

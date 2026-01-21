@@ -57,8 +57,8 @@ module Groups::GroupMembersHelper
     MemberSerializer.new.represent(members, { current_user: current_user, group: group, source: group })
   end
 
-  def group_group_links_serialized(group, group_links)
-    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user, source: group })
+  def group_group_links_serialized(source, group_links)
+    GroupLink::GroupGroupLinkSerializer.new.represent(group_links, { current_user: current_user, source: source })
   end
 
   # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`

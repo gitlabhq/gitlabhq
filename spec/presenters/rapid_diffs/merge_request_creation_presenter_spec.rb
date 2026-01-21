@@ -73,4 +73,12 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
 
     it { is_expected.to be_nil }
   end
+
+  describe '#linked_file' do
+    let(:request_params) { { source_branch: 'a', target_branch: 'b', old_path: 'test.txt', new_path: 'test.txt' } }
+
+    it 'returns nil because presenter is lazy' do
+      expect(presenter.linked_file).to be_nil
+    end
+  end
 end

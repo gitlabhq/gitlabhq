@@ -43,7 +43,7 @@ class Projects::CommitController < Projects::ApplicationController
             @commit,
             diff_view: diff_view,
             diff_options: commit_diff_options,
-            request_params: nil,
+            request_params: params,
             current_user: current_user,
             environment: define_environment
           )

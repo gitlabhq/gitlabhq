@@ -1,6 +1,6 @@
 -# TODO: add fork suggestion (commits only)
 
-%diff-file.rd-diff-file-component{ id: id, data: {  testid: 'rd-diff-file', file_data: file_data.to_json } }
+%diff-file.rd-diff-file-component{ id: id, class: classes, data: {  testid: 'rd-diff-file', file_data: file_data.to_json } }
   %article.rd-diff-file{ data: { virtual: (viewer_component.viewer_name if virtual?) }, style: (virtual_rendering_styles if virtual?), aria: { labelledby: heading_id } }
     = header || default_header
     .flash-container.rd-diff-file-error

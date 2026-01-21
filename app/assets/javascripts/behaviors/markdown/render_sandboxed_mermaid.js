@@ -1,4 +1,4 @@
-import { countBy } from 'lodash';
+import { countBy, debounce } from 'lodash';
 import { __ } from '~/locale';
 import {
   getBaseURL,
@@ -9,6 +9,8 @@ import {
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { unrestrictedPages } from './constants';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
@@ -89,6 +91,11 @@ function renderMermaidEl(el, source) {
   // Added in MermaidFilter if the asset proxy is enabled.
   const proxiedUrls = el.dataset.proxiedUrls ? JSON.parse(el.dataset.proxiedUrls) : null;
 
+  const pre = el.closest('pre');
+  const wrapper = pre?.closest('.js-markdown-code') || pre?.parentNode;
+
+  if (!wrapper) return;
+
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src: getSandboxFrameSrc(),
@@ -98,21 +105,33 @@ function renderMermaidEl(el, source) {
     width: '100%',
   });
 
-  const wrapper = document.createElement('div');
-  wrapper.appendChild(iframeEl);
+  const iframeContainer = document.createElement('div');
+  iframeContainer.appendChild(iframeEl);
 
-  // Hide the markdown but keep it "visible enough" to allow Copy-as-GFM
+  // Ensure all mermaid diagrams renders as block.
+  // By default Duo UI renders markdown with flex which causes layout issues.
+  if (wrapper.classList.contains('js-markdown-code')) {
+    wrapper.classList.add('!gl-block');
+  }
+
+  // Hide the pre but keep it "visible enough" to allow Copy-as-GFM
   // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83202
   // Also remove padding from the pre element to prevent errant scrollbar appearing
-  el.closest('pre').classList.add('gl-sr-only', '!gl-p-0');
-  el.closest('pre').parentNode.appendChild(wrapper);
+  // and hide the border for duo-ui pre element
+  pre.classList.add('gl-sr-only', '!gl-p-0', '!gl-border-none');
+  wrapper.appendChild(iframeContainer);
 
-  // Event Listeners
-  iframeEl.addEventListener('load', () => {
+  // Function to request render/re-render from sandbox
+  let hasRendered = false;
+  const renderSandbox = () => {
     // Potential risk associated with '*' discussed in below thread
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74414#note_735183398
-    iframeEl.contentWindow.postMessage({ source, proxiedUrls }, '*');
-  });
+    iframeEl.contentWindow?.postMessage({ source, proxiedUrls }, '*');
+    hasRendered = true;
+  };
+
+  // Event Listeners
+  iframeEl.addEventListener('load', renderSandbox);
 
   window.addEventListener(
     'message',
@@ -125,6 +144,19 @@ function renderMermaidEl(el, source) {
     },
     false,
   );
+
+  // Re-render diagram when panel resizes to recalculate height
+  const debouncedResize = debounce(() => {
+    if (!document.contains(iframeContainer)) {
+      PanelBreakpointInstance.removeResizeListener(debouncedResize);
+      return;
+    }
+    if (hasRendered) {
+      renderSandbox();
+    }
+  }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+  PanelBreakpointInstance.addResizeListener(debouncedResize);
 }
 
 function renderMermaids(els) {

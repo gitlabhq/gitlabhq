@@ -10,8 +10,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diff_options) { { ignore_whitespace_changes: true } }
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
+  let(:request_params) { {} }
 
-  subject(:presenter) { described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options) }
+  subject(:presenter) do
+    described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+      request_params: request_params)
+  end
 
   before do
     allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
@@ -56,6 +60,18 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
         it { is_expected.to be_nil }
       end
+
+      context 'when linked_file is present' do
+        let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { file_path: 'test.txt' } }
+
+        before do
+          allow(merge_request).to receive(:diffs).and_return(diff_files)
+        end
+
+        it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=test.txt&skip_old_path=test.txt&view=inline") }
+      end
     end
 
     describe '#reload_stream_url' do
@@ -75,5 +91,29 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     subject(:method) { presenter.should_sort_metadata_files? }
 
     it { is_expected.to be(true) }
+  end
+
+  describe 'stream urls with skip parameters' do
+    describe '#reload_stream_url' do
+      subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }
+
+      it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=new.txt&skip_old_path=old.txt") }
+    end
+  end
+
+  describe '#linked_file' do
+    let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:request_params) { { file_path: 'test.txt' } }
+
+    before do
+      allow(merge_request).to receive(:diffs).and_return(diff_files)
+    end
+
+    it 'returns the linked file' do
+      result = presenter.linked_file
+      expect(result).to eq(diff_file)
+      expect(result.linked).to be(true)
+    end
   end
 end

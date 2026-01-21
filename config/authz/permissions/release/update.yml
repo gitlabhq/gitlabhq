@@ -1,0 +1,5 @@
+---
+name: update_release
+description: Grants the ability to update releases
+boundaries:
+  - project

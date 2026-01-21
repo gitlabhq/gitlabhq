@@ -16,10 +16,15 @@ module RapidDiffs
       return reload_stream_url(diff_view: @diff_view) if offset == 0
       return if offset.nil? || offset >= diffs_count
 
-      reload_stream_url(offset: offset, diff_view: @diff_view)
+      reload_stream_url(
+        offset: linked_file ? nil : offset,
+        diff_view: @diff_view,
+        skip_old_path: linked_file_params[:old_path],
+        skip_new_path: linked_file_params[:new_path]
+      )
     end
 
-    def reload_stream_url(offset: nil, diff_view: nil)
+    def reload_stream_url(offset: nil, diff_view: nil, skip_old_path: nil, skip_new_path: nil)
       raise NotImplementedError
     end
 
@@ -27,6 +32,14 @@ module RapidDiffs
       return if offset.nil? || offset == 0
 
       @diffs_slice ||= resource.first_diffs_slice(offset, @diff_options)
+    end
+
+    def linked_file
+      return if lazy? || (linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?)
+
+      @linked_file ||= resource.diffs(@diff_options.merge({
+        paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
+      })).diff_files.first.tap { |file| file && (file.linked = true) }
     end
 
     def diffs_stats_endpoint
@@ -61,6 +74,13 @@ module RapidDiffs
 
     def diffs_count
       @diffs_count ||= resource.diffs_for_streaming.diff_files.count
+    end
+
+    def linked_file_params
+      {
+        old_path: request_params[:old_path] || request_params[:file_path],
+        new_path: request_params[:new_path] || request_params[:file_path]
+      }
     end
   end
 end

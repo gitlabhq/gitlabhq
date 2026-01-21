@@ -67,5 +67,11 @@ module RapidDiffs
     def heading_id
       file_heading_id(@diff_file)
     end
+
+    def classes
+      [
+        ('rd-diff-file-component-linked' if @diff_file.linked)
+      ]
+    end
   end
 end

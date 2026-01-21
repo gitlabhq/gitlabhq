@@ -273,6 +273,33 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
       end
     end
 
+    context 'when skip parameters are provided' do
+      let(:skipped_file) do
+        build(:diff_file).tap do |file|
+          allow(file).to receive_messages(old_path: 'skip.txt', new_path: 'skip.txt')
+        end
+      end
+
+      let(:other_file) do
+        build(:diff_file).tap do |file|
+          allow(file).to receive_messages(old_path: 'other.txt', new_path: 'other.txt')
+        end
+      end
+
+      let(:diff_files) { [skipped_file, other_file] }
+
+      before do
+        allow(controller_instance).to receive(:params).and_return(
+          ActionController::Parameters.new(skip_old_path: 'skip.txt', skip_new_path: 'skip.txt', offset: '1')
+        )
+      end
+
+      it 'skips the file matching skip parameters' do
+        controller_instance.send(:diffs_stream)
+        expect(response.stream).to have_received(:write).with(diff_html).once
+      end
+    end
+
     context 'when stream is already closed' do
       before do
         allow(controller_instance).to receive(:stream_diff_files).and_wrap_original do |original_method, *args|

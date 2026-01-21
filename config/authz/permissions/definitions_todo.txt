@@ -228,7 +228,6 @@ create_path_lock
 create_project_secrets
 create_projects
 create_protected_tags
-create_release
 create_requirement
 create_requirement_test_report
 create_resource_access_tokens
@@ -572,7 +571,6 @@ read_operations_dashboard
 read_organization
 read_organization_cluster_agent_mapping
 read_organization_user
-read_package
 read_package_within_public_registries
 read_pages
 read_pages_content
@@ -599,7 +597,6 @@ read_prometheus
 read_protected_tags
 read_reject_non_dco_commits
 read_reject_unsigned_commits
-read_release
 read_release_evidence
 read_repository_graphs
 read_requirement
@@ -775,7 +772,6 @@ update_pipeline
 update_project_member
 update_project_secrets
 update_protected_tags
-update_release
 update_requirement
 update_runner
 update_runners_registration_token

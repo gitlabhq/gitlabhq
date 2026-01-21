@@ -1,0 +1,5 @@
+---
+name: revoke_personal_access_token
+description: Grants the ability to revoke personal access tokens
+boundaries:
+  - user

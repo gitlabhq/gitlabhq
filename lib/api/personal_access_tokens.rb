@@ -28,6 +28,7 @@ module API
         use :access_token_params
         use :pagination
       end
+      route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
       get do
         tokens = PersonalAccessTokensFinder.new(finder_params(current_user), current_user).execute
 
@@ -43,6 +44,7 @@ module API
         ]
         tags %w[personal_access_tokens]
       end
+      route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
       get ':id' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
@@ -67,6 +69,7 @@ module API
           desc: "The expiration date of the token",
           documentation: { example: '2021-01-31' }
       end
+      route_setting :authorization, permissions: :rotate_personal_access_token, boundary_type: :user
       post ':id/rotate' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
@@ -88,6 +91,7 @@ module API
         ]
         tags %w[personal_access_tokens]
       end
+      route_setting :authorization, permissions: :revoke_personal_access_token, boundary_type: :user
       delete ':id' do
         token = find_token(params[:id])
 

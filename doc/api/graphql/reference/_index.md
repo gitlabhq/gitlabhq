@@ -6358,6 +6358,33 @@ Input type: `DeleteDuoWorkflowsWorkflowInput`
 | <a id="mutationdeleteduoworkflowsworkflowerrors"></a>`errors` | [`[String!]!`](#string) | List of errors that occurred whilst trying to delete the workflow. |
 | <a id="mutationdeleteduoworkflowsworkflowsuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if workflow was successfully deleted. |
 
+### `Mutation.deleteGroupCustomAttribute`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Deletes a custom attribute from a group. Only available to admins.
+
+Input type: `DeleteGroupCustomAttributeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletegroupcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletegroupcustomattributegrouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the group. |
+| <a id="mutationdeletegroupcustomattributekey"></a>`key` | [`String!`](#string) | Key of the custom attribute to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletegroupcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletegroupcustomattributecustomattribute"></a>`customAttribute` | [`CustomAttribute`](#customattribute) | Deleted custom attribute. |
+| <a id="mutationdeletegroupcustomattributeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.deletePackagesProtectionRule`
 
 Deletes a protection rule for packages.
@@ -55425,6 +55452,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumunfinished_tag_cleanup_callout"></a>`UNFINISHED_TAG_CLEANUP_CALLOUT` | Callout feature name for unfinished_tag_cleanup_callout. |
 | <a id="usercalloutfeaturenameenumuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenumverification_reminder"></a>`VERIFICATION_REMINDER` | Callout feature name for verification_reminder. |
+| <a id="usercalloutfeaturenameenumvirtual_registry_permission_change_alert"></a>`VIRTUAL_REGISTRY_PERMISSION_CHANGE_ALERT` | Callout feature name for virtual_registry_permission_change_alert. |
 | <a id="usercalloutfeaturenameenumvsd_feedback_banner"></a>`VSD_FEEDBACK_BANNER` | Callout feature name for vsd_feedback_banner. |
 | <a id="usercalloutfeaturenameenumvulnerability_archival"></a>`VULNERABILITY_ARCHIVAL` | Callout feature name for vulnerability_archival. |
 | <a id="usercalloutfeaturenameenumvulnerability_report_grouping"></a>`VULNERABILITY_REPORT_GROUPING` | Callout feature name for vulnerability_report_grouping. |
@@ -55469,7 +55497,6 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturenameunlimited_members_during_trial_alert"></a>`UNLIMITED_MEMBERS_DURING_TRIAL_ALERT` | Callout feature name for unlimited_members_during_trial_alert. |
 | <a id="usergroupcalloutfeaturenameusage_quota_trial_alert"></a>`USAGE_QUOTA_TRIAL_ALERT` | Callout feature name for usage_quota_trial_alert. |
 | <a id="usergroupcalloutfeaturenameuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
-| <a id="usergroupcalloutfeaturenamevirtual_registry_permission_change_alert"></a>`VIRTUAL_REGISTRY_PERMISSION_CHANGE_ALERT` | Callout feature name for virtual_registry_permission_change_alert. |
 | <a id="usergroupcalloutfeaturenameweb_hook_disabled"></a>`WEB_HOOK_DISABLED` | Callout feature name for web_hook_disabled. |
 
 ### `UserPromotionStatusType`

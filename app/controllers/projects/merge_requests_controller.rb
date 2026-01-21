@@ -117,7 +117,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @rapid_diffs_presenter = ::RapidDiffs::MergeRequestPresenter.new(
       @merge_request,
       diff_view: diff_view,
-      diff_options: diff_options
+      diff_options: diff_options,
+      request_params: params
     )
 
     show_merge_request

@@ -1,6 +1,6 @@
 - if can?(current_user, :read_cross_project) && @user.user_readme&.rich_viewer
   .profile-readme-wrapper.gl-relative.gl-w-full.gl-pt-5
-    .profile-readme.read-more-container.gl-relative.justify-content-center.gl-border.gl-rounded-base.gl-overflow-hidden{ data: { 'read-more-height': 400 } }
+    .profile-readme.read-more-container.gl-relative.justify-content-center.gl-border.gl-rounded-lg.gl-overflow-hidden{ data: { 'read-more-height': 400 } }
       .read-more-content.gl-py-5.gl-px-6
         .gl-flex
           = render Pajamas::BreadcrumbComponent.new(class: 'gl-mb-4') do |c|
@@ -11,7 +11,7 @@
             .gl-ml-auto
               = link_to _('Edit file'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
         = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
-      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-2.gl-bg-default.gl-border-t.gl-border-t-default.gl-px-6.gl-rounded-b-base.gl-cursor-pointer
+      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-2.gl-bg-default.gl-border-t.gl-border-t-default.gl-px-6.gl-rounded-b-lg.gl-cursor-pointer
         = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-flex gl-items-center gl-gap-1', button_options: { class: 'gl-mt-4 -gl-ml-1', 'aria-label': _("Expand Readme") }) do
           = sprite_icon('chevron-down', size: 14)
           = _("Read more")
@@ -24,7 +24,7 @@
           = s_('UserProfile|Activity')
         = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all", aria: { label: _('View all activity') }
 
-      .user-calendar.gl-border.light.gl-rounded-base.gl-px-3.gl-pt-4.gl-text-center{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
+      .user-calendar.gl-border.light.gl-rounded-lg.gl-px-3.gl-pt-4.gl-text-center{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
         = gl_loading_icon(size: 'md', css_class: 'gl-my-8')
         .user-calendar-error.invisible
           = _('There was an error loading users activity calendar.')

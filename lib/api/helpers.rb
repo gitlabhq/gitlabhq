@@ -1121,14 +1121,16 @@ module API
       return unless access_token.try(:granular?)
 
       access = authorization_settings[:boundary_type]
+      boundary_param = authorization_settings[:boundary_param]
+
       case access
       when :user, :instance
         ::Authz::Boundary.for(access)
       when :group
-        group = find_group(params[:group_id] || params[:id])
+        group = find_group(boundary_param ? params[boundary_param] : (params[:group_id] || params[:id]))
         ::Authz::Boundary.for(group) if group
       when :project
-        project = find_project(params[:project_id] || params[:id])
+        project = find_project(boundary_param ? params[boundary_param] : (params[:project_id] || params[:id]))
         ::Authz::Boundary.for(project) if project
       end
     end

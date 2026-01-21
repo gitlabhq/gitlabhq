@@ -82,7 +82,7 @@ $focus-mode-z-index: 9000;
   right: -1px;
   pointer-events: none;
   opacity: 0;
-  @apply gl-rounded-base;
+  @apply gl-rounded-lg;
   animation-name: board-column-flash-border;
   animation-duration: 1.2s;
   animation-fill-mode: forwards;
@@ -100,7 +100,7 @@ $focus-mode-z-index: 9000;
   pointer-events: none;
   opacity: 0.96;
   background-color: var(--gl-feedback-warning-background-color);
-  @apply gl-rounded-base;
+  @apply gl-rounded-lg;
 }
 
 .board-column-not-applicable-content {

@@ -1,0 +1,5 @@
+---
+name: read_package_pipeline
+description: Grants the ability to read package pipelines
+boundaries:
+  - project

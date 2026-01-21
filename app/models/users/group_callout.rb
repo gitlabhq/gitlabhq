@@ -45,7 +45,7 @@ module Users
       project_premium_message_callout: 33, # EE-only
       repository_premium_message_callout: 34, # EE-only
       mrs_premium_message_callout: 35, # EE-only
-      virtual_registry_permission_change_alert: 36, # EE-only
+      # 36 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219097
       end_of_trial_modal: 37, # EE-only
       foundational_items_available: 38 # EE-only
     }
