@@ -411,7 +411,7 @@ For more information see [Downloading artifacts](../../../ci/jobs/job_artifacts.
 After validating the IaC scanning results for one project, you can implement the same approach across additional projects.
 
 - Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply IaC scanning settings across groups.
-- Share and reuse a central ruleset by [specifying a remote configuration file](../sast/customize_rulesets.md#specify-a-remote-configuration-file).
+- Share and reuse a central ruleset by [specifying a remote configuration file](../sast/customize_rulesets.md#remote-ruleset-file).
 
 ## Troubleshooting
 

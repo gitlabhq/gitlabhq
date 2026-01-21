@@ -368,7 +368,7 @@ For more information about configuration options, see [Available CI/CD variables
 After you are confident in the SAST results for a single project, you can extend its implementation to additional projects:
 
 - Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply SAST settings across groups.
-- Share and reuse a central ruleset by [specifying a remote configuration file](customize_rulesets.md#specify-a-remote-configuration-file).
+- Share and reuse a central ruleset by [specifying a remote configuration file](customize_rulesets.md#remote-ruleset-file).
 - If you have unique requirements, SAST can be run in an offline environment or under SELinux constraints.
 
 ## Supported languages and frameworks
@@ -507,7 +507,7 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 
-- You [disable a predefined rule](customize_rulesets.md#disable-predefined-rules).
+- You [disable a predefined rule](customize_rulesets.md#disable-default-rules).
 - A rule is removed from the default ruleset.
 
 Automatic resolution is available only for findings from the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
@@ -648,7 +648,7 @@ variables:
 You can customize the Semgrep-based SAST analyzer to scan languages that are not supported by a
 GitLab-managed ruleset. However, because GitLab does not provide rulesets for these other languages,
 you must
-[replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules)
+[replace or add to the default rules](customize_rulesets.md#replace-or-add-to-the-default-rules)
 to cover them. You must also modify the `rules` of the `semgrep-sast` CI/CD job so that the job runs
 when the relevant files are modified.
 
@@ -670,7 +670,7 @@ For example, to scan a Rust application, you must:
        target = "rust.yml"
    ```
 
-   For more details, see [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-predefined-rules).
+   For more details, see [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
 
 1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files. Define the following in the `.gitlab-ci.yml` file:
 

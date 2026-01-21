@@ -128,7 +128,7 @@ The `gitlab:zoekt:info` Rake task returns an output similar to the following:
 
 ```console
 Exact Code Search
-GitLab version:                                    18.8.0
+GitLab version:                                    18.9.0
 Enable indexing:                                   yes
 Enable searching:                                  yes
 Pause indexing:                                    no
@@ -171,9 +171,6 @@ Repositories count:               10
 Tasks count:                      10
   - done: 10
 Tasks pending/processing by type: (none)
-
-Feature Flags (Non-Default Values)
-- zoekt_search_meta_project_ids:   disabled
 
 Feature Flags (Default Values)
 - zoekt_too_many_replicas_event: disabled

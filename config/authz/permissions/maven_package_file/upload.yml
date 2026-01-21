@@ -1,0 +1,4 @@
+name: upload_maven_package_file
+description: Grants the ability to upload Maven package files
+boundaries:
+  - project

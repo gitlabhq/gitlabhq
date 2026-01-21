@@ -10599,6 +10599,7 @@ Input type: `PersonalAccessTokenRotateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpersonalaccesstokenrotateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpersonalaccesstokenrotateexpiresat"></a>`expiresAt` | [`ISO8601Date`](#iso8601date) | Expiration date of the token. |
 | <a id="mutationpersonalaccesstokenrotateid"></a>`id` | [`PersonalAccessTokenID!`](#personalaccesstokenid) | Global ID of the personal access token that will be rotated. |
 
 #### Fields

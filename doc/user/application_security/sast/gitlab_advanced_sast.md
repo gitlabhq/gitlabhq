@@ -377,7 +377,7 @@ set `GITLAB_ADVANCED_SAST_ENABLED` (or `GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/
 ## Customize GitLab Advanced SAST
 
 You can disable GitLab Advanced SAST rules or edit their metadata, just as you can other analyzers.
-For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-gitlab-advanced-sast-rules).
+For details, see [customize rulesets](customize_rulesets.md#replace-or-add-to-the-default-rules).
 
 ## Request source code of LGPL-licensed components in GitLab Advanced SAST
 

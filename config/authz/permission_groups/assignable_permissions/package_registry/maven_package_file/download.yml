@@ -1,0 +1,8 @@
+name: download_maven_package_file
+description: Grants the ability to download Maven package files
+boundaries:
+  - instance
+  - group
+  - project
+permissions:
+  - download_maven_package_file

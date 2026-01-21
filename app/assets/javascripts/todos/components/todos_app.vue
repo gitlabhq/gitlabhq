@@ -371,7 +371,7 @@ export default {
         </gl-tab>
       </gl-tabs>
 
-      <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
+      <div class="gl-my-3 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
         <gl-button
           id="todo-refresh-btn"
           v-gl-tooltip.hover

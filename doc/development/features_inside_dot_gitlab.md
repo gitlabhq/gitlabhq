@@ -17,4 +17,4 @@ When implementing new features, refer to these existing features to avoid confli
 - [Insights](../user/project/insights/_index.md#for-projects): `.gitlab/insights.yml`.
 - [Service Desk templates](../user/project/service_desk/configure.md#customize-emails-sent-to-external-participants): `.gitlab/service_desk_templates/`.
 - [Secret detection custom rulesets](../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets): `.gitlab/secret-detection-ruleset.toml`
-- [Static analysis custom rulesets](../user/application_security/sast/customize_rulesets.md#create-the-configuration-file): `.gitlab/sast-ruleset.toml`
+- [Static analysis custom rulesets](../user/application_security/sast/customize_rulesets.md): `.gitlab/sast-ruleset.toml`

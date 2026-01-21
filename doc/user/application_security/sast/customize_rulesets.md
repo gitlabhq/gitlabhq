@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Customize SAST analyzer rules in GitLab by disabling, overriding, or replacing predefined rules.
+description: Customize SAST analyzer rules in GitLab by disabling, overriding, or replacing default rules.
 title: Customize rulesets
 ---
 
@@ -19,70 +19,91 @@ title: Customize rulesets
 
 {{< /history >}}
 
-You can customize the behavior of our SAST analyzers by [defining a ruleset configuration file](#create-the-configuration-file) in the
-repository being scanned.
+Each SAST analyzer supports different levels of customization through the ruleset configuration
+file. The Semgrep-based SAST analyzer and GitLab Advanced SAST analyzer have a
+[default ruleset](rules.md).
 
-## Customization options by analyzer
+Rule: An individual security check or detection pattern that scans for specific vulnerabilities.
 
-| Customization | GitLab Advanced SAST | GitLab Semgrep | [Other Analyzers](analyzers.md#official-analyzers) |
-|---------------|----------------------|----------------|----------------------------------------------------|
-| [Disable predefined rules](#disable-predefined-rules)                           | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Override metadata of predefined rules](#override-metadata-of-predefined-rules) | {{< yes >}} | {{< yes >}} | {{< yes >}} |
-| [Replace or add to the predefined rules](#replace-or-add-to-the-predefined-rules) | Supports modifying the behavior of predefined non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs | {{< no >}} |
+Ruleset: A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
 
-## Disable predefined rules
+## Rule customization options
 
-You can disable predefined rules for any SAST analyzer.
+SAST rulesets come with default rules, but every organization has different security requirements.
+You can customize these rulesets by disabling rules, overriding their metadata, or replacing or
+adding rules.
 
-When you disable a rule:
+The table below shows which customization options are available for each analyzer type.
 
-- All SAST analyzers that support custom rulesets still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](_index.md#download-a-sast-report). GitLab Advanced SAST differs by excluding disabled rules from the initial scan.
-- Findings for the disabled rule no longer appear in the [pipeline security tab](../detect/security_scanning_results.md).
-- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/_index.md#activity-filter) in the [vulnerability report](../vulnerability_report/_index.md).
+| Customization                          | GitLab Advanced SAST                                                                                                                                             | GitLab Semgrep             | [Other analyzers](analyzers.md#official-analyzers) |
+|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------|----------------------------------------------------|
+| Disable default rules               | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
+| Override metadata of default rules  | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
+| Replace or add to default rules | Supports modifying the behavior of default non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs. | {{< no >}}                                         |
 
-The Semgrep-based analyzer handles disabled rules differently:
+### Disable default rules
 
-- If you disable a rule in the Semgrep-based analyzer, existing vulnerability findings for that rule are [automatically resolved](_index.md#automatic-vulnerability-resolution) after you merge the `sast-ruleset.toml` file to the default branch.
+You can disable default rules for any SAST analyzer. For example, you might want to exclude a
+specific rule based on organizational policy.
 
-See the [Schema](#schema) and [Examples](#examples) sections for information on how
-to configure this behavior.
+### Override metadata of default rules
 
-## Override metadata of predefined rules
+You can override certain attributes of default rules for any SAST analyzer. For example, you
+might want to override the severity of a vulnerability based on organizational policy, or choose a
+different message to display in the vulnerability report.
 
-You can override certain attributes of predefined rules for any SAST analyzer. This
-can be useful when adapting SAST to your existing workflow or tools. For example, you
-might want to override the severity of a vulnerability based on organizational policy,
-or choose a different message to display in the vulnerability report.
+### Replace or add to the default rules
 
-See the [Schema](#schema) and [Examples](#examples) sections for information on how
-to configure this behavior.
+You can replace or add to the default rules of the Semgrep-based SAST analyzer and GitLab Advanced
+SAST analyzer. By default, defining a custom ruleset replaces the default ruleset. To add to the
+default ruleset you must set `keepdefaultrules` to `true` in your
+[ruleset configuration file](#configuration-methods).
 
-## Replace or add to the predefined rules
+### Effects of ruleset customization
 
-You can replace or add to the [predefined ruleset](rules.md) for the Semgrep-based SAST analyzer and GitLab
-Advanced SAST analyzer. By default, defining a custom ruleset replaces the predefined ruleset. To
-add to the predefined ruleset you must set `keepdefaultrules` to `true` in your [ruleset configuration file](#create-the-configuration-file).
+The following table describes what happens when you customize SAST rulesets:
 
-You provide your customizations by using passthroughs, which are composed into a
-passthrough chain at runtime and evaluated to produce a complete configuration. The
-underlying scanner is then executed against this new configuration.
+| Action                     | Scan behavior                                                                                                                                                               | Pipeline security tab                                                                                                      | Vulnerability report                                                                                                                                   |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Disable a rule             | Analyzers still scan for the vulnerability but the rule's results are removed after the scan completes. GitLab Advanced SAST excludes disabled rules from the initial scan. | Findings detected by the rule before it was disabled no longer appear after the next pipeline runs.                        | Vulnerabilities detected by the rule before it was disabled are marked as [**No longer detected**](../vulnerability_report/_index.md#activity-filter). |
+| Override metadata          | No change to scan behavior.                                                                                                                                                 | Metadata of findings detected by the rule before it was overridden are updated after the next pipeline runs.               | Metadata of vulnerabilities detected by the rule before it was overridden are updated.                                                                 |
+| Replace default ruleset | The default ruleset is not used by analyzers that support custom rulesets.                                                                                               | Findings detected by rules in the default ruleset before it was replaced no longer appear after the next pipeline runs. | Vulnerabilities detected by rules in the default ruleset are marked as [**No longer detected**](../vulnerability_report/_index.md#activity-filter). |
 
-There are multiple passthrough types that let you provide configuration in different
-ways, such as using a file committed to your repository or inline in the ruleset
-configuration file. You can also choose how subsequent passthroughs in the chain are
-handled; they can overwrite or append to previous configuration.
+## Configuration methods
 
-See the [Schema](#schema) and [Examples](#examples) sections for information on how
-to configure this behavior.
+You can provide your ruleset customizations in the following ways:
 
-## Create the configuration file
+- Local ruleset file: Define your customizations in a `sast-ruleset.toml` file committed to your
+  repository. This approach keeps your ruleset configuration under version control alongside your
+  code.
+- Remote ruleset file: Specify a remote location (Git repository, URL, or other source) where your
+  ruleset configuration is hosted. This approach lets you manage rulesets centrally and reuse them
+  across multiple projects.
 
-To create the ruleset configuration file:
+> [!note]
+> A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
+
+You provide your customizations by using passthroughs. A passthrough is a configuration source that
+provides ruleset customizations to the scanner. Passthroughs can pull configuration from different
+locations, such as a file in your repository, a remote Git repository, a URL, or in the ruleset
+configuration file. You can combine several methods in a single ruleset by using multiple
+passthroughs. You can also choose how subsequent passthroughs in the chain are handled, either
+overwriting or appending to the previous configuration. At runtime, multiple passthroughs are
+composed into a chain and evaluated to produce a complete ruleset configuration that the scanner
+uses.
+
+### Local ruleset file
+
+To create the local ruleset configuration file:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
 1. Create a file named `sast-ruleset.toml` in the `.gitlab` directory.
+1. Add your custom ruleset to the `sast-ruleset.toml` file.
+1. Commit the local ruleset configuration file to the repository.
 
-## Specify a remote configuration file
+For more details on customizing the ruleset, see [schema](#schema) and [examples](#examples).
+
+### Remote ruleset file
 
 {{< history >}}
 
@@ -90,8 +111,9 @@ To create the ruleset configuration file:
 
 {{< /history >}}
 
-You can set a [CI/CD variable](../../../ci/variables/_index.md) to use a ruleset configuration file that's stored outside of the current repository.
-This can help you apply the same rules across multiple projects.
+You can set a [CI/CD variable](../../../ci/variables/_index.md) to use a ruleset configuration file
+that's stored outside of the current repository. This can help you apply the same rules across
+multiple projects.
 
 The `SAST_RULESET_GIT_REFERENCE` variable uses a format similar to
 [Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a project URI,
@@ -102,7 +124,7 @@ optional authentication, and optional Git SHA. The variable uses the following f
 ```
 
 > [!note]
-> If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
+> A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
 
 The following example enables SAST and uses a shared ruleset customization file. In this example,
 the file is committed on the default branch of `example-ruleset-project` at the path
@@ -146,7 +168,7 @@ Configuration example:
 ```
 
 Avoid creating configuration sections that modify existing rules and build a custom ruleset, as
-the latter replaces predefined rules completely.
+the latter replaces default rules completely.
 
 ### The `[$analyzer]` configuration section
 
@@ -155,7 +177,7 @@ differ based on the kind of configuration you're making.
 
 | Setting | Applies to | Description |
 | --------| -------------- | ----------- |
-| `[[$analyzer.ruleset]]` | Predefined rules | Defines modifications to an existing rule. |
+| `[[$analyzer.ruleset]]` | Default rules | Defines modifications to an existing rule. |
 | `interpolate` | All | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`) |
 | `description` | Passthroughs | Description of the custom ruleset. |
 | `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the user has read and write permissions for this directory. |
@@ -185,13 +207,13 @@ they're not explicitly stored in the configuration file.
 
 ### The `[[$analyzer.ruleset]]` section
 
-The `[[$analyzer.ruleset]]` section targets and modifies a single predefined rule. You can define
+The `[[$analyzer.ruleset]]` section targets and modifies a single default rule. You can define
 one to many of these sections per analyzer.
 
 | Setting | Description |
 | --------| ----------- |
 | `disable` | Whether the rule should be disabled. (Default: `false`) |
-| `[$analyzer.ruleset.identifier]` | Selects the predefined rule to be modified. |
+| `[$analyzer.ruleset.identifier]` | Selects the default rule to be modified. |
 | `[$analyzer.ruleset.override]` | Defines the overrides for the rule. |
 
 Configuration example:
@@ -205,13 +227,13 @@ Configuration example:
 
 ### The `[$analyzer.ruleset.identifier]` section
 
-The `[$analyzer.ruleset.identifier]` section defines the identifiers of the predefined
+The `[$analyzer.ruleset.identifier]` section defines the identifiers of the default
 rule that you wish to modify.
 
 | Setting | Description |
 | --------| ----------- |
-| `type`  | The type of identifier used by the predefined rule. |
-| `value` | The value of the identifier used by the predefined rule. |
+| `type`  | The type of identifier used by the default rule. |
+| `value` | The value of the identifier used by the default rule. |
 
 You can look up the correct values for `type` and `value` by viewing the
 [`gl-sast-report.json`](_index.md#download-a-sast-report) produced by the analyzer.
@@ -267,7 +289,7 @@ Configuration example:
 
 ### The `[$analyzer.ruleset.override]` section
 
-The `[$analyzer.ruleset.override]` section allows you to override attributes of a predefined rule.
+The `[$analyzer.ruleset.override]` section allows you to override attributes of a default rule.
 
 | Setting | Description |
 | --------| ----------- |
@@ -301,7 +323,7 @@ Configuration example:
 
 The `[[$analyzer.passthrough]]` section allows you to build a custom configuration for an analyzer. You
 can define up to 20 of these sections per analyzer. Passthroughs are composed into a _passthrough chain_
-that evaluates into a complete configuration that replaces the predefined rules of the analyzer.
+that evaluates into a complete configuration that replaces the default rules of the analyzer.
 
 Passthroughs are evaluated in order. Passthroughs listed later in the chain have
 a higher precedence and can overwrite or append to data yielded by previous
@@ -339,9 +361,9 @@ analyzer fails to parse your custom ruleset unless the indentation is represente
 
 ## Examples
 
-### Replace the predefined rules of GitLab Advanced SAST
+### Replace the default rules of GitLab Advanced SAST
 
-With the following custom ruleset configuration, the predefined ruleset
+With the following custom ruleset configuration, the default ruleset
 of the GitLab Advanced SAST analyzer is replaced with a custom ruleset contained in
 a file called `my-gitlab-advanced-sast-rules.yaml` in the repository being scanned.
 
@@ -367,7 +389,7 @@ rules:
     value = "my-gitlab-advanced-sast-rules.yaml"
 ```
 
-### Disable predefined GitLab Advanced SAST rules
+### Disable default GitLab Advanced SAST rules
 
 You can disable GitLab Advanced SAST rules or edit their metadata.
 The following example disables rules based on different criteria:
@@ -400,7 +422,7 @@ You can also see each identifier and its associated `type` in the [downloadable 
       value = "java_cookie_rule-CookieHTTPOnly"
 ```
 
-### Disable predefined rules of other SAST analyzers
+### Disable default rules of other SAST analyzers
 
 With the following custom ruleset configuration, the following rules are omitted from the report:
 
@@ -437,7 +459,7 @@ With the following custom ruleset configuration, the following rules are omitted
       value = "memcpy"
 ```
 
-### Override predefined rule metadata
+### Override default rule metadata
 
 With the following custom ruleset configuration, vulnerabilities found with
 `semgrep` with a type `CWE` and a value `322` have their severity overridden to `Critical`.
@@ -452,9 +474,9 @@ With the following custom ruleset configuration, vulnerabilities found with
       severity = "Critical"
 ```
 
-### Replace or add to the predefined rules of `semgrep`
+### Replace or add to the default rules of `semgrep`
 
-With the following custom ruleset configuration, the predefined ruleset
+With the following custom ruleset configuration, the default ruleset
 of the `semgrep` analyzer is replaced with a custom ruleset contained in
 a file called `my-semgrep-rules.yaml` in the repository being scanned.
 
@@ -482,7 +504,7 @@ rules:
 
 ### Build a custom configuration using a passthrough chain for `semgrep`
 
-With the following custom ruleset configuration, the predefined ruleset
+With the following custom ruleset configuration, the default ruleset
 of the `semgrep` analyzer is replaced with a custom ruleset produced by
 evaluating a chain of four passthroughs. Each passthrough produces a file
 that's written to the `/sgrules` directory within the container. A

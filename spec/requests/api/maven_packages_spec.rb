@@ -510,6 +510,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       subject { head api("/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
+    end
+
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
       get api("/packages/maven/#{path}/#{file_name}"), params: params, headers: request_headers
     end
@@ -792,6 +800,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       subject { head api("/groups/#{group.id}/-/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { group }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
+    end
+
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path, group_id: group.id)
       get api("/groups/#{group_id}/-/packages/maven/#{path}/#{file_name}"), params: params, headers: request_headers
     end
@@ -910,6 +926,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
     it_behaves_like 'not touching last downloaded at field for head request' do
       subject { head api("/projects/#{project.id}/packages/maven/#{maven_metadatum.path}/#{package_file.file_name}"), headers: headers_with_token }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :download_maven_package_file do
+      let(:boundary_object) { project }
+      let(:request) do
+        path = maven_metadatum.path
+        get api("/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}", personal_access_token: pat)
+      end
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
@@ -1473,6 +1497,25 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'updating personal access token last used'
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_maven_package_file do
+      let(:boundary_object) { project }
+      let(:request) do
+        file_extension = 'jar'
+        file_name = 'my-app-1.0-20180724.124855-1'
+        url = "/projects/#{project.id}/packages/maven/#{param_path}/#{file_name}.#{file_extension}"
+        params = { file: file_upload }
+
+        workhorse_finalize(
+          api(url, personal_access_token: pat),
+          method: :put,
+          file_key: :file,
+          params: params,
+          headers: headers,
+          send_rewritten_field: send_rewritten_field
+        )
+      end
     end
 
     def upload_file(params: {}, request_headers: headers, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')
