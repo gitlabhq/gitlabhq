@@ -21,13 +21,48 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: 
       end
 
       context 'with invalid JWT' do
-        let(:jwt) { '123' }
+        context 'with malformed JWT' do
+          let(:jwt) { '123' }
 
-        it 'returns 401' do
-          post_subscriptions
+          it 'returns 401' do
+            post_subscriptions
 
-          expect(response).to have_gitlab_http_status(:unauthorized)
-          expect(json_response).to eq('message' => '401 Unauthorized - JWT authentication failed')
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response).to eq('message' => '401 Unauthorized - JWT authentication failed')
+          end
+        end
+
+        context 'with nil JWT' do
+          let(:jwt) { nil }
+
+          it 'returns 401' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response).to eq('message' => '401 Unauthorized - Invalid JWT token')
+          end
+        end
+
+        context 'with empty JWT' do
+          let(:jwt) { '' }
+
+          it 'returns 401' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response).to eq('message' => '401 Unauthorized - Invalid JWT token')
+          end
+        end
+
+        context 'with oversized JWT' do
+          let(:jwt) { 'x' * 9.kilobytes }
+
+          it 'returns 401' do
+            post_subscriptions
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response).to eq('message' => '401 Unauthorized - Invalid JWT token')
+          end
         end
       end
 
@@ -67,6 +102,56 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: 
             expect(response).to have_gitlab_http_status(:created)
           end
         end
+      end
+    end
+  end
+
+  describe 'POST /api/v4/integrations/jira_connect/subscriptions' do
+    let(:installation) { create(:jira_connect_installation) }
+    let(:shared_secret) { installation.shared_secret }
+    let(:api_path) { '/api/v4/integrations/jira_connect/subscriptions' }
+
+    context 'when installation is not found' do
+      it 'returns unauthorized' do
+        jwt_token = Atlassian::Jwt.encode({ iss: 'unknown_key' }, 'wrong_secret')
+        post api_path, params: { jwt: jwt_token }
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when JWT signature is invalid' do
+      it 'returns unauthorized' do
+        jwt_token = Atlassian::Jwt.encode({ iss: installation.client_key }, 'wrong_secret')
+        post api_path, params: { jwt: jwt_token }
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when user_info call fails' do
+      it 'returns error' do
+        jwt_token = Atlassian::Jwt.encode(
+          { iss: installation.client_key, sub: 'user123', qsh: 'context-qsh' },
+          shared_secret
+        )
+
+        allow_next_instance_of(Atlassian::JiraConnect::Client) do |instance|
+          allow(instance).to receive(:user_info).and_return(nil)
+        end
+
+        post api_path, params: { jwt: jwt_token }
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when JWT has valid signature but invalid qsh' do
+      it 'returns unauthorized' do
+        jwt_token = Atlassian::Jwt.encode(
+          { iss: installation.client_key, sub: 'user123', qsh: 'invalid-qsh' },
+          shared_secret
+        )
+
+        post api_path, params: { jwt: jwt_token }
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
   end

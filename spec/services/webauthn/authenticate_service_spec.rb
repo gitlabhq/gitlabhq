@@ -200,6 +200,16 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
           )
         end
       end
+
+      context 'when webauthn verification returns false' do
+        before do
+          allow_next_instance_of(WebAuthn::AuthenticatorAssertionResponse) do |instance|
+            allow(instance).to receive(:verify).and_return(false)
+          end
+        end
+
+        it_behaves_like 'returns authentication failure'
+      end
     end
   end
 end

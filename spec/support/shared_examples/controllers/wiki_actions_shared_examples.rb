@@ -281,6 +281,27 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
+    context 'when the redirected page has leading and trailing slashes' do
+      let(:id) { 'PageA' }
+
+      before do
+        wiki.repository.update_file(
+          user,
+          '.gitlab/redirects.yml',
+          "PageA: PageB\nPageB: PageC\nPageC: /PageA/\n",
+          message: 'Create redirects file',
+          branch_name: 'master'
+        )
+      end
+
+      it 'renders the edit page with a notice' do
+        request
+
+        expect(response).to redirect_to_wiki(wiki, 'PageA', redirect_limit_reached: true)
+        expect(flash[:notice]).to eq('The page at <code>PageA</code> redirected too many times. You are now editing the page at <code>PageA</code>.')
+      end
+    end
+
     context 'when the page redirects to another page' do
       before do
         redirect_limit_yml = ''
