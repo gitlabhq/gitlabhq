@@ -29,6 +29,10 @@ RSpec.shared_context 'with claiming tools' do
       value || instance.public_send(attribute))
   end
 
+  def sanitize_records_for_grpc(records)
+    records.map { |record| record.except(:record) }
+  end
+
   before do
     stub_config_cell(enabled: true)
     allow(Current).to receive(:cells_claims_leases?).and_return(true)
@@ -101,12 +105,13 @@ RSpec.shared_context 'with claiming tools' do
   end
 
   def sort_records(records)
+    # Remove :record key before sorting
     # We don't care about the actual order, but need a consistent order
     # within this test run, so that when we compare two arrays we're only
     # checking that they contain the same records regardless of order.
     # This is reliable unless we hit hash collisions, which could cause
     # test flakiness.
-    records.sort_by(&:hash)
+    sanitize_records_for_grpc(records).sort_by(&:hash)
   end
 end
 

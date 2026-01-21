@@ -18,6 +18,18 @@ module RuboCop
       class UsersInternalOrganization < RuboCop::Cop::Base
         MSG = 'Use `Users::Internal.in_organization(organization)` before calling methods on `Users::Internal`.'
 
+        # Methods that don't require organization context
+        ALLOWED_METHODS = %i[
+          in_organization
+          try
+          clear_memoization
+          bot_avatar
+          prepend
+          prepend_mod
+          include
+          extend
+        ].freeze
+
         # Match both ::Users::Internal.method and Internal.method patterns
         # @!method users_internal_call?(node)
         def_node_matcher :users_internal_call?, <<~PATTERN
@@ -36,7 +48,7 @@ module RuboCop
 
         def on_send(node)
           users_internal_call?(node) do |method_name|
-            next if method_name == :in_organization
+            next if ALLOWED_METHODS.include?(method_name)
             next if chained_after_in_organization?(node)
 
             add_offense(node)

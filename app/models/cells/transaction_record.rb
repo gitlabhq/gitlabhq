@@ -93,8 +93,8 @@ module Cells
       raise Error, 'Attributes can now only be claimed on main DB' if Cells::OutstandingLease.connection != @connection
 
       @outstanding_lease = Cells::OutstandingLease.create_from_request!(
-        create_records: create_records,
-        destroy_records: destroy_records,
+        create_records: sanitize_records_for_grpc(create_records),
+        destroy_records: sanitize_records_for_grpc(destroy_records),
         deadline: deadline
       )
     rescue GRPC::BadStatus => e
@@ -126,6 +126,10 @@ module Cells
     private
 
     attr_reader :create_records, :destroy_records, :done, :outstanding_lease
+
+    def sanitize_records_for_grpc(records)
+      records.map { |record| record.except(:record) }
+    end
 
     def deadline
       GRPC::Core::TimeConsts.from_relative_time(TIMEOUT_IN_SECONDS)

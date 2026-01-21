@@ -5,6 +5,7 @@ import {
   GlIcon,
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
+import { ROUTES } from '../constants';
 
 export default {
   name: 'WorkItemsSavedViewSelector',
@@ -22,16 +23,20 @@ export default {
   },
   computed: {
     isViewActive() {
-      return window.location.pathname.includes(this.savedView.id);
+      return this.$route.params.view_id === this.savedView.id;
     },
   },
   methods: {
     onViewClick() {
-      // TODO: To be replaced with redirect to this.$router.push to `work_items/saved_views/:id`
-      if (this.isViewActive) {
-        return '';
+      if (!this.isViewActive) {
+        this.$router
+          .push({ name: ROUTES.savedView, params: { view_id: this.savedView.id } })
+          .catch((error) => {
+            if (error.name !== 'NavigationDuplicated') {
+              throw error;
+            }
+          });
       }
-      return '';
     },
     editView() {
       // TODO: to replace this with logic to edit a view
@@ -59,14 +64,15 @@ export default {
 </script>
 
 <template>
-  <div data-testid="selector-wrapper" @click="onViewClick">
+  <!-- TODO: Make this a <router-link> when !isViewActive, and <gl-disclosure-dropdown> when isViewActive -->
+  <div data-testid="selector-wrapper" class="gl-cursor-pointer" @click="onViewClick">
     <gl-disclosure-dropdown
       category="tertiary"
       :toggle-text="savedView.name"
       auto-close
       :no-caret="!isViewActive"
-      class="saved-view-selector !gl-h-full !gl-rounded-none"
-      :class="{ 'saved-view-selector-active': isViewActive }"
+      class="saved-view-selector gl-pointer-events-none !gl-h-full !gl-rounded-none"
+      :class="{ 'saved-view-selector-active gl-pointer-events-auto': isViewActive }"
       data-testid="saved-view-selector"
     >
       <gl-disclosure-dropdown-item data-testid="edit-action" @action="editView">

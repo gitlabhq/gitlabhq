@@ -1,0 +1,6 @@
+---
+name: read_milestone_merge_request
+description: Grants the ability to read milestone merge requests
+boundaries:
+  - group
+  - project

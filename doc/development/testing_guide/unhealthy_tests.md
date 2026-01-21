@@ -199,121 +199,18 @@ element on a page that is not yet rendered, or in unit tests by failing to wait 
 
 ### Quarantined tests
 
-When we have a flaky test in `master`:
+When a flaky test is blocking development on `master`, it should be quarantined to prevent impacting other developers.
+The [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/)
+provides comprehensive guidance on the quarantine process, including:
 
-1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/new) project with the relevant group label.
-1. Quarantine the test after the first failure.
-   If the test cannot be fixed in a timely fashion, there is an impact on the
-   productivity of all the developers, so it should be quarantined.
+- When to use the fast or long-term quarantine process
+- Timeline expectations and ownership responsibilities
+- How to remove tests from quarantine
+- How quarantine ownership and escalation procedures work
 
-For the complete quarantine process, including when to use fast vs long-term quarantine, timeline expectations, and ownership responsibilities, see the [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
-
-#### RSpec
-
-##### Fast quarantine
-
-Fast quarantine is used when a test needs immediate quarantine. The fast quarantine file is stored in a separate repository for rapid merging, while long-term quarantine modifies test metadata directly in the GitLab codebase.
-
-**Fast quarantine process:**
-
-1. **Immediate action**:
-   - Follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/blob/main/.gitlab/merge_request_templates/Default.md#fast-quarantine-process)
-
-1. **Re-running failed jobs with the latest fast quarantine file**:
-   - **RSpec tests (unit/integration/system)**: Re-trigger the `retrieve-tests-metadata` job, then retry the failed RSpec job. Simply restarting the job will NOT pick up new fast quarantine updates.
-   - **E2E tests**: Simply retry the failed E2E job - E2E tests automatically download the latest fast quarantine file.
-   - **Alternative**: Running a new pipeline will pick up the latest fast quarantine for all test types.
-
-For complete guidance on fast quarantine timelines, follow-up requirements, and the weekly fast quarantine clearance process, see the [Fast Quarantine section in the handbook](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/#fast-quarantine).
-
-##### Long-term quarantine
-
-Once a test is fast-quarantined, you can proceed with the long-term quarantining process. This can be done by opening a merge request.
-
-First, ensure the test file has a [`feature_category` metadata](../feature_categorization/_index.md#rspec-examples), to ensure correct attribution of the test file.
-
-Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
-~"failure::flaky-test" issue you created previously.
-
-```ruby
-# Quarantine a single spec
-it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  expect(response).to have_gitlab_http_status(:ok)
-end
-
-# Quarantine a describe/context block
-describe '#flaky-method', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  [...]
-end
-```
-
-This means it will be [skipped as pending by the QuarantineFormatter](https://gitlab.com/gitlab-org/ruby/gems/gitlab_quality-test_tooling/-/blob/main/lib/gitlab_quality/test_tooling/test_quarantine/quarantine_helper.rb#L34).
-
-Also, ensure that:
-
-1. The ~"quarantine" label is present on the merge request.
-1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).
-
-Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
-
-```ruby
-# Will be flagged by Rubocop
-shared_examples 'loads all the users when opened', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
-  [...]
-end
-
-# Does not work
-it_behaves_like 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
-
-# Does not work
-include_examples 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
-```
-
-After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
-
-For guidance on quarantine ownership, timelines, and removing tests from quarantine, see the [Test Quarantine Process handbook page](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
-
-##### Find quarantined tests by feature category
-
-To find all quarantined tests for a feature category, use `ripgrep`:
-
-```shell
-rg -l --multiline -w "(?s)feature_category:\s+:global_search.+quarantine:"
-```
-
-#### Jest
-
-For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
-
-```javascript
-// quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/56789
-// eslint-disable-next-line jest/no-disabled-tests
-it.skip('should throw an error', () => {
-  expect(response).toThrowError(expected_error)
-});
-```
-
-This means it is skipped unless the test suit is run with `--runInBand` Jest command line option:
-
-```shell
-jest --runInBand
-```
-
-A list of files with quarantined specs in them can be found with the command:
-
-```shell
-yarn jest:quarantine
-```
-
-For both test frameworks, make sure to add the `~"quarantined test"` label to the issue.
-
-Once a test is in quarantine, there are 3 choices:
-
-- Fix the test (that is, get rid of its flakiness).
-- Move the test to a lower level of testing.
-- Remove the test entirely (for example, because there's already a
-  lower-level test, or it's duplicating another same-level test, or it's testing
-  too much etc.).
+For immediate quarantine needs, use
+the [fast quarantine process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/) for rapid
+merging. For implementation details on how to quarantine tests in your codebase, refer to the handbook page.
 
 ### Automatic retries and flaky tests detection
 

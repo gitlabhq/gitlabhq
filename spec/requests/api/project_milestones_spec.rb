@@ -15,7 +15,9 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
   let(:params) { {} }
 
-  it_behaves_like 'group and project milestones', "/projects/:id/milestones"
+  it_behaves_like 'group and project milestones', "/projects/:id/milestones" do
+    let(:boundary_object) { project }
+  end
 
   shared_examples 'listing all milestones' do
     it 'returns correct list of milestones' do
@@ -196,6 +198,13 @@ RSpec.describe API::ProjectMilestones, feature_category: :team_planning do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(group.milestones.first.title).to eq(closed_milestone.title)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :promote_milestone do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api("/projects/#{project.id}/milestones/#{milestone.id}/promote", personal_access_token: pat)
+        end
       end
     end
 

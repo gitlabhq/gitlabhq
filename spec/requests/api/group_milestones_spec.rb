@@ -28,7 +28,9 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
     end
   end
 
-  it_behaves_like 'group and project milestones', "/groups/:id/milestones"
+  it_behaves_like 'group and project milestones', "/groups/:id/milestones" do
+    let(:boundary_object) { group }
+  end
 
   describe 'GET /groups/:id/milestones' do
     context 'for REST only' do

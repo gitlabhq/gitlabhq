@@ -92,10 +92,10 @@ module Types
           namespace = object.namespace
 
           if namespace.is_a?(::Group)
-            Gitlab::Routing.url_helpers.subscribe_group_saved_view_url(namespace, object.id)
+            Gitlab::Routing.url_helpers.group_saved_view_url(namespace, object.id)
           else
             project = namespace.project
-            Gitlab::Routing.url_helpers.subscribe_project_saved_view_url(project, object.id)
+            Gitlab::Routing.url_helpers.project_saved_view_url(project, object.id)
           end
         end
       end

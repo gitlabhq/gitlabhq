@@ -181,6 +181,9 @@ export default class VueRouterCompat {
     // eslint-disable-next-line no-constructor-return
     return new Proxy(router, {
       get(target, prop) {
+        if (prop === 'history') {
+          return target.options.history;
+        }
         const result = target[prop];
         // eslint-disable-next-line no-underscore-dangle
         if (result?.__v_isRef) {

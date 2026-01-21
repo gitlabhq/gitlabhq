@@ -11,6 +11,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work_item_type_form.vue';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import organisationWorkItemTypesQuery from '~/work_items/graphql/organisation_work_item_types.query.graphql';
 import { s__ } from '~/locale';
 
 export default {
@@ -28,6 +29,11 @@ export default {
   props: {
     fullPath: {
       type: String,
+      required: false,
+      default: '',
+    },
+    config: {
+      type: Object,
       required: true,
     },
   },
@@ -41,14 +47,21 @@ export default {
   },
   apollo: {
     workItemTypes: {
-      query: namespaceWorkItemTypesQuery,
+      query() {
+        return this.fullPath ? namespaceWorkItemTypesQuery : organisationWorkItemTypesQuery;
+      },
       variables() {
+        if (!this.fullPath) {
+          return {};
+        }
         return {
           fullPath: this.fullPath,
         };
       },
       update(data) {
-        return data.namespace?.workItemTypes?.nodes || [];
+        return this.fullPath
+          ? data.namespace?.workItemTypes?.nodes
+          : data.organisation?.workItemTypes?.nodes;
       },
       error(error) {
         this.errorMessage = s__('WorkItem|Failed to fetch work item types.');
@@ -62,6 +75,15 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.workItemTypes.loading;
+    },
+    canCreate() {
+      return this.config?.workItemTypeSettingsPermissions?.includes('create');
+    },
+    canEdit() {
+      return this.config?.workItemTypeSettingsPermissions?.includes('edit');
+    },
+    canArchive() {
+      return this.config?.workItemTypeSettingsPermissions?.includes('archive');
     },
   },
   methods: {
@@ -88,9 +110,14 @@ export default {
       :is-edit-mode="!!selectedWorkItemType"
       @close="closeModal"
     />
+    <!--
+      There is a separate view for subgroup/project levels where the user cannot create/edit/archive but showing only the
+      enabled and disabled types as two separate tables which will be utilising the same query response , we will require that setting here. Either we read it
+      from context/ or we just add another permission or the work item settings
+    -->
     <crud-component :title="s__('WorkItem|Types')" :count="count">
       <template #actions>
-        <gl-button size="small" @click="createEditWorkItemTypeFormVisible = true">
+        <gl-button v-if="canCreate" size="small" @click="createEditWorkItemTypeFormVisible = true">
           {{ s__('WorkItem|New type') }}
         </gl-button>
       </template>
@@ -120,12 +147,12 @@ export default {
             :toggle-text="__('Actions')"
             category="tertiary"
           >
-            <gl-disclosure-dropdown-item @action="editWorkItemType(item)">
+            <gl-disclosure-dropdown-item v-if="canEdit" @action="editWorkItemType(item)">
               <template #list-item>
                 {{ s__('WorkItem|Edit name and icon') }}
               </template>
             </gl-disclosure-dropdown-item>
-            <gl-disclosure-dropdown-item variant="danger">
+            <gl-disclosure-dropdown-item v-if="canArchive" variant="danger">
               <template #list-item>
                 {{ __('Delete') }}
               </template>

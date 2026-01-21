@@ -59,7 +59,7 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
       it 'returns the group URL' do
         url = resolve_field(:share_url, saved_view, current_user: current_user)
 
-        expect(url).to eq(Gitlab::Routing.url_helpers.subscribe_group_saved_view_url(group, saved_view.id))
+        expect(url).to eq(Gitlab::Routing.url_helpers.group_saved_view_url(group, saved_view.id))
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
       it 'returns the project URL' do
         url = resolve_field(:share_url, saved_view, current_user: current_user)
 
-        expect(url).to eq(Gitlab::Routing.url_helpers.subscribe_project_saved_view_url(project, saved_view.id))
+        expect(url).to eq(Gitlab::Routing.url_helpers.project_saved_view_url(project, saved_view.id))
       end
     end
   end

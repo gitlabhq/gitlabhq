@@ -57,7 +57,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
                 bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: 'newpath' },
                 source: { type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS,
                           rails_primary_key_id: be_a(Integer) },
-                subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) }
+                subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: be_a(Integer) },
+                record: instance
               }
             )
 
@@ -148,7 +149,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
         source: {
           type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS, rails_primary_key_id: instance.id
-        }
+        },
+        record: instance
       })
     end
   end

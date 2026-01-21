@@ -420,8 +420,27 @@ describe('date_format_utility.js', () => {
   });
 
   describe('toISODateFormat', () => {
-    it('should format a Date object into yyyy-mm-dd format', () => {
-      expect(utils.toISODateFormat(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
+    describe.each`
+      timezone                | localTime
+      ${'US/Eastern'}         | ${'2019-12-31'}
+      ${'UTC'}                | ${'2020-01-01'}
+      ${'Australia/Adelaide'} | ${'2020-01-01'}
+    `('for $timezone', ({ timezone, localTime }) => {
+      beforeEach(() => {
+        timezoneMock.register(timezone);
+      });
+
+      afterEach(() => {
+        timezoneMock.unregister();
+      });
+
+      it('formats to yyyy-mm-dd for the local timezone', () => {
+        expect(utils.toISODateFormat(new Date('2020-01-01T00:00:00Z'))).toEqual(localTime);
+      });
+
+      it('formats to yyyy-mm-dd for the UTC timezone', () => {
+        expect(utils.toISODateFormat(new Date('2020-01-01T00:00:00Z'), true)).toEqual('2020-01-01');
+      });
     });
   });
 

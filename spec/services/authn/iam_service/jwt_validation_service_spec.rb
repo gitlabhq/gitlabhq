@@ -49,47 +49,27 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
     end
 
     context 'when IAM is enabled' do
-      context 'with valid token' do
+      context 'when token is valid' do
         let(:token_string) do
           create_iam_jwt(user: user, scopes: 'api read_repository', issuer: iam_issuer,
             private_key: private_key, kid: kid)
         end
 
-        it 'returns a success ServiceResponse with payload and scopes' do
+        it 'returns a success ServiceResponse with jwt_payload' do
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_success
-          expect(result.payload[:payload]['sub']).to eq("user:#{user.id}")
-          expect(result.payload[:scopes]).to contain_exactly('api', 'read_repository')
+          expect(result.payload[:jwt_payload]).to be_a(Hash)
+          expect(result.payload[:jwt_payload]['sub']).to eq(user.id.to_s)
+          expect(result.payload[:jwt_payload]['scope']).to eq('api read_repository')
+          expect(result.payload[:jwt_payload]['jti']).to be_present
+          expect(result.payload[:jwt_payload]['iss']).to eq(iam_issuer)
+          expect(result.payload[:jwt_payload]['aud']).to eq(iam_audience)
+          expect(result.payload[:jwt_payload]['exp']).to be_present
+          expect(result.payload[:jwt_payload]['iat']).to be_present
         end
       end
 
-      context 'with valid token without scopes' do
-        let(:token_string) do
-          create_iam_jwt(user: user, scopes: nil, issuer: iam_issuer,
-            private_key: private_key, kid: kid)
-        end
-
-        it 'returns success with empty scopes array' do
-          expect(result).to be_a(ServiceResponse)
-          expect(result).to be_success
-          expect(result.payload[:scopes]).to eq([])
-        end
-      end
-
-      context 'with scopes containing whitespace' do
-        let(:token_string) do
-          create_iam_jwt(user: user, scopes: '  api   read_repository  ', issuer: iam_issuer,
-            private_key: private_key, kid: kid)
-        end
-
-        it 'returns success with trimmed scopes' do
-          expect(result).to be_a(ServiceResponse)
-          expect(result).to be_success
-          expect(result.payload[:scopes]).to contain_exactly('api', 'read_repository')
-        end
-      end
-
-      context 'with expired token' do
+      context 'when token has expired' do
         let(:token_string) do
           create_iam_jwt(user: user, expires_at: 1.hour.ago, issuer: iam_issuer,
             private_key: private_key, kid: kid)
@@ -98,7 +78,16 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         include_examples 'token validation error', message: 'Token has expired'
       end
 
-      context 'with invalid issuer' do
+      context 'when token has invalid iat' do
+        let(:token_string) do
+          create_iam_jwt(user: user, issued_at: 1.hour.from_now, issuer: iam_issuer, private_key: private_key,
+            kid: kid)
+        end
+
+        include_examples 'token validation error', message: 'Invalid token issue time'
+      end
+
+      context 'when token has invalid issuer' do
         let(:token_string) do
           create_iam_jwt(user: user, issuer: 'https://evil.com', private_key: private_key, kid: kid)
         end
@@ -106,7 +95,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         include_examples 'token validation error', message: 'Invalid token issuer'
       end
 
-      context 'with invalid audience' do
+      context 'when token has invalid audience' do
         let(:token_string) do
           create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid, aud: 'wrong')
         end
@@ -114,7 +103,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         include_examples 'token validation error', message: 'Invalid token audience'
       end
 
-      context 'with invalid signature' do
+      context 'when signature verification fails' do
         # Override the shared_context's JWKS stub for signature verification tests
         before do
           WebMock.reset!
@@ -128,15 +117,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
           end
 
           before do
-            # Simulate key rotation: first call returns old key, second call returns new key
-            old_jwks = { 'keys' => [JWT::JWK.new(old_key.public_key, { use: 'sig', kid: kid }).export] }
-            new_jwks = { 'keys' => [JWT::JWK.new(new_key.public_key, { use: 'sig', kid: kid }).export] }
-
-            stub_request(:get, "#{iam_service_url}/.well-known/jwks.json")
-              .to_return(
-                { status: 200, body: old_jwks.to_json, headers: { 'Content-Type' => 'application/json' } },
-                { status: 200, body: new_jwks.to_json, headers: { 'Content-Type' => 'application/json' } }
-              )
+            stub_iam_jwks_key_rotation(old_key: old_key, new_key: new_key)
           end
 
           it 'succeeds after refreshing keys' do
@@ -144,7 +125,7 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
           end
         end
 
-        context 'when token has invalid signature (retry also fails)' do
+        context 'when signature verification fails after retry' do
           let(:wrong_key) { OpenSSL::PKey::RSA.new(2048) }
           let(:token_string) do
             create_iam_jwt(user: user, issuer: iam_issuer, private_key: wrong_key, kid: kid)
@@ -201,19 +182,28 @@ RSpec.describe Authn::IamService::JwtValidationService, feature_category: :syste
         end
       end
 
-      context 'with malformed token' do
+      context 'when token is malformed' do
         let(:token_string) { 'not-a-valid-jwt' }
 
         include_examples 'token validation error', message: /Invalid token format/
       end
 
-      context 'with missing required claim' do
+      context 'when token is missing required claims' do
+        # Required claims: %w[sub jti exp iat iss aud scope]
+        # Note: iss and aud are tested separately above with specific error messages
+        let(:excluded_claim) { [] }
         let(:token_string) do
           create_iam_jwt(user: user, issuer: iam_issuer, private_key: private_key, kid: kid,
-            exclude_claims: ['jti'])
+            exclude_claims: excluded_claim)
         end
 
-        include_examples 'token validation error', message: /Invalid token format/
+        %w[sub jti exp iat scope].each do |claim|
+          context "when missing #{claim} claim" do
+            let(:excluded_claim) { [claim] }
+
+            include_examples 'token validation error', message: /Invalid token format/
+          end
+        end
       end
 
       context 'when JWKS fetch fails' do

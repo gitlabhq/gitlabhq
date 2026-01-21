@@ -55,6 +55,10 @@ For tier, choose one:
 
 ### Add-ons
 
+Use add-on information only for features in GitLab Duo Classic and GitLab Duo Self-Hosted.
+
+Do not use add-on information for features in the GitLab Duo Agent Platform.
+
 For add-ons, the possibilities are:
 
 ```markdown

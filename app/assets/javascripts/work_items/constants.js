@@ -244,6 +244,7 @@ export const ROUTES = {
   workItem: 'workItem',
   new: 'new',
   design: 'design',
+  savedView: 'savedView',
 };
 
 export const WORK_ITEM_TYPE_ROUTE_WORK_ITEM = 'work_items';

@@ -9042,6 +9042,17 @@ export const namespaceWorkItemTypesQueryResponse = {
   },
 };
 
+export const organisationWorkItemTypesQueryResponse = {
+  data: {
+    organisation: {
+      id: 'gid://gitlab/2',
+      workItemTypes: {
+        nodes: [...namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes],
+      },
+    },
+  },
+};
+
 export const namespaceWorkItemTypesWithOKRsQueryResponse = {
   data: {
     namespace: {

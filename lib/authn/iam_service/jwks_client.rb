@@ -61,18 +61,18 @@ module Authn
       end
 
       def endpoint
-        url = Gitlab.config.authn.iam_service.url
-        raise ConfigurationError, 'IAM service URL is not configured' if url.nil?
-
-        URI.join(url, JWKS_PATH).to_s
+        URI.join(service_url, JWKS_PATH).to_s
       end
 
       def cache_key
+        "iam:jwks:#{service_url}"
+      end
+
+      def service_url
         url = Gitlab.config.authn.iam_service.url
         raise ConfigurationError, 'IAM service URL is not configured' if url.nil?
 
-        issuer_hash = Digest::SHA256.hexdigest(url)[0..8]
-        "iam:jwks:#{issuer_hash}"
+        url
       end
     end
   end

@@ -1,0 +1,6 @@
+---
+name: read_milestone
+description: Grants the ability to read milestones
+boundaries:
+  - group
+  - project

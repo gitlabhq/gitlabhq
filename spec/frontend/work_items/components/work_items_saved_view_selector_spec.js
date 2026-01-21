@@ -9,17 +9,13 @@ const mockSavedView = {
 describe('WorkItemsSavedViewSelector', () => {
   let wrapper;
 
-  const setPathname = (pathname) => {
-    Object.defineProperty(window, 'location', {
-      value: { pathname },
-      writable: true,
-    });
-  };
-  const createComponent = (props = {}) => {
+  const createComponent = (routeMock = { params: { view_id: undefined } }) => {
     wrapper = shallowMountExtended(WorkItemsSavedViewSelector, {
       propsData: {
         savedView: mockSavedView,
-        ...props,
+      },
+      mocks: {
+        $route: routeMock,
       },
     });
   };
@@ -32,7 +28,6 @@ describe('WorkItemsSavedViewSelector', () => {
   const findDeleteAction = () => wrapper.findByTestId('delete-action');
 
   beforeEach(() => {
-    setPathname('/work_items');
     createComponent();
   });
 
@@ -49,9 +44,8 @@ describe('WorkItemsSavedViewSelector', () => {
     expect(findSelector().props('noCaret')).toBe(true);
   });
 
-  it('shows the caret when active and applies appripriate styles', () => {
-    setPathname('/work_items/saved_views/1');
-    createComponent();
+  it('shows the caret when active and applies appropriate styles', () => {
+    createComponent({ params: { view_id: '1' } });
 
     expect(findSelector().classes()).toContain('saved-view-selector-active');
     expect(findSelector().props('noCaret')).toBe(false);

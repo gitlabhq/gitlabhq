@@ -125,8 +125,7 @@ export default {
       }
     },
     handleCancelClick() {
-      const listPath =
-        this.$router.history.base + this.$router.history.current.fullPath.replace('/new', '');
+      const listPath = this.$router.history.base + this.$route.fullPath.replace('/new', '');
       const isWorkItemRoute = this.$route.params?.type === 'work_items';
       const isGroupWorkItemRoute = isWorkItemRoute && this.$router.history.base.includes('groups');
 

@@ -215,7 +215,6 @@ create_merge_request
 create_merge_request_approval_rules
 create_merge_request_from
 create_merge_request_in
-create_milestone
 create_non_backlog_issues
 create_note
 create_objective
@@ -556,7 +555,6 @@ read_member_access_request
 read_merge_request_closing_issue
 read_merge_request_iid
 read_merge_train_car
-read_milestone
 read_model_experiments
 read_model_registry
 read_namespace
@@ -759,7 +757,6 @@ update_iteration
 update_max_artifacts_size
 update_max_pages_size
 update_merge_request
-update_milestone
 update_name
 update_note
 update_o11y_settings

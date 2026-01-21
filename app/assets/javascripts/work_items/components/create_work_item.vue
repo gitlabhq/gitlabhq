@@ -654,7 +654,7 @@ export default {
       handler(shouldDiscardDraft) {
         // If this component is rendered in the create modal and user added data,
         // we need to track the button clicked on the confirmation modal (another modal)
-        if (shouldDiscardDraft) {
+        if (shouldDiscardDraft && this.selectedWorkItemTypeId) {
           this.handleDiscardDraft();
         }
       },

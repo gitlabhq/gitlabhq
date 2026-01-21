@@ -1,0 +1,6 @@
+---
+name: delete_milestone
+description: Grants the ability to delete milestones
+boundaries:
+  - group
+  - project

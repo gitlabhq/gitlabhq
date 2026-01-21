@@ -11,6 +11,8 @@ permissions:
   - create_issue_time_estimate
   - create_label
   - create_merge_request_time_estimate
+  - create_milestone
+  - promote_milestone
   - reset_issue_spent_time
   - reset_issue_time_estimate
   - reset_merge_request_spent_time
@@ -19,6 +21,7 @@ permissions:
   - update_label
   - update_epic_issue
   - update_epic_link
+  - update_milestone
 boundaries:
   - group
   - project

@@ -356,13 +356,14 @@ export const timeToHoursMinutes = (time = '') => {
  * Converts a Date object to a date-only string in the ISO format `yyyy-mm-dd`
  *
  * @param {Date} date A Date object
+ * @param {boolean} utc convert local time to UTC
  * @returns {string} A string in the format `yyyy-mm-dd`
  */
-export const toISODateFormat = (date) => {
-  const day = padWithZeros(date.getDate());
-  const month = padWithZeros(date.getMonth() + 1);
-  const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
+export const toISODateFormat = (date, utc = false) => {
+  const day = utc ? date.getUTCDate() : date.getDate();
+  const month = (utc ? date.getUTCMonth() : date.getMonth()) + 1;
+  const year = utc ? date.getUTCFullYear() : date.getFullYear();
+  return `${year}-${padWithZeros(month)}-${padWithZeros(day)}`;
 };
 
 /**

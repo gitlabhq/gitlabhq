@@ -20,10 +20,9 @@ module Authn
           return ServiceResponse.error(message: 'IAM JWT authentication is disabled', reason: :disabled)
         end
 
-        payload = decode_with_retry
-        scopes = extract_scopes(payload)
+        jwt_payload = decode_with_retry
 
-        ServiceResponse.success(payload: { payload: payload, scopes: scopes })
+        ServiceResponse.success(payload: { jwt_payload: jwt_payload })
       rescue JwksClient::JwksFetchFailedError, JwksClient::ConfigurationError => e
         ServiceResponse.error(message: e.message, reason: :service_unavailable)
       rescue JWT::DecodeError => e
@@ -49,26 +48,10 @@ module Authn
         payload
       end
 
-      def extract_scopes(payload)
-        return [] if payload['scope'].nil?
-
-        scopes = []
-
-        # Limits split to prevent DoS from excessive scope counts
-        # TODO: Discuss whether to add scope name validation here or rely on authorization layer
-        payload['scope'].to_s.split(' ', Gitlab::Auth.all_available_scopes.count + 1) do |scope|
-          scope = scope.squish
-          next if scope.empty?
-
-          scopes << scope
-        end
-
-        scopes
-      end
-
       def jwt_error_to_message(error)
         case error
         when JWT::ExpiredSignature then 'Token has expired'
+        when JWT::InvalidIatError then 'Invalid token issue time'
         when JWT::InvalidIssuerError then 'Invalid token issuer'
         when JWT::InvalidAudError then 'Invalid token audience'
         when JWT::VerificationError then "Signature verification failed: #{error.message}"
@@ -85,6 +68,7 @@ module Authn
         ServiceResponse.error(message: error_message, reason: :invalid_token)
       end
 
+      # TODO: agree and implement validation on jti to prevent the JWT from being replayed
       def decode_options
         {
           algorithms: ALLOWED_ALGORITHMS,

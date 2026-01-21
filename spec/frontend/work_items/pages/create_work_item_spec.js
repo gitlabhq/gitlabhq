@@ -276,6 +276,7 @@ describe('Create work item page component', () => {
       };
       const routeMock = {
         params: { type: 'work_items' },
+        fullPath: '/work_items/new',
       };
 
       createComponent({ $router: { history: historyMock, go: goMock }, $route: routeMock });
@@ -303,6 +304,7 @@ describe('Create work item page component', () => {
       };
       const routeMock = {
         params: { type: 'issues' },
+        fullPath: '/issues/new',
       };
 
       createComponent({ $router: { history: historyMock }, $route: routeMock });
@@ -328,6 +330,7 @@ describe('Create work item page component', () => {
       };
       const routeMock = {
         params: { type: 'work_items' },
+        fullPath: '/work_items/new',
       };
 
       createComponent({
@@ -357,6 +360,7 @@ describe('Create work item page component', () => {
       };
       const routeMock = {
         params: { type: 'epics' },
+        fullPath: '/epics/new',
       };
 
       createComponent({

@@ -15,7 +15,12 @@ import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
-import { namespaceWorkItemTypesQueryResponse } from 'ee_else_ce_jest/work_items/mock_data';
+import organisationWorkItemTypesQuery from '~/work_items/graphql/organisation_work_item_types.query.graphql';
+import {
+  namespaceWorkItemTypesQueryResponse,
+  organisationWorkItemTypesQueryResponse,
+} from 'ee_else_ce_jest/work_items/mock_data';
+import { DEFAULT_SETTINGS_CONFIG } from 'ee/groups/settings/work_items/constants';
 
 Vue.use(VueApollo);
 
@@ -37,6 +42,9 @@ describe('WorkItemTypesList', () => {
 
   const getMockWorkItemTypes = () =>
     namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
+  const getMockOrganisationWorkItemTypes = () =>
+    organisationWorkItemTypesQueryResponse.data.organisation.workItemTypes.nodes;
+  const mockOrganisationWorkItemTypes = getMockOrganisationWorkItemTypes();
   const mockWorkItemTypes = getMockWorkItemTypes();
   const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const mockEmptyResponseHandler = jest.fn().mockResolvedValue(mockEmptyResponse);
@@ -46,12 +54,31 @@ describe('WorkItemTypesList', () => {
     props = {},
     mountFn = mountExtended,
   } = {}) => {
+    const defaultProps = {
+      config: {
+        ...DEFAULT_SETTINGS_CONFIG,
+      },
+    };
+
     mockApollo = createMockApollo([[namespaceWorkItemTypesQuery, queryHandler]]);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: organisationWorkItemTypesQuery,
+      data: {
+        organisation: {
+          id: 'gid://gitlab/2',
+          workItemTypes: {
+            nodes: [...namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes],
+          },
+        },
+      },
+    });
 
     wrapper = mountFn(WorkItemTypesList, {
       apolloProvider: mockApollo,
       propsData: {
         fullPath: 'test-group',
+        ...defaultProps,
         ...props,
       },
       stubs: {
@@ -176,7 +203,7 @@ describe('WorkItemTypesList', () => {
     });
   });
 
-  describe('query behavior', () => {
+  describe('namespace work item types query', () => {
     it('passes correct fullPath to query', async () => {
       createWrapper({ props: { fullPath: 'my-group/sub-group' } });
 
@@ -272,6 +299,93 @@ describe('WorkItemTypesList', () => {
       await findNewTypeButton().vm.$emit('click');
       expect(findCreateEditForm().props('isEditMode')).toBe(false);
       expect(findCreateEditForm().props('workItemType')).toBe(null);
+    });
+  });
+
+  describe('organisation query', () => {
+    beforeEach(async () => {
+      createWrapper({ props: { fullPath: '' } });
+      await waitForPromises();
+    });
+
+    it('renders work item types from organisation query', () => {
+      expect(findWorkItemTypeRows()).toHaveLength(mockOrganisationWorkItemTypes.length);
+
+      mockOrganisationWorkItemTypes.forEach((type) => {
+        expect(findWorkItemTypeRow(type.id).exists()).toBe(true);
+      });
+    });
+
+    it('displays correct count from organisation data', () => {
+      expect(findCrudComponent().props('count')).toBe(mockOrganisationWorkItemTypes.length);
+    });
+
+    it('renders WorkItemTypeIcon for each organisation work item type', () => {
+      const icons = wrapper.findAllComponents(WorkItemTypeIcon);
+
+      expect(icons).toHaveLength(mockOrganisationWorkItemTypes.length);
+      icons.wrappers.forEach((icon, index) => {
+        expect(icon.props()).toMatchObject({
+          workItemType: mockOrganisationWorkItemTypes[index].name,
+        });
+      });
+    });
+
+    it('renders dropdowns for organisation work item types', () => {
+      const dropdowns = wrapper.findAllComponents(GlDisclosureDropdown);
+
+      expect(dropdowns).toHaveLength(mockOrganisationWorkItemTypes.length);
+    });
+
+    it('renders dropdowns with correct items for organisation types', () => {
+      mockOrganisationWorkItemTypes.forEach((mockWorkItemType) => {
+        const dropdown = findDropdownForType(mockWorkItemType.id);
+        const dropdownItems = dropdown.findAllComponents(GlDisclosureDropdownItem);
+        expect(dropdownItems).toHaveLength(2);
+        expect(dropdownItems.at(0).text()).toContain('Edit name and icon');
+        expect(dropdownItems.at(1).text()).toContain('Delete');
+      });
+    });
+  });
+
+  describe('error handling', () => {
+    it('handles namespace query error', async () => {
+      const errorQueryHandler = jest.fn().mockRejectedValue('Network error');
+      createWrapper({ queryHandler: errorQueryHandler });
+
+      await waitForPromises();
+
+      expect(findErrorAlert().exists()).toBe(true);
+      expect(findErrorAlert().text()).toContain('Failed to fetch work item types');
+    });
+
+    it('allows dismissing error alert', async () => {
+      const errorQueryHandler = jest.fn().mockRejectedValue('Network error');
+      createWrapper({ queryHandler: errorQueryHandler });
+
+      await waitForPromises();
+
+      expect(findErrorAlert().exists()).toBe(true);
+
+      await findErrorAlert().vm.$emit('dismiss');
+
+      expect(findErrorAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('query selection based on fullPath', () => {
+    it('does not call namespace query when fullPath is empty', async () => {
+      createWrapper({ props: { fullPath: '' } });
+      await waitForPromises();
+
+      expect(namespaceQueryHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls namespace query when fullPath is provided', async () => {
+      createWrapper({ props: { fullPath: 'test-group' } });
+      await waitForPromises();
+
+      expect(namespaceQueryHandler).toHaveBeenCalled();
     });
   });
 });

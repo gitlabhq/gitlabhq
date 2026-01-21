@@ -31,6 +31,14 @@
     background-color: var(--super-sidebar-bg);
   }
 
+  // TODO: Evaluate introducing semantic design tokens for button spacing
+  //
+  // Decrease spacing between buttons to align with optical spacing
+  // of rounded button borders
+  .gl-gap-3:has(> .gl-button) {
+    gap: 0.375rem; //= 6px
+  }
+
   // Disable global bootstrap modal backdrop when using panels
   .modal-open:has(.panel-content .modal.show) {
     .modal-backdrop {

@@ -142,11 +142,6 @@ function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
   local rspec_retry_status=0
 
-  if [[ $rspec_run_status -eq 3 ]]; then
-    echoerr "Not retrying failing examples since we failed early on purpose!"
-    exit "${rspec_run_status}"
-  fi
-
   if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
     exit "${rspec_run_status}"
@@ -154,12 +149,6 @@ function handle_retry_rspec_in_new_process() {
 
   if [[ $rspec_run_status -ne 0 ]]; then
     if is_rspec_last_run_results_file_missing; then
-      exit "${rspec_run_status}"
-    fi
-
-    local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
-    if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
-      echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
       exit "${rspec_run_status}"
     fi
 

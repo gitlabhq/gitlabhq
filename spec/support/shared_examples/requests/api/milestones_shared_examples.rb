@@ -102,6 +102,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_milestone do
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET #{route_definition}/:milestone_id" do
@@ -163,6 +169,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       expect(json_response['title']).to eq('foo & bar 1.1 -> 2.2')
       expect(json_response['description']).to be_nil
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_milestone do
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { title: 'new milestone' }
+      end
+    end
   end
 
   describe "PUT #{route_definition}/:milestone_id" do
@@ -200,6 +212,13 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
 
       expect(response).to have_gitlab_http_status(:ok)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_milestone do
+      let(:request) do
+        put api(resource_route, personal_access_token: pat),
+          params: { title: 'updated title' }
+      end
+    end
   end
 
   describe "DELETE #{route_definition}/:milestone_id" do
@@ -217,6 +236,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
 
       expect(project.milestones.find_by_id(milestone.id)).to be_nil
       expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_milestone do
+      let(:request) do
+        delete api(resource_route, personal_access_token: pat)
+      end
     end
   end
 
@@ -335,6 +360,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
         expect(json_response.second['id']).to eq(issue.id)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_milestone_issue do
+      let(:request) do
+        get api(issues_route, personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET #{route_definition}/:milestone_id/merge_requests" do
@@ -402,6 +433,12 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       expect(json_response.size).to eq(2)
       expect(json_response.first['id']).to eq(another_merge_request.id)
       expect(json_response.second['id']).to eq(merge_request.id)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_milestone_merge_request do
+      let(:request) do
+        get api(merge_requests_route, personal_access_token: pat)
+      end
     end
   end
 end

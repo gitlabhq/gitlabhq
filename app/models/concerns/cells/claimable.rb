@@ -105,7 +105,8 @@ module Cells
           source: {
             type: self.class.cells_claims_source_type,
             rails_primary_key_id: rails_primary_key_id
-          }
+          },
+          record: self
         }
       end
     end

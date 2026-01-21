@@ -63326,6 +63326,9 @@ msgstr ""
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr ""
 
+msgid "SecurityReports|Failed to load tracked refs."
+msgstr ""
+
 msgid "SecurityReports|Failed to retrieve the vulnerability data. Please refresh the page."
 msgstr ""
 
@@ -77394,9 +77397,6 @@ msgid "Work item creation via email is only supported for projects"
 msgstr ""
 
 msgid "Work item not supported"
-msgstr ""
-
-msgid "Work item settings"
 msgstr ""
 
 msgid "Work item type %{work_item_type_name} can only have a maximum of %{limit} active custom fields."

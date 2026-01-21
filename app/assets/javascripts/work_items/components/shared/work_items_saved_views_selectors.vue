@@ -3,6 +3,7 @@ import { GlDisclosureDropdown } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getSubsribedSavedViewsQuery from '~/work_items/graphql/work_item_saved_views_namespace.query.graphql';
+import { ROUTES } from '~/work_items/constants';
 import WorkItemsCreateSavedViewDropdown from '../work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from '../work_items_saved_view_selector.vue';
 
@@ -118,7 +119,7 @@ export default {
       this.visibleViews.push(selectedOverflowView);
       this.overflowedViews.unshift(removedVisibleView);
 
-      // TODO: Add this.$router.push to `work_items/saved_views/:id`
+      this.$router.push({ name: ROUTES.savedView, params: { view_id: view.id } });
     },
   },
 };

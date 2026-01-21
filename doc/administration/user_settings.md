@@ -76,6 +76,32 @@ To prevent existing users from creating top-level groups while still allowing th
 
 - The [GitLab UI](admin_area.md#prevent-a-user-from-creating-top-level-groups).
 - The [User API](../api/users.md#modify-a-user) to modify the `can_create_group` setting.
+- The Rails console for bulk updates.
+
+#### Using the Rails console
+
+Alternatively, you can update existing users using the Rails console.
+This method is more efficient for bulk updates.
+
+To disable group creation for existing users:
+
+1. Enter the Rails console:
+
+   ```shell
+   sudo gitlab-rails console
+   ```
+
+1. Disable group creation for all users except administrators:
+
+   ```ruby
+   User.where.not(admin: true).update_all(can_create_group: false)
+   ```
+
+   Or, to update specific users:
+
+   ```ruby
+   User.find_by(username: 'someuser').update(can_create_group: false)
+   ```
 
 ## Prevent users from changing their usernames
 

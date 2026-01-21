@@ -1,0 +1,6 @@
+---
+name: create_milestone
+description: Grants the ability to create milestones
+boundaries:
+  - group
+  - project

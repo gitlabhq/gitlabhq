@@ -707,7 +707,7 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 We used to skip tests that are [known to be flaky](../testing_guide/unhealthy_tests.md#automatic-retries-and-flaky-tests-detection),
 but we stopped doing so since that could actually lead to actual broken `master`.
 Instead, we introduced
-[a fast-quarantining process](../testing_guide/unhealthy_tests.md#fast-quarantine)
+[a fast-quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/)
 to proactively quarantine any flaky test reported in `#master-broken` incidents.
 
 This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`

@@ -266,3 +266,12 @@ For non-Code Suggestions troubleshooting for Neovim, see [Neovim troubleshooting
    ```lua
    :lua =vim.cmd('view ' .. vim.lsp.get_log_path())
    ```
+
+## Latency issues with code completion
+
+If you are assigned a seat in a project that has a specific model selected for code completion:
+
+- Your IDE extension disables the [direct connection to the AI gateway](../../../../administration/gitlab_duo/gateway.md#region-support)
+- Code completion requests go through the GitLab monolith, which then selects the specified model to respond to these requests.
+
+This might cause increased latency with code completion requests.

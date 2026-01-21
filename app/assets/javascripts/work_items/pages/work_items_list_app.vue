@@ -136,6 +136,7 @@ import {
   WORK_ITEM_TYPE_NAME_TICKET,
   METADATA_KEYS,
   WORK_ITEM_CREATE_SOURCES,
+  ROUTES,
 } from '../constants';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
@@ -1434,7 +1435,7 @@ export default {
       this.pageParams = getInitialPageParams(this.pageSize);
       this.sortKey = CREATED_DESC;
 
-      this.$router.push({ query: this.urlParams }).catch((error) => {
+      this.$router.push({ name: ROUTES.index, query: this.urlParams }).catch((error) => {
         if (error.name !== 'NavigationDuplicated') {
           throw error;
         }
