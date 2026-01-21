@@ -28,6 +28,12 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
     create(:jira_connect_subscription, installation: installation, namespace: group)
   end
 
+  shared_examples 'returns 403' do
+    it 'returns 403' do
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
+
   describe 'GET /-/jira_connect/repositories/search' do
     before do
       get '/-/jira_connect/repositories/search', params: { jwt: jwt, searchQuery: search_query }
@@ -35,11 +41,29 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
 
     let(:search_query) { nil }
 
-    context 'without JWT' do
-      let(:jwt) { nil }
+    context 'with invalid JWT' do
+      context 'with malformed JWT' do
+        let(:jwt) { '123' }
 
-      it 'returns 403' do
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it_behaves_like 'returns 403'
+      end
+
+      context 'without JWT' do
+        let(:jwt) { nil }
+
+        it_behaves_like 'returns 403'
+      end
+
+      context 'with empty JWT' do
+        let(:jwt) { '' }
+
+        it_behaves_like 'returns 403'
+      end
+
+      context 'with oversized JWT' do
+        let(:jwt) { 'x' * 9.kilobytes }
+
+        it_behaves_like 'returns 403'
       end
     end
 
@@ -75,11 +99,29 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
 
     let(:id) { nil }
 
-    context 'without JWT' do
-      let(:jwt) { nil }
+    context 'with invalid JWT' do
+      context 'with malformed JWT' do
+        let(:jwt) { '123' }
 
-      it 'returns 403' do
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it_behaves_like 'returns 403'
+      end
+
+      context 'without JWT' do
+        let(:jwt) { nil }
+
+        it_behaves_like 'returns 403'
+      end
+
+      context 'with empty JWT' do
+        let(:jwt) { '' }
+
+        it_behaves_like 'returns 403'
+      end
+
+      context 'with oversized JWT' do
+        let(:jwt) { 'x' * 9.kilobytes }
+
+        it_behaves_like 'returns 403'
       end
     end
 

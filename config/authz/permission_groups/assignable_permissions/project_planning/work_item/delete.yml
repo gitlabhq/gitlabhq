@@ -2,6 +2,9 @@
 name: delete_work_item
 description: Grants the ability to delete work items
 permissions:
+  - delete_epic
+  - delete_epic_link
+  - delete_epic_issue
   - delete_label
   - delete_issue_link
 boundaries:

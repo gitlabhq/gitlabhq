@@ -70,51 +70,6 @@ module IssuablesHelper
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def user_dropdown_label(user_id, default_label)
-    return default_label if user_id.nil?
-    return "Unassigned" if user_id == "0"
-
-    user = User.find_by(id: user_id)
-
-    if user
-      user.name
-    else
-      default_label
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def project_dropdown_label(project_id, default_label)
-    return default_label if project_id.nil?
-    return "Any project" if project_id == "0"
-
-    project = Project.find_by(id: project_id)
-
-    if project
-      project.full_name
-    else
-      default_label
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def group_dropdown_label(group_id, default_label)
-    return default_label if group_id.nil?
-    return "Any group" if group_id == "0"
-
-    group = ::Group.find_by(id: group_id)
-
-    if group
-      group.full_name
-    else
-      default_label
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def issuables_state_counter_text(issuable_type, state, display_count)
     titles = {
       opened: _("Open"),

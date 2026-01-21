@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.2 (2026-01-20)
+
+### Added (1 change)
+
+- [Rake task to seed AI Catalogs with external agents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d55d15507ac1dae272cfc5230616d2ce0e57e3cd) **GitLab Enterprise Edition**
+
+### Fixed (3 changes)
+
+- [Fix beta status of foundational flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7aeb7139f08add55324fe431a4bc4cf9c7d15cd5) **GitLab Enterprise Edition**
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c50eb4c11294b9e368bd3a82854d4756177ea76c) **GitLab Enterprise Edition**
+- [Ensure currentSelectedReviewers is always an array](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5236c50c2566011f4fa533f2315fcc7bbcefa69b)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/11f2df99940e349369021bb7613afebd7665c6af) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5652))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/51480b19ab4e87c7128927e0cb620eca79bb8ca8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5659))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a68318f350f598c97781e9bc9568e886a16505b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5658))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae827a88f454dcc0f4b21c7db522ea530966cee2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5654))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec6f16d7b95fe87d61d97ecf9a16e8784c172bec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5653))
+
 ## 18.8.1 (2026-01-19)
 
 ### Fixed (1 change)
@@ -467,6 +487,27 @@ entry.
 - [Remove restrict_invites_for_comp_id_service_accounts FF](https://gitlab.com/gitlab-org/gitlab/-/commit/247ef39e46547a924893d44a8e77742af7456d6f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213353)) **GitLab Enterprise Edition**
 - [Fix 20 rubocop violations for Layout/ArrayAlignment](https://gitlab.com/gitlab-org/gitlab/-/commit/d7277a5392e541ddbfd436e762c6abd6411d2d77) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200147))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ac7c5c8ba97b3dd4fe6cda9c3deea0be0dfeea5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214950))
+
+## 18.7.2 (2026-01-20)
+
+### Fixed (8 changes)
+
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8e5a7028c64d134fcca7b2a6ba89cbff0320bf64)
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3469cf61ffc33a5186c5c0dc108d90b521737c61)
+- [Allow user namespaces to be indexed in Zoekt for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d1ce678b06a2d599481a90084e9fa31088eee8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218904)) **GitLab Enterprise Edition**
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e96f86cc5bcdbe0a22468dfc07ef39ef8a903fc2)
+- [Fix migration health check endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/35813c8895bc080d7d72d7c69716a374c084da6f)
+- [Recreate p_sent_notifications.reply_key index](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02c0a479af12c482f0237c967981614d800a0ac7)
+- [Fix git push error for remote flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0be85e3a2c0fdcc4113185be9a32f6ef52f8460b) **GitLab Enterprise Edition**
+- [Fix container_repositories index repair to handle 1-to-1 relationship](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9aa8d96cd9245a97828d65162251ce194958b7da)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0504a0a8a3e437a535d2664e2f5819a7bf9a9c3d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5615))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef78fca8bb6823bedd59cd8d2ebc7158335dfb3f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5661))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7005dd1d9df8f429e4c633048ce6d53f0aec8e2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5611))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f74981ae0e3abd03584ed4a2acf3dcb25461a694) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5623))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0e071e78f995a6aa0253c69ee9f224fdc0c3ddc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5643))
 
 ## 18.7.1 (2026-01-07)
 
@@ -1201,6 +1242,25 @@ entry.
 - [Change the urgency of Ci::CreateDownstreamPipelineWorker](https://gitlab.com/gitlab-org/gitlab/-/commit/3c9c6c78e20c58b0543652be65eb3d9c675f7c4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212782))
 - [Remove destroy_fork_network_on_archive feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/9ce139e5d9330c2bf3da3dcb2275df64ac672602) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212714))
 - [Loose Foreign Keys Cleanup Workers should use sticky connections](https://gitlab.com/gitlab-org/gitlab/-/commit/99ae4f5fca9bbcd8e156002c3dca8c6e259cd7e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212600))
+
+## 18.6.4 (2026-01-20)
+
+### Fixed (6 changes)
+
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c1063719f74226c2dc20557d6f94af462f887b9)
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf0adfcad4d9dcdac7a0c7c2dac4afaffab8ab9f)
+- [Allow user namespaces to be indexed in Zoekt for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/88620e5775fc678fcaffb7bd62b2ad8199cd0e3b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218907)) **GitLab Enterprise Edition**
+- [Exclude Git LFS paths from Git HTTP throttling](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9adc444888b9086176a38e2fa60445efa6033810)
+- [Fix git push error for remote flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/62721d5ccfc9ff207fd92c5b5c6d5ece1f0b0a9d) **GitLab Enterprise Edition**
+- [Fix container_repositories index repair to handle 1-to-1 relationship](https://gitlab.com/gitlab-org/security/gitlab/-/commit/696fe2cd2aee758f489a7f660e706e163e7fb948)
+
+### Security (5 changes)
+
+- [Reject expired keys and blocked users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/275f77cf73d1bac7ddfd7e8e3d6e7fccf0987a00) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5610))
+- [Limit JWT token size in Jira Connect to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbc91bf7e7a09f21e568702f2dab4da512ec50b0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5660))
+- [Fix endless redirection loop in wikis for prepared redirect file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6c5588edda66d6a9a43435cda0d77c21e102a14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5612))
+- [Adds size validation to job token before decoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5eaaedff99e39f8ea44279e9a24acb08fc6e3ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5624))
+- [Prevent bypass 2FA with WebAuthn & passkey authentication](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a92850035467b57e2b499415f0feaa097ae4620c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5644))
 
 ## 18.6.3 (2026-01-07)
 

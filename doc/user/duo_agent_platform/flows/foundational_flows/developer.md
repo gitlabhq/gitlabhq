@@ -20,16 +20,9 @@ This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
 - Renamed from `Issue to MR` to the `Developer Flow` with a flag named `duo_developer_button` in 18.6. Disabled by default, but can be enabled for the instance or a user.
 - The `duo_workflow` flag must also be enabled, but it is enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
-- Feature flag `duo_workflow_in_ci` was removed in GitLab 18.9.
+- Feature flags `duo_workflow_in_ci`and `duo_developer_button` removed in GitLab 18.9.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 The Developer Flow streamlines the process of converting issues into actionable merge requests. This flow:
 

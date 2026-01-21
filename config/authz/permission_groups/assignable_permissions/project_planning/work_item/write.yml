@@ -1,18 +1,24 @@
 ---
 name: write_work_item
-description: Grants the ability to write work items
+description: Grants the ability to create and update work items
 permissions:
   - add_issue_spent_time
   - add_merge_request_spent_time
+  - create_epic
+  - create_epic_issue
+  - create_epic_link
+  - create_issue_link
   - create_issue_time_estimate
-  - create_merge_request_time_estimate
   - create_label
+  - create_merge_request_time_estimate
   - reset_issue_spent_time
   - reset_issue_time_estimate
   - reset_merge_request_spent_time
   - reset_merge_request_time_estimate
+  - update_epic
   - update_label
-  - create_issue_link
+  - update_epic_issue
+  - update_epic_link
 boundaries:
   - group
   - project

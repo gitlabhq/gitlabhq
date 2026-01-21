@@ -64,7 +64,7 @@ These fields are part of the AI Context schema and are specific to DAP (Duo Agen
 
 | Field             | Type          | Description                                                                                       | Example             | Context |
 |-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|---------|
-| `flow_type`       | string, null  | Type of DAP flow (more custom flows to be included in the future). | `"chat"`, `"software_development"`, `"issue_to_merge_request"`, `"convert_to_gitlab_ci"` | AI Context |
+| `flow_type`       | string, null  | Type of DAP flow (more custom flows to be included in the future). | `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` | AI Context |
 | `agent_name`      | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` | AI Context |
 | `agent_type`      | string, null  | Which agent type within the flow is executing. | `"foundational"`, `"custom"` | AI Context |
 
@@ -92,32 +92,32 @@ track_internal_event(
   user: user,
   project: project,
   namespace: namespace,
-  
+
   # Additional Standard Context fields for AI events
   additional_properties: {
     # Model information (Standard Context)
     model_provider: "anthropic",
     model_engine: "claude-3-5",
     model_name: "claude-3-5-sonnet-20241022",
-    
+
     # Feature and billing (Standard Context)
     feature_enablement_type: "duo_pro",
     app_id: "gitlab_duo_workflow",
     correlation_id: SecureRandom.uuid,
     billing_event_id: SecureRandom.uuid
   },
-  
+
   # AI Context fields
   ai_context: {
     # Session and workflow identifiers
     session_id: session.id,
-    
+
     # Flow and agent information
     flow_type: "software_development",
     agent_name: "code_generator",
     agent_type: "code_agent",
     flow_version: "2.1.0",
-    
+
     # Token tracking (AI Context)
     input_tokens: 1500,
     output_tokens: 800,

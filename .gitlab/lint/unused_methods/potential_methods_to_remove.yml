@@ -71,8 +71,6 @@ ee/app/models/ee/group.rb:
 - count_within_namespaces
 ee/app/models/ee/group_member.rb:
 - provisioned_by_this_group?
-ee/app/models/ee/issue.rb:
-- can_assign_epic?
 ee/app/models/ee/merge_request.rb:
 - sync_project_approval_rules_for_policy_configuration
 - delete_approval_rules_for_policy_configuration
@@ -147,12 +145,6 @@ app/helpers/groups_helper.rb:
 app/helpers/integrations_helper.rb:
 - integration_issue_type
 - integration_todo_target_type
-app/helpers/issuables_helper.rb:
-- user_dropdown_label
-- project_dropdown_label
-- group_dropdown_label
-app/helpers/issues_helper.rb:
-- can_admin_issue?
 app/helpers/routing/groups/members_helper.rb:
 - approve_access_request_group_member_path
 - resend_invite_group_member_path
@@ -233,10 +225,6 @@ app/models/concerns/integrations/base/integration.rb:
 - instance_exists_for?
 app/models/concerns/integrations/base/issue_tracker.rb:
 - enabled_in_gitlab_config
-app/models/concerns/issuable.rb:
-- has_multiple_assignees?
-- supports_issue_type?
-- can_assign_epic?
 app/models/concerns/mentionable.rb:
 - referenced_projects
 - referenced_group_users

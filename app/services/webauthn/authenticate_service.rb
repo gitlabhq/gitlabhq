@@ -20,7 +20,7 @@ module Webauthn
 
       encoder = WebAuthn.configuration.encoder
 
-      verify_webauthn(stored_webauthn_credential, webauthn_credential, @challenge, encoder)
+      raise WebAuthn::Error unless verify_webauthn(stored_webauthn_credential, webauthn_credential, @challenge, encoder)
 
       stored_webauthn_credential.update!(
         counter: webauthn_credential.sign_count,

@@ -1,0 +1,5 @@
+---
+name: delete_epic_issue
+description: Grants the ability to remove an issue from an epic
+boundaries:
+  - group

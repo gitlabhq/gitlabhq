@@ -99,13 +99,16 @@ To use the hosted models, set the following environment variables on your AI gat
    export GITLAB_SIMULATE_SAAS=0
    ```
 
-1. Seed your GitLab Duo Self-Hosted models using `bundle exec rake gitlab:duo:seed_self_hosted_models`.
-
-1. Running `bundle exec rake gitlab:duo:list_self_hosted_models` should output the list of created models
-
 1. Restart your GDK for the changes to take effect using `gdk restart`.
 
-## Configuring the custom model in the UI
+### Seeding self-hosted models through a `rake` task
+
+1. Run `bundle exec rake gitlab:duo:seed_self_hosted_models`.
+1. To verify, run `bundle exec rake gitlab:duo:list_self_hosted_models` to output the list of created models
+
+## Configuration and usage of GitLab Duo Self-Hosted models
+
+### Enabling self-hosted models
 
 To enable the use of self-hosted models in the GitLab instance, follow these steps:
 
@@ -114,9 +117,13 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 1. For **Local AI Gateway URL**, enter the URL of your AI gateway instance. In most cases, this will be `http://localhost:5052`.
 1. Save the changes.
 
-1. To save your changes, select **Create self-hosted model**.
+### Adding self-hosted models through the Admin UI
 
-- Save your changes by clicking on the `Create self-hosted model` button.
+1. Go to **Admin page -> GitLab Duo**
+1. Click the **Configure models for GitLab Duo** button
+1. In the Model Configuration page, click the **Add self-hosted model** button
+1. Fill in the model details
+1. Click **Create self-hosted model** to save your changes
 
 ### Using the self-hosted model to power AI features
 

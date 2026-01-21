@@ -282,6 +282,7 @@ may be possible for an attacker to steal your sensitive data.
   than the GitLab version you exported from.
 - Review [compatibility](#compatibility) for any issues.
 - At least the Maintainer role on the destination group to migrate to.
+- The `tar` command must be installed on both the source and destination GitLab instances.
 
 #### Import a project
 

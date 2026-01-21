@@ -1,0 +1,5 @@
+---
+name: read_epic
+description: Grants the ability to read epics
+boundaries:
+  - group

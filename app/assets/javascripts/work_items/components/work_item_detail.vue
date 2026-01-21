@@ -586,9 +586,6 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
-    duoWorkflowDefinition() {
-      return this.glFeatures.duoDeveloperButton ? 'developer/v1' : 'issue_to_merge_request';
-    },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
     },
@@ -1238,7 +1235,7 @@ export default {
                         :project-path="workItemFullPath"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
-                        :workflow-definition="duoWorkflowDefinition"
+                        workflow-definition="developer/v1"
                         :agent-privileges="agentPrivileges"
                         :work-item-id="workItem.iid"
                         size="medium"

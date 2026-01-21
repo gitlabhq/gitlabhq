@@ -122,6 +122,25 @@ The rule for this job compares all files and paths in the current branch
 recursively (`**/*`) against the `main` branch. The rule matches and the
 job runs only when there are changes to the files in the branch.
 
+## Run a job when a file is not present
+
+You can use `rules: exists` to configure a job to run only when a specific file does not exist.
+
+For example, to run a job in a merge request pipeline when the `example.yml` file does not exist:
+
+```yaml
+job:
+  script: echo "Hello, Rules!"
+  rules:
+    - exists:
+      - "example_dir/example.yml"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+```
+
+In this example, if the `example_dir/example.yml` file exists in the branch, the job does not run.
+If the file does not exist, the job can run in merge request pipelines.
+
 ## Common `if` clauses with predefined variables
 
 `rules:if` clauses are commonly used with [predefined CI/CD variables](../variables/predefined_variables.md),

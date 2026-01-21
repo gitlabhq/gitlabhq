@@ -193,7 +193,6 @@ create_coverage_fuzzing_corpus
 create_custom_emoji
 create_design
 create_environment_terminal
-create_epic
 create_epic_tree_relation
 create_external_issue_link
 create_feature_flag
@@ -492,7 +491,6 @@ read_duo_workflow_event
 read_emoji
 read_enterprise_ai_analytics
 read_ephemeral_token
-read_epic
 read_epic_iid
 read_epic_link_relation
 read_epic_relation
@@ -746,7 +744,6 @@ update_deploy_keys_project
 update_deploy_token
 update_design
 update_duo_workflow
-update_epic
 update_escalation_status
 update_feature_flag
 update_feature_flags_client

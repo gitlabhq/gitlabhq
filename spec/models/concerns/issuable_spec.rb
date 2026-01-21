@@ -1196,21 +1196,6 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
   end
 
-  describe '#supports_issue_type?' do
-    where(:issuable_type, :supports_issue_type) do
-      :issue         | true
-      :merge_request | false
-    end
-
-    with_them do
-      let(:issuable) { build_stubbed(issuable_type) }
-
-      subject { issuable.supports_issue_type? }
-
-      it { is_expected.to eq(supports_issue_type) }
-    end
-  end
-
   describe '#supports_confidentiality?' do
     where(:issuable_type, :supports_confidentiality) do
       :issue         | true
