@@ -22,7 +22,7 @@ module Authn
 
         encoder = WebAuthn.configuration.encoder
 
-        verify_passkey(@stored_passkey_credential, passkey_credential, @challenge, encoder)
+        raise WebAuthn::Error unless verify_passkey(@stored_passkey_credential, passkey_credential, @challenge, encoder)
 
         @stored_passkey_credential.update!(
           counter: passkey_credential.sign_count,

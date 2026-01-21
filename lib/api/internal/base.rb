@@ -214,6 +214,9 @@ module API
 
           key = Key.auth.find_by_fingerprint_sha256(fingerprint)
           not_found!('Key') if key.nil?
+          not_found!('Key') if key.expired?
+          unauthorized!('Key') if key.user&.blocked?
+
           present key, with: Entities::SSHKey
         end
 

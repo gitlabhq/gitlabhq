@@ -453,7 +453,7 @@ module WikiActions
 
     redirect_limit.times do
       seen << current_path
-      next_path = find_single_redirection(current_path)
+      next_path = find_single_redirection(current_path, redirect_limit)
 
       # if no single redirect is found, then use the current path
       # unless it is the same as the original path
@@ -468,11 +468,13 @@ module WikiActions
     { error: true, reason: :limit }
   end
 
-  def find_single_redirection(path)
+  def find_single_redirection(path, redirect_limit)
     current = path
     rest = []
 
-    until current == '.'
+    redirect_limit.times do
+      break if current == '.'
+
       redirect = redirections[current]
       return File.join(redirect, *rest) if redirect
 
@@ -486,7 +488,15 @@ module WikiActions
   def redirections
     strong_memoize(:redirections) do
       redirects_file = wiki.repository.blob_at(wiki.default_branch, Wiki::REDIRECTS_YML, limit: 0.5.megabytes)
-      redirects_file ? YAML.safe_load(redirects_file.data).to_h : {}
+
+      if redirects_file
+        YAML.safe_load(redirects_file.data)
+          .to_h
+          .transform_values { |v| v.to_s.gsub(%r{^[\\/]+}, "") } # Remove leading slashes from filenames
+          .transform_values { |v| v.to_s.gsub(%r{[\\/]+$}, "") } # Remove trailing slashes from filenames
+      else
+        {}
+      end
     end
   end
 end
