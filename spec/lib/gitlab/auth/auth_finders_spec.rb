@@ -118,6 +118,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  shared_examples 'rejects tokens that are too large' do
+    let(:token) { 'x' * (described_class::MAX_JOB_TOKEN_SIZE_BYTES + 1) }
+
+    it { expect { subject }.to raise_error Gitlab::Auth::InvalidTokenError, 'Token exceeds maximum size' }
+  end
+
   shared_examples 'composite identity authentication' do
     context 'with composite identity', :request_store do
       let_it_be(:oauth_application) { create(:oauth_application) }
@@ -1398,6 +1404,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it_behaves_like "job from token"
+
+        it_behaves_like 'rejects tokens that are too large'
       end
     end
 
@@ -1436,6 +1444,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it_behaves_like 'find user from job token'
+
+        it_behaves_like 'rejects tokens that are too large'
       end
 
       context 'when the token is in the token param' do
@@ -1444,6 +1454,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it_behaves_like 'find user from job token'
+
+        it_behaves_like 'rejects tokens that are too large'
       end
     end
 
@@ -1519,8 +1531,6 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         it { is_expected.to eq(user) }
       end
-
-      include_examples 'finds user when job token allowed'
     end
 
     context 'when route setting job_token_allowed is invalid' do

@@ -27,7 +27,13 @@ module API
                 requires :namespace_path, type: String, desc: 'Path for the namespace that should be subscribed'
               end
               post do
-                jwt = Atlassian::JiraConnect::Jwt::Symmetric.new(params[:jwt])
+                jwt_token = params[:jwt]
+                unless Atlassian::JiraConnect::JwtValidator.valid_token_size?(jwt_token)
+                  unauthorized!('Invalid JWT token')
+                end
+
+                jwt = Atlassian::JiraConnect::Jwt::Symmetric.new(jwt_token)
+                # JWT should exist here since token size validation passed
                 installation = JiraConnectInstallation.find_by_client_key(jwt.iss_claim)
 
                 if !installation || !jwt.valid?(installation.shared_secret) || !jwt.verify_context_qsh_claim
