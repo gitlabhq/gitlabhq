@@ -197,12 +197,23 @@ export default {
 
         if (matchingRule) {
           const options = matchingRule.options || [];
-          const isValueValid = Array.isArray(options) && options.includes(input.value);
+          const ruleIndex = input.rules.indexOf(matchingRule);
+          const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
+          const hasOptions = options.length > 0;
+
+          let value = matchingRule.default ?? '';
+
+          if (hasOptions && options.includes(input.value)) {
+            value = input.value;
+          } else if (!hasOptions && !ruleChanged) {
+            value = input.value;
+          }
 
           return {
             ...input,
             options,
-            value: isValueValid ? input.value : matchingRule.default || '',
+            value,
+            lastMatchedRuleIndex: ruleIndex,
             isSelected: true,
           };
         }
@@ -211,6 +222,7 @@ export default {
           ...input,
           options: [],
           value: '',
+          lastMatchedRuleIndex: null,
           isSelected: false,
         };
       });

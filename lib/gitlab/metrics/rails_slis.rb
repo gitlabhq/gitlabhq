@@ -38,8 +38,7 @@ module Gitlab
           ::Gitlab::Graphql::KnownOperations.default.operations.map do |op|
             {
               endpoint_id: op.to_caller_id,
-              # We'll be able to correlate feature_category with https://gitlab.com/gitlab-org/gitlab/-/issues/328535
-              feature_category: nil,
+              feature_category: op.feature_category,
               query_urgency: op.query_urgency.name
             }
           end

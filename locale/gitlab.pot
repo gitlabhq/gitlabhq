@@ -2760,9 +2760,6 @@ msgstr ""
 msgid "AICatalog|Describe any relevant information for your admin"
 msgstr ""
 
-msgid "AICatalog|Description"
-msgstr ""
-
 msgid "AICatalog|Description is required."
 msgstr ""
 
@@ -2773,9 +2770,6 @@ msgid "AICatalog|Disable agent from this %{namespaceType}"
 msgstr ""
 
 msgid "AICatalog|Disable flow from this %{namespaceType}"
-msgstr ""
-
-msgid "AICatalog|Display name"
 msgstr ""
 
 msgid "AICatalog|Duplicate"
@@ -3282,6 +3276,9 @@ msgstr ""
 msgid "AICatalog|Working with sensitive data."
 msgstr ""
 
+msgid "AICatalog|YAML configuration"
+msgstr ""
+
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
@@ -3661,9 +3658,6 @@ msgid "AWS secret access key (Optional)"
 msgstr ""
 
 msgid "Abort"
-msgstr ""
-
-msgid "About"
 msgstr ""
 
 msgid "About GitLab"
@@ -7239,9 +7233,6 @@ msgstr ""
 msgid "AiPowered|After the conversation was last updated"
 msgstr ""
 
-msgid "AiPowered|Agent & Flow Permissions"
-msgstr ""
-
 msgid "AiPowered|Allow GitLab Duo agents to execute flows for the instance. %{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
@@ -7335,13 +7326,19 @@ msgstr ""
 msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
 msgstr ""
 
-msgid "AiPowered|Define the minimum role level to perform each of the following actions"
+msgid "AiPowered|Control who can use AI features that run using CI/CD pipelines."
+msgstr ""
+
+msgid "AiPowered|Control who can use AI features that run without using CI/CD pipelines."
+msgstr ""
+
+msgid "AiPowered|Define the minimum role for the following actions"
 msgstr ""
 
 msgid "AiPowered|Direct connections"
 msgstr ""
 
-msgid "AiPowered|Enable"
+msgid "AiPowered|Duo Agent Platform Permissions"
 msgstr ""
 
 msgid "AiPowered|Enable AI logs"
@@ -7365,7 +7362,10 @@ msgstr ""
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
 msgstr ""
 
-msgid "AiPowered|Execute"
+msgid "AiPowered|Execute Duo Agent Platform"
+msgstr ""
+
+msgid "AiPowered|Execute Duo Agent Platform with CI/CD pipelines"
 msgstr ""
 
 msgid "AiPowered|Experiment and beta features"
@@ -7452,9 +7452,6 @@ msgstr ""
 msgid "AiPowered|Lock tooltip icon"
 msgstr ""
 
-msgid "AiPowered|Manage"
-msgstr ""
-
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr ""
 
@@ -7462,15 +7459,6 @@ msgid "AiPowered|Member access"
 msgstr ""
 
 msgid "AiPowered|Membership grants access to"
-msgstr ""
-
-msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
-msgstr ""
-
-msgid "AiPowered|Minimum role required to enable agents and flows on projects."
-msgstr ""
-
-msgid "AiPowered|Minimum role required to execute agents and flows."
 msgstr ""
 
 msgid "AiPowered|Model Selection"
@@ -19510,6 +19498,9 @@ msgid "Container registry is not enabled on this GitLab instance. Ask an adminis
 msgstr ""
 
 msgid "Container scanning"
+msgstr ""
+
+msgid "Container virtual registry not available"
 msgstr ""
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."

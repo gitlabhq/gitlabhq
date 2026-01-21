@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
   before do
     allow(Gitlab::Graphql::KnownOperations).to receive(:default)
-      .and_return(Gitlab::Graphql::KnownOperations.new(%w[foo bar]))
+      .and_return(Gitlab::Graphql::KnownOperations.new({
+        "foo" => { "feature_category" => "source_code_management", "urgency" => "low" },
+        "bar" => { "feature_category" => "team_planning", "urgency" => "high" }
+      }))
   end
 
   describe '.initialize_request_slis!' do
@@ -66,13 +69,23 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
     end
 
     let(:possible_graphql_labels) do
-      ['graphql:foo', 'graphql:bar', 'graphql:unknown'].map do |endpoint_id|
+      [
         {
-          endpoint_id: endpoint_id,
+          endpoint_id: 'graphql:foo',
+          feature_category: "source_code_management",
+          query_urgency: :low
+        },
+        {
+          endpoint_id: 'graphql:bar',
+          feature_category: "team_planning",
+          query_urgency: :high
+        },
+        {
+          endpoint_id: 'graphql:unknown',
           feature_category: nil,
           query_urgency: ::Gitlab::EndpointAttributes::DEFAULT_URGENCY.name
         }
-      end
+      ]
     end
 
     it "initializes the SLI for all expected endpoints", :aggregate_failures do

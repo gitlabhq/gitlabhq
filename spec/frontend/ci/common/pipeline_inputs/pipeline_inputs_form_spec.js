@@ -699,6 +699,68 @@ describe('PipelineInputsForm', () => {
     });
   });
 
+  describe('dynamic rules with free-form text input', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithRules);
+      await createComponent();
+    });
+
+    it('preserves user input for rules with no options', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'custom',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+      expect(getInputByName('instance_type').options).toEqual([]);
+
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('instance_type'),
+        value: 'custom-instance-type',
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toBe('custom-instance-type');
+      expect(getInputByName('instance_type').isSelected).toBe(true);
+    });
+
+    it('resets value to default when rule changes', async () => {
+      await selectInputs(['cloud_provider', 'environment']);
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'custom',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('instance_type'),
+        value: 'my-custom-value',
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toBe('my-custom-value');
+
+      findInputsTable().vm.$emit('update', {
+        name: 'cloud_provider',
+        value: 'gcp',
+        isSelected: true,
+        hasRules: false,
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toBe('e2-small');
+      expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+    });
+  });
+
   describe('dynamic rules with complex nested conditions', () => {
     beforeEach(async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithComplexRules);

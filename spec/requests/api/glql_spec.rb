@@ -217,6 +217,20 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
       expect(json_response['error']).to include('Query temporarily blocked')
     end
 
+    context 'with query execution errors' do
+      it 'returns 400 when GraphQL query execution fails' do
+        yaml = <<~YAML
+          fields: nonExistentField
+          query: group = "test-group" AND state = opened
+        YAML
+
+        post api(endpoint, user), params: { glql_yaml: yaml }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include("Field 'nonExistentField' doesn't exist")
+      end
+    end
+
     context 'with limit parameter processing' do
       before do
         create_list(:issue, 5, :opened, project: project)

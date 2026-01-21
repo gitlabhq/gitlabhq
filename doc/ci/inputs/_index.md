@@ -364,6 +364,41 @@ deploy:
 In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
 `canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
 
+### Allow user-entered values with `default: null`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218804) in GitLab 18.9.
+
+{{< /history >}}
+
+Use `spec:inputs:rules` with `default: null` and without `options` to allow users to enter
+their own value for an input. This is useful for workflow-specific values like environment names
+or test configurations.
+
+For example:
+
+```yaml
+spec:
+  inputs:
+    deployment_type:
+      options: ['standard', 'custom']
+      default: 'standard'
+
+    custom_config:
+      description: 'Custom configuration value'
+      rules:
+        - if: $[[ inputs.deployment_type ]] == 'custom'
+          default: null
+---
+
+deploy:
+  script: echo "Config: $[[ inputs.custom_config ]]"
+```
+
+In this example, when `deployment_type` is `custom`, the `custom_config` input is listed on the run pipeline page
+and users must enter a value for the input.
+
 ## Set input values
 
 ### For configuration added with `include`

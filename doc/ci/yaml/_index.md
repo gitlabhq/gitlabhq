@@ -1193,7 +1193,7 @@ in a header section.
 
 - `if`: A conditional expression to check input values, using [`$[[ inputs.input-id ]]` syntax](../inputs/_index.md#define-input-parameters-with-specinputs).
 - `options`: An array of allowed values for the input.
-- `default`: The default value for the input when this rule matches.
+- `default`: The default value for the input when this rule matches. Use [`default: null`](../inputs/_index.md#allow-user-entered-values-with-default-null) to allow users to enter their own value for the input.
 
 **Example of `spec:inputs:rules`**:
 

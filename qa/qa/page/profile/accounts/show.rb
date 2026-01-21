@@ -8,6 +8,7 @@ module QA
           view 'app/views/profiles/accounts/show.html.haml' do
             element 'delete-account-button', required: true
             element 'enable-2fa-button'
+            element 'manage-authentication-button'
           end
 
           view 'app/assets/javascripts/profile/account/components/delete_account_modal.vue' do
@@ -17,6 +18,10 @@ module QA
 
           def click_enable_2fa_button
             click_element('enable-2fa-button')
+          end
+
+          def click_manage_authentication_button
+            click_element('manage-authentication-button')
           end
 
           def delete_account(password)

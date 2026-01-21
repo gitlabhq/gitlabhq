@@ -177,6 +177,18 @@ RSpec.describe Gitlab::Ci::Config::Header::Input::Rules::Rule, feature_category:
         expect(entry.errors).to include(/must define 'options' with at least one value and a 'default'/)
       end
     end
+
+    context 'when rule has default: null without options' do
+      let(:config) { { if: '$[[ inputs.env ]] == "prod"', default: nil } }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when fallback rule has default: null without options' do
+      let(:config) { { default: nil } }
+
+      it { is_expected.to be_valid }
+    end
   end
 
   describe '#value' do

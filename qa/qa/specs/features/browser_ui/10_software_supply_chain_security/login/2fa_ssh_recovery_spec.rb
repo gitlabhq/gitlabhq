@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :requires_admin, :skip_live_env, feature_category: :system_access do
+  RSpec.describe(
+    'Software Supply Chain Security',
+    :requires_admin,
+    :skip_live_env,
+    feature_category:
+    :system_access,
+    feature_flag: { name: :passkeys }
+  ) do
     describe '2FA' do
       let!(:user) { Runtime::User::Store.test_user }
       let!(:user_api_client) { user.api_client }
@@ -48,7 +55,12 @@ module QA
         Flow::Login.while_signed_in(as: user) do
           Page::Main::Menu.perform(&:click_edit_profile_link)
           Page::Profile::Menu.perform(&:click_account)
-          Page::Profile::Accounts::Show.perform(&:click_enable_2fa_button)
+
+          if Runtime::Feature.enabled?("passkeys")
+            Page::Profile::Accounts::Show.perform(&:click_manage_authentication_button)
+          else
+            Page::Profile::Accounts::Show.perform(&:click_enable_2fa_button)
+          end
 
           Page::Profile::TwoFactorAuth.perform do |two_fa_auth|
             otp = QA::Support::OTP.new(two_fa_auth.otp_secret_content)

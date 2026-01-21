@@ -90,11 +90,9 @@ export default {
     const panelElement = getPanelElement(this.$refs.root.$el);
     if (panelElement) this.viewportTop = panelElement.getBoundingClientRect().top;
     const computedStyles = getComputedStyle(this.$refs.root.$el);
-    this.$nextTick(() => {
-      this.rowHeight = parseInt(computedStyles.getPropertyValue('--file-row-height'), 10);
-      this.updateIsNarrowScreen();
-      PanelBreakpointInstance.addBreakpointListener(this.updateIsNarrowScreen);
-    });
+    this.rowHeight = parseInt(computedStyles.getPropertyValue('--file-row-height'), 10);
+    this.updateIsNarrowScreen();
+    PanelBreakpointInstance.addBreakpointListener(this.updateIsNarrowScreen);
   },
   beforeDestroy() {
     PanelBreakpointInstance.removeBreakpointListener(this.updateIsNarrowScreen);

@@ -141,6 +141,7 @@ module API
         glql_result = execute_glql_query(compiled_glql, parsed_glql[:config])
         log_glql_execution(params[:glql_yaml], compiled_glql, parsed_glql[:config], glql_result)
         error!(glql_result[:errors].first[:message], 429) if glql_result[:rate_limited]
+        error!(glql_result[:errors].first[:message], 400) if glql_result[:errors]
 
         transformed_result = transform_glql_result(glql_result, parsed_glql[:config]['fields'])
         bad_request!(transformed_result['error']) unless transformed_result['success']
