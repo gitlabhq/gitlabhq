@@ -67,6 +67,7 @@ describe('FileBrowserHeight', () => {
     it('sets initial props when sticky height is enabled', async () => {
       createComponent({ enableStickyHeight: true });
       await nextTick();
+      await nextTick();
       const filler = wrapper.findComponent(StickyViewportFillerHeight);
       expect(filler.props('minHeight')).toBe(minHeight);
       expect(filler.props('stickyTopOffset')).toBe(topPadding);

@@ -21,6 +21,7 @@ type PumaReadinessChecker struct {
 	logger         *logrus.Logger
 	successChecker OptimizedReadinessChecker // Interface for both recording and checking success
 	skipInterval   time.Duration             // Duration to skip checks if recent success
+	loadShedder    *LoadShedder              // Optional load shedder for backlog-based load shedding
 }
 
 // PumaReadinessResponse represents the JSON response from Puma's readiness endpoint
@@ -72,6 +73,13 @@ func WithSuccessChecker(successChecker OptimizedReadinessChecker) PumaReadinessC
 func WithSkipInterval(interval time.Duration) PumaReadinessCheckerOption {
 	return func(p *PumaReadinessChecker) {
 		p.skipInterval = interval
+	}
+}
+
+// WithLoadShedder configures the checker to use load shedding based on backlog
+func WithLoadShedder(loadShedder *LoadShedder) PumaReadinessCheckerOption {
+	return func(p *PumaReadinessChecker) {
+		p.loadShedder = loadShedder
 	}
 }
 
@@ -257,6 +265,11 @@ func (p *PumaReadinessChecker) checkControlServer(ctx context.Context) (bool, ti
 	var controlResp PumaControlResponse
 	if err := json.Unmarshal(result.body, &controlResp); err != nil {
 		return false, result.duration, fmt.Errorf("unable to parse puma control response: %w", err)
+	}
+
+	// Update load shedder with latest backlog data if configured
+	if p.loadShedder != nil {
+		p.loadShedder.UpdateBacklog(&controlResp)
 	}
 
 	return p.validateWorkerStatus(controlResp, result.duration)

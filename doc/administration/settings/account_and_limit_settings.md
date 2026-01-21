@@ -551,11 +551,8 @@ After a lifetime for SSH keys is set, GitLab:
 - Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
   greater than the maximum immediately become invalid.
 
-{{< alert type="note" >}}
-
-When a user's SSH key becomes invalid they can delete and re-add the same key again.
-
-{{< /alert >}}
+> [!note]
+> When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
 ## User OAuth applications setting
 
@@ -747,11 +744,8 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Select the **Make new users' profiles private by default** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If [**Allow users to make their profiles private**](#prevent-users-from-making-their-profiles-private) is disabled, this setting is also disabled.
-
-{{< /alert >}}
+> [!note]
+> If [**Allow users to make their profiles private**](#prevent-users-from-making-their-profiles-private) is disabled, this setting is also disabled.
 
 ## Prevent users from deleting their accounts
 

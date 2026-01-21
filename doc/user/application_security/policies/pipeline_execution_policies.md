@@ -22,7 +22,7 @@ title: Pipeline execution policies
 
 Use pipeline execution policies to manage and enforce CI/CD jobs for multiple projects with a single configuration.
 
-> ![warning]
+> [!warning]
 > Do not enable pipeline execution policies until you have migrated existing [compliance pipelines](../../compliance/compliance_pipelines.md) in the same project. When both are configured, compliance pipelines replace the standard project pipeline but the pipeline execution policies apply based on the original project pipeline. This creates unpredictable behavior that varies depending on the pipeline execution policy strategy and CI/CD configurations, and can result in duplicated jobs, pipeline failures, or missing critical security and compliance checks. Compliance pipelines are [deprecated](../../../update/deprecations.md#compliance-pipelines). You should migrate existing compliance pipelines as soon as possible, and use pipeline execution policies for all new implementations.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).

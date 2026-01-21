@@ -25,11 +25,8 @@ and export the license usage file with the following information:
   - Timestamp the count was recorded (UTC)
   - Billable user count
 
-{{< alert type="note" >}}
-
-A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
-
-{{< /alert >}}
+> [!note]
+> A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
 ## Export license usage
 
@@ -44,11 +41,8 @@ This file contains the information GitLab uses to manually process
 and [renewals](../subscriptions/manage_subscription.md#renew-subscription). If your instance is firewalled or an
 offline environment, you must provide GitLab with this information.
 
-{{< alert type="warning" >}}
-
-Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](license_file.md#submit-license-usage-data).
-
-{{< /alert >}}
+> [!warning]
+> Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](license_file.md#submit-license-usage-data).
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Subscription**.

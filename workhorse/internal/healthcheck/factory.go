@@ -37,13 +37,27 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 
 	// Add readiness checkers
 	if cfg.ReadinessProbeURL != "" {
+		opts := []PumaReadinessCheckerOption{
+			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
+			WithSkipInterval(cfg.RailsSkipInterval.Duration),
+		}
+
+		// Add load shedder if configured
+		if cfg.LoadShedBacklogThreshold > 0 {
+			strategy := NewBacklogStrategy(cfg.LoadShedStrategy)
+			loadShedder := NewLoadShedder(cfg.LoadShedBacklogThreshold, cfg.LoadShedRetryAfterSeconds, logger, reg, strategy)
+			loadShedder.InitializeMetrics()
+			opts = append(opts, WithLoadShedder(loadShedder))
+			// Store the load shedder in the server for access by middleware
+			server.loadShedder = loadShedder
+		}
+
 		pumaReadinessChecker := NewPumaReadinessChecker(
 			cfg.ReadinessProbeURL,
 			cfg.PumaControlURL,
 			cfg.Timeout.Duration,
 			logger,
-			WithSuccessChecker(server.GetOptimizedReadinessChecker()),
-			WithSkipInterval(cfg.RailsSkipInterval.Duration),
+			opts...,
 		)
 		server.AddReadinessChecker(pumaReadinessChecker)
 	}

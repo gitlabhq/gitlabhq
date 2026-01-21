@@ -26265,6 +26265,7 @@ AI features communication message.
 | <a id="aimessagechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed message. Null when it is not a streamed message. |
 | <a id="aimessagecontent"></a>`content` | [`String`](#string) | Raw response content. |
 | <a id="aimessagecontenthtml"></a>`contentHtml` | [`String`](#string) | Response content as HTML. |
+| <a id="aimessageerrorcode"></a>`errorCode` | [`String`](#string) | Error code for troubleshooting. |
 | <a id="aimessageerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
 | <a id="aimessageextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
 | <a id="aimessageid"></a>`id` | [`ID`](#id) | UUID of the message. |

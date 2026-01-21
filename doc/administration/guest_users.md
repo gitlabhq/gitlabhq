@@ -34,11 +34,8 @@ Users with the Guest role:
 - In GitLab Free and Premium, users with the Guest role count as a billable user and consume a license seat.
 - In GitLab Ultimate, users with the Guest role do not count as a billable user or consume a license seat.
 
-{{< alert type="note" >}}
-
-While the Guest role generally provides limited access, creating a [custom role](../user/custom_roles/_index.md) with the [`View repository code`](../user/custom_roles/abilities.md#source-code-management) permission allows you to provide access to code in your repositories without consuming a license seat. Adding any other permissions causes the role to occupy a billable seat.
-
-{{< /alert >}}
+> [!note]
+> While the Guest role generally provides limited access, creating a [custom role](../user/custom_roles/_index.md) with the [`View repository code`](../user/custom_roles/abilities.md#source-code-management) permission allows you to provide access to code in your repositories without consuming a license seat. Adding any other permissions causes the role to occupy a billable seat.
 
 ## Assign Guest role to users
 

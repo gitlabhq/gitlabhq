@@ -42,7 +42,8 @@ module Mcp
 
       GRAPHQL_TOOLS = {
         'create_workitem_note' => ::Mcp::Tools::WorkItems::GraphqlCreateWorkItemNoteService,
-        'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService
+        'get_workitem_notes' => ::Mcp::Tools::WorkItems::GraphqlGetWorkItemNotesService,
+        'search_labels' => ::Mcp::Tools::Labels::GraphqlSearchService
       }.freeze
 
       attr_reader :tools, :alias_map

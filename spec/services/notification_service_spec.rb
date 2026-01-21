@@ -2046,9 +2046,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
-  describe 'Issues', :aggregate_failures do
+  describe 'Issues and Work Items', :aggregate_failures do
     let(:another_project) { create(:project, :public, namespace: group) }
-    let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned' }
+    let(:issue) { create(:issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned') }
 
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :public, namespace: group) }
@@ -2215,6 +2215,28 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           let(:current_user) { create(:user, :ghost) }
 
           include_examples 'is not able to send notifications', check_delivery_jobs_queue: true
+        end
+      end
+
+      context 'with work item' do
+        shared_examples 'notifies user with custom notification settings' do
+          it 'notifies user with custom notification settings' do
+            expect do
+              notification.new_issue(item, @u_guest_custom)
+            end.to enqueue_mail_with(Notify, :new_issue_email, @u_guest_custom, item, nil)
+          end
+        end
+
+        context 'of type task' do
+          let(:item) { create(:work_item, :task, project: project) }
+
+          include_examples 'notifies user with custom notification settings'
+        end
+
+        context 'of type ticket' do
+          let(:item) { create(:work_item, :ticket, project: project) }
+
+          include_examples 'notifies user with custom notification settings'
         end
       end
     end

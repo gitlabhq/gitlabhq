@@ -1,0 +1,11 @@
+#import "ee_else_ce/work_items/graphql/work_item_hierarchy_child_item.fragment.graphql"
+
+# @feature_category: portfolio_management
+mutation workItemHierarchyAddChildren($input: WorkItemHierarchyAddChildrenItemsInput!) {
+  workItemHierarchyAddChildrenItems(input: $input) {
+    addedChildren {
+      ...WorkItemHierarchyChildItem
+    }
+    errors
+  }
+}

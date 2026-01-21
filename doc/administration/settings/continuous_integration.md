@@ -110,11 +110,8 @@ Each artifact file in a job has a default maximum size of 100 MB.
 Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
 When different limits apply, the smaller value is used.
 
-{{< alert type="note" >}}
-
-This setting applies to the size of the final archive file, not individual files in a job.
-
-{{< /alert >}}
+> [!note]
+> This setting applies to the size of the final archive file, not individual files in a job.
 
 You can configure artifact size limits for:
 

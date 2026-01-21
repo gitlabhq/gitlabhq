@@ -106,3 +106,17 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
 
   # Number of consecutive successes required to become ready (readiness only)
   min_successful_probes = 1
+
+  # Optional: Load shedding configuration
+  # When enabled, Workhorse will return 503 Service Unavailable when Puma's
+  # request backlog exceeds the configured threshold. This helps protect Puma
+  # from being overwhelmed and allows NGINX to retry requests to other instances.
+  # Set to 0 (default) to disable load shedding.
+  # load_shed_backlog_threshold = 50
+
+  # Optional: Retry-After header value in seconds when shedding load
+  # In Kubernetes with multiple pods, use 0 to allow NGINX to immediately
+  # retry to a different pod. For single instances, use 1-2 to give Puma
+  # time to process queued requests.
+  # Default: 0 (immediate retry, recommended for Kubernetes)
+  # load_shed_retry_after_seconds = 0

@@ -64,11 +64,8 @@ To enable the export of
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-In GitLab 16.1 and earlier, you should not use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
-
-{{< /alert >}}
+> [!warning]
+> In GitLab 16.1 and earlier, you should not use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan_execution_policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:

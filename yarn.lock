@@ -1488,6 +1488,15 @@
   dependencies:
     "@vue/devtools-api" "^6.6.4"
 
+"@gitlab/vue-virtual-scroller-vue3@npm:vue-virtual-scroller@1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vue-virtual-scroller/-/vue-virtual-scroller-1.1.2.tgz#b8a6362f177abf3f2149ce1eac18013c71fe353b"
+  integrity sha512-SkUyc7QHCJFB5h1Fya7LxVizlVzOZZuFVipBGHYoTK8dwLs08bIz/tclvRApYhksaJIm/nn51inzO2UjpGJPMQ==
+  dependencies:
+    scrollparent "^2.0.1"
+    vue-observe-visibility "^0.4.4"
+    vue-resize "^0.4.5"
+
 "@gitlab/vuedraggable-vue3@npm:vuedraggable@4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/vuedraggable/-/vuedraggable-4.0.1.tgz#3bcaab0808b7944030b7d9a29f9a63d59dfa12c5"
@@ -15095,6 +15104,11 @@ vue-loader@15.11.1:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-observe-visibility@^0.4.4:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-0.4.6.tgz#878cb8ebcf3078e40807af29774e97105ebd519e"
+  integrity sha512-xo0CEVdkjSjhJoDdLSvoZoQrw/H2BlzB5jrCBKGZNXN2zdZgMuZ9BKrxXDjNP2AxlcCoKc8OahI3F3r3JGLv2Q==
+
 vue-observe-visibility@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vue-observe-visibility/-/vue-observe-visibility-1.0.0.tgz#17cf1b2caf74022f0f3c95371468ddf2b9573152"
@@ -15104,6 +15118,11 @@ vue-resizable@1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/vue-resizable/-/vue-resizable-1.3.4.tgz#04cbaeb7f90ebb92970b774f81f590832c640e5e"
   integrity sha512-Ub28/auJPaXObqpakCZABxoiZnJlSyJx65SJ7EwCu54rOJda2fgWj5ZiqvHa+xOuBGH6yemYPKwuO761Cey0Bg==
+
+vue-resize@^0.4.5:
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/vue-resize/-/vue-resize-0.4.5.tgz#4777a23042e3c05620d9cbda01c0b3cc5e32dcea"
+  integrity sha512-bhP7MlgJQ8TIkZJXAfDf78uJO+mEI3CaLABLjv0WNzr4CcGRGPIAItyWYnP6LsPA4Oq0WE+suidNs6dgpO4RHg==
 
 vue-resize@^1.0.1:
   version "1.0.1"

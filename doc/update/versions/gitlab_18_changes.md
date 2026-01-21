@@ -85,6 +85,11 @@ encounter a ClickHouse database migration error during the upgrade process due t
 permission (`DB::Exception: gitlab: Not enough privileges`). To resolve this error, see the
 [database dictionary read support troubleshooting documentation](../../integration/clickhouse.md#database-dictionary-read-support).
 
+### Batched background migration for CI data
+
+The [batched background migrations](../background_migrations.md) introduced in [18.7.0](#1870) had
+to be reintroduced to handle an edge case in the data structure and ensure that they would complete.
+
 ## 18.7.0
 
 - A [post deployment migration](../../development/database/post_deployment_migrations.md)

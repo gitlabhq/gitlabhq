@@ -52,11 +52,8 @@ You can configure the following as an identity provider:
 - [Okta](#configure-okta).
 - [Microsoft Entra ID (formerly Azure Active Directory)](#configure-microsoft-entra-id-formerly-azure-active-directory)
 
-{{< alert type="note" >}}
-
-Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
-
-{{< /alert >}}
+> [!note]
+> Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Okta
 
@@ -325,11 +322,8 @@ For detailed instructions on configuring group synchronization in your identity 
       - However, if your SAML group links use an object ID for the name,
       you must update the source attribute to `objectId`.
 
-{{< alert type="warning" >}}
-
-When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
-
-{{< /alert >}}
+> [!warning]
+> When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
 
 The standard GitLab SCIM application in the Okta application catalog does not support group synchronization.
 Alternatively, you can create a custom SCIM integration for group synchronization with Okta.

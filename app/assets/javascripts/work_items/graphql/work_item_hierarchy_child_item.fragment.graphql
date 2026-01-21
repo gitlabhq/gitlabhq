@@ -1,0 +1,41 @@
+#import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
+
+fragment WorkItemHierarchyChildItem on WorkItem {
+  id
+  iid
+  confidential
+  workItemType {
+    id
+    name
+    iconName
+  }
+  namespace {
+    id
+    fullPath
+    name
+  }
+  title
+  state
+  createdAt
+  closedAt
+  webUrl
+  reference(full: true)
+  widgets(onlyTypes: [HIERARCHY, ASSIGNEES, LABELS, LINKED_ITEMS, MILESTONE, START_AND_DUE_DATE]) {
+    ... on WorkItemWidgetHierarchy {
+      type
+      hasChildren
+      rolledUpCountsByType {
+        countsByState {
+          all
+          closed
+        }
+        workItemType {
+          id
+          name
+          iconName
+        }
+      }
+    }
+    ...WorkItemMetadataWidgets
+  }
+}

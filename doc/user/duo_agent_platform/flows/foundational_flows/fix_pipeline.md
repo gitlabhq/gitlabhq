@@ -38,7 +38,7 @@ The flow can automatically fix various pipeline issues, including:
 
 This flow is available in the GitLab UI only.
 
-> ![note]
+> [!note]
 > The Fix CI/CD Pipeline Flow creates merge requests by using a service account. Organizations with SOC 2, SOX, ISO 27001, or FedRAMP requirements should ensure appropriate peer review policies are in place. For more information, see [compliance considerations for merge requests](../../composite_identity.md#compliance-considerations-for-merge-requests).
 
 ## Prerequisites

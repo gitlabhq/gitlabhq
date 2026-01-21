@@ -275,6 +275,10 @@ if (USE_VUE3) {
     // 'pinia' uses 'vue-demi' to locate the current active version of Vue.
     // use an alias to ensure vue-demi finds the right version
     'vue-demi': path.join(ROOT_PATH, 'node_modules/vue-demi/lib/v3/index.mjs'),
+    'vendor/vue-virtual-scroller': path.join(
+      ROOT_PATH,
+      'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+    ),
   });
 
   vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/compiler.js');

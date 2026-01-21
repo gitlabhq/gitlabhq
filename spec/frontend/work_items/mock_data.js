@@ -591,6 +591,31 @@ export const updateWorkItemMutationErrorResponse = {
   },
 };
 
+export const workItemHierarchyAddChildrenMutationResponse = {
+  data: {
+    workItemHierarchyAddChildrenItems: {
+      addedChildren: [
+        {
+          id: 'gid://gitlab/WorkItem/444',
+          iid: '4',
+          createdAt: '2022-08-03T12:41:54Z',
+          closedAt: null,
+          confidential: false,
+          title: '123',
+          state: 'OPEN',
+          webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
+          reference: 'test-project-path#4',
+          workItemType: {
+            id: '1',
+            name: 'Task',
+            iconName: 'issue-type-task',
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const mockWorkItemReferenceQueryResponse = {
   data: {
     workItemsByReference: {

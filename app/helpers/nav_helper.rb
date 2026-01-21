@@ -11,10 +11,6 @@ module NavHelper
     header_links.include?(link)
   end
 
-  def extra_top_bar_classes
-    # overridden in ee
-  end
-
   def page_with_sidebar_class
     class_name = page_gutter_class
 

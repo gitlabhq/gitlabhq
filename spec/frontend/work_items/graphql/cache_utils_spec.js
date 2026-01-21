@@ -16,7 +16,6 @@ import {
   childrenWorkItems,
   createWorkItemNoteResponse,
   mockWorkItemNotesByIidResponse,
-  workItemHierarchyResponse,
   workItemResponseFactory,
   mockCreateWorkItemDraftData,
   mockNewWorkItemCache,
@@ -126,8 +125,7 @@ describe('work items graphql cache utils', () => {
       addHierarchyChildren({
         cache: mockCache,
         id,
-        workItem: workItemHierarchyResponse.data.namespace.workItem,
-        childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
+        newChildren: [childrenWorkItems[1], childrenWorkItems[0]],
       });
 
       const { fields } = mockCache.modify.mock.calls[0][0];
@@ -177,8 +175,7 @@ describe('work items graphql cache utils', () => {
         addHierarchyChildren({
           cache: mockCache,
           id,
-          workItem: workItemHierarchyResponse.data.namespace.workItem,
-          childrenIds: [childrenWorkItems[1].id, childrenWorkItems[0].id],
+          newChildren: [childrenWorkItems[1], childrenWorkItems[0]],
         }),
       ).not.toThrow();
 

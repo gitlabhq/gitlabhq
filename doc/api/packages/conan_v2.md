@@ -19,19 +19,11 @@ title: Conan v2 API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-For Conan v1 operations, see [Conan v1 API](conan_v1.md).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 Use this API to interact with the [Conan v2 package manager](../../user/packages/conan_2_repository/_index.md).
+For Conan v1 operations, see [Conan v1 API](conan_v1.md).
 
 Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
 and are not meant for manual consumption.

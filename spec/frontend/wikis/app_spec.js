@@ -16,8 +16,23 @@ describe('WikiApp', () => {
       provide: {
         wikiUrl: 'foo/bar',
         historyUrl: 'foo/history',
+        glFeatures: { wikiImmersiveEditor: true },
         ...provide,
       },
+    });
+  };
+
+  const expectEditingInterface = () => {
+    it('does not show the wiki content', () => {
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+
+    it('does show the wiki edit form', () => {
+      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(true);
+    });
+
+    it('does not show the wiki header', () => {
+      expect(wrapper.findComponent(WikiHeader).exists()).toBe(false);
     });
   };
 
@@ -51,7 +66,7 @@ describe('WikiApp', () => {
       expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(true);
     });
 
-    it(`toggles editing state`, async () => {
+    it('toggles editing state', async () => {
       expect(wrapper.findComponent(WikiContent).exists()).toBe(true);
       expect(wrapper.findComponent(WikiEditForm).exists()).toBe(false);
 
@@ -69,21 +84,27 @@ describe('WikiApp', () => {
     });
   });
 
-  describe('when editing', () => {
+  describe('when creating a new page', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true });
+      createComponent({ isEditingPath: true, pagePersisted: false });
     });
 
-    it('does not show the wiki content', () => {
-      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
-    });
-
-    it('does show the wiki edit form', () => {
-      expect(wrapper.findComponent(WikiEditForm).exists()).toBe(true);
-    });
+    expectEditingInterface();
 
     it('does not show the wiki notes', () => {
       expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(false);
+    });
+  });
+
+  describe('when opening an edit URL on an existing page', () => {
+    beforeEach(() => {
+      createComponent({ isEditingPath: true, pagePersisted: true });
+    });
+
+    expectEditingInterface();
+
+    it('does show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(true);
     });
   });
 

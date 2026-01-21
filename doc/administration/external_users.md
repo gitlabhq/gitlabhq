@@ -29,11 +29,8 @@ specific project. When assigning a role to an external user, you should be aware
 associated with the role. For example, if an external user is assigned the Guest role for a
 private project, they cannot access the code.
 
-{{< alert type="note" >}}
-
-An external user counts as a billable user and consumes a license seat.
-
-{{< /alert >}}
+> [!note]
+> An external user counts as a billable user and consumes a license seat.
 
 ## Create an external user
 
@@ -76,11 +73,8 @@ For example:
 - `\.int@example\.com$`: Matches email addresses that end with `.int@domain.com`.
 - `^(?:(?!\.ext@example\.com).)*$\r?`: Matches email address that don't include `.ext@example.com`.
 
-{{< alert type="warning" >}}
-
-Adding an regular expression can increase the risk of a regular expression denial of service (ReDoS) attack.
-
-{{< /alert >}}
+> [!warning]
+> Adding a regular expression can increase the risk of a regular expression denial of service (ReDoS) attack.
 
 Prerequisites:
 

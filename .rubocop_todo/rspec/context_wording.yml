@@ -2352,7 +2352,6 @@ RSpec/ContextWording:
     - 'spec/services/notes/destroy_service_spec.rb'
     - 'spec/services/notes/quick_actions_service_spec.rb'
     - 'spec/services/notes/update_service_spec.rb'
-    - 'spec/services/notification_recipients/builder/default_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/packages/composer/create_package_service_spec.rb'
     - 'spec/services/packages/conan/create_package_file_service_spec.rb'

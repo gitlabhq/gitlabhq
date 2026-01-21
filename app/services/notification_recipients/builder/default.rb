@@ -3,7 +3,7 @@
 module NotificationRecipients
   module Builder
     class Default < Base
-      MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request].freeze
+      MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request, :new_work_item].freeze
 
       attr_reader :target
       attr_reader :current_user
@@ -31,7 +31,7 @@ module NotificationRecipients
 
         # Re-assign is considered as a mention of the new assignee
         case custom_action
-        when :reassign_merge_request, :reassign_issue
+        when :reassign_merge_request, :reassign_issue, :reassign_work_item
           add_recipients(previous_assignees, :mention, nil)
           add_recipients(target.assignees, :mention, NotificationReason::ASSIGNED)
         when :change_reviewer_merge_request

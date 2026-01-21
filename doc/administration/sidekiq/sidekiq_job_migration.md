@@ -12,11 +12,8 @@ title: Sidekiq job migration Rake tasks
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This operation should be very uncommon. We do not recommend it for the vast majority of GitLab instances.
-
-{{< /alert >}}
+> [!warning]
+> This operation should be very uncommon. We do not recommend it for the vast majority of GitLab instances.
 
 Sidekiq routing rules allow administrators to re-route certain background jobs from their regular queue to an alternative queue. By default, GitLab uses one queue per background job type. GitLab has over 400 background job types, and so correspondingly it has over 400 queues.
 

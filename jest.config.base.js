@@ -48,6 +48,8 @@ module.exports = (path, options = {}) => {
       '^vue-apollo$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js',
       '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
       '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue.js',
+      '^vendor/vue-virtual-scroller$':
+        '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
     });
     Object.assign(globals, {
       'vue-jest': {

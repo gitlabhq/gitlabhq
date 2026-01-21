@@ -626,6 +626,31 @@ First, review the coverage data from the `gitlab.lcov` artifact from the
 The `rspec:coverage` job might have failed to gather coverage data for various
 [reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/578019).
 
+It is possible the `rspec:undercoverage` job will detect undercoverage for a method call but does not display [warnings](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218529). 
+
+```ruby
+loc: app/controllers/projects/attestations_controller.rb:84:102, coverage: 87.5%
+  def parsed_attestation_file hits: n/a
+    @parsed_attestation_file ||= begin hits: 52
+      if attestation && attestation_file hits: 12 branches: 1/1
+        Gitlab::Json.parse(attestation_file.read) hits: 10
+      else hits: n/a
+        {} hits: 2
+      end hits: n/a
+    rescue JSON::ParserError => e hits: n/a
+      Gitlab::AppJsonLogger.error( hits: 2
+        message: 'Failed to parse attestation file', hits: n/a
+        error_class: e.class.name, hits: n/a
+        error_message: e.message, hits: n/a
+        attestation_id: attestation&.id, hits: n/a
+        project_id: project.id, hits: n/a
+        feature_category: 'artifact_security' hits: n/a
+      ) hits: n/a
+      {} hits: 2
+    end hits: n/a
+  end hits: n/a
+```
+
 The `rspec:undercoverage` job has [known bugs](https://gitlab.com/groups/gitlab-org/-/epics/8254)
 that can cause false positive failures. Such false positive failures may also happen if you are updating database migration that is too old.
 You can test coverage locally to determine if it's safe to apply `pipeline:skip-undercoverage`. For example, using `<spec>` as the name of the

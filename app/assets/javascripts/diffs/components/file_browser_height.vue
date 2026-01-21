@@ -20,9 +20,11 @@ export default {
   },
   mounted() {
     const styles = getComputedStyle(this.$el);
-    this.stickyTopOffset = parseInt(styles.getPropertyValue('top'), 10);
-    this.minHeight = parseInt(styles.getPropertyValue('--file-tree-min-height'), 10);
-    this.bottomPadding = parseInt(styles.getPropertyValue('--file-tree-bottom-padding'), 10);
+    this.$nextTick(() => {
+      this.stickyTopOffset = parseInt(styles.getPropertyValue('top'), 10);
+      this.minHeight = parseInt(styles.getPropertyValue('--file-tree-min-height'), 10);
+      this.bottomPadding = parseInt(styles.getPropertyValue('--file-tree-bottom-padding'), 10);
+    });
   },
 };
 </script>

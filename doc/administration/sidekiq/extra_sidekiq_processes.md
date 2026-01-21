@@ -16,11 +16,8 @@ GitLab allows you to start multiple Sidekiq processes to process background jobs
 at a higher rate on a single instance. By default, Sidekiq starts one worker
 process and only uses a single core.
 
-{{< alert type="note" >}}
-
-The information in this page applies only to Linux package installations.
-
-{{< /alert >}}
+> [!note]
+> The information in this page applies only to Linux package installations.
 
 ## Start multiple processes
 

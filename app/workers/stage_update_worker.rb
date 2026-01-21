@@ -15,6 +15,6 @@ class StageUpdateWorker
   idempotent!
 
   def perform(stage_id)
-    Ci::Stage.find_by_id(stage_id)&.update_legacy_status
+    # noop - will be removed
   end
 end

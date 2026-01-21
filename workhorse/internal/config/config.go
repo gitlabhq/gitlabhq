@@ -202,6 +202,12 @@ type HealthCheckConfig struct {
 	MinSuccessfulProbes int `toml:"min_successful_probes" json:"min_successful_probes"`
 	// RailsSkipInterval is the duration to skip Rails readiness checks after a successful request
 	RailsSkipInterval TomlDuration `toml:"rails_skip_interval" json:"rails_skip_interval"`
+	// LoadShedBacklogThreshold is the backlog threshold at which to start shedding load (0 = disabled)
+	LoadShedBacklogThreshold int `toml:"load_shed_backlog_threshold" json:"load_shed_backlog_threshold"`
+	// LoadShedRetryAfterSeconds is the Retry-After header value in seconds when shedding load (default 0)
+	LoadShedRetryAfterSeconds int `toml:"load_shed_retry_after_seconds" json:"load_shed_retry_after_seconds"`
+	// LoadShedStrategy is the strategy to use for calculating effective backlog (max, sum; default: max)
+	LoadShedStrategy string `toml:"load_shed_strategy" json:"load_shed_strategy"`
 }
 
 // Config holds the overall application configuration

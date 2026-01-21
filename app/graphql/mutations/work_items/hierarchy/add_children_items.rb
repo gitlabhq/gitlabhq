@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'WorkItemHierarchyAddChildrenItems'
         description "Adds children to a given work item's hierarchy by Global ID."
 
+        include Mutations::WorkItems::Widgetable
+
         authorize :read_work_item
 
         argument :children_ids, [::Types::GlobalIDType[::WorkItem]],
@@ -29,12 +31,27 @@ module Mutations
           work_item = authorized_find!(id: id)
           children = attributes[:children]
 
-          update_result = ::WorkItems::ParentLinks::CreateService
-            .new(work_item, current_user, { issuable_references: children })
-            .execute
+          widget_attributes = { hierarchy_widget: { children: children } }
+          widget_params = extract_widget_params!(work_item.work_item_type, widget_attributes, work_item.resource_parent)
+
+          update_result = ::WorkItems::UpdateService.new(
+            container: work_item.resource_parent,
+            current_user: current_user,
+            params: {},
+            widget_params: widget_params
+          ).execute(work_item)
+
+          # Find newly added children using the provided children_ids
+          if update_result[:status] == :success
+            updated_work_item = update_result[:work_item]
+            children_ids = children.map(&:id)
+            added_children = updated_work_item.work_item_children.select { |child| children_ids.include?(child.id) }
+          else
+            added_children = []
+          end
 
           {
-            added_children: update_result[:created_references]&.map(&:work_item) || [],
+            added_children: added_children,
             errors: Array.wrap(update_result[:message])
           }
         end

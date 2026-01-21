@@ -87,11 +87,8 @@ To allow authorization with deploy tokens and keys:
    - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
-
-{{< /alert >}}
+> [!warning]
+> If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
 
 ## How GitLab connects to an external authorization service
 

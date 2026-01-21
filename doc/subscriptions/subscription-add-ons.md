@@ -76,6 +76,31 @@ GitLab Duo Pro and Enterprise require you to purchase seats and assign them to t
 The seat-based model gives you control over feature access and cost management
 based on your specific team needs.
 
+## GitLab Duo Agent Platform Self-Hosted
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 18.8
+
+{{< /history >}}
+
+> [!note]
+> GitLab Duo Agent Platform Self-Hosted is available only to customers with an offline license.
+
+GitLab Duo Agent Platform Self-Hosted provides access to the GitLab Duo Agent Platform for
+customers who use their own models on their self-deployed AI Gateway.
+
+Customers with this add-on are billed based on seat usage instead of [usage-based billing](gitlab_credits.md).
+
+To purchase GitLab Duo Agent Platform Self-Hosted, contact the
+[GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+
 ## Purchase GitLab Duo
 
 To purchase GitLab Duo Enterprise, contact the

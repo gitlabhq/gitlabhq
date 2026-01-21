@@ -141,11 +141,8 @@ Rate limits are enforced through two independent systems:
 A single request can count toward both types of rate limits simultaneously.
 Response headers only show the most restrictive `Rack::Attack` rate limit status.
 
-{{< alert type="note" >}}
-
-Application rate limits are not included in response headers.
-
-{{< /alert >}}
+> [!note]
+> Application rate limits are not included in response headers.
 
 #### Example
 

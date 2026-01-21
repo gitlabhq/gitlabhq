@@ -48,11 +48,8 @@ Event-level data enhances several benefits of Service Ping by offering more gran
 
 ### Enable or disable event-level data collection
 
-{{< alert type="note" >}}
-
-If Snowplow tracking is enabled, it will be automatically disabled when you enable product usage tracking. Only one data collection method can be active at a time.
-
-{{< /alert >}}
+> [!note]
+> If Snowplow tracking is enabled, it will be automatically disabled when you enable product usage tracking. Only one data collection method can be active at a time.
 
 To enable or disable event-level data collection:
 

@@ -179,11 +179,11 @@ module UsersHelper
       messageHtml: message,
       actionPrimary: {
         text: s_('AdminUsers|Confirm user'),
-        attributes: [{ variant: 'confirm', 'data-testid': 'confirm-user-confirm-button' }]
+        attributes: { variant: 'confirm', 'data-testid': 'confirm-user-confirm-button' }
       },
       actionSecondary: {
         text: _('Cancel'),
-        attributes: [{ variant: 'default' }]
+        attributes: { variant: 'default' }
       }
     })
 

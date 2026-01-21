@@ -140,11 +140,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security concerns
 
-{{< alert type="warning" >}}
-
-Be careful when choosing the domain used for receiving incoming email.
-
-{{< /alert >}}
+> [!warning]
+> Be careful when choosing the domain used for receiving incoming email.
 
 For example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain through Google
@@ -394,11 +391,8 @@ incoming_email:
 
 Example configuration for Gmail/Google Workspace. Assumes mailbox `gitlab-incoming@gmail.com`.
 
-{{< alert type="note" >}}
-
-`incoming_email_email` cannot be a Gmail alias account.
-
-{{< /alert >}}
+> [!note]
+> `incoming_email_email` cannot be a Gmail alias account.
 
 Example for Linux package installations:
 

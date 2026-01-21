@@ -14,34 +14,40 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
     let_it_be(:group_watcher)   { create(:user) }
     let_it_be(:project_watcher) { create(:user) }
 
-    let_it_be(:notification_setting_project_w) { create(:notification_setting, source: project, user: project_watcher, level: 2) }
-    let_it_be(:notification_setting_group_w) { create(:notification_setting, source: group, user: group_watcher, level: 2) }
-
-    subject { described_class.new(target, current_user, action: :new).tap { |s| s.build! } }
-
-    context 'participants and project watchers' do
-      before do
-        expect(target).to receive(:participants).and_return([participant, current_user])
-      end
-
-      it 'adds all participants and watchers' do
-        expect(subject.recipients.map(&:user)).to include(participant, project_watcher, group_watcher)
-        expect(subject.recipients.map(&:user)).not_to include(other_user)
-      end
+    let_it_be(:notification_setting_project_w) do
+      create(:notification_setting, source: project, user: project_watcher, level: 2)
     end
 
-    context 'subscribers' do
+    let_it_be(:notification_setting_group_w) do
+      create(:notification_setting, source: group, user: group_watcher, level: 2)
+    end
+
+    subject do
+      described_class.new(target, current_user, action: :new).tap(&:build!)
+        .recipients.map(&:user)
+    end
+
+    describe 'participants and project watchers' do
+      before do
+        allow(target).to receive(:participants).and_return([participant, current_user])
+      end
+
+      it { is_expected.to include(participant, project_watcher, group_watcher) }
+      it { is_expected.not_to include(other_user) }
+    end
+
+    describe 'subscribers' do
       it 'adds all subscribers' do
         subscriber = create(:user)
         non_subscriber = create(:user)
         create(:subscription, project: project, user: subscriber, subscribable: target, subscribed: true)
         create(:subscription, project: project, user: non_subscriber, subscribable: target, subscribed: false)
 
-        expect(subject.recipients.map(&:user)).to include(subscriber)
+        is_expected.to include(subscriber)
       end
     end
 
-    context 'custom notifications' do
+    describe 'custom notifications' do
       let_it_be(:custom_notification_user) { create(:user) }
       let_it_be(:another_group)   { create(:group) }
       let_it_be(:another_project) { create(:project, namespace: another_group) }
@@ -51,9 +57,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: project, user: custom_notification_user, level: :custom)
         end
 
-        it 'adds the user to the recipients' do
-          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-        end
+        it { is_expected.to include(custom_notification_user) }
       end
 
       context 'with the project custom notification setting in another project' do
@@ -61,9 +65,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: another_project, user: custom_notification_user, level: :custom)
         end
 
-        it 'does not add the user to the recipients' do
-          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-        end
+        it { is_expected.not_to include(custom_notification_user) }
       end
 
       context 'with group custom notification setting' do
@@ -71,9 +73,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: group, user: custom_notification_user, level: :custom)
         end
 
-        it 'adds the user to the recipients' do
-          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-        end
+        it { is_expected.to include(custom_notification_user) }
       end
 
       context 'with the group custom notification setting in another group' do
@@ -81,9 +81,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: another_group, user: custom_notification_user, level: :custom)
         end
 
-        it 'does not add the user to the recipients' do
-          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-        end
+        it { is_expected.not_to include(custom_notification_user) }
       end
 
       context 'with project global custom notification setting' do
@@ -96,15 +94,11 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
             create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
           end
 
-          it 'adds the user to the recipients' do
-            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-          end
+          it { is_expected.to include(custom_notification_user) }
         end
 
         context 'without global custom notification setting' do
-          it 'does not add the user to the recipients' do
-            expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-          end
+          it { is_expected.not_to include(custom_notification_user) }
         end
       end
 
@@ -118,15 +112,11 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
             create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
           end
 
-          it 'adds the user to the recipients' do
-            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-          end
+          it { is_expected.to include(custom_notification_user) }
         end
 
         context 'without global custom notification setting' do
-          it 'does not add the user to the recipients' do
-            expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-          end
+          it { is_expected.not_to include(custom_notification_user) }
         end
       end
 
@@ -141,9 +131,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: grand_parent_group, user: custom_notification_user, level: :custom)
         end
 
-        it 'adds the user to the recipients' do
-          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-        end
+        it { is_expected.to include(custom_notification_user) }
       end
 
       context 'without a project or group' do
@@ -153,9 +141,7 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
         end
 
-        it 'does not add the user to the recipients' do
-          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-        end
+        it { is_expected.not_to include(custom_notification_user) }
       end
 
       context 'when target is a work item' do
@@ -173,6 +159,11 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           )
         end
 
+        subject do
+          described_class.new(target, current_user, action: action).tap(&:build!)
+            .notification_recipients.map(&:user)
+        end
+
         context 'when work item is an issue' do
           let_it_be(:target) { create(:work_item, :issue, project: project) }
 
@@ -181,29 +172,37 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
           end
 
           with_them do
-            subject { described_class.new(target, current_user, action: action).tap { |s| s.build! } }
-
-            it "adds the user to the recipients" do
-              expect(subject.notification_recipients.map(&:user)).to include(custom_notification_user)
-            end
+            it { is_expected.to include(custom_notification_user) }
           end
         end
 
         context 'when work item issue is due' do
-          subject { described_class.new(target, current_user, action: :due, custom_action: :issue_due).tap { |s| s.build! } }
-
-          it "adds the user to the recipients" do
-            expect(subject.notification_recipients.map(&:user)).to include(custom_notification_user)
+          subject do
+            described_class.new(target, current_user, action: :due, custom_action: :issue_due).tap(&:build!)
+              .notification_recipients.map(&:user)
           end
+
+          it { is_expected.to include(custom_notification_user) }
         end
 
-        context 'when work item is not an issue' do
+        context 'when work item is task' do
           let_it_be(:target) { create(:work_item, :task, project: project) }
 
-          subject { described_class.new(target, current_user, action: :new).tap { |s| s.build! } }
+          where(:action) do
+            %w[new reopen close reassign]
+          end
 
-          it 'does not add the user to the recipients' do
-            expect(subject.notification_recipients.map(&:user)).not_to include(custom_notification_user)
+          with_them do
+            it { is_expected.to include(custom_notification_user) }
+          end
+
+          context 'when work item task is due' do
+            subject do
+              described_class.new(target, current_user, action: :due, custom_action: :issue_due).tap(&:build!)
+                .notification_recipients.map(&:user)
+            end
+
+            it { is_expected.to include(custom_notification_user) }
           end
         end
       end

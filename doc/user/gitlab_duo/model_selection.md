@@ -76,10 +76,13 @@ To select a model for a feature:
 ### Assign a default GitLab Duo namespace
 
 If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
+When GitLab Duo cannot automatically detect your namespace, the default namespace is used to determine what models to use.
 
-When GitLab Duo can't automatically detect the namespace you are working in, it uses the default namespace to determine what models to use.
+If you do not set a default namespace, GitLab Duo Chat (Agentic) and the GitLab Duo Agent Platform are disabled.
+For projects you're not a member of, your default namespace determines your
+[GitLab Credits](../../subscriptions/gitlab_credits.md) and available GitLab Duo features.
 
-Learn how to [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+For more information, see [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Troubleshooting
 

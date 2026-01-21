@@ -57,11 +57,8 @@ Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
 
-{{< alert type="note" >}}
-
-For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
-
-{{< /alert >}}
+> [!note]
+> For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
 
 Configuring the object storage using the consolidated form has a number of advantages:
 
@@ -348,11 +345,8 @@ If you use ADC, be sure that:
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
   ```
 
-{{< alert type="note" >}}
-
-To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-
-{{< /alert >}}
+> [!note]
+> To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 {{< tabs >}}
 
@@ -808,11 +802,8 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 
 ### Hitachi Vantara HCP
 
-{{< alert type="note" >}}
-
-Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
-
-{{< /alert >}}
+> [!note]
+> Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
 
 [HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
@@ -1551,11 +1542,8 @@ On the primary site:
 
 #### Clean up inconsistencies
 
-{{< alert type="warning" >}}
-
-Ensure you have a recent and working backup at hand before issuing any deletion commands.
-
-{{< /alert >}}
+> [!warning]
+> Ensure you have a recent and working backup at hand before issuing any deletion commands.
 
 Based on the previous scenario, multiple **uploads** are causing
 inconsistencies which are used as an example below.

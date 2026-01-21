@@ -15,11 +15,8 @@ title: Moderate users
 
 If you are an instance administrator, you have several options to moderate and control user access.
 
-{{< alert type="note" >}}
-
-This topic is specifically related to user moderation in GitLab Self-Managed. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
-
-{{< /alert >}}
+> [!note]
+> This topic is specifically related to user moderation in GitLab Self-Managed. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
 
 ## View users by type
 
@@ -168,11 +165,8 @@ A blocked user can be unblocked from the **Admin** area. To do this:
 The user's state is set to active and they consume a
 [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
-{{< alert type="note" >}}
-
-Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
-
-{{< /alert >}}
+> [!note]
+> Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
 
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
@@ -250,11 +244,8 @@ A maximum of 100,000 users can be deactivated per day.
 By default, users receive an email notification when their account is deactivated.
 You can disable [user deactivation emails](settings/email.md#user-deactivation-emails).
 
-{{< alert type="note" >}}
-
-GitLab generated bots are excluded from the automatic deactivation of dormant users.
-
-{{< /alert >}}
+> [!note]
+> GitLab generated bots are excluded from the automatic deactivation of dormant users.
 
 ### Automatically delete unconfirmed users
 
@@ -383,11 +374,8 @@ Use the **Admin** area to delete users.
 1. Type the username.
 1. Select **Delete user**.
 
-{{< alert type="note" >}}
-
-You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.
-
-{{< /alert >}}
+> [!note]
+> You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.
 
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
@@ -397,11 +385,8 @@ You can also delete a user and their contributions, such as merge requests, issu
 1. Type the username.
 1. Select **Delete user and contributions**.
 
-{{< alert type="note" >}}
-
-Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
-
-{{< /alert >}}
+> [!note]
+> Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
 
 ## Trust and untrust users
 
@@ -463,11 +448,8 @@ When moderating users, you may need to perform bulk actions on them based on cer
 
 Administrators can deactivate users that have no recent activity.
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 days_inactive = 90
@@ -483,11 +465,8 @@ end
 
 Administrators can block users that have no recent activity.
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 days_inactive = 90
@@ -503,11 +482,8 @@ end
 
 Administrators can block or delete users that have no projects or groups.
 
-{{< alert type="warning" >}}
-
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-{{< /alert >}}
+> [!warning]
+> Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 users = User.where('id NOT IN (select distinct(user_id) from project_authorizations)')

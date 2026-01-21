@@ -1,5 +1,5 @@
 diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
-index 9ac00e7..d8a7ef5 100644
+index 9ac00e7..3e6775d 100644
 --- a/node_modules/@vue/compat/dist/vue.cjs.js
 +++ b/node_modules/@vue/compat/dist/vue.cjs.js
 @@ -6429,7 +6429,7 @@ const publicPropertiesMap = (
@@ -11,18 +11,31 @@ index 9ac00e7..d8a7ef5 100644
      $attrs: (i) => shallowReadonly(i.attrs) ,
      $slots: (i) => shallowReadonly(i.slots) ,
      $refs: (i) => shallowReadonly(i.refs) ,
-@@ -7312,6 +7312,10 @@ function createCompatVue$1(createApp, createSingletonApp) {
-       options.data = () => data;
-     }
-     const app = createApp(options);
-+    if (options.parent && options.parent.$ && options.parent.$.provides) {
-+      // GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays
-+      app._context.provides = Object.create(options.parent.$.provides);
-+    }
+@@ -7315,6 +7315,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
-@@ -8167,6 +8171,10 @@ function setFullProps(instance, rawProps, props, attrs) {
++    if (options.parent && options.parent.$) {
++      // GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays
++      if (options.parent.$.provides) {
++        app._context.provides = Object.create(options.parent.$.provides);
++      }
++      // GitLab specific: inherit globalProperties (for Vuex $store, etc.)
++      // Note: We must copy properties, not use prototype chain, because Vue uses hasOwn() checks
++      const parentAppContext = options.parent.$.appContext;
++      const parentGlobalProps = parentAppContext && parentAppContext.config && parentAppContext.config.globalProperties;
++      if (parentGlobalProps) {
++        for (const key of Object.keys(parentGlobalProps)) {
++          if (!(key in app.config.globalProperties)) {
++            app.config.globalProperties[key] = parentGlobalProps[key];
++          }
++        }
++      }
++    }
+     const vm = app._createRoot(options);
+     if (options.el) {
+       return vm.$mount(options.el);
+@@ -8167,6 +8184,10 @@ function setFullProps(instance, rawProps, props, attrs) {
        );
      }
    }
@@ -34,7 +47,7 @@ index 9ac00e7..d8a7ef5 100644
  }
  function resolvePropValue(options, props, key, value, instance, isAbsent) {
 diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
-index 6eaafff..a00b983 100644
+index 6eaafff..b546904 100644
 --- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 +++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
 @@ -6336,7 +6336,7 @@ const publicPropertiesMap = (
@@ -46,18 +59,31 @@ index 6eaafff..a00b983 100644
      $attrs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.attrs) : i.attrs,
      $slots: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.slots) : i.slots,
      $refs: (i) => !!(process.env.NODE_ENV !== "production") ? shallowReadonly(i.refs) : i.refs,
-@@ -7221,6 +7221,10 @@ function createCompatVue$1(createApp, createSingletonApp) {
-       options.data = () => data;
-     }
-     const app = createApp(options);
-+    if (options.parent && options.parent.$ && options.parent.$.provides) {
-+      // GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays
-+      app._context.provides = Object.create(options.parent.$.provides);
-+    }
+@@ -7224,6 +7224,23 @@ function createCompatVue$1(createApp, createSingletonApp) {
      if (Ctor !== Vue) {
        applySingletonPrototype(app, Ctor);
      }
-@@ -8078,6 +8082,10 @@ function setFullProps(instance, rawProps, props, attrs) {
++    if (options.parent && options.parent.$) {
++      // GitLab specific: inherit provide/inject context if `parent` was passed - used for overlays
++      if (options.parent.$.provides) {
++        app._context.provides = Object.create(options.parent.$.provides);
++      }
++      // GitLab specific: inherit globalProperties (for Vuex $store, etc.)
++      // Note: We must copy properties, not use prototype chain, because Vue uses hasOwn() checks
++      const parentAppContext = options.parent.$.appContext;
++      const parentGlobalProps = parentAppContext && parentAppContext.config && parentAppContext.config.globalProperties;
++      if (parentGlobalProps) {
++        for (const key of Object.keys(parentGlobalProps)) {
++          if (!(key in app.config.globalProperties)) {
++            app.config.globalProperties[key] = parentGlobalProps[key];
++          }
++        }
++      }
++    }
+     const vm = app._createRoot(options);
+     if (options.el) {
+       return vm.$mount(options.el);
+@@ -8078,6 +8095,10 @@ function setFullProps(instance, rawProps, props, attrs) {
        );
      }
    }

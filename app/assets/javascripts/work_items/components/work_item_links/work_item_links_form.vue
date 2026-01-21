@@ -2,11 +2,10 @@
 import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { fetchPolicies } from '~/lib/graphql';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild, addHierarchyChildren } from '../../graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
-import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hierarchy.mutation.graphql';
+import workItemHierarchyAddChildrenMutation from '../../graphql/work_item_hierarchy_add_children.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
 import {
   FORM_TYPES,
@@ -310,29 +309,25 @@ export default {
       this.markFormSubmitInProgress(true);
       this.$apollo
         .mutate({
-          mutation: updateWorkItemHierarchyMutation,
-          fetchPolicy: fetchPolicies.NO_CACHE,
+          mutation: workItemHierarchyAddChildrenMutation,
           variables: {
             input: {
               id: this.issuableGid,
-              hierarchyWidget: {
-                childrenIds: this.workItemsToAdd.map((wi) => wi.id),
-              },
+              childrenIds: this.workItemsToAdd.map((wi) => wi.id),
             },
           },
           update: (
             cache,
             {
               data: {
-                workItemUpdate: { workItem },
+                workItemHierarchyAddChildrenItems: { addedChildren },
               },
             },
           ) =>
             addHierarchyChildren({
               cache,
               id: this.issuableGid,
-              workItem,
-              childrenIds: this.workItemsToAdd.map((wi) => wi.id),
+              newChildren: addedChildren || [],
             }),
         })
         .then(({ data }) => {

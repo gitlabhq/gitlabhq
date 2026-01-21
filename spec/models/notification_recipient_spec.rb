@@ -180,6 +180,52 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
     end
   end
 
+  describe '#custom_enabled?' do
+    let(:notification_setting) { user.notification_settings_for(project) }
+
+    where(:custom_action, :setting_updates, :expected_result, :description) do
+      [
+        [:new_issue, { new_issue: true }, true, 'issue event enabled'],
+        [:new_issue, { new_issue: false }, false, 'issue event disabled'],
+        [:new_work_item, { new_issue: true }, true, 'issue event enabled'],
+        [:new_work_item, { new_issue: false }, false, 'issue event disabled'],
+        [:close_issue, { close_issue: true }, true, 'close_issue enabled'],
+        [:close_work_item, { close_issue: true }, true, 'close_issue enabled'],
+        [:reassign_issue, { reassign_issue: true }, true, 'reassign_issue enabled'],
+        [:reassign_work_item, { reassign_issue: true }, true, 'reassign_issue enabled'],
+        [:reopen_issue, { reopen_issue: true }, true, 'reopen_issue enabled'],
+        [:reopen_work_item, { reopen_issue: true }, true, 'reopen_issue enabled'],
+        [:issue_due, { issue_due: true }, true, 'issue_due enabled'],
+        [:work_item_due, { issue_due: true }, true, 'issue_due enabled'],
+        [:new_epic, { new_epic: true }, true, 'epic event enabled'],
+        [:new_epic, { new_epic: false, new_issue: true }, true, 'epic event disabled but issue enabled'],
+        [:new_epic, { new_epic: false, new_issue: false }, false, 'both epic and issue events disabled'],
+        [:fixed_pipeline, { success_pipeline: true }, true, 'success_pipeline enabled']
+      ]
+    end
+
+    with_them do
+      let(:recipient) do
+        described_class.new(
+          user,
+          :custom,
+          custom_action: custom_action,
+          target: target,
+          project: project
+        )
+      end
+
+      before do
+        user.notification_settings_for(project).custom!
+        notification_setting.update!(setting_updates)
+      end
+
+      it "for action #{params[:custom_action]} returns #{params[:expected_result]} when #{params[:description]}" do
+        expect(recipient.custom_enabled?).to eq(expected_result)
+      end
+    end
+  end
+
   describe '#suitable_notification_level?' do
     context 'when notification level is mention' do
       before do

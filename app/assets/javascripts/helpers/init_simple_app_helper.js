@@ -62,7 +62,11 @@ const getApolloProvider = (apolloProviderOption) => {
  * This will mount MyApp as root on '#mount-here'. It will receive {'some': 'object'} as it's
  * provide values.
  */
-export const initSimpleApp = (selector, component, { withApolloProvider, name } = {}) => {
+export const initSimpleApp = (
+  selector,
+  component,
+  { withApolloProvider, name, additionalProvide = {} } = {},
+) => {
   const element = document.querySelector(selector);
 
   if (!element) {
@@ -70,7 +74,10 @@ export const initSimpleApp = (selector, component, { withApolloProvider, name } 
   }
 
   const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
-  const provide = element.dataset.provide ? JSON.parse(element.dataset.provide) : {};
+  const provide = {
+    ...(element.dataset.provide ? JSON.parse(element.dataset.provide) : {}),
+    ...additionalProvide,
+  };
 
   return new Vue({
     el: element,

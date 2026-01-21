@@ -13,19 +13,13 @@ description: Configure and test GitLab Cells functionality for GitLab.com admini
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This feature is available for administrators of GitLab.com only. This feature is not available for GitLab Self-Managed or GitLab Dedicated instances.
-
-{{< /alert >}}
+> [!note]
+> This feature is available for administrators of GitLab.com only. This feature is not available for GitLab Self-Managed or GitLab Dedicated instances.
 
 {{< alert type="disclaimer" />}}
 
-{{< alert type="note" >}}
-
-Cells 1.0 is in development. For more information about the state of cell development, see [epic 12383](https://gitlab.com/groups/gitlab-org/-/epics/12383).
-
-{{< /alert >}}
+> [!note]
+> Cells 1.0 is in development. For more information about the state of cell development, see [epic 12383](https://gitlab.com/groups/gitlab-org/-/epics/12383).
 
 To test cell functionality, configure the GitLab Rails console.
 

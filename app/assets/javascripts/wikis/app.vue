@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WikiHeader from './components/wiki_header.vue';
 import WikiContent from './components/wiki_content.vue';
 import WikiEditForm from './components/wiki_form.vue';
@@ -16,6 +17,7 @@ export default {
     WikiAlert,
     WikiNotesApp,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     isEditingPath: { default: false },
     isPageHistorical: { default: null },
@@ -31,19 +33,28 @@ export default {
   },
   data() {
     return {
-      isEditing: false,
+      hasEnteredEditMode: false,
     };
   },
   computed: {
+    isEditing() {
+      return this.isEditingPath || this.hasEnteredEditMode;
+    },
     showWikiNotes() {
-      return !(this.isEditingPath || this.isEditing) || this.pagePersisted;
+      return !this.isEditing || this.pagePersisted;
+    },
+    showWikiHeader() {
+      if (this.glFeatures.wikiImmersiveEditor) {
+        return !this.isEditing;
+      }
+      return !this.hasEnteredEditMode;
     },
   },
   watch: {
-    isEditing() {
+    hasEnteredEditMode() {
       const url = new URL(window.location);
 
-      if (this.isEditing) {
+      if (this.hasEnteredEditMode) {
         url.searchParams.set('edit', 'true');
       } else {
         url.searchParams.delete('edit');
@@ -61,7 +72,7 @@ export default {
   },
   methods: {
     setEditingMode(value) {
-      this.isEditing = value;
+      this.hasEnteredEditMode = value;
     },
     checkEditingMode() {
       const url = new URL(window.location);
@@ -91,8 +102,8 @@ export default {
       {{ $options.i18n.alertText }}
     </gl-alert>
     <wiki-alert v-if="error" :error="error" :wiki-page-path="wikiUrl" class="gl-mt-5" />
-    <wiki-header v-if="!isEditing" @is-editing="setEditingMode" />
-    <wiki-edit-form v-if="isEditingPath || isEditing" @is-editing="setEditingMode" />
+    <wiki-header v-if="showWikiHeader" @is-editing="setEditingMode" />
+    <wiki-edit-form v-if="isEditing" @is-editing="setEditingMode" />
     <wiki-content v-else :is-editing="isEditing" />
     <wiki-notes-app v-if="showWikiNotes" />
   </div>

@@ -293,11 +293,8 @@ To control Service Ping Generation through configuration:
 
 GitLab differentiates between operational and optional collected data.
 
-{{< alert type="note" >}}
-
-The **Include optional data in Service Ping** option is available only if either **Enable Service Ping** or **Enable Service Ping Generation** is enabled. If both settings are disabled, this option is disabled automatically.
-
-{{< /alert >}}
+> [!note]
+> The **Include optional data in Service Ping** option is available only if either **Enable Service Ping** or **Enable Service Ping Generation** is enabled. If both settings are disabled, this option is disabled automatically.
 
 ### Through the UI
 

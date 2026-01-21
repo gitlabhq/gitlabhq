@@ -26136,9 +26136,6 @@ msgstr ""
 msgid "DuoChat|Agentic mode (Beta)"
 msgstr ""
 
-msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
-msgstr ""
-
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
@@ -26149,9 +26146,6 @@ msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
 msgid "DuoChat|GitLab Duo Chat"
-msgstr ""
-
-msgid "DuoChat|GitLab Duo with Amazon Q"
 msgstr ""
 
 msgid "DuoChat|Give feedback"
@@ -26179,12 +26173,6 @@ msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
-msgstr ""
-
-msgid "DuoChat|group"
-msgstr ""
-
-msgid "DuoChat|project"
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the Code Review foundational flow in the top-level group."
@@ -75093,7 +75081,13 @@ msgstr ""
 msgid "VirtualRegistry|Clearing the cache deletes all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs might fail. Are you sure you want to continue?"
 msgstr ""
 
+msgid "VirtualRegistry|Configure an upstream registry to manage Container artifacts and cache entries."
+msgstr ""
+
 msgid "VirtualRegistry|Configure an upstream registry to manage Maven artifacts and cache entries."
+msgstr ""
+
+msgid "VirtualRegistry|Connect Container virtual registry to an upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Connect Maven virtual registry to an upstream"
@@ -75192,10 +75186,10 @@ msgstr ""
 msgid "VirtualRegistry|Failed to fetch cache entries."
 msgstr ""
 
-msgid "VirtualRegistry|Failed to fetch list of maven upstream registries."
+msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
 msgstr ""
 
-msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
+msgid "VirtualRegistry|Failed to fetch list of upstreams."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch upstream summary."
@@ -75387,6 +75381,9 @@ msgid "VirtualRegistry|Upstream cache cleared successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream created successfully."
+msgstr ""
+
+msgid "VirtualRegistry|Upstream has been deleted."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream summary"

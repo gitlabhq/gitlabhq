@@ -215,11 +215,8 @@ GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 
-{{< alert type="note" >}}
-
-These steps can only be completed by GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> These steps can only be completed by GitLab Support.
 
 Each `GET` request made to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
 

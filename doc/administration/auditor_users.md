@@ -34,11 +34,8 @@ Auditor users are sometimes used in situations where:
   manually adding the user to every project, you can create an auditor user that can access
   every project automatically.
 
-{{< alert type="note" >}}
-
-An auditor user counts as a billable user and consumes a license seat.
-
-{{< /alert >}}
+> [!note]
+> An auditor user counts as a billable user and consumes a license seat.
 
 ## Create an auditor user
 

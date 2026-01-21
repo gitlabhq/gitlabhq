@@ -21,7 +21,7 @@ import {
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import updateWorkItemHierarchyMutation from '~/work_items/graphql/update_work_item_hierarchy.mutation.graphql';
+import workItemHierarchyAddChildrenMutation from '~/work_items/graphql/work_item_hierarchy_add_children.mutation.graphql';
 import namespaceProjectsForLinksWidgetQuery from '~/work_items/graphql/namespace_projects_for_links_widget.query.graphql';
 import {
   availableWorkItemsResponse,
@@ -29,7 +29,7 @@ import {
   generateWorkItemsListWithId,
   namespaceProjectsList,
   namespaceWorkItemTypesQueryResponse,
-  updateWorkItemMutationResponse,
+  workItemHierarchyAddChildrenMutationResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
@@ -52,8 +52,10 @@ describe('WorkItemLinksForm', () => {
    */
   let wrapper;
 
-  const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
-  const updateMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
+  const addMutationResolver = jest
+    .fn()
+    .mockResolvedValue(workItemHierarchyAddChildrenMutationResponse);
+  const addMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const createMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
@@ -72,7 +74,7 @@ describe('WorkItemLinksForm', () => {
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_NAME_ISSUE,
     childrenType = WORK_ITEM_TYPE_NAME_TASK,
-    updateMutation = updateMutationResolver,
+    addMutation = addMutationResolver,
     createMutation = createMutationResolver,
     isGroup = false,
     createGroupLevelWorkItems = true,
@@ -82,7 +84,7 @@ describe('WorkItemLinksForm', () => {
         [projectWorkItemsQuery, availableWorkItemsResolver],
         [namespaceWorkItemTypesQuery, namespaceWorkItemTypesResolver],
         [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
-        [updateWorkItemHierarchyMutation, updateMutation],
+        [workItemHierarchyAddChildrenMutation, addMutation],
         [createWorkItemMutation, createMutation],
       ]),
       propsData: {
@@ -459,7 +461,7 @@ describe('WorkItemLinksForm', () => {
       });
       await waitForPromises();
 
-      expect(updateMutationResolver).toHaveBeenCalled();
+      expect(addMutationResolver).toHaveBeenCalled();
     });
 
     it('shows validation error when non-confidential child items are being added to confidential parent', async () => {
@@ -486,7 +488,7 @@ describe('WorkItemLinksForm', () => {
     });
 
     it('clears form error when token input is updated', async () => {
-      await createComponent({ formType: FORM_TYPES.add, updateMutation: updateMutationRejection });
+      await createComponent({ formType: FORM_TYPES.add, addMutation: addMutationRejection });
       await selectAvailableWorkItemTokens();
 
       // Trigger form submission

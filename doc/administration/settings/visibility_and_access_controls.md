@@ -153,11 +153,8 @@ To disable immediate deletion:
 1. Scroll to **Immediate deletion** and uncheck the checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Administrators can always immediately delete groups and projects through the Admin pages.
-
-{{< /alert >}}
+> [!note]
+> Administrators can always immediately delete groups and projects through the Admin pages.
 
 ### Override defaults and delete immediately
 
@@ -408,11 +405,8 @@ Prerequisites:
 Administrators can prevent non-administrators from inviting users to all groups or projects on the instance.
 When you configure this setting, only administrators can invite users to groups or projects on the instance.
 
-{{< alert type="note" >}}
-
-Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/import/_index.md) can still allow access to these groups and projects.
-
-{{< /alert >}}
+> [!note]
+> Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/import/_index.md) can still allow access to these groups and projects.
 
 Prerequisites:
 

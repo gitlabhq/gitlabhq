@@ -40,11 +40,8 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 
 For GitLab Helm chart instances, see information about [global server hooks in the Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#global-server-hooks).
 
-{{< alert type="note" >}}
-
-[Geo](geo/_index.md) doesn't replicate server hooks to secondary nodes.
-
-{{< /alert >}}
+> [!note]
+> [Geo](geo/_index.md) doesn't replicate server hooks to secondary nodes.
 
 ## Prerequisites
 
