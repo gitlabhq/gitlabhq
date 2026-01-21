@@ -16,9 +16,8 @@ title: GLQL fields
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
-- Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
-- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.10.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/476990) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
 
 {{< /history >}}
@@ -1320,7 +1319,7 @@ on or off.
 - Field `lastComment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
 - Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 - Fields `status`, `sourceBranch`, `targetBranch`, `sourceProject`, and `targetProject` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
-- Fields `health`, and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
+- Fields `health` and `type` in epics [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/222) in GitLab 18.3.
 - Field `subscribed` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/223) in GitLab 18.3.
 
 {{< /history >}}

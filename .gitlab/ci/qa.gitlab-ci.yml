@@ -229,7 +229,6 @@ e2e:perf-on-cng:
     - .e2e-trigger-base
     - .qa:rules:e2e:perf-on-cng
   stage: qa
-  allow_failure: true
   needs:
     - compile-production-assets
     - e2e-test-pipeline-generate

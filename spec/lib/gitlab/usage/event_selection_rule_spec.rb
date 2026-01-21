@@ -90,6 +90,24 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
           expect(event_selection_rule.redis_key_for_date).to match(Gitlab::Redis::HLL::KEY_REGEX)
         end
       end
+
+      context 'with custom additional property as unique identifier' do
+        let(:event_selection_rule) do
+          described_class.new(
+            name: 'example_event',
+            time_framed: false,
+            filter: filter,
+            unique_identifier_name: :merge_request_iid
+          )
+        end
+
+        it 'returns the correct key with custom property name' do
+          expect(event_selection_rule.redis_key_for_date)
+            .to eq('{hll_counters}_example_event-filter:[label:npm,property:deploy_token]-merge_request_iid')
+
+          expect(event_selection_rule.redis_key_for_date).to match(Gitlab::Redis::HLL::KEY_REGEX)
+        end
+      end
     end
 
     context "when time framed" do

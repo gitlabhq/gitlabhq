@@ -766,9 +766,9 @@ When rendered, the example looks similar to:
 
 - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
 - Option to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
-- Option to reference issues, epics, and work items with `[work_item:NUMBER]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.2.
-- Option to reference issues, epics, and work items with `[work_item:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
-- Option to reference issues, epics, and work items with `[work_item:123]` syntax [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+- Option to reference issues, epics, and work items with `[work_item:123]` syntax:
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
 - Option to reference epics with `[epic:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352864) in GitLab 18.4.
 
 {{< /history >}}

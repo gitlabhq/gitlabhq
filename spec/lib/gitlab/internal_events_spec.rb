@@ -635,6 +635,64 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
+    context 'when unique key is a custom additional property' do
+      let(:event_selection_rules) do
+        [
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true),
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: true,
+            unique_identifier_name: :merge_request_iid
+          )
+        ]
+      end
+
+      before do
+        allow(event_definition).to receive(:additional_properties).and_return({
+          merge_request_iid: {}
+        })
+      end
+
+      it 'is used when logging to RedisHLL with hashed value', :aggregate_failures do
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          additional_properties: { merge_request_iid: 'mr_123' }
+        )
+
+        expect_redis_tracking
+        expect_redis_hll_tracking('mr_123'.hash, :merge_request_iid)
+        expect_snowplow_tracking(nil, {}, extra: { merge_request_iid: 'mr_123' })
+      end
+
+      it 'works with numeric custom property values', :aggregate_failures do
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          additional_properties: { merge_request_iid: 456 }
+        )
+
+        expect_redis_tracking
+        expect_redis_hll_tracking(456.hash, :merge_request_iid)
+        expect_snowplow_tracking(nil, {}, extra: { merge_request_iid: 456 })
+      end
+
+      context 'when custom property is missing' do
+        it 'logs warning and does not update RedisHLL' do
+          described_class.track_event(event_name, user: user, project: project)
+
+          expect_redis_tracking
+          expect_no_redis_hll_tracking
+          expect(Gitlab::AppJsonLogger).to have_received(:warn).with(
+            message: /should be triggered with a named parameter 'merge_request_iid'/
+          )
+        end
+      end
+    end
+
     context 'when send_snowplow_event is false' do
       it 'logs to Redis and RedisHLL but not Snowplow' do
         described_class.track_event(event_name, send_snowplow_event: false, user: user, project: project)

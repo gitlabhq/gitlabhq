@@ -1553,9 +1553,9 @@ Note the following:
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
   necessary. To disable the unencrypted listener, set `praefect['configuration'][:listen_addr] = nil`.
-- The Internal Load Balancer will also access to the certificates and must be configured
-  to allow for TLS passthrough.
-  Refer to the load balancers documentation on how to configure this.
+- The Internal Load Balancer must be configured to handle TLS connections. Configure the load balancer to support TLS passthrough, which is where the load balancer
+  forwards encrypted traffic to the backend without terminating it. Do not use a passthrough/direct server return (DSR) load balancer. The load balancer must actively proxy
+  the connections to maintain proper load balancing and health checking.
 
 To configure Praefect with TLS:
 

@@ -466,6 +466,28 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       end
     end
 
+    context 'when the metric has custom additional property as unique key' do
+      let(:attributes) do
+        {
+          time_frame: '7d',
+          events: [
+            { name: 'an_event', unique: 'merge_request_iid' },
+            { name: 'another_event', unique: 'custom_property' }
+          ]
+        }
+      end
+
+      it 'returns unique counter event selection rules with custom property names' do
+        rule1 = make_rule(name: 'an_event', unique_identifier_name: :merge_request_iid)
+        rule2 = make_rule(name: 'another_event', unique_identifier_name: :custom_property)
+        expect(subject).to match_array([rule1, rule2])
+
+        subject.each do |rule|
+          expect(rule.total_counter?).to be(false)
+        end
+      end
+    end
+
     context 'when the metric has no unique keys' do
       let(:attributes) do
         {
