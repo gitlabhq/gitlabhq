@@ -22,7 +22,7 @@ describe('Issuable Time Tracker', () => {
     issuableId: '1',
     issuableIid: '1',
     initialTimeTracking: {
-      ...issuableTimeTrackingResponse.data.workspace.issuable,
+      ...issuableTimeTrackingResponse.data.namespace.issuable,
     },
   };
 

@@ -303,7 +303,7 @@ gem 'gitlab-sidekiq-fetcher',
 gem 'fugit', '~> 1.11.1', feature_category: :continuous_integration
 
 # HTTP requests
-gem 'httparty', '~> 0.23.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'httparty', '~> 0.24.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Colored output to console
 gem 'rainbow', '~> 3.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

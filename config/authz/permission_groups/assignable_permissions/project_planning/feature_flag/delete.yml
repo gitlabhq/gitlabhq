@@ -1,0 +1,7 @@
+---
+name: delete_feature_flag
+description: Grants the ability to delete feature flags
+permissions:
+  - delete_feature_flag
+boundaries:
+  - project

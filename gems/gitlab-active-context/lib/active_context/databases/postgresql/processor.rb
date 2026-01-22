@@ -47,7 +47,12 @@ module ActiveContext
         def process_filter(conditions)
           relation = base_relation
           conditions.each do |key, value|
-            relation = relation.where(key => value)
+            quoted_column = quote_column(key)
+            relation = if value.is_a?(Array)
+                         relation.where("#{quoted_column} IN (#{sql_placeholders(value)})", *value)
+                       else
+                         relation.where("#{quoted_column} = ?", value)
+                       end
           end
           relation
         end
@@ -55,10 +60,9 @@ module ActiveContext
         def process_prefix(conditions)
           relation = base_relation
           conditions.each do |key, value|
+            quoted_column = quote_column(key)
             sanitized_value = model.sanitize_sql_like(value)
-            relation = relation.where(
-              "#{model.adapter_class.quote_column_name(key)} LIKE ?", "#{sanitized_value}%"
-            )
+            relation = relation.where("#{quoted_column} LIKE ?", "#{sanitized_value}%")
           end
           relation
         end
@@ -114,7 +118,7 @@ module ActiveContext
 
           relation
             .order(
-              Arel.sql("#{model.adapter_class.quote_column_name(column)} <=> #{model.connection.quote(vector_str)}")
+              Arel.sql("#{quote_column(column)} <=> #{model.connection.quote(vector_str)}")
             )
             .limit(limit)
         end
@@ -122,9 +126,20 @@ module ActiveContext
         def process_limit(node)
           child_relation = process(node.children.first)
 
-          # Create a subquery
-          subquery = child_relation.arel.as('subq')
-          model.unscoped.select('subq.*').from(subquery).limit(node.value)
+          # Subquery needed when KNN (k) and LIMIT are both present
+          child_sql = child_relation.to_sql
+          limit_value = node.value
+
+          Struct.new(:to_sql).new("SELECT subq.* FROM (#{child_sql}) subq LIMIT #{limit_value}")
+        end
+
+        def quote_column(column)
+          quoted = model.connection.quote_column_name(column)
+          "#{model.connection.quote_table_name(model.table_name)}.#{quoted}"
+        end
+
+        def sql_placeholders(values)
+          Array.new(values.size, '?').join(', ')
         end
       end
     end

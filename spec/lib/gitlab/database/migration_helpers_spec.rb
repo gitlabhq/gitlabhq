@@ -1418,16 +1418,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
-  describe '#convert_to_type_column' do
-    it 'returns the name of the temporary column used to convert to bigint' do
-      expect(model.convert_to_type_column(:id, :int, :bigint)).to eq('id_convert_int_to_bigint')
-    end
-
-    it 'returns the name of the temporary column used to convert to uuid' do
-      expect(model.convert_to_type_column(:uuid, :string, :uuid)).to eq('uuid_convert_string_to_uuid')
-    end
-  end
-
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
       ActiveRecord::Migration.connection.execute(

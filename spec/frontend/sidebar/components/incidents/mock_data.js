@@ -1,7 +1,7 @@
 import { STATUS_TRIGGERED, STATUS_ACKNOWLEDGED } from '~/sidebar/constants';
 
 export const fetchData = {
-  workspace: {
+  namespace: {
     __typename: 'Project',
     id: 'gid://gitlab/Project/2',
     issuable: {
@@ -26,7 +26,7 @@ export const mutationData = {
 };
 
 export const fetchError = {
-  workspace: {
+  namespace: {
     __typename: 'Project',
   },
 };

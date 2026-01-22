@@ -2906,7 +2906,7 @@ Supported attributes:
 | `auto_merge`                   | boolean           | No       | If `true`, the merge request merges when the pipeline succeeds. |
 | `merge_commit_message`         | string            | No       | Custom merge commit message. |
 | `merge_when_pipeline_succeeds` | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) in GitLab 17.11. Use `auto_merge` instead. |
-| `sha`                          | string            | No       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails. |
+| `sha`                          | string            | No       | If present, this SHA must match the HEAD of the source branch. Use to ensure that only reviewed commits are merged. |
 | `should_remove_source_branch`  | boolean           | No       | If `true`, removes the source branch. |
 | `squash_commit_message`        | string            | No       | Custom squash commit message. |
 | `squash`                       | boolean           | No       | If `true`, squash all commits into a single commit on merge. |

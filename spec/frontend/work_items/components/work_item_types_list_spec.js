@@ -14,13 +14,14 @@ import WorkItemTypesList from '~/work_items/components/work_item_types_list.vue'
 import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work_item_type_form.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import organisationWorkItemTypesQuery from '~/work_items/graphql/organisation_work_item_types.query.graphql';
 import {
   namespaceWorkItemTypesQueryResponse,
   organisationWorkItemTypesQueryResponse,
+  mockWorkItemTypesConfigurationResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 import { DEFAULT_SETTINGS_CONFIG } from '~/work_items/constants';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -41,12 +42,12 @@ describe('WorkItemTypesList', () => {
   };
 
   const getMockWorkItemTypes = () =>
-    namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
+    mockWorkItemTypesConfigurationResponse.data.namespace.workItemTypes.nodes;
   const getMockOrganisationWorkItemTypes = () =>
     organisationWorkItemTypesQueryResponse.data.organisation.workItemTypes.nodes;
   const mockOrganisationWorkItemTypes = getMockOrganisationWorkItemTypes();
   const mockWorkItemTypes = getMockWorkItemTypes();
-  const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const namespaceQueryHandler = jest.fn().mockResolvedValue(mockWorkItemTypesConfigurationResponse);
   const mockEmptyResponseHandler = jest.fn().mockResolvedValue(mockEmptyResponse);
 
   const createWrapper = ({
@@ -60,7 +61,7 @@ describe('WorkItemTypesList', () => {
       },
     };
 
-    mockApollo = createMockApollo([[namespaceWorkItemTypesQuery, queryHandler]]);
+    mockApollo = createMockApollo([[workItemTypesConfigurationQuery, queryHandler]]);
 
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: organisationWorkItemTypesQuery,
@@ -92,10 +93,16 @@ describe('WorkItemTypesList', () => {
   const findWorkItemTypesTable = () => wrapper.findByTestId('work-item-types-table');
   const findWorkItemTypeRows = () => wrapper.findAll('[data-testid^="work-item-type-row"]');
   const findWorkItemTypeRow = (id) => wrapper.findByTestId(`work-item-type-row-${id}`);
+  const findLockedIconByRow = (id) => wrapper.findByTestId(`locked-icon-${id}`);
   const findNewTypeButton = () => wrapper.findComponent(GlButton);
   const findDropdownForType = (id) => findWorkItemTypeRow(id).findComponent(GlDisclosureDropdown);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findCreateEditForm = () => wrapper.findComponent(CreateEditWorkItemTypeForm);
+
+  const findLockIconTooltip = (typeId) => {
+    const icon = findLockedIconByRow(typeId);
+    return icon.attributes('title');
+  };
 
   describe('default rendering', () => {
     beforeEach(async () => {
@@ -211,7 +218,6 @@ describe('WorkItemTypesList', () => {
 
       expect(namespaceQueryHandler).toHaveBeenCalledWith({
         fullPath: 'my-group/sub-group',
-        onlyAvailable: false,
       });
     });
 
@@ -386,6 +392,100 @@ describe('WorkItemTypesList', () => {
       await waitForPromises();
 
       expect(namespaceQueryHandler).toHaveBeenCalled();
+    });
+  });
+
+  describe('locked configuration tooltip', () => {
+    beforeEach(async () => {
+      createWrapper();
+      await waitForPromises();
+    });
+
+    it('does not render locked icons configurable work item types', () => {
+      const firstType = mockWorkItemTypes[0];
+      const lockIcon = findLockedIconByRow(firstType.id);
+
+      expect(lockIcon.exists()).toBe(false);
+    });
+
+    it('includes service desk message when isServiceDesk is true', async () => {
+      const serviceDeskType = {
+        ...mockWorkItemTypes[0],
+        isServiceDesk: true,
+        isConfigurable: false,
+      };
+
+      const queryHandler = jest.fn().mockResolvedValue({
+        data: {
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            workItemTypes: {
+              nodes: [serviceDeskType],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'Namespace',
+          },
+        },
+      });
+
+      createWrapper({ queryHandler });
+      await waitForPromises();
+
+      const tooltipText = findLockIconTooltip(serviceDeskType.id);
+      expect(tooltipText).toContain('Usage is controlled by the Service Desk feature.');
+    });
+
+    it('includes group limitation message when isGroupWorkItemType is true', async () => {
+      const groupType = {
+        ...mockWorkItemTypes[0],
+        isGroupWorkItemType: true,
+        isConfigurable: false,
+      };
+
+      const queryHandler = jest.fn().mockResolvedValue({
+        data: {
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            workItemTypes: {
+              nodes: [groupType],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'Namespace',
+          },
+        },
+      });
+
+      createWrapper({ queryHandler });
+      await waitForPromises();
+
+      const tooltipText = findLockIconTooltip(groupType.id);
+      expect(tooltipText).toContain('Usage is limited to groups.');
+    });
+
+    it('does not render lock icon for configurable types', async () => {
+      const nonConfigurableType = {
+        ...mockWorkItemTypes[0],
+        isConfigurable: true,
+      };
+
+      const queryHandler = jest.fn().mockResolvedValue({
+        data: {
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            workItemTypes: {
+              nodes: [nonConfigurableType],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'Namespace',
+          },
+        },
+      });
+
+      createWrapper({ queryHandler });
+      await waitForPromises();
+
+      const lockIcon = findLockedIconByRow(nonConfigurableType.id);
+      expect(lockIcon.exists()).toBe(false);
     });
   });
 });

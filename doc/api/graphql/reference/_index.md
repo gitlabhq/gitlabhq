@@ -264,6 +264,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryaicatalogconfigureditemsconfigurableforprojectid"></a>`configurableForProjectId` | [`ProjectID`](#projectid) | Project ID to filter AI Catalog item consumers. When provided with group_id, returns only consumers whose associated items are configurable within the project (i.e., group-enabled items that are public or owned by the project). Excludes consumers for items that are private to other projects. |
 | <a id="queryaicatalogconfigureditemsfoundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Filter by foundational flow reference. |
 | <a id="queryaicatalogconfigureditemsgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
 | <a id="queryaicatalogconfigureditemsincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |

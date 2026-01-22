@@ -1,0 +1,5 @@
+---
+name: create_feature_flag_user_list
+description: Grants the ability to create feature flag user lists
+boundaries:
+  - project

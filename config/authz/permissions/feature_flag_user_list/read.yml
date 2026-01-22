@@ -1,0 +1,5 @@
+---
+name: read_feature_flag_user_list
+description: Grants the ability to read feature flag user lists
+boundaries:
+  - project

@@ -329,7 +329,7 @@ export const issueConfidentialityResponse = (confidential = false) => ({
 
 export const issuableDueDateResponse = (dueDate = null) => ({
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       issuable: {
@@ -355,7 +355,7 @@ export const issueDueDateSubscriptionResponse = () => ({
 
 export const issuableStartDateResponse = (startDate = null) => ({
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Group',
       issuable: {
@@ -413,7 +413,7 @@ export const issueReferenceResponse = (reference) => ({
 
 export const issueSubscriptionsResponse = (subscribed = false, emailsDisabled = false) => ({
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       issuable: {
@@ -441,7 +441,7 @@ export const mergeRequestSubscriptionMutationResponse = {
 
 export const issuableQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '1',
       issuable: {
@@ -483,7 +483,7 @@ export const issuableQueryResponse = {
 
 export const issuableQueryWithPlaceholderResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '1',
       issuable: {
@@ -504,41 +504,6 @@ export const issuableQueryWithPlaceholderResponse = {
             },
           ],
         },
-      },
-    },
-  },
-};
-
-export const searchQueryResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: '1',
-      users: {
-        nodes: [
-          {
-            user: {
-              id: '1',
-              avatarUrl: '/avatar',
-              name: 'root',
-              username: 'root',
-              webUrl: 'root',
-              webPath: '/root',
-              status: null,
-            },
-          },
-          {
-            user: {
-              id: '2',
-              avatarUrl: '/avatar2',
-              name: 'rookie',
-              username: 'rookie',
-              webUrl: 'rookie',
-              webPath: '/rookie',
-              status: null,
-            },
-          },
-        ],
       },
     },
   },
@@ -638,59 +603,6 @@ export const subscriptionResponse = {
             webPath: '/root',
             status: null,
             compositeIdentityEnforced: false,
-          },
-        ],
-      },
-    },
-  },
-};
-
-export const searchResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: '1',
-      users: {
-        nodes: [
-          {
-            id: 'gid://gitlab/User/1',
-            user: mockUser1,
-          },
-          {
-            id: 'gid://gitlab/User/4',
-            user: mockUser2,
-          },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: null,
-          startCursor: null,
-        },
-      },
-    },
-  },
-};
-
-export const searchResponseOnMR = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: '1',
-      users: {
-        nodes: [
-          {
-            id: 'gid://gitlab/User/1',
-            user: mockUser1,
-            mergeRequestInteraction: {
-              canMerge: true,
-            },
-          },
-          {
-            id: 'gid://gitlab/User/4',
-            user: mockUser2,
-            mergeRequestInteraction: {
-              canMerge: false,
-            },
           },
         ],
       },
@@ -923,7 +835,7 @@ export const participantsQueryResponse = {
 
 export const mrAssigneesQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       id: '1',
       issuable: {
@@ -1014,7 +926,7 @@ export const mockGroupMilestonesResponse = {
 
 export const noCurrentMilestoneResponse = {
   data: {
-    workspace: {
+    namespace: {
       issuable: { id: mockIssueId, attribute: null, __typename: 'Issue' },
       __typename: 'Project',
     },
@@ -1044,7 +956,7 @@ export const mockMilestoneMutationResponse = {
 
 export const emptyProjectMilestonesResponse = {
   data: {
-    workspace: {
+    namespace: {
       attributes: {
         nodes: [],
       },
@@ -1056,7 +968,7 @@ export const emptyProjectMilestonesResponse = {
 
 export const issuableTimeTrackingResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Project',
       issuable: {
         __typename: 'Issue',
@@ -1073,7 +985,7 @@ export const issuableTimeTrackingResponse = {
 
 export const todosResponse = {
   data: {
-    workspace: {
+    namespace: {
       __typename: 'Group',
       id: '1',
       issuable: {
@@ -1093,7 +1005,7 @@ export const todosResponse = {
 
 export const noMergeRequestTodosResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       issuable: {
@@ -1109,7 +1021,7 @@ export const noMergeRequestTodosResponse = {
 
 export const noTodosResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Group',
       issuable: {

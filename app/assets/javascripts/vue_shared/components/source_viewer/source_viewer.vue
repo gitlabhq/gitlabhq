@@ -168,6 +168,8 @@ export default {
           error.graphQLErrors?.[0]?.message || this.$options.i18n.blameErrorMessage;
         createAlert({
           message: errorMessage,
+          parent: this.$refs.fileContent?.parentElement,
+          dismissible: false,
           captureError: true,
           error,
         });
@@ -182,34 +184,37 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex">
-    <blame v-if="showBlame" :blame-info="blameInfo" :is-blame-loading="isBlameLoading" />
+  <div>
+    <div class="flash-container gl-mb-3"></div>
+    <div ref="fileContent" class="gl-flex">
+      <blame v-if="showBlame" :blame-info="blameInfo" :is-blame-loading="isBlameLoading" />
 
-    <div
-      class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
-      data-type="simple"
-      :data-path="blob.path"
-      data-testid="blob-viewer-file-content"
-    >
-      <codeowners-validation
-        v-if="isCodeownersFile"
-        class="gl-text-default"
-        :current-ref="currentRef"
-        :project-path="projectPath"
-        :file-path="blob.path"
-      />
-      <chunk
-        v-for="(chunk, index) in chunks"
-        :key="index"
-        :is-highlighted="Boolean(chunk.isHighlighted)"
-        :raw-content="chunk.rawContent"
-        :highlighted-content="chunk.highlightedContent"
-        :total-lines="chunk.totalLines"
-        :starting-from="chunk.startingFrom"
-        :blame-path="blob.blamePath"
-        :blob-path="blob.path"
-        @appear="() => handleAppear(index)"
-      />
+      <div
+        class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
+        data-type="simple"
+        :data-path="blob.path"
+        data-testid="blob-viewer-file-content"
+      >
+        <codeowners-validation
+          v-if="isCodeownersFile"
+          class="gl-text-default"
+          :current-ref="currentRef"
+          :project-path="projectPath"
+          :file-path="blob.path"
+        />
+        <chunk
+          v-for="(chunk, index) in chunks"
+          :key="index"
+          :is-highlighted="Boolean(chunk.isHighlighted)"
+          :raw-content="chunk.rawContent"
+          :highlighted-content="chunk.highlightedContent"
+          :total-lines="chunk.totalLines"
+          :starting-from="chunk.startingFrom"
+          :blame-path="blob.blamePath"
+          :blob-path="blob.path"
+          @appear="() => handleAppear(index)"
+        />
+      </div>
     </div>
   </div>
 </template>

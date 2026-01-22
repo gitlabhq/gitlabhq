@@ -116,7 +116,7 @@ export const workspaceLabelsQueryEmptyResponse = {
 
 export const issuableLabelsQueryResponse = {
   data: {
-    workspace: {
+    namespace: {
       id: 'workspace-1',
       issuable: {
         __typename: 'Issue',

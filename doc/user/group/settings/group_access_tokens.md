@@ -130,7 +130,7 @@ If you are an administrator, you can create group access tokens in the Rails con
 
    1. Use the group access token in the `PRIVATE-TOKEN` header with GitLab REST APIs. For example:
 
-      - [Create an epic](../../../api/epics.md#new-epic) in the group.
+      - [Create an epic](../../../api/epics.md#create-an-epic) in the group.
       - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline) in one of the group's projects.
       - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
 

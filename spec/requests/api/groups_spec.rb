@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Groups, feature_category: :groups_and_projects do
+RSpec.describe API::Groups, :with_current_organization, feature_category: :groups_and_projects do
   include GroupAPIHelpers
   include UploadHelpers
   include WorkhorseHelpers

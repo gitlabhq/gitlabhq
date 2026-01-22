@@ -1,0 +1,5 @@
+---
+name: update_feature_flag
+description: Grants the ability to update feature flags
+boundaries:
+  - project

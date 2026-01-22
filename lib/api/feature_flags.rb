@@ -38,6 +38,7 @@ module API
             values: %w[enabled disabled]
           use :pagination
         end
+        route_setting :authorization, permissions: :read_feature_flag, boundary_type: :project
         get do
           feature_flags = ::FeatureFlagsFinder
             .new(user_project, current_user, declared_params(include_missing: false))
@@ -70,6 +71,7 @@ module API
             end
           end
         end
+        route_setting :authorization, permissions: :create_feature_flag, boundary_type: :project
         post do
           authorize_create_feature_flag!
 
@@ -106,6 +108,7 @@ module API
           ]
           tags feature_flags_tags
         end
+        route_setting :authorization, permissions: :read_feature_flag, boundary_type: :project
         get do
           authorize_read_feature_flag!
           exclude_legacy_flags_check!
@@ -141,6 +144,7 @@ module API
             end
           end
         end
+        route_setting :authorization, permissions: :update_feature_flag, boundary_type: :project
         put do
           authorize_update_feature_flag!
           exclude_legacy_flags_check!
@@ -174,6 +178,7 @@ module API
           ]
           tags feature_flags_tags
         end
+        route_setting :authorization, permissions: :delete_feature_flag, boundary_type: :project
         delete do
           authorize_destroy_feature_flag!
 

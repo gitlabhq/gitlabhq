@@ -20517,7 +20517,7 @@ msgstr ""
 msgid "Copy %{protocol} clone URL"
 msgstr ""
 
-msgid "Copy Chat Session ID (%{id})"
+msgid "Copy Chat Session ID: %{id}"
 msgstr ""
 
 msgid "Copy ID"
@@ -78774,6 +78774,9 @@ msgstr ""
 msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
+msgid "WorkItem|This is a system type that cannot be renamed, disabled, or deleted."
+msgstr ""
+
 msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr ""
 
@@ -78853,6 +78856,12 @@ msgid "WorkItem|Update work items"
 msgstr ""
 
 msgid "WorkItem|Usage"
+msgstr ""
+
+msgid "WorkItem|Usage is controlled by the Service Desk feature."
+msgstr ""
+
+msgid "WorkItem|Usage is limited to groups."
 msgstr ""
 
 msgid "WorkItem|Usage:"

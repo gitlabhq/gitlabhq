@@ -595,10 +595,6 @@ module Gitlab
         install_rename_triggers(table, old, new)
       end
 
-      def convert_to_type_column(column, from_type, to_type)
-        "#{column}_convert_#{from_type}_to_#{to_type}"
-      end
-
       def convert_to_bigint_column(column)
         "#{column}_convert_to_bigint"
       end
@@ -860,36 +856,8 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      # Fetches indexes on a column by name for postgres.
-      #
-      # This will include indexes using an expression on the column, for example:
-      # `CREATE INDEX CONCURRENTLY index_name ON table (LOWER(column));`
-      #
-      # We can remove this when upgrading to Rails 5 with an updated `index_exists?`:
-      # - https://github.com/rails/rails/commit/edc2b7718725016e988089b5fb6d6fb9d6e16882
-      #
-      # Or this can be removed when we no longer support postgres < 9.5, so we
-      # can use `CREATE INDEX IF NOT EXISTS`.
       def index_exists_by_name?(table, index)
-        # We can't fall back to the normal `index_exists?` method because that
-        # does not find indexes without passing a column name.
-        if indexes(table).map(&:name).include?(index.to_s)
-          true
-        else
-          postgres_exists_by_name?(table, index)
-        end
-      end
-
-      def postgres_exists_by_name?(table, name)
-        index_sql = <<~SQL
-          SELECT COUNT(*)
-          FROM pg_catalog.pg_indexes
-          WHERE schemaname = #{connection.quote(current_schema)}
-            AND tablename = #{connection.quote(table)}
-            AND indexname = #{connection.quote(name)}
-        SQL
-
-        connection.select_value(index_sql).to_i > 0
+        index_name_exists?(table, index)
       end
 
       def create_or_update_plan_limit(limit_name, plan_name, limit_value)
@@ -978,26 +946,6 @@ into similar problems in the future (e.g. when new tables are created).
 
       private
 
-      def cascade_statement(cascade)
-        cascade ? 'CASCADE' : ''
-      end
-
-      def validate_check_constraint_name!(constraint_name)
-        if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH
-          raise "The maximum allowed constraint name is #{MAX_IDENTIFIER_NAME_LENGTH} characters"
-        end
-      end
-
-      # mappings => {} where keys are column names and values are hashes with the following keys:
-      # from_type - from which type we're migrating
-      # to_type - to which type we're migrating
-      # default_value - custom default value, if not provided will be taken from neutral_values_for_type
-      def mapping_has_required_columns?(mapping)
-        %i[from_type to_type].map do |required_key|
-          mapping.has_key?(required_key)
-        end.all?
-      end
-
       def column_is_nullable?(table, column)
         table_name, schema_name = table.to_s.split('.').reverse
         schema_name ||= current_schema
@@ -1012,26 +960,6 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
 
         connection.select_value(check_sql) == 'YES'
-      end
-
-      def missing_schema_object_message(table, type, name)
-        <<~MESSAGE
-          Could not find #{type} "#{name}" on table "#{table}" which was referenced during the migration.
-          This issue could be caused by the database schema straying from the expected state.
-
-          To resolve this issue, please verify:
-            1. all previous migrations have completed
-            2. the database objects used in this migration match the Rails definition in schema.rb or structure.sql
-
-        MESSAGE
-      end
-
-      def tables_match?(target_table, foreign_key_table)
-        target_table.blank? || foreign_key_table == target_table
-      end
-
-      def options_match?(foreign_key_options, options)
-        options.all? { |k, v| foreign_key_options[k].to_s == v.to_s }
       end
 
       def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil, limit: nil)

@@ -1,7 +1,7 @@
 #import "./milestone.fragment.graphql"
 
 query mergeRequestMilestone($fullPath: ID!, $iid: String!) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: mergeRequest(iid: $iid) {
       id

@@ -3,6 +3,9 @@
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div>
   <div
+    class="flash-container gl-mb-3"
+  />
+  <div
     class="code code-syntax-highlight-theme file-content gl-flex js-syntax-highlight"
   >
     <div

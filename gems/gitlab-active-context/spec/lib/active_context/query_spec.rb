@@ -35,6 +35,14 @@ RSpec.describe ActiveContext::Query do
       end
     end
 
+    describe '.missing' do
+      it 'creates a missing query with a field name' do
+        query = described_class.missing('embedding')
+        expect(query.type).to eq(:missing)
+        expect(query.value).to eq('embedding')
+      end
+    end
+
     describe '.or' do
       it 'creates an OR query with multiple queries' do
         query1 = described_class.filter(project_id: 1)
@@ -127,6 +135,27 @@ RSpec.describe ActiveContext::Query do
       it 'raises an error for non-integer limit' do
         base_query = described_class.filter(project_id: 1)
         expect { base_query.limit('5') }.to raise_error(ArgumentError, /Limit must be a number/)
+      end
+    end
+
+    describe '#missing' do
+      it 'creates a missing query chained with the base query as a child' do
+        base_query = described_class.filter(project_id: 1)
+        missing_query = base_query.missing('embedding')
+
+        expect(missing_query.type).to eq(:missing)
+        expect(missing_query.value).to eq('embedding')
+        expect(missing_query.children).to contain_exactly(base_query)
+      end
+
+      it 'chains multiple missing queries' do
+        base_query = described_class.filter(project_id: 1)
+        missing_query = base_query.missing('embedding_v1').missing('embedding_v2')
+
+        expect(missing_query.type).to eq(:missing)
+        expect(missing_query.value).to eq('embedding_v2')
+        expect(missing_query.children.first.type).to eq(:missing)
+        expect(missing_query.children.first.value).to eq('embedding_v1')
       end
     end
 
@@ -250,6 +279,23 @@ RSpec.describe ActiveContext::Query do
 
         ast = knn_query.inspect_ast
         expect(ast).to eq('knn(target: similarity, vector: [0.1, 0.2, 0.3], k: 5)')
+      end
+
+      it 'generates a readable AST representation for a missing query' do
+        query = described_class.missing('embedding')
+        ast = query.inspect_ast
+        expect(ast).to eq('missing(embedding)')
+      end
+
+      it 'generates a readable AST representation for multiple missing queries with OR' do
+        query = described_class.or(
+          described_class.missing('embedding_v1'),
+          described_class.missing('embedding_v2')
+        )
+        ast = query.inspect_ast
+        expect(ast).to include('or')
+        expect(ast).to include('missing(embedding_v1)')
+        expect(ast).to include('missing(embedding_v2)')
       end
     end
 

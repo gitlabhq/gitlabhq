@@ -48,7 +48,7 @@
 
 module ActiveContext
   class Query
-    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or].freeze
+    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or, :missing].freeze
     SPACES_PER_INDENT = 2
 
     class << self
@@ -79,6 +79,10 @@ module ActiveContext
         raise ArgumentError, "And cannot be empty" if queries.empty?
 
         new(type: :and, children: queries)
+      end
+
+      def missing(field)
+        new(type: :missing, value: field)
       end
 
       def knn(k:, target: nil, vector: nil, content: nil)
@@ -146,11 +150,17 @@ module ActiveContext
       )
     end
 
+    def missing(field)
+      self.class.new(type: :missing, value: field, children: [self])
+    end
+
     def inspect_ast(indent = 0)
       indentation = " " * SPACES_PER_INDENT * indent
       details = case type
                 when :filter, :prefix
                   "#{type}(#{value.map { |k, v| "#{k}: #{v}" }.join(', ')})"
+                when :missing
+                  "missing(#{value})"
                 when :knn
                   knn_details = []
                   knn_details << "target: #{value[:target]}" if value[:target]

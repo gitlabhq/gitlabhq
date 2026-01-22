@@ -15,10 +15,6 @@ module ActiveContext
         end
       end
 
-      def initialize
-        @operations = {}
-      end
-
       def migrate!
         raise NotImplementedError, "#{self.class.name} must implement #migrate!"
       end
@@ -27,49 +23,22 @@ module ActiveContext
         false
       end
 
+      def completed?
+        raise NotImplementedError, "#{self.class.name} must implement #completed?"
+      end
+
       def create_collection(name, **options, &block)
-        operation = initialize_operation("create_#{name}")
-
-        unless operation.completed?
-          ActiveContext.adapter.executor.create_collection(name, **options, &block)
-          operation.complete!
-        end
-
-        operation.completed?
+        ActiveContext.adapter.executor.create_collection(name, **options, &block)
       end
 
       def update_collection_metadata(collection:, metadata:)
         raise MigrationError, 'Metadata should be a hash' unless metadata.is_a?(::Hash)
 
-        operation = initialize_operation("update_collection_metadata_#{metadata.to_json}")
-
-        unless operation.completed?
-          collection.collection_record.update_metadata!(metadata.merge(collection_class: collection.name))
-          operation.complete!
-        end
-
-        operation.completed?
+        collection.collection_record.update_metadata!(metadata.merge(collection_class: collection.name))
       end
 
       def drop_collection(name)
-        operation = initialize_operation("drop_#{name}")
-
-        unless operation.completed?
-          ActiveContext.adapter.executor.drop_collection(name)
-          operation.complete!
-        end
-
-        operation.completed?
-      end
-
-      def all_operations_completed?
-        @operations.values.all?(&:completed?)
-      end
-
-      private
-
-      def initialize_operation(key)
-        @operations[key] ||= OperationResult.new(key)
+        ActiveContext.adapter.executor.drop_collection(name)
       end
     end
 

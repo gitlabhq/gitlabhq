@@ -1,0 +1,5 @@
+---
+name: create_freeze_period
+description: Grants the ability to create freeze periods
+boundaries:
+  - project

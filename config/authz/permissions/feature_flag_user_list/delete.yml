@@ -1,0 +1,5 @@
+---
+name: delete_feature_flag_user_list
+description: Grants the ability to delete feature flag user lists
+boundaries:
+  - project

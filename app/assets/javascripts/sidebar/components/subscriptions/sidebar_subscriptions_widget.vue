@@ -81,16 +81,16 @@ export default {
         return !this.iid;
       },
       update(data) {
-        return data.workspace?.issuable?.subscribed || false;
+        return data.namespace?.issuable?.subscribed || false;
       },
       result({ data }) {
         if (!data) {
           return;
         }
         this.emailsDisabled = this.parentIsGroup
-          ? data.workspace?.emailsDisabled
-          : data.workspace?.issuable?.emailsDisabled;
-        this.$emit('subscribedUpdated', data.workspace?.issuable?.subscribed);
+          ? data.namespace?.emailsDisabled
+          : data.namespace?.issuable?.emailsDisabled;
+        this.$emit('subscribedUpdated', data.namespace?.issuable?.subscribed);
       },
       error() {
         createAlert({

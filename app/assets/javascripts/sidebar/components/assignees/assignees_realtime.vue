@@ -35,7 +35,7 @@ export default normalizeRender({
         return this.queryVariables;
       },
       update(data) {
-        return data.workspace?.issuable;
+        return data.namespace?.issuable;
       },
       subscribeToMore: {
         document() {

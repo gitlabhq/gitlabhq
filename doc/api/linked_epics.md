@@ -31,10 +31,9 @@ This change is a breaking change.
 
 If the Related Epics feature is not available in your GitLab plan, a `403` status code is returned.
 
-## List related epic links from a group
+## List all related epic links for a group
 
-Get a list of a given group's related epic links within group and sub-groups, filtered according to the user authorizations.
-The user needs to have access to the `source_epic` and `target_epic` to access the related epic link.
+Lists all related epic links for a specified group and its subgroups. The user needs to have access to both the `source_epic` and `target_epic` to view the related epic link.
 
 ```plaintext
 GET /groups/:id/related_epic_links
@@ -155,9 +154,9 @@ Example response:
 ]
 ```
 
-## List linked epics from an epic
+## List all linked epics for an epic
 
-Get a list of a given epic's linked epics filtered according to the user authorizations.
+Lists all linked epics for a specified epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/related_epics
@@ -241,7 +240,7 @@ Example response:
 
 {{< /history >}}
 
-Create a two-way relation between two epics. The user must have at least the Guest role for both groups.
+Creates a two-way relation between two epics. The user must have at least the Guest role for both groups.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/related_epics
@@ -368,7 +367,7 @@ Example response:
 
 {{< /history >}}
 
-Delete a two-way relation between two epics. The user must have at least the Guest role for both groups.
+Deletes a two-way relation between two specified epics. The user must have at least the Guest role for both groups.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id

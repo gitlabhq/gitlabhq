@@ -5,13 +5,15 @@ import {
   GlLoadingIcon,
   GlAlert,
   GlDisclosureDropdownItem,
+  GlBadge,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import CreateEditWorkItemTypeForm from '~/work_items/components/create_edit_work_item_type_form.vue';
-import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import organisationWorkItemTypesQuery from '~/work_items/graphql/organisation_work_item_types.query.graphql';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 import { s__ } from '~/locale';
 
 export default {
@@ -25,6 +27,10 @@ export default {
     GlAlert,
     CreateEditWorkItemTypeForm,
     GlDisclosureDropdownItem,
+    GlBadge,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     fullPath: {
@@ -48,7 +54,7 @@ export default {
   apollo: {
     workItemTypes: {
       query() {
-        return this.fullPath ? namespaceWorkItemTypesQuery : organisationWorkItemTypesQuery;
+        return this.fullPath ? workItemTypesConfigurationQuery : organisationWorkItemTypesQuery;
       },
       variables() {
         if (!this.fullPath) {
@@ -95,6 +101,26 @@ export default {
       this.createEditWorkItemTypeFormVisible = false;
       this.selectedWorkItemType = null;
     },
+    getTooltipText(item) {
+      const baseMessage = s__(
+        'WorkItem|This is a system type that cannot be renamed, disabled, or deleted.',
+      );
+
+      let additionalText = '';
+
+      if (item.isServiceDesk) {
+        additionalText = s__('WorkItem|Usage is controlled by the Service Desk feature.');
+      } else if (item.isGroupWorkItemType) {
+        additionalText = s__('WorkItem|Usage is limited to groups.');
+      }
+
+      return additionalText ? `${baseMessage} ${additionalText}` : baseMessage;
+    },
+    isLocked(item) {
+      // we cant use !item.isConfigurable because it can also be undefined/null in which case we dont want
+      // to show locked icon
+      return item.isConfigurable === false;
+    },
   },
 };
 </script>
@@ -131,13 +157,27 @@ export default {
           class="gl-border-b gl-flex gl-justify-between gl-gap-4 gl-border-b-subtle gl-py-4 last:gl-border-b-0"
           :data-testid="`work-item-type-row-${item.id}`"
         >
-          <work-item-type-icon
-            :work-item-type="item.name"
-            class="gl-font-semibold gl-text-default"
-            icon-class="gl-flex-shrink-0 gl-mr-2"
-            show-text
-            icon-variant="subtle"
-          />
+          <!-- Type Column -->
+          <div class="gl-flex gl-items-center gl-gap-2">
+            <work-item-type-icon
+              :work-item-type="item.name"
+              class="gl-font-semibold gl-text-default"
+              icon-class="gl-flex-shrink-0 gl-mr-2"
+              show-text
+              icon-variant="subtle"
+            />
+            <gl-badge
+              v-if="isLocked(item)"
+              v-gl-tooltip
+              icon="lock"
+              :data-testid="`locked-icon-${item.id}`"
+              :title="getTooltipText(item)"
+              :aria-label="getTooltipText(item)"
+              class="gl-shrink-0"
+            />
+          </div>
+
+          <!-- Options Column -->
 
           <gl-disclosure-dropdown
             :toggle-id="`work-item-type-actions-${item.id}`"

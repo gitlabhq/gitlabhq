@@ -1,5 +1,5 @@
 query issueSubscribed($fullPath: ID!, $iid: String) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     issuable: issue(iid: $iid) {
       id

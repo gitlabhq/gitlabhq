@@ -1,19 +1,13 @@
 <script>
 import { computed } from 'vue';
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
-import {
-  sidebarState,
-  JS_TOGGLE_EXPAND_CLASS,
-  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
-  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
-  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
-} from '../constants';
+import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '../constants';
 import {
   isCollapsed,
   toggleSuperSidebarCollapsed,
@@ -24,18 +18,13 @@ import SidebarPortalTarget from './sidebar_portal_target.vue';
 import IconOnlyToggle from './icon_only_toggle.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
-import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
-import SidebarHoverPeekBehavior from './sidebar_hover_peek_behavior.vue';
 import ScrollScrim from './scroll_scrim.vue';
 
 export default {
   components: {
-    GlButton,
     IconOnlyToggle,
     HelpCenter,
     SidebarMenu,
-    SidebarPeekBehavior,
-    SidebarHoverPeekBehavior,
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
@@ -46,11 +35,9 @@ export default {
   },
   mixins: [Tracking.mixin()],
   i18n: {
-    skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
-    adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialWidget', 'projectStudioEnabled'],
+  inject: ['showTrialWidget'],
   provide() {
     return {
       isIconOnly: computed(() => this.isIconOnly),
@@ -90,11 +77,8 @@ export default {
         'super-sidebar-toggled-manually': this.wasToggledManually,
       };
     },
-    isAdmin() {
-      return this.sidebarData?.admin_mode?.user_is_admin;
-    },
     canIconOnly() {
-      return this.projectStudioEnabled && !this.sidebarState.isMobile;
+      return !this.sidebarState.isMobile;
     },
     isIconOnly() {
       return this.canIconOnly && this.sidebarState.isIconOnly;
@@ -179,39 +163,10 @@ export default {
         document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`)?.focus();
       }
     },
-    onPeekChange(state) {
-      if (state === STATE_CLOSED) {
-        this.sidebarState.isPeek = false;
-        this.sidebarState.isCollapsed = true;
-        this.showPeekHint = false;
-      } else if (state === STATE_WILL_OPEN) {
-        this.sidebarState.hasPeeked = true;
-        this.sidebarState.isPeek = false;
-        this.sidebarState.isCollapsed = true;
-        this.showPeekHint = true;
-      } else {
-        this.sidebarState.isPeek = true;
-        this.sidebarState.isCollapsed = false;
-        this.showPeekHint = false;
-      }
-    },
-    onHoverPeekChange(state) {
-      if (state === STATE_OPEN) {
-        this.sidebarState.hasPeeked = true;
-        this.sidebarState.isHoverPeek = true;
-        this.sidebarState.isCollapsed = false;
-      } else if (state === STATE_CLOSED) {
-        this.sidebarState.isHoverPeek = false;
-        this.sidebarState.isCollapsed = true;
-      }
-    },
     firstFocusableElement() {
       return this.$refs.sidebarMenu.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.isAdmin && !this.projectStudioEnabled) {
-        return this.$refs.adminAreaLink.$el;
-      }
       return this.$refs.helpCenter.$el.querySelector('button');
     },
     focusTrap(event) {
@@ -239,17 +194,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="menuItems.length || !projectStudioEnabled" class="super-sidebar-wrapper">
+  <div v-if="menuItems.length" class="super-sidebar-wrapper">
     <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
-    <gl-button
-      v-if="!projectStudioEnabled && sidebarData.is_logged_in"
-      class="super-sidebar-skip-to gl-sr-only !gl-fixed gl-left-0 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
-      data-testid="super-sidebar-skip-to"
-      href="#content-body"
-      variant="confirm"
-    >
-      {{ $options.i18n.skipToMainContent }}
-    </gl-button>
     <nav
       id="super-sidebar"
       aria-labelledby="super-sidebar-heading"
@@ -300,18 +246,6 @@ export default {
         <div v-else class="gl-p-2">
           <div class="gl-flex gl-flex-col gl-justify-end">
             <help-center ref="helpCenter" :sidebar-data="sidebarData" class="gl-mr-2" />
-
-            <gl-button
-              v-if="isAdmin && !projectStudioEnabled"
-              ref="adminAreaLink"
-              class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
-              data-testid="sidebar-admin-link"
-              :href="sidebarData.admin_url"
-              icon="admin"
-              size="small"
-            >
-              {{ $options.i18n.adminArea }}
-            </gl-button>
           </div>
         </div>
         <icon-only-toggle v-if="canIconOnly" class="gl-hidden xl:gl-flex" @toggle="toggleSidebar" />
@@ -326,20 +260,5 @@ export default {
     >
       {{ shortcutLink.title }}
     </a>
-
-    <!--
-      Only mount peek behavior components if the sidebar is peekable, to avoid
-      setting up event listeners unnecessarily.
-    -->
-    <sidebar-peek-behavior
-      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isHoverPeek"
-      :is-mouse-over-sidebar="isMouseover"
-      @change="onPeekChange"
-    />
-    <sidebar-hover-peek-behavior
-      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isPeek"
-      :is-mouse-over-sidebar="isMouseover"
-      @change="onHoverPeekChange"
-    />
   </div>
 </template>

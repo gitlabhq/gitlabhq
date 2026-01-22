@@ -143,8 +143,7 @@ export default {
 
         return variables;
       },
-      update: (data) =>
-        (data?.workspace?.attributes?.nodes || data?.namespace?.attributes?.nodes) ?? [],
+      update: (data) => data?.namespace?.attributes?.nodes ?? [],
       error(error) {
         createAlert({ message: this.i18n.listFetchError, captureError: true, error });
       },

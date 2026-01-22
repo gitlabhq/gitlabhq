@@ -26,7 +26,12 @@ module Ci
       before_transition any => :current do |partition|
         next false unless partition.all_partitions_exist?
 
-        Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
+        partition.current_from ||= Time.current
+
+        Ci::Partition.with_status(:current).update_all(
+          current_until: partition.current_from,
+          status: Ci::Partition.statuses[:active]
+        )
       end
     end
 

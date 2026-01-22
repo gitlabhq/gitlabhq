@@ -1,0 +1,5 @@
+---
+name: read_freeze_period
+description: Grants the ability to read freeze periods
+boundaries:
+  - project

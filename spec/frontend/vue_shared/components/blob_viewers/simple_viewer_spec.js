@@ -163,6 +163,8 @@ describe('Blob Simple Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Unable to load blame information. Please try again.',
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: expect.any(Error),
         });
@@ -184,6 +186,8 @@ describe('Blob Simple Viewer component', () => {
 
         expect(createAlert).toHaveBeenCalledWith({
           message: backendErrorMessage,
+          parent: expect.any(HTMLElement),
+          dismissible: false,
           captureError: true,
           error: graphQLError,
         });

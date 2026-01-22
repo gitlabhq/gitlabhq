@@ -6,10 +6,6 @@ module ActiveContext
       class QueryResult
         include ActiveContext::Databases::Concerns::QueryResult
 
-        def count
-          result['hits']['total']['value']
-        end
-
         def each
           return enum_for(:each) unless block_given?
 

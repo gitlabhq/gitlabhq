@@ -49,9 +49,9 @@ fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `star
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`
 - `due_date_from_milestones` has been deprecated in favor of `due_date_from_inherited_source`
 
-## List epics for a group
+## List all group epics
 
-Gets all epics of the requested group and its subgroups.
+Lists all epics for a specified group and its subgroups.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
@@ -206,9 +206,9 @@ Example response:
 ]
 ```
 
-## Single epic
+## Retrieve an epic
 
-Gets a single epic
+Retrieves a specified epic for a group.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid
@@ -283,9 +283,9 @@ Example response:
 }
 ```
 
-## New epic
+## Create an epic
 
-Creates a new epic.
+Creates an epic for a specified group.
 
 {{< alert type="note" >}}
 
@@ -378,9 +378,9 @@ Example response:
 }
 ```
 
-## Update epic
+## Update an epic
 
-Updates an epic.
+Updates a specified epic for a group.
 
 ```plaintext
 PUT /groups/:id/epics/:epic_iid
@@ -463,7 +463,7 @@ Example response:
 }
 ```
 
-## Delete epic
+## Delete an epic
 
 {{< history >}}
 
@@ -471,7 +471,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes an epic
+Deletes a specified epic from a group.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid
@@ -488,11 +488,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/5"
 ```
 
-## Create a to-do item
+## Create a to-do item for an epic
 
-Manually creates a to-do item for the current user on an epic. If
-there already exists a to-do item for the user on that epic, status code `304` is
-returned.
+Creates a to-do item for the current user on a specified epic. If a to-do item already exists for the user on that epic, status code 304 is returned.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/todo

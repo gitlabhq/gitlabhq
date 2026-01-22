@@ -195,9 +195,7 @@ create_design
 create_environment_terminal
 create_epic_tree_relation
 create_external_issue_link
-create_feature_flag
 create_feature_flags_client
-create_freeze_period
 create_group
 create_group_link
 create_group_stage
@@ -494,9 +492,7 @@ read_event
 read_external_emails
 read_external_status_check
 read_external_status_check_response
-read_feature_flag
 read_finding_token_status
-read_freeze_period
 read_geo_node
 read_geo_registry
 read_google_cloud_artifact_registry
@@ -738,9 +734,7 @@ update_deploy_token
 update_design
 update_duo_workflow
 update_escalation_status
-update_feature_flag
 update_feature_flags_client
-update_freeze_period
 update_git_access_protocol
 update_group_deploy_key
 update_group_deploy_key_for_group

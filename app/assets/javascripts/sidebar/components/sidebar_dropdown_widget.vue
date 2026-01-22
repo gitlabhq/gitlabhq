@@ -107,7 +107,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable || data.namespace?.issuable || {};
+        return data.namespace?.issuable || {};
       },
       skip() {
         return !this.iid;

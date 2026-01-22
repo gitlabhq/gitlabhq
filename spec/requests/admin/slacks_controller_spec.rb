@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::SlacksController, :enable_admin_mode, feature_category: :integrations do
+RSpec.describe Admin::SlacksController, :enable_admin_mode, :with_current_organization, feature_category: :integrations do
   let_it_be(:user) { create(:admin) }
 
   before do

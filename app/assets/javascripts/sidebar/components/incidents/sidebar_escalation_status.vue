@@ -46,7 +46,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.escalationStatus;
+        return data.namespace?.issuable?.escalationStatus;
       },
       error(error) {
         const message = this.$options.i18n.fetchError;

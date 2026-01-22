@@ -52,8 +52,6 @@ RSpec.configure do |rspec|
   # controllers or services rely on organization context.
   rspec.include_context 'with current_organization setting', type: :controller
 
-  rspec.include_context 'with current_organization setting', type: :request unless ::Gitlab::Database.has_database?(:ci)
-
   # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true
   rspec.include_context 'with Organization URL helpers', with_organization_url_helpers: true

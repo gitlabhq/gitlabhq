@@ -700,6 +700,42 @@ Our current RSpec tests parallelization setup is as follows:
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
+## Code coverage
+
+We collect code coverage data from our test suites to power test selection, coverage analytics, and flaky test analysis.
+
+### Coverage types
+
+| Type | Collection method | Tests |
+|------|------------------|-------|
+| Backend | SimpleCov → LCOV | RSpec |
+| Backend E2E | Coverband | E2E specs |
+| Frontend | Istanbul | Jest |
+| Frontend E2E | Istanbul | E2E specs |
+| Workhorse | Go coverage | Go tests |
+
+### CI jobs
+
+Coverage data flows through several CI jobs:
+
+1. **Collection**: Tests run with coverage instrumentation
+   - `rspec` jobs collect backend coverage via SimpleCov
+   - `jest` jobs collect frontend coverage via Istanbul
+   - `e2e:test-on-gdk` collects E2E coverage via Coverband (backend) and Istanbul (frontend)
+   - `workhorse` jobs collect Go coverage
+
+1. **Merging**: Coverage from parallel jobs and E2E is merged
+   - `rspec:coverage` merges RSpec coverage into `coverage/lcov/gitlab.lcov`
+   - `coverage-frontend` merges Jest coverage
+   - Merge scripts combine E2E coverage with unit/integration coverage
+
+1. **Export**: Merged coverage is exported to ClickHouse
+   - `test-coverage:export-rspec-and-e2e` exports backend coverage
+   - `test-coverage:export-jest-and-e2e` exports frontend coverage
+   - `test-coverage:export-workhorse` exports Workhorse coverage
+
+For detailed documentation on coverage collection, data flow, and ClickHouse storage, see [Code coverage](code_coverage.md).
+
 ## Flaky tests
 
 ### Automatic skipping of flaky tests

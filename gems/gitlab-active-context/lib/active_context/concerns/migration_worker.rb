@@ -80,15 +80,15 @@ module ActiveContext
       def process_migration!(migration_record, migration_instance)
         log "Starting migration #{migration_record.version}"
 
-        migration_record.mark_as_started!
+        migration_record.mark_as_started! unless migration_record.in_progress?
         migration_instance.migrate!
 
-        if migration_instance.all_operations_completed?
+        if migration_instance.completed?
           log "Marking migration #{migration_record.version} as completed"
 
           migration_record.mark_as_completed!
         else
-          log "Migration #{migration_record.version} partially completed, re-enqueueing worker"
+          log "Migration #{migration_record.version} incomplete, re-enqueueing worker"
 
           re_enqueue_worker
         end
