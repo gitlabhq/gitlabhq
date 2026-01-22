@@ -9,6 +9,8 @@ import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import activeBoardItemQuery from '~/boards/graphql/client/active_board_item.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
+import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
+import { WORK_ITEM_TYPE_ENUM_ISSUE, WORK_ITEM_TYPE_ENUM_TICKET } from '~/work_items/constants';
 import { mockLabelList, mockIssue, DEFAULT_COLOR } from '../mock_data';
 
 jest.mock('~/lib/utils/url_utility');
@@ -200,6 +202,28 @@ describe('Board card', () => {
       item: {
         ...mockIssue,
         type: 'INCIDENT',
+      },
+    });
+
+    await selectCard();
+
+    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
+  });
+
+  it('should redirect to the legacy issue page on card click when item is ticket', async () => {
+    mountComponent({ item: { ...mockIssue, type: WORK_ITEM_TYPE_ENUM_TICKET } });
+
+    await selectCard();
+
+    expect(visitUrl).toHaveBeenCalledWith(mockIssue.webUrl);
+  });
+
+  it('should redirect to the legacy issue page on card click when item is service desk issue', async () => {
+    mountComponent({
+      item: {
+        ...mockIssue,
+        author: { id: '1', username: SUPPORT_BOT_USERNAME },
+        type: WORK_ITEM_TYPE_ENUM_ISSUE,
       },
     });
 

@@ -1,15 +1,23 @@
-import { GlBadge, GlButton, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { useFakeDate } from 'helpers/fake_date';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
-import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
+import {
+  STATUS_CLOSED,
+  STATUS_OPEN,
+  STATUS_REOPENED,
+  TYPE_ISSUE,
+  TYPE_TICKET,
+} from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import { TICKET_CALLOUT_DISMISSED_KEY } from '~/work_items/constants';
 import { mockIssuable, mockIssuableShowProps } from '../mock_data';
 
 describe('IssuableHeader component', () => {
@@ -19,6 +27,7 @@ describe('IssuableHeader component', () => {
   const findStatusBadge = () => wrapper.findComponent(GlBadge);
   const findToggleButton = () => wrapper.findComponent(GlButton);
   const findAuthorLink = () => wrapper.findComponent(GlLink);
+  const findPopover = () => wrapper.findComponent(GlPopover);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findIcon = (name) =>
@@ -277,6 +286,52 @@ describe('IssuableHeader component', () => {
       createComponent();
 
       expect(wrapper.text()).toContain('Header actions slot');
+    });
+  });
+
+  describe('ticket callout', () => {
+    useFakeDate(2026, 0, 14); // 2026-01-14
+
+    it('renders when ticket type && logged in && before end date', () => {
+      window.gon = { ...window.gon, current_user_id: 1 };
+      createComponent({ issuableType: TYPE_TICKET, showWorkItemTypeIcon: true });
+
+      expect(findPopover().text()).toBe(
+        'Issues created from Service Desk are now Tickets. Filter by type "Ticket" to see only these items.',
+      );
+    });
+
+    it('does not render when another type', () => {
+      window.gon = { ...window.gon, current_user_id: 1 };
+      createComponent({ issuableType: TYPE_ISSUE, showWorkItemTypeIcon: true });
+
+      expect(findPopover().exists()).toBe(false);
+    });
+
+    it('does not render when dismissal has been persisted in local storage', () => {
+      localStorage.setItem(TICKET_CALLOUT_DISMISSED_KEY, 'true');
+      window.gon = { ...window.gon, current_user_id: 1 };
+      createComponent({ issuableType: TYPE_TICKET, showWorkItemTypeIcon: true });
+
+      expect(findPopover().exists()).toBe(false);
+    });
+
+    it('does not render when not logged in', () => {
+      window.gon = { ...window.gon, current_user_id: undefined };
+      createComponent({ issuableType: TYPE_TICKET, showWorkItemTypeIcon: true });
+
+      expect(findPopover().exists()).toBe(false);
+    });
+
+    describe('when date falls after end date', () => {
+      useFakeDate(2026, 1, 19); // 2026-02-19
+
+      it('does not render', () => {
+        window.gon = { ...window.gon, current_user_id: 1 };
+        createComponent({ issuableType: TYPE_TICKET, showWorkItemTypeIcon: true });
+
+        expect(findPopover().exists()).toBe(false);
+      });
     });
   });
 });

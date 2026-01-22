@@ -244,7 +244,7 @@ export const infoBannerTitle = s__(
 );
 export const infoBannerAdminNote = s__('ServiceDesk|Your users can send emails to this address:');
 export const infoBannerUserNote = s__(
-  'ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.',
+  'ServiceDesk|Tickets created from Service Desk emails will appear here. Each comment becomes part of the email conversation.',
 );
 export const enableServiceDesk = s__('ServiceDesk|Enable Service Desk');
 export const learnMore = __('Learn more about Service Desk');

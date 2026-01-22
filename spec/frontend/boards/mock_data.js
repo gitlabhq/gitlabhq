@@ -262,6 +262,7 @@ export const rawIssue = {
   title: 'Issue 1',
   id: 'gid://gitlab/Issue/436',
   iid: '27',
+  author: { id: '1', username: 'root' },
   closedAt: null,
   dueDate: null,
   timeEstimate: 0,
@@ -318,6 +319,7 @@ export const rawIssue = {
 export const mockIssue = {
   id: 'gid://gitlab/Issue/436',
   iid: '27',
+  author: { id: '1', username: 'root' },
   title: 'Issue 1',
   closedAt: null,
   dueDate: null,
