@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Utils::Gsub, feature_category: :shared do
+RSpec.describe Gitlab::Utils::Gsub, feature_category: :continuous_integration do
   describe '#gsub_with_limit' do
     let(:regex) { /(?<scheme>ftp)/ }
 

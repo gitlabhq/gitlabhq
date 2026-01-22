@@ -14,6 +14,9 @@ class GroupsController < Groups::ApplicationController
   respond_to :html
 
   prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:merge_requests], if: -> {
+    request.format.atom?
+  }) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :authenticate_user!, only: [:new, :create]
@@ -40,7 +43,7 @@ class GroupsController < Groups::ApplicationController
 
   before_action :set_group_markdown_flags
 
-  before_action :group_projects, only: [:activity, :merge_requests]
+  before_action :group_projects, only: [:activity, :merge_requests] # rubocop:disable Rails/LexicallyScopedActionFilter -- merge_requests defined in IssuableCollectionsAction concern
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show]
@@ -150,8 +153,6 @@ class GroupsController < Groups::ApplicationController
   def edit
     @badge_api_endpoint = expose_path(api_v4_groups_badges_path(id: @group.id))
   end
-
-  def merge_requests; end
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute

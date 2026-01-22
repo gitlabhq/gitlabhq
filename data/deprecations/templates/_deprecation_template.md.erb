@@ -23,7 +23,6 @@ For advanced searching and filtering of this deprecation information, try
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
 <!-- vale off -->
-
 <!--
 DO NOT EDIT THIS PAGE DIRECTLY
 
@@ -45,38 +44,18 @@ For deprecation reviewers (Technical Writers only):
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
   https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
-
 <%-
   CANCELLED_STATUSES = ["Cancelled", "Canceled"]
   PENDING_STATUSES = ["Pending"]
-  SPECIAL_STATUSES = CANCELLED_STATUSES + PENDING_STATUSES
-  # Regex for identifying semantic version numbers (like "16.0" or "15.3")
-  # This distinguishes actual version releases from special statuses.
-  VERSION_NUMBER_PATTERN = /^\d+(\.\d+)*$/
 -%>
-<% if milestones.any? -%><div class="js-deprecation-filters"></div><%- end -%>
 <%- milestones.each do |milestone| %>
 <%-
-  # Process milestone to determine its type and set appropriate attributes
-
   # Check if this is a special status milestone (like "Pending" or "Cancelled")
   is_cancelled = CANCELLED_STATUSES.any? { |status| milestone.downcase == status.downcase }
   is_pending = PENDING_STATUSES.any? { |status| milestone.downcase == status.downcase }
   is_special_status = is_cancelled || is_pending
-
-  # Special status milestones get a data attribute that allows them to be
-  # treated differently by the filtering JavaScript on the website.
-  special_attr = is_special_status ? " data-special-status=\"true\"" : ""
-
-  # Only add the data-milestone attribute to numeric version milestones
-  # This ensures filtering works correctly by excluding special statuses
-  # from being treated as filterable versions
-  is_version_number = milestone =~ VERSION_NUMBER_PATTERN
-  data_milestone_attr = is_version_number ? " data-milestone=\"#{milestone}\"" : ""
 -%>
-<div class="milestone-wrapper"<%= special_attr %><%= data_milestone_attr %>>
-
-<% if is_cancelled -%>
+<%- if is_cancelled -%>
 ## Canceled changes
 
 The following changes have been canceled.
@@ -87,26 +66,21 @@ The following changes have been removed from their original milestone and are be
 <%- else -%>
 ## GitLab <%= milestone %>
 <%- end -%>
-  <%- entries.select{|d| d["removal_milestone"] == milestone}.each do |deprecation| %>
-<div class="deprecation <% if deprecation["breaking_change"] -%>breaking-change<% end %>"<%= data_milestone_attr %>>
+<%- entries.select{|d| d["removal_milestone"] == milestone}.each do |deprecation| -%>
 
 ### <%= deprecation["title"] %>
 
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone"><%= deprecation["announcement_milestone"]%></span>
-<% if deprecation["end_of_support_milestone"] && !is_special_status -%>
-- End of Support in GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
-<% end -%>
-<% if deprecation["removal_milestone"] && !is_special_status -%>
-- Removal in GitLab <span class="milestone"><%= deprecation["removal_milestone"]%></span><% if deprecation["breaking_change"] -%> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))<% end %>
-<% end -%>
-<% if deprecation["issue_url"] -%>
+- Announced in GitLab <%= deprecation["announcement_milestone"]%>
+<%- if deprecation["end_of_support_milestone"] && !is_special_status -%>
+- End of Support in GitLab <%= deprecation["end_of_support_milestone"]%>
+<%- end -%>
+<%- if deprecation["removal_milestone"] && !is_special_status -%>
+- Removal in GitLab <%= deprecation["removal_milestone"]%><% if deprecation["breaking_change"] -%> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))<% end %>
+<%- end -%>
+<%- if deprecation["issue_url"] -%>
 - To discuss this change or learn more, see the [deprecation issue](<%= deprecation["issue_url"]%>).
 <%- end -%>
-
-</div>
-<% if is_cancelled -%>
+<%- if is_cancelled -%>
 
 > [!note]
 > This change has been canceled.
@@ -117,10 +91,7 @@ The following changes have been removed from their original milestone and are be
 <%- end -%>
 
 <%= deprecation["body"] -%>
-
-</div>
-  <%- end -%>
-</div>
+<%- end -%>
 <%- end -%>
 
 > [!disclaimer]

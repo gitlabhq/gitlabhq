@@ -91,4 +91,75 @@ RSpec.describe 'Merge Requests Feed', feature_category: :devops_reports do
       end
     end
   end
+
+  describe 'GET /groups/:group/-/merge_requests' do
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+    before_all do
+      group.add_developer(user)
+    end
+
+    context 'when authenticated' do
+      before do
+        sign_in user
+        visit merge_requests_group_path(group, :atom)
+      end
+
+      it 'renders atom feed' do
+        expect(page).to have_gitlab_http_status(:ok)
+      end
+
+      it 'renders atom feed with group merge requests title' do
+        expect(body).to have_selector('title', text: "#{group.name} merge requests", visible: :all)
+      end
+    end
+
+    context 'when authenticated via feed token' do
+      before do
+        visit merge_requests_group_path(group, :atom, feed_token: user.feed_token)
+      end
+
+      it 'renders atom feed' do
+        expect(page).to have_gitlab_http_status(:ok)
+      end
+
+      it 'renders atom feed with group merge requests title' do
+        expect(body).to have_selector('title', text: "#{group.name} merge requests", visible: :all)
+      end
+    end
+
+    context 'when not authenticated' do
+      context 'and the group is private' do
+        before do
+          visit merge_requests_group_path(group, :atom)
+        end
+
+        it 'renders atom feed with no merge requests' do
+          expect(page).to have_gitlab_http_status(:ok)
+          expect(body).not_to have_selector('entry')
+        end
+      end
+
+      context 'and the group is public' do
+        let_it_be(:group) { create(:group, :public) }
+        let_it_be(:project) { create(:project, :public, :repository, group: group) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+        before do
+          visit merge_requests_group_path(group, :atom)
+        end
+
+        it 'renders atom feed' do
+          expect(page).to have_gitlab_http_status(:ok)
+        end
+
+        it 'renders atom feed with group merge requests title' do
+          expect(body).to have_selector('title', text: "#{group.name} merge requests", visible: :all)
+        end
+      end
+    end
+  end
 end

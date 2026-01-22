@@ -28,8 +28,17 @@ module IssuableCollectionsAction
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  # -- Instance variables needed to pass data to views
   def merge_requests
-    render_merge_requests
+    respond_to do |format|
+      format.html do
+        render_merge_requests
+      end
+      format.atom do
+        render_merge_requests
+        render layout: 'xml'
+      end
+    end
   end
 
   def issues_calendar

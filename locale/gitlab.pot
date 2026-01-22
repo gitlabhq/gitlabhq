@@ -26951,6 +26951,9 @@ msgstr ""
 msgid "Email address copied"
 msgstr ""
 
+msgid "Email address is required."
+msgstr ""
+
 msgid "Email address suffix"
 msgstr ""
 
@@ -63362,7 +63365,13 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo will automatically review new critical and high severity %{linkStart}SAST vulnerabilities on the default branch to identify potential false positives%{linkEnd}. GitLab Duo assigns each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The service is a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
+msgid "SecurityReports|GitLab Duo can automatically review new critical and high severity SAST vulnerabilities on the default branch to %{linkStart}identify potential false positives%{linkEnd}. GitLab Duo can assign each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The feature is available as a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings."
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo security features are here!"
 msgstr ""
 
 msgid "SecurityReports|Go to policies"
@@ -71858,6 +71867,12 @@ msgstr ""
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
 msgstr ""
 
+msgid "Trial|By clicking %{buttonText} or registering through a third party, you accept the %{subscriptionAgreement} and acknowledge the %{privacyStatement}."
+msgstr ""
+
+msgid "Trial|Company name"
+msgstr ""
+
 msgid "Trial|Continue"
 msgstr ""
 
@@ -71870,13 +71885,37 @@ msgstr ""
 msgid "Trial|Cookie Policy."
 msgstr ""
 
+msgid "Trial|Country or region"
+msgstr ""
+
+msgid "Trial|First name"
+msgstr ""
+
+msgid "Trial|Get started"
+msgstr ""
+
 msgid "Trial|GitLab Subscription Agreement"
+msgstr ""
+
+msgid "Trial|Having trouble with this form? You can also request a trial on %{link}."
 msgstr ""
 
 msgid "Trial|Help us personalize your GitLab experience by answering a few questions"
 msgstr ""
 
+msgid "Trial|I agree that GitLab can contact me by email about its product, services, or events."
+msgstr ""
+
+msgid "Trial|Last name"
+msgstr ""
+
+msgid "Trial|Note: You must have an internet connection."
+msgstr ""
+
 msgid "Trial|Privacy Statement"
+msgstr ""
+
+msgid "Trial|Select a country or region"
 msgstr ""
 
 msgid "Trial|Select state or province"
@@ -71885,10 +71924,16 @@ msgstr ""
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr ""
 
+msgid "Trial|Start your free Ultimate trial!"
+msgstr ""
+
 msgid "Trial|Start your free trial"
 msgstr ""
 
 msgid "Trial|State or province"
+msgstr ""
+
+msgid "Trial|We need a few more details from you to activate your trial for your GitLab instance."
 msgstr ""
 
 msgid "Trial|We need a few more details from you to activate your trial."
@@ -71898,6 +71943,9 @@ msgid "Trial|Welcome to GitLab"
 msgstr ""
 
 msgid "Trial|What's your reason for joining GitLab?"
+msgstr ""
+
+msgid "Trial|Work email address"
 msgstr ""
 
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for %{duration} days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
