@@ -321,12 +321,9 @@ To resolve this issue, update your NGINX configuration to enable relative URLs i
 
 You can use the container registry debug server to diagnose problems. The debug endpoint can monitor metrics and health, as well as do profiling.
 
-{{< alert type="warning" >}}
-
-Sensitive information may be available from the debug endpoint.
-Access to the debug endpoint must be locked down in a production environment.
-
-{{< /alert >}}
+> [!warning]
+> Sensitive information may be available from the debug endpoint.
+> Access to the debug endpoint must be locked down in a production environment.
 
 The optional debug server can be enabled by setting the registry debug address
 in your `gitlab.rb` configuration.
@@ -518,12 +515,9 @@ curl "localhost:5001/metrics"
 
 You can enable debug logs to help troubleshoot issues with the container registry.
 
-{{< alert type="warning" >}}
-
-Debug logs may contain sensitive information such as authentication details, tokens, or repository information.
-Enable debug logs only when necessary, and disable them when troubleshooting is complete.
-
-{{< /alert >}}
+> [!warning]
+> Debug logs may contain sensitive information such as authentication details, tokens, or repository information.
+> Enable debug logs only when necessary, and disable them when troubleshooting is complete.
 
 {{< tabs >}}
 

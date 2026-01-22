@@ -17,12 +17,9 @@ This page describes the GitLab reference architecture designed to target a peak 
 For a full list of reference architectures, see
 [Available reference architectures](_index.md#available-reference-architectures).
 
-{{< alert type="note" >}}
-
-Before deploying this architecture it's recommended to read through the [main documentation](_index.md) first,
-specifically the [Before you start](_index.md#before-you-start) and [Deciding which architecture to use](_index.md#deciding-which-architecture-to-start-with) sections.
-
-{{< /alert >}}
+> [!note]
+> Before deploying this architecture it's recommended to read through the [main documentation](_index.md) first,
+> specifically the [Before you start](_index.md#before-you-start) and [Deciding which architecture to use](_index.md#deciding-which-architecture-to-start-with) sections.
 
 - **Target load**: API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS
 - **High Availability**: Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
@@ -740,12 +737,9 @@ before proceeding.
 Now that the PostgreSQL servers are all set up, let's configure PgBouncer
 for tracking and handling reads/writes to the primary database.
 
-{{< alert type="note" >}}
-
-PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< /alert >}}
+> [!note]
+> PgBouncer is single threaded and doesn't significantly benefit from an increase in CPU cores.
+> Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 The following IPs will be used as an example:
 
@@ -1778,12 +1772,9 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-{{< alert type="note" >}}
-
-[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
-examples include the Object storage configuration.
-
-{{< /alert >}}
+> [!note]
+> [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
+> examples include the Object storage configuration.
 
 {{< alert type="note" >}}
 
@@ -1950,12 +1941,9 @@ Rails requires connections to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-{{< alert type="note" >}}
-
-[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
-examples include the Object storage configuration.
-
-{{< /alert >}}
+> [!note]
+> [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
+> examples include the Object storage configuration.
 
 The following IPs will be used as an example:
 

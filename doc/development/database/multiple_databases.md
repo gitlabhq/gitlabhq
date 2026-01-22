@@ -826,12 +826,9 @@ For this purpose, GitLab provides separate Rake tasks, one for each database:
 - `gitlab:db:truncate_legacy_tables:ci` will truncate the legacy tables in CI database.
 - `gitlab:db:truncate_legacy_tables:sec` will truncate the legacy tables in Sec database.
 
-{{< alert type="note" >}}
-
-These tasks can only be run when the tables in the database are
-[locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
-
-{{< /alert >}}
+> [!note]
+> These tasks can only be run when the tables in the database are
+> [locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
 
 {{< alert type="warning" >}}
 

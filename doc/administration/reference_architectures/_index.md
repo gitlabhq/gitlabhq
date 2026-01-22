@@ -168,12 +168,9 @@ In most cases, the downtime required for doing an upgrade shouldn't be substanti
 As an additional layer of HA resilience, you can deploy select components in Kubernetes, known as a Cloud Native Hybrid reference architecture. For stability
 reasons, stateful components such as Gitaly [cannot be deployed in Kubernetes](#stateful-components-in-kubernetes).
 
-{{< alert type="note" >}}
-
-Cloud Native Hybrid is an alternative and more advanced setup compared to a standard reference architecture.
-Running services in Kubernetes is complex. Use this setup only if you have strong working knowledge and experience in Kubernetes.
-
-{{< /alert >}}
+> [!note]
+> Cloud Native Hybrid is an alternative and more advanced setup compared to a standard reference architecture.
+> Running services in Kubernetes is complex. Use this setup only if you have strong working knowledge and experience in Kubernetes.
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
@@ -327,12 +324,9 @@ Deploying across availability zones is supported and generally recommended for a
 
 Deploying across multiple self-hosted data centers is possible but requires careful consideration. This requires synchronous capable latency between centers, robust redundant network links to prevent split-brain scenarios, all centers located in the same geographic region, and deployment across an odd number of centers for proper quorum voting (like [availability zones](#availability-zones-cloud-providers)).
 
-{{< alert type="note" >}}
-
-It may not be possible for GitLab Support to assist with infrastructure-related issues stemming from multi-data center deployments.
-Choosing to deploy across centers is generally at your own risk.
-
-{{< /alert >}}
+> [!note]
+> It may not be possible for GitLab Support to assist with infrastructure-related issues stemming from multi-data center deployments.
+> Choosing to deploy across centers is generally at your own risk.
 
 {{< alert type="warning" >}}
 

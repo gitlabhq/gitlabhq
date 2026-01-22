@@ -25,12 +25,9 @@ enabled for analytics.
 
 ## Adding new event for tracking
 
-{{< alert type="note" >}}
-
-If you prefer to follow along an example, see [MR 197139](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197139) which contains all the required steps to add a new
-event to the AI tracking system.
-
-{{< /alert >}}
+> [!note]
+> If you prefer to follow along an example, see [MR 197139](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197139) which contains all the required steps to add a new
+> event to the AI tracking system.
 
 To add a new event you must first declare the corresponding event in the `InternalEvents` subsystem.
 See [Internal Event Quick Start guide](../internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)

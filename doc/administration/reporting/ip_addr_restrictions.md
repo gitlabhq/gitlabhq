@@ -19,12 +19,9 @@ specified limit is reached, any requests made by the user from a new IP address 
 
 IP addresses are cleared from the list when no further requests have been made by the user from the IP address in the specified time period.
 
-{{< alert type="note" >}}
-
-When a runner runs a CI/CD job as a particular user, the runner IP address is also stored against the user's list of
-unique IP addresses. Therefore, the IP addresses per user limit should take into account the number of configured active runners.
-
-{{< /alert >}}
+> [!note]
+> When a runner runs a CI/CD job as a particular user, the runner IP address is also stored against the user's list of
+> unique IP addresses. Therefore, the IP addresses per user limit should take into account the number of configured active runners.
 
 ## Configure IP address restrictions
 

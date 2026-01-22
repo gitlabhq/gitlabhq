@@ -559,12 +559,9 @@ incoming_email:
 
 ##### Dedicated email address
 
-{{< alert type="note" >}}
-
-Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk/_index.md).
-
-{{< /alert >}}
+> [!note]
+> Supports [Reply by Email](reply_by_email.md) only.
+> Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
@@ -777,12 +774,9 @@ incoming_email:
 
 ##### Dedicated email address
 
-{{< alert type="note" >}}
-
-Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk/_index.md).
-
-{{< /alert >}}
+> [!note]
+> Supports [Reply by Email](reply_by_email.md) only.
+> Cannot support [Service Desk](../user/project/service_desk/_index.md).
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 

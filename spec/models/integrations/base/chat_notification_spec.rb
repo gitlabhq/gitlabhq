@@ -150,6 +150,8 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
       let_it_be(:label_2) { build(:label, project: project, name: 'Community contribution') }
       let_it_be(:label_3) { build(:label, project: project, name: 'Backend') }
       let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
+      let_it_be(:work_item) { create(:work_item, project: project, labels: [label, label_2, label_3]) }
+      let_it_be(:incident) { create(:work_item, :incident, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:note) { create(:note, noteable: issue, project: project) }
 
       let(:data) { Gitlab::DataBuilder::Note.build(note, user, :create) }
@@ -165,6 +167,15 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
       shared_examples 'does not notify the chat integration' do
         specify do
           expect(integration).not_to receive(:notify).with(any_args)
+
+          integration.execute(data)
+        end
+      end
+
+      shared_examples 'uses IssueMessage' do
+        it 'uses IssueMessage' do
+          expect(Integrations::ChatMessage::IssueMessage).to receive(:new).and_return(double)
+          expect(integration).to receive(:notify).and_return(true)
 
           integration.execute(data)
         end
@@ -187,12 +198,111 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
           let(:data) { issue.to_hook_data(user) }
 
           it_behaves_like 'notifies the chat integration'
+          it_behaves_like 'uses IssueMessage'
+
+          it 'routes issue events to issue channels' do
+            allow(integration).to receive(:issue_channel).and_return('#issues')
+
+            expect(integration)
+              .to receive(:notify)
+              .with(any_args, hash_including(channel: ['#issues']))
+              .and_return(true)
+
+            integration.execute(data)
+          end
+
+          context 'with update action' do
+            let(:data) { issue.to_hook_data(user).merge!({ object_attributes: { action: 'update' } }) }
+
+            it_behaves_like 'does not notify the chat integration'
+          end
+        end
+
+        context 'when Work Item events' do
+          let(:data) { work_item.to_hook_data(user) }
+
+          it_behaves_like 'notifies the chat integration'
+          it_behaves_like 'uses IssueMessage'
+
+          it 'routes work item events to issue channels' do
+            allow(integration).to receive(:issue_channel).and_return('#issues')
+
+            expect(integration)
+              .to receive(:notify)
+              .with(any_args, hash_including(channel: ['#issues']))
+              .and_return(true)
+
+            integration.execute(data)
+          end
+
+          context 'with confidential work item' do
+            let_it_be(:confidential_work_item) { create(:work_item, :confidential, labels: [label]) }
+            let(:data) { confidential_work_item.to_hook_data(user) }
+
+            it_behaves_like 'notifies the chat integration'
+            it_behaves_like 'uses IssueMessage'
+
+            it 'routes confidential work item events to confidential issue channels' do
+              allow(integration).to receive(:confidential_issue_channel).and_return('#confidential-issues')
+
+              expect(integration)
+                .to receive(:notify)
+                .with(any_args, hash_including(channel: ['#confidential-issues']))
+                .and_return(true)
+
+              integration.execute(data)
+            end
+          end
+
+          context "with Service Desk ticket" do
+            let_it_be(:service_desk_ticket) do
+              create(:work_item, :ticket, :confidential, project: project, author: create(:support_bot),
+                external_author: 'service.desk@example.com', labels: [label])
+            end
+
+            let(:data) { service_desk_ticket.to_hook_data(user) }
+
+            it_behaves_like 'notifies the chat integration'
+            it_behaves_like 'uses IssueMessage'
+
+            it 'routes confidential work item events to confidential issue channels' do
+              allow(integration).to receive(:confidential_issue_channel).and_return('#confidential-issues')
+
+              expect(integration)
+                .to receive(:notify)
+                .with(any_args, hash_including(channel: ['#confidential-issues']))
+                .and_return(true)
+
+              integration.execute(data)
+            end
+          end
+
+          context "with incident" do
+            let(:data) { incident.to_hook_data(user) }
+
+            it_behaves_like 'does not notify the chat integration'
+          end
+
+          context 'with update action' do
+            let(:data) { work_item.to_hook_data(user).merge!({ object_attributes: { action: 'update' } }) }
+
+            it_behaves_like 'does not notify the chat integration'
+          end
         end
 
         context 'when Incident events' do
           let(:data) { issue.to_hook_data(user).merge!({ object_kind: 'incident' }) }
 
           it_behaves_like 'notifies the chat integration'
+          it_behaves_like 'uses IssueMessage'
+
+          context 'with update action' do
+            let(:data) do
+              issue.to_hook_data(user).merge!({ object_kind: 'incident', object_attributes: { action: 'update' } })
+            end
+
+            it_behaves_like 'does not notify the chat integration'
+          end
         end
       end
 
@@ -320,6 +430,12 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
           it_behaves_like 'does not notify the chat integration'
         end
       end
+
+      context 'when object_kind is unsupported' do
+        let(:data) { { object_kind: 'unsupported_event' } }
+
+        it_behaves_like 'does not notify the chat integration'
+      end
     end
 
     context 'with "channel" property' do
@@ -435,6 +551,12 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
           expect(integration.api_field_names).not_to include(field)
         end
       end
+    end
+  end
+
+  describe '#configurable_events' do
+    it 'excludes work item events from configurable events' do
+      expect(integration.configurable_events).not_to include('work_item', 'confidential_work_item')
     end
   end
 end

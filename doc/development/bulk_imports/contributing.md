@@ -46,12 +46,9 @@ For example, to add import support for a new `Project` association called `docum
 
 #### Add it to `import_export.yml` file
 
-{{< alert type="note" >}}
-
-Associations listed in this file are imported from top to bottom. If you have an association that is order-dependent, put the dependencies before the
-associations that require them. For example, documents must be imported before merge requests, otherwise they are not valid.
-
-{{< /alert >}}
+> [!note]
+> Associations listed in this file are imported from top to bottom. If you have an association that is order-dependent, put the dependencies before the
+> associations that require them. For example, documents must be imported before merge requests, otherwise they are not valid.
 
 1. Add your association to `tree.project` within the `import_export.yml`.
 

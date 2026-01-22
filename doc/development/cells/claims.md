@@ -73,12 +73,9 @@ The `subject_type` and `subject_key` identify which record owns the claimed
 attribute. This often matches the sharding key, but not always. Use your
 judgment when the sharding key doesn't apply.
 
-{{< alert type="note" >}}
-
-Changes to associations are also claimed automatically in the same
-transaction when saving.
-
-{{< /alert >}}
+> [!note]
+> Changes to associations are also claimed automatically in the same
+> transaction when saving.
 
 #### Tests
 

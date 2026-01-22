@@ -60,12 +60,9 @@ If you have a license, you can also import it when you install GitLab.
 
 - For Helm Charts installations, use [the `global.gitlab.license` configuration keys](https://docs.gitlab.com/charts/installation/command-line-options.html#basic-configuration).
 
-{{< alert type="warning" >}}
-
-These methods only add a license at the time of installation. To renew or upgrade
-a license, add the license in the **Admin** area in the web user interface.
-
-{{< /alert >}}
+> [!warning]
+> These methods only add a license at the time of installation. To renew or upgrade
+> a license, add the license in the **Admin** area in the web user interface.
 
 ## Submit license usage data
 
@@ -133,12 +130,9 @@ You can also [export](../subscriptions/manage_subscription.md) your license usag
 
 The following commands can be run in the [Rails console](operations/rails_console.md#starting-a-rails-console-session).
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
-We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
+> We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 ### See current license information
 

@@ -54,8 +54,8 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
   describe Groups::ChildrenController, '(JavaScript fixtures)', type: :controller do
     let_it_be(:subgroup) { create(:group, parent: group) }
     let_it_be(:nested_subgroup) { create(:group, parent: subgroup, name: 'foo bar baz') }
-    let_it_be(:project) { create(:project, namespace: subgroup) }
-    let_it_be(:nested_project) { create(:project, namespace: nested_subgroup) }
+    let_it_be(:project) { create(:project, namespace: subgroup, name: 'Sub project 1') }
+    let_it_be(:nested_project) { create(:project, namespace: nested_subgroup, name: 'Sub project 2') }
 
     before do
       group.add_owner(user)

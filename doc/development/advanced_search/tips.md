@@ -114,12 +114,9 @@ search migration has completed (such as a migration that added the necessary fie
 
 ## Testing
 
-{{< alert type="warning" >}}
-
-Elasticsearch tests do not run on every merge request. Add `~pipeline:run-search-tests` or `~group::global search` labels to the merge
-request to run tests with the production versions of Elasticsearch and PostgreSQL.
-
-{{< /alert >}}
+> [!warning]
+> Elasticsearch tests do not run on every merge request. Add `~pipeline:run-search-tests` or `~group::global search` labels to the merge
+> request to run tests with the production versions of Elasticsearch and PostgreSQL.
 
 ### Advanced search migrations
 

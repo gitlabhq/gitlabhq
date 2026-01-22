@@ -18,12 +18,9 @@ simpler operation compared to the three-step import method.
 
 ## One-step import
 
-{{< alert type="warning" >}}
-
-The registry must be shut down or remain in `read-only` mode during the import.
-Otherwise, data written during the import becomes inaccessible or leads to inconsistencies.
-
-{{< /alert >}}
+> [!warning]
+> The registry must be shut down or remain in `read-only` mode during the import.
+> Otherwise, data written during the import becomes inaccessible or leads to inconsistencies.
 
 {{< tabs >}}
 

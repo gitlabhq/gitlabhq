@@ -7,12 +7,9 @@ title: Design Patterns
 
 This page covers suggested design patterns and also anti-patterns.
 
-{{< alert type="note" >}}
-
-When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
-When adding a design anti-pattern, clearly state **the problem it prevents**.
-
-{{< /alert >}}
+> [!note]
+> When adding a design pattern to this document, be sure to clearly state the **problem it solves**.
+> When adding a design anti-pattern, clearly state **the problem it prevents**.
 
 ## Patterns
 

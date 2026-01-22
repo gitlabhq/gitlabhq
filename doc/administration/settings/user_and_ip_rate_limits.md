@@ -23,12 +23,9 @@ The following limits are disabled by default:
 - [Authenticated API requests (per user)](#enable-authenticated-api-request-rate-limit).
 - [Authenticated web requests (per user)](#enable-authenticated-web-request-rate-limit).
 
-{{< alert type="note" >}}
-
-By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
-may trigger the rate limits configured for unauthenticated requests.
-
-{{< /alert >}}
+> [!note]
+> By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
+> may trigger the rate limits configured for unauthenticated requests.
 
 {{< alert type="note" >}}
 

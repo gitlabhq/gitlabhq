@@ -52,9 +52,7 @@ RSpec.configure do |rspec|
   # controllers or services rely on organization context.
   rspec.include_context 'with current_organization setting', type: :controller
 
-  if Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
-    rspec.include_context 'with current_organization setting', type: :request
-  end
+  rspec.include_context 'with current_organization setting', type: :request unless ::Gitlab::Database.has_database?(:ci)
 
   # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true

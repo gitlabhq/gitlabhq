@@ -264,12 +264,9 @@ LangSmith integration works with any tools, including [GitLab Centralized Evalua
 
 ### Use tracing with LangSmith
 
-{{< alert type="note" >}}
-
-Tracing is available in Development and Testing environment only.
-It's not available in Production environment.
-
-{{< /alert >}}
+> [!note]
+> Tracing is available in Development and Testing environment only.
+> It's not available in Production environment.
 
 1. Access [LangSmith](https://smith.langchain.com/) and create an account
    1. Optional. [Create an Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=Individual_Bulk_Access_Request) to be added to the GitLab organization in LangSmith.

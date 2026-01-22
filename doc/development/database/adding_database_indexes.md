@@ -336,12 +336,9 @@ them by index size in descending order. More information on the meaning of the v
 For GitLab.com, you can check the latest generated [production reports](https://console.postgres.ai/gitlab/reports/)
 on postgres.ai and inspect the `H002 Unused Indexes` file.
 
-{{< alert type="warning" >}}
-
-These reports only show indexes that have no recorded usage **since the last statistics reset.**
-They do not guarantee that the indexes are never used.
-
-{{< /alert >}}
+> [!warning]
+> These reports only show indexes that have no recorded usage **since the last statistics reset.**
+> They do not guarantee that the indexes are never used.
 
 ### Verifying that an index is unused
 
@@ -749,19 +746,12 @@ def down
 end
 ```
 
-{{< alert type="note" >}}
-
 Async indexes are only supported for GitLab.com environments,
 so `prepare_async_index` and `prepare_partitioned_async_index` are no-ops for other environments.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-`prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
-In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
-
-{{< /alert >}}
+> [!note]
+> `prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
+> In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
 
 ### Verify the MR was deployed and the index exists in production
 

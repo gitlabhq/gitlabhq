@@ -16,12 +16,9 @@ title: Configure VS Code Extension Marketplace
 The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
 Web IDE and Workspaces. Administrators can configure access to the marketplace for the entire instance.
 
-{{< alert type="note" >}}
-
-To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
-This security requirement ensures that third-party extensions run in isolation and cannot access your account.
-
-{{< /alert >}}
+> [!note]
+> To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
+> This security requirement ensures that third-party extensions run in isolation and cannot access your account.
 
 ## Access VS Code Extension Marketplace settings
 

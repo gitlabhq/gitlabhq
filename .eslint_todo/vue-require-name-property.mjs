@@ -1658,7 +1658,6 @@ export default {
     'ee/app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/container_scanning_counts.vue',
     'ee/app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/metadata_container_scanning.vue',
     'ee/app/assets/javascripts/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue',
-    'ee/app/assets/javascripts/packages_and_registries/virtual_registries/components/maven/registries_and_upstreams/registries_table.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue',
     'ee/app/assets/javascripts/pages/admin/namespace_limits/components/excluded_namespaces.vue',
     'ee/app/assets/javascripts/pages/admin/namespace_limits/components/namespace_limits_changelog.vue',

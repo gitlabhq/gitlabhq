@@ -86,12 +86,9 @@ variant, and 25% would be assigned the _blue_ variant:
 For an even distribution in this example, change the command to set it to 66% instead
 of 50.
 
-{{< alert type="note" >}}
-
-To immediately stop running an experiment, use the
-`/chatops run feature set pill_color false` command.
-
-{{< /alert >}}
+> [!note]
+> To immediately stop running an experiment, use the
+> `/chatops run feature set pill_color false` command.
 
 {{< alert type="warning" >}}
 
@@ -222,12 +219,9 @@ experiment(:pill_color, actor: current_user) do |e|
 end
 ```
 
-{{< alert type="note" >}}
-
-When passing a block to the `experiment` method, it is implicitly invoked as
-if `run` has been called.
-
-{{< /alert >}}
+> [!note]
+> When passing a block to the `experiment` method, it is implicitly invoked as
+> if `run` has been called.
 
 #### Segmentation rules
 
@@ -259,12 +253,9 @@ defined. The first segmentation rule to produce a truthy result assigns the vari
 In our example, any user named `'Richard'`, regardless of account age, is always
 assigned the _red_ variant. If you want the opposite logic, flip the order.
 
-{{< alert type="note" >}}
-
-Keep in mind when defining segmentation rules: after a truthy result, the remaining
-segmentation rules are skipped to achieve optimal performance.
-
-{{< /alert >}}
+> [!note]
+> Keep in mind when defining segmentation rules: after a truthy result, the remaining
+> segmentation rules are skipped to achieve optimal performance.
 
 #### Exclusion rules
 

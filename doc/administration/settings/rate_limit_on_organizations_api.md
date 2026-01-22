@@ -20,12 +20,9 @@ title: Rate limit on Organizations API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

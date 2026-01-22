@@ -238,12 +238,9 @@ where the runner is registered to:
 
 This list of jobs is then filtered further by matching tags between job and runner tags.
 
-{{< alert type="note" >}}
-
-If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
-The runner may have more tags than defined for the job, but not vice-versa.
-
-{{< /alert >}}
+> [!note]
+> If a job contains tags, the runner doesn't pick the job if it does not match **all** the tags.
+> The runner may have more tags than defined for the job, but not vice-versa.
 
 Finally if the runner can only pick jobs that are tagged, all untagged jobs are filtered out.
 

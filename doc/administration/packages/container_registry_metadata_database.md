@@ -225,12 +225,9 @@ To skip post-deployment migrations:
    sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
-{{< alert type="note" >}}
-
-The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
-Run `sudo gitlab-ctl registry-database migrate up --help` for details.
-
-{{< /alert >}}
+> [!note]
+> The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
+> Run `sudo gitlab-ctl registry-database migrate up --help` for details.
 
 ## Online garbage collection monitoring
 
@@ -413,12 +410,9 @@ registry['database'] = {
 }
 ```
 
-{{< alert type="note" >}}
-
-When using an external database, omit the `-u registry` option from the
-commands throughout this documentation.
-
-{{< /alert >}}
+> [!note]
+> When using an external database, omit the `-u registry` option from the
+> commands throughout this documentation.
 
 ## Backup with metadata database
 
@@ -497,12 +491,9 @@ Use separate database instances on each site because:
 
 You can revert your registry to use object storage metadata after completing a metadata import.
 
-{{< alert type="warning" >}}
-
-When you revert to object storage metadata, any container images, tags, or repositories
-added or deleted between the import completion and this revert operation are not available.
-
-{{< /alert >}}
+> [!warning]
+> When you revert to object storage metadata, any container images, tags, or repositories
+> added or deleted between the import completion and this revert operation are not available.
 
 To revert to object storage metadata:
 

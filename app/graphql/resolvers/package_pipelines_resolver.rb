@@ -63,7 +63,7 @@ module Resolvers
     def decode_cursor(encoded)
       return unless encoded
 
-      decoded = Gitlab::Json.parse(context.schema.cursor_encoder.decode(encoded, nonce: true))
+      decoded = Gitlab::Json.safe_parse(context.schema.cursor_encoder.decode(encoded, nonce: true))
       id_from_cursor(decoded)
     rescue JSON::ParserError
       raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"

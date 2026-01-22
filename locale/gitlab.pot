@@ -55595,6 +55595,9 @@ msgstr ""
 msgid "Read documentation"
 msgstr ""
 
+msgid "Read less"
+msgstr ""
+
 msgid "Read more"
 msgstr ""
 
@@ -74928,6 +74931,9 @@ msgstr ""
 msgid "VirtualRegistries|Container upstreams"
 msgstr ""
 
+msgid "VirtualRegistries|Edit registry"
+msgstr ""
+
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
@@ -75195,10 +75201,10 @@ msgstr ""
 msgid "VirtualRegistry|Failed to fetch cache entries."
 msgstr ""
 
-msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
+msgid "VirtualRegistry|Failed to fetch list of upstreams."
 msgstr ""
 
-msgid "VirtualRegistry|Failed to fetch list of upstreams."
+msgid "VirtualRegistry|Failed to fetch list of virtual registries."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch upstream summary."
@@ -75354,6 +75360,9 @@ msgid "VirtualRegistry|The cache cleanup policy has completed successfully for %
 msgstr ""
 
 msgid "VirtualRegistry|The scheduled cache cleanup for %{group_link} could not be completed."
+msgstr ""
+
+msgid "VirtualRegistry|There are no container virtual registries yet"
 msgstr ""
 
 msgid "VirtualRegistry|There are no maven virtual registries yet"
@@ -75934,13 +75943,10 @@ msgstr ""
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr ""
 
-msgid "Vulnerability|AI detected false positive"
-msgstr ""
-
-msgid "Vulnerability|AI false positive assessment details"
-msgstr ""
-
 msgid "Vulnerability|AI false positive confidence score"
+msgstr ""
+
+msgid "Vulnerability|AI false positive reasoning:"
 msgstr ""
 
 msgid "Vulnerability|AI false positive scan complete"
@@ -76072,13 +76078,13 @@ msgstr ""
 msgid "Vulnerability|For more information, view vulnerability details."
 msgstr ""
 
+msgid "Vulnerability|GitLab Duo scanned this vulnerability to identify the likelihood that it is a false positive (FP) and found that this vulnerability is %{falsePositiveResult}."
+msgstr ""
+
 msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
 msgid "Vulnerability|GitLab checks if detected secrets are active. You should revoke and replace active secrets immediately, because they can be used to impersonate legitimate activity."
-msgstr ""
-
-msgid "Vulnerability|Gitlab Duo has identified this vulnerability as a false positive"
 msgstr ""
 
 msgid "Vulnerability|Identifier"
@@ -76138,10 +76144,13 @@ msgstr ""
 msgid "Vulnerability|Project:"
 msgstr ""
 
-msgid "Vulnerability|Remove False Positive Flag"
+msgid "Vulnerability|Remove false positive flag"
 msgstr ""
 
 msgid "Vulnerability|Remove identifier row"
+msgstr ""
+
+msgid "Vulnerability|Remove the false positive flag from this vulnerability"
 msgstr ""
 
 msgid "Vulnerability|Removing this flag will not change the vulnerability's status. The vulnerability will remain in its current state but will no longer be marked as a false positive."
@@ -76289,6 +76298,15 @@ msgid "Vulnerability|circular dependency"
 msgstr ""
 
 msgid "Vulnerability|code_flow"
+msgstr ""
+
+msgid "Vulnerability|likely a false positive"
+msgstr ""
+
+msgid "Vulnerability|not a false positive"
+msgstr ""
+
+msgid "Vulnerability|possibly a false positive"
 msgstr ""
 
 msgid "WARNING:"

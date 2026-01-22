@@ -485,12 +485,9 @@ the correct credentials for the Sentinel nodes.
 While it doesn't require a list of all Sentinel nodes, in case of a failure,
 it needs to access at least one of the listed.
 
-{{< alert type="note" >}}
-
-The following steps should be performed in the GitLab application server
-which ideally should not have Redis or Sentinels on it for a HA setup.
-
-{{< /alert >}}
+> [!note]
+> The following steps should be performed in the GitLab application server
+> which ideally should not have Redis or Sentinels on it for a HA setup.
 
 1. SSH into the server where the GitLab application is installed.
 1. Edit `/etc/gitlab/gitlab.rb` and add/change the following lines:

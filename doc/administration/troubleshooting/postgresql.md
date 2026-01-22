@@ -16,12 +16,9 @@ This page contains information about PostgreSQL the GitLab Support team uses
 when troubleshooting. GitLab makes this information public, so that anyone can
 make use of the Support team's collected knowledge.
 
-{{< alert type="warning" >}}
-
-Some procedures documented here may break your GitLab instance. Use at your
-own risk.
-
-{{< /alert >}}
+> [!warning]
+> Some procedures documented here may break your GitLab instance. Use at your
+> own risk.
 
 If you're on a [paid tier](https://about.gitlab.com/pricing/) and aren't sure
 how to use these commands, [contact Support](https://about.gitlab.com/support/)
@@ -208,12 +205,9 @@ postgresql['idle_in_transaction_session_timeout'] = '60s'
 
 Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-{{< alert type="note" >}}
-
-These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
-or Amazon RDS is being used, these values don't get set, and would have to be set externally.
-
-{{< /alert >}}
+> [!note]
+> These are Linux package settings. If an external database, such as a customer's PostgreSQL installation
+> or Amazon RDS is being used, these values don't get set, and would have to be set externally.
 
 ### Temporarily changing the statement timeout
 

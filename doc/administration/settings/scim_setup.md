@@ -108,12 +108,9 @@ The SAML application created during [single sign-on](../../integration/saml.md) 
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
 
-{{< alert type="note" >}}
-
-You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
-and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
-
-{{< /alert >}}
+> [!note]
+> You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
+> and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
 
 To configure Microsoft Entra ID, you configure:
 
@@ -180,12 +177,9 @@ Next, provision the users:
 
 ##### Configure attribute mappings
 
-{{< alert type="note" >}}
-
-While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
-your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
+> your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
 While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
 attribute mappings. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
@@ -236,12 +230,9 @@ Under the **Settings** section:
 
 After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
-{{< alert type="warning" >}}
-
-Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
-provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
+> provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
 
 ## Remove access
 
@@ -297,12 +288,9 @@ This means SCIM membership updates from your identity provider do not affect use
 
 Support for improvements is proposed in [issue 582729](https://gitlab.com/gitlab-org/gitlab/-/issues/582729).
 
-{{< alert type="note" >}}
-
-To ensure all group links are associated with the SCIM group from the start,
-you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
-
-{{< /alert >}}
+> [!note]
+> To ensure all group links are associated with the SCIM group from the start,
+> you should configure all SAML group links before setting up SCIM group provisioning in your identity provider.
 
 If you need to add group links after the initial provisioning, you can re-provision the SCIM group in your identity provider by deleting the SCIM group provisioning (not the IdP group itself), then recreating it.
 This action re-associates all current SAML group links with the SCIM group.

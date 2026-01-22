@@ -28,12 +28,9 @@ If the GitLab instance uses Admin Mode, you must
 [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
 **Admin** is visible.
 
-{{< alert type="note" >}}
-
-Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area.
-On GitLab.com, the **Admin** area feature is not available.
-
-{{< /alert >}}
+> [!note]
+> Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area.
+> On GitLab.com, the **Admin** area feature is not available.
 
 ## Administering projects
 
@@ -278,12 +275,9 @@ After you turn off this setting:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 To administer all groups in the GitLab instance:
 

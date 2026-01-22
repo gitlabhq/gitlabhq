@@ -172,12 +172,9 @@ short lock on the table before being able to enforce the constraint on new data.
 
 Also `add_concurrent_foreign_key` will add the constraint only if it's not existing.
 
-{{< alert type="warning" >}}
-
-Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
-once per migration file, unless the source and target tables are identical.
-
-{{< /alert >}}
+> [!warning]
+> Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
+> once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
 
@@ -212,12 +209,9 @@ class RemoveRecordsWithoutUserFromEmailsTable < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-The MR that adds this data migration should have ~data-deletion label applied.
-Refer [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
-
-{{< /alert >}}
+> [!note]
+> The MR that adds this data migration should have ~data-deletion label applied.
+> Refer [preparation-when-adding-data-migrations](../database_review.md#preparation-when-adding-data-migrations) for more information.
 
 #### Validate the foreign key
 

@@ -775,12 +775,9 @@ assigned to it.
 
 ### Storj Gateway (SJ)
 
-{{< alert type="note" >}}
-
-The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
-While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
-
-{{< /alert >}}
+> [!note]
+> The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
+> While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
 
 The [Storj Network](https://www.storj.io/) provides an S3-compatible API gateway. Use the following configuration example:
 

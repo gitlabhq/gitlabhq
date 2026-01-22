@@ -4,9 +4,7 @@ Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
     - 'app/controllers/admin/database_diagnostics_controller.rb'
-    - 'app/controllers/event_forward/event_forward_controller.rb'
     - 'app/finders/projects/branch_rules_finder.rb'
-    - 'app/graphql/resolvers/package_pipelines_resolver.rb'
     - 'app/helpers/icons_helper.rb'
     - 'app/models/active_session.rb'
     - 'app/models/blob_viewer/dependency_manager.rb'

@@ -49,12 +49,9 @@ CREATE TABLE merge_request_diff_files (
 PARTITION BY RANGE(merge_request_diff_id);
 ```
 
-{{< alert type="note" >}}
-
-The primary key of a partitioned table must include the partition key as
-part of the primary key definition.
-
-{{< /alert >}}
+> [!note]
+> The primary key of a partitioned table must include the partition key as
+> part of the primary key definition.
 
 And we might have a list of partitions for the table, such as:
 

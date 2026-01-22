@@ -58,12 +58,9 @@ Prerequisites:
    - Developers.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
-is enabled, administrators must enter Admin Mode to create new projects.
-
-{{< /alert >}}
+> [!note]
+> If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
+> is enabled, administrators must enter Admin Mode to create new projects.
 
 ## Restrict project deletion to administrators
 
@@ -101,12 +98,9 @@ To disable the restriction:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Deletion protection prevents accidental deletion of groups and projects on your instance.
 
@@ -135,12 +129,9 @@ To configure deletion protection for groups and projects:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 By default, immediate deletion is turned on for groups and projects scheduled for deletion. This way, users
 can bypass the configured retention period and delete groups or projects immediately.
@@ -259,12 +250,9 @@ Prerequisites:
      - Only administrators can create private groups, projects, and snippets.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-You cannot restrict a visibility level that is set as the default for new projects or groups.
-Conversely, you cannot set a restricted visibility level as the default for new projects or groups.
-
-{{< /alert >}}
+> [!note]
+> You cannot restrict a visibility level that is set as the default for new projects or groups.
+> Conversely, you cannot set a restricted visibility level as the default for new projects or groups.
 
 ## Configure enabled Git access protocols
 
@@ -430,12 +418,9 @@ To prevent invitations:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 {{< details >}}
 

@@ -162,12 +162,9 @@ project. Object pool repositories are stored similarly to regular repositories i
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-{{< alert type="warning" >}}
-
-Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
-This can cause data loss in the regular repositories that depend on the object pool.
-
-{{< /alert >}}
+> [!warning]
+> Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
+> This can cause data loss in the regular repositories that depend on the object pool.
 
 ### Translate hashed object pool storage paths
 

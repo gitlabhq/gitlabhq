@@ -16,12 +16,9 @@ GitLab provides Rake tasks for cleaning up GitLab instances.
 
 ## Remove unreferenced LFS files
 
-{{< alert type="warning" >}}
-
-Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
-have finished, which otherwise may lead to data loss.
-
-{{< /alert >}}
+> [!warning]
+> Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
+> have finished, which otherwise may lead to data loss.
 
 When you remove LFS files from a repository's history, they become orphaned and continue to consume
 disk space. With this Rake task, you can remove invalid references from the database, which
@@ -197,12 +194,9 @@ I, [2018-08-02T10:26:47.764356 #45087]  INFO -- : Moved to lost and found: @hash
 
 ## Remove orphan artifact files
 
-{{< alert type="note" >}}
-
-These commands don't work for artifacts stored on
-[object storage](../object_storage.md).
-
-{{< /alert >}}
+> [!note]
+> These commands don't work for artifacts stored on
+> [object storage](../object_storage.md).
 
 When you notice there are more job artifacts files and/or directories on disk than there
 should be, you can run:

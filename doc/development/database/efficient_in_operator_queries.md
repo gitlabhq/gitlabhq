@@ -683,12 +683,9 @@ Ordering records by mixed columns where one or more columns are coming from `JOI
 works with limitations. It requires extra configuration via Common Table Expression (CTE). The trick is to use a
 non-materialized CTE to act as a "fake" table which exposes all required columns.
 
-{{< alert type="note" >}}
-
-The query performance might not improve compared to the standard `IN` query. Always
-check the query plan.
-
-{{< /alert >}}
+> [!note]
+> The query performance might not improve compared to the standard `IN` query. Always
+> check the query plan.
 
 Example: order issues by `projects.name, issues.id` within the group hierarchy
 
@@ -978,12 +975,9 @@ Order the keyset arrays according to the original `ORDER BY` clause with `LIMIT 
 `UNNEST [] WITH ORDINALITY` table function. The function locates the "lowest" keyset cursor
 values and gives us the array position. These cursor values are used to locate the record.
 
-{{< alert type="note" >}}
-
-At this point, we haven't read anything from the database tables, because we relied on
-fast index-only scans.
-
-{{< /alert >}}
+> [!note]
+> At this point, we haven't read anything from the database tables, because we relied on
+> fast index-only scans.
 
 | `project_ids` | `created_at_values` | `id_values` |
 | ------------- | ------------------- | ----------- |

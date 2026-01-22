@@ -272,12 +272,9 @@ configure this:
 
 ## Switch from Unicorn to Puma
 
-{{< alert type="note" >}}
-
-For Helm-based deployments, see the
-[`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
-
-{{< /alert >}}
+> [!note]
+> For Helm-based deployments, see the
+> [`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
 
 Puma is the default web server and Unicorn is no longer supported.
 

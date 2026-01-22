@@ -12,12 +12,9 @@ title: Working with the bundled PgBouncer service
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
-For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
-
-{{< /alert >}}
+> [!note]
+> PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
+> For support, you need a [Premium subscription](https://about.gitlab.com/pricing/).
 
 [PgBouncer](https://www.pgbouncer.org/) is used to seamlessly migrate database
 connections between servers in a failover scenario. Additionally, it can be used

@@ -18,12 +18,9 @@ Configure Gitaly Cluster (Praefect) using either:
 
 Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
-{{< alert type="note" >}}
-
-Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
-[epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
-
-{{< /alert >}}
+> [!note]
+> Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
+> [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
 ## Requirements
 
@@ -43,12 +40,9 @@ Gitaly nodes fails in a mutating RPC call.
 See the [design document](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/design_ha.md)
 for implementation details.
 
-{{< alert type="note" >}}
-
-If not set in GitLab, feature flags are read as false from the console and Praefect uses their
-default value. The default value depends on the GitLab version.
-
-{{< /alert >}}
+> [!note]
+> If not set in GitLab, feature flags are read as false from the console and Praefect uses their
+> default value. The default value depends on the GitLab version.
 
 ### Network latency and connectivity
 
@@ -530,12 +524,9 @@ If there are multiple Praefect nodes:
 
 To complete this section you need a [configured PostgreSQL server](#postgresql), including:
 
-{{< alert type="warning" >}}
-
-Praefect should be run on a dedicated node. Do not run Praefect on the
-application server, or a Gitaly node.
-
-{{< /alert >}}
+> [!warning]
+> Praefect should be run on a dedicated node. Do not run Praefect on the
+> application server, or a Gitaly node.
 
 On the Praefect node:
 
@@ -1244,12 +1235,9 @@ internal traffic from the GitLab application to the Praefect nodes. The
 specifics on which load balancer to use or the exact configuration is beyond the
 scope of the GitLab documentation.
 
-{{< alert type="note" >}}
-
-The load balancer must be configured to accept traffic from the Gitaly nodes in
-addition to the GitLab nodes.
-
-{{< /alert >}}
+> [!note]
+> The load balancer must be configured to accept traffic from the Gitaly nodes in
+> addition to the GitLab nodes.
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
@@ -1743,12 +1731,9 @@ You can configure either:
 
 ### Configure default replication factor
 
-{{< alert type="warning" >}}
-
-Reducing the default replication when there are object pools can cause some linked repositories to break.
-Object pools have relative paths that begin with `@pools/`.
-
-{{< /alert >}}
+> [!warning]
+> Reducing the default replication when there are object pools can cause some linked repositories to break.
+> Object pools have relative paths that begin with `@pools/`.
 
 If `default_replication_factor` is unset, the repositories are always replicated on every storage node defined in
 `virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are

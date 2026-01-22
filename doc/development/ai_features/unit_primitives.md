@@ -122,12 +122,9 @@ According to this definition, the feature:
 - This feature is only relevant for requests to the AI gateway. The corresponding entry in `scopes` does not need to be present
   in `scopes` when a token is attached to requests sent to other backend services.
 
-{{< alert type="note" >}}
-
-Not setting any `cut_off_date` implies a feature remains freely available, regardless of what
-`add_ons` are defined.
-
-{{< /alert >}}
+> [!note]
+> Not setting any `cut_off_date` implies a feature remains freely available, regardless of what
+> `add_ons` are defined.
 
 #### Related Configurations
 

@@ -12,12 +12,9 @@ title: Place GitLab into a read-only state
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-The recommended method to place GitLab in a read-only state is to enable
-[maintenance mode](maintenance_mode/_index.md).
-
-{{< /alert >}}
+> [!note]
+> The recommended method to place GitLab in a read-only state is to enable
+> [maintenance mode](maintenance_mode/_index.md).
 
 In some cases, you might want to place GitLab under a read-only state.
 The configuration for doing so depends on your desired outcome.

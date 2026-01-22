@@ -164,12 +164,9 @@ If turned off for an instance, it cannot be turned on for individual projects.
 When this feature is turned off, existing preserved artifacts don't immediately expire.
 A new successful pipeline must run on a branch before its artifacts can expire.
 
-{{< alert type="note" >}}
-
-All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
-which can delay the effect of settings changes.
-
-{{< /alert >}}
+> [!note]
+> All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
+> which can delay the effect of settings changes.
 
 To keep artifacts from the latest successful pipelines:
 
@@ -224,12 +221,9 @@ When disabled, the [default role to use pipeline variables](../../user/group/acc
 setting is set to **No one allowed** for new groups, which cascades to new projects in the new groups.
 When enabled, the setting defaults to **Developer** instead.
 
-{{< alert type="warning" >}}
-
-To keep the most secure defaults for new groups and projects, the recommendation is
-to set this setting to disabled.
-
-{{< /alert >}}
+> [!warning]
+> To keep the most secure defaults for new groups and projects, the recommendation is
+> to set this setting to disabled.
 
 To allow pipeline variables by default in all new projects in new groups:
 

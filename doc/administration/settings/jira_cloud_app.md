@@ -324,12 +324,9 @@ Only one GitLab instance per organization can use the official Atlassian Marketp
 
 ## Configure your GitLab instance to serve as a proxy
 
-{{< alert type="note" >}}
-
-For most users, this configuration is not necessary. To Jira Cloud with multiple instances,
-you can connect each instance with the GitLab for Jira Cloud app.
-
-{{< /alert >}}
+> [!note]
+> For most users, this configuration is not necessary. To Jira Cloud with multiple instances,
+> you can connect each instance with the GitLab for Jira Cloud app.
 
 A GitLab instance can serve as a proxy for other GitLab instances through the GitLab for Jira Cloud app.
 You might want to use a proxy if you're managing multiple GitLab instances but only want to

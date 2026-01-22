@@ -66,12 +66,9 @@ this default configuration used by:
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
 multiple machines.
 
-{{< alert type="note" >}}
-
-When configured to run on their own servers, Gitaly servers must be
-[upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
-
-{{< /alert >}}
+> [!note]
+> When configured to run on their own servers, Gitaly servers must be
+> [upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
 
 {{< alert type="note" >}}
 
@@ -443,12 +440,9 @@ leading to `Error creating pipeline` and `Commit not found` errors, or stale dat
 As the final step, you must update Gitaly clients to switch from using local Gitaly service to use
 the Gitaly servers you just configured.
 
-{{< alert type="note" >}}
-
-GitLab requires a `default` repository storage to be configured.
-[Read more about this limitation](#gitlab-requires-a-default-repository-storage).
-
-{{< /alert >}}
+> [!note]
+> GitLab requires a `default` repository storage to be configured.
+> [Read more about this limitation](#gitlab-requires-a-default-repository-storage).
 
 This can be risky because anything that prevents your Gitaly clients from reaching the Gitaly
 servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
@@ -704,12 +698,9 @@ For information on control groups, see [Cgroups](cgroups.md).
 The way data is stored in the object database of a Git repository can become inefficient over time, which slows down Git operations. You can schedule Gitaly to run a
 daily background task with a maximum duration to clean up these items and improve performance.
 
-{{< alert type="warning" >}}
-
-Background repository optimization can place significant load on the host while running.
-Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
-
-{{< /alert >}}
+> [!warning]
+> Background repository optimization can place significant load on the host while running.
+> Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
 Configure background repository optimization in one of two ways:
 
@@ -958,12 +949,9 @@ should be:
 - On a disk with enough IO bandwidth. If the cache disk runs out of IO bandwidth, all
   fetches, and probably the entire server, slows down.
 
-{{< alert type="warning" >}}
-
-All existing data in the specified directory will be removed.
-Take care not to use a directory with existing data.
-
-{{< /alert >}}
+> [!warning]
+> All existing data in the specified directory will be removed.
+> Take care not to use a directory with existing data.
 
 By default, the cache storage directory is set to a subdirectory of the first Gitaly storage
 defined in the configuration file.

@@ -229,12 +229,9 @@ The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitla
   Leverage this block to render a rich help text. To render a plain text help text, prefer the `help` parameter.
 ```
 
-{{< alert type="note" >}}
-
-**The toggle ViewComponent is special as it depends on the Vue.js component.**
-To actually initialize this component, make sure to call the `initToggle` helper from `~/toggles`.
-
-{{< /alert >}}
+> [!note]
+> **The toggle ViewComponent is special as it depends on the Vue.js component.**
+> To actually initialize this component, make sure to call the `initToggle` helper from `~/toggles`.
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/toggle_component.rb).

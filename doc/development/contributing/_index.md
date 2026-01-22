@@ -23,12 +23,9 @@ For a step-by-step guide for first-time contributors, see [Tutorial: Make a GitL
 1. [Make changes and open a merge request](#make-changes-and-open-a-merge-request)
 1. Your merge request is triaged, reviewed, and can then be incorporated into the product.
 
-{{< alert type="note" >}}
-
-All contributions must be submitted in English. GitLab engineering work is done in English,
-and merge requests and issues in other languages cannot be reviewed or accepted.
-
-{{< /alert >}}
+> [!note]
+> All contributions must be submitted in English. GitLab engineering work is done in English,
+> and merge requests and issues in other languages cannot be reviewed or accepted.
 
 ## GitLab technologies
 

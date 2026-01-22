@@ -754,12 +754,9 @@ use `percentage_of_actors`.
 
 #### Use actors for verifying in production
 
-{{< alert type="warning" >}}
-
-Using production as a testing environment is not recommended. Use our testing
-environments for testing features that are not production-ready.
-
-{{< /alert >}}
+> [!warning]
+> Using production as a testing environment is not recommended. Use our testing
+> environments for testing features that are not production-ready.
 
 While the staging environment provides a way to test features in an environment
 that resembles production, it doesn't allow you to compare before-and-after
@@ -1101,12 +1098,9 @@ Deferring jobs can be useful during an incident where contentious behavior from
 worker instances are saturating infrastructure resources (such as database and database connection pool).
 The implementation can be found at [SkipJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/skip_jobs.rb).
 
-{{< alert type="note" >}}
-
-Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to remove the
-feature flag after the worker is deemed safe to continue processing.
-
-{{< /alert >}}
+> [!note]
+> Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to remove the
+> feature flag after the worker is deemed safe to continue processing.
 
 When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
 use a **percentage of time** rollout. For example:

@@ -370,12 +370,9 @@ are supported and can be added if needed.
 In this section, you'll be guided through configuring an external Redis instance
 to be used with GitLab.
 
-{{< alert type="note" >}}
-
-Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< /alert >}}
+> [!note]
+> Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
+> Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 ### Provide your own Redis instance
 
@@ -630,12 +627,9 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-{{< alert type="note" >}}
-
-If you find that the environment's Sidekiq job processing is slow with long queues
-you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< /alert >}}
+> [!note]
+> If you find that the environment's Sidekiq job processing is slow with long queues
+> you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 {{< alert type="note" >}}
 

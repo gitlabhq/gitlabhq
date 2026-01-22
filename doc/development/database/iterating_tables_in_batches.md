@@ -301,12 +301,9 @@ To address this problem, we have two options:
 - Create another, conditional index to cover the new query.
 - Replace the index with a more generalized configuration.
 
-{{< alert type="note" >}}
-
-Having multiple indexes on the same table and on the same columns could be a performance bottleneck
-when writing data.
-
-{{< /alert >}}
+> [!note]
+> Having multiple indexes on the same table and on the same columns could be a performance bottleneck
+> when writing data.
 
 Let's consider the following index (avoid):
 

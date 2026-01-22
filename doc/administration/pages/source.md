@@ -12,12 +12,9 @@ title: GitLab Pages administration for self-compiled installations
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Before attempting to enable GitLab Pages, first make sure you have
-[installed GitLab](../../install/self_compiled/_index.md) successfully.
-
-{{< /alert >}}
+> [!note]
+> Before attempting to enable GitLab Pages, first make sure you have
+> [installed GitLab](../../install/self_compiled/_index.md) successfully.
 
 This document explains how to configure GitLab Pages for self-compiled GitLab installations.
 
@@ -81,12 +78,9 @@ host that GitLab runs. For example, an entry would look like this:
 Where `example.io` is the domain to serve GitLab Pages from,
 and `192.0.2.1` is the IP address of your GitLab instance.
 
-{{< alert type="note" >}}
-
-You should not use the GitLab domain to serve user pages. For more information
-see the [security section](#security).
-
-{{< /alert >}}
+> [!note]
+> You should not use the GitLab domain to serve user pages. For more information
+> see the [security section](#security).
 
 ## Configuration
 

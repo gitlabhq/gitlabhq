@@ -26,12 +26,9 @@ The GitLab Pages daemon runs as a separate process and can be configured either 
 as GitLab or on its own dedicated infrastructure.
 For user documentation, see [GitLab Pages](../../user/project/pages/_index.md).
 
-{{< alert type="note" >}}
-
-This guide is for Linux package installations. If you have a self-compiled GitLab installation, see
-[GitLab Pages administration for self-compiled installations](source.md).
-
-{{< /alert >}}
+> [!note]
+> This guide is for Linux package installations. If you have a self-compiled GitLab installation, see
+> [GitLab Pages administration for self-compiled installations](source.md).
 
 ## The GitLab Pages daemon
 
@@ -675,12 +672,9 @@ Pages access control is disabled by default. To enable it:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Users can now configure it in their [projects' settings](../../user/project/pages/pages_access_control.md).
 
-{{< alert type="note" >}}
-
-For this setting to be effective with multi-node setups, it has to be applied to
-all the App nodes and Sidekiq nodes.
-
-{{< /alert >}}
+> [!note]
+> For this setting to be effective with multi-node setups, it has to be applied to
+> all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
@@ -852,12 +846,9 @@ To configure the certificates in your GitLab Pages server:
 
 ### ZIP serving and cache configuration
 
-{{< alert type="warning" >}}
-
-These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
-change these settings only if absolutely necessary. Use extreme caution.
-
-{{< /alert >}}
+> [!warning]
+> These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
+> change these settings only if absolutely necessary. Use extreme caution.
 
 GitLab Pages can serve content from ZIP archives through object storage.
 It uses an in-memory cache to increase the performance when serving content from a ZIP
@@ -1284,12 +1275,9 @@ The following [object storage](../object_storage.md) settings are:
 | `remote_directory` | The name of the bucket where Pages site content is stored. | |
 | `connection` | Various connection options described below. | |
 
-{{< alert type="note" >}}
-
-If you want to stop using and disconnect the NFS server, you need to
-[explicitly disable local storage](#disable-pages-local-storage).
-
-{{< /alert >}}
+> [!note]
+> If you want to stop using and disconnect the NFS server, you need to
+> [explicitly disable local storage](#disable-pages-local-storage).
 
 ### S3-compatible connection settings
 

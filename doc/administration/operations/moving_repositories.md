@@ -174,12 +174,9 @@ In this case, there are ways you can copy all your repositories from `/var/opt/g
 - The target directory contains an outdated copy of the repositories.
 - When you have thousands of repositories.
 
-{{< alert type="warning" >}}
-
-Each of the approaches can or does overwrite data in the target directory `/mnt/gitlab/repositories`. You must correctly
-specify the source and the target.
-
-{{< /alert >}}
+> [!warning]
+> Each of the approaches can or does overwrite data in the target directory `/mnt/gitlab/repositories`. You must correctly
+> specify the source and the target.
 
 ### Use backup and restore (recommended)
 
@@ -233,12 +230,9 @@ You can use a `rsync` to move repositories if:
 - The target directory already contains a partial or outdated copy of the repositories, which means copying all the data
   again with `tar` is inefficient.
 
-{{< alert type="warning" >}}
-
-You must use the `--delete` option when using `rsync`. Using `rsync` without `--delete` can cause data loss and
-repository corruption. For more information, see [issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
-
-{{< /alert >}}
+> [!warning]
+> You must use the `--delete` option when using `rsync`. Using `rsync` without `--delete` can cause data loss and
+> repository corruption. For more information, see [issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
 The `/.` in the following command is very important, otherwise you can get the wrong directory structure in the target
 directory. If you want to see progress, replace `-a` with `-av`.

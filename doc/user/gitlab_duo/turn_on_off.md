@@ -102,11 +102,6 @@ To change GitLab Duo Core availability:
 
 GitLab Duo Agent Platform includes GitLab Duo Chat (Agentic), agents, and flows. This setting is on by default.
 
-This setting does not override other GitLab Duo settings. For GitLab Duo Agent Platform to work:
-
-- GitLab Duo must be enabled.
-- Experiment and beta features must be enabled because GitLab Duo Agent Platform is in beta.
-
 ### On GitLab.com
 
 On GitLab.com, you can control GitLab Duo Agent Platform availability for your top-level group (namespace).

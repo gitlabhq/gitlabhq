@@ -11,12 +11,9 @@ in our guidelines. For example, you can use batched background
 migrations to migrate data that's stored in a single JSON column
 to a separate table instead.
 
-{{< alert type="note" >}}
-
-Batched background migrations replaced the legacy background migrations framework.
-Check that documentation in reference to any changes involving that framework.
-
-{{< /alert >}}
+> [!note]
+> Batched background migrations replaced the legacy background migrations framework.
+> Check that documentation in reference to any changes involving that framework.
 
 {{< alert type="note" >}}
 
@@ -279,12 +276,9 @@ queue_batched_background_migration(
   )
 ```
 
-{{< alert type="note" >}}
-
-This helper raises an error if the number of provided job arguments does not match
-the number of [job arguments](#use-job-arguments) defined in `JOB_CLASS_NAME`.
-
-{{< /alert >}}
+> [!note]
+> This helper raises an error if the number of provided job arguments does not match
+> the number of [job arguments](#use-job-arguments) defined in `JOB_CLASS_NAME`.
 
 Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
@@ -507,12 +501,9 @@ queue_batched_background_migration(
 )
 ```
 
-{{< alert type="note" >}}
-
-If the number of defined job arguments does not match the number of job arguments provided when
-scheduling the migration, `queue_batched_background_migration` raises an error.
-
-{{< /alert >}}
+> [!note]
+> If the number of defined job arguments does not match the number of job arguments provided when
+> scheduling the migration, `queue_batched_background_migration` raises an error.
 
 In this example, `copy_from` returns `name`, and `copy_to` returns `name_convert_to_text`:
 
@@ -794,12 +785,9 @@ Estimations may be affected by the [migration optimization mechanism](#migration
 
 ### Cleaning up a batched background migration
 
-{{< alert type="note" >}}
-
-Cleaning up any remaining background migrations must be done in either a major
-or minor release. You must not do this in a patch release.
-
-{{< /alert >}}
+> [!note]
+> Cleaning up any remaining background migrations must be done in either a major
+> or minor release. You must not do this in a patch release.
 
 Because background migrations can take a long time, you can't immediately clean
 things up after queueing them. For example, you can't drop a column used in the

@@ -55,12 +55,9 @@ CREATE TABLE audit_events (
 PARTITION BY RANGE(created_at);
 ```
 
-{{< alert type="note" >}}
-
-The primary key of a partitioned table must include the partition key as
-part of the primary key definition.
-
-{{< /alert >}}
+> [!note]
+> The primary key of a partitioned table must include the partition key as
+> part of the primary key definition.
 
 And we might have a list of partitions for the table, such as:
 
@@ -253,12 +250,9 @@ This step [queues a batched background migration](../batched_background_migratio
 
 ### Step 3: Post-backfill cleanup (Release after a required stop post Step 2)
 
-{{< alert type="warning" >}}
-
-A [required stop](../required_stops.md) must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully
-in GitLab Self-Managed instances.
-
-{{< /alert >}}
+> [!warning]
+> A [required stop](../required_stops.md) must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully
+> in GitLab Self-Managed instances.
 
 In this step,
 add another post-deployment migration that cleans up after the

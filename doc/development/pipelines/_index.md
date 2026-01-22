@@ -626,7 +626,7 @@ First, review the coverage data from the `gitlab.lcov` artifact from the
 The `rspec:coverage` job might have failed to gather coverage data for various
 [reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/578019).
 
-It is possible the `rspec:undercoverage` job will detect undercoverage for a method call but does not display [warnings](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218529). 
+It is possible the `rspec:undercoverage` job will detect undercoverage for a method call but does not display [warnings](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218529).
 
 ```ruby
 loc: app/controllers/projects/attestations_controller.rb:84:102, coverage: 87.5%
@@ -707,7 +707,7 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 We used to skip tests that are [known to be flaky](../testing_guide/unhealthy_tests.md#automatic-retries-and-flaky-tests-detection),
 but we stopped doing so since that could actually lead to actual broken `master`.
 Instead, we introduced
-[a fast-quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/)
+[a fast-quarantining process](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/#fast-quarantine)
 to proactively quarantine any flaky test reported in `#master-broken` incidents.
 
 This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`

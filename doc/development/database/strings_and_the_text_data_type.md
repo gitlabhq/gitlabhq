@@ -33,12 +33,9 @@ but only for updating the declaration of the columns. We can then validate it at
 `VALIDATE CONSTRAINT`, which requires only a `SHARE UPDATE EXCLUSIVE LOCK` (only conflicts with other
 validations and index creation while it allows reads and writes).
 
-{{< alert type="note" >}}
-
-Don't use text columns for `encrypts` attributes. Use a
-[`:jsonb` column](../migration_style_guide.md#encrypted-attributes) instead
-
-{{< /alert >}}
+> [!note]
+> Don't use text columns for `encrypts` attributes. Use a
+> [`:jsonb` column](../migration_style_guide.md#encrypted-attributes) instead
 
 ## Create a new table with text columns
 
@@ -169,12 +166,9 @@ other processes that try to access it while running the update.
 Also, after checking our production database, we know that there are `issues` with more characters in
 their title than the 1024 character limit, so we cannot add and validate the constraint in one step.
 
-{{< alert type="note" >}}
-
-Even if we did not have any record with a title larger than the provided limit, another
-instance of GitLab could have such records, so we would follow the same process either way.
-
-{{< /alert >}}
+> [!note]
+> Even if we did not have any record with a title larger than the provided limit, another
+> instance of GitLab could have such records, so we would follow the same process either way.
 
 #### Prevent new invalid records (current release)
 

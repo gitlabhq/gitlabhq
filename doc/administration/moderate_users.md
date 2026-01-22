@@ -306,12 +306,9 @@ To do this:
 The user's state is set to active and they consume a
 [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
-{{< alert type="note" >}}
-
-A deactivated user can also reactivate their account themselves by logging back in through the UI.
-Users can also be reactivated using the [GitLab API](../api/user_moderation.md#reactivate-a-user).
-
-{{< /alert >}}
+> [!note]
+> A deactivated user can also reactivate their account themselves by logging back in through the UI.
+> Users can also be reactivated using the [GitLab API](../api/user_moderation.md#reactivate-a-user).
 
 ## Ban and unban users
 

@@ -633,12 +633,9 @@ To prevent storage cost increases, configure a lifecycle policy in your S3 bucke
 The container registry does not automatically clean these up.
 A three-day expiration policy for incomplete multipart uploads works well for most usage patterns.
 
-{{< alert type="note" >}}
-
-`loglevel` settings differ between the [`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md#configuration-parameters) and [`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md#configuration-parameters) drivers.
-If you set the `loglevel` for the wrong driver, it is ignored and a warning message is printed.
-
-{{< /alert >}}
+> [!note]
+> `loglevel` settings differ between the [`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md#configuration-parameters) and [`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md#configuration-parameters) drivers.
+> If you set the `loglevel` for the wrong driver, it is ignored and a warning message is printed.
 
 When using MinIO with the `s3_v2` driver, add the `checksum_disabled` parameter to disable AWS checksums:
 
@@ -1390,12 +1387,9 @@ Prerequisites:
 - You must have installed GitLab by using a Linux package or the
   [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
 
-{{< alert type="note" >}}
-
-Retention policies in an object storage provider, such as Amazon S3 Lifecycle, may prevent
-objects from being properly deleted.
-
-{{< /alert >}}
+> [!note]
+> Retention policies in an object storage provider, such as Amazon S3 Lifecycle, may prevent
+> objects from being properly deleted.
 
 The container registry can use considerable amounts of storage space, and you might want to
 [reduce storage usage](../../user/packages/container_registry/reduce_container_registry_storage.md).

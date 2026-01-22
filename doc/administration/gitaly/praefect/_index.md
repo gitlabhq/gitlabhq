@@ -37,12 +37,9 @@ Using Gitaly Cluster (Praefect) increases fault tolerance by:
 - Detecting Gitaly node failures.
 - Automatically routing Git requests to an available Gitaly node.
 
-{{< alert type="note" >}}
-
-Technical support for Gitaly Cluster (Praefect) is limited to GitLab Premium and Ultimate
-customers.
-
-{{< /alert >}}
+> [!note]
+> Technical support for Gitaly Cluster (Praefect) is limited to GitLab Premium and Ultimate
+> customers.
 
 The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly Cluster (Praefect):
 
@@ -72,12 +69,9 @@ The availability objectives for Gitaly Cluster (Praefect) assuming a single node
 
 Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/epics/8903).
 
-{{< alert type="warning" >}}
-
-If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
-RPO and RTO discussed previously.
-
-{{< /alert >}}
+> [!warning]
+> If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
+> RPO and RTO discussed previously.
 
 ## Before deploying Gitaly Cluster (Praefect)
 

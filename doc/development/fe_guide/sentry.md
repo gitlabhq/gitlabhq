@@ -12,12 +12,9 @@ GitLab.com is configured to report to our Sentry instance at **Admin** > **Metri
 
 We monitor two kinds of data: **Errors** and **Performance**.
 
-{{< alert type="note" >}}
-
-The [Frontend Observability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/frontend-observability/) is looking to improve how we use Sentry. GitLab team members can provide feedback at
-[issue #427402](https://gitlab.com/gitlab-org/gitlab/-/issues/427402).
-
-{{< /alert >}}
+> [!note]
+> The [Frontend Observability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/frontend-observability/) is looking to improve how we use Sentry. GitLab team members can provide feedback at
+> [issue #427402](https://gitlab.com/gitlab-org/gitlab/-/issues/427402).
 
 ## Start using Sentry
 
@@ -69,12 +66,9 @@ Once errors are captured, they appear in Sentry. For example you can see the
 
 In the list, select any error to see more details... and ideally propose a solution for it!
 
-{{< alert type="note" >}}
-
-We suggest filtering errors by the environments `gprd` and `gprd-cny`, as there is some spam in our
-environment data.
-
-{{< /alert >}}
+> [!note]
+> We suggest filtering errors by the environments `gprd` and `gprd-cny`, as there is some spam in our
+> environment data.
 
 ### Exploring error data
 

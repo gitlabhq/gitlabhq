@@ -33,9 +33,11 @@ module Integrations
       end
 
       def activity
+        subtitle = project_link ? "in #{project_link}" : ""
+
         {
           title: "#{issue_type} #{state} by #{strip_markup(user_combined_name)}",
-          subtitle: "in #{project_link}",
+          subtitle: subtitle,
           text: issue_link,
           image: user_avatar
         }
@@ -48,7 +50,8 @@ module Integrations
       private
 
       def message
-        "[#{project_link}] #{issue_type} #{issue_link} #{state} by #{strip_markup(user_combined_name)}"
+        project_part = project_link ? "[#{project_link}] " : ""
+        "#{project_part}#{issue_type} #{issue_link} #{state} by #{strip_markup(user_combined_name)}"
       end
 
       def opened_issue?
@@ -65,6 +68,8 @@ module Integrations
       end
 
       def project_link
+        return if project_name.blank?
+
         link(project_name, project_url)
       end
 

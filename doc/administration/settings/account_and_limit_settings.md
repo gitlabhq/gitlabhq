@@ -249,12 +249,9 @@ number of minutes of inactivity set when you [customize your session duration](#
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history. This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history. This feature is not ready for production use.
 
 GitLab administrators can choose to customize the session duration (in minutes) for Git operations
 when 2FA is enabled. The default is 15 and this can be set to a value between 1 and 10080.
@@ -673,12 +670,9 @@ By default, new users can create top-level groups. GitLab administrators can pre
 1. Expand **Account and limit**.
 1. Clear the **Allow new users to create top-level groups** checkbox.
 
-{{< alert type="note" >}}
-
-This setting applies only to users added after you turn off the setting. Existing users
-can still create top-level groups.
-
-{{< /alert >}}
+> [!note]
+> This setting applies only to users added after you turn off the setting. Existing users
+> can still create top-level groups.
 
 ## Prevent non-members from creating projects and groups
 

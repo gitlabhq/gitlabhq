@@ -9,12 +9,9 @@ If you want to contribute to the GitLab codebase and want a development environm
 your changes, you can use
 [GDK-in-a-box](https://gitlab-org.gitlab.io/gitlab-development-kit/gdk_in_a_box/). GDK-in-a-box is available as a multi-platform container image, pre-configured with [the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
-{{< alert type="warning" >}}
-
-GDK-in-a-box Virtual Machine (VM) images are no longer supported and
-were deprecated in favor of the container-based images.
-
-{{< /alert >}}
+> [!warning]
+> GDK-in-a-box Virtual Machine (VM) images are no longer supported and
+> were deprecated in favor of the container-based images.
 
 The GDK is a local development environment that includes an installation of GitLab Self-Managed,
 sample projects, and administrator access with which you can test functionality.

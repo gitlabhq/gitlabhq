@@ -23,9 +23,13 @@ Each SAST analyzer supports different levels of customization through the rulese
 file. The Semgrep-based SAST analyzer and GitLab Advanced SAST analyzer have a
 [default ruleset](rules.md).
 
-Rule: An individual security check or detection pattern that scans for specific vulnerabilities.
+## Ruleset glossary
 
-Ruleset: A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
+Rule
+: An individual security check or detection pattern that scans for specific vulnerabilities.
+
+Ruleset
+: A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
 
 ## Rule customization options
 
@@ -73,24 +77,21 @@ The following table describes what happens when you customize SAST rulesets:
 
 You can provide your ruleset customizations in the following ways:
 
-- Local ruleset file: Define your customizations in a `sast-ruleset.toml` file committed to your
+Local ruleset file
+: Define your customizations in a `sast-ruleset.toml` file committed to your
   repository. This approach keeps your ruleset configuration under version control alongside your
   code.
-- Remote ruleset file: Specify a remote location (Git repository, URL, or other source) where your
+
+Remote ruleset file
+: Specify a remote location (Git repository, URL, or other source) where your
   ruleset configuration is hosted. This approach lets you manage rulesets centrally and reuse them
   across multiple projects.
 
 > [!note]
 > A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
 
-You provide your customizations by using passthroughs. A passthrough is a configuration source that
-provides ruleset customizations to the scanner. Passthroughs can pull configuration from different
-locations, such as a file in your repository, a remote Git repository, a URL, or in the ruleset
-configuration file. You can combine several methods in a single ruleset by using multiple
-passthroughs. You can also choose how subsequent passthroughs in the chain are handled, either
-overwriting or appending to the previous configuration. At runtime, multiple passthroughs are
-composed into a chain and evaluated to produce a complete ruleset configuration that the scanner
-uses.
+You provide your customizations by using [passthroughs](#passthroughs), which are configuration
+sources that can be combined into a ruleset.
 
 ### Local ruleset file
 
@@ -140,7 +141,7 @@ variables:
 
 See [specify a private remote configuration example](#specify-a-private-remote-configuration) for advanced usage.
 
-### Troubleshooting remote configuration files
+#### Troubleshooting remote configuration files
 
 If remote configuration file doesn't seem to be applying customizations correctly, the causes can be:
 
@@ -149,6 +150,16 @@ If remote configuration file doesn't seem to be applying customizations correctl
    - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/_index.md) to `false` to ignore the local configuration file.
 1. There is a problem with authentication.
    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
+
+### Passthroughs
+
+A passthrough is a configuration source that provides ruleset customizations to the scanner.
+Passthroughs can pull configuration from different locations, such as a file in your repository, a
+remote Git repository, a URL, or in the ruleset configuration file. You can combine several methods
+in a single ruleset by using multiple passthroughs. You can also choose how subsequent passthroughs
+in the chain are handled, either overwriting or appending to the previous configuration. At runtime,
+multiple passthroughs are composed into a chain and evaluated to produce a complete ruleset
+configuration that the scanner uses.
 
 ## Schema
 

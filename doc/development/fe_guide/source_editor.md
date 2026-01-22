@@ -65,12 +65,9 @@ An instance of Source Editor accepts the following configuration options:
 | `blobGlobalId` | `false` | `String`: An auto-generated property.|
 | Editor Options | `false` | `Object(s)`: Any property outside of the list above is treated as an Editor Option for this particular instance. Use this field to override global Editor Options on the instance level. A full [index of Editor Options](https://microsoft.github.io/monaco-editor/docs.html#enums/editor.EditorOption.html) is available. |
 
-{{< alert type="note" >}}
-
-The `blobGlobalId` property may be removed in a future release. Use the standard blob properties
-instead unless you have a specific use case that requires `blobGlobalId`.
-
-{{< /alert >}}
+> [!note]
+> The `blobGlobalId` property may be removed in a future release. Use the standard blob properties
+> instead unless you have a specific use case that requires `blobGlobalId`.
 
 ## API
 

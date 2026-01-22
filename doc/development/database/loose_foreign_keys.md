@@ -464,12 +464,9 @@ def show
 end
 ```
 
-{{< alert type="note" >}}
-
-This example is unlikely in GitLab, because we usually look up the parent models to perform
-permission checks.
-
-{{< /alert >}}
+> [!note]
+> This example is unlikely in GitLab, because we usually look up the parent models to perform
+> permission checks.
 
 ## A note on `dependent: :destroy` and `dependent: :nullify`
 

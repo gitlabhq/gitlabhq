@@ -97,12 +97,9 @@ Considering a given release milestone, such as 13.0.
 After checking our production database, we know that there are `epics` with `NULL` descriptions,
 so we cannot add and validate the constraint in one step.
 
-{{< alert type="note" >}}
-
-Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
-such records, so we would follow the same process either way.
-
-{{< /alert >}}
+> [!note]
+> Even if we did not have any epic with a `NULL` description, another instance of GitLab could have
+> such records, so we would follow the same process either way.
 
 #### Prevent new invalid records (current release)
 

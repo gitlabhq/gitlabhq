@@ -36,12 +36,9 @@ To configure default settings for an integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-This may affect all or most of the groups and projects on your GitLab instance. Review the details
-below.
-
-{{< /alert >}}
+> [!warning]
+> This may affect all or most of the groups and projects on your GitLab instance. Review the details
+> below.
 
 If this is the first time you are setting up instance-level settings for an integration:
 

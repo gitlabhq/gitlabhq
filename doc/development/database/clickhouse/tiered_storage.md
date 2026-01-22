@@ -82,12 +82,9 @@ PARTITION BY toYYYYMM(event_date)
 SETTINGS storage_policy = 'move_from_local_disks_to_gcs'
 ```
 
-{{< alert type="note" >}}
-
-In this storage policy, the move happens implicitly. It is also possible to keep
-_hot_ data on local disks for a fixed period of time and then move them as _cold_.
-
-{{< /alert >}}
+> [!note]
+> In this storage policy, the move happens implicitly. It is also possible to keep
+> _hot_ data on local disks for a fixed period of time and then move them as _cold_.
 
 This approach is possible with
 [Table TTLs](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#mergetree-table-ttl),

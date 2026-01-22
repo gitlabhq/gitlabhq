@@ -239,12 +239,9 @@ To check a project's repository checksums across on all Gitaly nodes, run the
 
 ### Accept data loss
 
-{{< alert type="warning" >}}
-
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
-[recovery efforts](#data-recovery) must be performed before using it.
-
-{{< /alert >}}
+> [!warning]
+> `accept-dataloss` causes permanent data loss by overwriting other versions of the repository. Data
+> [recovery efforts](#data-recovery) must be performed before using it.
 
 If it is not possible to bring one of the up to date replicas back online, you may have to accept data
 loss. When accepting data loss, Praefect marks the chosen replica of the repository as the latest version
@@ -258,12 +255,9 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 ### Enable writes or accept data loss
 
-{{< alert type="warning" >}}
-
-`accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
-Data [recovery efforts](#data-recovery) must be performed before using it.
-
-{{< /alert >}}
+> [!warning]
+> `accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
+> Data [recovery efforts](#data-recovery) must be performed before using it.
 
 Praefect provides the following subcommands to re-enable writes or accept data loss. If it is not possible to bring one
 of the up-to-date nodes back online, you might have to accept data loss:

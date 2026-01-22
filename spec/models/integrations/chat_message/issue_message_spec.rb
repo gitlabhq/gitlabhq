@@ -85,6 +85,25 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
         expect(subject.attachments).to be_empty
       end
     end
+
+    context 'when project_name is blank' do
+      before do
+        args[:project_name] = ''
+      end
+
+      it 'returns message without project' do
+        expect(subject.pretext).to eq('Issue <http://url.com|#100 Issue title> opened by Test User (test.user)')
+      end
+
+      it 'returns activity without subtitle' do
+        expect(subject.activity).to eq({
+          title: 'Issue opened by Test User (test.user)',
+          subtitle: '',
+          text: '[#100 Issue title](http://url.com)',
+          image: 'http://someavatar.com'
+        })
+      end
+    end
   end
 
   context 'with markdown' do
@@ -119,6 +138,25 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
         expect(subject.activity).to eq({
           title: 'Issue closed by Test User (test.user)',
           subtitle: 'in [project_name](http://somewhere.com)',
+          text: '[#100 Issue title](http://url.com)',
+          image: 'http://someavatar.com'
+        })
+      end
+    end
+
+    context 'when project_name is blank' do
+      before do
+        args[:project_name] = ''
+      end
+
+      it 'returns message without project' do
+        expect(subject.pretext).to eq('Issue [#100 Issue title](http://url.com) opened by Test User (test.user)')
+      end
+
+      it 'returns activity without subtitle' do
+        expect(subject.activity).to eq({
+          title: 'Issue opened by Test User (test.user)',
+          subtitle: '',
           text: '[#100 Issue title](http://url.com)',
           image: 'http://someavatar.com'
         })
