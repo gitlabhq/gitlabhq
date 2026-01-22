@@ -455,11 +455,8 @@ calculated based on the Sidekiq shard's capacity (`threads * maxReplicas * maxPe
 - `maxReplicas`: Number of max replicas configured for the shard. [Example for `catchall` shard](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/d322295ee8c4aa1681d92695678af232c4135cfb/releases/gitlab/values/gprd.yaml.gotmpl#L709-710).
 - `maxPercentage`: A percentage based on the worker's urgency. The [configuration](https://gitlab.com/gitlab-org/gitlab/blob/69deb38d99685f72d7e8494fe503d80b93b650ed/app/workers/concerns/worker_attributes.rb#L44-48).
 
-{{< alert type="note" >}}
-
-This only applies if the static `concurrency_limit` attribute has not been set.
-
-{{< /alert >}}
+> [!note]
+> This only applies if the static `concurrency_limit` attribute has not been set.
 
 To override the default `maxPercentage`, you can define the `max_concurrency_limit_percentage` attribute:
 

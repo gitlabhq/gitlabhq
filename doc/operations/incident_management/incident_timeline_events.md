@@ -83,12 +83,9 @@ Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-{{< alert type="warning" >}}
-
-Internal notes added to incident timelines in public and internal
-incidents are visible to anyone with access to the incident.
-
-{{< /alert >}}
+> [!warning]
+> Internal notes added to incident timelines in public and internal
+> incidents are visible to anyone with access to the incident.
 
 To create a timeline event from a comment on the incident:
 

@@ -13,12 +13,9 @@ title: Install GitLab under a relative URL
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Configuring a relative URL for GitLab has [known issues with Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/456427) and
-[testing limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/439943).
-
-{{< /alert >}}
+> [!warning]
+> Configuring a relative URL for GitLab has [known issues with Geo](https://gitlab.com/gitlab-org/gitlab/-/issues/456427) and
+> [testing limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/439943).
 
 While you should install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
@@ -61,12 +58,9 @@ See the [requirements](requirements.md) document for more information.
 
 ## Enable relative URL in GitLab
 
-{{< alert type="note" >}}
-
-Do not make any changes to your web server configuration file regarding
-relative URL. The relative URL support is implemented by GitLab Workhorse.
-
-{{< /alert >}}
+> [!note]
+> Do not make any changes to your web server configuration file regarding
+> relative URL. The relative URL support is implemented by GitLab Workhorse.
 
 ---
 

@@ -134,11 +134,8 @@ For information on testing migrations, review our
 
 ### Access the console with `psql`
 
-{{< alert type="note" >}}
-
-You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
-
-{{< /alert >}}
+> [!note]
+> You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
 
 To access the database lab instances, you must:
 

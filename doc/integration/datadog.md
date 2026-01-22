@@ -45,12 +45,9 @@ failures and performance issues.
 
 For more information, see the [Datadog CI Visibility documentation](https://docs.datadoghq.com/continuous_integration/pipelines/?tab=gitlab).
 
-{{< alert type="warning" >}}
-
-Datadog CI Visibility is priced per committer. Using this feature might affect your Datadog bill.
-For details, see the [Datadog pricing page](https://www.datadoghq.com/pricing/?product=ci-pipeline-visibility#products).
-
-{{< /alert >}}
+> [!warning]
+> Datadog CI Visibility is priced per committer. Using this feature might affect your Datadog bill.
+> For details, see the [Datadog pricing page](https://www.datadoghq.com/pricing/?product=ci-pipeline-visibility#products).
 
 This feature is based on [Webhooks](../user/project/integrations/webhooks.md),
 and only requires configuration in GitLab:

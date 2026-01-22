@@ -13,11 +13,8 @@ At a high level, to add a new relation to the direct transfer importer, you must
 1. Add a label for the newly created relation to display in the UI.
 1. Ensure sufficient test coverage.
 
-{{< alert type="note" >}}
-
-To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
-
-{{< /alert >}}
+> [!note]
+> To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
 
 ## Export from source
 
@@ -287,11 +284,8 @@ We specified:
 - `minimum_source_version: '16.11.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
   so this pipeline only runs if source version is 16.11 or later.
 
-{{< alert type="note" >}}
-
-If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.
-
-{{< /alert >}}
+> [!note]
+> If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.
 
 #### Covering a pipeline with tests
 

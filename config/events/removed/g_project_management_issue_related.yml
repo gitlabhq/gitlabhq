@@ -1,7 +1,7 @@
 ---
-description: An issue was unrelated to another issue
+description: An issue was marked as related to another issue
 internal_events: true
-action: g_project_management_issue_unrelated
+action: g_project_management_issue_related
 extra_properties:
 identifiers:
 - project
@@ -14,4 +14,6 @@ tiers:
 - free
 - premium
 - ultimate
-
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218523
+milestone_removed: '18.9'

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals do
+RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals, feature_category: :pipeline_composition do
   let(:left) { double('left') }
   let(:right) { double('right') }
 
@@ -64,6 +64,53 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Equals do
 
       with_them do
         it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'with boolean and string comparison' do
+      context 'when boolean matches string representation' do
+        where(:left_value, :right_value) do
+          [
+            [true, 'true'],
+            ['true', true],
+            [false, 'false'],
+            ['false', false]
+          ]
+        end
+
+        with_them do
+          it { is_expected.to eq(true) }
+        end
+      end
+
+      context 'when boolean does not match string representation' do
+        where(:left_value, :right_value) do
+          [
+            [true, 'false'],
+            ['false', true],
+            [false, 'true'],
+            ['true', false]
+          ]
+        end
+
+        with_them do
+          it { is_expected.to eq(false) }
+        end
+      end
+    end
+
+    context 'with both values as booleans' do
+      where(:left_value, :right_value, :expected) do
+        [
+          [true, true, true],
+          [false, false, true],
+          [true, false, false],
+          [false, true, false]
+        ]
+      end
+
+      with_them do
+        it { is_expected.to eq(expected) }
       end
     end
   end

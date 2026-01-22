@@ -7,11 +7,8 @@ title: ClickHouse within GitLab
 
 This document gives a high-level overview of how to develop features using ClickHouse in the GitLab Rails application.
 
-{{< alert type="note" >}}
-
-Most of the tooling and APIs are considered unstable.
-
-{{< /alert >}}
+> [!note]
+> Most of the tooling and APIs are considered unstable.
 
 ## GDK setup
 
@@ -180,11 +177,8 @@ select dictGetOrDefault('project_traversal_paths_dictionary', 'traversal_path', 
 - `3`: Project ID value
 - `0/`: Default value in case the record cannot be found in the dictionary
 
-{{< alert type="note" >}}
-
-Depending on the dictionary configuration, data loaded by the dictionary might be stale. When using dictionaries, always consider consistency requirements and ways to correct inconsistent data eventually.
-
-{{< /alert >}}
+> [!note]
+> Depending on the dictionary configuration, data loaded by the dictionary might be stale. When using dictionaries, always consider consistency requirements and ways to correct inconsistent data eventually.
 
 ## Post deployment migrations
 
@@ -318,11 +312,8 @@ CsvBuilder::Gzip.new(iterator, column_mapping).render do |tempfile|
 end
 ```
 
-{{< alert type="note" >}}
-
-It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
-
-{{< /alert >}}
+> [!note]
+> It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
 
 ## Iterating over tables
 

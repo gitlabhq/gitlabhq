@@ -31,6 +31,7 @@ If you select a specific model for a feature, the feature uses that model until 
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/18818) in GitLab 18.5. Feature flag `ai_model_switching` enabled.
 - Feature flag `ai_model_switching` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.7.
+- Feature flag `duo_agent_platform_model_selection` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/218591) in GitLab 18.9.
 
 {{< /history >}}
 

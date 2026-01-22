@@ -140,12 +140,9 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-{{< alert type="note" >}}
-
-Ensure your requests are smaller than the
-[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
-
-{{< /alert >}}
+> [!note]
+> Ensure your requests are smaller than the
+> [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
 #### Example request body
 
@@ -218,12 +215,9 @@ can be a nested JSON object. For example:
 }
 ```
 
-{{< alert type="note" >}}
-
-Ensure your requests are smaller than the
-[payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
-
-{{< /alert >}}
+> [!note]
+> Ensure your requests are smaller than the
+> [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
 #### Prometheus severity options
 
@@ -296,12 +290,9 @@ Example request payload:
 }
 ```
 
-{{< alert type="note" >}}
-
-When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
-When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
-
-{{< /alert >}}
+> [!note]
+> When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
+> When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
 
 ## Authorization
 
@@ -348,12 +339,9 @@ curl --request POST \
   <username:password@url>
 ```
 
-{{< alert type="warning" >}}
-
-Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
-using one of the header options described previously if your tooling supports it.
-
-{{< /alert >}}
+> [!warning]
+> Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
+> using one of the header options described previously if your tooling supports it.
 
 ## Response body
 

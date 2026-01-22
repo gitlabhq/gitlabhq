@@ -12,12 +12,9 @@ title: Configure OpenID Connect in AWS to retrieve temporary credentials
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-`CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
-
-{{< /alert >}}
+> [!warning]
+> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial shows you how to use a GitLab CI/CD job with a JSON web token (JWT) to retrieve temporary credentials from AWS without storing secrets.
 To do this, you must configure OpenID Connect (OIDC) for ID federation between GitLab and AWS. For background and requirements for integrating GitLab using OIDC, see [Connect to cloud services](../_index.md).

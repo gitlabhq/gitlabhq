@@ -190,12 +190,9 @@ To set resource limits:
 kubectl patch deployment gitlab-runner -p '{"spec":{"template":{"spec":{"containers":[{"name":"gitlab-runner","resources":{"requests":{"cpu":"500m","memory":"256Mi"},"limits":{"cpu":"1000m","memory":"512Mi"}}}]}}}}'
 ```
 
-{{< alert type="note" >}}
-
-The feature to allow deployment patching from the Operator configuration is under development.
-For more information, see [merge request 197](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/merge_requests/197).
-
-{{< /alert >}}
+> [!note]
+> The feature to allow deployment patching from the Operator configuration is under development.
+> For more information, see [merge request 197](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/merge_requests/197).
 
 **High CPU usage patterns:**
 
@@ -372,12 +369,9 @@ resources:
     memory: "600Mi" # 100% headroom
 ```
 
-{{< alert type="note" >}}
-
-Memory usage varies significantly based on log volume. Jobs producing more than
-4 MB of logs require proportionally more memory.
-
-{{< /alert >}}
+> [!note]
+> Memory usage varies significantly based on log volume. Jobs producing more than
+> 4 MB of logs require proportionally more memory.
 
 ### Configuration examples
 

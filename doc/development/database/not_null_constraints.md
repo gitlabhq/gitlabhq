@@ -488,11 +488,8 @@ CREATE TABLE labels (
 
 #### Example
 
-{{< alert type="note" >}}
-
-The milestone number is just an example. Use the correct version.
-
-{{< /alert >}}
+> [!note]
+> The milestone number is just an example. Use the correct version.
 
 ```ruby
 # frozen_string_literal: true
@@ -555,11 +552,8 @@ CREATE TABLE labels (
 
 #### Example
 
-{{< alert type="note" >}}
-
-The milestone number is just an example. Use the correct version.
-
-{{< /alert >}}
+> [!note]
+> The milestone number is just an example. Use the correct version.
 
 ```ruby
 # frozen_string_literal: true

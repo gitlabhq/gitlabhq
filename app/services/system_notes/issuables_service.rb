@@ -35,8 +35,6 @@ module SystemNotes
     def relate_issuable(noteable_ref)
       body = "marked this #{noteable_name} as related to #{extract_issuable_reference(noteable_ref)}"
 
-      track_issue_event(:track_issue_related_action)
-
       create_note(NoteSummary.new(noteable, project, author, body, action: 'relate'))
     end
 
@@ -50,8 +48,6 @@ module SystemNotes
     # Returns the created Note object
     def unrelate_issuable(noteable_ref)
       body = "removed the relation with #{noteable_ref.to_reference(noteable.resource_parent)}"
-
-      track_issue_event(:track_issue_unrelated_action)
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'unrelate'))
     end

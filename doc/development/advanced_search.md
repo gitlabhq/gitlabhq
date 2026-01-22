@@ -413,11 +413,8 @@ All new indexes must have:
 Data types for primary and foreign keys must match the column type in the database. For example, the database column
 type `integer` maps to `integer` and `bigint` maps to `long` in the mapping.
 
-{{< alert type="warning" >}}
-
-[Nested fields](https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#_limits_on_nested_mappings_and_objects) introduce significant overhead. A flattened multi-value approach is recommended instead.
-
-{{< /alert >}}
+> [!warning]
+> [Nested fields](https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html#_limits_on_nested_mappings_and_objects) introduce significant overhead. A flattened multi-value approach is recommended instead.
 
 | PostgreSQL type         | Elasticsearch mapping                                                                                                                                                                                                                                                                  |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -595,11 +592,8 @@ New scopes must be added to the following constants:
 - `ALLOWED_SCOPES` in `Gitlab::Search::AbuseDetection`
 - `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
 
-{{< alert type="note" >}}
-
-Global search can be disabled for a scope. You can do the following changes for disabling global search:
-
-{{< /alert >}}
+> [!note]
+> Global search can be disabled for a scope. You can do the following changes for disabling global search:
 
 1. Add an application setting named `global_search_SCOPE_enabled` that defaults to `true` under the `search` jsonb accessor in [`app/models/application_setting.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/d52af9fafd5016ea25a665a9d5cb797b37a39b10/app/models/application_setting.rb#L738).
 1. Add an entry in JSON schema validator file [`application_setting_search.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/d52af9fafd5016ea25a665a9d5cb797b37a39b10/app/validators/json_schemas/application_setting_search.json)
@@ -754,11 +748,8 @@ for each scope. See [roles and permissions documentation](../user/permissions.md
 The query builder framework is used to build Elasticsearch queries. We also support a legacy query framework implemented
 in the `Elastic::Latest::ApplicationClassProxy` class and classes that inherit it.
 
-{{< alert type="note" >}}
-
-New document types must use the query builder framework.
-
-{{< /alert >}}
+> [!note]
+> New document types must use the query builder framework.
 
 ### Creating a query
 
@@ -1020,11 +1011,8 @@ Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`)
 
 Performs a hybrid search using embeddings. Uses `full_text_search` unless embeddings are supported.
 
-{{< alert type="warning" >}}
-
-Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this query must be used with the `by_knn` filter.
-
-{{< /alert >}}
+> [!warning]
+> Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this query must be used with the `by_knn` filter.
 
 The example below is for Elasticsearch.
 
@@ -1594,17 +1582,10 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
 filter on `namespace_visibility_level` based on permissions user has for each group.
 
-{{< alert type="note" >}}
-
 This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
-
-{{< /alert >}}
+> [!note]
+> Examples are shown for an authenticated user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 ##### global
 
@@ -1774,11 +1755,8 @@ Filtering is applied for:
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 
-{{< alert type="note" >}}
-
-Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
-
-{{< /alert >}}
+> [!note]
+> Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
 
 ##### global
 
@@ -2712,11 +2690,8 @@ in the EE specs:
 
 ## Zero-downtime reindexing with multiple indices
 
-{{< alert type="note" >}}
-
-This is not applicable yet as multiple indices functionality is not fully implemented.
-
-{{< /alert >}}
+> [!note]
+> This is not applicable yet as multiple indices functionality is not fully implemented.
 
 Currently, GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 

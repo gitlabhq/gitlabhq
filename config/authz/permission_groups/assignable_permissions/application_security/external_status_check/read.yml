@@ -1,0 +1,7 @@
+---
+name: read_external_status_check
+description: Grants the ability to read external status checks
+boundaries:
+  - project
+permissions:
+  - read_external_status_check

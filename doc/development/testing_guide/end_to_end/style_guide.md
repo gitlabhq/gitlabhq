@@ -69,11 +69,8 @@ We follow a simple formula roughly based on Hungarian notation.
   - `-tab`
   - `-menu_item`
 
-{{< alert type="note" >}}
-
-If none of the listed types are suitable, open a merge request to add an appropriate type to the list.
-
-{{< /alert >}}
+> [!note]
+> If none of the listed types are suitable, open a merge request to add an appropriate type to the list.
 
 ### Examples
 

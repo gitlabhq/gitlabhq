@@ -158,12 +158,9 @@ When 2FA is not enforced in a top-level group:
 - If **Allow more restrictive 2FA enforcement for subgroups** is disabled, subgroups
   cannot enforce a 2FA requirement independently. 2FA is not required for any members in the hierarchy.
 
-{{< alert type="note" >}}
-
-When **All users in this group must set up two-factor authentication** is enabled, it always
-takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
-
-{{< /alert >}}
+> [!note]
+> When **All users in this group must set up two-factor authentication** is enabled, it always
+> takes precedence over **Allow more restrictive 2FA enforcement for subgroups**.
 
 To prevent subgroups from setting individual 2FA requirements:
 
@@ -184,12 +181,9 @@ without using 2FA. For example:
 To ensure this does not occur, [prevent sharing of projects](../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
 for the 2FA group.
 
-{{< alert type="warning" >}}
-
-If you add members to a project in a group or subgroup that has 2FA
-enabled, 2FA is **not** required for those individually added members.
-
-{{< /alert >}}
+> [!warning]
+> If you add members to a project in a group or subgroup that has 2FA
+> enabled, 2FA is **not** required for those individually added members.
 
 ## Disable 2FA
 

@@ -45,11 +45,8 @@ we can:
 1. For each record in the table, delete the associated `ci_pipelines` records
    using the `project_id` column.
 
-{{< alert type="note" >}}
-
-For this procedure to work, we must register which tables to clean up asynchronously.
-
-{{< /alert >}}
+> [!note]
+> For this procedure to work, we must register which tables to clean up asynchronously.
 
 ## The `scripts/decomposition/generate-loose-foreign-key`
 
@@ -58,11 +55,8 @@ decomposition effort. It presents existing keys and allows chosen foreign keys t
 converted into loose foreign keys. This ensures consistency between foreign key and loose foreign
 key definitions, and ensures that they are properly tested.
 
-{{< alert type="warning" >}}
-
-We strongly advise you to use the automation script for swapping any foreign key to a loose foreign key.
-
-{{< /alert >}}
+> [!warning]
+> We strongly advise you to use the automation script for swapping any foreign key to a loose foreign key.
 
 The tool ensures that all aspects of swapping a foreign key are covered. This includes:
 
@@ -922,11 +916,8 @@ When the cleanup is done, the older partitions are automatically detached by the
 
 ### PartitionManager bug
 
-{{< alert type="note" >}}
-
-This issue happened in the past on Staging and it has been mitigated.
-
-{{< /alert >}}
+> [!note]
+> This issue happened in the past on Staging and it has been mitigated.
 
 When adding a new partition, the default value of the `partition` column is also updated. This is
 a schema change that is executed in the same transaction as the new partition creation. It's highly

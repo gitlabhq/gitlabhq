@@ -65,11 +65,8 @@ After you have defined the event, you must register it for AI tracking:
 
 ## Removing an event from AI usage tracking
 
-{{< alert type="note" >}}
-
-If you like to be guided by example you can check [MR 199111](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199111) which contains all required steps to remove an event from AI tracking system.
-
-{{< /alert >}}
+> [!note]
+> If you like to be guided by example you can check [MR 199111](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199111) which contains all required steps to remove an event from AI tracking system.
 
 To remove your event from the AI usage tracking system:
 
@@ -103,8 +100,5 @@ when tracking for events outside of Rails app. For example in IDE extension. Ext
 curl "https://gitlab.com/api/v4/usage_data/track_event" --request POST --header "Authorization: Bearer glpat-XXX" --header 'Content-Type: application/json' --data '{"event": "code_suggestion_accepted_in_ide", "additional_properties": {"language": "javascript", "suggestion_size": 9, "timestamp": "2025-07-02 12:55:11 UTC", "branch_name": "my-new-feature"}, "project_id": 4}'
 ```
 
-{{< alert type="note" >}}
-
-Since external events can pass any data in `additional_properties` hash, it's recommended to allowlist related attributes in your event transformation block.
-
-{{< /alert >}}
+> [!note]
+> Since external events can pass any data in `additional_properties` hash, it's recommended to allowlist related attributes in your event transformation block.

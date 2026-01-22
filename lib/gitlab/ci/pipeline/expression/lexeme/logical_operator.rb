@@ -29,6 +29,32 @@ module Gitlab
             def self.type
               :logical_operator
             end
+
+            private
+
+            def compare_with_coercion(left, right)
+              if boolean_string_comparison?(left, right)
+                coerce_to_string(left) == coerce_to_string(right)
+              else
+                left == right
+              end
+            end
+
+            def boolean_string_comparison?(left, right)
+              (boolean?(left) && string?(right)) || (string?(left) && boolean?(right))
+            end
+
+            def boolean?(value)
+              value.instance_of?(TrueClass) || value.instance_of?(FalseClass)
+            end
+
+            def string?(value)
+              value.is_a?(::String)
+            end
+
+            def coerce_to_string(value)
+              boolean?(value) ? value.to_s : value
+            end
           end
         end
       end

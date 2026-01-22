@@ -85,11 +85,8 @@ The examples below contain launch configurations for `rails-web` and `rails-back
    }
    ```
 
-{{< alert type="warning" >}}
-
-The VS Code Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
-
-{{< /alert >}}
+> [!warning]
+> The VS Code Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
 
 ## Debugging
 

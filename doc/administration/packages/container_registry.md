@@ -302,6 +302,24 @@ credentials:
 docker login <registry.gitlab.example.com>
 ```
 
+#### Configure self-signed certificates
+
+If you want to use self-signed certificates with the container registry,
+you must configure the Docker daemon to trust self-signed certificates:
+
+1. Instruct the Docker daemon to [use self-signed certificates](https://distribution.github.io/distribution/about/insecure/#use-self-signed-certificates). These steps vary based on your operating system.
+1. In the GitLab Runner `config.toml` file, mount the Docker daemon and set `privileged = false`:
+
+   ```toml
+     [runners.docker]
+       image = "ruby:2.6"
+       privileged = false
+       volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+   ```
+
+   Setting `privileged = true` takes precedence over the Docker daemon.
+1. Restart Docker.
+
 ## Disable container registry site-wide
 
 When you disable the Registry by following these steps, you do not

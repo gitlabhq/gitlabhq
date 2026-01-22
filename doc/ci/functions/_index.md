@@ -433,12 +433,9 @@ exec:
     - "echo ${PWD}"
 ```
 
-{{< alert type="note" >}}
-
-Any dependency required by the executing function should also be installed by the function.
-For example, if a function calls `go`, it should first install it.
-
-{{< /alert >}}
+> [!note]
+> Any dependency required by the executing function should also be installed by the function.
+> For example, if a function calls `go`, it should first install it.
 
 ##### Return an output
 

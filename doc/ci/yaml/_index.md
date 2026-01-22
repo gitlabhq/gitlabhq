@@ -1877,12 +1877,9 @@ job:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-`artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
-has more options.
-
-{{< /alert >}}
+> [!note]
+> `artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
+> has more options.
 
 Use `artifacts:public` to control whether job artifacts in public pipelines are available for download
 with the GitLab UI and API by anonymous users, or Guest and Reporter roles.
@@ -2420,12 +2417,9 @@ rspec:
 Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/repository/branches/protected.md)
 and unprotected branches.
 
-{{< alert type="warning" >}}
-
-When set to `true`, users without access to protected branches can read and write to
-cache keys used by protected branches.
-
-{{< /alert >}}
+> [!warning]
+> When set to `true`, users without access to protected branches can read and write to
+> cache keys used by protected branches.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

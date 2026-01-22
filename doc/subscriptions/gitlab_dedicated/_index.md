@@ -211,12 +211,9 @@ You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicat
 
 Your website uses the domain `tenant_name.gitlab-dedicated.site`, where `tenant_name` matches your instance URL.
 
-{{< alert type="note" >}}
-
-Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
-you still access your website at `tenant_name.gitlab-dedicated.site`.
-
-{{< /alert >}}
+> [!note]
+> Custom domains are not supported. If you add a custom domain like `gitlab.my-company.com`,
+> you still access your website at `tenant_name.gitlab-dedicated.site`.
 
 Control access to your website with:
 

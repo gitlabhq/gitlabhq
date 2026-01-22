@@ -73,12 +73,9 @@ To disable Arkose Protect, run the following command in the Rails console.
    ApplicationSetting.current.update(arkose_labs_enabled: false)
    ```
 
-{{< alert type="note" >}}
-
-Disabling Arkose also disables phone number and credit card verification.
-New users are only required to verify their email address.
-
-{{< /alert >}}
+> [!note]
+> Disabling Arkose also disables phone number and credit card verification.
+> New users are only required to verify their email address.
 
 It is important to note that disabling Arkose also disables phone number and credit card verification. All new users will only be required to verify their email address.
 

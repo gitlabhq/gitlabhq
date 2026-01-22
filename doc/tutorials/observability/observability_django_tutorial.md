@@ -5,12 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab Observability with a Django application'
 ---
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-<!-- Update this note when observability_features flag is removed -->
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> <!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 

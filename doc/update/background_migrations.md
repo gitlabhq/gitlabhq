@@ -125,12 +125,9 @@ For example:
 sudo gitlab-rake gitlab:background_migrations:pause[main_85]
 ```
 
-{{< alert type="note" >}}
-
-You can only pause migrations with an `active` status. Attempting to pause a migration in any other
-state results in an error.
-
-{{< /alert >}}
+> [!note]
+> You can only pause migrations with an `active` status. Attempting to pause a migration in any other
+> state results in an error.
 
 ### Resume a migration
 
@@ -146,12 +143,9 @@ For example:
 sudo gitlab-rake gitlab:background_migrations:resume[main_85]
 ```
 
-{{< alert type="note" >}}
-
-You can only resume migrations with a `paused` status. Attempting to resume a migration in any other
-state results in an error.
-
-{{< /alert >}}
+> [!note]
+> You can only resume migrations with a `paused` status. Attempting to resume a migration in any other
+> state results in an error.
 
 ### Execute a migration
 
@@ -349,12 +343,9 @@ advanced users who understand the risks of doing so.
 
 #### Pause batched background migrations
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to each feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to each feature's history for more details.
 
 To pause an ongoing batched background migration,
 disable the batched background migrations feature.
@@ -414,12 +405,9 @@ Use the following database queries to see the state of the current batched backg
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to this feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to this feature's history for more details.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
@@ -433,12 +421,9 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
-Refer to this feature's history for more details.
-
-{{< /alert >}}
+> [!warning]
+> There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
+> Refer to this feature's history for more details.
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
@@ -732,9 +717,6 @@ If you're on a long upgrade path and have many pending migrations, you might wan
 Another option is to ignore the pending migrations and [reindex the instance](../integration/advanced_search/elasticsearch.md#index-the-instance) after you upgrade GitLab to the target version.
 You can also disable advanced search during this process with the [**Search with advanced search**](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
 
-{{< alert type="warning" >}}
-
-Indexing large instances comes with risks.
-For more information, see [index large instances efficiently](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently).
-
-{{< /alert >}}
+> [!warning]
+> Indexing large instances comes with risks.
+> For more information, see [index large instances efficiently](../integration/advanced_search/elasticsearch.md#index-large-instances-efficiently).

@@ -139,12 +139,9 @@ Finally, your AWS ECS service is updated with the new revision of the
 task definition, making the cluster pull the newest version of your
 application.
 
-{{< alert type="note" >}}
-
-ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
-set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
-
-{{< /alert >}}
+> [!note]
+> ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
+> set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
 {{< alert type="warning" >}}
 

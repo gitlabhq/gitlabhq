@@ -387,19 +387,13 @@ Instead, you can use `stub_method` to stub the method:
   end
 ```
 
-{{< alert type="note" >}}
-
-`stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
-
-{{< /alert >}}
+> [!note]
+> `stub_method` does not work when used in conjunction with `let_it_be_with_refind`. This is because `stub_method` will stub a method on an instance and `let_it_be_with_refind` will create a new instance of the object for each run.
 
 `stub_method` does not support method existence and method arity checks.
 
-{{< alert type="warning" >}}
-
-`stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
-
-{{< /alert >}}
+> [!warning]
+> `stub_method` is supposed to be used in factories only. It's strongly discouraged to be used elsewhere. Consider using [RSpec mocks](https://rspec.info/features/3-12/rspec-mocks/) if available.
 
 #### Stubbing member access level
 

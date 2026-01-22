@@ -453,12 +453,9 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
 ### OpenSSL 3 upgrade
 
-{{< alert type="note" >}}
-
-Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
-to identify and assess the compatibility of your external integrations.
-
-{{< /alert >}}
+> [!note]
+> Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
+> to identify and assess the compatibility of your external integrations.
 
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no

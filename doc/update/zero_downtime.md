@@ -396,12 +396,9 @@ for each secondary site. The required order is upgrading the primary first, then
 the secondaries. You must also run any post-deployment migrations on the primary after
 all secondaries have been updated.
 
-{{< alert type="note" >}}
-
-The same [requirements](#requirements) and [considerations](#considerations) apply for upgrading a live GitLab environment with
-Geo.
-
-{{< /alert >}}
+> [!note]
+> The same [requirements](#requirements) and [considerations](#considerations) apply for upgrading a live GitLab environment with
+> Geo.
 
 ### Primary site
 

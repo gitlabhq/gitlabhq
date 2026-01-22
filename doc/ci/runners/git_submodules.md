@@ -58,12 +58,9 @@ You do not need to configure additional variables in this case, but you need to 
 
 ### Using relative URLs
 
-{{< alert type="warning" >}}
-
-If you use relative URLs, submodules may resolve incorrectly in forking workflows.
-Use absolute URLs instead if you expect your project to have forks.
-
-{{< /alert >}}
+> [!warning]
+> If you use relative URLs, submodules may resolve incorrectly in forking workflows.
+> Use absolute URLs instead if you expect your project to have forks.
 
 When your submodule is on the same GitLab server, you can also use relative URLs in
 your `.gitmodules` file:

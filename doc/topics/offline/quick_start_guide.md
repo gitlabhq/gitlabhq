@@ -129,7 +129,7 @@ Follow these steps to enable the container registry. These steps reflect those f
 ## Allow the Docker daemon to trust the registry and GitLab Runner
 
 Provide your Docker daemon with your certs by
-[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry_troubleshooting.md#using-self-signed-certificates-with-container-registry):
+[following the steps for using trusted certificates with your registry](../../administration/packages/container_registry.md#configure-self-signed-certificates):
 
 ```shell
 sudo mkdir -p /etc/docker/certs.d/my-host.internal:5000
@@ -435,7 +435,7 @@ Additionally, checkpoint data should exist for the particular package registry b
 
 The [`application_json.log`](../../administration/logs/_index.md#application_jsonlog) file will help verify the
 sync job has run and is without error. Events associated with the sync will have a `DEBUG` severity and the class is `PackageMetadata::SyncService`.
-Example: 
+Example:
 `{"severity":"DEBUG","time":"2026-01-07T02:15:49.618Z","meta.caller_id":"PackageMetadata::AdvisoriesSyncWorker","correlation_id":"43008e30dd708eadbe1ab16ad7fa953f","meta.root_caller_id":"Cronjob","meta.feature_category":"software_composition_analysis","meta.client_id":"ip/","class":"PackageMetadata::SyncService","message":"Evaluating data for advisories:offline//opt/gitlab/embedded/service/gitlab-rails/vendor/package_metadata/advisories/v2/maven/1761761049/0.ndjson"}`
 
 The [`sidekiq`](../../administration/logs/_index.md#sidekiq-logs) logs will show if any errors have occurred during the sync job. Events logged for the sync will mention the relevant classes:

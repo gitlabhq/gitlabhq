@@ -666,11 +666,8 @@ This can be overridden by passing a `description:` argument.
 
 ### Connection types
 
-{{< alert type="note" >}}
-
-For specifics on implementation, see [Pagination implementation](#pagination-implementation).
-
-{{< /alert >}}
+> [!note]
+> For specifics on implementation, see [Pagination implementation](#pagination-implementation).
 
 GraphQL uses [cursor based pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
 to expose collections of items. This provides the clients with a lot
@@ -2255,11 +2252,8 @@ to deliver the messages over websockets.
 When a client subscribes to a subscription, we store their query in-memory in Puma workers. Then when the subscription is triggered,
 the Puma workers execute the stored GraphQL queries and push the results to the clients.
 
-{{< alert type="note" >}}
-
-We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
-
-{{< /alert >}}
+> [!note]
+> We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
 
 ### Building subscriptions
 

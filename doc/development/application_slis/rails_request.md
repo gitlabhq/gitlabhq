@@ -254,11 +254,8 @@ specify do
 end
 ```
 
-{{< alert type="warning" >}}
-
-We can't specify the urgency at the namespace level. The directive is ignored when doing so.
-
-{{< /alert >}}
+> [!warning]
+> We can't specify the urgency at the namespace level. The directive is ignored when doing so.
 
 ### Error budget attribution and ownership
 

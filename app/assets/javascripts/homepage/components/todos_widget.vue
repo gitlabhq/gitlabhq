@@ -181,12 +181,14 @@ export default {
       }}
     </p>
     <template v-else>
-      <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
-        <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
-          <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
-          <rect x="24" y="0" width="174" height="8" rx="2" ry="2" />
-          <rect x="182" y="0" width="16" height="8" rx="2" ry="2" />
-        </gl-skeleton-loader>
+      <div
+        v-if="showLoading && $apollo.queries.todos.loading"
+        class="gl-flex gl-flex-col gl-gap-y-4 gl-py-4"
+      >
+        <div v-for="i in 5" :key="i" class="gl-flex gl-items-center gl-justify-between">
+          <gl-skeleton-loader :width="300" :lines="2" />
+          <gl-skeleton-loader :width="50" :lines="1" :equal-width-lines="true" />
+        </div>
       </div>
 
       <div

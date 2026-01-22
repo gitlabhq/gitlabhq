@@ -97,12 +97,9 @@ sudo -u postgres psql -d template1
 Then create a user (in our case `runner`) which is used by your
 application. Change `$password` in the following command to a strong password.
 
-{{< alert type="note" >}}
-
-Be sure to not enter `template1=#` in the following commands, as that's part of
-the PostgreSQL prompt.
-
-{{< /alert >}}
+> [!note]
+> Be sure to not enter `template1=#` in the following commands, as that's part of
+> the PostgreSQL prompt.
 
 ```shell
 template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;

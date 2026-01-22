@@ -17,6 +17,7 @@ module Gitlab
             Expression::Lexeme::String,
             Expression::Lexeme::Pattern,
             Expression::Lexeme::Null,
+            Expression::Lexeme::Boolean,
             Expression::Lexeme::Equals,
             Expression::Lexeme::Matches,
             Expression::Lexeme::NotEquals,

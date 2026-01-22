@@ -196,6 +196,12 @@
     border-bottom-color: $blue-500 !important;
   }
 }
+
+.gl-modal:has(.saved-view-confirm-modal) {
+  .modal-body {
+    min-height: auto;
+  }
+}
 /* stylelint-enable gitlab/no-gl-class */
 
 .saved-view-item {
@@ -213,4 +219,3 @@
     }
   }
 }
-

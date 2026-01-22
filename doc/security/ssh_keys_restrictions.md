@@ -91,12 +91,9 @@ Git user has default SSH configuration? ... no
   Please fix the error above and rerun the checks.
 ```
 
-{{< alert type="warning" >}}
-
-Remove the custom configuration as soon as you can. These customizations
-are explicitly not supported and may stop working at any time.
-
-{{< /alert >}}
+> [!warning]
+> Remove the custom configuration as soon as you can. These customizations
+> are explicitly not supported and may stop working at any time.
 
 ## Verify GitLab SSH ownership and permissions
 

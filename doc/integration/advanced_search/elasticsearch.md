@@ -21,12 +21,9 @@ To enable advanced search, you must:
 1. [Install an Elasticsearch or AWS OpenSearch cluster](#install-an-elasticsearch-or-aws-opensearch-cluster).
 1. [Enable advanced search](#enable-advanced-search).
 
-{{< alert type="note" >}}
-
-Advanced search stores all projects in the same Elasticsearch indices.
-However, private projects appear in search results only to users who have access.
-
-{{< /alert >}}
+> [!note]
+> Advanced search stores all projects in the same Elasticsearch indices.
+> However, private projects appear in search results only to users who have access.
 
 ## Elasticsearch glossary
 
@@ -58,12 +55,9 @@ Running the search cluster on the same server as GitLab might lead to performanc
 For a search cluster with a single node, the cluster status is always yellow because the primary shard is allocated.
 The cluster cannot assign replica shards to the same node as primary shards.
 
-{{< alert type="note" >}}
-
-Before you use a new Elasticsearch cluster in production, see
-[important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
-
-{{< /alert >}}
+> [!note]
+> Before you use a new Elasticsearch cluster in production, see
+> [important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
 
 ### Version requirements
 
@@ -224,12 +218,9 @@ Here's an example of a resource-based (domain) access policy where `es:ESHttp*` 
 }
 ```
 
-{{< alert type="note" >}}
-
-The `aws_role_arn` must be provided if using [AWS `AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
-across accounts. The ARN should be the role that has permissions to access OpenSearch.
-
-{{< /alert >}}
+> [!note]
+> The `aws_role_arn` must be provided if using [AWS `AssumeRole`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html)
+> across accounts. The ARN should be the role that has permissions to access OpenSearch.
 
 ###### Identity-based policy examples
 
@@ -621,12 +612,9 @@ in your Sidekiq logs. For more information, see
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When you select the **Limit the amount of namespace and project data to index** checkbox,
 you can specify namespaces and projects to index.
@@ -640,12 +628,9 @@ When you enable this setting:
   to support filtering in security reports.
 - [Associated data](#advanced-search-index-scopes) is indexed only for the namespaces and projects you specify.
 
-{{< alert type="warning" >}}
-
-If you do not specify any namespace or project after you enable this setting,
-only project records are indexed and no associated data can be searched.
-
-{{< /alert >}}
+> [!warning]
+> If you do not specify any namespace or project after you enable this setting,
+> only project records are indexed and no associated data can be searched.
 
 #### Indexed namespaces
 
@@ -1427,12 +1412,9 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as the previous configuration.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
-{{< alert type="note" >}}
-
-It is important to run the Rake task immediately after reconfiguring GitLab.
-After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
-
-{{< /alert >}}
+> [!note]
+> It is important to run the Rake task immediately after reconfiguring GitLab.
+> After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
 #### Two nodes, one process for each
 
@@ -1498,12 +1480,9 @@ To handle these queue groups on two nodes:
    sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
    ```
 
-{{< alert type="note" >}}
-
-It is important to run the Rake task immediately after reconfiguring GitLab.
-After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
-
-{{< /alert >}}
+> [!note]
+> It is important to run the Rake task immediately after reconfiguring GitLab.
+> After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
 
 ### Deleted documents
 

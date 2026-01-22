@@ -6,10 +6,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 describe('WorkItemsNewSavedViewModal', () => {
   let wrapper;
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props, title = 'New view' } = {}) => {
     wrapper = shallowMountExtended(WorkItemsNewSavedViewModal, {
       propsData: {
         show: true,
+        title,
         ...props,
       },
     });
@@ -26,11 +27,17 @@ describe('WorkItemsNewSavedViewModal', () => {
     createComponent();
   });
 
-  it('correctly renders the modal and the form', () => {
+  it('correctly renders the modal, default title and the form', () => {
     expect(findForm().exists()).toBe(true);
     expect(findTitleInput().exists()).toBe(true);
     expect(findDescriptionInput().exists()).toBe(true);
     expect(findVisibilityInputs().exists()).toBe(true);
+    expect(findModal().props('title')).toBe('New view');
+  });
+
+  it('corecctly changes the passed title', () => {
+    createComponent({ title: 'Save view' });
+    expect(findModal().props('title')).toBe('Save view');
   });
 
   it('autofocuses the title input when the modal is shown', async () => {

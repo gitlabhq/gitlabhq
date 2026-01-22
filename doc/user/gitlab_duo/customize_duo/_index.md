@@ -25,5 +25,19 @@ When you customize GitLab Duo, apply the following best practices:
   needed.
 - Choose the method that matches your use case.
 - Combine multiple methods to tailor and control how GitLab Duo behaves.
+- If you use multiple methods, consider the following file structure for your project:
+
+  ```plaintext
+  Project root directory
+  |- AGENTS.md                         # Applies to multiple Duo features
+  |- .gitlab/duo/
+     |- chat-rules.md                  # Custom Chat-specific rules
+     |─ mr-review-instructions.yaml    # Custom code review standards
+     |─ ...                            # Other configuration as needed
+  ```
+
+  You can include other configuration files in the `.gitlab/duo/` folder, such as
+  [custom flow definitions](../../duo_agent_platform/flows/custom.md), or the
+  [MCP server configuration](../../gitlab_duo/model_context_protocol/mcp_server.md).
 - Document your choices in comments to explain why certain instructions exist.
 - Protect customization files with [Code Owners](../../project/codeowners/_index.md) to manage changes.

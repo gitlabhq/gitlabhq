@@ -100,22 +100,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue relate actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_RELATED }
-
-      subject(:track_event) { described_class.track_issue_related_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue unrelate actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_UNRELATED }
-
-      subject(:track_event) { described_class.track_issue_unrelated_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue marked as duplicate actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_MARKED_AS_DUPLICATE }

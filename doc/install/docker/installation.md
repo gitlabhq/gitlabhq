@@ -69,12 +69,9 @@ To change the server's SSH port:
 
 ## Create a directory for the volumes
 
-{{< alert type="warning" >}}
-
-Specific recommendations exist for volumes hosting Gitaly data. NFS-based filesystems can
-cause performance issues and so [EFS is not recommended](../aws/_index.md#elastic-file-system-efs).
-
-{{< /alert >}}
+> [!warning]
+> Specific recommendations exist for volumes hosting Gitaly data. NFS-based filesystems can
+> cause performance issues and so [EFS is not recommended](../aws/_index.md#elastic-file-system-efs).
 
 Create a directory for the configuration files, logs,
 and data files. The directory can be in your user's home directory (for example

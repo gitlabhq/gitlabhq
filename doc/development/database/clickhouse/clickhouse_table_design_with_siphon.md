@@ -30,11 +30,8 @@ This guide assumes that the following GitLab components are up and running:
 - NATS
 - Siphon Producer and Siphon Consumer (for ClickHouse)
 
-{{< alert type="note" >}}
-
-**Current status:** Siphon is only available for local development via GDK for database tables present in the `main` database. You should set up these dependencies with GDK following [this guide](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/siphon/). You can find help and discuss technical issues in the `#f_siphon` Slack channel.
-
-{{< /alert >}}
+> [!note]
+> **Current status:** Siphon is only available for local development via GDK for database tables present in the `main` database. You should set up these dependencies with GDK following [this guide](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/siphon/). You can find help and discuss technical issues in the `#f_siphon` Slack channel.
 
 ## Table Replication Example
 
@@ -92,11 +89,8 @@ Examples for such columns:
 - Sharding keys.
 - Columns which are not modifiable from the application, for example updating the `target_id` and `target_type` values of a `notes` record.
 
-{{< alert type="note" >}}
-
-Siphon and ClickHouse does not do any validations regarding the correctness of the primary key configuration.
-
-{{< /alert >}}
+> [!note]
+> Siphon and ClickHouse does not do any validations regarding the correctness of the primary key configuration.
 
 ### Siphon Configuration
 
@@ -123,11 +117,8 @@ The updated configuration triggers Siphon to perform two actions:
 1. **Initial Snapshot:** Take a snapshot of the current data to populate the `siphon_labels` table.
 1. **Continuous Replication:** Capture all subsequent record changes in real-time via logical replication and apply them to the `siphon_labels` table.
 
-{{< alert type="note" >}}
-
-Depending on the table size, the initial data snapshot may take several minutes or hours to complete.
-
-{{< /alert >}}
+> [!note]
+> Depending on the table size, the initial data snapshot may take several minutes or hours to complete.
 
 You can inspect the table from rails console:
 

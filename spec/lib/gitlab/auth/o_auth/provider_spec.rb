@@ -141,6 +141,30 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
           expect(config).to be_nil
         end
       end
+
+      context 'when provider has a custom name in args' do
+        let(:provider_config) do
+          GitlabSettings::Options.new({
+            'name' => 'openid_connect',
+            'args' => GitlabSettings::Options.new({
+              'name' => 'my_custom_provider',
+              'gitlab_username_claim' => 'preferred_username'
+            })
+          })
+        end
+
+        before do
+          allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider_config])
+        end
+
+        it 'returns the config when searching by custom name' do
+          config = described_class.config_for('my_custom_provider')
+          expect(config).to be_a(GitlabSettings::Options)
+          expect(config.name).to eq('openid_connect')
+          expect(config.dig('args', 'name')).to eq('my_custom_provider')
+          expect(config.dig('args', 'gitlab_username_claim')).to eq('preferred_username')
+        end
+      end
     end
   end
 

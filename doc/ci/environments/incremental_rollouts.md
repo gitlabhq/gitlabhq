@@ -116,12 +116,9 @@ available, [demonstrating configuration of timed rollouts](https://gitlab.com/gl
 
 ## Blue-Green Deployment
 
-{{< alert type="note" >}}
-
-Teams can leverage an Ingress annotation and [set traffic weight](../../user/project/canary_deployments.md#how-to-change-the-traffic-weight-on-a-canary-ingress-deprecated)
-as an alternative approach to the blue-green deployment strategy documented here.
-
-{{< /alert >}}
+> [!note]
+> Teams can leverage an Ingress annotation and [set traffic weight](../../user/project/canary_deployments.md#how-to-change-the-traffic-weight-on-a-canary-ingress-deprecated)
+> as an alternative approach to the blue-green deployment strategy documented here.
 
 Also sometimes known as A/B deployment or red-black deployment, this technique is used to reduce
 downtime and risk during a deployment. When combined with incremental rollouts, you can

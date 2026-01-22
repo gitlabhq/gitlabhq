@@ -99,11 +99,8 @@ To find a domain expert:
 
 ### Reviewer roulette
 
-{{< alert type="note" >}}
-
-[Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
-
-{{< /alert >}}
+> [!note]
+> [Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
@@ -694,11 +691,8 @@ experience, refactors the existing code). Then:
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.
 
-{{< alert type="warning" >}}
-
-**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
-
-{{< /alert >}}
+> [!warning]
+> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
 ### Merging a merge request
 
@@ -746,11 +740,8 @@ when rebasing from the UI or with the [`/rebase` quick action](../user/project/q
 
 When ready to merge:
 
-{{< alert type="warning" >}}
-
-**If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
-
-{{< /alert >}}
+> [!warning]
+> **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
 
 - Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md)
   feature when the merge request has a lot of commits.

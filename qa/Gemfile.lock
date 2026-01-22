@@ -106,7 +106,7 @@ GEM
       logger
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
-    faker (3.5.3)
+    faker (3.6.0)
       i18n (>= 1.8.11, < 2)
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
@@ -401,7 +401,7 @@ DEPENDENCIES
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.3.0)
   factory_bot (~> 6.5.1)
-  faker (~> 3.5, >= 3.5.3)
+  faker (~> 3.6)
   faraday-retry (~> 2.4)
   fog-google (~> 1.27)
   gitlab-orchestrator!

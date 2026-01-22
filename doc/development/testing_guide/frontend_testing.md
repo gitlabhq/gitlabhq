@@ -1129,11 +1129,8 @@ it.each([
 );
 ```
 
-{{< alert type="note" >}}
-
-Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
-
-{{< /alert >}}
+> [!note]
+> Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
 
 For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string (`''`) and a non-empty string (`'search string'`) would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience.
 

@@ -43,32 +43,22 @@ Before investigating specific issues, try these troubleshooting steps:
    * Connection #0 to host <hostname> left intact
    ```
 
-## Using self-signed certificates with container registry
+## Error: `... x509: certificate signed by unknown authority`
 
-If you're using a self-signed certificate with your container registry, you
-might encounter issues during the CI jobs like the following:
+When using a self-signed certificate with the container registry,
+you might encounter a similar error in your CI/CD pipeline jobs:
 
 ```plaintext
 Error response from daemon: Get registry.example.com/v1/users/: x509: certificate signed by unknown authority
 ```
 
-The Docker daemon running the command expects a cert signed by a recognized CA,
-thus the previous error.
+This error occurrs because the Docker daemon running the command expects
+a certificate signed by a recognized Certificate Authority, not a self-signed certificate.
 
-While GitLab doesn't support using self-signed certificates with Container
-Registry out of the box, it is possible to make it work by
-[instructing the Docker daemon to trust the self-signed certificates](https://distribution.github.io/distribution/about/insecure/#use-self-signed-certificates),
-mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
-`config.toml` file. Setting `privileged = true` takes precedence over the Docker daemon:
+To resolve this error, configure Docker to trust self-signed certificates. For help with the Docker configuration,
+see [Configure self-signed certificates](container_registry.md#configure-self-signed-certificates).
 
-```toml
-  [runners.docker]
-    image = "ruby:2.6"
-    privileged = false
-    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
-```
-
-Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
+For additional information, see [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/18239).
 
 ## Docker login attempt fails with: 'token signed by untrusted key'
 

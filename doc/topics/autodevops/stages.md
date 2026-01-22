@@ -437,12 +437,9 @@ as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 ### Kubernetes 1.16+
 
-{{< alert type="warning" >}}
-
-The default value for the `deploymentApiVersion` setting was changed from
-`extensions/v1beta` to `apps/v1`.
-
-{{< /alert >}}
+> [!warning]
+> The default value for the `deploymentApiVersion` setting was changed from
+> `extensions/v1beta` to `apps/v1`.
 
 In Kubernetes 1.16 and later, a number of
 [APIs were removed](https://kubernetes.io/blog/2019/07/18/api-deprecations-in-1-16/),
@@ -457,12 +454,9 @@ To use Auto Deploy on a Kubernetes 1.16+ cluster:
    `AUTO_DEVOPS_POSTGRES_CHANNEL` set to `1`, follow the
    [guide to upgrade PostgreSQL](upgrading_postgresql.md).
 
-{{< alert type="warning" >}}
-
-Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
-to back up and restore your database before opting into version `2`.
-
-{{< /alert >}}
+> [!warning]
+> Follow the [guide to upgrading PostgreSQL](upgrading_postgresql.md)
+> to back up and restore your database before opting into version `2`.
 
 ### Migrations
 

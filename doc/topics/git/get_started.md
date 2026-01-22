@@ -75,12 +75,9 @@ These must be resolved manually by reviewing and editing the code.
 After a successful merge, you can delete the branch if it is no longer needed.
 Deleting unnecessary branches helps keep your repository organized and manageable.
 
-{{< alert type="note" >}}
-
-To ensure no work is lost, verify all changes are incorporated into the default branch
-before you delete the branch after the final merge.
-
-{{< /alert >}}
+> [!note]
+> To ensure no work is lost, verify all changes are incorporated into the default branch
+> before you delete the branch after the final merge.
 
 For more information, see [Branches](../../user/project/repository/branches/_index.md).
 

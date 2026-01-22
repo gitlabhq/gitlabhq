@@ -604,11 +604,8 @@ return `true` in different contexts.
 
 ### (Deprecated) Issue and epic experiments
 
-{{< alert type="note" >}}
-
-This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
-
-{{< /alert >}}
+> [!note]
+> This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
 If you would like to use the evaluation framework (as described [in the evaluation documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eval_scenarios/duo_chat/docs.md))
 you can import the required groups and projects using this Rake task:
@@ -625,11 +622,8 @@ desired.
 
 #### (Deprecated) Epic and issue fixtures
 
-{{< alert type="note" >}}
-
-This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
-
-{{< /alert >}}
+> [!note]
+> This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
 The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
 The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.

@@ -541,12 +541,9 @@ Any other values result in an error message and effectively disable the feature.
 When enabled, logs for all service containers are captured and streamed into the jobs trace log concurrently with
 other logs. Logs from each container are prefixed with the container's aliases, and displayed in a different color.
 
-{{< alert type="note" >}}
-
-To diagnose job failures, you can adjust the logging level in your service container for which you want to capture logs.
-The default logging level might not provide sufficient troubleshooting information.
-
-{{< /alert >}}
+> [!note]
+> To diagnose job failures, you can adjust the logging level in your service container for which you want to capture logs.
+> The default logging level might not provide sufficient troubleshooting information.
 
 {{< alert type="warning" >}}
 

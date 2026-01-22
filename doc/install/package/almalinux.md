@@ -13,12 +13,9 @@ title: Install the Linux package on AlmaLinux and RHEL-compatible distributions
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-See [supported platforms](_index.md#supported-platforms) for the full list of
-supported distributions and architectures.
-
-{{< /alert >}}
+> [!note]
+> See [supported platforms](_index.md#supported-platforms) for the full list of
+> supported distributions and architectures.
 
 ## Prerequisites
 

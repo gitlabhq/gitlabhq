@@ -164,12 +164,9 @@ the right subgroup. This example sets up four rules:
 - Frontend engineers should review changes to frontend files.
 - Backend engineers should review changes to backend files.
 
-{{< alert type="note" >}}
-
-GitLab Free supports only optional reviews. To make reviews required, you need
-GitLab Premium or Ultimate.
-
-{{< /alert >}}
+> [!note]
+> GitLab Free supports only optional reviews. To make reviews required, you need
+> GitLab Premium or Ultimate.
 
 To add a CODEOWNERS file to your `excelsior` project:
 

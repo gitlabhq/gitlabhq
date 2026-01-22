@@ -65,11 +65,8 @@ separate transactions.
 
 Adding a foreign key to an existing database column requires database structure changes and potential data changes.
 
-{{< alert type="note" >}}
-
-In case the table is in use, we should always assume that there is inconsistent data.
-
-{{< /alert >}}
+> [!note]
+> In case the table is in use, we should always assume that there is inconsistent data.
 
 Adding a FK constraint to an existing column is a multi-milestone process:
 

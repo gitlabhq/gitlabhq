@@ -198,12 +198,9 @@ data:
   runner-token: "REDACTED"
 ```
 
-{{< alert type="note" >}}
-
-If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
-you can set it to any string. This value is ignored when `runner-token` is present.
-
-{{< /alert >}}
+> [!note]
+> If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
+> you can set it to any string. This value is ignored when `runner-token` is present.
 
 ## Known issues
 

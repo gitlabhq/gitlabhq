@@ -10,7 +10,7 @@ import {
   GlAlert,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -119,6 +119,7 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
+import WorkItemsNewSavedViewModal from '../components/work_items_new_saved_view_modal.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -200,6 +201,7 @@ export default {
     NewResourceDropdown,
     WorkItemsSavedViewsSelectors,
     GlAlert,
+    WorkItemsNewSavedViewModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -267,12 +269,17 @@ export default {
       error: undefined,
       bulkEditInProgress: false,
       filterTokens: [],
+      initialFilterTokens: [],
+      filtersChanged: false,
       isInitialLoadComplete: false,
       pageInfo: {},
       pageParams: {},
       pageSize: DEFAULT_PAGE_SIZE,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
+      initialSortKey: null,
+      sortChanged: false,
+      initialPreferences: null,
       state: STATUS_OPEN,
       workItemsFull: [],
       workItemsSlim: [],
@@ -288,6 +295,7 @@ export default {
       isSortKeyInitialized: !this.isLoggedIn,
       hasWorkItems: false,
       workItemsCount: null,
+      isNewViewModalVisible: false,
     };
   },
   apollo: {
@@ -938,6 +946,18 @@ export default {
     isBulkEditDisabled() {
       return this.showBulkEditSidebar || this.workItems.length === 0;
     },
+    preferencesChanged() {
+      if (!this.initialPreferences) return false;
+
+      const currentPreferences = {
+        hiddenMetadataKeys: this.displaySettings.namespacePreferences?.hiddenMetadataKeys ?? [],
+      };
+
+      return !isEqual(currentPreferences, this.initialPreferences);
+    },
+    viewConfigChanged() {
+      return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -975,6 +995,21 @@ export default {
           expiry: CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY,
         });
       }
+    },
+    sortKey(newKey) {
+      if (!this.initialSortKey) {
+        this.initialSortKey = newKey;
+      }
+    },
+    displaySettings: {
+      immediate: true,
+      handler(value) {
+        if (!this.initialPreferences && value) {
+          this.initialPreferences = {
+            hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
+          };
+        }
+      },
     },
   },
   created() {
@@ -1082,6 +1117,18 @@ export default {
       this.$router.push({ query: this.urlParams });
     },
     handleFilter(tokens) {
+      const filteredTokens = tokens
+        .filter((token) => {
+          if (token.type === 'filtered-search-term') {
+            return Boolean(token.value?.data);
+          }
+
+          return true;
+        })
+        .map(({ id, ...rest }) => rest);
+
+      this.filtersChanged = !isEqual(filteredTokens, this.initialFilterTokens);
+
       this.filterTokens = tokens;
       this.hasStateToken = this.checkIfStateTokenExists();
       this.updateState(tokens);
@@ -1136,6 +1183,7 @@ export default {
         return;
       }
 
+      this.sortChanged = sortKey !== this.initialSortKey;
       this.sortKey = sortKey;
       this.pageParams = getInitialPageParams(this.pageSize);
 
@@ -1292,6 +1340,7 @@ export default {
           },
         });
       }
+      this.initialFilterTokens = this.filterTokens;
     },
     checkIfStateTokenExists() {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
@@ -1661,8 +1710,40 @@ export default {
 
         <template v-if="isPlanningViewsEnabled && !isServiceDeskList" #before-list-items>
           <!-- state-count -->
-          <div class="gl-border-b gl-py-3" data-testid="work-item-count">
-            {{ workItemTotalStateCount }}
+          <div class="gl-border-b gl-flex gl-justify-between gl-py-3">
+            <div class="gl-flex gl-items-center">
+              <span data-testid="work-item-count" class="gl-mr-3">{{
+                workItemTotalStateCount
+              }}</span>
+              <gl-button
+                v-if="workItemsSavedViewsEnabled && allowBulkEditing"
+                size="small"
+                category="primary"
+                variant="default"
+                :disabled="isBulkEditDisabled"
+                data-testid="bulk-edit-start-button"
+                @click="showBulkEditSidebar = true"
+              >
+                {{ __('Bulk edit') }}
+              </gl-button>
+            </div>
+
+            <template v-if="workItemsSavedViewsEnabled">
+              <gl-button
+                v-if="viewConfigChanged"
+                size="small"
+                category="primary"
+                variant="default"
+                data-testid="save-view-button"
+                @click="isNewViewModalVisible = true"
+              >
+                {{ s__('WorkItem|Save view') }}
+              </gl-button>
+              <work-items-new-saved-view-modal
+                v-model="isNewViewModalVisible"
+                :title="s__('WorkItem|Save view')"
+              />
+            </template>
           </div>
         </template>
 

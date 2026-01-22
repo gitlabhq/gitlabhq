@@ -241,12 +241,9 @@ Change a file in the project and see if it's reflected in the demo application o
 
 Congratulations! You successfully set up continuous deployment to ECS.
 
-{{< alert type="note" >}}
-
-ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
-set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
-
-{{< /alert >}}
+> [!note]
+> ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
+> set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
 ## Set up review apps
 

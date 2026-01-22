@@ -51,12 +51,9 @@ You can choose the deployment method when enabling Auto DevOps or later:
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
-to minimize downtime and risk.
-
-{{< /alert >}}
+> [!note]
+> Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
+> to minimize downtime and risk.
 
 ## Auto DevOps base domain
 

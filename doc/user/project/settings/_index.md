@@ -12,6 +12,10 @@ title: Project settings
 
 {{< /details >}}
 
+## Prerequisites
+
+- The Maintainer or Owner role for the project.
+
 ## Configure project features and permissions
 
 To configure features and permissions for a project:

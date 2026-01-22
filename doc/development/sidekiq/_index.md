@@ -153,11 +153,8 @@ can schedule helps mitigate the risk of overwhelming the system, which could lea
 
 This guidance applies both to .com and self-managed customers. A single worker scheduling thousands of jobs can easily disrupt the normal functioning of an SM instance.
 
-{{< alert type="note" >}}
-
-If Sidekiq only has 20 threads and the limit for a specific job is 200 then it will never be able to hit this 200 concurrency so it will not be limited.
-
-{{< /alert >}}
+> [!note]
+> If Sidekiq only has 20 threads and the limit for a specific job is 200 then it will never be able to hit this 200 concurrency so it will not be limited.
 
 ### Static Concurrency Limit
 
@@ -183,11 +180,8 @@ Alternatively, you can set a fixed limit directly:
 concurrency_limit -> { 250 }
 ```
 
-{{< alert type="note" >}}
-
-Keep in mind that using a static limit means any updates or changes require merging an MR and waiting for the next deployment to take effect.
-
-{{< /alert >}}
+> [!note]
+> Keep in mind that using a static limit means any updates or changes require merging an MR and waiting for the next deployment to take effect.
 
 ### Instance-Configurable Concurrency Limit
 
@@ -206,11 +200,8 @@ This approach also allows having separate limits for .com and GitLab Self-Manage
 
 To determine an appropriate limit, you can use the `sidekiq: Worker Concurrency Detail` dashboard as a guide in [Grafana](https://dashboards.gitlab.net/goto/z244H0YNR?orgId=1).
 
-{{< alert type="note" >}}
-
-The [concurrency limit may be momentarily exceeded](https://gitlab.com/gitlab-org/gitlab/-/issues/490936#note_2172737349) and should not be relied on as a strict limit.
-
-{{< /alert >}}
+> [!note]
+> The [concurrency limit may be momentarily exceeded](https://gitlab.com/gitlab-org/gitlab/-/issues/490936#note_2172737349) and should not be relied on as a strict limit.
 
 ## Deferring Sidekiq workers
 

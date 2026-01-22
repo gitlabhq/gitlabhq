@@ -13,12 +13,9 @@ title: Install the Linux package on Amazon Linux 2
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-See [supported platforms](_index.md#supported-platforms) for a full list of
-supported distributions and architectures.
-
-{{< /alert >}}
+> [!note]
+> See [supported platforms](_index.md#supported-platforms) for a full list of
+> supported distributions and architectures.
 
 ## Prerequisites
 

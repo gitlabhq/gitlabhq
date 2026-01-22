@@ -14,12 +14,9 @@ title: 'Tutorial: Perform fuzz testing in GitLab (deprecated)'
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-Coverage-guided fuzz testing was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
-and is planned for removal in 19.0. This is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> Coverage-guided fuzz testing was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+> and is planned for removal in 19.0. This is a breaking change.
 
 <!-- vale gitlab_base.FutureTense = NO -->
 

@@ -139,12 +139,9 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 1. In the job, define the environment `name` and `url`. If an
    environment of that name doesn't exist when the pipeline runs, it is created.
 
-{{< alert type="note" >}}
-
-Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
-
-{{< /alert >}}
+> [!note]
+> Some characters cannot be used in environment names. For more information about the
+> `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 For example, to create an environment named `staging`, with URL `https://staging.example.com`:
 
@@ -176,12 +173,9 @@ To create a dynamic environment, in your `.gitlab-ci.yml` file:
      environments with the same prefix.
    - `url`: Optional. Prefix the hostname with a related CI/CD variable like `$CI_ENVIRONMENT_SLUG`.
 
-{{< alert type="note" >}}
-
-Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
-
-{{< /alert >}}
+> [!note]
+> Some characters cannot be used in environment names. For more information about the
+> `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 In the following example, every time the `deploy_review_app` job runs the environment's name and
 URL are defined using unique values.

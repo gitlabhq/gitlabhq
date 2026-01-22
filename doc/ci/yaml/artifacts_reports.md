@@ -32,12 +32,9 @@ pipeline features from each job.
 
 To browse the report output files, ensure you include the [`artifacts:paths`](_index.md#artifactspaths) keyword in your job definition.
 
-{{< alert type="note" >}}
-
-Combined reports in parent pipelines using [artifacts from child pipelines](_index.md#needspipelinejob) is
-not supported. Support for this feature is proposed in [epic 8205](https://gitlab.com/groups/gitlab-org/-/epics/8205).
-
-{{< /alert >}}
+> [!note]
+> Combined reports in parent pipelines using [artifacts from child pipelines](_index.md#needspipelinejob) is
+> not supported. Support for this feature is proposed in [epic 8205](https://gitlab.com/groups/gitlab-org/-/epics/8205).
 
 ## `artifacts:reports:accessibility`
 
@@ -162,12 +159,9 @@ The results of the reports are aggregated in the final coverage report.
 
 The results of coverage reports appear in merge request [diff annotations](../testing/code_coverage/_index.md#coverage-visualization).
 
-{{< alert type="note" >}}
-
-Coverage reports from child pipelines appear in merge request diff annotations,
-but the artifacts themselves are not shared with parent pipelines.
-
-{{< /alert >}}
+> [!note]
+> Coverage reports from child pipelines appear in merge request diff annotations,
+> but the artifacts themselves are not shared with parent pipelines.
 
 ## `artifacts:reports:codequality`
 

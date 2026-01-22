@@ -19,12 +19,9 @@ GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authen
 
 Kerberos is only available on instances that use GitLab Enterprise Edition (EE). If you're running GitLab Community Edition (CE), you can [convert from GitLab CE to GitLab EE](../update/convert_to_ee/package.md).
 
-{{< alert type="warning" >}}
-
-GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
-[set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
-
-{{< /alert >}}
+> [!warning]
+> GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
+> [set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
 
 ## Configuration
 
@@ -54,12 +51,9 @@ sudo chmod 0600 /etc/http.keytab
 
 #### Self-compiled installations
 
-{{< alert type="note" >}}
-
-For self-compiled installations, make sure the `kerberos` gem group
-[has been installed](../install/self_compiled/_index.md#install-gems).
-
-{{< /alert >}}
+> [!note]
+> For self-compiled installations, make sure the `kerberos` gem group
+> [has been installed](../install/self_compiled/_index.md#install-gems).
 
 1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
    authentication. In most cases, you only need to enable Kerberos and specify

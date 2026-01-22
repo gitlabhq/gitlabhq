@@ -162,11 +162,8 @@ class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-{{< alert type="note" >}}
-
-Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
-
-{{< /alert >}}
+> [!note]
+> Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
 
 ```ruby
 class Model < ApplicationRecord

@@ -13,11 +13,8 @@ title: Logs
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This feature is not under active development.
-
-{{< /alert >}}
+> [!note]
+> This feature is not under active development.
 
 {{< history >}}
 

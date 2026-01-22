@@ -314,12 +314,9 @@ This section describes common errors you can encounter.
 
 ### Update the GPG key for the GitLab repositories
 
-{{< alert type="note" >}}
-
-This is a temporary fix until the GitLab image is updated with the new
-GPG key.
-
-{{< /alert >}}
+> [!note]
+> This is a temporary fix until the GitLab image is updated with the new
+> GPG key.
 
 The pre-configured GitLab image in Azure (provided by Bitnami) uses
 a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gpg-key-for-gitlab-package-repositories-metadata-changing/).

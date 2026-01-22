@@ -12,12 +12,9 @@ title: Configure OpenID Connect with GCP Workload Identity Federation
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-`CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
-
-{{< /alert >}}
+> [!warning]
+> `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+> and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration
@@ -31,12 +28,9 @@ This tutorial assumes you have a Google Cloud account and a Google Cloud project
 Your account must have at least the **workload identity pool Admin** permission
 on the Google Cloud project.
 
-{{< alert type="note" >}}
-
-If you would prefer to use a Terraform module and a CI/CD template instead of this tutorial,
-see [How OIDC can simplify authentication of GitLab CI/CD pipelines with Google Cloud](https://about.gitlab.com/blog/2023/06/28/introduction-of-oidc-modules-for-integration-between-google-cloud-and-gitlab-ci/).
-
-{{< /alert >}}
+> [!note]
+> If you would prefer to use a Terraform module and a CI/CD template instead of this tutorial,
+> see [How OIDC can simplify authentication of GitLab CI/CD pipelines with Google Cloud](https://about.gitlab.com/blog/2023/06/28/introduction-of-oidc-modules-for-integration-between-google-cloud-and-gitlab-ci/).
 
 To complete this tutorial:
 
@@ -89,12 +83,9 @@ inside the workload identity pool created in the previous step, using the follow
 
   You must map every attribute that you want to use for permission granting. For example, if you want to map permissions in the next step based on the user's email address, you must map `attribute.user_email` to `assertion.user_email`.
 
-{{< alert type="warning" >}}
-
-For projects hosted on GitLab.com, GCP requires you to
-[limit access to only tokens issued by your GitLab group](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gitlab-saas_2).
-
-{{< /alert >}}
+> [!warning]
+> For projects hosted on GitLab.com, GCP requires you to
+> [limit access to only tokens issued by your GitLab group](https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#gitlab-saas_2).
 
 ## Grant permissions for Service Account impersonation
 

@@ -47,12 +47,12 @@ To view which roles can access GitLab Duo Core, see [GitLab Duo group permission
 
 ### GitLab Duo Self-Hosted
 
-If you are a customer with an offline license, GitLab Duo Core is not available on
+If you have an offline license, GitLab Duo Core is not available on
 GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
 
-If you are a customer with an online license, you can use GitLab Duo Core in combination with
-GitLab Duo Self-Hosted, but to enable GitLab Duo Core you must select the GitLab AI vendor model
-for GitLab Duo Chat and Code Suggestions for the entire instance.
+If you have an online license, you can use GitLab Duo Core in combination with
+GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab AI vendor model
+for GitLab Duo Chat (Classic) and Code Suggestions for the instance.
 
 ### GitLab Duo Core limits
 

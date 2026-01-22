@@ -807,11 +807,8 @@ In our Rails Controllers you must use `ActionController::StrongParameters`. This
 
 Using `params[:key]` can lead to vulnerabilities when one part of the codebase expects a type like `String`, but gets passed (and handles unsafely and without error) an `Array`.
 
-{{< alert type="note" >}}
-
-This only applies to Rails Controllers. Our API and GraphQL endpoints enforce strong typing, and Go is statically typed.
-
-{{< /alert >}}
+> [!note]
+> This only applies to Rails Controllers. Our API and GraphQL endpoints enforce strong typing, and Go is statically typed.
 
 ### Example
 

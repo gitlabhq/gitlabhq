@@ -55,12 +55,9 @@ We may discontinue package builds before vendor EOL due to:
 
 We aim to provide at least 6 months' notice before discontinuing support for any operating system version. When technical limitations or vendor constraints require shorter notice, we will communicate changes as soon as possible.
 
-{{< alert type="note" >}}
-
-`amd64` and `x86_64` refer to the same 64-bit architecture. The names `arm64` and `aarch64` are also interchangeable
-and refer to the same architecture.
-
-{{< /alert >}}
+> [!note]
+> `amd64` and `x86_64` refer to the same 64-bit architecture. The names `arm64` and `aarch64` are also interchangeable
+> and refer to the same architecture.
 
 | Operating system                                                                   | First supported GitLab version | Architecture          | Operating system EOL | Proposed last supported GitLab version  | Upstream release notes                                                                                        |
 |------------------------------------------------------------------------------------|--------------------------------|-----------------------|----------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------|

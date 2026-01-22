@@ -25,7 +25,6 @@ export default {
     GlModal,
   },
   i18n: {
-    newViewTitle: s__('WorkItem|New view'),
     descriptionValidation: s__('WorkItem|140 characters max'),
     validateTitle: s__('WorkItem|Title is required.'),
     privateView: s__('WorkItem|Only you can see and edit this view.'),
@@ -41,6 +40,11 @@ export default {
     show: {
       type: Boolean,
       required: true,
+    },
+    title: {
+      type: String,
+      required: false,
+      default: s__('WorkItem|New view'),
     },
   },
   emits: ['hide'],
@@ -90,8 +94,8 @@ export default {
   <gl-modal
     modal-id="create-saved-view-modal"
     modal-class="create-saved-view-modal"
-    :aria-label="$options.i18n.newViewTitle"
-    :title="$options.i18n.newViewTitle"
+    :aria-label="title"
+    :title="title"
     :visible="show"
     body-class="!gl-pb-0"
     size="sm"

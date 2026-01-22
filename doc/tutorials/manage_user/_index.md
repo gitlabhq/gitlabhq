@@ -278,12 +278,9 @@ Review the invite errors and try again:
 - Alex Smith: Access level should be greater than or equal to Owner inherited membership from group Development
 ```
 
-{{< alert type="note" >}}
-
-You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group,
-as they have an inherited membership from the parent group.
-
-{{< /alert >}}
+> [!note]
+> You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group,
+> as they have an inherited membership from the parent group.
 
 You decide to keep Alex as an Owner in this subgroup as it is appropriate given
 their role for the organization. Select **Cancel** to cancel this invite.

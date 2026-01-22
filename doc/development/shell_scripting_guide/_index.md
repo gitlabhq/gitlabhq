@@ -20,11 +20,8 @@ deviations from this guide, they should be described in the
 
 ## Avoid using shell scripts
 
-{{< alert type="warning" >}}
-
-This is a must-read section.
-
-{{< /alert >}}
+> [!warning]
+> This is a must-read section.
 
 Having said all of the above, we recommend staying away from shell scripts
 as much as possible. A language like Ruby or Python (if required for
@@ -115,11 +112,8 @@ and ignore files starting with a period. To override this, use `-ln` flag to spe
 
 ## Testing
 
-{{< alert type="note" >}}
-
-This is a work in progress.
-
-{{< /alert >}}
+> [!note]
+> This is a work in progress.
 
 It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64016) to evaluate different tools for the
 automated testing of shell scripts (like [BATS](https://github.com/bats-core/bats-core)).

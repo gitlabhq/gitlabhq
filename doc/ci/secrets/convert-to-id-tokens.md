@@ -12,12 +12,9 @@ title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
-when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
-
-{{< /alert >}}
+> [!note]
+> Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
+> when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
 
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](id_token_authentication.md).
 

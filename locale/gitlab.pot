@@ -13949,6 +13949,9 @@ msgstr ""
 msgid "Cannot be merged automatically"
 msgstr ""
 
+msgid "Cannot create an immutable tag rule from a protection rule"
+msgstr ""
+
 msgid "Cannot create organization. The `o` namespace is a reserved path. Please rename the group or user before creating an organization."
 msgstr ""
 
@@ -78493,6 +78496,9 @@ msgid "WorkItem|Save"
 msgstr ""
 
 msgid "WorkItem|Save and overwrite"
+msgstr ""
+
+msgid "WorkItem|Save view"
 msgstr ""
 
 msgid "WorkItem|Search by view name or description"

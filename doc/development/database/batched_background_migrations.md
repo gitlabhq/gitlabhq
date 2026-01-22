@@ -296,11 +296,8 @@ to do so. Leaving around old batched background migration is a form of
 technical debt that needs to be maintained in tests and in application
 behavior.
 
-{{< alert type="note" >}}
-
-You cannot depend on any batched background migration being completed until after it is finalized.
-
-{{< /alert >}}
+> [!note]
+> You cannot depend on any batched background migration being completed until after it is finalized.
 
 We recommend that batched background migrations are finalized after all of the
 following conditions are met:
@@ -544,11 +541,8 @@ However, using `scope_to` means the query must consider only rows matching the g
 
 It should be used only when the scoped conditions are indexed, and the batching query is not filtering out any rows.
 
-{{< alert type="warning" >}}
-
-A strong indicator of the proper index: the query plan should have an index-only scan without any additional filters.
-
-{{< /alert >}}
+> [!warning]
+> A strong indicator of the proper index: the query plan should have an index-only scan without any additional filters.
 
 To err on the side of caution, the `Database/AvoidScopeTo` cop is employed to prevent using `scope_to`. After you confirm that
 the selection query is performant (with a proper index), disable the cop and specify the index definition which
@@ -762,11 +756,8 @@ module Gitlab
 end
 ```
 
-{{< alert type="note" >}}
-
-[Additional filters](#perform-migration-for-a-subset-of-the-table) defined with `scope_to` are ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
-
-{{< /alert >}}
+> [!note]
+> [Additional filters](#perform-migration-for-a-subset-of-the-table) defined with `scope_to` are ignored by `LooseIndexScanBatchingStrategy` and `distinct_each_batch`.
 
 ### Calculate overall time estimation of a batched background migration
 
@@ -777,11 +768,8 @@ calculate all the singularities around the records being migrated, making furthe
 `interval * number of records / max batch size` can be used to determine an approximate estimation of how long the migration takes.
 Where `interval` and `max batch size` refer to options defined for the job, and the `total tuple count` is the number of records to be migrated.
 
-{{< alert type="note" >}}
-
-Estimations may be affected by the [migration optimization mechanism](#migration-optimization).
-
-{{< /alert >}}
+> [!note]
+> Estimations may be affected by the [migration optimization mechanism](#migration-optimization).
 
 ### Cleaning up a batched background migration
 
@@ -826,11 +814,8 @@ creation.
 
 ### Execute a particular batch on the database testing pipeline
 
-{{< alert type="note" >}}
-
-Only [database maintainers](https://gitlab.com/groups/gitlab-org/maintainers/database/-/group_members?with_inherited_permissions=exclude) can view the database testing pipeline artifacts. Ask one for help if you need to use this method.
-
-{{< /alert >}}
+> [!note]
+> Only [database maintainers](https://gitlab.com/groups/gitlab-org/maintainers/database/-/group_members?with_inherited_permissions=exclude) can view the database testing pipeline artifacts. Ask one for help if you need to use this method.
 
 Let's assume that a batched background migration failed on a particular batch on GitLab.com and you want to figure out which query failed and why. At the moment, we don't have a good way to retrieve query information (especially the query parameters) and rerunning the entire migration with more logging would be a long process.
 
@@ -1005,11 +990,8 @@ and prepare for the migration:
 
 ## Managing
 
-{{< alert type="note" >}}
-
-BBM management takes place through `chatops` integration, which is limited to GitLab team members only.
-
-{{< /alert >}}
+> [!note]
+> BBM management takes place through `chatops` integration, which is limited to GitLab team members only.
 
 ### List batched background migrations
 
@@ -1036,11 +1018,8 @@ Output example:
 
 ![Output of the ChatOps command listing all the active batched background migrations.](img/list_v15_4.png)
 
-{{< alert type="note" >}}
-
-ChatOps returns 20 batched background migrations order by `created_at` (DESC).
-
-{{< /alert >}}
+> [!note]
+> ChatOps returns 20 batched background migrations order by `created_at` (DESC).
 
 ### Monitor the progress and status of a batched background migration
 
@@ -1066,11 +1045,8 @@ Output example:
 
 `Progress` represents the percentage of the background migration that has been completed.
 
-{{< alert type="note" >}}
-
-Progress percentage may not be reported correctly if the migration employs a cursor.
-
-{{< /alert >}}
+> [!note]
+> Progress percentage may not be reported correctly if the migration employs a cursor.
 
 Definitions of the batched background migration states:
 
@@ -1106,11 +1082,8 @@ Output example:
 
 ![Output of the ChatOps command to pause a specific batched background migration using MIGRATION_ID.](img/pause_v15_4.png)
 
-{{< alert type="note" >}}
-
-You can pause only `active` batched background migrations.
-
-{{< /alert >}}
+> [!note]
+> You can pause only `active` batched background migrations.
 
 ### Resume a batched background migration
 
@@ -1134,11 +1107,8 @@ Output example:
 
 ![Output of the ChatOps command to resume a specific batched background migration using MIGRATION_ID.](img/resume_v15_4.png)
 
-{{< alert type="note" >}}
-
-You can resume only `active` batched background migrations
-
-{{< /alert >}}
+> [!note]
+> You can resume only `active` batched background migrations
 
 ### Enable or disable background migrations
 

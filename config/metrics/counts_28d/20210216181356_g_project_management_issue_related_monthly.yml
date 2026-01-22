@@ -4,7 +4,7 @@ key_path: redis_hll_counters.issues_edit.g_project_management_issue_related_mont
 description: Count of MAU relating an issue to another issue
 product_group: project_management
 value_type: number
-status: active
+status: removed
 time_frame: 28d
 data_source: internal_events
 events:
@@ -17,3 +17,5 @@ tiers:
 performance_indicator_type: []
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218523
+milestone_removed: '18.9'

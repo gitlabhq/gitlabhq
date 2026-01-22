@@ -69,7 +69,7 @@ module Gitlab
           else
             provider = Gitlab.config.omniauth.providers.find do |provider|
               provider.name == name ||
-                (AuthHelper.oidc_providers.include?(provider.name.to_sym) && provider.dig(:args, :name) == name)
+                (AuthHelper.oidc_providers.include?(provider.name.to_sym) && provider.dig('args', 'name') == name)
             end
             merge_provider_args_with_defaults!(provider)
 

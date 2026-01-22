@@ -19,12 +19,9 @@ If you are deploying to a [Kubernetes cluster](../../user/infrastructure/cluster
 associated with your project, you can configure these deployments from your
 `.gitlab-ci.yml` file.
 
-{{< alert type="note" >}}
-
-Kubernetes configuration isn't supported for Kubernetes clusters
-[managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-
-{{< /alert >}}
+> [!note]
+> Kubernetes configuration isn't supported for Kubernetes clusters
+> [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
 
 The following configuration options are supported:
 

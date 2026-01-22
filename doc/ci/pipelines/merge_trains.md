@@ -214,6 +214,10 @@ To remove a merge request from a merge train:
 If you have a high-priority merge request, like a critical patch that must
 be merged urgently, you can select **Merge immediately**.
 
+> [!warning]
+> Merging immediately can use a lot of CI/CD resources. Use this option
+> only in critical situations.
+
 When you merge a merge request immediately:
 
 - The commits from the merge request are merged, ignoring the status of the merge train.
@@ -222,19 +226,9 @@ When you merge a merge request immediately:
   with a new merge train pipeline for each. These new merge train pipelines now contain
   the commits added by the merge request that was merged immediately.
 
-{{< alert type="warning" >}}
-
-Merging immediately can use a lot of CI/CD resources. Use this option
-only in critical situations.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
-merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
-
-{{< /alert >}}
+> [!note]
+> The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
+> merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
 
 ### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
 

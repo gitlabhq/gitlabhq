@@ -137,12 +137,9 @@ To add a large file into your Git repository and track it with Git LFS:
 
 1. Create a merge request.
 
-{{< alert type="note" >}}
-
-When you add a new file type to Git LFS tracking, existing files of this type
-are not converted to Git LFS. Only files of this type, added after you begin tracking, are added to Git LFS. Use `git lfs migrate` to convert existing files to use Git LFS.
-
-{{< /alert >}}
+> [!note]
+> When you add a new file type to Git LFS tracking, existing files of this type
+> are not converted to Git LFS. Only files of this type, added after you begin tracking, are added to Git LFS. Use `git lfs migrate` to convert existing files to use Git LFS.
 
 ### Stop tracking a file
 
@@ -173,12 +170,9 @@ To stop tracking a file with Git LFS:
 1. Create a merge request and request a review.
 1. Merge the request into the target branch.
 
-{{< alert type="note" >}}
-
-If you delete an object tracked by Git LFS, without tracking it with `git lfs untrack`,
-the object shows as `modified` in `git status`.
-
-{{< /alert >}}
+> [!note]
+> If you delete an object tracked by Git LFS, without tracking it with `git lfs untrack`,
+> the object shows as `modified` in `git status`.
 
 ### Stop tracking all files of a single type
 

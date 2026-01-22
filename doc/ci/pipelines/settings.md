@@ -147,12 +147,9 @@ To customize the path:
    - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-You cannot use your project's [pipeline editor](../pipeline_editor/_index.md) to
-edit CI/CD configuration files in other projects or on an external site.
-
-{{< /alert >}}
+> [!note]
+> You cannot use your project's [pipeline editor](../pipeline_editor/_index.md) to
+> edit CI/CD configuration files in other projects or on an external site.
 
 ### Custom CI/CD configuration file examples
 

@@ -189,11 +189,8 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000 --disable-feature g
 
 This will instruct the QA framework to disable the `gitaly_enforce_requests_limits` feature flag ([via the API](../../../../api/features.md)) if not already disabled, run all the tests in the `Test::Instance::All` scenario, and then enable the feature flag again if it was enabled earlier.
 
-{{< alert type="note" >}}
-
-You can also [toggle feature flags in the tests themselves](../best_practices/feature_flags.md).
-
-{{< /alert >}}
+> [!note]
+> You can also [toggle feature flags in the tests themselves](../best_practices/feature_flags.md).
 
 Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature` are QA framework options, not `rspec` options.
 

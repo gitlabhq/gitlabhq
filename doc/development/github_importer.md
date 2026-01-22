@@ -83,11 +83,8 @@ This worker imports all pull requests. For every pull request a job for the
 This worker imports only direct repository collaborators who are not outside collaborators.
 For every collaborator, we schedule a job for the `Gitlab::GithubImport::ImportCollaboratorWorker` worker.
 
-{{< alert type="note" >}}
-
-This stage is optional (controlled by `Gitlab::GithubImport::Settings`) and is selected by default.
-
-{{< /alert >}}
+> [!note]
+> This stage is optional (controlled by `Gitlab::GithubImport::Settings`) and is selected by default.
 
 ### 6. Stage::ImportIssuesAndDiffNotesWorker
 
@@ -139,11 +136,8 @@ Each job:
 1. Downloads the attachment.
 1. Replaces the old link with a newly-generated link to GitLab.
 
-{{< alert type="note" >}}
-
-It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
-
-{{< /alert >}}
+> [!note]
+> It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
 ### 9. Stage::ImportProtectedBranchesWorker
 

@@ -311,12 +311,9 @@ compile:
       - mybinaries
 ```
 
-{{< alert type="note" >}}
-
-For a more incremental approach, migrate one job at a time.
-Start with the `build` job, then repeat the steps for the `format` and `test` jobs.
-
-{{< /alert >}}
+> [!note]
+> For a more incremental approach, migrate one job at a time.
+> Start with the `build` job, then repeat the steps for the `format` and `test` jobs.
 
 The CI/CD template migration involves the following steps:
 

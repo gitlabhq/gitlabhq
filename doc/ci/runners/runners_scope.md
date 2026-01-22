@@ -75,12 +75,9 @@ To create an instance runner:
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
-{{< alert type="note" >}}
-
-The runner authentication token displays in the UI for a limited period of time during registration. After you register the runner,
-the authentication token is stored in the `config.toml`.
-
-{{< /alert >}}
+> [!note]
+> The runner authentication token displays in the UI for a limited period of time during registration. After you register the runner,
+> the authentication token is stored in the `config.toml`.
 
 ### Create an instance runner with a registration token (deprecated)
 
@@ -479,12 +476,9 @@ must be enabled for each project explicitly.
 
 Project runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
-{{< alert type="note" >}}
-
-Project runners do not get instance with forked projects automatically.
-A fork does copy the CI/CD settings of the cloned repository.
-
-{{< /alert >}}
+> [!note]
+> Project runners do not get instance with forked projects automatically.
+> A fork does copy the CI/CD settings of the cloned repository.
 
 ### Project runner ownership
 

@@ -101,11 +101,8 @@ In general, all migrations for a single deploy shouldn't take longer than
 1 hour for GitLab.com. The following guidelines are not hard rules, they were
 estimated to keep migration duration to a minimum.
 
-{{< alert type="note" >}}
-
-Keep in mind that all durations should be measured against GitLab.com.
-
-{{< /alert >}}
+> [!note]
+> Keep in mind that all durations should be measured against GitLab.com.
 
 {{< alert type="note" >}}
 
@@ -497,11 +494,8 @@ This script:
 1. Updates both the filename and the timestamp within the migration class
 1. Handles both regular and post-deployment migrations
 
-{{< alert type="note" >}}
-
-Run this script before merging if your migrations have been in review for a long time (_> 3 weeks_) or when rebasing old migration branches.
-
-{{< /alert >}}
+> [!note]
+> Run this script before merging if your migrations have been in review for a long time (_> 3 weeks_) or when rebasing old migration branches.
 
 ## Migration helpers and versioning
 

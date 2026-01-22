@@ -135,12 +135,9 @@ If you receive this error, you can do one of the following actions:
   and persisted by Helm, regardless of whether or not your chart uses the
   variable.
 
-{{< alert type="warning" >}}
-
-Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
-channel 1 database for your environment.
-
-{{< /alert >}}
+> [!warning]
+> Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
+> channel 1 database for your environment.
 
 ## Auto DevOps is automatically disabled for a project
 

@@ -64,6 +64,7 @@ import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vu
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import WorkItemsNewSavedViewModal from '~/work_items/components/work_items_new_saved_view_modal.vue';
 import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
@@ -180,6 +181,8 @@ const findServiceDeskEmptyStateWithAnyIssues = () =>
 const findServiceDeskEmptyStateWithoutAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithoutAnyTickets);
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
+const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
+const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 
 const mountComponent = ({
   provide = {},
@@ -1992,11 +1995,55 @@ describe('when workItemPlanningView flag is enabled', () => {
 });
 
 describe('when workItemsSavedViewsEnabled flag is enabled', () => {
-  it('renders the WorkItemsSavedViewsSelectors', async () => {
+  beforeEach(async () => {
     mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
     await waitForPromises();
+  });
 
+  it('renders the WorkItemsSavedViewsSelectors', () => {
     expect(findWorkItemsSavedViewsSelectors().exists()).toBe(true);
+  });
+
+  it('does not render save buttons if no changes to view were made', () => {
+    expect(findSaveViewButton().exists()).toBe(false);
+  });
+
+  describe('when not on a saved view', () => {
+    beforeEach(async () => {
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+      await waitForPromises();
+    });
+
+    it('renders "Save view" button when filters change', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(findSaveViewButton().exists()).toBe(true);
+    });
+
+    it('renders "Save view" button when sort changes', async () => {
+      findIssuableList().vm.$emit('sort', UPDATED_DESC);
+      await nextTick();
+      await waitForPromises();
+
+      expect(findSaveViewButton().exists()).toBe(true);
+    });
+
+    it('opens the new saved view modal when clicking "Save view"', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().exists()).toBe(true);
+    });
   });
 });
 

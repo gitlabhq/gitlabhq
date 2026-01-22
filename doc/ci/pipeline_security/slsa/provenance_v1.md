@@ -46,12 +46,9 @@ This official [SLSA Provenance](https://slsa.dev/spec/v1.1/provenance) `buildTyp
 This `buildType` describes the execution of a workflow that builds a software
 artifact.
 
-{{< alert type="note" >}}
-
-Consumers should ignore unrecognized external parameters. Any changes must
-not change the semantics of existing external parameters.
-
-{{< /alert >}}
+> [!note]
+> Consumers should ignore unrecognized external parameters. Any changes must
+> not change the semantics of existing external parameters.
 
 ### External parameters
 

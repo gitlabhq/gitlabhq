@@ -66,11 +66,16 @@ export default {
         )
       }}
     </p>
+
     <template v-else-if="isLoading">
-      <gl-skeleton-loader v-for="i in $options.MAX_ITEMS" :key="i" :height="24">
-        <rect x="0" y="0" width="16" height="16" rx="2" ry="2" />
-        <rect x="24" y="0" width="200" height="16" rx="2" ry="2" />
-      </gl-skeleton-loader>
+      <div class="gl-flex gl-flex-col gl-gap-y-4 gl-pt-3">
+        <gl-skeleton-loader
+          v-for="i in $options.MAX_ITEMS"
+          :key="i"
+          :lines="1"
+          :equal-width-lines="true"
+        />
+      </div>
     </template>
 
     <p v-else-if="!projects.length" class="gl-my-0 gl-mb-3">

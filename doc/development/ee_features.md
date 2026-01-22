@@ -1726,11 +1726,8 @@ export default {
 </template>
 ```
 
-{{< alert type="note" >}}
-
-Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
-
-{{< /alert >}}
+> [!note]
+> Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
 
 ##### Recommended alternative approach (named/scoped slots)
 

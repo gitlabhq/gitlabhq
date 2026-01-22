@@ -105,12 +105,9 @@ Archived deployments are still available, in the UI or by using the API, for aud
 Also, you can still fetch the deployed commit from the repository
 with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
 
-{{< alert type="note" >}}
-
-GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size)
-so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
-
-{{< /alert >}}
+> [!note]
+> GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size)
+> so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
 
 ## Deployment rollback
 

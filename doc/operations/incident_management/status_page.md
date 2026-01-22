@@ -92,12 +92,9 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 1. On the left sidebar, select **Build** > **Pipelines**.
 1. To deploy the Status Page to S3, select **New pipeline**.
 
-{{< alert type="warning" >}}
-
-Consider limiting who can access issues in this project, as any user who can view
-the incident can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
-
-{{< /alert >}}
+> [!warning]
+> Consider limiting who can access issues in this project, as any user who can view
+> the incident can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
 
 ### Sync incidents to the Status Page
 
@@ -160,12 +157,9 @@ After publication, you can access the incident's details page by selecting the
 
 To publish an update to the Incident, update the incident's description.
 
-{{< alert type="warning" >}}
-
-When referenced incidents are changed (such as title or confidentiality) the incident
-they were referenced in is not updated.
-
-{{< /alert >}}
+> [!warning]
+> When referenced incidents are changed (such as title or confidentiality) the incident
+> they were referenced in is not updated.
 
 ### Publish comments on incidents
 
@@ -177,12 +171,9 @@ To publish comments to the Status Page Incident:
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per incident) are also published.
 
-{{< alert type="warning" >}}
-
-Anyone with access to view the incident can add an emoji reaction to a comment, so
-consider limiting access to issues to team members only.
-
-{{< /alert >}}
+> [!warning]
+> Anyone with access to view the incident can add an emoji reaction to a comment, so
+> consider limiting access to issues to team members only.
 
 ### Update the incident status
 

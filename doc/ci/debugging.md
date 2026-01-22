@@ -234,12 +234,9 @@ job1:
       - rspec.xmp
 ```
 
-{{< alert type="warning" >}}
-
-Do not save tokens, passwords, or other sensitive information in artifacts,
-as they could be viewed by any user with access to the pipelines.
-
-{{< /alert >}}
+> [!warning]
+> Do not save tokens, passwords, or other sensitive information in artifacts,
+> as they could be viewed by any user with access to the pipelines.
 
 ### Run the job's commands locally
 

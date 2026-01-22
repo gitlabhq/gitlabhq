@@ -30,11 +30,8 @@ which executes several times per day. The model that uses sliding list partition
 uses `next_partition_if` and `detach_partition_if` to determine `missing_partitions` and `extra_partitions` respectively.
 Define blocks for them, so that it can be dynamically decided when to add new partition and drop the old ones.
 
-{{< alert type="note" >}}
-
-Make sure proper indexes are used for filter conditions used within the partitioning blocks.
-
-{{< /alert >}}
+> [!note]
+> Make sure proper indexes are used for filter conditions used within the partitioning blocks.
 
 **Example:**
 

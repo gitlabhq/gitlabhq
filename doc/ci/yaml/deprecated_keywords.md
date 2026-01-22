@@ -7,12 +7,9 @@ title: Deprecated keywords
 
 Some CI/CD keywords are deprecated and no longer recommended for use.
 
-{{< alert type="warning" >}}
-
-These keywords are still usable to ensure backwards compatibility,
-but could be scheduled for removal in a future major milestone.
-
-{{< /alert >}}
+> [!warning]
+> These keywords are still usable to ensure backwards compatibility,
+> but could be scheduled for removal in a future major milestone.
 
 ## Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 
@@ -47,12 +44,9 @@ You can use `only` and `except` to control when to add jobs to pipelines.
 
 ### `only:refs` / `except:refs`
 
-{{< alert type="note" >}}
-
-`only:refs` and `except:refs` are deprecated. To use refs, regular expressions, or variables
-to control when to add jobs to pipelines, use [`rules:if`](_index.md#rulesif) instead.
-
-{{< /alert >}}
+> [!note]
+> `only:refs` and `except:refs` are deprecated. To use refs, regular expressions, or variables
+> to control when to add jobs to pipelines, use [`rules:if`](_index.md#rulesif) instead.
 
 You can use the `only:refs` and `except:refs` keywords to control when to add jobs to a
 pipeline based on branch names or pipeline types.
@@ -138,12 +132,9 @@ job2:
 
 ### `only:variables` / `except:variables`
 
-{{< alert type="note" >}}
-
-`only:variables` and `except:variables` are deprecated. To use refs, regular expressions, or variables
-to control when to add jobs to pipelines, use [`rules:if`](_index.md#rulesif) instead.
-
-{{< /alert >}}
+> [!note]
+> `only:variables` and `except:variables` are deprecated. To use refs, regular expressions, or variables
+> to control when to add jobs to pipelines, use [`rules:if`](_index.md#rulesif) instead.
 
 You can use the `only:variables` or `except:variables` keywords to control when to add jobs
 to a pipeline, based on the status of [CI/CD variables](../variables/_index.md).
@@ -167,12 +158,9 @@ deploy:
 
 ### `only:changes` / `except:changes`
 
-{{< alert type="note" >}}
-
-`only:changes` and `except:changes` are deprecated. To use changed files to control
-when to add a job to a pipeline, use [`rules:changes`](_index.md#ruleschanges) instead.
-
-{{< /alert >}}
+> [!note]
+> `only:changes` and `except:changes` are deprecated. To use changed files to control
+> when to add a job to a pipeline, use [`rules:changes`](_index.md#ruleschanges) instead.
 
 Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
 when a Git push event modifies a file.

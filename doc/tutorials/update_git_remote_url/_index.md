@@ -18,12 +18,9 @@ Update your Git remote URLs if:
 - Your organization has moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-{{< alert type="note" >}}
-
-If you don't have an existing local working copy from the old remote, then you don't need this tutorial.
-You can instead clone the project from the new GitLab URL.
-
-{{< /alert >}}
+> [!note]
+> If you don't have an existing local working copy from the old remote, then you don't need this tutorial.
+> You can instead clone the project from the new GitLab URL.
 
 This tutorial explains how to update the remote URL for your local repository without:
 

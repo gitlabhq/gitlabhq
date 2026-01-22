@@ -9,7 +9,7 @@ RSpec.describe Integrations::SlackInstallation::InstanceService, :enable_admin_m
   subject(:service) { described_class.new(current_user: user, params: params) }
 
   it_behaves_like Integrations::SlackInstallation::BaseService do
-    let(:installation_alias) { '_gitlab-instance' }
+    let(:installation_alias) { "gitlab-organization-#{current_organization.id}" }
     let(:integration) { Integrations::GitlabSlackApplication.for_instance.first }
     let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_admin_application_settings_slack_url }
     let(:enqueues_propagation_worker) { true }

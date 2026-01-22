@@ -3615,7 +3615,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker
@@ -3625,7 +3626,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_transform_references
   :worker_name: BulkImports::TransformReferencesWorker

@@ -21,12 +21,9 @@ Choose which GitLab offering suits your needs:
 - GitLab Self-Managed: Install, administer, and maintain your own GitLab instance.
   The subscription provides the same set of features for all users.
 
-{{< alert type="note" >}}
-
-Subscriptions cannot be transferred between GitLab.com and GitLab Self-Managed.
-If you want to switch to a different GitLab offering, you must purchase and apply a new subscription.
-
-{{< /alert >}}
+> [!note]
+> Subscriptions cannot be transferred between GitLab.com and GitLab Self-Managed.
+> If you want to switch to a different GitLab offering, you must purchase and apply a new subscription.
 
 ## Choose a subscription tier
 

@@ -13,6 +13,7 @@ module BulkImports
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
     worker_resource_boundary :memory
+    tags :import_shared_storage
 
     sidekiq_retries_exhausted do |job, exception|
       perform_failure(job, exception)

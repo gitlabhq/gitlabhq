@@ -99,12 +99,9 @@ For example, to build a Docker image based on based on the
 To pass complex values like spaces and newlines, use Base64 encoding.
 Complex, unencoded values can cause issues with character escaping.
 
-{{< alert type="warning" >}}
-
-Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
-[this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
-
-{{< /alert >}}
+> [!warning]
+> Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
+> [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
 
 ## Custom container image
 

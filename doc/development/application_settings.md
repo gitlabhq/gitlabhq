@@ -94,11 +94,8 @@ to remove the original column. This a required multi-milestone process that invo
 1. Dropping the column.
 1. Removing the ignore rule.
 
-{{< alert type="warning" >}}
-
-Dropping the original column before ignoring it in the model can cause problems with zero-downtime migrations.
-
-{{< /alert >}}
+> [!warning]
+> Dropping the original column before ignoring it in the model can cause problems with zero-downtime migrations.
 
 ### Default values
 

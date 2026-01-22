@@ -51,12 +51,9 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
@@ -77,12 +74,9 @@ For more information, see the history.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 {{< alert type="warning" >}}
 

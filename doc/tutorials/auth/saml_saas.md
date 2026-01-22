@@ -78,12 +78,9 @@ To create an IdP application:
 
 The SAML application is created in Okta.
 
-{{< alert type="note" >}}
-
-For more information about SAML attributes and advanced configuration options,
-see the [SAML SSO documentation](../../user/group/saml_sso/_index.md#okta).
-
-{{< /alert >}}
+> [!note]
+> For more information about SAML attributes and advanced configuration options,
+> see the [SAML SSO documentation](../../user/group/saml_sso/_index.md#okta).
 
 {{< /tab >}}
 
@@ -119,12 +116,9 @@ The enterprise application is created in Microsoft Entra ID.
    - **Name identifier format**: Select **Persistent**.
 1. Select **Save**.
 
-{{< alert type="note" >}}
-
-For more information about SAML attributes and advanced configuration options,
-see the [SAML SSO documentation](../../user/group/saml_sso/_index.md#azure).
-
-{{< /alert >}}
+> [!note]
+> For more information about SAML attributes and advanced configuration options,
+> see the [SAML SSO documentation](../../user/group/saml_sso/_index.md#azure).
 
 {{< /tab >}}
 

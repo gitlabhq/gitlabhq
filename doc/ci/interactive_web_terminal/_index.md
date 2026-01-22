@@ -53,12 +53,9 @@ Support for fixing these limitations is tracked in the following issues:
 
 ## Debugging a running job
 
-{{< alert type="note" >}}
-
-Not all executors are
-[supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-
-{{< /alert >}}
+> [!note]
+> Not all executors are
+> [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 
 {{< alert type="note" >}}
 

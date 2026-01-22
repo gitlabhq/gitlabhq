@@ -310,11 +310,8 @@ module Types
 end
 ```
 
-{{< alert type="note" >}}
-
-If you are connecting an EE subscription, update `EE::Types::SubscriptionType` instead.
-
-{{< /alert >}}
+> [!note]
+> If you are connecting an EE subscription, update `EE::Types::SubscriptionType` instead.
 
 Make sure the `:issue_updated` argument matches the name used in the `subscription` request sent by the frontend in camel-case (`issueUpdated`), or `graphql-ruby` does not know which subscribers to inform. The event can now trigger.
 
@@ -336,11 +333,8 @@ module GraphqlTriggers
 end
 ```
 
-{{< alert type="note" >}}
-
-If the trigger is for an EE subscription, update `EE::GraphqlTriggers` instead.
-
-{{< /alert >}}
+> [!note]
+> If the trigger is for an EE subscription, update `EE::GraphqlTriggers` instead.
 
 - The first argument, `:issue_updated`, must match the `field` name used in the previous
   step.

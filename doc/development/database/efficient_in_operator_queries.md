@@ -166,11 +166,8 @@ The technique can only optimize `IN` queries that satisfy the following requirem
 - The columns in the `ORDER BY` clause are distinct
   (the combination of the columns uniquely identifies one particular row in the table).
 
-{{< alert type="warning" >}}
-
-This technique does not improve the performance of the `COUNT(*)` queries.
-
-{{< /alert >}}
+> [!warning]
+> This technique does not improve the performance of the `COUNT(*)` queries.
 
 ## The `InOperatorOptimization` module
 
@@ -591,11 +588,8 @@ FROM
 LIMIT 20
 ```
 
-{{< alert type="note" >}}
-
-To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
-
-{{< /alert >}}
+> [!note]
+> To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
 
 #### Using calculated `ORDER BY` expression
 

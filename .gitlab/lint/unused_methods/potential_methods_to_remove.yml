@@ -189,8 +189,6 @@ app/models/ci/job_token/allowlist.rb:
 app/models/ci/pipeline.rb:
 - has_archive_artifacts?
 - has_erasable_artifacts?
-app/models/ci/resource_group.rb:
-- waiting_processables
 app/models/ci/runner.rb:
 - belongs_to_one_project?
 - fallback_owner_project

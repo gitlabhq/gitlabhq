@@ -20,12 +20,9 @@ This page offers a walkthrough of a common configuration for GitLab on AWS using
 
 ## Getting started for production-grade GitLab
 
-{{< alert type="note" >}}
-
-This document is an installation guide for a proof of concept instance. It is not a reference architecture, and it does not result in a highly available configuration.
-It's highly recommended to use the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) instead.
-
-{{< /alert >}}
+> [!note]
+> This document is an installation guide for a proof of concept instance. It is not a reference architecture, and it does not result in a highly available configuration.
+> It's highly recommended to use the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) instead.
 
 Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [40 RPS or 2,000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [60 RPS or 3,000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster (Praefect) to achieve HA for Git repository storage and specifies triple redundancy.
 
@@ -137,12 +134,9 @@ As we are using [Amazon S3 object storage](#amazon-s3-object-storage), our EC2 i
 
 We use this role when we [create a launch template](#create-a-launch-template) later on.
 
-{{< alert type="note" >}}
-
-GitLab supports AWS Instance Metadata Service Version 2 (IMDSv2). GitLab automatically uses IMDSv2 when available and falls back to IMDSv1 if needed. You can safely require
-IMDSv2 on your EC2 instances for enhanced security.
-
-{{< /alert >}}
+> [!note]
+> GitLab supports AWS Instance Metadata Service Version 2 (IMDSv2). GitLab automatically uses IMDSv2 when available and falls back to IMDSv1 if needed. You can safely require
+> IMDSv2 on your EC2 instances for enhanced security.
 
 ## Configuring the network
 
@@ -632,12 +626,9 @@ gitlab=# \q
 
 #### Set up Gitaly
 
-{{< alert type="warning" >}}
-
-In this architecture, having a single Gitaly server creates a single point of failure. Use
-[Gitaly Cluster (Praefect)](../../administration/gitaly/praefect/_index.md) to remove this limitation.
-
-{{< /alert >}}
+> [!warning]
+> In this architecture, having a single Gitaly server creates a single point of failure. Use
+> [Gitaly Cluster (Praefect)](../../administration/gitaly/praefect/_index.md) to remove this limitation.
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the
@@ -662,23 +653,17 @@ Let's create an EC2 instance where we install Gitaly:
    1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
 1. Review all your settings and, if you're happy, select **Launch Instance**.
 
-{{< alert type="note" >}}
-
-Instead of storing configuration and repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow
-the same guidance mentioned previously. See the [Amazon EBS pricing page](https://aws.amazon.com/ebs/pricing/).
-
-{{< /alert >}}
+> [!note]
+> Instead of storing configuration and repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow
+> the same guidance mentioned previously. See the [Amazon EBS pricing page](https://aws.amazon.com/ebs/pricing/).
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/configure_gitaly.md#run-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) previously.
 
 ##### Elastic File System (EFS)
 
-{{< alert type="warning" >}}
-
-We do not recommend using EFS because it can negatively impact the performance of GitLab. For more information, see the
-[documentation about avoiding cloud-based file systems](../../administration/nfs.md#avoid-using-cloud-based-file-systems).
-
-{{< /alert >}}
+> [!warning]
+> We do not recommend using EFS because it can negatively impact the performance of GitLab. For more information, see the
+> [documentation about avoiding cloud-based file systems](../../administration/nfs.md#avoid-using-cloud-based-file-systems).
 
 If you do decide to use EFS, ensure that the [PosixUser](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html#cfn-efs-accesspoint-posixuser)
 attribute is either omitted or correctly specified with the UID and GID of the `git` user on the system that Gitaly is

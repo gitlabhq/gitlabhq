@@ -190,12 +190,9 @@ include:
   - template: Jobs/Deploy.latest.gitlab-ci.yml
 ```
 
-{{< alert type="warning" >}}
-
-Using a [beta](../../policy/development_stages_support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
-your environments. Do not test it with important projects or environments.
-
-{{< /alert >}}
+> [!warning]
+> Using a [beta](../../policy/development_stages_support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
+> your environments. Do not test it with important projects or environments.
 
 ## Resource Architectures of the `auto-deploy-app` chart
 

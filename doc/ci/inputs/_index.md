@@ -399,6 +399,33 @@ deploy:
 In this example, when `deployment_type` is `custom`, the `custom_config` input is listed on the run pipeline page
 and users must enter a value for the input.
 
+### Use boolean inputs with `spec:inputs:rules`
+
+You can use boolean inputs in rule conditions. Boolean values can be compared using boolean literals (`true`/`false`):
+
+```yaml
+spec:
+  inputs:
+    publish:
+      type: boolean
+      default: true
+
+    publish_stage:
+      rules:
+        - if: $[[ inputs.publish ]] == true
+          default: 'publish'
+        - if: $[[ inputs.publish ]] == false
+          default: 'test'
+---
+
+job:
+  stage: $[[ inputs.publish_stage ]]
+  script: echo "Publishing is $[[ inputs.publish ]]"
+```
+
+In this example, when `publish` is `true`, `publish_stage` defaults to `publish`. When `publish` is `false`,
+it defaults to `test`.
+
 ## Set input values
 
 ### For configuration added with `include`

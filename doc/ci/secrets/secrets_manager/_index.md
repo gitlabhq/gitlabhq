@@ -22,12 +22,9 @@ ignore_in_report: true
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
-notice. This feature is not ready for public testing or production use.
-
-{{< /alert >}}
+> [!warning]
+> This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
+> notice. This feature is not ready for public testing or production use.
 
 Secrets represent sensitive information your CI/CD jobs need to function. Secrets could be access tokens,
 database credentials, private keys, or similar.

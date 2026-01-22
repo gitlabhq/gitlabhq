@@ -25,11 +25,8 @@ If a test can't reliably block a merge, deployment, or release, it shouldn't exi
 
 ## Test Suite Placement Guidelines
 
-{{< alert type="note" >}}
-
-Please see [testing levels](testing_levels.md) for detailed information on the test pyramid and [pipeline tiers](../pipelines/_index.md#pipeline-tiers) for understanding merge request pipeline tiers.
-
-{{< /alert >}}
+> [!note]
+> Please see [testing levels](testing_levels.md) for detailed information on the test pyramid and [pipeline tiers](../pipelines/_index.md#pipeline-tiers) for understanding merge request pipeline tiers.
 
 | Test Type | Purpose | When to Run | Blocking |
 |-----------|---------|-------------|----------|

@@ -1072,12 +1072,9 @@ SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
 
-{{< alert type="note" >}}
-
-If the attribute specified in `groups_attribute` is incorrect or missing then the user will
-access as a standard user.
-
-{{< /alert >}}
+> [!note]
+> If the attribute specified in `groups_attribute` is incorrect or missing then the user will
+> access as a standard user.
 
 Example configuration:
 
@@ -2200,12 +2197,9 @@ the requirement to select an element before actually signing in.
 Every sign in attempt redirects to the SAML server, so you cannot sign in using
 local credentials. Make sure at least one of the SAML users has administrator access.
 
-{{< alert type="note" >}}
-
-To bypass the auto sign-in setting, append `?auto_sign_in=false` in the sign in
-URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
-
-{{< /alert >}}
+> [!note]
+> To bypass the auto sign-in setting, append `?auto_sign_in=false` in the sign in
+> URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ### Map SAML response attribute names
 
@@ -3045,12 +3039,9 @@ In the following example, the value of `uid` attribute in the SAML response is s
 Encrypting the SAML assertion is optional but recommended. This adds an additional layer of protection
 to prevent unencrypted data being logged or intercepted by malicious actors.
 
-{{< alert type="note" >}}
-
-This integration uses the `certificate` and `private_key` settings for both
-assertion encryption and request signing.
-
-{{< /alert >}}
+> [!note]
+> This integration uses the `certificate` and `private_key` settings for both
+> assertion encryption and request signing.
 
 To encrypt your SAML assertions, define the private key and the public certificate in the GitLab
 SAML settings. Your IdP encrypts the assertion with the public certificate and
@@ -3439,12 +3430,9 @@ The Ruby SAML gem is used by the
 [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the
 client side of the SAML authentication.
 
-{{< alert type="note" >}}
-
-The SAML redirect binding is different to the SAML POST binding. In the POST binding,
-signing is required to prevent intermediaries from tampering with the requests.
-
-{{< /alert >}}
+> [!note]
+> The SAML redirect binding is different to the SAML POST binding. In the POST binding,
+> signing is required to prevent intermediaries from tampering with the requests.
 
 ## Password generation for users created through SAML
 

@@ -371,13 +371,6 @@ You can also [delete projects using the Rails console](troubleshooting.md#delete
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-On GitLab.com and GitLab Dedicated, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
-If you must delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
-
-{{< /alert >}}
-
 If you do not want to wait for the configured retention period to delete a project,
 you can delete the project immediately.
 

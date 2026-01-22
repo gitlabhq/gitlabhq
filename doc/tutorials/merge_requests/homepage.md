@@ -22,12 +22,9 @@ title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 This tutorial introduces you to the new user interface for managing merge requests.
 

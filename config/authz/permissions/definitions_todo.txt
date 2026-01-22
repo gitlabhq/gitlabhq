@@ -490,7 +490,6 @@ read_epic_link_relation
 read_epic_relation
 read_event
 read_external_emails
-read_external_status_check
 read_external_status_check_response
 read_finding_token_status
 read_geo_node

@@ -538,11 +538,8 @@ class Group < Namespace
 end
 ```
 
-{{< alert type="warning" >}}
-
-Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
-
-{{< /alert >}}
+> [!warning]
+> Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
 
 ```ruby
 class Group < Namespace

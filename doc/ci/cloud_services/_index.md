@@ -18,12 +18,9 @@ title: Connect to cloud services
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-`CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and are scheduled to be removed in GitLab 17.0. Use [ID tokens](../secrets/id_token_authentication.md) instead.
-
-{{< /alert >}}
+> [!warning]
+> `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+> and are scheduled to be removed in GitLab 17.0. Use [ID tokens](../secrets/id_token_authentication.md) instead.
 
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/developers/how-connect-works/) to
 give your build and deployment jobs access to cloud credentials and services.

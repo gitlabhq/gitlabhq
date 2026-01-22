@@ -746,12 +746,9 @@ For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions
 To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-project)
 toggle in the project settings.
 
-{{< alert type="warning" >}}
-
-This action destroys the metadata about the component project and its versions published
-in the catalog. The project and its repository still exist, but are not visible in the catalog.
-
-{{< /alert >}}
+> [!warning]
+> This action destroys the metadata about the component project and its versions published
+> in the catalog. The project and its repository still exist, but are not visible in the catalog.
 
 To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
 

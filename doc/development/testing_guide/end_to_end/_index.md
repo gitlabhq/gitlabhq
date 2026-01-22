@@ -111,11 +111,8 @@ Examples could include:
 
 Skip running end-to-end tests by applying the `pipeline:skip-e2e` label to the merge request.
 
-{{< alert type="warning" >}}
-
-There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
-
-{{< /alert >}}
+> [!warning]
+> There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
 
 #### Dynamic parallel job scaling
 

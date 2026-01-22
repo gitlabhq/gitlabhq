@@ -64,10 +64,6 @@ module Ci
       end
     end
 
-    def waiting_processables
-      processables.waiting_for_resource
-    end
-
     def current_processable
       Ci::Processable.find_by('(id, partition_id) IN (?)', resources.select('build_id, partition_id'))
     end

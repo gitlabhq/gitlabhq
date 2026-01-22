@@ -221,6 +221,21 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION cluster_platforms_kubernetes_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.organization_id, NEW.group_id, NEW.project_id) != 1 THEN
+    SELECT "organization_id", "group_id", "project_id"
+    INTO NEW."organization_id", NEW."group_id", NEW."project_id"
+    FROM "clusters"
+    WHERE "clusters"."id" = NEW."cluster_id";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION cluster_providers_aws_sharding_key() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14038,6 +14053,29 @@ CREATE SEQUENCE arkose_sessions_id_seq
 
 ALTER SEQUENCE arkose_sessions_id_seq OWNED BY arkose_sessions.id;
 
+CREATE TABLE ascp_scans (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    base_scan_id bigint,
+    scan_sequence integer NOT NULL,
+    scan_type smallint DEFAULT 0 NOT NULL,
+    commit_sha text NOT NULL,
+    base_commit_sha text,
+    CONSTRAINT check_50c7afc508 CHECK ((char_length(commit_sha) <= 64)),
+    CONSTRAINT check_510aade8e9 CHECK ((char_length(base_commit_sha) <= 64))
+);
+
+CREATE SEQUENCE ascp_scans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ascp_scans_id_seq OWNED BY ascp_scans.id;
+
 CREATE TABLE atlassian_identities (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -16761,7 +16799,10 @@ CREATE TABLE cluster_platforms_kubernetes (
     encrypted_password_iv character varying,
     encrypted_token text,
     encrypted_token_iv character varying,
-    authorization_type smallint
+    authorization_type smallint,
+    organization_id bigint,
+    group_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE cluster_platforms_kubernetes_id_seq
@@ -29142,7 +29183,8 @@ CREATE TABLE system_note_metadata (
     description_version_id bigint,
     note_id bigint NOT NULL,
     id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_9135b6f0b6 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq
@@ -33256,6 +33298,8 @@ ALTER TABLE ONLY approvals ALTER COLUMN id SET DEFAULT nextval('approvals_id_seq
 
 ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
 
+ALTER TABLE ONLY ascp_scans ALTER COLUMN id SET DEFAULT nextval('ascp_scans_id_seq'::regclass);
+
 ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('atlassian_identities_user_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_id_seq'::regclass);
@@ -36077,6 +36121,9 @@ ALTER TABLE ONLY ar_internal_metadata
 ALTER TABLE ONLY arkose_sessions
     ADD CONSTRAINT arkose_sessions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ascp_scans
+    ADD CONSTRAINT ascp_scans_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT atlassian_identities_pkey PRIMARY KEY (user_id);
 
@@ -36353,6 +36400,9 @@ ALTER TABLE note_metadata
 ALTER TABLE cluster_providers_aws
     ADD CONSTRAINT check_6d49cca3b0 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
+ALTER TABLE cluster_platforms_kubernetes
+    ADD CONSTRAINT check_73ecf3bb91 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
@@ -36364,9 +36414,6 @@ ALTER TABLE award_emoji
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE system_note_metadata
-    ADD CONSTRAINT check_9135b6f0b6 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE related_epic_links
     ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
@@ -41331,6 +41378,12 @@ CREATE UNIQUE INDEX idx_ci_runner_taggings_proj_type_on_tag_id_runner_id_and_typ
 
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
 
+CREATE INDEX idx_cluster_platforms_kubernetes_on_group_id ON cluster_platforms_kubernetes USING btree (group_id);
+
+CREATE INDEX idx_cluster_platforms_kubernetes_on_organization_id ON cluster_platforms_kubernetes USING btree (organization_id);
+
+CREATE INDEX idx_cluster_platforms_kubernetes_on_project_id ON cluster_platforms_kubernetes USING btree (project_id);
+
 CREATE INDEX idx_cluster_providers_aws_on_group_id ON cluster_providers_aws USING btree (group_id);
 
 CREATE INDEX idx_cluster_providers_aws_on_organization_id ON cluster_providers_aws USING btree (organization_id);
@@ -42079,7 +42132,7 @@ CREATE INDEX index_ai_catalog_item_consumers_on_parent_item_consumer_id ON ai_ca
 
 CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
 
-CREATE INDEX index_ai_catalog_item_consumers_on_service_account_id ON ai_catalog_item_consumers USING btree (service_account_id);
+CREATE UNIQUE INDEX index_ai_catalog_item_consumers_on_service_account_id_unique ON ai_catalog_item_consumers USING btree (service_account_id);
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_catalog_item_version_dependencies USING btree (dependency_id);
 
@@ -42344,6 +42397,14 @@ CREATE INDEX index_arkose_sessions_on_session_xid ON arkose_sessions USING btree
 CREATE INDEX index_arkose_sessions_on_user_id ON arkose_sessions USING btree (user_id);
 
 CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree (verified_at);
+
+CREATE INDEX index_ascp_scans_on_base_scan_id ON ascp_scans USING btree (base_scan_id);
+
+CREATE INDEX index_ascp_scans_on_commit_sha ON ascp_scans USING btree (commit_sha);
+
+CREATE UNIQUE INDEX index_ascp_scans_on_project_id_and_scan_sequence ON ascp_scans USING btree (project_id, scan_sequence);
+
+CREATE INDEX index_ascp_scans_on_project_id_and_scan_type ON ascp_scans USING btree (project_id, scan_type);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identities USING btree (extern_uid);
 
@@ -46017,7 +46078,11 @@ CREATE INDEX index_slack_integrations_on_organization_id ON slack_integrations U
 
 CREATE INDEX index_slack_integrations_on_project_id ON slack_integrations USING btree (project_id);
 
-CREATE UNIQUE INDEX index_slack_integrations_on_team_id_and_alias ON slack_integrations USING btree (team_id, alias);
+CREATE UNIQUE INDEX index_slack_integrations_on_team_id_alias_group_id ON slack_integrations USING btree (team_id, alias, group_id);
+
+CREATE UNIQUE INDEX index_slack_integrations_on_team_id_alias_organization_id ON slack_integrations USING btree (team_id, alias, organization_id);
+
+CREATE UNIQUE INDEX index_slack_integrations_on_team_id_alias_project_id ON slack_integrations USING btree (team_id, alias, project_id);
 
 CREATE INDEX index_slack_integrations_scopes_on_group_id ON slack_integrations_scopes USING btree (group_id);
 
@@ -51055,6 +51120,8 @@ CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conve
 
 CREATE TRIGGER approval_policy_rules_loose_fk_trigger AFTER DELETE ON approval_policy_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER ascp_scans_loose_fk_trigger AFTER DELETE ON ascp_scans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER assign_ci_runner_machines_id_trigger BEFORE INSERT ON ci_runner_machines FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_machines_id_value();
 
 CREATE TRIGGER assign_ci_runner_taggings_id_trigger BEFORE INSERT ON ci_runner_taggings FOR EACH ROW EXECUTE FUNCTION assign_ci_runner_taggings_id_value();
@@ -51567,6 +51634,8 @@ CREATE TRIGGER trigger_cfbec3f07e2b BEFORE INSERT OR UPDATE ON deployment_merge_
 
 CREATE TRIGGER trigger_cleanup_pipeline_iid_after_delete AFTER DELETE ON p_ci_pipelines FOR EACH ROW EXECUTE FUNCTION cleanup_pipeline_iid_after_delete();
 
+CREATE TRIGGER trigger_cluster_platforms_kubernetes_sharding_key BEFORE INSERT OR UPDATE ON cluster_platforms_kubernetes FOR EACH ROW EXECUTE FUNCTION cluster_platforms_kubernetes_sharding_key();
+
 CREATE TRIGGER trigger_cluster_providers_aws_sharding_key BEFORE INSERT OR UPDATE ON cluster_providers_aws FOR EACH ROW EXECUTE FUNCTION cluster_providers_aws_sharding_key();
 
 CREATE TRIGGER trigger_cluster_providers_gcp_sharding_key BEFORE INSERT OR UPDATE ON cluster_providers_gcp FOR EACH ROW EXECUTE FUNCTION cluster_providers_gcp_sharding_key();
@@ -51780,6 +51849,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_platforms_kubernetes
+    ADD CONSTRAINT fk_0358d71adf FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_approval_rules
     ADD CONSTRAINT fk_03983bf729 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -52035,6 +52107,9 @@ ALTER TABLE ONLY ai_catalog_item_version_dependencies
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_16ddb573de FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY ascp_scans
+    ADD CONSTRAINT fk_16efa16ef2 FOREIGN KEY (base_scan_id) REFERENCES ascp_scans(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_17a5fafbd4 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -54079,6 +54154,9 @@ ALTER TABLE ONLY protected_branches
 ALTER TABLE ONLY packages_composer_packages
     ADD CONSTRAINT fk_de97b49a7b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_platforms_kubernetes
+    ADD CONSTRAINT fk_deca307b23 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_def441dfc3 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -54195,6 +54273,9 @@ ALTER TABLE ONLY board_labels
 
 ALTER TABLE ONLY packages_debian_project_distribution_keys
     ADD CONSTRAINT fk_eb2224a3c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_platforms_kubernetes
+    ADD CONSTRAINT fk_eb81334270 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY tag_gpg_signatures
     ADD CONSTRAINT fk_ebf091e1c4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;

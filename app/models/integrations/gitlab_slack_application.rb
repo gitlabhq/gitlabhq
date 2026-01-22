@@ -86,7 +86,8 @@ module Integrations
       return unless slack_integration
 
       new_integration.slack_integration = slack_integration.dup.tap do |entity|
-        entity.alias = new_integration.parent&.full_path || SlackIntegration::INSTANCE_ALIAS
+        entity.alias = new_integration.parent&.full_path ||
+          SlackIntegration.organization_alias(new_integration.organization_id)
 
         # The sharding key of the slack_integrations table is derived from the
         # sharding key set on the related Integration record

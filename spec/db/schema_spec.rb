@@ -37,6 +37,7 @@ RSpec.describe 'Database schema',
       ai_events_counts: %w[user_id namespace_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
+      ascp_scans: %w[project_id], # Uses loose FK for async deletion (config/gitlab_loose_foreign_keys.yml)
       approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],

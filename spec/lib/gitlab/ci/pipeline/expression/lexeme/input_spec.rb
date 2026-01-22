@@ -50,6 +50,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Input, feature_category
       expect(inputs_hash[:inputs]).not_to receive(:with_indifferent_access)
       expect(lexeme.evaluate(inputs_hash)).to eq 'production'
     end
+
+    context 'with boolean input values' do
+      it 'returns boolean values as-is' do
+        expect(lexeme.evaluate(inputs: { 'environment' => true })).to be true
+        expect(lexeme.evaluate(inputs: { 'environment' => false })).to be false
+      end
+    end
   end
 
   describe '#inspect' do
