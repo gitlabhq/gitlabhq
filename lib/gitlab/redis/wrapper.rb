@@ -16,8 +16,6 @@ require 'redis/store/factory'
 module Gitlab
   module Redis
     class Wrapper
-      InvalidPathError = Class.new(StandardError)
-
       class << self
         delegate :url, :store, :encrypted_secrets, to: :new
 
@@ -195,18 +193,16 @@ module Gitlab
         decrypted_config = parse_encrypted_config(config)
         final_config = Gitlab::Redis::ConfigGenerator.new('Redis').generate(decrypted_config)
 
-        result = if final_config[:cluster].present?
-                   final_config[:cluster] = final_config[:cluster].map do |node|
-                     next node unless node.is_a?(String)
+        if final_config[:cluster].present?
+          final_config[:cluster] = final_config[:cluster].map do |node|
+            next node unless node.is_a?(String)
 
-                     ::Redis::Store::Factory.extract_host_options_from_uri(node)
-                   end
-                   final_config
-                 else
-                   parse_redis_url(final_config)
-                 end
-
-        parse_client_tls_options(result)
+            ::Redis::Store::Factory.extract_host_options_from_uri(node)
+          end
+          final_config
+        else
+          parse_redis_url(final_config)
+        end
       end
 
       def parse_encrypted_config(encrypted_config)
@@ -240,37 +236,6 @@ module Gitlab
           # {url: ..., port: ..., sentinels: [...]}
           redis_hash.merge(config)
         end
-      end
-
-      def parse_client_tls_options(config)
-        return config unless config&.key?(:ssl_params)
-
-        # Only cert_file and key_file are handled in this method. ca_file and
-        # ca_path are Strings, so they can be passed as-is. cert_store is not
-        # currently supported.
-
-        cert_file = config[:ssl_params].delete(:cert_file)
-        key_file = config[:ssl_params].delete(:key_file)
-
-        if cert_file
-          unless ::File.exist?(cert_file)
-            raise InvalidPathError,
-              "Certificate file #{cert_file} specified in in `resque.yml` does not exist."
-          end
-
-          config[:ssl_params][:cert] = OpenSSL::X509::Certificate.new(File.read(cert_file))
-        end
-
-        if key_file
-          unless ::File.exist?(key_file)
-            raise InvalidPathError,
-              "Key file #{key_file} specified in in `resque.yml` does not exist."
-          end
-
-          config[:ssl_params][:key] = OpenSSL::PKey.read(File.read(key_file))
-        end
-
-        config
       end
 
       def raw_config_hash

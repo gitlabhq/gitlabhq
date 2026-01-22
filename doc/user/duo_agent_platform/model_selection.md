@@ -49,7 +49,7 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
@@ -68,14 +68,6 @@ To select a model for a feature:
   Please leave your feedback about using OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
 
 {{< /alert >}}
-
-### Assign a default GitLab Duo namespace
-
-If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
-
-When GitLab Duo can't automatically detect the namespace you are working in, it uses the default namespace to determine what models to use.
-
-Learn how to [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Troubleshooting
 

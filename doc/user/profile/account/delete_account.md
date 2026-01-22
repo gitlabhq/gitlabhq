@@ -43,11 +43,8 @@ On GitLab Self-Managed, this feature is disabled by default. Use the
 {{< /alert >}}
 
 You can schedule your account for deletion. When you delete your account, it enters a pending
-deletion state. Generally, deletions happen in an hour, but can take up to seven days for
-accounts that are either:
-
-- Associated with comments, issues, merge requests, notes, or snippets
-- Not part of a paid plan
+deletion state. Generally, deletions complete in one or two hours but can take up to seven days for
+accounts that are associated with comments, issues, merge requests, notes, or snippets.
 
 While your account is pending deletion:
 

@@ -41,7 +41,7 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](#assign-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
@@ -50,17 +50,6 @@ To select a model for a feature:
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
-
-### Assign a default GitLab Duo namespace
-
-If you belong to multiple GitLab Duo namespaces, you must choose one as your default namespace.
-When GitLab Duo cannot automatically detect your namespace, the default namespace is used to determine what models to use.
-
-If you do not set a default namespace, GitLab Duo Chat (Agentic) and the GitLab Duo Agent Platform are disabled.
-For projects you're not a member of, your default namespace determines your
-[GitLab Credits](../../subscriptions/gitlab_credits.md) and available GitLab Duo features.
-
-For more information, see [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 ## Troubleshooting
 

@@ -53671,6 +53671,9 @@ msgstr ""
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr ""
 
+msgid "ProjectSettings|Regex explanation"
+msgstr ""
+
 msgid "ProjectSettings|Regex that all merge request titles must match"
 msgstr ""
 
@@ -53783,6 +53786,9 @@ msgid "ProjectSettings|The default template will be applied on save."
 msgstr ""
 
 msgid "ProjectSettings|The host of your data collector instance."
+msgstr ""
+
+msgid "ProjectSettings|The plain language explanation of what this expression enforces. Consider including examples that will pass."
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."

@@ -23,7 +23,7 @@ require (
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/modelcontextprotocol/go-sdk v1.2.1-0.20260111125647-b4f957ff3c27
-	github.com/prometheus/client_golang v1.23.0
+	github.com/prometheus/client_golang v1.23.2
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
@@ -37,7 +37,7 @@ require (
 	golang.org/x/image v0.28.0
 	golang.org/x/oauth2 v0.30.0
 	google.golang.org/grpc v1.73.0
-	google.golang.org/protobuf v1.36.6
+	google.golang.org/protobuf v1.36.8
 )
 
 require (
@@ -129,7 +129,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
-	github.com/prometheus/common v0.65.0 // indirect
+	github.com/prometheus/common v0.66.1 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/prometheus/prometheus v0.54.0 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
@@ -157,8 +157,9 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.37.0 // indirect
 	go.opentelemetry.io/otel/trace v1.37.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
+	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect

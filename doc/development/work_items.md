@@ -422,35 +422,160 @@ provide a smooth migration path of epics to WIT with minimal disruption to user 
 We will move towards work items, work item types, and custom widgets (CW) in an iterative process.
 For a rough outline of the work ahead of us, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
 
-## Redis HLL Counter Schema
+## Work item instrumentation
 
-We need a more scalable Redis counter schema for work items that is inclusive of Plan xMAU, Project Management xMAU, Certify xMAU, and
-Product Planning xMAU. We cannot aggregate and dedupe events across features within a group or at the stage level with
-our current Redis slot schema.
+Work item interactions are tracked using GitLab [internal events](internal_analytics/internal_event_instrumentation/_index.md) system,
+which feeds into Snowplow for analytics. A centralized instrumentation architecture provides consistent
+tracking across all work item types and interactions.
 
-All three Plan product groups will be using the same base object (`work item`). Each product group still needs to
-track MAU.
+### Architecture overview
 
-### Proposed aggregate counter schema
+The instrumentation system consists of three main components:
 
 ```mermaid
-graph TD
-    Event[Specific Interaction Counter] --> AC[Aggregate Counters]
-    AC --> Plan[Plan xMAU]
-    AC --> PM[Project Management xMAU]
-    AC --> PP[Product Planning xMAU]
-    AC --> Cer[Certify xMAU]
-    AC --> WI[Work Items Users]
+graph LR
+    accTitle: Work Items Instrumentation
+    accDescr: Visualization of the flow between work item services and instrumentation.
+    subgraph Services
+        US[UpdateService]
+        CS[CreateService]
+        Other[Other Services]
+    end
+
+    subgraph Instrumentation
+        TS[TrackingService]
+        EM[EventMappings]
+        EA[EventActions]
+    end
+
+    US -->|old_associations| TS
+    CS -->|explicit event| TS
+    Other -->|explicit event| TS
+    TS --> EM
+    EM --> EA
+    TS -->|track_internal_event| IE[Internal Events]
 ```
 
-### Implementation
+| Component | Purpose |
+|-----------|---------|
+| `EventActions` | Defines all trackable event constants (for example, `work_item_create`, `work_item_title_update`) |
+| `TrackingService` | Unified entry point for tracking; accepts either an explicit event or derives events from changes |
+| `EventMappings` | Declarative mappings from attribute and association changes to events |
 
-The new aggregate schema is already implemented and we are already tracking work item unique actions
-in [GitLab.com](https://gitlab.com).
+### Event properties
 
-For implementation details, this [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93231) can be used
-as a reference. The MR covers the definition of new unique actions, event tracking in the code and also
-adding the new unique actions to the required aggregate counters.
+All work item events include standardized properties for segmentation:
+
+| Property | Description |
+|----------|-------------|
+| `user` | The user performing the action |
+| `namespace` | The namespace containing the work item |
+| `project` | The project containing the work item (if applicable) |
+| `label` | The work item type name (for example, `Issue`, `Epic`, `Task`) |
+| `property` | The user's role in the namespace |
+
+### Integration patterns
+
+#### Explicit event tracking
+
+For discrete actions like create, delete, or clone, pass the event directly:
+
+```ruby
+Gitlab::WorkItems::Instrumentation::TrackingService.new(
+  work_item: work_item,
+  current_user: current_user,
+  event: Gitlab::WorkItems::Instrumentation::EventActions::CREATE
+).execute
+```
+
+#### Derived event tracking
+
+For updates where multiple fields may change, pass the previous state and let
+`EventMappings` determine which events to emit:
+
+```ruby
+# In associations_before_update, capture state before changes
+def associations_before_update(work_item)
+  super.merge(
+    confidential: work_item.confidential,
+    # ... other associations
+  )
+end
+
+# In after_update, track with old_associations
+Gitlab::WorkItems::Instrumentation::TrackingService.new(
+  work_item: work_item,
+  current_user: current_user,
+  old_associations: old_associations
+).execute
+```
+
+### Current events
+
+For the complete list of trackable work item events, see
+[`EventActions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/work_items/instrumentation/event_actions.rb).
+
+### Add new event
+
+To add a new work item event:
+
+1. **Define your event and metrics** using the internal events CLI. Follow the
+   [quick start guide](internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)
+   to generate the necessary YAML definitions.
+
+1. **Add the event constant** in `lib/gitlab/work_items/instrumentation/event_actions.rb`:
+
+   ```ruby
+   NEW_ACTION = 'work_item_new_action'
+
+   ALL_EVENTS = [
+     # ... existing events
+     NEW_ACTION
+   ].freeze
+   ```
+
+1. **Add mapping** (for update-derived events only) in `lib/gitlab/work_items/instrumentation/event_mappings.rb`:
+
+   For attribute changes:
+
+   ```ruby
+   ATTRIBUTE_MAPPINGS = [
+     # ... existing mappings
+     { event: EventActions::NEW_ACTION, key: 'attribute_name' }
+   ].freeze
+   ```
+
+   For association changes with custom comparison logic:
+
+   ```ruby
+   ASSOCIATION_MAPPINGS = [
+     # ... existing mappings
+     {
+       event: EventActions::NEW_ACTION,
+       key: :association_name,
+       compare: ->(old, new) { old != new }
+     }
+   ].freeze
+   ```
+
+1. **Call the tracking service** from the relevant service class.
+
+1. **Add specs** using the shared examples:
+
+   ```ruby
+   it_behaves_like 'tracks work item event', :work_item, :user, 'work_item_new_action'
+   ```
+
+For a minimal example of adding new event instrumentation after the YAML definitions are in place, see
+[MR !215447](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215447) which adds two events
+with just 5 files changed and +28 lines.
+
+### Related files
+
+- Event constants: [`event_actions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/work_items/instrumentation/event_actions.rb)
+- Tracking service: [`tracking_service.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/work_items/instrumentation/tracking_service.rb)
+- Event mappings: [`event_mappings.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/work_items/instrumentation/event_mappings.rb)
+- Shared examples: [`tracking_service_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/shared_examples/work_items/tracking_service_shared_examples.rb)
 
 ## Related topics
 

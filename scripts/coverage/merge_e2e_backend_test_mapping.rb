@@ -12,8 +12,15 @@ require_relative '../../tooling/lib/tooling/test_map_packer'
 #
 # E2E mappings (test -> sources) are inverted to source -> tests format,
 # then merged with Crystalball mappings to produce a combined mapping file.
+#
+# Crystalball provides two mapping strategies:
+# - DescribedClassStrategy: Maps tests based on the described class (packed-mapping.json.gz)
+# - CoverageStrategy: Maps tests based on actual code coverage (packed-mapping-alt.json.gz)
+#
+# Both strategies are merged to provide comprehensive test-to-source mappings.
 class BackendTestMappingMerger
-  CRYSTALBALL_MAPPING_PATH = 'crystalball/packed-mapping.json.gz'
+  CRYSTALBALL_DESCRIBED_MAPPING_PATH = 'crystalball/packed-mapping.json.gz'
+  CRYSTALBALL_COVERAGE_MAPPING_PATH = 'crystalball/packed-mapping-alt.json.gz'
   MERGED_MAPPING_PATH = 'crystalball/merged-mapping.json.gz'
   E2E_MAPPING_ARTIFACT_GLOB = 'e2e-test-mapping/test-code-paths-mapping-*.json'
 
@@ -30,20 +37,30 @@ class BackendTestMappingMerger
                              inverted
                            end
 
-    crystalball_mapping = load_crystalball_mapping
-    if crystalball_mapping.nil?
-      puts "Crystalball mapping not found at #{CRYSTALBALL_MAPPING_PATH}"
-      crystalball_mapping = {}
+    described_mapping = load_crystalball_mapping(CRYSTALBALL_DESCRIBED_MAPPING_PATH)
+    if described_mapping.nil?
+      puts "Crystalball described_class mapping not found at #{CRYSTALBALL_DESCRIBED_MAPPING_PATH}"
+      described_mapping = {}
     else
-      puts "Loaded Crystalball mapping: #{crystalball_mapping.size} source files"
+      puts "Loaded Crystalball described_class mapping: #{described_mapping.size} source files"
     end
 
-    if inverted_e2e_mapping.empty? && crystalball_mapping.empty?
-      warn "ERROR: Both E2E and Crystalball mappings are missing, cannot produce merged mapping"
+    coverage_mapping = load_crystalball_mapping(CRYSTALBALL_COVERAGE_MAPPING_PATH)
+    if coverage_mapping.nil?
+      puts "Crystalball coverage mapping not found at #{CRYSTALBALL_COVERAGE_MAPPING_PATH}"
+      coverage_mapping = {}
+    else
+      puts "Loaded Crystalball coverage mapping: #{coverage_mapping.size} source files"
+    end
+
+    if inverted_e2e_mapping.empty? && described_mapping.empty? && coverage_mapping.empty?
+      warn "ERROR: All mappings are missing, cannot produce merged mapping"
       return false
     end
 
-    merged_mapping = merge_mappings(crystalball_mapping, inverted_e2e_mapping)
+    # Merge all mapping sources: described_class + coverage + e2e
+    merged_mapping = merge_mappings(described_mapping, coverage_mapping)
+    merged_mapping = merge_mappings(merged_mapping, inverted_e2e_mapping)
     puts "Merged mapping: #{merged_mapping.size} source files"
 
     save_merged_mapping(merged_mapping)
@@ -82,10 +99,10 @@ class BackendTestMappingMerger
   end
 
   # Loads and unpacks Crystalball mapping from gzipped file.
-  def load_crystalball_mapping
-    return unless File.exist?(CRYSTALBALL_MAPPING_PATH)
+  def load_crystalball_mapping(path)
+    return unless File.exist?(path)
 
-    compressed = File.binread(CRYSTALBALL_MAPPING_PATH)
+    compressed = File.binread(path)
     json_content = Zlib::GzipReader.new(StringIO.new(compressed)).read
     packed_mapping = JSON.parse(json_content)
 

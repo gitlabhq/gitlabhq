@@ -4,8 +4,41 @@ module Gitlab
   module Redis
     class ConfigGenerator
       CommandExecutionError = Class.new(StandardError)
+      InvalidPathError = Class.new(StandardError)
 
       attr_reader :component
+
+      def self.parse_client_tls_options(config)
+        return config unless config&.key?(:ssl_params)
+
+        # Only cert_file and key_file are handled in this method. ca_file and
+        # ca_path are Strings, so they can be passed as-is. cert_store is not
+        # currently supported. Note that this is no longer needed now that
+        # redis-client does this conversion for us with the cert and key parameters,
+        # but preserve this for backwards compatibility.
+        cert_file = config[:ssl_params].delete(:cert_file)
+        key_file = config[:ssl_params].delete(:key_file)
+
+        if cert_file
+          unless ::File.exist?(cert_file)
+            raise InvalidPathError,
+              "Certificate file #{cert_file} specified in Redis configuration does not exist."
+          end
+
+          config[:ssl_params][:cert] = OpenSSL::X509::Certificate.new(File.read(cert_file))
+        end
+
+        if key_file
+          unless ::File.exist?(key_file)
+            raise InvalidPathError,
+              "Key file #{key_file} specified in Redis configuration does not exist."
+          end
+
+          config[:ssl_params][:key] = OpenSSL::PKey.read(File.read(key_file))
+        end
+
+        config
+      end
 
       def initialize(component = 'Redis')
         @component = component
@@ -13,12 +46,14 @@ module Gitlab
 
       def generate(original_config)
         command = original_config.delete(:config_command)
-        return original_config unless command.present?
+        config = if command.present?
+                   config_from_command = generate_yaml_from_command(command)
+                   config_from_command.present? ? original_config.deep_merge(config_from_command) : original_config
+                 else
+                   original_config
+                 end
 
-        config_from_command = generate_yaml_from_command(command)
-        return original_config unless config_from_command.present?
-
-        original_config.deep_merge(config_from_command)
+        self.class.parse_client_tls_options(config)
       end
 
       private

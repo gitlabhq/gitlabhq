@@ -5,6 +5,7 @@
 - :allow_forgery_protection
 - :allow_rich_text_editor_for_new_users
 - :allow_unrouted_sidekiq_calls
+- :allow_user_experience_sli_schema_request
 - :allowed_to_be_slow
 - :api
 - :assume_throttled

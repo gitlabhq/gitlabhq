@@ -68,7 +68,7 @@ To give a user access to specific features:
 
 These settings apply to:
 
-- Users who have the top-level group as the [default GitLab Duo namespace](../../gitlab_duo/model_selection.md).
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
 - Users that don't have access through their default namespace, but the current top-level group gives them ability to use the feature.
 
 {{< /tab >}}
