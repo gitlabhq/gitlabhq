@@ -37,22 +37,7 @@ Vulnerability
 : - Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
     even if the vulnerability is no longer detected in the default branch.
 
-The presentation of security scanning results differs depending on the
-[pipeline type](../../../ci/pipelines/pipeline_types.md) - branch pipeline or merge request
-pipeline.
-
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
-
-| Vulnerability information                          | Branch pipeline         | Merge request pipeline |
-|----------------------------------------------------|-------------------------|------------------------|
-| Security reports                                   | {{< yes >}}             | {{< yes >}}            |
-| Pipeline security report<br />(Ultimate only)      | {{< yes >}}             | {{< yes >}}            |
-| Merge request security widget<br />(Ultimate only) | {{< no >}}              | {{< yes >}}            |
-| Vulnerability report                               | {{< yes >}}<sup>1</sup> | {{< no >}}             |
-
-**Footnotes**:
-
-1. Vulnerability report is only available for the default branch.
 
 ## Security report artifacts
 

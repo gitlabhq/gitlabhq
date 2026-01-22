@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: false, feature_category: :shared do
+RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: false, feature_category: :feature_flags do
   include StubVersion
 
   # Pick a long-lasting real feature flag to test that we can check feature flags in the load balancer

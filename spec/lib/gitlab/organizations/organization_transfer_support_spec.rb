@@ -95,6 +95,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       scim_oauth_access_tokens
       security_policy_settings
       slack_api_scopes
+      slack_integrations
       slack_integrations_scopes
       snippet_repositories
       snippet_repository_storage_moves

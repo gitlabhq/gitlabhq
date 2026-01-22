@@ -2,7 +2,6 @@
 
 module Ci
   class Build < Ci::Processable
-    prepend Ci::BulkInsertableTags
     include Ci::Contextable
     include Ci::Deployable
     include TokenAuthenticatable
@@ -270,6 +269,12 @@ module Ci
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
+
+    # Builds no longer use the p_ci_build_tags table for tag storage.
+    # Tags are stored in ci_job_definitions and accessed via job_definition.tag_list.
+    # Tag records in the `tags` table are created by Ci::PendingBuild.build_tags_ids.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/580301
+    skip_callback :save, :after, :save_tags
 
     class << self
       # This is needed for url_for to work,

@@ -2380,42 +2380,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#save_tags' do
-    let(:build) { create(:ci_build, :without_job_definition, tag_list: ['tag'], pipeline: pipeline) }
-
-    it 'saves tags' do
-      build.save!
-
-      expect(build.tag_list).to contain_exactly('tag')
-      expect(build.tags).to be_empty
-      expect(build.taggings).to be_empty
-    end
-
-    context 'when tags have white-space' do
-      before do
-        build.tag_list = ['       taga', 'tagb      ', '   tagc    ']
-      end
-
-      it 'strips tags' do
-        build.save!
-
-        expect(build.tag_list).to match_array(%w[taga tagb tagc])
-        expect(build.tags.map(&:name)).to be_empty
-      end
-    end
-
-    context 'with BulkInsertableTags.with_bulk_insert_tags' do
-      it 'does not save_tags' do
-        Ci::BulkInsertableTags.with_bulk_insert_tags do
-          build.save!
-        end
-
-        expect(build.tags).to be_empty
-        expect(build.taggings).to be_empty
-      end
-    end
-  end
-
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag'], pipeline: pipeline) }

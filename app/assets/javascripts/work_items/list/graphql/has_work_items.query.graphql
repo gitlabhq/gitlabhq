@@ -1,0 +1,11 @@
+# @feature_category: portfolio_management
+query hasWorkItems($fullPath: ID!, $types: [IssueType!]) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItems(types: $types, first: 1) {
+      nodes {
+        id
+      }
+    }
+  }
+}

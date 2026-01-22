@@ -113,11 +113,11 @@ import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_t
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
-import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
-import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
-import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
+import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
+import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
@@ -183,7 +183,7 @@ export default {
     IssueCardStatistics,
     IssueCardTimeInfo,
     WorkItemBulkEditSidebar: () =>
-      import('~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue'),
+      import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
     WorkItemDrawer,
     WorkItemHealthStatus,
     EmptyStateWithAnyIssues,

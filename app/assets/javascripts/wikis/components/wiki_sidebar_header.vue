@@ -1,10 +1,13 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { toggleWikiSidebar } from '../utils/sidebar_toggle';
 
 export default {
   name: 'WikiSidebarHeader',
-  components: { GlButton },
+  components: {
+    GlButton,
+  },
   inject: ['hasCustomSidebar', 'hasWikiPages', 'editSidebarUrl', 'canCreate', 'isEditingSidebar'],
   props: {
     pagesListExpanded: {
@@ -30,6 +33,7 @@ export default {
       if (!this.hasCustomSidebar) return;
       this.$emit('toggle-pages-list');
     },
+    toggleWikiSidebar,
   },
 };
 </script>
@@ -40,6 +44,8 @@ export default {
       category="tertiary"
       icon="chevron-double-lg-left"
       class="toggle-close block gutter-toggle js-sidebar-wiki-toggle-close gl-mr-3 gl-block gl-flex-none !gl-pt-0"
+      :aria-label="s__('Wiki|Close sidebar')"
+      @click="toggleWikiSidebar"
     />
     <div
       class="gl-flex gl-items-center gl-overflow-hidden gl-p-2"

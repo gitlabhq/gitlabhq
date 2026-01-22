@@ -10,6 +10,7 @@ module Integrations
       attr_reader :state
       attr_reader :description
       attr_reader :object_kind
+      attr_reader :type
 
       def initialize(params)
         super
@@ -23,6 +24,7 @@ module Integrations
         @state = obj_attr[:state]
         @description = obj_attr[:description] || ''
         @object_kind = params[:object_kind]
+        @type = obj_attr[:type]
       end
 
       def attachments
@@ -82,7 +84,11 @@ module Integrations
       end
 
       def issue_type
-        @issue_type ||= object_kind == 'incident' ? 'Incident' : 'Issue'
+        @issue_type ||= type || fallback_type
+      end
+
+      def fallback_type
+        object_kind == 'incident' ? 'Incident' : 'Issue'
       end
     end
   end

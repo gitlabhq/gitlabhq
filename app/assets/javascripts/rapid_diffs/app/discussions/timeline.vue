@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-  <div class="rd-discussion-timeline gl-mt-5" data-testid="commit-timeline">
+  <div class="rd-discussion-timeline gl-my-5" data-testid="commit-timeline">
     <div class="rd-discussion-timeline-comments">
       <diff-discussions :discussions="timelineDiscussions" timeline-layout />
     </div>

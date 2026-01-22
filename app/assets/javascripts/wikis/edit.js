@@ -5,6 +5,7 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import csrf from '~/lib/utils/csrf';
 import ZenMode from '~/zen_mode';
 import WikiContentApp from './app.vue';
+import { mountWikiSidebar } from './mount_sidebar';
 
 const mountWikiEditApp = () => {
   const el = document.querySelector('#js-vue-wiki-edit-app');
@@ -52,4 +53,5 @@ const mountWikiEditApp = () => {
 export const mountApplications = () => {
   new ZenMode(); // eslint-disable-line no-new
   mountWikiEditApp();
+  mountWikiSidebar();
 };

@@ -74,7 +74,7 @@ RSpec.describe Network::Graph, feature_category: :source_code_management do
 
     it 'requests the position of the commit' do
       expect(project.repository).to receive(:count_commits)
-                                      .with(all: true, after: project.repository.commit.date)
+                                      .with(revisions: ['--branches', '--tags'], after: project.repository.commit.date)
                                       .once
                                       .and_call_original
 

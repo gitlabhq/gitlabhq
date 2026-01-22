@@ -2,14 +2,38 @@
 import WikiSidebarHeader from './wiki_sidebar_header.vue';
 import WikiSidebarEntries from './wiki_sidebar_entries.vue';
 
+const LOCAL_STORAGE_STATE_KEY = 'wiki-sidebar-expanded';
+
 export default {
   name: 'WikiSidebar',
   components: { WikiSidebarHeader, WikiSidebarEntries },
   inject: ['hasCustomSidebar'],
   data() {
     return {
-      pagesListExpanded: !this.hasCustomSidebar,
+      pagesListExpanded: this.getInitialPagesListState(),
     };
+  },
+  watch: {
+    pagesListExpanded(newValue) {
+      this.persistPagesListState(newValue);
+    },
+  },
+  methods: {
+    getInitialPagesListState() {
+      // If no custom sidebar, always show pages list
+      if (!this.hasCustomSidebar) return true;
+
+      // Restore from localStorage if available
+      const savedState = localStorage.getItem(LOCAL_STORAGE_STATE_KEY);
+      return savedState === 'expanded';
+    },
+    persistPagesListState(expanded) {
+      if (expanded) {
+        localStorage.setItem(LOCAL_STORAGE_STATE_KEY, 'expanded');
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_STATE_KEY);
+      }
+    },
   },
 };
 </script>

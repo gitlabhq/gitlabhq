@@ -521,15 +521,12 @@ To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-
 
 ### `config should be an array of hashes` error message
 
-You might see an error similar to the following when using [`!reference` tags](yaml/yaml_optimization.md#reference-tags)
-with the [`parallel:matrix` keyword](yaml/_index.md#parallelmatrix):
+You might see an error similar to the following when using multiple [`!reference` tags](yaml/yaml_optimization.md#reference-tags) in an array:
 
 ```plaintext
 This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.
 ```
 
-The `parallel:matrix` keyword does not support multiple `!reference` tags at the same time.
-Try using [YAML anchors](yaml/yaml_optimization.md#anchors) instead.
-
-[Issue 439828](https://gitlab.com/gitlab-org/gitlab/-/issues/439828) proposes improving
-`!reference` tag support in `parallel:matrix`.
+While the `script`, `rules`, and `stages` keywords support using multiple reference tags, other keywords expecting an array do not.
+You can [use nesting to work around this limitation](https://gitlab.com/gitlab-org/gitlab/-/issues/439828#note_1918858137),
+or use [YAML anchors](yaml/yaml_optimization.md#anchors) instead.

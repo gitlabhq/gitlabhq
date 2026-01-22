@@ -16178,6 +16178,29 @@ The edge type for [`AgentConfiguration`](#agentconfiguration).
 | <a id="agentconfigurationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="agentconfigurationedgenode"></a>`node` | [`AgentConfiguration`](#agentconfiguration) | The item at the end of the edge. |
 
+#### `AgentPlatformSessionsAggregationResponseConnection`
+
+The connection type for [`AgentPlatformSessionsAggregationResponse`](#agentplatformsessionsaggregationresponse).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponseconnectionedges"></a>`edges` | [`[AgentPlatformSessionsAggregationResponseEdge]`](#agentplatformsessionsaggregationresponseedge) | A list of edges. |
+| <a id="agentplatformsessionsaggregationresponseconnectionnodes"></a>`nodes` | [`[AgentPlatformSessionsAggregationResponse]`](#agentplatformsessionsaggregationresponse) | A list of nodes. |
+| <a id="agentplatformsessionsaggregationresponseconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AgentPlatformSessionsAggregationResponseEdge`
+
+The edge type for [`AgentPlatformSessionsAggregationResponse`](#agentplatformsessionsaggregationresponse).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponseedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="agentplatformsessionsaggregationresponseedgenode"></a>`node` | [`AgentPlatformSessionsAggregationResponse`](#agentplatformsessionsaggregationresponse) | The item at the end of the edge. |
+
 #### `AgentPlatformUserFlowCountConnection`
 
 The connection type for [`AgentPlatformUserFlowCount`](#agentplatformuserflowcount).
@@ -25752,6 +25775,60 @@ Agent platform aggregated metrics by flow type.
 | <a id="agentplatformflowmetricsessionscount"></a>`sessionsCount` | [`Int!`](#int) | Total number of sessions. |
 | <a id="agentplatformflowmetricuserscount"></a>`usersCount` | [`Int!`](#int) | Number of unique users. |
 
+### `AgentPlatformSessionsAggregationResponse`
+
+Response for AgentPlatformSessions aggregation engine.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsecompletionrate"></a>`completionRate` | [`Float`](#float) | Session completion rate. |
+| <a id="agentplatformsessionsaggregationresponsedimensions"></a>`dimensions` | [`AgentPlatformSessionsAggregationResponseDimensions`](#agentplatformsessionsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="agentplatformsessionsaggregationresponsefinishedcount"></a>`finishedCount` | [`Int`](#int) | Number of finished sessions. |
+| <a id="agentplatformsessionsaggregationresponsemeanduration"></a>`meanDuration` | [`Float`](#float) | Average session duration in seconds. |
+| <a id="agentplatformsessionsaggregationresponsetotalcount"></a>`totalCount` | [`Int`](#int) | Total number of sessions. |
+| <a id="agentplatformsessionsaggregationresponseuserscount"></a>`usersCount` | [`Int`](#int) | Number of unique users. |
+
+#### Fields with arguments
+
+##### `AgentPlatformSessionsAggregationResponse.durationQuantile`
+
+Session duration quantile in seconds.
+
+Returns [`Float`](#float).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsedurationquantilequantile"></a>`quantile` | [`Float`](#float) |  |
+
+### `AgentPlatformSessionsAggregationResponseDimensions`
+
+Response dimensions for AgentPlatformSessions aggregation engine.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsedimensionsflowtype"></a>`flowType` | [`String`](#string) | Type of session. |
+| <a id="agentplatformsessionsaggregationresponsedimensionsuserid"></a>`userId` | [`Int`](#int) | User ID. |
+
+#### Fields with arguments
+
+##### `AgentPlatformSessionsAggregationResponseDimensions.createdEventAt`
+
+Session creation time.
+
+Returns [`Date`](#date).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsedimensionscreatedeventatgranularity"></a>`granularity` | [`String`](#string) |  |
+
 ### `AgentPlatformUserFlowCount`
 
 Agent platform flow counts aggergated per user.
@@ -26429,6 +26506,32 @@ Self-hosted LLM servers.
 | <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
 | <a id="aiselfhostedmodelreleasestate"></a>`releaseState` | [`AiSelfHostedModelReleaseState!`](#aiselfhostedmodelreleasestate) | GitLab release status of the model. |
 | <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
+
+### `AiUsage`
+
+Usage metrics. Not for production use yet.
+
+#### Fields with arguments
+
+##### `AiUsage.agentPlatformSessions`
+
+Aggregation engine for GitLab agent platform sessions usage.
+
+Returns [`AgentPlatformSessionsAggregationResponseConnection`](#agentplatformsessionsaggregationresponseconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusageagentplatformsessionscreatedeventatfrom"></a>`createdEventAtFrom` | [`Time`](#time) | Filter by session creation timestamp. Start of the range. |
+| <a id="aiusageagentplatformsessionscreatedeventatto"></a>`createdEventAtTo` | [`Time`](#time) | Filter by session creation timestamp. End of the range. |
+| <a id="aiusageagentplatformsessionsflowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many flow types. |
+| <a id="aiusageagentplatformsessionsorderby"></a>`orderBy` | [`[AggregationOrder!]`](#aggregationorder) | Sorting order list for the aggregated data. |
+| <a id="aiusageagentplatformsessionsuserid"></a>`userId` | [`[Int!]`](#int) | Filter by one or many user ids. |
 
 ### `AiUsageData`
 
@@ -33864,6 +33967,7 @@ GPG signature for a signed commit.
 | <a id="groupadmineditpath"></a>`adminEditPath` | [`String`](#string) | Admin path for editing group. Only available to admins. |
 | <a id="groupadminshowpath"></a>`adminShowPath` | [`String`](#string) | Admin path of the group. Only available to admins. |
 | <a id="groupaisettings"></a>`aiSettings` {{< icon name="warning-solid" >}} | [`AiNamespaceSettings`](#ainamespacesettings) | **Introduced** in GitLab 18.8. **Status**: Experiment. AI settings for the namespace. |
+| <a id="groupaiusage"></a>`aiUsage` {{< icon name="warning-solid" >}} | [`AiUsage`](#aiusage) | **Introduced** in GitLab 18.9. **Status**: Experiment. AI-related data 2.0. |
 | <a id="groupaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
@@ -42541,6 +42645,7 @@ Project-level settings for product analytics provider.
 | <a id="projectadminshowpath"></a>`adminShowPath` | [`String`](#string) | Admin path of the project. Only available to admins. |
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
 | <a id="projectaiagents"></a>`aiAgents` {{< icon name="warning-solid" >}} | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
+| <a id="projectaiusage"></a>`aiUsage` {{< icon name="warning-solid" >}} | [`AiUsage`](#aiusage) | **Introduced** in GitLab 18.9. **Status**: Experiment. AI-related data 2.0. |
 | <a id="projectaiusagedata"></a>`aiUsageData` {{< icon name="warning-solid" >}} | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="projectaixrayreports"></a>`aiXrayReports` {{< icon name="warning-solid" >}} | [`AiXrayReportConnection!`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
@@ -59362,6 +59467,15 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="agentplatformmetricsnotinputflowtypes"></a>`flowTypes` | [`[String!]`](#string) | List of flow types to exclude. |
+
+### `AggregationOrder`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aggregationorderdirection"></a>`direction` | [`SortDirectionEnum!`](#sortdirectionenum) | Sorting direction. |
+| <a id="aggregationorderidentifier"></a>`identifier` | [`String!`](#string) | Dimension or metric identifier. |
 
 ### `AiAdditionalContextInput`
 

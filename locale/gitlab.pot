@@ -26166,6 +26166,9 @@ msgstr ""
 msgid "DuoChat|What is a fork?"
 msgstr ""
 
+msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service account needs to be verified. Contact your administrator."
+msgstr ""
+
 msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the Code Review foundational flow in the top-level group."
 msgstr ""
 
@@ -26227,6 +26230,9 @@ msgid "DuoCodeReview|is reviewing your merge request and will let you know when 
 msgstr ""
 
 msgid "DuoCodeReview|is working on a reply"
+msgstr ""
+
+msgid "DuoCodeReview|started %{session_link} and will let you know when it's finished"
 msgstr ""
 
 msgid "DuoCoreTrialDiscover|Accelerate learning and collaboration through AI interaction"
@@ -77247,6 +77253,9 @@ msgid "WikiPage|{Give this page a title}"
 msgstr ""
 
 msgid "Wiki|Add custom sidebar"
+msgstr ""
+
+msgid "Wiki|Close sidebar"
 msgstr ""
 
 msgid "Wiki|Commit message"

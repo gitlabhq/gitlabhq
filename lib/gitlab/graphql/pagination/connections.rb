@@ -31,6 +31,11 @@ module Gitlab
           )
 
           schema.connections.add(
+            Gitlab::Database::Aggregation::AggregationResult,
+            Gitlab::Database::Aggregation::Graphql::AggregationConnection
+          )
+
+          schema.connections.add(
             Gitlab::Graphql::Pagination::ClickHouseAggregatedRelation,
             Gitlab::Graphql::Pagination::ClickHouseAggregatedConnection
           )

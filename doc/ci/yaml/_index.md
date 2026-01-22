@@ -4523,8 +4523,6 @@ for `PROVIDER` and `STACK`:
           PROVIDER: [aws, gcp]
   ```
 
-  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](yaml_optimization.md#reference-tags) with `parallel:matrix`.
-
 **Related topics**:
 
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).

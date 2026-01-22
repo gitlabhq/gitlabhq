@@ -12,7 +12,7 @@ import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_
 import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
 import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
-import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
+import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
 import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
@@ -65,11 +65,11 @@ import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
-import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
-import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
-import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
-import hasWorkItemsQuery from '~/work_items/graphql/list/has_work_items.query.graphql';
-import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_count_only.query.graphql';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
+import getWorkItemsFullQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
+import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
+import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {

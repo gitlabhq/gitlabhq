@@ -2,17 +2,17 @@ import Vue, { nextTick } from 'vue';
 import { VueRenderer } from '@tiptap/vue-2';
 
 /*
- * This test verifies that TipTap's VueRenderer.updateProps works correctly
+ * This test verifies that Tiptap's VueRenderer.updateProps works correctly
  * with our Vue 3 compat patch that allows prop mutation when
  * __GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__ is set.
  *
- * TipTap's VueRenderer directly mutates $props to update node view components,
+ * Tiptap's VueRenderer directly mutates $props to update node view components,
  * which normally fails in Vue 3's dev mode because props are readonly.
  * Our patch in vue.cjs.js skips shallowReadonly when the magic prop is set.
  *
  * In Vue 2, props are mutable by default, so this test passes in both modes.
  */
-describe('TipTap Vue compatibility', () => {
+describe('Tiptap Vue compatibility', () => {
   let container;
   let warnSpy;
 
@@ -49,7 +49,7 @@ describe('TipTap Vue compatibility', () => {
         },
       });
 
-      // Create props with the magic property (like our patched TipTap does)
+      // Create props with the magic property (like our patched Tiptap does)
       const props = { selected: false };
       Object.defineProperty(props, '__GITLAB_VUE3_MIGRATION_MUTABLE_PROPS__', {
         value: true,
@@ -57,7 +57,7 @@ describe('TipTap Vue compatibility', () => {
         configurable: true,
       });
 
-      // Create VueRenderer (this is what TipTap does internally)
+      // Create VueRenderer (this is what Tiptap does internally)
       const renderer = new VueRenderer(TestComponent, {
         propsData: props,
       });
@@ -71,7 +71,7 @@ describe('TipTap Vue compatibility', () => {
       // Clear warnings from initialization
       warnSpy.mockClear();
 
-      // Call updateProps (this is what TipTap does when selecting a node)
+      // Call updateProps (this is what Tiptap does when selecting a node)
       renderer.updateProps({ selected: true });
       await nextTick();
 

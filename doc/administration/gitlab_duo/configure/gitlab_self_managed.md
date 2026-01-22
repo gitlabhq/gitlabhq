@@ -15,17 +15,10 @@ gitlab_dedicated: no
 
 ## Prerequisites
 
-- Allow both outbound and inbound connections.
-  Network firewalls might cause delay.
-- [Turn off Silent Mode](../../silent_mode/_index.md#turn-off-silent-mode).
-- [Activate your GitLab instance with an activation code](../../license.md#activate-gitlab-ee).
-  You cannot use a legacy license.
-  Except for [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md),
-  you also cannot use an offline license.
-- Turn on composite identity.
-
-For the best results, use GitLab 17.2 and later.
-Earlier versions might continue to work, but performance might be degraded.
+- Silent Mode is [turned off](../../silent_mode/_index.md#turn-off-silent-mode).
+- [Your instance is activated with an activation code](../../license.md#activate-gitlab-ee).
+  - You cannot use a license key.
+  - You cannot use GitLab Duo with an offline license, with the exception of [GitLab Duo Self-Hosted](../../gitlab_duo_self_hosted/_index.md).
 
 ## Turn on composite identity
 

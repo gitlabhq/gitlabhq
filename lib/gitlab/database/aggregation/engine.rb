@@ -81,17 +81,21 @@ module Gitlab
 
         # @return [Gitlab::Database::Aggregation::AggregationResult]
         def execute(request)
+          if request_valid?(request)
+            ServiceResponse.success(payload: { data: execute_query_plan(request.to_query_plan(self)) })
+          else
+            ServiceResponse.error(payload: { errors: errors }, message: errors.full_messages.join(', '))
+          end
+        end
+
+        def request_valid?(request)
           validate
 
           plan = request.to_query_plan(self)
           plan.validate
           errors.merge!(plan.errors)
 
-          if errors.any?
-            ServiceResponse.error(payload: { errors: errors }, message: errors.full_messages.join(', '))
-          else
-            ServiceResponse.success(payload: { data: execute_query_plan(plan) })
-          end
+          errors.empty?
         end
 
         private

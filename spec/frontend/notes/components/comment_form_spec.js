@@ -500,10 +500,10 @@ describe('issue_comment_form component', () => {
     });
 
     describe('actions', () => {
-      it('should be possible to close the issue', () => {
+      it('should be possible to close the ticket', () => {
         mountComponent();
 
-        expect(findCloseReopenButton().text()).toBe('Close issue');
+        expect(findCloseReopenButton().text()).toBe('Close ticket');
       });
 
       it.each`
@@ -538,7 +538,7 @@ describe('issue_comment_form component', () => {
       it('should update buttons texts when it has note', () => {
         mountComponent({ initialData: { note: 'Foo' } });
 
-        expect(findCloseReopenButton().text()).toBe('Comment & close issue');
+        expect(findCloseReopenButton().text()).toBe('Comment & close ticket');
       });
 
       it('updates button text with noteable type', () => {

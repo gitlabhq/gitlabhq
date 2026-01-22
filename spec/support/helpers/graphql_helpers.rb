@@ -838,6 +838,7 @@ module GraphqlHelpers
       use BatchLoader::GraphQL
 
       lazy_resolve ::Gitlab::Graphql::Lazy, :force
+      default_max_page_size(::GitlabSchema.default_max_page_size)
     end
   end
 

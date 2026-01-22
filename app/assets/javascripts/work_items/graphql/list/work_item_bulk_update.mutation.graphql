@@ -1,5 +1,0 @@
-mutation workItemBulkUpdate($input: WorkItemBulkUpdateInput!) {
-  workItemBulkUpdate(input: $input) {
-    updatedWorkItemCount
-  }
-}

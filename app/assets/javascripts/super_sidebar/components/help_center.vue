@@ -254,7 +254,7 @@ export default {
     <gl-button
       v-if="showWhatsNewNotification"
       v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
-      class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
+      class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5"
       category="tertiary"
       icon="compass"
       data-testid="sidebar-whatsnew-button"
@@ -294,7 +294,7 @@ export default {
           v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2"
+          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"
