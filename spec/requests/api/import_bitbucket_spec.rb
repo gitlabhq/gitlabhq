@@ -7,6 +7,29 @@ RSpec.describe API::ImportBitbucket, feature_category: :importers do
   let_it_be(:project) { create(:project) }
 
   describe 'POST /import/bitbucket' do
+    it_behaves_like 'authorizing granular token permissions', :create_bitbucket_import do
+      before do
+        allow_next_instance_of(Import::BitbucketService) do |service|
+          allow(service).to receive(:execute).and_return(status: :success, project: project)
+        end
+      end
+
+      let_it_be(:group) { create(:group, developers: [user]) }
+      let_it_be(:params) do
+        {
+          bitbucket_username: 'foo',
+          bitbucket_app_password: 'bar',
+          repo_path: 'path/to/repo',
+          target_namespace: group.full_path
+        }
+      end
+
+      let(:boundary_object) { group }
+      let(:request) do
+        post api('/import/bitbucket', personal_access_token: pat), params: params
+      end
+    end
+
     shared_examples 'bitbucket import endpoint' do
       before do
         allow_next_instance_of(Import::BitbucketService) do |service|

@@ -15,20 +15,13 @@ title: GitLab Dedicated users and notifications
 
 Manage users who can access Switchboard and configure notifications for your GitLab Dedicated instance.
 
-## Switchboard user management
-
-Switchboard is the administrative interface for managing your GitLab Dedicated instance.
-Switchboard users are administrators who can configure and monitor the instance.
-
-{{< alert type="note" >}}
-
 Switchboard users are separate from the users on your GitLab Dedicated instance.
-For information about configuring authentication for both Switchboard and your GitLab Dedicated instance,
+
+Switchboard has its own authentication system, separate from your GitLab Dedicated instance.
+For information about configuring authentication for your GitLab Dedicated instance users,
 see [authentication for GitLab Dedicated](authentication/_index.md).
 
-{{< /alert >}}
-
-### Add Switchboard users
+## Add Switchboard users
 
 Administrators can add two types of Switchboard users to manage and view their GitLab Dedicated instance:
 
@@ -45,7 +38,7 @@ To add a new user to Switchboard for your GitLab Dedicated instance:
 
 An invitation to use Switchboard is sent to the user.
 
-### Reset your password
+## Reset your password
 
 To reset your Switchboard password:
 
@@ -60,7 +53,7 @@ To reset your Switchboard password:
 After your password is reset, you're automatically signed in to Switchboard.
 If multi-factor authentication (MFA) is set up for your account, you're prompted to enter your MFA verification code.
 
-### Reset multi-factor authentication
+## Reset multi-factor authentication
 
 To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 The support team will help you regain access to your account.

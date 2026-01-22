@@ -29268,6 +29268,9 @@ msgstr ""
 msgid "Failed to load related branches"
 msgstr ""
 
+msgid "Failed to load security configuration"
+msgstr ""
+
 msgid "Failed to load stack trace."
 msgstr ""
 
@@ -49212,7 +49215,7 @@ msgstr ""
 msgid "PerformanceBar|Frontend resources"
 msgstr ""
 
-msgid "PerformanceBar|GDK running in SaaS mode"
+msgid "PerformanceBar|GitLab running in SaaS mode"
 msgstr ""
 
 msgid "PerformanceBar|Gitaly calls"
@@ -61111,13 +61114,13 @@ msgstr ""
 msgid "SecurityInventory|Load more"
 msgstr ""
 
+msgid "SecurityInventory|Manage security configuration"
+msgstr ""
+
 msgid "SecurityInventory|Manage security scanners"
 msgstr ""
 
 msgid "SecurityInventory|Manage security scanners for subgroup projects"
-msgstr ""
-
-msgid "SecurityInventory|Manage tool coverage"
 msgstr ""
 
 msgid "SecurityInventory|No projects found"
@@ -61151,6 +61154,12 @@ msgid "SecurityInventory|Secret push protection"
 msgstr ""
 
 msgid "SecurityInventory|Secret push protection (SD)"
+msgstr ""
+
+msgid "SecurityInventory|Security configuration"
+msgstr ""
+
+msgid "SecurityInventory|Security configuration: %{projectName}"
 msgstr ""
 
 msgid "SecurityInventory|Security inventory"

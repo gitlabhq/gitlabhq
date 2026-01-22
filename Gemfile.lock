@@ -309,7 +309,7 @@ GEM
       tins (~> 1.0)
     amazing_print (1.8.1)
     android_key_attestation (0.3.0)
-    apollo_upload_server (2.1.6)
+    apollo_upload_server (2.1.7)
       actionpack (>= 6.1.6)
       graphql (>= 1.8)
     app_store_connect (0.38.0)

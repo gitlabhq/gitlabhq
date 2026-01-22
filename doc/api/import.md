@@ -248,6 +248,7 @@ curl --request POST \
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215036) in GitLab 17.0.
+- Support for Bitbucket Cloud API tokens [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/575583) in GitLab 18.9.
 
 {{< /history >}}
 
@@ -256,7 +257,10 @@ Import your projects from Bitbucket Cloud to GitLab using by the API.
 Prerequisites:
 
 - The [prerequisites for Bitbucket Cloud importer](../user/import/bitbucket_cloud.md).
-- A [Bitbucket Cloud app password](../user/import/bitbucket_cloud.md#generate-a-bitbucket-cloud-app-password).
+- One of the following:
+  - A [Bitbucket Cloud app password](../user/import/bitbucket_cloud.md#generate-a-bitbucket-cloud-app-password). Bitbucket Cloud app passwords
+    [are deprecated](https://www.atlassian.com/blog/bitbucket/bitbucket-cloud-transitions-to-api-tokens-enhancing-security-with-app-password-deprecation).
+  - A [Bitbucket Cloud API token](#bitbucket-cloud-api-token-scopes) with the required scopes.
 
 ```plaintext
 POST /import/bitbucket
@@ -264,11 +268,15 @@ POST /import/bitbucket
 
 | Attribute                | Type   | Required | Description |
 |:-------------------------|:-------|:---------|:------------|
-| `bitbucket_username`     | string | Yes      | Bitbucket Cloud username. |
-| `bitbucket_app_password` | string | Yes      | Bitbucket Cloud app password. |
+| `bitbucket_username`     | string | No       | Bitbucket Cloud username. Required when using app password authentication. |
+| `bitbucket_app_password` | string | No       | Bitbucket Cloud app password. Required when using app password authentication. |
+| `bitbucket_email`        | string | No       | Bitbucket Cloud email. Required when using API token authentication. |
+| `bitbucket_api_token`    | string | No       | Bitbucket Cloud API token. Required when using API token authentication. |
 | `repo_path`              | string | Yes      | Path to repository. |
 | `target_namespace`       | string | Yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. |
 | `new_name`               | string | No       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
+
+Example using app password:
 
 ```shell
 curl --request POST \
@@ -283,6 +291,31 @@ curl --request POST \
     "new_name": "new_project_name"
 }'
 ```
+
+Example using API token:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/import/bitbucket" \
+  --header "content-type: application/json" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{
+    "bitbucket_email": "email@example.com",
+    "bitbucket_api_token": "your_bitbucket_api_token",
+    "repo_path": "username/my_project",
+    "target_namespace": "my_group/my_subgroup",
+    "new_name": "new_project_name"
+}'
+```
+
+### Bitbucket Cloud API token scopes
+
+If you're using a Bitbucket Cloud API token for authentication, the token must have the following scopes:
+
+- `read:repository:bitbucket`
+- `read:pullrequest:bitbucket`
+- `read:issue:bitbucket`
+- `read:wiki:bitbucket`
 
 ## Related topics
 

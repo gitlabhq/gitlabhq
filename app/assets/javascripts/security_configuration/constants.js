@@ -196,3 +196,6 @@ export const SCAN_PROFILE_I18N = {
   successApplying: s__('SecurityProfiles|Profile applied successfully.'),
   successDetaching: s__('SecurityProfiles|Profile disabled successfully.'),
 };
+export const SCAN_PROFILE_STATUS_APPLIED = 'enabled';
+export const SCAN_PROFILE_STATUS_MIXED = 'mixed';
+export const SCAN_PROFILE_STATUS_DISABLED = 'disabled';

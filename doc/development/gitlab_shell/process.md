@@ -33,6 +33,10 @@ Rails application:
 
    {{< /alert >}}
 
+> [!warning]
+> When developing new features in GitLab Shell that involves Gitaly, you must follow the guidelines regarding
+> [Gitaly version compatibility requirement](../gitaly.md#gitaly-version-compatibility-requirement).
+
 ## Security releases
 
 GitLab Shell is included in the packages we create for GitLab. Each version of

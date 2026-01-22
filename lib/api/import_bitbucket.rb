@@ -37,6 +37,8 @@ module API
       at_least_one_of :bitbucket_app_password, :bitbucket_api_token
     end
 
+    route_setting :authorization, permissions: :create_bitbucket_import,
+      boundary_type: :group, boundary_param: :target_namespace
     post 'import/bitbucket' do
       result = Import::BitbucketService.new(
         current_user,

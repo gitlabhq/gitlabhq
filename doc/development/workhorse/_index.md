@@ -36,6 +36,10 @@ When required, Workhorse makes modifications to HTTP headers which GitLab Rails 
   Upon receiving directives from Rails, Workhorse executes specialized tasks such as directly
   interacting with [Gitaly](../../administration/gitaly/_index.md) or offloading processing file uploads from Rails.
 
+> [!warning]
+> When developing new features in Workhorse that involves Gitaly, you must follow the guidelines regarding
+> [Gitaly version compatibility requirement](../gitaly.md#gitaly-version-compatibility-requirement).
+
 ### Specialized task handling
 
 - Workhorse is capable of intercepting certain requests based on Rails' responses and executing

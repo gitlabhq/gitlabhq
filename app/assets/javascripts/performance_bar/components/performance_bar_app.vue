@@ -178,7 +178,7 @@ export default {
           v-gl-tooltip.viewport
           class="view gl-text-sm !gl-text-neutral-0"
           data-testid="simulate-saas-indicator"
-          :title="s__('PerformanceBar|GDK running in SaaS mode')"
+          :title="s__('PerformanceBar|GitLab running in SaaS mode')"
         >
           {{ s__('PerformanceBar|SaaS') }}
         </span>

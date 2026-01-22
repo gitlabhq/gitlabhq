@@ -6,6 +6,7 @@ import resolvers from 'ee_else_ce/security_configuration/graphql/resolvers';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
+import SecurityConfigurationProvider from './components/security_configuration_provider.vue';
 import { augmentFeatures } from './utils';
 
 export const initSecurityConfiguration = (el) => {
@@ -32,8 +33,28 @@ export const initSecurityConfiguration = (el) => {
     }),
   });
 
+  const { projectId, projectFullPath, useGraphql } = el.dataset;
+
+  // Use GraphQL mode when explicitly enabled (e.g., from drawer)
+  const shouldUseGraphql = parseBoolean(useGraphql);
+
+  if (shouldUseGraphql) {
+    return new Vue({
+      el,
+      apolloProvider,
+      name: 'SecurityConfigurationRoot',
+      provide: {
+        projectId,
+        projectFullPath,
+      },
+      render(createElement) {
+        return createElement(SecurityConfigurationProvider);
+      },
+    });
+  }
+
+  // Legacy mode: use server-rendered data
   const {
-    projectFullPath,
     groupFullPath,
     canReadAttributes,
     canManageAttributes,

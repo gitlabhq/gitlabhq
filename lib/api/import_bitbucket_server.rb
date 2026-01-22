@@ -48,6 +48,7 @@ module API
         desc: 'Strategy for behavior on timeouts'
     end
 
+    route_setting :authorization, permissions: :create_bitbucket_server_import, boundary_type: :instance
     post 'import/bitbucket_server' do
       result = Import::BitbucketServerService.new(client, current_user,
         params.merge(organization_id: Current.organization.id)).execute(credentials)
