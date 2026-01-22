@@ -195,7 +195,7 @@ can use a nested list to group them with the feature:
   ```markdown
   - [Introduced](https://issue-link) in GitLab 18.3 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
   - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.4.
-  - Dependency report sidepanel
+  - Dependency report sidepanel:
     - [Introduced](https://issue-link) in GitLab 18.4 [with feature flags](../../administration/feature_flags/_index.md) named `flag_one` and `flag_two`. Disabled by default.
     - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 18.5.
     - [Generally available](https://issue-link) in GitLab 18.6. Feature flags `flag_one` and `flag_two` removed.

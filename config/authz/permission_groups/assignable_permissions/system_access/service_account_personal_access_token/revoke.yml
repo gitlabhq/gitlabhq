@@ -1,0 +1,7 @@
+---
+name: revoke_service_account_personal_access_token
+description: Grants the ability to revoke personal access tokens of service accounts
+boundaries:
+  - group
+permissions:
+  - revoke_service_account_personal_access_token

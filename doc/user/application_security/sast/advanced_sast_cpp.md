@@ -374,3 +374,24 @@ cdb-rebase -i compile_commands_abs.json -o compile_commands.json -s "$PWD" -d .
 ```
 
 Note: the `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
+
+### Partial scan coverage due to missing header files
+
+Partial scan coverage can occur when required system or third-party header files are not available in the scan job.
+Headers installed during the build job must be explicitly forwarded to the scan job and made resolvable through
+the include paths recorded in the compilation database.
+
+One common approach is to cache the required headers and update the compilation database to reference them:
+
+```shell
+# Create and populate an include cache
+mkdir -p include-cache
+dpkg -L <build-dependency-packages> | sed -n 's:^/usr/include/::p' > headers.txt
+rsync -a --files-from=headers.txt /usr/include/ include-cache/
+
+# Add cached headers to compile flags
+cdb_append . "-I'$PWD/include-cache'"
+```
+
+For a full demonstration, see the
+[example](https://gitlab.com/gitlab-org/security-products/demos/experiments/advanced-sast-cpp/OpenSceneGraph/-/merge_requests/4).

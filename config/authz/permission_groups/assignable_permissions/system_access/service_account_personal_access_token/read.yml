@@ -1,0 +1,7 @@
+---
+name: read_service_account_personal_access_token
+description: Grants the ability to read personal access tokens of service accounts
+boundaries:
+  - group
+permissions:
+  - read_service_account_personal_access_token

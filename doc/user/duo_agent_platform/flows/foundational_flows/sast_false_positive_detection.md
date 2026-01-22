@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: SAST false positive detection
+title: SAST False Positive Detection Flow
 ---
 
 {{< details >}}
@@ -19,19 +19,19 @@ title: SAST false positive detection
 
 {{< /history >}}
 
-SAST false positive detection automatically analyzes critical and high severity SAST vulnerabilities to identify potential false positives. This reduces noise in your vulnerability report by flagging vulnerabilities that are likely not actual security risks.
+The SAST False Positive Detection Flow automatically analyzes critical and high severity SAST vulnerabilities to identify potential false positives. This process reduces noise in your vulnerability report by flagging vulnerabilities that are likely not actual security risks.
 
 When a SAST security scan runs, GitLab Duo automatically analyzes each vulnerability to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../../../application_security/sast/analyzers.md).
 
 The GitLab Duo assessment includes:
 
-- **Confidence score**: A numerical score indicating the likelihood that the finding is a false positive.
-- **Explanation**: Contextual reasoning about why the finding may or may not be a true positive.
-- **Visual indicator**: A badge in the vulnerability report showing the assessment.
+- Confidence score: A numerical score indicating the likelihood that the finding is a false positive.
+- Explanation: Contextual reasoning about why the finding may or may not be a true positive.
+- Visual indicator: In the vulnerability report, a badge that shows the assessment.
 
 Results are based on AI analysis and should be reviewed by security professionals. This feature requires GitLab Duo with an active subscription.
 
-## Running SAST false positive detection
+## Run SAST False Positive Detection
 
 The flow runs automatically when:
 
@@ -46,7 +46,7 @@ You can also manually trigger analysis for existing vulnerabilities:
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive**.
 
-## Related links
+## Related topics
 
 - [SAST false positive detection](../../../application_security/vulnerabilities/false_positive_detection.md).
 - [Vulnerability report](../../../application_security/vulnerability_report/_index.md).

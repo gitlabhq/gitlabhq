@@ -233,7 +233,6 @@ create_resource_access_tokens
 create_runners
 create_saved_replies
 create_sentry_issue
-create_service_account
 create_snippet
 create_squash_option
 create_subgroup
@@ -261,7 +260,6 @@ delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
-delete_service_account
 delete_tag
 delete_user
 delete_work_item

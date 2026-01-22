@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo Agent Platform
 ---
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
 {{< collapsible title="Model information" >}}
 
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
@@ -30,12 +37,8 @@ throughout the software development lifecycle.
 - Delegate routine tasks, from code refactoring and security scans to research,
   to specialized AI agents.
 
-The Agent Platform is made up of [several features](../gitlab_duo/feature_summary.md),
-which are available in the GitLab UI and IDEs.
-
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For an example of how the Agent Platform can improve a traditionally time-consuming workflow, see [Developer Onboarding with GitLab Duo Agent Platform](https://youtu.be/UD8vAAglkY0?si=7AWWDfd-mLGdkBwT).
-<!-- Video published on 2025-11-20 -->
+To get started, see
+[Get started with the GitLab Duo Agent Platform](../get_started/get_started_agent_platform.md).
 
 ## Prerequisites
 
@@ -57,14 +60,16 @@ In addition, to use the Agent Platform in your IDE:
 - You must install an editor extension, like the GitLab Workflow extension for VS Code, and authenticate with GitLab.
 - You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
 
-## Getting started
+## Features
 
-To get started, see
-[Get started with the GitLab Duo Agent Platform](../get_started/get_started_agent_platform.md).
+The following features are part of the GitLab Duo Agent Platform.
 
-## Related topics
-
-- [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
-- [AI Catalog](ai_catalog.md)
-- [Agents](agents/_index.md)
-- [Flows](flows/_index.md)
+| Feature | Description |
+|---------|-------------|
+| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | Enhanced Chat that autonomously performs actions, searches multiple sources, and can create and edit files to answer complex questions. |
+| [AI Catalog](ai_catalog.md) | Central list of agents and flows where you can discover, create, and enable them in your projects. |
+| [Agents](agents/_index.md) | AI-powered assistants that help accomplish specific tasks. Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations). |
+| [Flows](flows/_index.md) | One or more agents working together to solve complex problems and automate development tasks. |
+| [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) | Standardized way for GitLab Duo features to securely connect to external data sources and tools. |
+| [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) | Enables AI tools like Claude Desktop and Cursor to securely connect to your GitLab instance. |
+| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Framework that creates structured, queryable representations of code repositories to power AI features. |

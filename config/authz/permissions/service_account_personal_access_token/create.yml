@@ -1,0 +1,5 @@
+---
+name: create_service_account_personal_access_token
+description: Grants the ability to create personal access tokens for service accounts
+boundaries:
+  - group

@@ -20,7 +20,7 @@ import {
   namespaceWorkItemTypesQueryResponse,
   organisationWorkItemTypesQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
-import { DEFAULT_SETTINGS_CONFIG } from 'ee/groups/settings/work_items/constants';
+import { DEFAULT_SETTINGS_CONFIG } from '~/work_items/constants';
 
 Vue.use(VueApollo);
 

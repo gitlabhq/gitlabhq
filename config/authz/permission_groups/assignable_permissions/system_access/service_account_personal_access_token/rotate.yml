@@ -1,0 +1,7 @@
+---
+name: rotate_service_account_personal_access_token
+description: Grants the ability to rotate personal access tokens of service accounts
+boundaries:
+  - group
+permissions:
+  - rotate_service_account_personal_access_token
