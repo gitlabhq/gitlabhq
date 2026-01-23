@@ -456,6 +456,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:cells_stale_requests_cleanup_cron
+  :worker_name: Cells::StaleRequestsCleanupCronWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration

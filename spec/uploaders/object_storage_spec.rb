@@ -1168,10 +1168,10 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
             context 'when bucket prefix is configured' do
               let(:fog_config) do
-                Gitlab.config.uploads.object_store.tap do |config|
-                  config[:remote_directory] = 'main-bucket'
-                  config[:bucket_prefix] = 'my/uploads'
-                end
+                config = Gitlab.config.uploads.object_store.dup
+                config[:remote_directory] = 'main-bucket'
+                config[:bucket_prefix] = 'my/uploads'
+                config
               end
 
               let(:bucket) { 'main-bucket' }

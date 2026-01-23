@@ -1,0 +1,5 @@
+---
+name: read_ruby_gem
+description: Grants the ability to read ruby gems
+boundaries:
+  - project

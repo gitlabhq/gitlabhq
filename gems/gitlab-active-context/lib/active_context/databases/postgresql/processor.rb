@@ -24,13 +24,14 @@ module ActiveContext
         # Processes a query node and returns the corresponding ActiveRecord relation
         def process(node)
           case node.type
-          when :all    then process_all
-          when :filter then process_filter(node.value)
-          when :prefix then process_prefix(node.value)
-          when :and    then process_and(node.children)
-          when :or     then process_or(node.children)
-          when :knn    then process_knn(node)
-          when :limit  then process_limit(node)
+          when :all     then process_all
+          when :filter  then process_filter(node.value)
+          when :prefix  then process_prefix(node.value)
+          when :missing then process_missing(node)
+          when :and     then process_and(node.children)
+          when :or      then process_or(node.children)
+          when :knn     then process_knn(node)
+          when :limit   then process_limit(node)
           else
             raise ArgumentError, "Unsupported node type: #{node.type}"
           end
@@ -65,6 +66,12 @@ module ActiveContext
             relation = relation.where("#{quoted_column} LIKE ?", "#{sanitized_value}%")
           end
           relation
+        end
+
+        def process_missing(node)
+          quoted_column = quote_column(node.value)
+
+          process_and(node.children).where("#{quoted_column} IS NULL")
         end
 
         def process_and(children)

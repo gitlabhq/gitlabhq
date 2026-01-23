@@ -5043,6 +5043,30 @@ Input type: `ContainerUpstreamCreateInput`
 | <a id="mutationcontainerupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainerupstreamcreateupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Container upstream after the mutation. |
 
+### `Mutation.containerUpstreamDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerUpstreamDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamdeleteid"></a>`id` | [`VirtualRegistriesContainerUpstreamID!`](#virtualregistriescontainerupstreamid) | ID of the upstream to be deleted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainerupstreamdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainerupstreamdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainerupstreamdeleteupstream"></a>`upstream` | [`ContainerUpstreamDetails`](#containerupstreamdetails) | Destroyed upstream. |
+
 ### `Mutation.containerUpstreamUpdate`
 
 {{< details >}}

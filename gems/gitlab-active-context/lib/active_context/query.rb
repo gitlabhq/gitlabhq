@@ -32,6 +32,7 @@
 # - :all      - Return all documents
 # - :filter   - Exact match conditions
 # - :prefix   - Prefix/starts-with conditions
+# - :missing  - Field is missing data
 # - :limit    - Restricts number of results
 # - :knn      - K-nearest neighbor vector search
 # - :and      - Logical AND between queries

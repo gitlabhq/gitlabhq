@@ -1,0 +1,7 @@
+---
+name: download_ruby_gem
+description: Grants the ability to download Ruby gems
+permissions:
+  - download_ruby_gem
+boundaries:
+  - project

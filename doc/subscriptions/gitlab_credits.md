@@ -62,7 +62,7 @@ The commitment is billed up front at the start of the contract term.
 Credits become available immediately after purchase, and reset on the first of every month.
 Unused credits do not roll over to the next month.
 
-## On-Demand Credits
+## On-Demand credits
 
 On-Demand credits cover usage incurred after you have used all included credits
 and the credits in the Monthly Committed Pool.

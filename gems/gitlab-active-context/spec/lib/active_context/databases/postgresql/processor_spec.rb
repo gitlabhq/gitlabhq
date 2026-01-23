@@ -209,6 +209,26 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
   end
 
+  context 'with missing queries' do
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.missing('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"embedding\" IS NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(status: 'active').missing('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') AND (\"items\".\"embedding\" IS NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(project_id: [1, 2, 3]).missing('embedding'),
+      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"project_id\" IN (1, 2, 3)) " \
+        "AND (\"items\".\"embedding\" IS NULL)"
+
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.filter(status: 'active').missing('embedding').limit(10),
+      "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+        "AND (\"items\".\"embedding\" IS NULL)) subq LIMIT 10"
+  end
+
   context 'with all queries' do
     it_behaves_like 'a SQL transformer',
       ActiveContext::Query.all,

@@ -843,6 +843,9 @@ Settings.cron_jobs['authn_data_retention_oauth_access_token_archive_worker']['jo
 Settings.cron_jobs['lost_transaction_recovery_worker'] ||= {}
 Settings.cron_jobs['lost_transaction_recovery_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['lost_transaction_recovery_worker']['job_class'] = 'Cells::LostTransactionRecoveryWorker'
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker'] ||= {}
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['topology_service_stale_requests_cleanup_worker']['job_class'] = 'Cells::StaleRequestsCleanupCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

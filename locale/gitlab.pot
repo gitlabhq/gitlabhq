@@ -79203,6 +79203,9 @@ msgstr ""
 msgid "Workspaces|Devfile Validation Rules."
 msgstr ""
 
+msgid "Workspaces|Devfile can't be empty."
+msgstr ""
+
 msgid "Workspaces|Devfile is invalid."
 msgstr ""
 

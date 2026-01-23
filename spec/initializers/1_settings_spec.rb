@@ -336,6 +336,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         loose_foreign_keys_cleanup_worker
         loose_foreign_keys_merge_request_diff_commit_cleanup_worker
         lost_transaction_recovery_worker
+        topology_service_stale_requests_cleanup_worker
         manage_evidence_worker
         member_invitation_reminder_emails_worker
         members_expiring_worker

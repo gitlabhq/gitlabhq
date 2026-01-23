@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml[Rails.env].keys
+databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+  .fetch(Rails.env, {}).keys
 
 namespace :gitlab do
   namespace :background_migrations do

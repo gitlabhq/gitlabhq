@@ -581,6 +581,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :integrations, json_schema: { filename: "application_setting_integrations" }
 
+  jsonb_accessor :topology_service_settings,
+    topology_service_concurrency_limit: [:integer, { default: 200 }]
+
+  validates :topology_service_settings, json_schema: { filename: "application_setting_topology_service_settings" }
+
   with_options(presence: true, if: :slack_app_enabled?) do
     validates :slack_app_id
     validates :slack_app_secret
@@ -639,7 +644,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_unauthenticated_packages_api_period_in_seconds,
       :throttle_unauthenticated_packages_api_requests_per_period,
       :throttle_unauthenticated_period_in_seconds,
-      :throttle_unauthenticated_requests_per_period
+      :throttle_unauthenticated_requests_per_period,
+      :topology_service_concurrency_limit
   end
 
   with_options(numericality: { only_integer: true, greater_than_or_equal_to: 0 }) do

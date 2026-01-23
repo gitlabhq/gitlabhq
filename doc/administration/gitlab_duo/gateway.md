@@ -27,6 +27,7 @@ The routing might not always result in the absolute nearest deployment for every
 ### GitLab Self-Managed and GitLab Dedicated
 
 For GitLab Self-Managed and GitLab Dedicated, GitLab manages region selection.
+You cannot choose the deployment region of the AI Gateway.
 For more information, see [available regions](https://schemas.runway.gitlab.com/RunwayService/#spec_regions)
 in the [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway) service manifest.
 

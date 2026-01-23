@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replication do
-  include_examples 'remote object storage cleaner',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/545622' do
+  include_examples 'remote object storage cleaner' do
     let(:bucket_name) { 'artifacts' }
     let(:model_class) { ::Ci::JobArtifact }
     let(:stub_object_storage_uploader_for_cleaner) { stub_artifacts_object_storage }

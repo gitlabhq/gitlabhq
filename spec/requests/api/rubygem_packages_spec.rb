@@ -220,6 +220,16 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :download_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => pat.token } }
+      let(:request) { get(url, headers: headers) }
+
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rubygems/api/v1/gems/authorize' do
@@ -287,6 +297,16 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
 
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { workhorse_headers.merge({ 'HTTP_AUTHORIZATION' => pat.token }) }
+      let(:request) { post(url, headers: headers) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 
@@ -392,6 +412,25 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { workhorse_headers.merge({ 'HTTP_AUTHORIZATION' => pat.token }) }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :post,
+          file_key: file_key,
+          params: params,
+          headers: headers,
+          send_rewritten_field: send_rewritten_field
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'GET /api/v4/projects/:project_id/packages/rubygems/api/v1/dependencies' do
@@ -470,6 +509,16 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
     it_behaves_like 'updating personal access token last used' do
       let(:headers) { build_auth_headers(tokens[:personal_access_token]) }
       let(:params) { {} }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_ruby_gem do
+      let(:boundary_object) { project }
+      let(:headers) { { 'HTTP_AUTHORIZATION' => pat.token } }
+      let(:request) { get(url, headers: headers) }
+
+      before do
+        project.add_developer(user)
+      end
     end
   end
 end
