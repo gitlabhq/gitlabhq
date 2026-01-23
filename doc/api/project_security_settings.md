@@ -36,8 +36,8 @@ GET /projects/:id/security_settings
 
 ```shell
 curl --request GET \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/projects/7/security_settings"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/7/security_settings"
 ```
 
 Example response:
@@ -82,8 +82,8 @@ PUT /projects/:id/security_settings
 
 ```shell
 curl --request PUT \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
 ```
 
 Example response:

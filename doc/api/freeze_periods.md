@@ -33,7 +33,9 @@ GET /projects/:id/freeze_periods
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
 ```
 
 Example response:
@@ -71,7 +73,9 @@ GET /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```
 
 Example response:
@@ -109,9 +113,11 @@ POST /projects/:id/freeze_periods
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "freeze_start": "0 23 * * 5", "freeze_end": "0 7 * * 1", "cron_timezone": "UTC" }' \
-     --request POST "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
+curl --request POST \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{ "freeze_start": "0 23 * * 5", "freeze_end": "0 7 * * 1", "cron_timezone": "UTC" }' \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods"
 ```
 
 Example response:
@@ -150,9 +156,11 @@ PUT /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data '{ "freeze_end": "0 8 * * 1" }' \
-     --request PUT "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
+curl --request PUT \
+  --header 'Content-Type: application/json' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data '{ "freeze_end": "0 8 * * 1" }' \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```
 
 Example response:
@@ -188,6 +196,7 @@ DELETE /projects/:id/freeze_periods/:freeze_period_id
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
-
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/19/freeze_periods/1"
 ```

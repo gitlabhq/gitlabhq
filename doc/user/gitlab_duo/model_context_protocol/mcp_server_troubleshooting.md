@@ -16,6 +16,13 @@ title: Troubleshooting the GitLab MCP server
 
 When working with GitLab MCP server, you might encounter the following issues.
 
+## `404 Not Found` when starting the GitLab MCP server
+
+You might get a `404 Not Found` error when you try to start the GitLab MCP server.
+This error occurs when GitLab Duo Core or beta and experimental features are turned off.
+
+To resolve this issue, ensure you meet all [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
+
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 
 In GitLab 18.6 and earlier, you might get this error when the MCP client library

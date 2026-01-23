@@ -3,8 +3,11 @@
 module API
   class Labels < ::API::Base
     include PaginationParams
+    include APIGuard
 
     helpers ::API::Helpers::LabelHelpers
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 

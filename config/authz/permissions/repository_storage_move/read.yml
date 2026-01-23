@@ -1,0 +1,6 @@
+---
+name: read_repository_storage_move
+description: Grants the ability to read repository storage moves
+boundaries:
+  - group
+  - project

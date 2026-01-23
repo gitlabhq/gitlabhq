@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetRepository, feature_category: :snippets do
+RSpec.describe SnippetRepository, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   let(:snippet) { create(:personal_snippet, :repository, author: user) }

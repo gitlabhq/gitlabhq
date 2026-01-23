@@ -238,7 +238,7 @@ class ActiveSession
     return unless raw_session
 
     if raw_session.start_with?('v2:')
-      session_data = Gitlab::Json.parse(raw_session[3..]).symbolize_keys
+      session_data = Gitlab::Json.safe_parse(raw_session[3..]).symbolize_keys
       # load only known attributes
       session_data.slice!(*ATTR_ACCESSOR_LIST.union(ATTR_READER_LIST))
       new(**session_data)

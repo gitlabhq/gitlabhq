@@ -84,7 +84,7 @@ module Gitlab
       def calculate_verification_status
         return :unknown_key unless signed_by_key
         return :other_user unless committer?
-        return :unverified unless signed_by_user_email_verified?
+        return :same_user_different_email unless signed_by_user_email_verified?
 
         :verified
       end

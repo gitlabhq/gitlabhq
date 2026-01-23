@@ -8,5 +8,8 @@ description: Store the awarding of emoji by users on Issues, Epics, and other Aw
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3785
 milestone: '8.9'
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514604
+sharding_key:
+  namespace_id: namespaces
+  organization_id: organizations
+organization_transfer_support: todo
 table_size: small

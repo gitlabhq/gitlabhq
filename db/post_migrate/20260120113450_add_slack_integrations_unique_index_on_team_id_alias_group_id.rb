@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddSlackIntegrationsUniqueIndexOnTeamIdAliasGroupId < Gitlab::Database::Migration[2.3]
-  milestone '18.6'
+  milestone '18.9'
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_slack_integrations_on_team_id_alias_group_id'

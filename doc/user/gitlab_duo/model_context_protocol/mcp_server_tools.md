@@ -266,6 +266,30 @@ Example:
 Search issues for "flaky test" across GitLab
 ```
 
+## `search_labels`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218121) in GitLab 18.9.
+
+{{< /history >}}
+
+Searches for labels in a GitLab project or group.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `full_path`  | string  | Yes      | Full path of the project or group (for example, `namespace/project`). |
+| `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
+| `search`     | string  | No       | Search term to filter labels by title. |
+
+When you search group labels, the results include labels from ancestor and descendant groups.
+
+Example:
+
+```plaintext
+Show me all labels in project gitlab-org/gitlab
+```
+
 ## `semantic_code_search`
 
 {{< history >}}

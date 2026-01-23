@@ -22,6 +22,11 @@ var (
 func handleUploadPack(w *HTTPResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
 	ctx := r.Context()
 
+	// Extract correlation ID from X-Gitaly-Correlation-Id header and store in context
+	if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+		ctx = context.WithValue(ctx, gitaly.GitalyCorrelationIDKey, correlationID)
+	}
+
 	// Prevent the client from holding the connection open indefinitely. A
 	// transfer rate of 17KiB/sec is sufficient to send 10MiB of data in
 	// ten minutes, which seems adequate. Most requests will be much smaller.

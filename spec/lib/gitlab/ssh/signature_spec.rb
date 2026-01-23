@@ -252,8 +252,8 @@ RSpec.describe Gitlab::Ssh::Signature, feature_category: :source_code_management
         user.update!(confirmed_at: nil)
       end
 
-      it 'reports unverified status' do
-        expect(signature.verification_status).to eq(:unverified)
+      it 'reports same_user_different_email status' do
+        expect(signature.verification_status).to eq(:same_user_different_email)
       end
     end
 

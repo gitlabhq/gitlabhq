@@ -35,7 +35,9 @@ GET /application/plan_limits
 | `plan_name`                       | string  | no       | Name of the plan to get the limits from. Default: `default`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/plan_limits"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/plan_limits"
 ```
 
 Example response:
@@ -103,7 +105,9 @@ PUT /application/plan_limits
 | `web_hook_calls`                  | integer | no       | Maximum number of times a webhook can be called per minute per top-level namespace. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/plan_limits?plan_name=default&conan_max_file_size=3221225472"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/plan_limits?plan_name=default&conan_max_file_size=3221225472"
 ```
 
 Example response:

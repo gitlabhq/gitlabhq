@@ -5241,9 +5241,6 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|AI agents, such as Agentic Chat and agent flows, that work in parallel to accomplish tasks simultaneously. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr ""
 
@@ -5302,6 +5299,9 @@ msgid "AdminAIPoweredFeatures|GitLab managed model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Multiple AI agents that work in parallel to help you create code, research results, and perform tasks simultaneously. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
@@ -30478,9 +30478,6 @@ msgid "GCP region configured"
 msgstr ""
 
 msgid "GPG Key ID:"
-msgstr ""
-
-msgid "GPG key mismatch"
 msgstr ""
 
 msgid "GPG key was added to your account"
@@ -65408,6 +65405,9 @@ msgstr ""
 msgid "SignUp|Username is too short (minimum is %{min_length} characters)."
 msgstr ""
 
+msgid "Signature key mismatch"
+msgstr ""
+
 msgid "Signed in"
 msgstr ""
 
@@ -69632,7 +69632,7 @@ msgstr ""
 msgid "This commit was signed with a verified signature and the committer email was verified to belong to the same user."
 msgstr ""
 
-msgid "This commit was signed with a verified signature, but the committer email is not associated with the GPG Key."
+msgid "This commit was signed with a verified signature, but the committer email is not verified."
 msgstr ""
 
 msgid "This commit was signed with an %{strong_open}unverified%{strong_close} signature."
@@ -75003,6 +75003,9 @@ msgstr ""
 msgid "VirtualRegistries|Edit registry"
 msgstr ""
 
+msgid "VirtualRegistries|New registry"
+msgstr ""
+
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
@@ -75518,6 +75521,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "VirtualRegistry|You can add GitLab-hosted repositories as upstreams. Use your GitLab username and a personal access token as the password."
+msgstr ""
+
+msgid "VirtualRegistry|You can add up to %{count} registries per top-level group."
 msgstr ""
 
 msgid "VirtualRegistry|You can add up to 20 registries per top-level group."

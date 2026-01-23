@@ -42,7 +42,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope"
 ```
 
 Example response:
@@ -112,7 +114,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist"
 ```
 
 Example response:
@@ -246,7 +250,9 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
 ```
 
 Example response:

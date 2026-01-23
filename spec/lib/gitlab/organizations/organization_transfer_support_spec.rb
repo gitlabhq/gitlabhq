@@ -29,6 +29,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       ai_usage_events
       analytics_cycle_analytics_stage_event_hashes
       authentication_events
+      award_emoji
       background_operation_jobs
       background_operation_workers
       bulk_import_batch_trackers

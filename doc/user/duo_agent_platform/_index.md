@@ -57,17 +57,17 @@ To use the Agent Platform in your IDE:
 - Have a project in a [group namespace](../namespace/_index.md).
 - Have at least the Developer role.
 
-## Features
+## Use cases
 
-The following features are part of the GitLab Duo Agent Platform.
+Solve these use cases by using the GitLab Duo Agent Platform.
 
-| Feature | Description |
-|---------|-------------|
-| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | Enhanced Chat that autonomously performs actions, searches multiple sources, and can create and edit files to answer complex questions. |
-| [AI Catalog](ai_catalog.md) | Central list of agents and flows where you can discover, create, and enable them in your projects. |
-| [Agents](agents/_index.md) | AI-powered assistants that help accomplish specific tasks. Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations). |
-| [Flows](flows/_index.md) | One or more agents working together to solve complex problems and automate development tasks. |
-| [Customization](../gitlab_duo/customize_duo/_index.md) | Customize the Agent Platform with custom rules for Agentic Chat, AGENTS.md files for project-specific context, and code review instructions to enforce coding standards.  |
-| [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) | Standardized way for GitLab Duo features to securely connect to external data sources and tools. |
-| [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) | Enables AI tools like Claude Desktop and Cursor to securely connect to your GitLab instance. |
-| [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Framework that creates structured, queryable representations of code repositories to power AI features. |
+| Use case | Feature |
+|-------------|---------|
+| Answer complex questions by searching multiple sources and autonomously creating and editing files. | [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) |
+| Automate repetitive tasks: Triage issues, fix bugs, generate tests, add documentation, analyze vulnerabilities. | [Agents](agents/_index.md) - Includes foundational agents (pre-built), custom agents (team-specific), and external agents (third-party integrations).|
+| Solve complex problems and automate development tasks by making one or more agents work together: Fix CI/CD pipelines, review and modernize code, fix vulnerabilities. | [Flows](flows/_index.md) |
+| Discover, create, and enable agents and flows from this central list. | [AI Catalog](ai_catalog.md) |
+| Customize the Agent Platform with custom rules for Agentic Chat, AGENTS.md files for project-specific context, and code review instructions to enforce coding standards. | [Customization](../gitlab_duo/customize_duo/_index.md) |
+| Securely connect GitLab Duo features to external data sources and tools. | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) |
+| Securely connect AI tools and applications to your GitLab instance. | [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) |
+| Create structured, queryable representations of code repositories and use them to power AI features. | [Knowledge Graph](../project/repository/knowledge_graph/_index.md) |

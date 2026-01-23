@@ -14,7 +14,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
   let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }
-  let_it_be(:package_file) { package.package_files.with_file_name_like('%.xml').first }
+  let_it_be(:package_file, reload: true) { package.package_files.with_file_name_like('%.xml').first }
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
@@ -361,6 +361,23 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('text/plain')
           expect(response.body).to eq(package_file.file_sha1)
+        end
+
+        context 'when package file has nil checksums' do
+          before do
+            # Simulate a package file with nil checksums (e.g., from incomplete upload or data corruption)
+            package_file.update_columns(file_sha1: nil, file_md5: nil)
+          end
+
+          %w[sha1 md5].each do |format|
+            it "returns an empty string for #{format} instead of raising an error" do
+              download_file(file_name: package_file.file_name + ".#{format}")
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response.media_type).to eq('text/plain')
+              expect(response.body).to eq('')
+            end
+          end
         end
 
         context 'with a non existing maven path' do
@@ -834,6 +851,21 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('text/plain')
           expect(response.body).to eq(package_file.send(:"file_#{format}"))
+        end
+
+        context 'when package file has nil checksums' do
+          before do
+            # Simulate a package file with nil checksums (e.g., from incomplete upload or data migration)
+            package_file.update_columns(file_sha1: nil, file_md5: nil)
+          end
+
+          it 'returns an empty string instead of raising an error' do
+            download_file(file_name: package_file.file_name + ".#{format}")
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.media_type).to eq('text/plain')
+            expect(response.body).to eq('')
+          end
         end
       end
 

@@ -42,8 +42,8 @@ PUT /groups/:id/security_settings
 
 ```shell
 curl --request PUT \
---header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
 ```
 
 Example response:

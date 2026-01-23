@@ -25,8 +25,9 @@ GET /projects/:id/resource_groups
 | `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
 ```
 
 Example of response
@@ -55,8 +56,9 @@ GET /projects/:id/resource_groups/:key
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
 Example of response
@@ -89,7 +91,9 @@ GET /projects/:id/resource_groups/:key/current_job
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/current_job"
 ```
 
 Example of response
@@ -181,8 +185,9 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
 ```
 
 Example of response

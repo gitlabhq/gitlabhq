@@ -14536,7 +14536,8 @@ CREATE TABLE award_emoji (
     updated_at timestamp without time zone,
     awardable_id bigint,
     namespace_id bigint,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_8ef14b7067 CHECK ((num_nonnulls(namespace_id, organization_id) = 1))
 );
 
 CREATE TABLE award_emoji_archived (
@@ -36409,9 +36410,6 @@ ALTER TABLE ONLY group_type_ci_runners
 
 ALTER TABLE clusters_kubernetes_namespaces
     ADD CONSTRAINT check_8556b17a2a CHECK ((num_nonnulls(group_id, organization_id, sharding_project_id) = 1)) NOT VALID;
-
-ALTER TABLE award_emoji
-    ADD CONSTRAINT check_8ef14b7067 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
 
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;

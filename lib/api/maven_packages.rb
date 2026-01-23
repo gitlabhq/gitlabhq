@@ -77,9 +77,9 @@ module API
 
           case format
           when 'md5'
-            package_file.file_md5
+            package_file.file_md5.to_s
           when 'sha1'
-            package_file.file_sha1
+            package_file.file_sha1.to_s
           else
             track_package_event('pull_package', :maven, project: project, namespace: project&.namespace) if jar_file?(format)
 
@@ -130,9 +130,9 @@ module API
 
       case format
       when 'md5'
-        package_file.file_md5
+        package_file.file_md5.to_s
       when 'sha1'
-        package_file.file_sha1
+        package_file.file_sha1.to_s
       else
         track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
 
