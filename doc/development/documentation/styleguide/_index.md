@@ -1728,7 +1728,10 @@ Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your
 Use a diagram to illustrate a process or the relationship between entities, if the information is too
 complex to be understood from text only.
 
-To create a diagram, use either [Mermaid](https://mermaid.js.org/#/) (recommended) or [Draw.io](https://draw.io).
+To create a diagram, use either:
+
+- [Mermaid](https://mermaid.js.org/#/) (recommended). Mermaid version 11 is supported in documentation.
+- [Draw.io](https://draw.io).
 
 Mermaid is the recommended diagramming tool, but it is not suitable for all situations. For example,
 complex diagram requirements might result in a layout that is difficult to understand.

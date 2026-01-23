@@ -150,8 +150,5 @@ For environments that serve fewer users or a lower RPS, you can lower the node s
 
 Now you have a fresh GitLab environment with core functionality configured accordingly. You might want to configure additional optional GitLab features depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.
-
-{{< /alert >}}
+> [!note]
+> Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.

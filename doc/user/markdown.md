@@ -1478,11 +1478,12 @@ Visit the [official page](https://mermaidjs.github.io/) for more details. The
 learn Mermaid and debug issues in your Mermaid code. Use it to identify and resolve
 issues in your diagrams.
 
+GitLab.com supports Mermaid version 10.
+
 To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Basic Mermaid diagram example
     accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
@@ -1497,7 +1498,6 @@ graph TD
 When rendered, the example looks similar to:
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Basic Mermaid diagram example
     accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
@@ -1512,7 +1512,6 @@ You can also include subgraphs:
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
     accTitle: Mermaid diagram with subgraphs
     accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows.
@@ -1536,7 +1535,6 @@ graph TB
 When rendered, the example looks similar to:
 
 ```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
     accTitle: Mermaid diagram with subgraphs rendered
     accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows as rendered.

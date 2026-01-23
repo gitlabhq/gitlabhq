@@ -101,7 +101,7 @@ To create an agent:
    select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
 
-   For more information, see the list of [agent tools](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ai/catalog/built_in_tool_definitions.rb).
+   For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
 {{< /tab >}}

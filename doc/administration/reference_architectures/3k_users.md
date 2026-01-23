@@ -61,11 +61,8 @@ For a full list of reference architectures, see
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 3k
@@ -437,11 +434,8 @@ Refer to your preferred Load Balancer's documentation for further guidance.
 
 Next, we set up the Consul servers.
 
-{{< alert type="note" >}}
-
-Consul must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
-
-{{< /alert >}}
+> [!note]
+> Consul must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 The following IPs will be used as an example:
 
@@ -839,11 +833,8 @@ Using [Redis](https://redis.io/) in scalable environment is possible using a **P
 topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
-{{< alert type="note" >}}
-
-Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
-
-{{< /alert >}}
+> [!note]
+> Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
 
 {{< alert type="note" >}}
 
@@ -1219,11 +1210,8 @@ This is how this would work with a Linux package PostgreSQL setup:
 Praefect is the router and transaction manager for Gitaly Cluster (Praefect) and all connections to Gitaly go through
 it. This section details how to configure it.
 
-{{< alert type="note" >}}
-
-Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
-
-{{< /alert >}}
+> [!note]
+> Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 Praefect requires several secret tokens to secure communications across the cluster:
 
@@ -2142,11 +2130,8 @@ required. Each component has various considerations and rules to follow, and the
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
 but with smaller performance requirements, the following modifications are supported as follows:
 
-{{< alert type="note" >}}
-
-If not stated below, no other modifications are supported for lower use counts.
-
-{{< /alert >}}
+> [!note]
+> If not stated below, no other modifications are supported for lower use counts.
 
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
 - Combining select nodes: The following specific components are supported to be combined onto the same nodes to reduce complexity at the cost of some performance:
@@ -2245,11 +2230,8 @@ services where applicable):
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 3k
@@ -2382,8 +2364,5 @@ After following this guide you should now have a fresh GitLab environment with c
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.
-
-{{< /alert >}}
+> [!note]
+> Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.

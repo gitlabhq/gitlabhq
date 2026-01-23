@@ -619,6 +619,51 @@ RSpec.describe SearchController, feature_category: :global_search do
           get(:count, params: { search: 'foo@bar.com', scope: 'users' })
         end
       end
+
+      it 'increments the custom search sli apdex' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+          elapsed: a_kind_of(Numeric),
+          search_scope: 'projects',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get :count, params: { search: 'hello', scope: 'projects' }
+      end
+
+      context 'with custom search sli error rate' do
+        context 'when the search is successful' do
+          it 'increments the custom search sli error rate with error: false' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: false,
+              search_scope: 'projects',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :count, params: { search: 'hello', scope: 'projects', filter: 'search' }
+          end
+        end
+
+        context 'when the search raises an error' do
+          before do
+            allow_next_instance_of(SearchService) do |service|
+              allow(service).to receive(:search_results).and_raise(ActiveRecord::QueryCanceled)
+            end
+          end
+
+          it 'increments the custom search sli error rate with error: true' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: true,
+              search_scope: 'projects',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :count, params: { search: 'hello', scope: 'projects', filter: 'search' }
+          end
+        end
+      end
     end
 
     describe 'GET #autocomplete' do
@@ -707,6 +752,61 @@ RSpec.describe SearchController, feature_category: :global_search do
         end
 
         let_it_be(:namespace) { create(:group) }
+      end
+
+      it 'increments the custom search sli apdex' do
+        expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_apdex).with(
+          elapsed: a_kind_of(Numeric),
+          search_scope: 'projects',
+          search_type: 'basic',
+          search_level: 'global'
+        )
+
+        get :autocomplete, params: { term: 'setting', scope: 'projects' }
+      end
+
+      context 'with custom search sli error rate' do
+        context 'when the search is successful' do
+          it 'increments the custom search sli error rate with error: false' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: false,
+              search_scope: 'projects',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :autocomplete, params: { term: 'setting', scope: 'projects', filter: 'search' }
+          end
+        end
+
+        context 'when the search raises an error' do
+          before do
+            allow(controller).to receive(:search_autocomplete_opts).and_raise(ActiveRecord::QueryCanceled)
+          end
+
+          it 'increments the custom search sli error rate with error: true' do
+            expect(Gitlab::Metrics::GlobalSearchSlis).to receive(:record_error_rate).with(
+              error: true,
+              search_scope: 'projects',
+              search_type: 'basic',
+              search_level: 'global'
+            )
+
+            get :autocomplete, params: { term: 'setting', scope: 'projects', filter: 'search' }
+          end
+        end
+      end
+
+      context 'when search_type is nil' do
+        it 'handles nil search_type gracefully' do
+          allow_next_instance_of(SearchService) do |service|
+            allow(service).to receive(:search_type).and_return(nil)
+          end
+
+          get :autocomplete, params: { term: 'setting', scope: 'projects' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 

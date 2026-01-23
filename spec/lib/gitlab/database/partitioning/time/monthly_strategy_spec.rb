@@ -66,43 +66,13 @@ RSpec.describe Gitlab::Database::Partitioning::Time::MonthlyStrategy, feature_ca
       SQL
     end
 
-    it 'detects both partitions' do
+    it 'detects both partitions and does not enforce an explicit connection for ApplicationRecord models' do
       expect(current_partitions).to eq(
         [
           time_partition(table_name, nil, '2020-05-01', "#{model.table_name}_000000"),
           time_partition(table_name, '2020-05-01', '2020-06-01', "#{model.table_name}_202005")
         ]
       )
-    end
-
-    context 'with enforce_explicit_connection_for_partitioned_shared_models enabled' do
-      before do
-        stub_feature_flags(enforce_explicit_connection_for_partitioned_shared_models: true)
-      end
-
-      it 'does not enforce an explicit connection for ApplicationRecord models' do
-        expect(current_partitions).to eq(
-          [
-            time_partition(table_name, nil, '2020-05-01', "#{model.table_name}_000000"),
-            time_partition(table_name, '2020-05-01', '2020-06-01', "#{model.table_name}_202005")
-          ]
-        )
-      end
-    end
-
-    context 'with enforce_explicit_connection_for_partitioned_shared_models disabled' do
-      before do
-        stub_feature_flags(enforce_explicit_connection_for_partitioned_shared_models: false)
-      end
-
-      it 'does not enforce an explicit connection for ApplicationRecord models' do
-        expect(current_partitions).to eq(
-          [
-            time_partition(table_name, nil, '2020-05-01', "#{model.table_name}_000000"),
-            time_partition(table_name, '2020-05-01', '2020-06-01', "#{model.table_name}_202005")
-          ]
-        )
-      end
     end
 
     context 'with shared model' do

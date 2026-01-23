@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GraphqlTriggers, feature_category: :shared do
+RSpec.describe GraphqlTriggers, feature_category: :api do
   let_it_be(:project) { create(:project) }
   let_it_be(:issuable, refind: true) { create(:work_item, project: project) }
 

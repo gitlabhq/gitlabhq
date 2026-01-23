@@ -28,6 +28,11 @@
   margin: 0;
   border: 1px solid var(--gl-border-color-default);
   border-top: 0;
+  max-width: none;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .rd-diff-file-details > summary {

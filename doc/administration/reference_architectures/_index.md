@@ -71,11 +71,8 @@ The following reference architectures are available as recommended starting poin
 
 The architectures are named in terms of peak load, based on user count or requests per second (RPS). RPS is calculated based on average real data.
 
-{{< alert type="note" >}}
-
-Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
-
-{{< /alert >}}
+> [!note]
+> Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
 
 For details about what each reference architecture is tested against, see the "Testing Methodology" section of each page.
 
@@ -83,11 +80,8 @@ For details about what each reference architecture is tested against, see the "T
 
 To determine which architecture to pick for the expected load, see the following initial sizing guide tables.
 
-{{< alert type="note" >}}
-
-Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos because they may impact the choice beyond just RPS or user count.
-
-{{< /alert >}}
+> [!note]
+> Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos because they may impact the choice beyond just RPS or user count.
 
 #### GitLab package (Omnibus)
 
@@ -275,17 +269,10 @@ You can use any machine types that meet or exceed the specified requirements for
 
 This guidance is also applicable for any Cloud Provider services such as AWS RDS.
 
-{{< alert type="note" >}}
-
-Any "burstable" instance types are not recommended due to inconsistent performance.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!note]
+> Any "burstable" instance types are not recommended due to inconsistent performance.
 
 For details about what machine types we test against and how, refer to [validation and test results](#validation-and-test-results).
-
-{{< /alert >}}
 
 ### Supported disk types
 
@@ -324,15 +311,11 @@ Deploying across availability zones is supported and generally recommended for a
 
 Deploying across multiple self-hosted data centers is possible but requires careful consideration. This requires synchronous capable latency between centers, robust redundant network links to prevent split-brain scenarios, all centers located in the same geographic region, and deployment across an odd number of centers for proper quorum voting (like [availability zones](#availability-zones-cloud-providers)).
 
-> [!note]
+> [!warning]
 > It may not be possible for GitLab Support to assist with infrastructure-related issues stemming from multi-data center deployments.
 > Choosing to deploy across centers is generally at your own risk.
-
-{{< alert type="warning" >}}
-
-It is not supported to deploy a single [GitLab environment across different regions](#deploying-one-environment-over-multiple-regions). Data centers should be in the same region.
-
-{{< /alert >}}
+> Additionally, it is not supported to deploy a single [GitLab environment across different regions](#deploying-one-environment-over-multiple-regions).
+> Data centers should be in the same region.
 
 ### Large Monorepos
 
@@ -343,11 +326,8 @@ Their presence and how they are used can put a significant strain on the entire 
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
 
-{{< alert type="warning" >}}
-
-If this applies to you, we strongly recommend you follow the linked documentation and reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/) for further guidance.
-
-{{< /alert >}}
+> [!warning]
+> If this applies to you, we strongly recommend you follow the linked documentation and reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Large monorepos come with notable cost. If you have such a repository,
 follow these guidance to ensure good performance and to keep costs in check:
@@ -494,11 +474,8 @@ Use an [external Redis service](../redis/replication_and_failover_external.md#re
 
 Redis is primarily single threaded. For environments targeting the 200 RPS / 10,000 users class or larger, separate the instances into cache & persistent data to achieve optimum performance.
 
-{{< alert type="note" >}}
-
-Serverless variants of Redis services are not supported at this time.
-
-{{< /alert >}}
+> [!note]
+> Serverless variants of Redis services are not supported at this time.
 
 ### Best practices for object storage
 
@@ -577,11 +554,8 @@ Each reference architecture is tested against specific throughput targets based 
 
 The listed RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
-{{< alert type="note" >}}
-
-Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
-
-{{< /alert >}}
+> [!note]
+> Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
 
 ### Test coverage and results
 
@@ -602,11 +576,8 @@ In this section you can find links to documentation for relevant areas and speci
 
 The reference architectures are designed as a starting point, and are elastic and scalable throughout. You might want to adjust the environment for your specific needs after deployment for reasons such as additional performance capacity or reduced costs. This behavior is expected. Scaling can be done iteratively or wholesale to the next architecture size, if metrics suggest that a component is exhausted.
 
-{{< alert type="note" >}}
-
-If a component is continuously exhausting its given resources, reach out to our [Support team](https://about.gitlab.com/support/) before performing any significant scaling.
-
-{{< /alert >}}
+> [!note]
+> If a component is continuously exhausting its given resources, reach out to our [Support team](https://about.gitlab.com/support/) before performing any significant scaling.
 
 For most components, vertical and horizontal scaling can be applied as usual. However, before doing so, be aware of the following caveats:
 
@@ -622,11 +593,8 @@ You should take an iterative approach when scaling downwards, to ensure there ar
 
 In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, you could have to scale these other dependent components as well. To determine this, monitor the saturation metrics of all dependent services before scaling. If multiple interdependent components show saturation, they should be scaled together in a coordinated manner rather than sequentially, preventing bottlenecks from simply shifting between components.
 
-{{< alert type="note" >}}
-
-The architectures have been designed to have elasticity to accommodate an upstream component being scaled. However, reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to your environment to be safe.
-
-{{< /alert >}}
+> [!note]
+> The architectures have been designed to have elasticity to accommodate an upstream component being scaled. However, reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to your environment to be safe.
 
 The following components can impact others when they have been significantly scaled:
 
@@ -651,21 +619,15 @@ For more information, see the following documentation:
 Upgrading a reference architecture environment is the same as any other GitLab environment. For more information, see
 [upgrade GitLab](../../update/_index.md). [Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
 
-{{< alert type="note" >}}
-
-You should upgrade a reference architecture in the same order as you created it.
-
-{{< /alert >}}
+> [!note]
+> You should upgrade a reference architecture in the same order as you created it.
 
 ### Monitoring
 
 You can monitor your infrastructure and [GitLab](../monitoring/_index.md) using various options. See the selected monitoring solution's documentation for more information.
 
-{{< alert type="note" >}}
-
-GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/_index.md) that could be hooked into your solution.
-
-{{< /alert >}}
+> [!note]
+> GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/_index.md) that could be hooked into your solution.
 
 ## Update history
 

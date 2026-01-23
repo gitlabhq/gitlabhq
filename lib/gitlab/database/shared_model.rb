@@ -41,8 +41,6 @@ module Gitlab
         end
 
         def ensure_connection_set!
-          return if Feature.disabled?(:enforce_explicit_connection_for_partitioned_shared_models, :instance)
-
           return if overriding_connection
 
           raise 'Connection not set for SharedModel partition strategy. ' \

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Helpers, feature_category: :shared do
+RSpec.describe API::Helpers, feature_category: :api do
   using RSpec::Parameterized::TableSyntax
 
   subject(:helper) { Class.new.include(described_class).new }

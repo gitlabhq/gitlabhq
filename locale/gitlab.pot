@@ -47432,6 +47432,9 @@ msgstr ""
 msgid "Only required if not using role instance credentials."
 msgstr ""
 
+msgid "Only the author can change visibility settings"
+msgstr ""
+
 msgid "Only track method calls that take longer to complete than the given duration."
 msgstr ""
 
@@ -79889,6 +79892,9 @@ msgid "You do not have permission to unlock it"
 msgstr ""
 
 msgid "You do not have permission to update the environment."
+msgstr ""
+
+msgid "You do not have permission to update this saved view."
 msgstr ""
 
 msgid "You do not have permission to view this embedded view."

@@ -52,11 +52,8 @@ For a full list of reference architectures, see
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to deploy them over multiple availability zones for resilience if desired.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to deploy them over multiple availability zones for resilience if desired.
 
 ```plantuml
 @startuml 2k
@@ -1180,11 +1177,8 @@ services where applicable):
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
 <!-- markdownlint-enable MD029 -->
 
-{{< alert type="note" >}}
-
-For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
-
-{{< /alert >}}
+> [!note]
+> For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
 
 ```plantuml
 @startuml 2k
@@ -1286,8 +1280,5 @@ After following this guide you should now have a fresh GitLab environment with c
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.
-
-{{< /alert >}}
+> [!note]
+> Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.

@@ -24,6 +24,10 @@ module WorkItems
       attr_spammable :name, spam_title: true
 
       enum :sort, ::WorkItems::SortingKeys.all.keys
+
+      def unsubscribe_other_users!(user:)
+        user_saved_views.where.not(user: user).delete_all
+      end
     end
   end
 end

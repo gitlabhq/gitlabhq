@@ -9,8 +9,7 @@ module Gitlab
         def ensure_connection_set
           return unless model < SharedModel
 
-          model.ensure_connection_set! if Feature.enabled?(
-            :enforce_explicit_connection_for_partitioned_shared_models, :instance)
+          model.ensure_connection_set!
         end
       end
     end

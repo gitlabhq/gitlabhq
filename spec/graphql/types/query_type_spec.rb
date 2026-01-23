@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
+RSpec.describe GitlabSchema.types['Query'], feature_category: :api do
   include GraphqlHelpers
 
   include_context 'with FOSS query type fields'
