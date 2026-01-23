@@ -581,7 +581,7 @@ This feature is available for testing, but not ready for production use.
 {{< /alert >}}
 
 You can reuse input definitions across multiple CI/CD configurations by defining them in external files
-and including them with [`spec:include`](../yaml/_index.md#specinclude).
+and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
 
 Create a file with input definitions, for example in a file named `shared-inputs.yml`:
 
@@ -625,7 +625,10 @@ spec:
 ---
 ```
 
-### Duplicate input keys
+> [!note]
+> You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
+
+### Override inputs from an external file
 
 {{< history >}}
 

@@ -29,7 +29,8 @@ This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
 {{< /history >}}
 
 > [!note]
-> Depending on your add-on, you might have access to GitLab Duo Code Review (Classic) instead. Learn how [Code Review Flow is different](#differences-from-gitlab-duo-code-review-classic).
+> Depending on your add-on, you might have access to GitLab Duo Code Review (Classic) instead.
+> Learn how [the two features compare](../../../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
 
@@ -142,19 +143,6 @@ To enable automatic reviews for all projects:
 1. Select **Save changes**.
 
 Settings cascade from application to group to project. More specific settings override broader ones.
-
-## Differences from GitLab Duo Code Review (Classic)
-
-While the Code Review Flow provides the same core functionality as
-[GitLab Duo Code Review (Classic)](../../../gitlab_duo/code_review_classic.md),
-the GitLab Duo Agent Platform implementation offers:
-
-- Improved context awareness: Better understanding of repository structure and cross-file dependencies.
-- Agentic capabilities: Multi-step reasoning for more thorough analysis.
-- Modern architecture: Built on the scalable GitLab Duo Agent Platform.
-
-All existing features including custom instructions, automatic reviews, and interaction patterns
-remain compatible.
 
 ## Related topics
 

@@ -654,7 +654,7 @@ export default {
               />
               <gl-popover
                 v-if="suggestPopoverVisible"
-                :target="$refs.suggestButton.$el"
+                :target="() => $refs.suggestButton && $refs.suggestButton.$el"
                 :css-classes="['diff-suggest-popover']"
                 placement="bottom"
                 :show="suggestPopoverVisible"

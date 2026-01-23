@@ -88,6 +88,10 @@
     "Submodule",
     "TreeEntry"
   ],
+  "EntryInterface": [
+    "ContainerUpstreamCacheEntry",
+    "MavenUpstreamCacheEntry"
+  ],
   "EventTargetType": [
     "Design",
     "Issue",

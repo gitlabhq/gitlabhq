@@ -1,0 +1,9 @@
+---
+name: duo_chat_binary_feedback
+description: Enable binary feedback (thumbs up/down) for Duo Agentic Chat messages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219147
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/578583
+milestone: '18.9'
+group: group::duo chat
+type: gitlab_com_derisk
+default_enabled: false

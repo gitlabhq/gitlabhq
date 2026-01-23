@@ -746,6 +746,16 @@ Do not confuse **create** with [**add**](#add).
 
 Do not use **create new**. The word **create** implies that the object is new, and the extra word is not necessary.
 
+## credits, GitLab Credits
+
+Use **GitLab Credits** (uppercase) to refer to the usage-based billing feature.
+Use **credits** (lowercase) to refer to the unit of measurement.
+
+For example:
+
+- GitLab Credits are the standardized consumption unit used for usage-based billing.
+- You can view your credit usage in the GitLab Credits dashboard.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.

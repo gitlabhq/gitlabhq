@@ -31,16 +31,18 @@ export default {
         class="gl-heading-3 !gl-mb-3"
         data-testid="settings-sub-section-heading"
       >
-        <slot v-if="$scopedSlots.heading" name="heading"></slot>
-        <template v-else>{{ heading }}</template>
+        <slot name="heading">
+          {{ heading }}
+        </slot>
       </h3>
       <p
         v-if="hasDescription"
         class="gl-max-w-88 gl-text-subtle"
         data-testid="settings-sub-section-description"
       >
-        <slot v-if="$scopedSlots.description" name="description"></slot>
-        <template v-else>{{ description }}</template>
+        <slot name="description">
+          {{ description }}
+        </slot>
       </p>
     </div>
     <div class="gl-mt-3">

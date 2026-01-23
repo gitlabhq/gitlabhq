@@ -24,6 +24,11 @@ export default {
       default: '',
     },
   },
+  data() {
+    return {
+      localQuery: this.query,
+    };
+  },
   computed: {
     ...mapState('ref', ['matches']),
     ...mapState('editNew', ['projectId', 'release']),
@@ -31,10 +36,15 @@ export default {
       return this.matches?.tags?.list || [];
     },
     createText() {
-      return this.query ? this.$options.i18n.createTag : this.$options.i18n.typeNew;
+      return this.localQuery ? this.$options.i18n.createTag : this.$options.i18n.typeNew;
     },
     selectedNotShown() {
       return this.release.tagName && !this.tags.some((tag) => tag.name === this.release.tagName);
+    },
+  },
+  watch: {
+    query(newVal) {
+      this.localQuery = newVal;
     },
   },
   created() {
@@ -43,14 +53,14 @@ export default {
   mounted() {
     this.setProjectId(this.projectId);
     this.setEnabledRefTypes([REF_TYPE_TAGS]);
-    this.search(this.query);
+    this.search(this.localQuery);
   },
   methods: {
     ...mapActions('ref', ['setEnabledRefTypes', 'setProjectId', 'search']),
     onSearchBoxInput(searchQuery = '') {
-      const query = searchQuery.trim();
-      this.$emit('change', query);
-      this.debouncedSearch(query);
+      this.localQuery = searchQuery.trim();
+      this.$emit('change', this.localQuery);
+      this.debouncedSearch(this.localQuery);
     },
     selected(tagName) {
       return (this.release?.tagName ?? '') === tagName;
@@ -66,7 +76,7 @@ export default {
 <template>
   <div data-testid="tag-name-search">
     <gl-search-box-by-type
-      :value="query"
+      :value="localQuery"
       class="gl-border-b-1 gl-border-dropdown gl-border-b-solid"
       borderless
       autofocus
@@ -97,12 +107,12 @@ export default {
         category="tertiary"
         class="!gl-justify-start !gl-rounded-none"
         block
-        :disabled="!query"
-        @click="$emit('create', query)"
+        :disabled="!localQuery"
+        @click="$emit('create', localQuery)"
       >
         <gl-sprintf :message="createText">
           <template #tag>
-            <span class="gl-font-bold">{{ query }}</span>
+            <span class="gl-font-bold">{{ localQuery }}</span>
           </template>
         </gl-sprintf>
       </gl-button>

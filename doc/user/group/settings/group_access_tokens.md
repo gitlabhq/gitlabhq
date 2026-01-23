@@ -132,7 +132,7 @@ If you are an administrator, you can create group access tokens in the Rails con
 
       - [Create an epic](../../../api/epics.md#create-an-epic) in the group.
       - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline) in one of the group's projects.
-      - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
+      - [Create an issue](../../../api/issues.md#create-an-issue) in one of the group's projects.
 
    1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.

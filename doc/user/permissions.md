@@ -89,7 +89,7 @@ Group permissions for [group features](group/_index.md):
 | Create project in group <sup>2</sup>                                                        |       |         |          |     ✓     |     ✓      |   ✓   |
 | Create subgroup <sup>3</sup>                                                                |       |         |          |           |     ✓      |   ✓   |
 | Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |           |            |   ✓   |
-| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |
+| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |         |          |           |     ✓      |   ✓   |
 | Fork project into a group                                                                   |       |         |          |           |     ✓      |   ✓   |
 | View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
 | View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
@@ -240,7 +240,7 @@ Group permissions for [package registry](packages/_index.md):
 | Create epics                                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Update epic details                                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete epics                                                                        |       |    ✓    |          |           |            |   ✓   |
+| Delete epics <sup>5</sup>                                                           |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
 
@@ -248,6 +248,7 @@ Group permissions for [package registry](packages/_index.md):
 1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
 1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent epic.
+1. Planner, Reporter, Developer, and Maintainer can only delete the epics that they authored.
 
 Group permissions for [wikis](project/wiki/group.md):
 
@@ -702,7 +703,7 @@ Project permissions for [issues](project/issues/_index.md):
 | [Search](search/_index.md) issues and comments                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create issues                                                                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [confidential issues](project/issues/confidential_issues.md)                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) confidential issues and comments                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) confidential issues and comments                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Edit issues, including metadata, item locking, and resolving threads <sup>1</sup> |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal notes                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Close and reopen issues <sup>2</sup>                                              |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -719,7 +720,7 @@ Project permissions for [issues](project/issues/_index.md):
 | Reopen [test cases](../ci/test_cases/_index.md)                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [Import](project/issues/csv_import.md) issues from a CSV file                     |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | [Export](project/issues/csv_export.md) issues to a CSV file                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Delete issues                                                                     |       |    ✓    |          |           |            |   ✓   |
+| Delete issues <sup>5</sup>                                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
@@ -731,6 +732,7 @@ Project permissions for [issues](project/issues/_index.md):
 1. Guest users can close and reopen issues that they authored or are assigned to.
 1. Guest users can archive and reopen issues that they authored or are assigned to.
 1. Guest users can modify the title and description that they authored or are assigned to.
+1. Planner, Reporter, Developer, and Maintainer can only delete the issues that they authored.
 
 Project permissions for [tasks](tasks.md):
 

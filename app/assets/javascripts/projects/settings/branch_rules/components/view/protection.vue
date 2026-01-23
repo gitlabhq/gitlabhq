@@ -147,8 +147,9 @@ export default {
 <template>
   <crud-component :title="header" :icon="icon" :count="count" data-testid="status-checks">
     <template v-if="showDescriptionSlot" #description>
-      <slot v-if="$scopedSlots.description" name="description"></slot>
-      <template v-else>{{ helpText }}</template>
+      <slot name="description">
+        {{ helpText }}
+      </slot>
     </template>
     <template #actions>
       <div v-if="glFeatures.editBranchRules && isEditAvailable" class="gl-flex">

@@ -227,6 +227,7 @@ export default {
       }
     },
   },
+  jobLogTestId: { 'data-testid': 'job-log-search-box' },
 };
 </script>
 
@@ -270,7 +271,7 @@ export default {
         v-model="searchTerm"
         class="gl-w-30 gl-grow gl-flex-nowrap"
         :placeholder="$options.i18n.searchPlaceholder"
-        data-testid="job-log-search-box"
+        :wrapper-attributes="$options.jobLogTestId"
         @clear="handleClearSearch"
         @submit="searchJobLog"
       />

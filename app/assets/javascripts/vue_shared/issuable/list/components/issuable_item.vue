@@ -517,10 +517,11 @@ export default {
         </span>
       </div>
       <div class="issuable-info gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-gap-y-1">
-        <slot v-if="hasSlotContents('reference')" name="reference"></slot>
-        <span v-else data-testid="issuable-reference" class="issuable-reference">
-          {{ reference }}
-        </span>
+        <slot name="reference">
+          <span data-testid="issuable-reference" class="issuable-reference">
+            {{ reference }}
+          </span>
+        </slot>
         <span class="-gl-ml-2 gl-hidden @sm/panel:gl-block" aria-hidden="true">&middot;</span>
         <span class="issuable-authored -gl-ml-2 gl-hidden @sm/panel:gl-block">
           <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">

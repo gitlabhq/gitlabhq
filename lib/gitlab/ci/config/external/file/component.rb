@@ -58,7 +58,31 @@ module Gitlab
               errors.push(component_result.message) unless content.present?
             end
 
+            override :load_and_validate_expanded_hash!
+            def load_and_validate_expanded_hash!
+              validate_component_spec!
+
+              return if errors.any?
+
+              super
+            end
+
             private
+
+            def validate_component_spec!
+              return unless content.present?
+
+              yaml_result = load_uninterpolated_yaml
+              return unless yaml_result.valid? && yaml_result.has_header?
+
+              spec = yaml_result.spec
+              return unless spec.is_a?(Hash) && spec.key?(:include)
+
+              errors.push(
+                "Component `#{masked_location}` cannot use `spec:include`. " \
+                  "This keyword is not supported in components"
+              )
+            end
 
             attr_reader :path, :version
 

@@ -1,0 +1,5 @@
+---
+name: read_issue_iteration_event
+description: Grants the ability to read issue iteration events.
+boundaries:
+  - project

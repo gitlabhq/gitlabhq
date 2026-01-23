@@ -243,7 +243,7 @@ export default {
       <import-status :project-id="importedProjectId" :status="importStatus" :stats="stats" />
     </td>
     <td data-testid="actions" class="gl-whitespace-nowrap">
-      <gl-tooltip :target="() => $refs.cancelButton.$el">
+      <gl-tooltip :target="() => $refs.cancelButton && $refs.cancelButton.$el">
         <div class="gl-text-left">
           <p class="gl-mb-5 gl-font-bold">{{ s__('ImportProjects|Cancel import') }}</p>
           {{

@@ -1324,6 +1324,7 @@ deploy:
 
 **Additional details**:
 
+- You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
 - External input files must contain only the `inputs` key. Other keys cause validation errors.
 - External inputs are merged first, then inline inputs are applied.
 - Inline inputs take precedence over external inputs with the same name.

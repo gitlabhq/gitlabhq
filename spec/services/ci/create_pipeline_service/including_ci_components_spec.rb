@@ -187,6 +187,34 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
           .to include 'no function matching `gitlab_undefined_function`:'
       end
     end
+
+    context 'when component uses spec:include' do
+      let(:template) do
+        <<~YAML
+              spec:
+                inputs:
+                  stage:
+                include:
+                  - local: /shared-inputs.yml
+              ---
+              test-my-job:
+                stage: $[[ inputs.stage ]]
+                script: run tests
+        YAML
+      end
+
+      it 'does not create a pipeline because spec:include is not supported in components' do
+        response = execute_service
+
+        pipeline = response.payload
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages[0].content)
+          .to include 'cannot use `spec:include`'
+        expect(pipeline.error_messages[0].content)
+          .to include 'This keyword is not supported in components'
+      end
+    end
   end
 
   def execute_service

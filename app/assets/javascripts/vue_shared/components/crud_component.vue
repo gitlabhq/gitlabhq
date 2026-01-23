@@ -258,8 +258,9 @@ export default {
             :href="`#${anchorId}`"
             :aria-labelledby="anchorId"
           />
-          <slot v-if="$scopedSlots.title" name="title"></slot>
-          <template v-else>{{ title }}</template>
+          <slot name="title">
+            {{ title }}
+          </slot>
 
           <span
             v-if="displayedCount || $scopedSlots.count"
@@ -279,8 +280,9 @@ export default {
           class="!gl-mb-0 !gl-mt-2 !gl-text-sm !gl-leading-normal !gl-text-subtle"
           data-testid="crud-description"
         >
-          <slot v-if="$scopedSlots.description" name="description"></slot>
-          <template v-else>{{ description }}</template>
+          <slot name="description">
+            {{ description }}
+          </slot>
         </p>
       </div>
       <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">

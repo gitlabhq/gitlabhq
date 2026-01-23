@@ -640,7 +640,7 @@ We often create documentation issues for a Hackathon. These issues are typically
    - Use a [script](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/create_issues.js) to create one issue for each Markdown file listed in the Vale results.
      This script uses the [`Doc cleanup` issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Doc_cleanup.md).
    - Create issues one at a time by using the `Doc cleanup` issue template.
-   - Create issues in bulk by using the [Issues API](../../api/issues.md#new-issue).
+   - Create issues in bulk by using the [Issues API](../../api/issues.md#create-an-issue).
 
 Ensure that the labels assigned to the issues match those in the `Doc cleanup` issue template.
 

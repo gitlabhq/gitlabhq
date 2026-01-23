@@ -22,8 +22,8 @@ import {
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DROPDOWN_Y_OFFSET } from '../constants';
 
-// Left offset required for the dropdown to be aligned with the super sidebar
-const DROPDOWN_X_OFFSET_BASE = -158;
+// Left offset required for the dropdown to be aligned
+const DROPDOWN_X_OFFSET_BASE = -8;
 
 export default {
   CREATION_CONTEXT_SUPER_SIDEBAR,
@@ -42,7 +42,7 @@ export default {
     createNew: __('Create new…'),
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled', 'projectStudioEnabled'],
+  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled'],
   props: {
     groups: {
       type: Array,
@@ -60,7 +60,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: this.projectStudioEnabled ? -8 : DROPDOWN_X_OFFSET_BASE,
+        crossAxis: DROPDOWN_X_OFFSET_BASE,
       };
     },
     isEpicsList() {

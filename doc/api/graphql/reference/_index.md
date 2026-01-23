@@ -18715,6 +18715,43 @@ The edge type for [`ContainerRepositoryTag`](#containerrepositorytag).
 | <a id="containerrepositorytagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerrepositorytagedgenode"></a>`node` | [`ContainerRepositoryTag`](#containerrepositorytag) | The item at the end of the edge. |
 
+#### `ContainerUpstreamCacheEntryConnection`
+
+The connection type for [`ContainerUpstreamCacheEntry`](#containerupstreamcacheentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamcacheentryconnectionedges"></a>`edges` | [`[ContainerUpstreamCacheEntryEdge]`](#containerupstreamcacheentryedge) | A list of edges. |
+| <a id="containerupstreamcacheentryconnectionnodes"></a>`nodes` | [`[ContainerUpstreamCacheEntry]`](#containerupstreamcacheentry) | A list of nodes. |
+| <a id="containerupstreamcacheentryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `ContainerUpstreamCacheEntryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamcacheentryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `ContainerUpstreamCacheEntryEdge`
+
+The edge type for [`ContainerUpstreamCacheEntry`](#containerupstreamcacheentry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamcacheentryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerupstreamcacheentryedgenode"></a>`node` | [`ContainerUpstreamCacheEntry`](#containerupstreamcacheentry) | The item at the end of the edge. |
+
 #### `ContainerUpstreamConnection`
 
 The connection type for [`ContainerUpstream`](#containerupstream).
@@ -30229,6 +30266,27 @@ Represents a container upstream registry.
 | <a id="containerupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="containerupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
+### `ContainerUpstreamCacheEntry`
+
+Represents a cache entry for an upstream container registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamcacheentrycontenttype"></a>`contentType` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Content type of the cached file. |
+| <a id="containerupstreamcacheentrycreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was created. |
+| <a id="containerupstreamcacheentrydownloadedat"></a>`downloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last downloaded. |
+| <a id="containerupstreamcacheentrydownloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.9. **Status**: Experiment. Number of times the entry has been downloaded. |
+| <a id="containerupstreamcacheentryfilemd5"></a>`fileMd5` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. MD5 hash of the cached file. |
+| <a id="containerupstreamcacheentryfilesha1"></a>`fileSha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. SHA1 hash of the cached file. |
+| <a id="containerupstreamcacheentryid"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ID of the cache entry. |
+| <a id="containerupstreamcacheentryrelativepath"></a>`relativePath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Relative path of the cached entry. |
+| <a id="containerupstreamcacheentrysize"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.9. **Status**: Experiment. Size of the cached file in bytes. |
+| <a id="containerupstreamcacheentryupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last updated. |
+| <a id="containerupstreamcacheentryupstreamcheckedat"></a>`upstreamCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the upstream was last checked. |
+| <a id="containerupstreamcacheentryupstreametag"></a>`upstreamEtag` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ETag from the upstream source. |
+
 ### `ContainerUpstreamDetails`
 
 Represents container upstream details.
@@ -30245,6 +30303,29 @@ Represents container upstream details.
 | <a id="containerupstreamdetailsregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithRegistry!]!`](#containerregistryupstreamwithregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Represents the connected upstream registry for an upstream and the upstream position data. |
 | <a id="containerupstreamdetailsurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="containerupstreamdetailsusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
+
+#### Fields with arguments
+
+##### `ContainerUpstreamDetails.cacheEntries`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Represents cache entries for the upstream container registry.
+
+Returns [`ContainerUpstreamCacheEntryConnection`](#containerupstreamcacheentryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerupstreamdetailscacheentriessearch"></a>`search` | [`String`](#string) | Search cache entries by relative path. |
 
 ### `ContextPreset`
 
@@ -37766,18 +37847,18 @@ Represents a cache entry for a Maven upstream.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mavenupstreamcacheentrycontenttype"></a>`contentType` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Content type of the cached file. |
-| <a id="mavenupstreamcacheentrycreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was created. |
-| <a id="mavenupstreamcacheentrydownloadedat"></a>`downloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was last downloaded. |
-| <a id="mavenupstreamcacheentrydownloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.7. **Status**: Experiment. Number of times the entry has been downloaded. |
-| <a id="mavenupstreamcacheentryfilemd5"></a>`fileMd5` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. MD5 hash of the cached file. |
-| <a id="mavenupstreamcacheentryfilesha1"></a>`fileSha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. SHA1 hash of the cached file. |
-| <a id="mavenupstreamcacheentryid"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. ID of the cache entry. |
-| <a id="mavenupstreamcacheentryrelativepath"></a>`relativePath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Relative path of the cached entry. |
-| <a id="mavenupstreamcacheentrysize"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.7. **Status**: Experiment. Size of the cached file in bytes. |
-| <a id="mavenupstreamcacheentryupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cache entry was last updated. |
-| <a id="mavenupstreamcacheentryupstreamcheckedat"></a>`upstreamCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the upstream was last checked. |
-| <a id="mavenupstreamcacheentryupstreametag"></a>`upstreamEtag` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. ETag from the upstream source. |
+| <a id="mavenupstreamcacheentrycontenttype"></a>`contentType` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Content type of the cached file. |
+| <a id="mavenupstreamcacheentrycreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was created. |
+| <a id="mavenupstreamcacheentrydownloadedat"></a>`downloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last downloaded. |
+| <a id="mavenupstreamcacheentrydownloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.9. **Status**: Experiment. Number of times the entry has been downloaded. |
+| <a id="mavenupstreamcacheentryfilemd5"></a>`fileMd5` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. MD5 hash of the cached file. |
+| <a id="mavenupstreamcacheentryfilesha1"></a>`fileSha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. SHA1 hash of the cached file. |
+| <a id="mavenupstreamcacheentryid"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ID of the cache entry. |
+| <a id="mavenupstreamcacheentryrelativepath"></a>`relativePath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Relative path of the cached entry. |
+| <a id="mavenupstreamcacheentrysize"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.9. **Status**: Experiment. Size of the cached file in bytes. |
+| <a id="mavenupstreamcacheentryupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last updated. |
+| <a id="mavenupstreamcacheentryupstreamcheckedat"></a>`upstreamCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the upstream was last checked. |
+| <a id="mavenupstreamcacheentryupstreametag"></a>`upstreamEtag` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ETag from the upstream source. |
 
 ### `MavenUpstreamDetails`
 
@@ -58371,6 +58452,30 @@ Implementations:
 | <a id="entrypath"></a>`path` | [`String!`](#string) | Path of the entry. |
 | <a id="entrysha"></a>`sha` | [`String!`](#string) | SHA of the entry. |
 | <a id="entrytype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
+
+#### `EntryInterface`
+
+Implementations:
+
+- [`ContainerUpstreamCacheEntry`](#containerupstreamcacheentry)
+- [`MavenUpstreamCacheEntry`](#mavenupstreamcacheentry)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="entryinterfacecontenttype"></a>`contentType` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Content type of the cached file. |
+| <a id="entryinterfacecreatedat"></a>`createdAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was created. |
+| <a id="entryinterfacedownloadedat"></a>`downloadedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last downloaded. |
+| <a id="entryinterfacedownloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.9. **Status**: Experiment. Number of times the entry has been downloaded. |
+| <a id="entryinterfacefilemd5"></a>`fileMd5` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. MD5 hash of the cached file. |
+| <a id="entryinterfacefilesha1"></a>`fileSha1` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. SHA1 hash of the cached file. |
+| <a id="entryinterfaceid"></a>`id` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ID of the cache entry. |
+| <a id="entryinterfacerelativepath"></a>`relativePath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. Relative path of the cached entry. |
+| <a id="entryinterfacesize"></a>`size` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | **Introduced** in GitLab 18.9. **Status**: Experiment. Size of the cached file in bytes. |
+| <a id="entryinterfaceupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the cache entry was last updated. |
+| <a id="entryinterfaceupstreamcheckedat"></a>`upstreamCheckedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 18.9. **Status**: Experiment. Timestamp when the upstream was last checked. |
+| <a id="entryinterfaceupstreametag"></a>`upstreamEtag` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.9. **Status**: Experiment. ETag from the upstream source. |
 
 #### `Eventable`
 

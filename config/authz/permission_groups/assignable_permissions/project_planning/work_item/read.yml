@@ -16,6 +16,7 @@ permissions:
   - read_milestone_issue
   - read_milestone_merge_request
   - read_milestone_burndown_event
+  - read_issue_iteration_event
 boundaries:
   - group
   - project

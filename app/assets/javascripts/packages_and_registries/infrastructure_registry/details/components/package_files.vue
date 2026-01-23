@@ -137,7 +137,7 @@ export default {
       </template>
 
       <template #cell(created)="{ item }">
-        <time-ago-tooltip :time="item.created_at" />
+        <time-ago-tooltip v-if="item.created_at" :time="item.created_at" />
       </template>
 
       <template #cell(actions)="{ item }">

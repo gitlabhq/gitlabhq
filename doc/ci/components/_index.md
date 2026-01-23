@@ -296,6 +296,19 @@ build-image:
 
 You can also use component context to [reference versioned resources](examples.md#use-component-context-to-reference-versioned-resources).
 
+### Component `spec` section
+
+The `spec` section in a component template defines the component's configuration and inputs.
+You can use the following keywords in the `spec` section:
+
+- [`inputs`](../yaml/_index.md#specinputs): Define input parameters for users to customize component configuration.
+- [`component`](../yaml/_index.md#speccomponent): Declare which component context fields to make available for interpolation (like `name`, `sha`, `version`, and `reference`).
+
+> [!note]
+> You cannot use [`spec:include`](../yaml/_index.md#specinclude) in components.
+> Components should be self-contained and not depend on external files. Define inputs
+> directly in the component instead of including them from separate files.
+
 ## Write a component
 
 This section describes some best practices for creating high quality component projects.
