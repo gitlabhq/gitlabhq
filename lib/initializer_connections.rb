@@ -31,7 +31,7 @@ module InitializerConnections
   end
 
   def self.debug_database_queries
-    return yield if Rails.env.production?
+    return yield if Gitlab::Utils.to_boolean(ENV['SKIP_DEBUG_INITIALIZE_CONNECTIONS'], default: Rails.env.production?)
 
     callback = ->(_name, _started, _finished, _unique_id, payload) do
       # rubocop:disable Gitlab/RailsLogger -- development/test only
