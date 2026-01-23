@@ -96,6 +96,7 @@ module API
           at_least_one_of :destination_slug, :destination_name
         end
       end
+      route_setting :authorization, permissions: :create_bulk_import, boundary_type: :instance
       post do
         check_rate_limit!(:bulk_import, scope: current_user)
 
@@ -139,6 +140,7 @@ module API
         optional :status, type: String, values: BulkImport.all_human_statuses,
           desc: 'Return GitLab Migrations with specified status'
       end
+      route_setting :authorization, permissions: :read_bulk_import, boundary_type: :instance
       get do
         present paginate(bulk_imports), with: Entities::BulkImport
       end
@@ -161,6 +163,7 @@ module API
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
           desc: "Return all GitLab Migrations' entities with specified status"
       end
+      route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
       get :entities do
         entities = ::BulkImports::EntitiesFinder.new(
           user: current_user,
@@ -183,6 +186,7 @@ module API
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
       end
+      route_setting :authorization, permissions: :read_bulk_import, boundary_type: :instance
       get ':import_id' do
         present bulk_import, with: Entities::BulkImport
       end
@@ -204,6 +208,7 @@ module API
           desc: 'Return import entities with specified status'
         use :pagination
       end
+      route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
       get ':import_id/entities' do
         present paginate(bulk_import_entities), with: Entities::BulkImports::Entity
       end
@@ -222,6 +227,7 @@ module API
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
         requires :entity_id, type: Integer, desc: "The ID of GitLab Migration entity"
       end
+      route_setting :authorization, permissions: :read_bulk_import_entity, boundary_type: :instance
       get ':import_id/entities/:entity_id' do
         present bulk_import_entity, with: Entities::BulkImports::Entity
       end
@@ -240,6 +246,7 @@ module API
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
         requires :entity_id, type: Integer, desc: "The ID of GitLab Migration entity"
       end
+      route_setting :authorization, permissions: :read_bulk_import_entity_failure, boundary_type: :instance
       get ':import_id/entities/:entity_id/failures' do
         present paginate(bulk_import_entity.failures), with: Entities::BulkImports::EntityFailure
       end
@@ -259,6 +266,7 @@ module API
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
       end
+      route_setting :authorization, permissions: :cancel_bulk_import, boundary_type: :instance
       post ':import_id/cancel' do
         bulk_import = BulkImport.find_by_id(params[:import_id])
 

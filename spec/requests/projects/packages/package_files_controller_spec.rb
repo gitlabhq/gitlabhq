@@ -31,18 +31,6 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
 
         download
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(packages_generic_package_content_type_allowlist: false)
-        end
-
-        it 'does not sanitize content type' do
-          expect(Gitlab::ContentTypes).not_to receive(:sanitize_content_type).and_call_original
-
-          download
-        end
-      end
     end
 
     context 'with remote object storage' do

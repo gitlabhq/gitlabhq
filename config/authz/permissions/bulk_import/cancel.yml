@@ -1,0 +1,5 @@
+---
+name: cancel_bulk_import
+description: Grants the ability to cancel a GitLab Migration (bulk import)
+boundaries:
+  - instance

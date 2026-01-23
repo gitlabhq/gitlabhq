@@ -28,6 +28,7 @@ module API
           ]
           tags ['project_export']
         end
+        route_setting :authorization, permissions: :read_project_export, boundary_type: :project
         get ':id/export' do
           present user_project, with: Entities::ProjectExportStatus, current_user: current_user
         end
@@ -44,6 +45,7 @@ module API
           tags ['project_export']
           produces %w[application/octet-stream application/json]
         end
+        route_setting :authorization, permissions: :download_project_export, boundary_type: :project
         get ':id/export/download' do
           check_rate_limit! :project_download_export, scope: [current_user, user_project]
 
@@ -79,6 +81,7 @@ module API
               desc: 'HTTP method to upload the exported project'
           end
         end
+        route_setting :authorization, permissions: :create_project_export, boundary_type: :project
         post ':id/export' do
           check_rate_limit! :project_export, scope: current_user
 
@@ -132,6 +135,7 @@ module API
         params do
           optional :batched, type: Boolean, desc: 'Whether to export in batches'
         end
+        route_setting :authorization, permissions: :create_project_relation_export, boundary_type: :project
         post ':id/export_relations' do
           response = ::BulkImports::ExportService
             .new(portable: user_project, user: current_user, batched: params[:batched])
@@ -172,6 +176,7 @@ module API
 
           all_or_none_of :batched, :batch_number
         end
+        route_setting :authorization, permissions: :download_project_relation_export, boundary_type: :project
         get ':id/export_relations/download' do
           export = user_project.bulk_import_exports.for_user_and_relation(current_user, params[:relation])
             .for_offline_export(nil).first
@@ -226,6 +231,7 @@ module API
         params do
           optional :relation, type: String, desc: 'Project relation name'
         end
+        route_setting :authorization, permissions: :read_project_relation_export, boundary_type: :project
         get ':id/export_relations/status' do
           if params[:relation]
             export = user_project.bulk_import_exports.for_user_and_relation(current_user, params[:relation])

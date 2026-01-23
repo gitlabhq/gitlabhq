@@ -75359,6 +75359,15 @@ msgstr ""
 msgid "VirtualRegistry|Name"
 msgstr ""
 
+msgid "VirtualRegistry|Name cannot be longer than %{length} characters."
+msgstr ""
+
+msgid "VirtualRegistry|Name is required."
+msgstr ""
+
+msgid "VirtualRegistry|New container virtual registry"
+msgstr ""
+
 msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 

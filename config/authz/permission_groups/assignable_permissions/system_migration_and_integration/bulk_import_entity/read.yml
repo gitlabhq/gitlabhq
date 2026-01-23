@@ -1,0 +1,7 @@
+---
+name: read_bulk_import_entity
+description: Grants the ability to read GitLab Migration entity details
+permissions:
+  - read_bulk_import_entity
+boundaries:
+  - instance

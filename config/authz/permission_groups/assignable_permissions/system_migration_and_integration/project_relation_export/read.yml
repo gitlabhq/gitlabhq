@@ -1,0 +1,7 @@
+---
+name: read_project_relation_export
+description: Grants the ability to read project relation export status
+permissions:
+  - read_project_relation_export
+boundaries:
+  - project

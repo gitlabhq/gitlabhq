@@ -280,7 +280,6 @@ app/models/issue.rb:
 - previous_updated_at
 - email_participants_emails
 app/models/jira_import_state.rb:
-- owner_class_attribute_default
 - non_initial?
 app/models/merge_request.rb:
 - head_pipeline_active?
@@ -314,8 +313,6 @@ app/models/project_statistics.rb:
 - update_lfs_objects_size
 - update_uploads_size
 - update_container_registry_size
-app/models/project_team.rb:
-- members_with_access_levels
 app/models/todo.rb:
 - unmergeable?
 - merge_train_removed?
@@ -326,6 +323,5 @@ app/models/todo.rb:
 - for_ssh_key?
 - self_assigned?
 app/models/user.rb:
-- owner_class_attribute_default
 - inactive_message
 - will_save_change_to_login?

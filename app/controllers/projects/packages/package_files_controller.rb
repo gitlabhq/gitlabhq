@@ -14,12 +14,9 @@ module Projects
 
         package.touch_last_downloaded_at
 
-        sanitize_content_type = package.generic? &&
-          Feature.enabled?(:packages_generic_package_content_type_allowlist, project)
-
         send_upload(package_file.file, attachment: package_file.file_name_for_download,
           ssrf_params: ::Packages::SsrfProtection.params_for(package_file.package),
-          sanitize_content_type: sanitize_content_type)
+          sanitize_content_type: package.generic?)
       end
     end
   end

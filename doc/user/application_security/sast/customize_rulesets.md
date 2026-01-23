@@ -31,6 +31,12 @@ Rule
 Ruleset
 : A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
 
+Passthrough
+
+: A passthrough is a configuration source that pulls ruleset customizations from a file, Git
+repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
+each one can overwrite or append to the previous configuration.
+
 ## Rule customization options
 
 SAST rulesets come with default rules, but every organization has different security requirements.
@@ -90,8 +96,8 @@ Remote ruleset file
 > [!note]
 > A local `.gitlab/sast-ruleset.toml` file takes precedence over a remote ruleset file.
 
-You provide your customizations by using [passthroughs](#passthroughs), which are configuration
-sources that can be combined into a ruleset.
+You provide your customizations by using passthroughs, which are configuration sources that can be
+combined into a ruleset.
 
 ### Local ruleset file
 
@@ -150,16 +156,6 @@ If remote configuration file doesn't seem to be applying customizations correctl
    - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/_index.md) to `false` to ignore the local configuration file.
 1. There is a problem with authentication.
    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
-
-### Passthroughs
-
-A passthrough is a configuration source that provides ruleset customizations to the scanner.
-Passthroughs can pull configuration from different locations, such as a file in your repository, a
-remote Git repository, a URL, or in the ruleset configuration file. You can combine several methods
-in a single ruleset by using multiple passthroughs. You can also choose how subsequent passthroughs
-in the chain are handled, either overwriting or appending to the previous configuration. At runtime,
-multiple passthroughs are composed into a chain and evaluated to produce a complete ruleset
-configuration that the scanner uses.
 
 ## Schema
 
