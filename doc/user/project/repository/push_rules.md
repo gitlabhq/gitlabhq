@@ -279,12 +279,9 @@ In Git, filenames include both the file's name, and all directories preceding th
 When you `git push`, each filename in the push is compared to the regular expression
 in **Prohibited filenames**.
 
-{{< alert type="note" >}}
-
-This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
-which does not support positive or negative lookaheads.
-
-{{< /alert >}}
+> [!note]
+> This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
+> which does not support positive or negative lookaheads.
 
 The regular expression can:
 

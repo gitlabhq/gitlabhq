@@ -167,12 +167,9 @@ you can type (or select from the dropdown list) the following:
 - Deployed before
 - Deployed after
 
-{{< alert type="note" >}}
-
-Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
-do not return results, as this method does not create a merge commit.
-
-{{< /alert >}}
+> [!note]
+> Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
+> do not return results, as this method does not create a merge commit.
 
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from.
@@ -482,12 +479,9 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
 

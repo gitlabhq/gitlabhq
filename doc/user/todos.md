@@ -60,12 +60,9 @@ To sort the To-Do List:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:

@@ -28,12 +28,9 @@ for Web Editor commits.
 
 For changes to multiple files, use the [Web IDE](../web_ide/_index.md).
 
-{{< alert type="note" >}}
-
-To manage files in a [protected branch](branches/protected.md),
-you must have the appropriate [permissions](../../permissions.md).
-
-{{< /alert >}}
+> [!note]
+> To manage files in a [protected branch](branches/protected.md),
+> you must have the appropriate [permissions](../../permissions.md).
 
 ## Manage files
 

@@ -385,7 +385,7 @@ To enable AI features in workspaces:
    GitLab Self-Managed Ultimate Subscription with GitLab Duo Pro add-on license yourself, follow the cloud license
    with CustomersDot approach.
 
-1. Configure your instance to use the staging AI gateway (`https://cloud.staging.gitlab.com/ai`).
+1. Configure your instance to use the staging AI Gateway (`https://cloud.staging.gitlab.com/ai`).
 
 For workspaces, you must enable GitLab Duo Chat features. They are only available with a GitLab Duo Enterprise
 license. You cannot provision this license for yourself through the staging Customers Portal.

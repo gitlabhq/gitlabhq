@@ -98,7 +98,7 @@ The composite identity is part of the workflow.
 AI Catalog flows use different token types with different permission scopes:
 
 - OAuth tokens used for composite identity in AI workflows have access restricted to the `ai_workflows` and `mcp` scopes.
-  This OAuth token is passed to the AI gateway to run the flow.
+  This OAuth token is passed to the AI Gateway to run the flow.
 - CI job tokens that are triggered as part of the flow have permissions further restricted by the
   [available job token permissions](../../ci/jobs/ci_job_token.md#job-token-access).
 

@@ -24,12 +24,9 @@ Use file exports to:
 
 [Direct transfer](../../group/import/_index.md) remains the recommended migration method for most situations.
 
-{{< alert type="note" >}}
-
-You should not use project export files to back up your data.
-Using project export files for backups does not always work, and not all items are exported.
-
-{{< /alert >}}
+> [!note]
+> You should not use project export files to back up your data.
+> Using project export files for backups does not always work, and not all items are exported.
 
 ## Known issues
 
@@ -262,12 +259,9 @@ You can import a project and its data. The amount of data you can import depends
   [set maximum import file size](#set-maximum-import-file-size).
 - On GitLab.com, the value is [set to 5 GB](../../gitlab_com/_index.md#account-and-limit-settings).
 
-{{< alert type="warning" >}}
-
-Only import projects from sources you trust. If you import a project from an untrusted source, it
-may be possible for an attacker to steal your sensitive data.
-
-{{< /alert >}}
+> [!warning]
+> Only import projects from sources you trust. If you import a project from an untrusted source, it
+> may be possible for an attacker to steal your sensitive data.
 
 #### Prerequisites
 

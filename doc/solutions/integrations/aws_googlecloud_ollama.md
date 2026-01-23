@@ -61,7 +61,7 @@ For more information about the component and its purpose, see [AI Gateway](../..
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
     accTitle: GitLab Duo Self-Hosted architecture
-    accDescr: Shows the flow from GitLab Ultimate to the AI gateway, which connects to Ollama running Mistral.
+    accDescr: Shows the flow from GitLab Ultimate to the AI Gateway, which connects to Ollama running Mistral.
 
     A[GitLab<br/>Ultimate] --> C
     C[GitLab<br/>AI Gateway] --> B[Ollama<br/>Mistral]
@@ -164,7 +164,7 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available in [Install the GitLab AI gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January
+While the official installation guide is available in [Install the GitLab AI Gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January
 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Ensure that ...

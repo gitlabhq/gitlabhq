@@ -688,12 +688,9 @@ a [`service_desk_email`](#configure-service-desk-alias-email) in the instance co
 
 ### Configure Service Desk alias email
 
-{{< alert type="note" >}}
-
-On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address. You can still configure the
-[custom suffix](#configure-a-suffix-for-service-desk-alias-email) in project settings.
-
-{{< /alert >}}
+> [!note]
+> On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address. You can still configure the
+> [custom suffix](#configure-a-suffix-for-service-desk-alias-email) in project settings.
 
 Service Desk uses the [incoming email](../../../administration/incoming_email.md)
 configuration by default. However, to have a separate email address for Service Desk,

@@ -111,12 +111,9 @@ the [API](../../../api/merge_request_context_commits.md).
 
 ### Add a comment to a commit
 
-{{< alert type="warning" >}}
-
-Threads created this way are lost if the commit ID changes after a
-force push.
-
-{{< /alert >}}
+> [!warning]
+> Threads created this way are lost if the commit ID changes after a
+> force push.
 
 To add discussion to a specific commit:
 

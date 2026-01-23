@@ -385,16 +385,16 @@ Common causes include:
 
 - Large context windows or complex prompts
 - Model performance limitations
-- Network latency between the AI gateway and the model endpoint
+- Network latency between the AI Gateway and the model endpoint
 - Cross-region inference delays (for AWS Bedrock deployments)
 
 To resolve timeout errors:
 
-1. [Configure a higher AI gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
+1. [Configure a higher AI Gateway timeout value](configure_duo_features.md#configure-timeout-for-the-ai-gateway). You can set the timeout between 60 and 600 seconds (10 minutes).
 1. Monitor your logs after adjusting the timeout to verify the errors are resolved.
 1. If timeout errors persist even with a higher timeout value:
    - Check your model's performance and resource allocation.
-   - Verify network connectivity between the AI gateway and model endpoint.
+   - Verify network connectivity between the AI Gateway and model endpoint.
    - Consider using a more performant model or deployment configuration.
 
 ## Verify GitLab setup

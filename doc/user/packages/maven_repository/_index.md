@@ -430,12 +430,9 @@ To publish a package by using Gradle:
 
 ## Publish a package
 
-{{< alert type="warning" >}}
-
-Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
-see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
-
-{{< /alert >}}
+> [!warning]
+> Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
+> see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
 
 After you have set up the [authentication](#authenticate-to-the-package-registry)
 and [chosen an endpoint for publishing](#naming-convention),
@@ -932,12 +929,9 @@ Your changes are automatically saved.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).

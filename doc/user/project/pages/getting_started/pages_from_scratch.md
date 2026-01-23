@@ -22,12 +22,9 @@ This example uses Jekyll, but other SSGs follow similar steps.
 You do not need to be familiar with Jekyll or SSGs
 to complete this tutorial.
 
-{{< alert type="note" >}}
-
-To create a Pages site with plain HTML, see the [create a GitLab Pages website from a CI/CD template](pages_ci_cd_template.md)
-tutorial. For a list of available templates, see [project templates](pages_new_project_template.md#project-templates).
-
-{{< /alert >}}
+> [!note]
+> To create a Pages site with plain HTML, see the [create a GitLab Pages website from a CI/CD template](pages_ci_cd_template.md)
+> tutorial. For a list of available templates, see [project templates](pages_new_project_template.md#project-templates).
 
 To create a GitLab Pages website:
 

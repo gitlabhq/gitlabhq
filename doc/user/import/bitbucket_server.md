@@ -131,8 +131,8 @@ in the GitLab user database. If no such user is found:
 - For pull request reviewers, no reviewer is assigned.
 - For pull request approvers, no approval is added.
 
-`@mentions` on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
-If a user with the same email address is not found on GitLab, the `@mention` is made static.
+Mentions on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
+If a user with the same email address is not found on GitLab, the mention is made static.
 For a user to be matched, they must have a GitLab role that provides at least read access to the project.
 
 If the project is public, GitLab only matches users who are invited to the project.

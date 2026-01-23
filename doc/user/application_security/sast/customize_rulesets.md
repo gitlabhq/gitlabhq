@@ -163,8 +163,8 @@ If remote configuration file doesn't seem to be applying customizations correctl
 
 The top-level section contains one or more configuration sections, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
 
-| Setting | Description |
-| --------| ----------- |
+| Setting       | Description                                                                                                                                            |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `[$analyzer]` | Declares a configuration section for an analyzer. The name follows the names defined in the list of [SAST analyzers](analyzers.md#official-analyzers). |
 
 Configuration example:
@@ -182,15 +182,15 @@ the latter replaces default rules completely.
 The `[$analyzer]` section lets you customize the behavior of an analyzer. Valid properties
 differ based on the kind of configuration you're making.
 
-| Setting | Applies to | Description |
-| --------| -------------- | ----------- |
-| `[[$analyzer.ruleset]]` | Default rules | Defines modifications to an existing rule. |
-| `interpolate` | All | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`) |
-| `description` | Passthroughs | Description of the custom ruleset. |
-| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the user has read and write permissions for this directory. |
-| `validate`    | Passthroughs | If set to `true`, the content of each passthrough is validated. The validation works for `yaml`, `xml`, `json` and `toml` content. The proper validator is identified based on the extension used in the `target` parameter of the `[[$analyzer.passthrough]]` section. (Default: `false`) |
-| `timeout`     | Passthroughs | The maximum time to spend to evaluate the passthrough chain, before timing out. The timeout cannot exceed 300 seconds. (Default: 60) |
-| `keepdefaultrules`  | Passthroughs | If set to `true`, the analyzer's default rules are activated in conjunction with the defined passthroughs. (Default: `false`) |
+| Setting                 | Applies to    | Description                                                                                                                                                                                                                                                                                                   |
+|-------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `[[$analyzer.ruleset]]` | Default rules | Defines modifications to an existing rule.                                                                                                                                                                                                                                                                    |
+| `interpolate`           | All           | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`)                                                                                                                           |
+| `description`           | Passthroughs  | Description of the custom ruleset.                                                                                                                                                                                                                                                                            |
+| `targetdir`             | Passthroughs  | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the user has read and write permissions for this directory. |
+| `validate`              | Passthroughs  | If set to `true`, the content of each passthrough is validated. The validation works for `yaml`, `xml`, `json` and `toml` content. The proper validator is identified based on the extension used in the `target` parameter of the `[[$analyzer.passthrough]]` section. (Default: `false`)                    |
+| `timeout`               | Passthroughs  | The maximum time to spend to evaluate the passthrough chain, before timing out. The timeout cannot exceed 300 seconds. (Default: 60)                                                                                                                                                                          |
+| `keepdefaultrules`      | Passthroughs  | If set to `true`, the analyzer's default rules are activated in conjunction with the defined passthroughs. (Default: `false`)                                                                                                                                                                                 |
 
 #### `interpolate`
 
@@ -217,11 +217,11 @@ they're not explicitly stored in the configuration file.
 The `[[$analyzer.ruleset]]` section targets and modifies a single default rule. You can define
 one to many of these sections per analyzer.
 
-| Setting | Description |
-| --------| ----------- |
-| `disable` | Whether the rule should be disabled. (Default: `false`) |
-| `[$analyzer.ruleset.identifier]` | Selects the default rule to be modified. |
-| `[$analyzer.ruleset.override]` | Defines the overrides for the rule. |
+| Setting                          | Description                                             |
+|----------------------------------|---------------------------------------------------------|
+| `disable`                        | Whether the rule should be disabled. (Default: `false`) |
+| `[$analyzer.ruleset.identifier]` | Selects the default rule to be modified.                |
+| `[$analyzer.ruleset.override]`   | Defines the overrides for the rule.                     |
 
 Configuration example:
 
@@ -237,9 +237,9 @@ Configuration example:
 The `[$analyzer.ruleset.identifier]` section defines the identifiers of the default
 rule that you wish to modify.
 
-| Setting | Description |
-| --------| ----------- |
-| `type`  | The type of identifier used by the default rule. |
+| Setting | Description                                           |
+|---------|-------------------------------------------------------|
+| `type`  | The type of identifier used by the default rule.      |
 | `value` | The value of the identifier used by the default rule. |
 
 You can look up the correct values for `type` and `value` by viewing the
@@ -298,12 +298,12 @@ Configuration example:
 
 The `[$analyzer.ruleset.override]` section allows you to override attributes of a default rule.
 
-| Setting | Description |
-| --------| ----------- |
-| `description`  | A detailed description of the issue. |
-| `message` | (Deprecated) A description of the issue. |
-| `name` | The name of the rule. |
-| `severity` | The severity of the rule. Valid options are: `Critical`, `High`, `Medium`, `Low`, `Unknown`, `Info`) |
+| Setting       | Description                                                                                         |
+|---------------|-----------------------------------------------------------------------------------------------------|
+| `description` | A detailed description of the issue.                                                                |
+| `message`     | (Deprecated) A description of the issue.                                                            |
+| `name`        | The name of the rule.                                                                               |
+| `severity`    | The severity of the rule. Valid options are: `Critical`, `High`, `Medium`, `Low`, `Unknown`, `Info` |
 
 {{< alert type="note" >}}
 
@@ -339,24 +339,24 @@ to use or modify an existing configuration.
 
 The size of the configuration generated by a single passthrough is limited to 10 MB.
 
-| Setting | Applies to | Description |
-| ------- | ---------- | ----------- |
-| `type` | All |  One of `file`, `raw`, `git` or `url`. |
-| `target` | All | The target file to contain the data written by the passthrough evaluation. If empty, a random filename is used. |
-| `mode` | All | If `overwrite`, the `target` file is overwritten. If `append`, new content is appended to the `target` file. The `git` type only supports `overwrite`. (Default: `overwrite`) |
-| `ref` | `type = "git"` | Contains the name of the branch, tag, or the SHA to pull |
-| `subdir` | `type = "git"` | Used to select a subdirectory of the Git repository as the configuration source. |
-| `value` | All | For the `file`, `url`, and `git` types, defines the location of the file or Git repository. For the `raw` type, contains the inline configuration. |
-| `validator` | All | Used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target file after the evaluation of a passthrough. |
+| Setting     | Applies to     | Description                                                                                                                                                                   |
+|-------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`      | All            | One of `file`, `raw`, `git` or `url`.                                                                                                                                         |
+| `target`    | All            | The target file to contain the data written by the passthrough evaluation. If empty, a random filename is used.                                                               |
+| `mode`      | All            | If `overwrite`, the `target` file is overwritten. If `append`, new content is appended to the `target` file. The `git` type only supports `overwrite`. (Default: `overwrite`) |
+| `ref`       | `type = "git"` | Contains the name of the branch, tag, or the SHA to pull                                                                                                                      |
+| `subdir`    | `type = "git"` | Used to select a subdirectory of the Git repository as the configuration source.                                                                                              |
+| `value`     | All            | For the `file`, `url`, and `git` types, defines the location of the file or Git repository. For the `raw` type, contains the inline configuration.                            |
+| `validator` | All            | Used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target file after the evaluation of a passthrough.                                                |
 
 #### Passthrough types
 
-| Type   | Description |
-| ------ | ----------- |
-| `file` | Use a file that is present in the Git repository. |
-| `raw`  | Provide the configuration inline. |
+| Type   | Description                                          |
+|--------|------------------------------------------------------|
+| `file` | Use a file that is present in the Git repository.    |
+| `raw`  | Provide the configuration inline.                    |
 | `git`  | Pull the configuration from a remote Git repository. |
-| `url`  | Fetch the configuration using HTTP. |
+| `url`  | Fetch the configuration using HTTP.                  |
 
 {{< alert type="warning" >}}
 

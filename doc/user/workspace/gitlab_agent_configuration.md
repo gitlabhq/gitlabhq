@@ -109,12 +109,9 @@ To remove an allowed cluster agent from a group:
 
 GitLab updates the status of the selected agent to **Blocked**, and removes the agent from the **Allowed agents** tab.
 
-{{< alert type="note" >}}
-
-Removing an allowed cluster agent from a group does not immediately stop running workspaces using
-the agent. Running workspaces stop when they are automatically terminated or manually stopped.
-
-{{< /alert >}}
+> [!note]
+> Removing an allowed cluster agent from a group does not immediately stop running workspaces using
+> the agent. Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Allow a cluster agent for workspaces on the instance
 
@@ -157,12 +154,9 @@ To remove an allowed cluster agent from the instance:
 1. Expand **Available agents for workspaces**.
 1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.
 
-{{< alert type="note" >}}
-
-Removing an allowed cluster agent from an instance does not immediately stop running workspaces using
-the agent. Running workspaces stop when they are automatically terminated or manually stopped.
-
-{{< /alert >}}
+> [!note]
+> Removing an allowed cluster agent from an instance does not immediately stop running workspaces using
+> the agent. Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Legacy agent authorization strategy
 

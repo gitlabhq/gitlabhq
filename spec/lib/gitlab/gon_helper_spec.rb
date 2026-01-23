@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GonHelper, feature_category: :shared do
+RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
   let_it_be(:organization) { create(:organization) }
   let(:helper) do
     Class.new do

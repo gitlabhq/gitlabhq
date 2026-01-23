@@ -109,12 +109,9 @@ To discard any changes to the description you've made after selecting the templa
 
 ![Choosing a description template in an issue](img/description_templates_v17_10.png)
 
-{{< alert type="note" >}}
-
-You can create shortcut links to create an issue using a designated template.
-For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
-
-{{< /alert >}}
+> [!note]
+> You can create shortcut links to create an issue using a designated template.
+> For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
 
 ### Supported variables in merge request templates
 
@@ -124,12 +121,9 @@ For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_templat
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature is available only for
-[the default template](#set-a-default-template-for-merge-requests-and-issues).
-
-{{< /alert >}}
+> [!note]
+> This feature is available only for
+> [the default template](#set-a-default-template-for-merge-requests-and-issues).
 
 When you save a merge request for the first time, GitLab replaces these variables in
 your merge request template with their values:

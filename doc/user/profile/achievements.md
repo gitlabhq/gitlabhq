@@ -19,12 +19,9 @@ title: Achievements
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `achievements`.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available,
+> an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `achievements`.
 
 Achievements are a way to reward users for their activity on GitLab.
 As a namespace maintainer or owner, you can create custom achievements for specific contributions. You can award these

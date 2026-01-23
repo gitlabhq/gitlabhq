@@ -76,7 +76,7 @@ such as marking the import as completed.
 
 ## Pull request mentions
 
-Pull request descriptions and notes can contain @mentions to users. If a user with the
+Pull request descriptions and notes can contain mentions to users. If a user with the
 same email does not exist on GitLab, this can lead to incorrect users being tagged.
 
 To get around this, we build a cache containing all users who have access to the Bitbucket

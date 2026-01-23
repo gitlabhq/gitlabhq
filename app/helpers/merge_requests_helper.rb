@@ -519,7 +519,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _('Your review requests that have been merged.'),
+                helpContent: _('Your review requests merged in the last 2 weeks.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -530,7 +530,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Assigned'),
-                helpContent: _('Your merge requests that have been merged.'),
+                helpContent: _('Your merge requests merged in the last 2 weeks.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   state: 'merged',
@@ -651,7 +651,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _('Your review requests that have been merged.'),
+                helpContent: _('Your review requests merged in the last 2 weeks.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -662,7 +662,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Your merge requests'),
-                helpContent: _('Your merge requests that have been merged.'),
+                helpContent: _('Your merge requests merged in the last 2 weeks.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   state: 'merged',

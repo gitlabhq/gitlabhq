@@ -22,12 +22,9 @@ for deleting container images from specific projects.
 To delete specific container images from a project or group, you can use [the GitLab UI](#use-the-gitlab-ui)
 or [GitLab API](#use-the-gitlab-api).
 
-{{< alert type="warning" >}}
-
-Deleting container images is a destructive action and can't be undone. To restore
-a deleted container image, you must rebuild and re-upload it.
-
-{{< /alert >}}
+> [!warning]
+> Deleting container images is a destructive action and can't be undone. To restore
+> a deleted container image, you must rebuild and re-upload it.
 
 ## Garbage collection
 
@@ -131,12 +128,9 @@ delete_image:
     - regctl tag rm $IMAGE
 ```
 
-{{< alert type="note" >}}
-
-You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
-the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
-
-{{< /alert >}}
+> [!note]
+> You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
+> the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
 
 ## Use a cleanup policy
 

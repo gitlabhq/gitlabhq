@@ -27,12 +27,9 @@ For more information about how the Code Owners feature handles errors, see [Erro
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When viewing a [`CODEOWNERS` file](_index.md#codeowners-file), GitLab runs
 validations to help you find syntax and permission issues. If no syntax issues

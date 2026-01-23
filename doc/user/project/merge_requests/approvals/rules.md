@@ -337,12 +337,9 @@ like `@group-name`, only direct members of eligible groups can provide approvals
 | The project's group                                                                              | {{< yes >}}    | {{< yes >}} |
 | A parent of the project's group                                                                  | {{< yes >}}    | {{< yes >}} |
 
-{{< alert type="note" >}}
-
-For group-based approvals, only direct members of the group can approve merge requests.
-Inherited members of the eligible groups cannot provide approvals.
-
-{{< /alert >}}
+> [!note]
+> For group-based approvals, only direct members of the group can approve merge requests.
+> Inherited members of the eligible groups cannot provide approvals.
 
 ### Group approvers
 

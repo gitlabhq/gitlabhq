@@ -78,7 +78,7 @@ To set up your GDK environment to run the GitLab Duo Self-Hosted, follow the ste
 
 ### Setting up Environment Variables
 
-To use the hosted models, set the following environment variables on your AI gateway:
+To use the hosted models, set the following environment variables on your AI Gateway:
 
 1. In the `GDK_ROOT/gitlab-ai-gateway/.env` file, set the following variables:
 
@@ -114,7 +114,7 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 
 1. On your GDK instance, go to `/admin/gitlab_duo/configuration`.
 1. Select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
-1. For **Local AI Gateway URL**, enter the URL of your AI gateway instance. In most cases, this will be `http://localhost:5052`.
+1. For **Local AI Gateway URL**, enter the URL of your AI Gateway instance. In most cases, this will be `http://localhost:5052`.
 1. Save the changes.
 
 ### Adding self-hosted models through the Admin UI

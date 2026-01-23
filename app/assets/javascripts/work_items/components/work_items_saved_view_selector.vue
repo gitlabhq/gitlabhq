@@ -4,7 +4,9 @@ import {
   GlDisclosureDropdownItem,
   GlIcon,
   GlDisclosureDropdownGroup,
+  GlButton,
 } from '@gitlab/ui';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '../constants';
 
 export default {
@@ -14,6 +16,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
+    GlButton,
   },
   props: {
     savedView: {
@@ -23,21 +26,15 @@ export default {
   },
   computed: {
     isViewActive() {
-      return this.$route.params.view_id === this.savedView.id;
+      const id = getIdFromGraphQLId(this.savedView.id).toString();
+      return this.$route.params.view_id === id;
+    },
+    viewLink() {
+      const id = getIdFromGraphQLId(this.savedView.id).toString();
+      return { name: ROUTES.savedView, params: { view_id: id } };
     },
   },
   methods: {
-    onViewClick() {
-      if (!this.isViewActive) {
-        this.$router
-          .push({ name: ROUTES.savedView, params: { view_id: this.savedView.id } })
-          .catch((error) => {
-            if (error.name !== 'NavigationDuplicated') {
-              throw error;
-            }
-          });
-      }
-    },
     editView() {
       // TODO: to replace this with logic to edit a view
       return '';
@@ -64,15 +61,13 @@ export default {
 </script>
 
 <template>
-  <!-- TODO: Make this a <router-link> when !isViewActive, and <gl-disclosure-dropdown> when isViewActive -->
-  <div data-testid="selector-wrapper" class="gl-cursor-pointer" @click="onViewClick">
+  <div data-testid="selector-wrapper">
     <gl-disclosure-dropdown
+      v-if="isViewActive"
       category="tertiary"
       :toggle-text="savedView.name"
       auto-close
-      :no-caret="!isViewActive"
-      class="saved-view-selector gl-pointer-events-none !gl-h-full !gl-rounded-none"
-      :class="{ 'saved-view-selector-active gl-pointer-events-auto': isViewActive }"
+      class="saved-view-selector saved-view-selector-active !gl-h-full !gl-rounded-none"
       data-testid="saved-view-selector"
     >
       <gl-disclosure-dropdown-item data-testid="edit-action" @action="editView">
@@ -116,5 +111,13 @@ export default {
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
+    <gl-button
+      v-else
+      category="tertiary"
+      :to="viewLink"
+      class="saved-view-selector gl-h-full !gl-rounded-none"
+    >
+      {{ savedView.name }}
+    </gl-button>
   </div>
 </template>

@@ -18,12 +18,9 @@ between the two branches are shown as a diff in the merge request. Each time
 you push commits to a branch connected to a merge request, GitLab updates the
 merge request diff to a new diff version.
 
-{{< alert type="note" >}}
-
-Diff versions are updated on each push, not each commit. If a push contains multiple
-commits, only one new diff version is created.
-
-{{< /alert >}}
+> [!note]
+> Diff versions are updated on each push, not each commit. If a push contains multiple
+> commits, only one new diff version is created.
 
 By default, GitLab compares the latest push in your source branch (`feature`)
 against the most recent commit in the target branch, often `main`.

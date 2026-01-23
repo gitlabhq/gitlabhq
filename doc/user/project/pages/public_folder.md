@@ -75,12 +75,9 @@ rename that folder to a collision-free alternative first:
 
 ## SvelteKit
 
-{{< alert type="note" >}}
-
-GitLab Pages supports only static sites. For SvelteKit,
-you can use [`adapter-static`](https://kit.svelte.dev/docs/adapters#supported-environments-static-sites).
-
-{{< /alert >}}
+> [!note]
+> GitLab Pages supports only static sites. For SvelteKit,
+> you can use [`adapter-static`](https://kit.svelte.dev/docs/adapters#supported-environments-static-sites).
 
 When using `adapter-static`, add the following to your `svelte.config.js`:
 
@@ -99,12 +96,9 @@ export default {
 
 ## Next.js
 
-{{< alert type="note" >}}
-
-GitLab Pages supports only static sites. For Next.js, you can use
-Next's [Static HTML export functionality](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
-
-{{< /alert >}}
+> [!note]
+> GitLab Pages supports only static sites. For Next.js, you can use
+> Next's [Static HTML export functionality](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
 
 With the release of [Next.js 13](https://nextjs.org/blog/next-13) a lot has changed on how Next.js works.
 You should use the following `next.config.js` so all static assets can be exported properly:

@@ -70,12 +70,9 @@ redirecting the browser to these unique domain URLs. Browsers might cache this r
 For example, if the unique ID is `f85695`, the last example is
 `http(s)://product-manual-f85695.example.io/`.
 
-{{< alert type="warning" >}}
-
-For limitations regarding namespaces served under the general domain name and HTTPS,
-see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
-
-{{< /alert >}}
+> [!warning]
+> For limitations regarding namespaces served under the general domain name and HTTPS,
+> see [Subdomains of subdomains](introduction.md#subdomains-of-subdomains).
 
 To understand Pages domains clearly, read the examples below.
 

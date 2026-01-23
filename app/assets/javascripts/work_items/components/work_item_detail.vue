@@ -1277,25 +1277,6 @@ export default {
                 :linked-resources="workItemLinkedResources"
               />
 
-              <span
-                v-if="hasDesignWidget && !hasDesignManagementFeature"
-                class="gl-mt-5 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-p-3 gl-text-center"
-                data-testid="design-management-disabled-message"
-              >
-                <gl-sprintf
-                  :message="
-                    s__(
-                      'DesignManagement|To upload designs, you\'ll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}',
-                    )
-                  "
-                >
-                  <template #link="{ content }">
-                    <gl-link :href="$options.designManagementDocsHref">
-                      {{ content }}
-                    </gl-link>
-                  </template>
-                </gl-sprintf>
-              </span>
               <design-widget
                 v-if="hasDesignWidget"
                 :class="{ 'gl-mt-0': isDrawer }"

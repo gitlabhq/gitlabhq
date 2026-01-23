@@ -89,12 +89,9 @@ Storage data updates occur:
 - When you push or delete tags in a project's container repository.
 - Every 5 minutes for groups.
 
-{{< alert type="note" >}}
-
-For GitLab Self-Managed instances, storage data becomes available after an administrator enables the metadata database.
-On GitLab.com, the metadata database is enabled by default.
-
-{{< /alert >}}
+> [!note]
+> For GitLab Self-Managed instances, storage data becomes available after an administrator enables the metadata database.
+> On GitLab.com, the metadata database is enabled by default.
 
 ## How container registry usage is calculated
 
@@ -161,12 +158,9 @@ To delete the underlying layers and images that aren't associated with any tags,
 
 ### Enable the cleanup policy
 
-{{< alert type="warning" >}}
-
-For performance reasons, enabled cleanup policies are automatically disabled for projects on
-GitLab.com that don't have a container image.
-
-{{< /alert >}}
+> [!warning]
+> For performance reasons, enabled cleanup policies are automatically disabled for projects on
+> GitLab.com that don't have a container image.
 
 ### How the cleanup policy works
 

@@ -61,7 +61,7 @@ entry:
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
 
-To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#get-details-on-a-personal-access-token).
+To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#retrieve-a-personal-access-token).
 You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
 ### Replace expired access tokens

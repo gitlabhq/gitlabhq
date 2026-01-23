@@ -13,6 +13,8 @@ RSpec.describe PlanLimits do
   end
 
   describe 'validations' do
+    subject { build(:plan_limits, :default_plan) }
+
     it { is_expected.to validate_numericality_of(:notification_limit).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:enforcement_limit).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:web_hook_calls).is_greater_than_or_equal_to(0) }
@@ -279,7 +281,7 @@ RSpec.describe PlanLimits do
     end
 
     let(:columns_with_nil) do
-      %w[repository_size plan_name_uid]
+      %w[repository_size]
     end
 
     let(:datetime_columns) do
@@ -320,6 +322,28 @@ RSpec.describe PlanLimits do
   describe '#dashboard_storage_limit_enabled?' do
     it 'returns false' do
       expect(plan_limits.dashboard_storage_limit_enabled?).to be false
+    end
+  end
+
+  describe '#set_plan_name_uid' do
+    context 'when plan_name_uid is missing' do
+      it 'populates plan_name_uid on save' do
+        plan_limits.update_column(:plan_name_uid, nil)
+
+        plan_limits.reload.update!(ci_pipeline_size: 200)
+
+        expect(plan_limits.reload.plan_name_uid).to eq(Plan::PLAN_NAME_UID_LIST[:default])
+      end
+    end
+
+    context 'when plan is nil' do
+      it 'sets plan_name_uid to nil without raising an error' do
+        limits = build(:plan_limits, plan: nil)
+
+        limits.set_plan_name_uid
+
+        expect(limits.plan_name_uid).to be_nil
+      end
     end
   end
 

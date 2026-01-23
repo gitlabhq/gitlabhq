@@ -71,9 +71,9 @@ Example Response:
 ]
 ```
 
-## Get single milestone
+## Retrieve a milestone
 
-Gets a single project milestone.
+Retrieves a specified project milestone.
 
 ```plaintext
 GET /projects/:id/milestones/:milestone_id
@@ -86,9 +86,9 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
-## Create new milestone
+## Create a milestone
 
-Creates a new project milestone.
+Creates a project milestone.
 
 ```plaintext
 POST /projects/:id/milestones

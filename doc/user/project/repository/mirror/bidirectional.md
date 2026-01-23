@@ -73,12 +73,9 @@ To test the integration, select **Test** and confirm GitLab doesn't return an er
 
 ## Prevent conflicts by using a pre-receive hook
 
-{{< alert type="warning" >}}
-
-This solution negatively affects the performance of Git push operations, because
-they are proxied to the upstream Git repository.
-
-{{< /alert >}}
+> [!warning]
+> This solution negatively affects the performance of Git push operations, because
+> they are proxied to the upstream Git repository.
 
 In this configuration, one Git repository acts as the authoritative upstream, and
 the other as downstream. This server-side `pre-receive` hook accepts a push only

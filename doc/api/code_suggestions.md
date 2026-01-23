@@ -36,7 +36,7 @@ POST /code_suggestions/completions
 Use the AI abstraction layer to generate code completions.
 
 Requests to this endpoint are proxied to the
-[AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
+[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
 
 Parameters:
 
@@ -145,7 +145,7 @@ curl --request POST \
     }'
 ```
 
-## Fetch direct connection details for the AI gateway
+## Fetch direct connection details for the AI Gateway
 
 {{< history >}}
 
@@ -162,7 +162,7 @@ POST /code_suggestions/direct_access
 > This endpoint rate-limits each user to 10 requests per 5-minute window.
 
 Returns user-specific connection details which can be used by IDEs/clients to send `completion` requests directly to
-AI gateway, including headers that must be proxied to the AI gateway as well as the required authentication token.
+AI Gateway, including headers that must be proxied to the AI Gateway as well as the required authentication token.
 
 Example request:
 

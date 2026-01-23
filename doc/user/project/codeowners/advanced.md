@@ -299,12 +299,9 @@ If an entry includes no owners, or zero [accessible owners](#inaccessible-or-inc
 exist, the entry is invalid. Because this rule can never be satisfied, GitLab
 auto-approves it in merge requests.
 
-{{< alert type="note" >}}
-
-When a protected branch has `Require code owner approval` enabled, rules with
-zero owners are still honored.
-
-{{< /alert >}}
+> [!note]
+> When a protected branch has `Require code owner approval` enabled, rules with
+> zero owners are still honored.
 
 ### Minimum approvals
 

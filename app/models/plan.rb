@@ -66,6 +66,10 @@ class Plan < ApplicationRecord
   end
   # rubocop: enable Database/AvoidUsingPluckWithoutLimit
 
+  def self.plan_name_uids_for_ids(plan_ids)
+    id_in(plan_ids).map(&:plan_name_uid_before_type_cast)
+  end
+
   def actual_limits
     limits || build_limits
   end

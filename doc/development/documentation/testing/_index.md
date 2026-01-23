@@ -449,6 +449,6 @@ We also run some documentation tests in these projects:
 - GitLab Plugin for Neovim: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>
 - GitLab Language Server: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>
 - GitLab Extension for Visual Studio: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
-- AI gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
+- AI Gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Centralized Evaluation Framework: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>
 - GitLab Container Registry: <https://gitlab.com/gitlab-org/container-registry/-/blob/master/.gitlab/ci/validate.yml>

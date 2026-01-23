@@ -118,7 +118,7 @@ Your code goes through a pre-scan security workflow when using GitLab Duo:
 ## GitLab Duo Self-Hosted
 
 When you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-and the self-hosted AI gateway, you do not share any data with GitLab.
+and the self-hosted AI Gateway, you do not share any data with GitLab.
 
 GitLab Self-Managed administrators can use [Service Ping](../../administration/settings/usage_statistics.md#service-ping)
 to send usage statistics to GitLab. This is separate to the [telemetry data](#telemetry).

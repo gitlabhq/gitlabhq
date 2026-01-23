@@ -21,6 +21,6 @@ ease of administration (backups, upgrades, and troubleshooting) with the cost of
 - [Upgrade GitLab](../update/_index.md)
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/ "Run CI/CD jobs in a pipeline.")
 - [Configure GitLab Runner](https://docs.gitlab.com/runner/configuration/ "Configuration and monitoring options.")
-- [Install GitLab AI gateway](install_ai_gateway.md)
+- [Install GitLab AI Gateway](install_ai_gateway.md)
 
 {{< /cards >}}

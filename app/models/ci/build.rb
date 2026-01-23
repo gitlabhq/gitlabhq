@@ -209,14 +209,14 @@ module Ci
       )
     end
 
-    scope :timed_out_builds, -> do
+    scope :timed_out_running_builds, -> do
       joins(:runtime_metadata)
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout <= ?",
           Time.current)
         .where(arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
     end
 
-    scope :not_timed_out_builds, -> do
+    scope :not_timed_out_running_builds, -> do
       joins(:runtime_metadata)
         .where("#{Ci::RunningBuild.table_name}.created_at + INTERVAL \'1 second\' * #{table_name}.timeout > ?",
           Time.current)

@@ -83,6 +83,14 @@ module LooseForeignKeys
       return unless feature_category_override_enabled?
 
       feature_category = child_table_feature_category(loose_foreign_key_definition.from_table)
+
+      logger.info(
+        event: :cleanup_worker_feature_category_override,
+        table_name: loose_foreign_key_definition.from_table,
+        feature_category: feature_category,
+        exception: exception
+      )
+
       Gitlab::ErrorTracking.track_exception(exception, feature_category: feature_category)
     end
 

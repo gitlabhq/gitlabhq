@@ -215,12 +215,9 @@ An organization might have a policy that does not allow merging merge requests i
 external status checks do not pass. However, the details in the widget are for informational
 purposes only.
 
-{{< alert type="note" >}}
-
-GitLab cannot guarantee that the external status checks are properly processed by
-the related external service.
-
-{{< /alert >}}
+> [!note]
+> GitLab cannot guarantee that the external status checks are properly processed by
+> the related external service.
 
 ## Troubleshooting
 

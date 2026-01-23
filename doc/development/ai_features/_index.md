@@ -18,7 +18,7 @@ Here is a list of all of the main steps to go through from a fresh, GDK-less com
 1. [Setup your Google Cloud Platform account and the CLI](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-google-cloud-platform-in-ai-gateway)
 1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
 1. Get your OpenAI API key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/40277)
-1. [If you want to use GitLab Duo Chat, Code Suggestions, and other non-GitLab Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
+1. [If you want to use GitLab Duo Chat, Code Suggestions, and other non-GitLab Duo Agent Platform features, install and configure AI Gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
 1. [If you want to use GitLab Duo Agent Platform or Agentic Chat locally, setup GitLab Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
 1. [Run the GitLab Duo setup Rake task](#run-gitlabduosetup-script)
 
@@ -36,9 +36,9 @@ See [GitLab Duo licensing for local development](ai_development_license.md).
 
 If there is any issue, check out [the troubleshooting documentation](ai_development_license.md#troubleshooting).
 
-### Install AI gateway
+### Install AI Gateway
 
-This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI gateway with GDK.
+This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI Gateway with GDK.
 
 {{< alert type="note" >}}
 Make sure your license has a GitLab Duo Pro or GitLab Duo Enterprise add-on enabled before you proceed.
@@ -46,7 +46,7 @@ GitLab Duo Core access is available automatically when you have a Premium or Ent
 {{< /alert >}}
 
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally.
-AI gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure
+AI Gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure
 to check in your GDK database that the ai gateway URL is correct. Run:
 
 ```ruby
@@ -141,7 +141,7 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
   After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
   and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
 
-  A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
+  A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI Gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
 
   A1003 is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
@@ -169,17 +169,17 @@ Apply the following feature flags to any AI feature work:
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
-### Push feature flags to AI gateway
+### Push feature flags to AI Gateway
 
-You can push [feature flags](../feature_flags/_index.md) to AI gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI gateway.
+You can push [feature flags](../feature_flags/_index.md) to AI Gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI Gateway.
 See the following example:
 
 ```ruby
-# Push a feature flag state to AI gateway.
+# Push a feature flag state to AI Gateway.
 Gitlab::AiGateway.push_feature_flag(:new_prompt_template, user)
 ```
 
-Later, you can use the feature flag state in AI gateway in the following way:
+Later, you can use the feature flag state in AI Gateway in the following way:
 
 ```python
 from ai_gateway.feature_flags import is_feature_enabled
@@ -191,17 +191,17 @@ else:
   # Build a prompt from the old prompt template
 ```
 
-**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
-If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
+**IMPORTANT**: At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository **before** removing the flag in GitLab-Rails repository.
+If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI Gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
-**IMPORTANT**: Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
+**IMPORTANT**: Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 **Technical details**:
 
 - When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
-  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI gateway.
+  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI Gateway.
 - When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#terms) (UJWT)
-  for direct AI gateway communication, GitLab returns:
+  for direct AI Gateway communication, GitLab returns:
 
   - Public headers (including `x-gitlab-enabled-feature-flags`).
   - The generated UJWT (1-hour expiration).
@@ -359,8 +359,8 @@ An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/
 
 - Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
-- [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
-- [AI gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
+- [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
+- [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
 - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF).
 
 ## Security

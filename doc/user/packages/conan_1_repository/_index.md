@@ -152,12 +152,9 @@ conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_acc
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-{{< alert type="note" >}}
-
-Because your authentication with GitLab expires on a regular basis, you may
-occasionally need to re-enter your personal access token.
-
-{{< /alert >}}
+> [!note]
+> Because your authentication with GitLab expires on a regular basis, you may
+> occasionally need to re-enter your personal access token.
 
 ### Set a default remote for your project (optional)
 
@@ -171,12 +168,9 @@ In a terminal, run this command:
 conan remote add_ref Hello/0.1@mycompany/beta gitlab
 ```
 
-{{< alert type="note" >}}
-
-The package recipe includes the version, so the default remote for
-`Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
-
-{{< /alert >}}
+> [!note]
+> The package recipe includes the version, so the default remote for
+> `Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
 
 If you don't set a default user or remote, you can still include the user and
 remote in your commands:
@@ -443,14 +437,11 @@ When you upload a Conan package, GitLab automatically extracts metadata from the
 > [!flag]
 > The availability of this feature is controlled by a feature flag. For more information, see the history.
 
-{{< alert type="note" >}}
-
-Conan 1 revisions are supported only when the remote is setup on a [project](#add-a-remote-for-your-project),
-not for the entire [instance](#add-a-remote-for-your-instance).
-
-{{< /alert >}}
-
 Conan 1 revisions provide package immutability in the package registry. When you make changes to a recipe or a package without changing its version, Conan calculates a unique identifier (revision) to track these changes.
+
+> [!note]
+> Conan 1 revisions are supported only when the remote is setup on a [project](#add-a-remote-for-your-project),
+> not for the entire [instance](#add-a-remote-for-your-instance).
 
 ### Types of revisions
 

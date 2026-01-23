@@ -150,14 +150,14 @@ see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).
 
 ## Other hosting options
 
-By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI gateway that's hosted by GitLab.
+By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI Gateway that's hosted by GitLab.
 
-If you want to host your own language models or AI gateway:
+If you want to host your own language models or AI Gateway:
 
-- You can [use GitLab Duo Self-Hosted to host the AI gateway and use any of the supported self-hosted models](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms).
+- You can [use GitLab Duo Self-Hosted to host the AI Gateway and use any of the supported self-hosted models](../../gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms).
   This option provides full control over your data and security.
 - Use a [hybrid configuration](../../gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
-  where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.
+  where you host your own AI Gateway and models for some features, but configure other features to use the GitLab AI Gateway and vendor models.
 
 ## Hide sidebar widget that shows GitLab Duo Core availability (removed)
 

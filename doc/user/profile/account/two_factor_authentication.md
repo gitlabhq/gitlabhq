@@ -374,12 +374,10 @@ these recovery codes to sign in to your account.
 You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
 
-{{< alert type="note" >}}
-
-- You can use each code only once to sign in to your account.
-- Recovery codes are not generated for WebAuthn devices.
-
-{{< /alert >}}
+> [!note]
+>
+> - You can use each code only once to sign in to your account.
+> - Recovery codes are not generated for WebAuthn devices.
 
 For information on regenerating or restoring your recovery codes, see
 [recovery options and 2FA reset](two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).

@@ -79,7 +79,7 @@ Policies in a compliance and security policy group are stored in a `policy.yml` 
 
 - Depending on the number of groups and projects in scope, policy changes may take some time to apply across your instance.
 - The synchronization process uses background jobs that are automatically queued when you designate a compliance and security policy group, create policies, or update policies.
-- Instance administrators can monitor background job processing in **Admin Area** > **Monitoring** > **Background jobs**.
+- Instance administrators can monitor background job processing in **Admin** > **Monitoring** > **Background jobs**.
 - To verify that policies are successfully applied in a target group or project, go to **Secure** > **Policies** in the group or project.
 
 ### Managing performance

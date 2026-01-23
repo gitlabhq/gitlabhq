@@ -12,12 +12,9 @@ title: Connect EKS clusters through cluster certificates (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
-to create new clusters.
-
-{{< /alert >}}
+> [!warning]
+> This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
+> to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
 Kubernetes Service (EKS).

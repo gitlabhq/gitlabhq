@@ -168,7 +168,7 @@ Before starting a model migration:
      - For new providers: Create new model definition file
    - Verify configurations (enums, stop tokens, timeouts, etc.)
    - Test the model locally:
-     - Set up the [AI gateway development environment](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
+     - Set up the [AI Gateway development environment](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
      - Configure API keys in `.env` file
      - Test using Swagger UI at `http://localhost:5052/docs`
    - Create an issue for new model support if needed
@@ -215,7 +215,7 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 
 **AI Framework Team**:
 
-- Add new model to AI gateway configurations
+- Add new model to AI Gateway configurations
 - Verify compatibility with current API specification
 - Verify the model works with existing API patterns
 - Create model configuration file
@@ -234,7 +234,7 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 - Update documentation
 
 {{< alert type="note" >}}
-While we're moving toward AI gateway holding the prompts, feature flag implementation still requires a GitLab release.
+While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
 {{< /alert >}}
 
 ### Vertex Models Migration Tasks
@@ -242,7 +242,7 @@ While we're moving toward AI gateway holding the prompts, feature flag implement
 **AI Framework Team**:
 
 - Activate model in Google Cloud Platform
-- Update AI gateway to support new Vertex model
+- Update AI Gateway to support new Vertex model
 - Document model-specific parameters
 
 **Feature Team**:
@@ -260,15 +260,15 @@ While we're moving toward AI gateway holding the prompts, feature flag implement
 For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/_index.md).
 
 {{< alert type="note" >}}
-Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI gateway codebase, as they won't have access to the new GitLab release.
+Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
 {{< /alert >}}
 
 ### Model Selection Implementation
 
 Implement model selection logic in:
 
-- AI gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
-- Model definitions in AI gateway
+- AI Gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
+- Model definitions in AI Gateway
 - Any custom implementations in specific features
 
 ### Rollout Strategy
@@ -276,8 +276,8 @@ Implement model selection logic in:
 1. **Enable feature flag** for small percentage of users/groups
 1. **Monitor performance** using:
    - [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview)
-   - [AI gateway metrics dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
-   - [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
+   - [AI Gateway metrics dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
+   - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
    - [Feature usage dashboard](https://log.gprd.gitlab.net/app/r/s/egybF)
    - [Periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features)
 1. **Gradually increase** rollout percentage
@@ -312,7 +312,7 @@ Implement model selection logic in:
 **AI Framework Team**:
 
 - Create integration plan
-- Implement provider API in AI gateway
+- Implement provider API in AI Gateway
 - Create model configuration files
 - Update authentication mechanisms
 - Document provider-specific parameters

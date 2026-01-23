@@ -53,12 +53,9 @@ While your account is pending deletion:
 - You cannot create a new account with the same primary email address unless you change the
   email address first.
 
-{{< alert type="note" >}}
-
-After the account is deleted, any user can create a user account with the same username. If
-another user takes the username, you cannot reclaim it.
-
-{{< /alert >}}
+> [!note]
+> After the account is deleted, any user can create a user account with the same username. If
+> another user takes the username, you cannot reclaim it.
 
 To delete your own account:
 
@@ -94,12 +91,9 @@ To delete a user:
    - **Delete user and contributions** to delete the user and their associated records. This option also removes all groups (and
      projects within these groups) where the user is the sole direct Owner of a group. Inherited ownership doesn't apply.
 
-{{< alert type="warning" >}}
-
-Using the **Delete user and contributions** option may result in removing more data than intended. See
-[associated records](#associated-records) for additional details.
-
-{{< /alert >}}
+> [!warning]
+> Using the **Delete user and contributions** option may result in removing more data than intended. See
+> [associated records](#associated-records) for additional details.
 
 ### Associated records
 

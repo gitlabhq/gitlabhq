@@ -182,7 +182,7 @@ the operation. For example:
 
 - `List all project access tokens` -> `Lists all project access tokens.`
 - `Delete an SSH key` -> `Deletes an SSH key from your user account.`
-- `Get details on an enterprise user` -> `Gets details on a specified enterprise user.`
+- `Retrieve an enterprise user` -> `Retrieves details on a specified enterprise user.`
 
 ## Request attributes
 

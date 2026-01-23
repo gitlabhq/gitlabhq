@@ -1,11 +1,4 @@
-import {
-  GlAlert,
-  GlEmptyState,
-  GlIntersectionObserver,
-  GlLink,
-  GlButton,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver, GlButton, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -139,8 +132,6 @@ describe('WorkItemDetail component', () => {
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
-  const findDesignManagementDisabledMessage = () =>
-    wrapper.findByTestId('design-management-disabled-message');
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
@@ -1161,39 +1152,6 @@ describe('WorkItemDetail component', () => {
       await nextTick();
 
       expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
-    });
-  });
-
-  describe('design management disabled message', () => {
-    it('renders message when hasDesignManagementFeature=false', async () => {
-      createComponent({ provide: { hasDesignManagementFeature: false } });
-      await waitForPromises();
-
-      expect(findDesignManagementDisabledMessage().text()).toContain(
-        "To upload designs, you'll need to enable LFS and have an admin enable hashed storage",
-      );
-      expect(findDesignManagementDisabledMessage().findComponent(GlLink).attributes('href')).toBe(
-        '/help/user/project/issues/design_management#prerequisites',
-      );
-    });
-
-    it('does not render message when design widget is not available', async () => {
-      createComponent({
-        provide: { hasDesignManagementFeature: false },
-        handler: jest
-          .fn()
-          .mockResolvedValue(workItemByIidResponseFactory({ designWidgetPresent: false })),
-      });
-      await waitForPromises();
-
-      expect(findDesignManagementDisabledMessage().exists()).toBe(false);
-    });
-
-    it('does not render message when hasDesignManagementFeature=true', async () => {
-      createComponent({ provide: { hasDesignManagementFeature: true } });
-      await waitForPromises();
-
-      expect(findDesignManagementDisabledMessage().exists()).toBe(false);
     });
   });
 

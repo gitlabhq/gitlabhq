@@ -121,12 +121,9 @@ conan remote login -p <personal_access_token or deploy_token> gitlab <gitlab_use
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-{{< alert type="note" >}}
-
-Because your authentication with GitLab expires on a regular basis, you may
-occasionally need to re-enter your personal access token.
-
-{{< /alert >}}
+> [!note]
+> Because your authentication with GitLab expires on a regular basis, you may
+> occasionally need to re-enter your personal access token.
 
 ## Publish a Conan 2 package
 

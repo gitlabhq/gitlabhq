@@ -48,12 +48,9 @@ Create or edit the `.npmrc` file in the same directory as your `package.json`. I
   //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"
 ```
 
-{{< alert type="warning" >}}
-
-Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
-be committed to a repository.
-
-{{< /alert >}}
+> [!warning]
+> Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
+> be committed to a repository.
 
 For example:
 
@@ -350,12 +347,9 @@ When publishing by using a CI/CD pipeline, you can use the
 to authenticate with your project's package registry. You can use these variables to create a `.npmrc` file
 for authentication during execution of your CI/CD job.
 
-{{< alert type="note" >}}
-
-When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
-`http` URLs default to `80`, and `https` URLs default to `443`.
-
-{{< /alert >}}
+> [!note]
+> When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
+> `http` URLs default to `80`, and `https` URLs default to `443`.
 
 In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
@@ -462,12 +456,9 @@ predefined variables `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}`
 to authenticate with your project's package registry. You can use these variables to create a `.npmrc` file
 for authentication during execution of your CI/CD job.
 
-{{< alert type="note" >}}
-
-When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
-`http` URLs default to `80`, and `https` URLs default to `443`.
-
-{{< /alert >}}
+> [!note]
+> When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
+> `http` URLs default to `80`, and `https` URLs default to `443`.
 
 In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
@@ -749,12 +740,9 @@ from a user that has access to all the groups or individual projects:
 @group-2:registry=https://gitlab.example.com/api/v4/packages/npm/
 ```
 
-{{< alert type="warning" >}}
-
-Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/tokens/_index.md#security-considerations)
-for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
-
-{{< /alert >}}
+> [!warning]
+> Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/tokens/_index.md#security-considerations)
+> for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ### `npm publish` targets default npm registry (`registry.npmjs.org`)
 

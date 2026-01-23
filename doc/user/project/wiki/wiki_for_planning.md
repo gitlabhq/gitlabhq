@@ -151,12 +151,9 @@ Transform your wiki pages into live dashboards using [GitLab Query Language](../
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
-{{< alert type="note" >}}
-
-Embedded views have performance considerations. Large queries may time out or be rate-limited.
-If you encounter timeouts, reduce the scope of your query by adding more filters or reducing the `limit` parameter.
-
-{{< /alert >}}
+> [!note]
+> Embedded views have performance considerations. Large queries may time out or be rate-limited.
+> If you encounter timeouts, reduce the scope of your query by adding more filters or reducing the `limit` parameter.
 
 ### Basic embedded view syntax
 
@@ -181,12 +178,9 @@ as issues are created, modified, or closed.
 
 Create comprehensive planning dashboards directly in your wiki pages.
 
-{{< alert type="note" >}}
-
-In the examples throughout this section, replace `project = "group/project"` with your actual project path,
-such as `project = "gitlab-org/gitlab"` or `project = "my-team/my-project"`.
-
-{{< /alert >}}
+> [!note]
+> In the examples throughout this section, replace `project = "group/project"` with your actual project path,
+> such as `project = "gitlab-org/gitlab"` or `project = "my-team/my-project"`.
 
 Prerequisites:
 

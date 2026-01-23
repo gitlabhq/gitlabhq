@@ -96,12 +96,9 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the project.
 
-{{< alert type="note" >}}
-
-The invited group's name and membership source are masked from members who do not have access to the invited group.
-Project Owners can see the membership details of invited groups to help them manage access to their projects.
-
-{{< /alert >}}
+> [!note]
+> The invited group's name and membership source are masked from members who do not have access to the invited group.
+> Project Owners can see the membership details of invited groups to help them manage access to their projects.
 
 ### Examples
 

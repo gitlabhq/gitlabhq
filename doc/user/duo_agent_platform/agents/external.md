@@ -120,12 +120,12 @@ To integrate your agent with an external AI model provider, you must also have a
 
 {{< /history >}}
 
-External agents use GitLab-managed credentials through an AI gateway.
+External agents use GitLab-managed credentials through an AI Gateway.
 
 When you use GitLab-managed credentials:
 
 - Set `injectGatewayToken: true` in your external agent configuration.
-- Configure the external agent to use the GitLab AI gateway proxy endpoints.
+- Configure the external agent to use the GitLab AI Gateway proxy endpoints.
 
 The following environment variables are automatically injected when `injectGatewayToken` is `true`:
 

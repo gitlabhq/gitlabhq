@@ -52876,6 +52876,10 @@ definitions:
         type: string
       downvotes:
         type: string
+      start_date:
+        type: string
+        format: date
+        example: '2022-11-18'
       due_date:
         type: string
         format: date
@@ -61404,6 +61408,10 @@ definitions:
         type: string
       downvotes:
         type: string
+      start_date:
+        type: string
+        format: date
+        example: '2022-11-18'
       due_date:
         type: string
         format: date
@@ -61575,6 +61583,10 @@ definitions:
         type: string
       downvotes:
         type: string
+      start_date:
+        type: string
+        format: date
+        example: '2022-11-18'
       due_date:
         type: string
         format: date

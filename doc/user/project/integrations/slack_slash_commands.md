@@ -28,12 +28,9 @@ You can use [slash commands](gitlab_slack_application.md#slash-commands) to run 
 like creating an issue, from a [Slack](https://slack.com/) chat environment.
 To run slash commands in Slack, you must configure both Slack and GitLab.
 
-{{< alert type="note" >}}
-
-This feature is only configurable on GitLab Self-Managed.
-For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
-
-{{< /alert >}}
+> [!note]
+> This feature is only configurable on GitLab Self-Managed.
+> For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 
 GitLab can also send events (such as `issue created`) to Slack as part of
 [Slack notifications](gitlab_slack_application.md#slack-notifications).

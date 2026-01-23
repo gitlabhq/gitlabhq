@@ -38,12 +38,9 @@ that token works even though Admin Mode is enabled. For more information, see
 
 ## Authenticate with username and password
 
-{{< alert type="note" >}}
-
-If you have enabled [two-factor authentication (2FA)](../../profile/account/two_factor_authentication.md)
-(including email OTP) on your account, you must [authenticate with a token](#authenticate-with-a-token).
-
-{{< /alert >}}
+> [!note]
+> If you have enabled [two-factor authentication (2FA)](../../profile/account/two_factor_authentication.md)
+> (including email OTP) on your account, you must [authenticate with a token](#authenticate-with-a-token).
 
 To authenticate with your username and password, run the `docker login` command:
 

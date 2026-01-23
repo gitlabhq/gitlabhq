@@ -79,8 +79,10 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Cannot be achieved with a before_action hook, due to the execution order.
     downgrade_scopes! if action_name == 'new'
 
-    # Default scope to `mcp` for MCP server requests and dynamic MCP applications.
-    params[:scope] = Gitlab::Auth::MCP_SCOPE.to_s if resource_is_mcp_server? || should_default_to_mcp_scope?
+    # Force scope to `mcp` for MCP server requests and dynamic MCP applications.
+    # This ensures that even if a client requests other scopes, dynamic MCP applications
+    # are restricted to the mcp scope only, regardless of what was requested.
+    params[:scope] = Gitlab::Auth::MCP_SCOPE.to_s if resource_is_mcp_server? || should_force_mcp_scope_for_dynamic_app?
     params[:organization_id] = ::Current.organization.id
 
     super
@@ -90,9 +92,8 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     params[:resource].present? && params[:resource].end_with?('/api/v4/mcp')
   end
 
-  def should_default_to_mcp_scope?
-    params[:scope].blank? &&
-      doorkeeper_application&.dynamic? &&
+  def should_force_mcp_scope_for_dynamic_app?
+    doorkeeper_application&.dynamic? &&
       # Verify application only has mcp scope. Dynamic apps are always created with
       # only mcp scope (see dynamic_registrations_controller.rb), but this check
       # guards against future changes or manual modifications.

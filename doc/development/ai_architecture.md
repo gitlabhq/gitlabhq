@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: AI Architecture
 ---
 
-This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI gateway Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
+This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI Gateway Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
 ## Introduction
 
@@ -24,7 +24,7 @@ package Clients {
 [GitLab.com] as GLCOM
 [Self-Managed/Dedicated] as SMI
 [CustomersDot API] as CD
-[AI gateway] as AIGW
+[AI Gateway] as AIGW
 
 package Models {
   [3rd party models (Anthropic,VertexAI)] as THIRD
@@ -50,7 +50,7 @@ AIGW -down-> Models : prompts
 
 - [GitLab instances](https://gitlab.com/gitlab-org/gitlab) - GitLab monolith that powers all types of GitLab instances
 - [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) - Allows customers to buy and upgrade subscriptions by adding more seats and add/edit payment records. It also manages self-managed licenses.
-- [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) - System that provides unified interface for invoking models. Deployed in Google Cloud Run (using [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway)).
+- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) - System that provides unified interface for invoking models. Deployed in Google Cloud Run (using [Runway](https://gitlab.com/gitlab-com/gl-infra/platform/runway)).
 - Extensions
   - [Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) (powers Code Suggestions in VS Code, Visual Studio 2022 for Windows, and Neovim)
   - [VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension)
@@ -58,13 +58,13 @@ AIGW -down-> Models : prompts
   - [Visual Studio 2022 for Windows](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension)
   - [Neovim](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)
 
-### Difference between how GitLab.com and Self-Managed/Dedicated access AI gateway
+### Difference between how GitLab.com and Self-Managed/Dedicated access AI Gateway
 
 - GitLab.com
   - GitLab.com instances self-issue JWT Auth token signed with a private key.
 - Other types of instances
   - Self-Managed and Dedicated regularly synchronise their licenses and AI Access tokens with CustomersDot.
-  - Self-Managed and Dedicated instances route traffic to appropriate AI gateway.
+  - Self-Managed and Dedicated instances route traffic to appropriate AI Gateway.
 
 ## SaaS-based AI abstraction layer
 
@@ -72,9 +72,9 @@ GitLab operates a cloud-hosted AI architecture. We will allow access to it for l
 
 There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating self-managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking self-managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
 
-## AI gateway
+## AI Gateway
 
-The AI gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
+The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
 [Abstraction Layer](ai_features/_index.md#feature-development-abstraction-layer).
@@ -122,22 +122,22 @@ The following table documents functionality that Code Suggestions offers today, 
 |--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
 | Request processing |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
 |                    | Receives requests from IDEs (VS Code, GitLab Web IDE, MS Visual Studio 2022 for Windows, IntelliJ, JetBrains, VIM, Emacs, Sublime), including code before and after the cursor | GitLab Rails                                                                                                                                                          | GitLab Rails                                                 |
-|                    | Authenticates the current user, verifies they are authorized to use Code Suggestions for this project                                                                         | GitLab Rails + AI gateway                                                                                                                                             | GitLab Rails + AI gateway                                    |
-|                    | Preprocesses the request to add context, such as including imports via TreeSitter                                                                                             | AI gateway                                                                                                                                                            | Undecided                                                    |
-|                    | Routes the request to the AI Provider                                                                                                                                         | AI gateway                                                                                                                                                            | AI gateway                                                   |
+|                    | Authenticates the current user, verifies they are authorized to use Code Suggestions for this project                                                                         | GitLab Rails + AI Gateway                                                                                                                                             | GitLab Rails + AI Gateway                                    |
+|                    | Preprocesses the request to add context, such as including imports via TreeSitter                                                                                             | AI Gateway                                                                                                                                                            | Undecided                                                    |
+|                    | Routes the request to the AI Provider                                                                                                                                         | AI Gateway                                                                                                                                                            | AI Gateway                                                   |
 |                    | Returns the response to the IDE                                                                                                                                               | GitLab Rails                                                                                                                                                          | GitLab Rails                                                 |
 |                    | Logs the request, including timestamp, response time, model, etc                                                                                                              | Both                                                                                                                                                                  | Both                                                         |
 | Telemetry          |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
-|                    | User acceptance or rejection in the IDE                                                                                                                                       | AI gateway                                                                                                                                                            | [Both](https://gitlab.com/gitlab-org/gitlab/-/issues/418282) |
-|                    | Number of unique users per day                                                                                                                                                | [GitLab Rails](https://app.periscopedata.com/app/gitlab/1143612/Code-Suggestions-Usage), AI gateway                                                                   | Undecided                                                    |
-|                    | Error rate, model usage, response time, IDE usage                                                                                                                             | [AI gateway](https://log.gprd.gitlab.net/app/dashboards#/view/6c947f80-7c07-11ed-9f43-e3784d7fe3ca?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-6h,to:now))) | Both                                                         |
-|                    | Suggestions per language                                                                                                                                                      | AI gateway                                                                                                                                                            | [Both](https://gitlab.com/groups/gitlab-org/-/epics/11017)   |
+|                    | User acceptance or rejection in the IDE                                                                                                                                       | AI Gateway                                                                                                                                                            | [Both](https://gitlab.com/gitlab-org/gitlab/-/issues/418282) |
+|                    | Number of unique users per day                                                                                                                                                | [GitLab Rails](https://app.periscopedata.com/app/gitlab/1143612/Code-Suggestions-Usage), AI Gateway                                                                   | Undecided                                                    |
+|                    | Error rate, model usage, response time, IDE usage                                                                                                                             | [AI Gateway](https://log.gprd.gitlab.net/app/dashboards#/view/6c947f80-7c07-11ed-9f43-e3784d7fe3ca?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-6h,to:now))) | Both                                                         |
+|                    | Suggestions per language                                                                                                                                                      | AI Gateway                                                                                                                                                            | [Both](https://gitlab.com/groups/gitlab-org/-/epics/11017)   |
 | Monitoring         |                                                                                                                                                                               | Both                                                                                                                                                                  | Both                                                         |
 |                    |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
 | Model Routing      |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
-|                    | Currently we are not using this functionality, but Code Suggestions is able to support routing to multiple models based on a percentage of traffic                            | AI gateway                                                                                                                                                            | Both                                                         |
+|                    | Currently we are not using this functionality, but Code Suggestions is able to support routing to multiple models based on a percentage of traffic                            | AI Gateway                                                                                                                                                            | Both                                                         |
 | Internal Models    |                                                                                                                                                                               |                                                                                                                                                                       |                                                              |
-|                    | Currently unmaintained, the ability to run models in our own instance, running them inside Triton, and routing requests to our own models                                     | AI gateway                                                                                                                                                            | AI gateway                                                   |
+|                    | Currently unmaintained, the ability to run models in our own instance, running them inside Triton, and routing requests to our own models                                     | AI Gateway                                                                                                                                                            | AI Gateway                                                   |
 
 ### Self-managed support
 
@@ -157,5 +157,5 @@ See our discussions [in issue 418955](https://gitlab.com/gitlab-org/gitlab/-/iss
 
 ## Future changes to the architecture
 
-- We plan on deploying [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) in different regions to improve latency (see the ed epic [Multi-region support for AI gateway](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1206)).
+- We plan on deploying [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) in different regions to improve latency (see the ed epic [Multi-region support for AI Gateway](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1206)).
 - We would like to centralize telemetry. However, centralizing AI (or, Cloud Connector) telemetry is a difficult and unsolved problem as of now.

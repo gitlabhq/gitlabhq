@@ -119,12 +119,9 @@ The new email address is added as a secondary email address.
 You can use secondary email addresses to reset passwords but not to authenticate.
 You can update your [primary email address](#change-your-primary-email).
 
-{{< alert type="note" >}}
-
-[Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching and
-[group and project imports](../import/_index.md).
-
-{{< /alert >}}
+> [!note]
+> [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching and
+> [group and project imports](../import/_index.md).
 
 ## Delete email addresses from your user profile
 
@@ -142,12 +139,9 @@ sent to the primary email address instead.
 
 Unverified secondary email addresses are automatically deleted after three days.
 
-{{< alert type="note" >}}
-
-Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
-the deleted email address.
-
-{{< /alert >}}
+> [!note]
+> Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
+> the deleted email address.
 
 To delete an email address from your account:
 

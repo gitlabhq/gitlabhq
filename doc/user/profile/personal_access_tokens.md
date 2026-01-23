@@ -48,21 +48,15 @@ Use impersonation tokens to automate authentication as a specific user.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
-- Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring personal access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-> [!warning]
-> The ability to create personal access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on when personal access tokens expire and expiry dates are added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 You can create as many personal access tokens as you like.
 
@@ -92,12 +86,9 @@ list of scopes to the URL. For example:
 https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
 
-{{< alert type="warning" >}}
-
-Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
-for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
-
-{{< /alert >}}
+> [!warning]
+> Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
+> for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ## Rotate a personal access token
 
@@ -300,12 +291,9 @@ A personal access token can perform actions based on the assigned scopes.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
 
 Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
 

@@ -367,12 +367,9 @@ Prerequisites:
 1. Under **Project visibility**, ensure the **Users can request access** checkbox is not selected.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Disabling the **Allow users to request access** setting prevents new access requests.
-Existing pending requests are not removed and can still be approved or denied.
-
-{{< /alert >}}
+> [!note]
+> Disabling the **Allow users to request access** setting prevents new access requests.
+> Existing pending requests are not removed and can still be approved or denied.
 
 ## Membership and visibility rights
 

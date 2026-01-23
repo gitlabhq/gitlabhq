@@ -18,7 +18,7 @@ the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 To answer a user's question asked in the Chat interface, GitLab sends a
 [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
 to the Rails backend. Rails backend sends then instructions to the Large
-Language Model (LLM) through the [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
+Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
 ## Which use cases lend themselves most to contributing to Chat?
 
@@ -78,7 +78,7 @@ you find a solution.
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                                                       |
 |-----------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with Premium or Ultimate license and enabled Chat.                                                                                                                                                                                                                    |
-| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI gateway](_index.md#install-ai-gateway) is set up correctly.                                                                                                                                                                                                      |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](_index.md#install-ai-gateway) is set up correctly.                                                                                                                                                                                                      |
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `FactoryBot.create(:cloud_connector_access)`.                                                                                                              |
 
@@ -155,17 +155,17 @@ conversation in GitLab Duo Chat towards predefined areas of interest or concern.
 
 ### Adding a new tool
 
-To add a new tool you need to add changes both to [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
-and Rails Monolith. The main chat prompt is stored and assembled on AI gateway. Rails side is responsible for assembling
-required parameters of the prompt and sending them to AI gateway. AI gateway is responsible for assembling Chat prompt and
+To add a new tool you need to add changes both to [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+and Rails Monolith. The main chat prompt is stored and assembled on AI Gateway. Rails side is responsible for assembling
+required parameters of the prompt and sending them to AI Gateway. AI Gateway is responsible for assembling Chat prompt and
 selecting Chat tools that are available for user based on their subscription and add-on.
 
 When LLM selects the tool to use, this tool is executed on the Rails side. Tools use different endpoint to make
-a request to AI gateway. When you add a new tool, take into account that AI gateway works with different clients
+a request to AI Gateway. When you add a new tool, take into account that AI Gateway works with different clients
 and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool.
 If you want to add a new tool, contact the GitLab Duo Chat team. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
 
-#### Changes in AI gateway
+#### Changes in AI Gateway
 
 1. Create a new class for a tool in `ai_gateway/chat/tools/gitlab.py`. This class should include next properties:
 
@@ -351,7 +351,7 @@ For more information, see [the guideline of the regression evaluator](https://gi
 ## GitLab Duo Chat Self-managed End-to-End Tests
 
 In MRs, the end-to-end tests exercise the GitLab Duo Chat functionality of GitLab Self-Managed instances by using an instance of the GitLab Linux package
-integrated with the `latest` version of AI gateway. The instance of AI gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
+integrated with the `latest` version of AI Gateway. The instance of AI Gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
 To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipeline and view the `ai-gateway` job.
 
 The `ai-gateway` job activates a cloud license and then assigns a GitLab Duo Pro seat to a test user, before the tests are run.
@@ -687,7 +687,7 @@ flow of how we construct a Chat prompt:
    -> [`GLAgentRemoteExecutor.stream`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)
    -> [`api.v2.agent.chat.agent.chat`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133)
    -> Rails)
-1. We've now made our first request to the AI gateway. If the LLM says that the answer to the first request is final,
+1. We've now made our first request to the AI Gateway. If the LLM says that the answer to the first request is final,
    Rails [parses the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L56) and [returns it](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L63) for further response handling by [`Gitlab::Llm::Completions::Chat`](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/completions/chat.rb#L66).
 1. If the answer is not final, the "thoughts" and "picked tools" from the first LLM request are parsed and then the relevant tool class is called.
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L207)
@@ -722,7 +722,7 @@ The error codes follow the format: `<Layer Identifier><Four-digit Series Number>
 For example:
 
 - `M1001`: A network communication error in the monolith layer.
-- `G2005`: A data formatting/processing error in the AI gateway layer.
+- `G2005`: A data formatting/processing error in the AI Gateway layer.
 - `A3010`: An authentication or data access permissions error in a third-party API.
 
 ### Error Code Layer Identifier
@@ -730,7 +730,7 @@ For example:
 | Code | Layer           |
 |------|-----------------|
 | M    | Monolith        |
-| G    | AI gateway      |
+| G    | AI Gateway      |
 | A    | Third-party API |
 
 ### Error Series

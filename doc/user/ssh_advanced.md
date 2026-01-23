@@ -199,12 +199,9 @@ To update a previously-cloned repository that is aliased as `origin`:
 git remote set-url origin git@<user_1.gitlab.com>:gitlab-org/gitlab.git
 ```
 
-{{< alert type="note" >}}
-
-Private and public keys contain sensitive data. Ensure the permissions
-on the files make them readable to you but not accessible to others.
-
-{{< /alert >}}
+> [!note]
+> Private and public keys contain sensitive data. Ensure the permissions
+> on the files make them readable to you but not accessible to others.
 
 ## Use different keys for different repositories
 

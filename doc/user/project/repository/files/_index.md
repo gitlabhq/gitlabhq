@@ -90,12 +90,9 @@ To render an OpenAPI file:
 1. Select **Display rendered file**.
 1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
 
-{{< alert type="note" >}}
-
-When `displayOperationId` is present in the query string and has any value, it
-evaluates to `true`. This behavior matches the default behavior of Swagger.
-
-{{< /alert >}}
+> [!note]
+> When `displayOperationId` is present in the query string and has any value, it
+> evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 ## View Git records for a file
 

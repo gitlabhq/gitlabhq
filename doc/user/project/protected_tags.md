@@ -114,12 +114,9 @@ graph LR
 To grant access to Subgroup Y members for Project A, you must share the project with the subgroup.
 Adding the subgroup directly to the protected tag settings is not effective and isn't applicable to subgroup members.
 
-{{< alert type="note" >}}
-
-For a group to have protected tag permissions, the project must be directly shared with the group.
-Inherited project membership from parent groups is not sufficient for protected tag permissions.
-
-{{< /alert >}}
+> [!note]
+> For a group to have protected tag permissions, the project must be directly shared with the group.
+> Inherited project membership from parent groups is not sufficient for protected tag permissions.
 
 ## Wildcard protected tags
 

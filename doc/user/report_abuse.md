@@ -65,12 +65,9 @@ To report abuse from a user's comment:
 1. Complete an abuse report.
 1. Select **Send report**.
 
-{{< alert type="note" >}}
-
-A URL to the reported user's comment is pre-filled in the abuse report's
-**Message** field.
-
-{{< /alert >}}
+> [!note]
+> A URL to the reported user's comment is pre-filled in the abuse report's
+> **Message** field.
 
 ## Report abuse from an issue
 

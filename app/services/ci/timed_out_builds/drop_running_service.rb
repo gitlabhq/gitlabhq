@@ -15,7 +15,7 @@ module Ci
 
       def timed_out_builds(partition)
         Ci::Build
-          .timed_out_builds
+          .timed_out_running_builds
           .in_partition(partition.id)
       end
     end

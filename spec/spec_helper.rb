@@ -574,7 +574,7 @@ RSpec.configure do |config|
     Users::Internal.clear_memoization(:support_bot_id)
   end
 
-  config.before do |example|
+  config.before do
     # Reconfigures the Cloud Connector data loader to use YamlDataLoader as the default
     # instead of the DatabaseDataLoader. This is because specs should not rely on
     # database contents. But this can be overridden to use DatabaseDataLoader by explicitly specifying the
@@ -599,21 +599,10 @@ RSpec.configure do |config|
       config.logger = Labkit::Logging::JsonLogger.new("/dev/null")
     end
 
-    # Stub user experience SLI schema request by default to avoid external network calls.
-    # Tests can opt out with :allow_user_experience_sli_schema_request tag
-    unless example.metadata[:allow_user_experience_sli_schema_request]
-      schema_fixture = Rails.root.join('spec/fixtures/user_experience_sli/feature_categories_schema.json').read
-
-      WebMock
-        .stub_request(:get, "https://gitlab.com/gitlab-org/gitlab/-/raw/master/config/feature_categories/schema.json")
-        .to_return(status: 200, body: schema_fixture, headers: { 'Content-Type' => 'application/json' })
-    end
-
     example.run
 
     Labkit::UserExperienceSli::Current.reset
     Labkit::UserExperienceSli.reset_configuration
-    WebMock.reset!
   end
 
   config.backtrace_exclusion_patterns << %r{lib/gitlab/database}

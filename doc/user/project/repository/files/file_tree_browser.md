@@ -19,12 +19,9 @@ title: File tree browser
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The file tree browser is a drawer that displays your repository's files and directories in
 a collapsible tree structure. Use it to navigate your repository without scrolling

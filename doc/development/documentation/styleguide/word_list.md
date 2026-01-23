@@ -260,7 +260,7 @@ Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do
 
 ## AI Gateway
 
-Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI Gateway** (lowercase), and do not hyphenate.
 
 ## AI-powered, AI-native
 
@@ -1245,7 +1245,7 @@ This guidance follows the [Use of Third-party Trademarks](https://handbook.gitla
 
 Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
 that is hosted by a third-party provider, and that customers access by using the GitLab
-[AI gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
+[AI Gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
 
 Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
 or when the customer uses the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)

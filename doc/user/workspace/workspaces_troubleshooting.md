@@ -108,12 +108,9 @@ workspace-example-abc123-def456   0/1   Init:ImagePullBackOff   0
 This error occurs when the workspace cannot pull init container images from `registry.gitlab.com`.
 In offline environments, the init container image is hardcoded and cannot be overridden from your devfile.
 
-{{< alert type="warning" >}}
-
-The following workaround is unsupported and temporary. Use at your own risk until
-[issue 509983](https://gitlab.com/gitlab-org/gitlab/-/issues/509983) provides a supported solution.
-
-{{< /alert >}}
+> [!warning]
+> The following workaround is unsupported and temporary. Use at your own risk until
+> [issue 509983](https://gitlab.com/gitlab-org/gitlab/-/issues/509983) provides a supported solution.
 
 The workaround is:
 

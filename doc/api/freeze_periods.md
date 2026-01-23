@@ -53,9 +53,9 @@ Example response:
 ]
 ```
 
-## Get a freeze period
+## Retrieve a freeze period
 
-Get a freeze period for a specified `freeze_period_id`.
+Retrieves a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
@@ -93,7 +93,7 @@ Example response:
 
 ## Create a freeze period
 
-Create a freeze period.
+Creates a freeze period for a specified project.
 
 Prerequisites:
 
@@ -135,7 +135,7 @@ Example response:
 
 ## Update a freeze period
 
-Update a freeze period for the given `freeze_period_id`.
+Updates a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 
@@ -178,7 +178,7 @@ Example response:
 
 ## Delete a freeze period
 
-Delete a freeze period for the given `freeze_period_id`.
+Deletes a freeze period for a specified `freeze_period_id`.
 
 Prerequisites:
 

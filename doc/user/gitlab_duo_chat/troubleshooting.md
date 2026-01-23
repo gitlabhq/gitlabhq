@@ -163,7 +163,7 @@ Some possible reasons:
 
 - A client-side error caused by a bug in the GitLab code.
 - A server-side error caused by a bug in the Anthropic code.
-- An HTTP request that did not reach the AI gateway.
+- An HTTP request that did not reach the AI Gateway.
 
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/479465) to more clearly specify the reason for the error.
 
@@ -175,9 +175,9 @@ If the problem continues, report the issue to the GitLab Support team.
 ### GitLab Duo Self-Hosted
 
 If you encounter this error when using Chat with GitLab Duo Self-Hosted, there was a
-problem connecting to the AI gateway.
+problem connecting to the AI Gateway.
 
-To resolve this, use the [self-hosted debugging script](../../administration/gitlab_duo_self_hosted/troubleshooting.md#use-debugging-scripts) to check that the AI gateway is accessible from the
+To resolve this, use the [self-hosted debugging script](../../administration/gitlab_duo_self_hosted/troubleshooting.md#use-debugging-scripts) to check that the AI Gateway is accessible from the
 GitLab instance and working as expected.
 
 If the problem persists, report the issue to the GitLab support team.
@@ -187,7 +187,7 @@ If the problem persists, report the issue to the GitLab support team.
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from the AI gateway or GitLab
+This error occurs when no events are returned from the AI Gateway or GitLab
 failed to parse the events.
 
 Try your request again, or check the [AI Gateway logs](../../administration/gitlab_duo_self_hosted/logging.md)
@@ -198,14 +198,14 @@ for any errors.
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1003`.
 
-This error occurs when streaming response from AI gateway failed. Try your request again.
+This error occurs when streaming response from AI Gateway failed. Try your request again.
 
 ### GitLab Duo Self-Hosted
 
 If you encounter this issue when using Chat with GitLab Duo Self-Hosted, check
 if streaming is working:
 
-1. In the AI gateway container, run the following command:
+1. In the AI Gateway container, run the following command:
 
    ```shell
    curl --request 'POST' \
@@ -244,11 +244,11 @@ if streaming is working:
    the response will be empty.
 
 1. To check if this is a model deployment issue, check the
-   [AI gateway logs](../../administration/gitlab_duo_self_hosted/logging.md)
+   [AI Gateway logs](../../administration/gitlab_duo_self_hosted/logging.md)
    for specific error messages.
 
 1. To validate the connection, disable streaming by setting the
-   `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI gateway
+   `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI Gateway
    container:
 
    ```shell
@@ -260,7 +260,7 @@ if streaming is working:
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1004`.
 
-This error occurs when an error occurred in the AI gateway process. Try your request again.
+This error occurs when an error occurred in the AI Gateway process. Try your request again.
 
 ## `Error A1005`
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'google/apis/sqladmin_v1beta4'
 
-RSpec.describe GoogleCloud::CreateCloudsqlInstanceWorker, feature_category: :shared do
+RSpec.describe GoogleCloud::CreateCloudsqlInstanceWorker, feature_category: :cloud_native_installation do
   let(:random_user) { create(:user) }
   let(:project) { create(:project) }
   let(:worker_options) do

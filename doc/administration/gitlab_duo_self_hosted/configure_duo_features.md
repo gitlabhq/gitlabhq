@@ -155,7 +155,7 @@ To add a self-hosted model:
 
 To set a model identifier for an Amazon Bedrock model:
 
-1. Set your `AWS_REGION`. Ensure you have access to models in that region in your AI gateway Docker configuration.
+1. Set your `AWS_REGION`. Ensure you have access to models in that region in your AI Gateway Docker configuration.
 1. Add the region prefix to the model's inference profile ID for cross-region inferencing.
 1. Use the `bedrock/` prefix region as the prefix for the model identifier.
 
@@ -236,7 +236,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI gateway and models.
+You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI Gateway and models.
 
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.

@@ -167,7 +167,7 @@
 }
 
 /* stylelint-disable gitlab/no-gl-class */
-.default-selector, .saved-view-selector .gl-button {
+.default-selector, .saved-view-selector .gl-button, .saved-view-selector.gl-button {
   border-bottom: 2px solid transparent !important;
   border-radius: 0;
 
@@ -178,7 +178,7 @@
   &:focus-visible {
     outline: none;
     box-shadow: inset 0 0 0 2px var(--gl-focus-ring-outer-color), inset 0 0 0 3px var(--gl-focus-ring-inner-color);
-    border-radius: 0.5rem;
+    border-radius: 0.5rem !important;
     border-bottom: 2px solid transparent !important;
   }
 }

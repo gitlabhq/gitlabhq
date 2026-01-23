@@ -5,6 +5,7 @@
 *.rej
 .dir-locals.el
 .DS_Store
+/OpenCode.md
 .bundle
 .chef
 .directory

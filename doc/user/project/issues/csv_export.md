@@ -68,12 +68,9 @@ The CSV file has this format:
 - Fields are quoted with double quotes (`"`) if needed.
 - Newline characters separate rows.
 
-{{< alert type="note" >}}
-
-For information about CSV parsing requirements that can affect how exported files display when viewed
-in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsing-considerations).
-
-{{< /alert >}}
+> [!note]
+> For information about CSV parsing requirements that can affect how exported files display when viewed
+> in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsing-considerations).
 
 ## Columns
 

@@ -38,12 +38,9 @@ To set up GitLab workspaces infrastructure:
 First, you need to create your own copy of the infrastructure setup repository so that you can
 configure it for your environment.
 
-{{< alert type="note" >}}
-
-It is not possible to create workspaces from projects in your personal namespace. Instead, fork the
-repository to a top-level group or subgroup.
-
-{{< /alert >}}
+> [!note]
+> It is not possible to create workspaces from projects in your personal namespace. Instead, fork the
+> repository to a top-level group or subgroup.
 
 To fork the repository:
 

@@ -20,12 +20,9 @@ description: Use the container virtual registry to cache container images from u
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The GitLab container virtual registry is a local proxy you can use to cache container images from
 upstream registries. It acts as a pull-through cache, storing frequently-accessed images locally

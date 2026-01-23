@@ -527,12 +527,9 @@ git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" 
 
 The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
 
-{{< alert type="warning" >}}
-
-For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
-configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
-
-{{< /alert >}}
+> [!warning]
+> For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
+> configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
 
 ```plaintext
 # Required modules

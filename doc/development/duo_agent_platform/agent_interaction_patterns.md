@@ -49,9 +49,9 @@ Resources:
 
 #### Adding Update When Flow is Complete or Review Needed: Add a New Comment
 
-Behavior Pattern: When an agent completes its work or requires human review and follow-up actions, create a new comment with a summary and next steps, and @mention the relevant user.
+Behavior Pattern: When an agent completes its work or requires human review and follow-up actions, create a new comment with a summary and next steps, and mention the relevant user.
 
-- New comments with @mentions create to-dos or emails for users, engaging them on their familiar notification pattern
+- New comments with mentions create to-dos or emails for users, engaging them on their familiar notification pattern
 - Signals a clear transition from "agent working" to "human action required"
 - Ensures important milestones don't get lost in updated content
 
@@ -73,11 +73,11 @@ Resources:
 
 ### Mentioning Users
 
-Behavior Pattern: Agents use @mentions the way a human would: to communicate important information to team members who they are collaborating with, while taking care not to create unnecessary noise for others.
+Behavior Pattern: Agents use mentions the way a human would: to communicate important information to team members who they are collaborating with, while taking care not to create unnecessary noise for others.
 
-- @mention the user who triggered the flow in the initial comment
-- @mention users who need to respond when requesting review or approval
-- Avoid @mentioning in progress updates
+- Mention the user who triggered the flow in the initial comment
+- Mention users who need to respond when requesting review or approval
+- Avoid mentioning in progress updates
 
 Rationale:
 
@@ -122,8 +122,8 @@ COMMENT BEHAVIOR:
 * Create ONE initial status comment when you start
 * Update that same comment with your progress
 * Create a NEW comment when you complete or need review
-* Always @mention users in completion/review comments
-* Never @mention users in progress updates
+* Always mention users in completion/review comments
+* Never mention users in progress updates
 
 FINAL SUMMARY:
 * Always post a final summary when done
@@ -137,7 +137,7 @@ These patterns help manage load by:
 
 - Updating vs. creating: Reduces database writes and notification volume
 - Consolidated status: One comment per active session vs. many
-- Selective @mentions: Reduces to-do item creation to meaningful moments
+- Selective mentions: Reduces to-do item creation to meaningful moments
 - Session UI for details: Keeps detailed logs out of the primary work item
 
 ### Other Considerations

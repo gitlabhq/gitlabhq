@@ -24842,9 +24842,6 @@ msgstr ""
 msgid "DesignManagement|The maximum number of designs allowed to be uploaded is %{upload_limit}. Please try again."
 msgstr ""
 
-msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{linkStart}More information%{linkEnd}"
-msgstr ""
-
 msgid "DesignManagement|Unselect the design"
 msgstr ""
 
@@ -80603,10 +80600,10 @@ msgstr ""
 msgid "Your merge requests have a new homepage!"
 msgstr ""
 
-msgid "Your merge requests that are waiting for approvals."
+msgid "Your merge requests merged in the last 2 weeks."
 msgstr ""
 
-msgid "Your merge requests that have been merged."
+msgid "Your merge requests that are waiting for approvals."
 msgstr ""
 
 msgid "Your merge requests with approvals by all assigned reviewers."
@@ -80708,7 +80705,7 @@ msgstr ""
 msgid "Your review"
 msgstr ""
 
-msgid "Your review requests that have been merged."
+msgid "Your review requests merged in the last 2 weeks."
 msgstr ""
 
 msgid "Your reviews you've requested changes for or commented on."

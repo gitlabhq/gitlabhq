@@ -19,12 +19,9 @@ You can also manage your storage usage by improving [pipeline efficiency](../ci/
 
 For more help with API automation, you can also use the [GitLab community forum and Discord](https://about.gitlab.com/community/).
 
-{{< alert type="warning" >}}
-
-The script examples in this page are for demonstration purposes only and should not
-be used in production. You can use the examples to design and test your own scripts for storage automation.
-
-{{< /alert >}}
+> [!warning]
+> The script examples in this page are for demonstration purposes only and should not
+> be used in production. You can use the examples to design and test your own scripts for storage automation.
 
 ## API requirements
 
@@ -605,12 +602,9 @@ To delete pipelines based on a specific date, specify the `created_at` key.
 You can use the date to calculate the difference between the current date and
 when the pipeline was created. If the age is larger than the threshold, the pipeline is deleted.
 
-{{< alert type="note" >}}
-
-The `created_at` key must be converted from a timestamp to Unix epoch time,
-for example with `date -d '2023-08-08T18:59:47.581Z' +%s`.
-
-{{< /alert >}}
+> [!note]
+> The `created_at` key must be converted from a timestamp to Unix epoch time,
+> for example with `date -d '2023-08-08T18:59:47.581Z' +%s`.
 
 Example with GitLab CLI:
 

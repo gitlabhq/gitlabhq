@@ -23668,6 +23668,20 @@ The connection type for [`SecurityTrackedRef`](#securitytrackedref).
 | <a id="securitytrackedrefconnectionnodes"></a>`nodes` | [`[SecurityTrackedRef]`](#securitytrackedref) | A list of nodes. |
 | <a id="securitytrackedrefconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `SecurityTrackedRefConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitytrackedrefconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
 #### `SecurityTrackedRefEdge`
 
 The edge type for [`SecurityTrackedRef`](#securitytrackedref).

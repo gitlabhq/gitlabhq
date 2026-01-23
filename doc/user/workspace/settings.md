@@ -32,12 +32,9 @@ To set up a basic workspace configuration:
 
 If your workspace configuration is not working, see [Troubleshooting workspaces](workspaces_troubleshooting.md).
 
-{{< alert type="note" >}}
-
-If a setting has an invalid value, it's not possible to update any setting until you fix that value.
-Updating any of these settings, except `enabled`, does not affect existing workspaces.
-
-{{< /alert >}}
+> [!note]
+> If a setting has an invalid value, it's not possible to update any setting until you fix that value.
+> Updating any of these settings, except `enabled`, does not affect existing workspaces.
 
 ## Configuration reference
 

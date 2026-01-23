@@ -1313,15 +1313,19 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'deduplicates on allowed_plan_ids' do
+      let_it_be(:default_plan) { create(:default_plan) }
+
       before do
-        create_list(:ci_runner, 2, allowed_plan_ids: [1, 2])
-        create_list(:ci_runner, 2, allowed_plan_ids: [3, 4])
+        create_list(:ci_runner, 2, allowed_plan_ids: [default_plan.id])
+        create_list(:ci_runner, 2, allowed_plan_ids: [])
       end
 
       it 'creates two matchers' do
         expect(matchers.size).to eq(2)
 
-        expect(matchers.map(&:allowed_plan_ids)).to match_array([[1, 2], [3, 4]])
+        expect(matchers.map(&:allowed_plan_ids)).to match_array(
+          [[default_plan.id], []]
+        )
       end
     end
 

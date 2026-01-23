@@ -154,6 +154,7 @@ Example response:
       "downvotes": 0,
       "merge_requests_count": 0,
       "user_notes_count": 1,
+      "start_date": null,
       "due_date": "2016-07-22",
       "imported":false,
       "imported_from": "none",

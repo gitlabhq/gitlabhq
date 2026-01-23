@@ -19,12 +19,9 @@ In this CI/CD example, the release is triggered by one of the following events:
 You can use this method if you prefer to create the Git tag manually, and create a release as a
 result.
 
-{{< alert type="note" >}}
-
-Do not provide Release notes when you create the Git tag in the UI. Providing release notes
-creates a release, resulting in the pipeline failing.
-
-{{< /alert >}}
+> [!note]
+> Do not provide Release notes when you create the Git tag in the UI. Providing release notes
+> creates a release, resulting in the pipeline failing.
 
 Key points in the following extract of an example `.gitlab-ci.yml` file:
 

@@ -165,12 +165,9 @@ page of any project that belongs to the group.
 By adding a badge to a group, you add and enforce a project-level badge
 for all projects in the group.
 
-{{< alert type="note" >}}
-
-While these badges appear as project-level badges in the codebase, they
-cannot be edited or deleted at the project level.
-
-{{< /alert >}}
+> [!note]
+> While these badges appear as project-level badges in the codebase, they
+> cannot be edited or deleted at the project level.
 
 If you need individual badges for each project, either:
 

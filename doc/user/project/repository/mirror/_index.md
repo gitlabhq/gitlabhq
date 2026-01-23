@@ -215,12 +215,9 @@ If you must change the key at any time, you can remove and re-add the mirror
 to generate a new key. Update the other repository with the new
 key to keep the mirror running.
 
-{{< alert type="note" >}}
-
-The generated keys are stored in the GitLab database, not in the file system. Therefore,
-SSH public key authentication for mirrors cannot be used in a pre-receive hook.
-
-{{< /alert >}}
+> [!note]
+> The generated keys are stored in the GitLab database, not in the file system. Therefore,
+> SSH public key authentication for mirrors cannot be used in a pre-receive hook.
 
 ### Verify a host key
 

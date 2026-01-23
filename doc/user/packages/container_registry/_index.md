@@ -232,9 +232,6 @@ For example:
 COSIGN_EXPERIMENTAL=1 cosign sign --registry-referrers-mode oci-1-1 <container image>
 ```
 
-{{< alert type="note" >}}
-
-While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
-implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).
-
-{{< /alert >}}
+> [!note]
+> While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
+> implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).

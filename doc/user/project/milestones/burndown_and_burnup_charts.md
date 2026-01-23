@@ -168,12 +168,9 @@ When an issue is closed, the **Total** line remains the same and the **Completed
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.
 If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the

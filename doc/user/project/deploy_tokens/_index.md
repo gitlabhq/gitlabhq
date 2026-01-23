@@ -48,12 +48,9 @@ You can create deploy tokens at either the project or group level:
 By default, a deploy token does not expire. You can optionally set an expiry date when you create
 it. Expiry occurs at midnight UTC on that date.
 
-{{< alert type="warning" >}}
-
-You cannot use new or existing deploy tokens for Git operations and package registry operations if
-[external authorization](../../../administration/settings/external_authorization.md) is enabled.
-
-{{< /alert >}}
+> [!warning]
+> You cannot use new or existing deploy tokens for Git operations and package registry operations if
+> [external authorization](../../../administration/settings/external_authorization.md) is enabled.
 
 ## Scope
 
@@ -110,12 +107,9 @@ CI/CD variables are available only to immediate child projects of the group.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Deploy tokens expire on the date you define at 00:00 AM UTC.
 

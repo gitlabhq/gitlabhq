@@ -550,7 +550,7 @@ To link a vulnerability to existing Jira issues, add the following line to the J
 /-/security/vulnerabilities/<id>
 ```
 
-`<id>` is any [vulnerability ID](../../../api/vulnerabilities.md#single-vulnerability).
+`<id>` is any [vulnerability ID](../../../api/vulnerabilities.md#retrieve-a-vulnerability).
 You can add several lines with different IDs to one description.
 
 Jira issues with appropriate description are added to the **Related Jira issues** section, and the linked issues counter is

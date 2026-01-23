@@ -48,7 +48,7 @@ To view which roles can access GitLab Duo Core, see [GitLab Duo group permission
 ### GitLab Duo Self-Hosted
 
 If you have an offline license, GitLab Duo Core is not available on
-GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
+GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI Gateway.
 
 If you have an online license, you can use GitLab Duo Core in combination with
 GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab AI vendor model

@@ -22,12 +22,9 @@ description: Task labels, confidential tasks, linked items, and task weights.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 A task in GitLab is a planning item that can be created in an issue.
 Use tasks to break down user stories captured in [issues](project/issues/_index.md) into

@@ -67,12 +67,9 @@ To manage workspaces from a project:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
 
-{{< alert type="warning" >}}
-
-When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
-in that workspace. The data cannot be recovered.
-
-{{< /alert >}}
+> [!warning]
+> When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
+> in that workspace. The data cannot be recovered.
 
 ### Deleting resources associated with a workspace
 
@@ -102,12 +99,9 @@ To manage all workspaces associated with `agentk`:
 1. Select the **Workspaces** tab.
 1. From the list, you can restart, stop, or terminate an existing workspace.
 
-{{< alert type="warning" >}}
-
-When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
-in that workspace. The data cannot be recovered.
-
-{{< /alert >}}
+> [!warning]
+> When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
+> in that workspace. The data cannot be recovered.
 
 ### Identify an agent from a running workspace
 
@@ -152,12 +146,9 @@ components:
       image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:[VERSION_TAG]"
 ```
 
-{{< alert type="note" >}}
-
-This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
-[default `default_devfile.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml).
-
-{{< /alert >}}
+> [!note]
+> This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
+> [default `default_devfile.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml).
 
 The workspace default image includes development tools such as Ruby, Node.js, Rust, Go, Python,
 Java, PHP, GCC, and their corresponding package managers. These tools are updated regularly.
@@ -177,12 +168,9 @@ You can define a devfile in the following locations, relative to your project's 
 - /.devfile/{devfile_name}.yml
 ```
 
-{{< alert type="note" >}}
-
-Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
-For example, `.devfile/subfolder/devfile.yaml` is not recognized.
-
-{{< /alert >}}
+> [!note]
+> Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
+> For example, `.devfile/subfolder/devfile.yaml` is not recognized.
 
 ### Validation rules
 
@@ -598,12 +586,9 @@ The logs directory contains the following log files:
 | `start-sshd.log`       | SSH daemon startup         | Output from SSH daemon initialization, including server startup and configuration details. |
 | `clone-unshallow.log`  | Git repository conversion  | Logs from the background process that converts the shallow clone to a full clone and retrieves the complete Git history for the project. |
 
-{{< alert type="note" >}}
-
-Log files are recreated each time you restart a workspace. Previous log files are not preserved
-when you stop and restart a workspace.
-
-{{< /alert >}}
+> [!note]
+> Log files are recreated each time you restart a workspace. Previous log files are not preserved
+> when you stop and restart a workspace.
 
 ## Shallow cloning
 

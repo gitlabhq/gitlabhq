@@ -26,12 +26,9 @@ and quality. Protected branches:
 - Regulate force push permissions to maintain commit history.
 - Control access through both the UI and the Protected branches API.
 
-{{< alert type="note" >}}
-
-The default branch for your repository is protected by default.
-For more information about default branch settings, see [default branch](default.md).
-
-{{< /alert >}}
+> [!note]
+> The default branch for your repository is protected by default.
+> For more information about default branch settings, see [default branch](default.md).
 
 For information about how protection rules behave when a branch matches multiple rules or has
 complex permission requirements, see [Protection rules](protection_rules.md).
@@ -66,12 +63,9 @@ To protect a branch:
      1. If desired, search to add **Deploy keys**.
      1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-In GitLab Premium and Ultimate, you can also add groups or individual users
-to **Allowed to merge** and **Allowed to push and merge**.
-
-{{< /alert >}}
+> [!note]
+> In GitLab Premium and Ultimate, you can also add groups or individual users
+> to **Allowed to merge** and **Allowed to push and merge**.
 
 ### In a group
 
@@ -280,12 +274,9 @@ to a protected branch:
 
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When you assign a group to a protected branch, only direct members of that group are included.
-Members from parent groups are not automatically granted permissions to the protected branch.
-
-{{< /alert >}}
+> [!note]
+> When you assign a group to a protected branch, only direct members of that group are included.
+> Members from parent groups are not automatically granted permissions to the protected branch.
 
 #### Group inheritance requirements
 
@@ -332,12 +323,9 @@ To grant access to Subgroup Y members for Project A, you must share the project 
 the subgroup. Adding the subgroup directly to the protected branch settings is not effective
 and isn't applicable to subgroup members.
 
-{{< alert type="note" >}}
-
-For a group to have protected branch permissions, the project must be directly shared with the group.
-Inherited project membership from parent groups is not sufficient for protected branch permissions.
-
-{{< /alert >}}
+> [!note]
+> For a group to have protected branch permissions, the project must be directly shared with the group.
+> Inherited project membership from parent groups is not sufficient for protected branch permissions.
 
 ### Enable deploy key access
 

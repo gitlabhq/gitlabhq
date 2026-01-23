@@ -18,12 +18,9 @@ title: Add a cluster using cluster certificates (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
-To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/_index.md).
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+> To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/_index.md).
 
 ## Disable a cluster
 

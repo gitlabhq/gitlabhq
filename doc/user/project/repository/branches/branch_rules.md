@@ -75,12 +75,9 @@ To view branch rules and protections for a single branch:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -233,12 +230,9 @@ For more information, see [External status checks](../../merge_requests/status_c
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -272,15 +266,9 @@ For information about branch protection controls, see [Protected branches](prote
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-> [!note]
-> Deleting a branch rule is not available for rules targeting `all branches`.
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Prerequisites:
 
@@ -294,6 +282,9 @@ To delete a branch rule:
 1. Next to a rule you want to delete, select **View details**.
 1. In the upper-right corner, select **Delete rule**.
 1. On the confirmation dialog, select **Delete branch rule**.
+
+> [!note]
+> Deleting a branch rule is not available for rules targeting `all branches`.
 
 ## Related topics
 

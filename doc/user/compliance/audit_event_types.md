@@ -801,7 +801,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`virtual_registries_container_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry container cache entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
-| [`virtual_registries_packages_maven_cache_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
+| [`virtual_registries_packages_maven_cache_remote_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache remote entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
 
 ### Vulnerability management
 

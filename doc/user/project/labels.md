@@ -243,12 +243,9 @@ To edit a **group** label:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-If you delete a label, it is permanently deleted. All references to the label are removed from the
-system and you cannot undo the deletion.
-
-{{< /alert >}}
+> [!warning]
+> If you delete a label, it is permanently deleted. All references to the label are removed from the
+> system and you cannot undo the deletion.
 
 Prerequisites:
 
@@ -578,12 +575,9 @@ by [label priority](issues/sorting_issue_lists.md#sorting-by-label-priority) and
 When prioritizing labels, you must do it from a project.
 It's not possible to do it from the group label list.
 
-{{< alert type="note" >}}
-
-Priority sorting is based on the highest priority label only.
-[This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
-
-{{< /alert >}}
+> [!note]
+> Priority sorting is based on the highest priority label only.
+> [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
 
 Prerequisites:
 

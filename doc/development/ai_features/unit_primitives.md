@@ -119,7 +119,7 @@ According to this definition, the feature:
 - It transitions from free access to paid access on October 17, 2024 at midnight UTC. Beyond this point, you must have either GitLab Duo Pro or GitLab Duo Enterprise, and a Premium or Ultimate subscription.
 - If the above listed conditions hold true, a Cloud Connector token will carry this feature
   in its `scopes` claim, allowing backend services to verify access accordingly.
-- This feature is only relevant for requests to the AI gateway. The corresponding entry in `scopes` does not need to be present
+- This feature is only relevant for requests to the AI Gateway. The corresponding entry in `scopes` does not need to be present
   in `scopes` when a token is attached to requests sent to other backend services.
 
 > [!note]

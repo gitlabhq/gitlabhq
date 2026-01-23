@@ -94,7 +94,7 @@ To enable false positive detection for a specific project:
 
 GitLab administrators can enable false positive detection for the entire instance:
 
-1. On the left sidebar, select **Admin Area**.
+1. On the left sidebar, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Select the **Turn on SAST false positive detection** checkbox.

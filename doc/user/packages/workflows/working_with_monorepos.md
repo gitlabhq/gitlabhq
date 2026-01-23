@@ -54,12 +54,9 @@ To publish a package for `MyProject`:
    NPM_TOKEN=<token> npm publish
    ```
 
-{{< alert type="warning" >}}
-
-Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
-be committed to a repository.
-
-{{< /alert >}}
+> [!warning]
+> Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
+> be committed to a repository.
 
 You should see the package for `MyProject` published in your project's package registry.
 

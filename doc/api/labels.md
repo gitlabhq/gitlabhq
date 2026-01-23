@@ -22,9 +22,9 @@ Use this API to manage [project labels](../user/project/labels.md).
 
 For group labels, use the [group labels API](group_labels.md).
 
-## List labels
+## List all project labels
 
-Get all labels for a given project.
+Lists all labels for a specified project.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -128,9 +128,9 @@ Example response:
 ]
 ```
 
-## Get a single project label
+## Retrieve a project label
 
-Get a single label for a given project.
+Retrieves a specified label for a project.
 
 ```plaintext
 GET /projects/:id/labels/:label_id
@@ -168,9 +168,9 @@ Example response:
 }
 ```
 
-## Create a new label
+## Create a project label
 
-Creates a new label for the given repository with the given name and color.
+Creates a label for a specified project with the specified name and color.
 
 ```plaintext
 POST /projects/:id/labels
@@ -212,9 +212,9 @@ Example response:
 }
 ```
 
-## Delete a label
+## Delete a project label
 
-Deletes a label with a given name.
+Deletes a specified label from a project.
 
 ```plaintext
 DELETE /projects/:id/labels/:label_id
@@ -234,10 +234,9 @@ curl --request DELETE \
 > [!note]
 > An older endpoint `DELETE /projects/:id/labels` with `name` in the parameters is still available, but deprecated.
 
-## Edit an existing label
+## Update a project label
 
-Updates an existing label with new name or new color. At least one parameter
-is required, to update the label.
+Updates a specified label for a project with a new name or color. At least one parameter is required to update the label.
 
 ```plaintext
 PUT /projects/:id/labels/:label_id
@@ -285,7 +284,7 @@ Example response:
 
 ## Promote a project label to a group label
 
-Promotes a project label to a group label. The label keeps its ID.
+Promotes a specified project label to a group label. The label keeps its ID.
 
 ```plaintext
 PUT /projects/:id/labels/:label_id/promote
@@ -322,11 +321,9 @@ Example response:
 > [!note]
 > An older endpoint `PUT /projects/:id/labels/promote` with `name` in the parameters is still available, but deprecated.
 
-## Subscribe to a label
+## Subscribe to a project label
 
-Subscribes the authenticated user to a label to receive notifications.
-If the user is already subscribed to the label, the status code `304`
-is returned.
+Subscribes the authenticated user to a specified project label to receive notifications. If the user is already subscribed to the label, status code `304` is returned.
 
 ```plaintext
 POST /projects/:id/labels/:label_id/subscribe
@@ -363,11 +360,9 @@ Example response:
 }
 ```
 
-## Unsubscribe from a label
+## Unsubscribe from a project label
 
-Unsubscribes the authenticated user from a label to not receive notifications
-from it. If the user is not subscribed to the label, the
-status code `304` is returned.
+Unsubscribes the authenticated user from a specified project label to stop receiving notifications. If the user is not subscribed to the label, status code `304` is returned.
 
 ```plaintext
 POST /projects/:id/labels/:label_id/unsubscribe

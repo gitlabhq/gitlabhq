@@ -47,9 +47,9 @@ If an authenticated user does not have permission to
 [view vulnerability report](../user/permissions.md#project-application-security),
 this request returns a `403 Forbidden` status code.
 
-## Single vulnerability
+## Retrieve a vulnerability
 
-Gets a single vulnerability
+Retrieves a specified vulnerability.
 
 ```plaintext
 GET /vulnerabilities/:id
@@ -90,9 +90,9 @@ Example response:
 }
 ```
 
-## Confirm vulnerability
+## Confirm a vulnerability
 
-Confirms a given vulnerability. Returns status code `304` if the vulnerability is already confirmed.
+Confirms a specified vulnerability. Returns status code `304` if the vulnerability is already confirmed.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -137,9 +137,9 @@ Example response:
 }
 ```
 
-## Resolve vulnerability
+## Resolve a vulnerability
 
-Resolves a given vulnerability. Returns status code `304` if the vulnerability is already resolved.
+Resolves a specified vulnerability. Returns status code `304` if the vulnerability is already resolved.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -184,9 +184,9 @@ Example response:
 }
 ```
 
-## Dismiss vulnerability
+## Dismiss a vulnerability
 
-Dismisses a given vulnerability. Returns status code `304` if the vulnerability is already dismissed.
+Dismisses a specified vulnerability. Returns status code `304` if the vulnerability is already dismissed.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),
@@ -231,9 +231,9 @@ Example response:
 }
 ```
 
-## Revert vulnerability to detected state
+## Revert a vulnerability to detected state
 
-Reverts a given vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
+Reverts a specified vulnerability to detected state. Returns status code `304` if the vulnerability is already in detected state.
 
 If an authenticated user does not have permission to
 [change vulnerability status](../user/permissions.md#project-application-security),

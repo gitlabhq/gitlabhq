@@ -209,12 +209,9 @@ This behavior:
 
 Administrators can disable this behavior globally in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md#control-package-forwarding). Group Owners can disable this behavior for specific groups in the **Packages and registries** section of the group settings.
 
-{{< alert type="note" >}}
-
-When you use the `--index-url` option, do not specify the port if it is a default
-port. `http` URLs default to 80, and `https` URLs default to 443.
-
-{{< /alert >}}
+> [!note]
+> When you use the `--index-url` option, do not specify the port if it is a default
+> port. `http` URLs default to 80, and `https` URLs default to 443.
 
 ### Install from a project
 

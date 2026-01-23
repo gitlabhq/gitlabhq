@@ -303,7 +303,7 @@ Prerequisites:
 
 - The administrator has not selected a model for the instance. If a model has been selected for the instance,
   you cannot change the model for Chat.
-- Your instance must be connected to the GitLab AI gateway.
+- Your instance must be connected to the GitLab AI Gateway.
 
 {{< /tab >}}
 

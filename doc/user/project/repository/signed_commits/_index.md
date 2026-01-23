@@ -27,12 +27,9 @@ It's important to understand the difference between signed and verified commits:
 If GitLab can verify the committer's identity with a public key, the commit is
 marked **Verified** in the GitLab UI.
 
-{{< alert type="note" >}}
-
-The committer and author fields are distinct in Git. The author writes the commit, and the committer
-applies it. Commit signing verifies only the committer's identity.
-
-{{< /alert >}}
+> [!note]
+> The committer and author fields are distinct in Git. The author writes the commit, and the committer
+> applies it. Commit signing verifies only the committer's identity.
 
 GitLab supports the following commit signing methods:
 
@@ -81,12 +78,9 @@ using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-ke
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The [`gitmailmap`](https://git-scm.com/docs/gitmailmap) feature allows users to map author names and email addresses.
 GitLab uses these email addresses to provide links to the commit author.

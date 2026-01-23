@@ -213,11 +213,18 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
         stub_feature_flags(loose_foreign_key_worker_feature_category_override: true)
       end
 
-      it 'tracks exception with feature_category from dictionary' do
+      it 'logs and tracks exception with feature_category from dictionary' do
         dictionary_entry = instance_double(Gitlab::Database::Dictionary::Entry, feature_categories: ['ci_pipeline'])
         allow(Gitlab::Database::Dictionary.entries).to receive(:find_by_table_name)
           .with('_test_loose_fk_child_table_1')
           .and_return(dictionary_entry)
+
+        expect(Sidekiq.logger).to receive(:info).with(
+          event: :cleanup_worker_feature_category_override,
+          table_name: '_test_loose_fk_child_table_1',
+          feature_category: :ci_pipeline,
+          exception: exception
+        )
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           exception,
