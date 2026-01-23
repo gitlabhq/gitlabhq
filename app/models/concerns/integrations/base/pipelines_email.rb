@@ -6,6 +6,7 @@ module Integrations
       extend ActiveSupport::Concern
 
       include NotificationBranchSelection
+      include NotificationPipelineStatusSelection
 
       RECIPIENTS_LIMIT = 30
 
@@ -44,6 +45,10 @@ module Integrations
           type: :checkbox,
           description: -> { _('Send notifications for broken pipelines.') }
 
+        field :notify_only_when_pipeline_status_changes,
+          type: :checkbox,
+          description: -> { _('Send notifications only when the pipeline status changes.') }
+
         field :notify_only_default_branch,
           type: :checkbox,
           api_only: true,
@@ -63,6 +68,7 @@ module Integrations
 
           if properties.blank?
             self.notify_only_broken_pipelines = true
+            self.notify_only_when_pipeline_status_changes = false
             self.branches_to_be_notified = "default"
           elsif !notify_only_default_branch.nil?
             # In older versions, there was only a boolean property named
@@ -102,17 +108,6 @@ module Integrations
 
         def should_pipeline_be_notified?(data)
           notify_for_branch?(data) && notify_for_pipeline?(data)
-        end
-
-        def notify_for_pipeline?(data)
-          case data[:object_attributes][:status]
-          when 'success'
-            !notify_only_broken_pipelines?
-          when 'failed'
-            true
-          else
-            false
-          end
         end
 
         def retrieve_recipients

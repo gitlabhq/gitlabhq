@@ -2687,7 +2687,6 @@ RSpec/ContextWording:
     - 'spec/views/profiles/preferences/show.html.haml_spec.rb'
     - 'spec/views/projects/_home_panel.html.haml_spec.rb'
     - 'spec/views/projects/commit/show.html.haml_spec.rb'
-    - 'spec/views/projects/commits/show.html.haml_spec.rb'
     - 'spec/views/projects/edit.html.haml_spec.rb'
     - 'spec/views/projects/hooks/edit.html.haml_spec.rb'
     - 'spec/views/projects/hooks/index.html.haml_spec.rb'

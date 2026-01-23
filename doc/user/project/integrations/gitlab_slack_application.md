@@ -191,6 +191,8 @@ To configure Slack notifications:
 1. Optional. In the **Notification settings** section:
    - Select the **Notify only broken pipelines** checkbox
      to receive notifications for failed pipelines only.
+   - Select the **Notify only when status changes** checkbox
+     to receive notifications only when the pipeline status for the ref changes.
    - From the **Branches for which notifications are to be sent** dropdown list,
      select the branches you want to receive notifications for.
 

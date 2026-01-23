@@ -25,8 +25,8 @@ export default {
     showPackageCount() {
       return Number.isInteger(this.count);
     },
-    packageAmountText() {
-      return n__(`%d Package`, `%d Packages`, this.count);
+    packageCountText() {
+      return n__('PackageRegistry|%d package', 'PackageRegistry|%d packages', this.count);
     },
   },
   i18n: {
@@ -38,7 +38,7 @@ export default {
 <template>
   <title-area :title="$options.i18n.LIST_TITLE_TEXT" :metadata-loading="isLoading">
     <template #metadata-amount>
-      <metadata-item v-if="showPackageCount" icon="package" :text="packageAmountText" />
+      <metadata-item v-if="showPackageCount" icon="package" :text="packageCountText" />
     </template>
     <template #right-actions>
       <slot name="settings-link"></slot>

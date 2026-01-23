@@ -75,6 +75,7 @@ module Integrations
       :namespace,
       :new_issue_url,
       :notify_only_broken_pipelines,
+      :notify_only_when_pipeline_status_changes,
       :package_name,
       :password,
       :priority,

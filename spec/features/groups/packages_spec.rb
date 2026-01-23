@@ -47,6 +47,8 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
 
       it_behaves_like 'packages list', check_project_name: true
 
+      it_behaves_like 'packages can be deleted'
+
       it_behaves_like 'pipelines on packages list', is_group_page: true
 
       it_behaves_like 'package details link'

@@ -3826,7 +3826,6 @@ RSpec/FeatureCategory:
     - 'spec/views/projects/_home_panel.html.haml_spec.rb'
     - 'spec/views/projects/blob/_viewer.html.haml_spec.rb'
     - 'spec/views/projects/commit/_commit_box.html.haml_spec.rb'
-    - 'spec/views/projects/commits/show.html.haml_spec.rb'
     - 'spec/views/projects/diffs/_viewer.html.haml_spec.rb'
     - 'spec/views/projects/edit.html.haml_spec.rb'
     - 'spec/views/projects/environments/terminal.html.haml_spec.rb'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::File, feature_category: :shared do
+RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }

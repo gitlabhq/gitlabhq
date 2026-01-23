@@ -18,6 +18,24 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 end
 
+RSpec.shared_examples 'packages can be deleted' do
+  include Spec::Support::Helpers::ModalHelpers
+
+  it 'allows deletion of packages' do
+    expect(page).to have_content('2 packages')
+
+    find('[data-testid="delete-dropdown"]', match: :first).click
+    find('[data-testid="action-delete"]', match: :first).click
+    within_modal do
+      expect(page).to have_content('Delete package version')
+      click_button('Permanently delete')
+    end
+
+    expect(page).to have_content 'Package deleted successfully'
+    expect(page).to have_content('1 package')
+  end
+end
+
 RSpec.shared_examples 'pipelines on packages list' do |is_group_page: false|
   let_it_be(:pipelines) do
     %w[c83d6e391c22777fca1ed3012fce84f633d7fed0

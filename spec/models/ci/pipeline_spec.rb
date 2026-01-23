@@ -3014,6 +3014,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#ref_status_name' do
+    context 'when ci_ref exists' do
+      let(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        pipeline.ci_ref.succeed
+      end
+
+      it 'returns ci_ref status name' do
+        expect(pipeline.ref_status_name).to eq('success')
+      end
+    end
+
+    context 'when ci_ref does not exist' do
+      let(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
+
+      it 'returns nil' do
+        expect(pipeline.ref_status_name).to be_nil
+      end
+    end
+  end
+
   context 'with non-empty project' do
     let(:pipeline) do
       create(

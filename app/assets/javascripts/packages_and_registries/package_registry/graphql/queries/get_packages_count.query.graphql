@@ -1,0 +1,33 @@
+# @feature_category: package_registry
+
+query getPackagesCount(
+  $fullPath: ID!
+  $isGroupPage: Boolean!
+  $packageName: String
+  $packageType: PackageTypeEnum
+  $packageVersion: String
+  $packageStatus: PackageStatus
+) {
+  project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    id
+    packages(
+      packageName: $packageName
+      packageType: $packageType
+      packageVersion: $packageVersion
+      status: $packageStatus
+    ) {
+      count
+    }
+  }
+  group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    id
+    packages(
+      packageName: $packageName
+      packageType: $packageType
+      packageVersion: $packageVersion
+      status: $packageStatus
+    ) {
+      count
+    }
+  }
+}

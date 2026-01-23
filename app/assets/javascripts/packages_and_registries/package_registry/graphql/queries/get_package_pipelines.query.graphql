@@ -1,3 +1,5 @@
+# @feature_category: package_registry
+
 query getPackagePipelines($id: PackagesPackageID!, $first: Int) {
   package(id: $id) {
     id

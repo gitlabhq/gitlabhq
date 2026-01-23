@@ -1,3 +1,4 @@
+# @feature_category: package_registry
 #import "~/packages_and_registries/package_registry/graphql/fragments/package_data.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
@@ -28,7 +29,6 @@ query getPackages(
       first: $first
       last: $last
     ) {
-      count
       nodes {
         ...PackageData
       }
@@ -50,7 +50,6 @@ query getPackages(
       first: $first
       last: $last
     ) {
-      count
       nodes {
         ...PackageData
         project {

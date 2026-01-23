@@ -1,3 +1,5 @@
+# @feature_category: package_registry
+
 mutation destroyPackageFiles($projectPath: ID!, $ids: [PackagesPackageFileID!]!) {
   destroyPackageFiles(input: { projectPath: $projectPath, ids: $ids }) {
     errors

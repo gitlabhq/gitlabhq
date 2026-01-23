@@ -101,11 +101,6 @@ msgid_plural "%d Modules"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d Package"
-msgid_plural "%d Packages"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d Scanned URL"
 msgid_plural "%d Scanned URLs"
 msgstr[0] ""
@@ -48116,6 +48111,11 @@ msgstr ""
 msgid "Package type must be PyPI"
 msgstr ""
 
+msgid "PackageRegistry|%d package"
+msgid_plural "PackageRegistry|%d packages"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "PackageRegistry|%{count} selected"
 msgid_plural "PackageRegistry|%{count} selected"
 msgstr[0] ""
@@ -59351,9 +59351,6 @@ msgstr ""
 msgid "ScanResultPolicy|For scanners that require builds, when a project does not have a build pipeline."
 msgstr ""
 
-msgid "ScanResultPolicy|Global Settings"
-msgstr ""
-
 msgid "ScanResultPolicy|Grant bypass permissions to users based on their organizational role or custom role assignments."
 msgstr ""
 
@@ -59591,9 +59588,6 @@ msgstr ""
 msgid "ScanResultPolicy|Service accounts"
 msgstr ""
 
-msgid "ScanResultPolicy|Severity and status settings will apply to all scan rules"
-msgstr ""
-
 msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
@@ -59631,9 +59625,6 @@ msgid "ScanResultPolicy|When %{scanners} finds scanner-specific conditions in an
 msgstr ""
 
 msgid "ScanResultPolicy|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} %{boldDescription} all the following criteria:"
-msgstr ""
-
-msgid "ScanResultPolicy|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} vulnerability type that matches all the following criteria:"
 msgstr ""
 
 msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
@@ -61711,6 +61702,9 @@ msgstr ""
 msgid "SecurityOrchestration|Denylist details"
 msgstr ""
 
+msgid "SecurityOrchestration|Dependency Scanning Rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
@@ -61804,6 +61798,9 @@ msgstr ""
 msgid "SecurityOrchestration|Excluded projects"
 msgstr ""
 
+msgid "SecurityOrchestration|Exploit settings"
+msgstr ""
+
 msgid "SecurityOrchestration|External event"
 msgstr ""
 
@@ -61859,6 +61856,9 @@ msgid "SecurityOrchestration|For large groups, there may be a significant delay 
 msgstr ""
 
 msgid "SecurityOrchestration|Gather violation data and developer feedback"
+msgstr ""
+
+msgid "SecurityOrchestration|Global Settings"
 msgstr ""
 
 msgid "SecurityOrchestration|Group ID: %{id}"
@@ -62241,6 +62241,9 @@ msgstr ""
 msgid "SecurityOrchestration|Run scans for merge request pipelines targeting default branches and on default branches. Optimized for MR approval policy compatibility"
 msgstr ""
 
+msgid "SecurityOrchestration|Runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} vulnerability type that matches all the following criteria:"
+msgstr ""
+
 msgid "SecurityOrchestration|Runs comprehensive scans for `release/*` branches and when merging to main/production branches"
 msgstr ""
 
@@ -62410,6 +62413,9 @@ msgid "SecurityOrchestration|Settings from outside of the policy cannot override
 msgstr ""
 
 msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to replace or remove the deprecated criteria."
+msgstr ""
+
+msgid "SecurityOrchestration|Severity and status settings will apply to all scan rules"
 msgstr ""
 
 msgid "SecurityOrchestration|Severity is %{severity}."
@@ -62715,6 +62721,9 @@ msgstr ""
 msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
 msgstr ""
 
+msgid "SecurityOrchestration|When a %{scanType} with %{scanners} runs against %{branches} %{branchExceptions} and finds %{vulnerabilitiesNumber} vulnerability type that matches all the following criteria:"
+msgstr ""
+
 msgid "SecurityOrchestration|When license scanner finds any license except %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
 msgstr ""
 
@@ -62964,6 +62973,9 @@ msgstr ""
 msgid "SecurityOrchestration|scanner finds"
 msgstr ""
 
+msgid "SecurityOrchestration|scanners"
+msgstr ""
+
 msgid "SecurityOrchestration|scanners find"
 msgstr ""
 
@@ -63004,6 +63016,9 @@ msgid "SecurityOrchestration|type: scan_result_policy is replaced with %{linkSta
 msgstr ""
 
 msgid "SecurityOrchestration|v2"
+msgstr ""
+
+msgid "SecurityOrchestration|vulnerabilities allowed"
 msgstr ""
 
 msgid "SecurityOrchestration|with %{exceptionType}"
@@ -64253,6 +64268,9 @@ msgid "Send notifications for broken pipelines."
 msgstr ""
 
 msgid "Send notifications for the default branch."
+msgstr ""
+
+msgid "Send notifications only when the pipeline status changes."
 msgstr ""
 
 msgid "Send report"

@@ -734,6 +734,10 @@ module Ci
       stages.order(:position).pluck(:name)
     end
 
+    def ref_status_name
+      ci_ref&.status_name&.to_s
+    end
+
     def ref_exists?
       project.repository.ref_exists?(git_ref)
     rescue Gitlab::Git::Repository::NoRepository

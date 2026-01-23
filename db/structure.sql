@@ -36372,6 +36372,9 @@ ALTER TABLE epic_issues
 ALTER TABLE bulk_import_batch_trackers
     ADD CONSTRAINT check_13004cd9a8 CHECK ((num_nonnulls(namespace_id, organization_id, project_id) = 1)) NOT VALID;
 
+ALTER TABLE user_agent_details
+    ADD CONSTRAINT check_17a3a18e31 CHECK ((organization_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 

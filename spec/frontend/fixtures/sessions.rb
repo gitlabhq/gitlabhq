@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sessions (JavaScript fixtures)' do
+RSpec.describe 'Sessions (JavaScript fixtures)', feature_category: :system_access do
   include JavaScriptFixturesHelpers
 
   describe SessionsController, '(JavaScript fixtures)', type: :controller do

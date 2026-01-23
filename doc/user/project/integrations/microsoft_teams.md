@@ -66,6 +66,8 @@ GitLab to send the notifications:
    [configured Microsoft Teams](#configure-microsoft-teams).
 1. Optional. If you enable the pipeline trigger, select the
    **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
+1. Optional. If you enable the pipeline trigger, select the
+   **Notify only when status changes** checkbox to send notifications only when the pipeline status for the ref changes.
 1. Select the branches you want to send notifications for.
 1. Select **Save changes**.
 

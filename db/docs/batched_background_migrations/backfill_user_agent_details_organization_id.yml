@@ -5,4 +5,4 @@ feature_category: instance_resiliency
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215327
 milestone: '18.8'
 queued_migration_version: 20251215170942
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20260105193313

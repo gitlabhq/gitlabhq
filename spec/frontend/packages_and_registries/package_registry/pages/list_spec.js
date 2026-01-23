@@ -24,10 +24,12 @@ import {
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+import getPackagesCountQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages_count.query.graphql';
 import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import {
   packagesListQuery,
+  packagesListCountQuery,
   groupPackageSettingsQuery,
   groupPackageSettingsQueryForGroup,
   packageData,
@@ -37,10 +39,11 @@ import {
 jest.mock('~/alert');
 jest.mock('~/lib/utils/scroll_utils');
 
+Vue.use(VueApollo);
+
 describe('PackagesListApp', () => {
   useLocalStorageSpy();
   let wrapper;
-  let apolloProvider;
 
   const defaultProvide = {
     emptyListIllustration: 'emptyListIllustration',
@@ -79,18 +82,18 @@ describe('PackagesListApp', () => {
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
+    countResolver = jest.fn().mockResolvedValue(packagesListCountQuery()),
     groupPackageSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQueryForGroup()),
     mutationResolver,
     provide = defaultProvide,
   } = {}) => {
-    Vue.use(VueApollo);
-
     const requestHandlers = [
       [getPackagesQuery, resolver],
+      [getPackagesCountQuery, countResolver],
       [getGroupPackageSettings, groupPackageSettingsResolver],
       [destroyPackagesMutation, mutationResolver],
     ];
-    apolloProvider = createMockApollo(requestHandlers);
+    const apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(ListPage, {
       apolloProvider,
@@ -118,10 +121,12 @@ describe('PackagesListApp', () => {
 
   it('does not execute the query without sort being set', () => {
     const resolver = jest.fn().mockResolvedValue(packagesListQuery());
+    const countResolver = jest.fn().mockResolvedValue(packagesListCountQuery());
 
-    mountComponent({ resolver });
+    mountComponent({ resolver, countResolver });
 
     expect(resolver).not.toHaveBeenCalled();
+    expect(countResolver).not.toHaveBeenCalled();
   });
 
   it('has persisted pagination', async () => {
@@ -220,10 +225,7 @@ describe('PackagesListApp', () => {
 
     await waitForFirstRequest();
 
-    expect(findPackageTitle().exists()).toBe(true);
-    expect(findPackageTitle().props()).toMatchObject({
-      count: 2,
-    });
+    expect(findPackageTitle().props('count')).toBe(2);
   });
 
   describe('link to settings', () => {
@@ -392,6 +394,7 @@ describe('PackagesListApp', () => {
     let groupPackageSettingsResolver;
     let provide;
     let resolver;
+    let countResolver;
 
     const isGroupPage = type === WORKSPACE_GROUP;
 
@@ -399,6 +402,7 @@ describe('PackagesListApp', () => {
       jest.spyOn(Sentry, 'captureException').mockImplementation();
       provide = { ...defaultProvide, isGroupPage };
       resolver = jest.fn().mockResolvedValue(packagesListQuery({ type }));
+      countResolver = jest.fn().mockResolvedValue(packagesListCountQuery({ type }));
 
       const response = isGroupPage
         ? groupPackageSettingsQueryForGroup()
@@ -407,6 +411,7 @@ describe('PackagesListApp', () => {
       mountComponent({
         provide,
         resolver,
+        countResolver,
         groupPackageSettingsResolver,
       });
       return waitForFirstRequest();
@@ -420,6 +425,13 @@ describe('PackagesListApp', () => {
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ isGroupPage, [sortType]: 'NAME_DESC' }),
       );
+    });
+
+    it('calls the count resolver with the right parameters', () => {
+      expect(countResolver).toHaveBeenCalledWith({
+        fullPath: provide.fullPath,
+        isGroupPage,
+      });
     });
 
     it('calls the group packageSettings resolver with the right parameters', () => {
@@ -438,6 +450,20 @@ describe('PackagesListApp', () => {
         resolver = jest.fn().mockRejectedValue(new Error('error'));
         mountComponent({
           resolver,
+        });
+        return waitForFirstRequest();
+      });
+
+      it('captures error in Sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalled();
+      });
+    });
+
+    describe('when packagesCount query fails', () => {
+      beforeEach(() => {
+        countResolver = jest.fn().mockRejectedValue(new Error('error'));
+        mountComponent({
+          countResolver,
         });
         return waitForFirstRequest();
       });
@@ -475,17 +501,17 @@ describe('PackagesListApp', () => {
   });
 
   describe.each`
-    description         | resolverResponse
-    ${'empty response'} | ${packagesListQuery({ extend: { packages: { nodes: [], count: 0, pageInfo: {}, __typename: 'PackageConnection' } } })}
+    description         | countResolverResponse
+    ${'empty response'} | ${packagesListCountQuery({ count: 0 })}
     ${'error response'} | ${{ data: { group: null } }}
-  `(`$description renders empty state`, ({ resolverResponse }) => {
+  `(`$description renders empty state`, ({ countResolverResponse }) => {
     const groupPackageSettingsResolver = jest
       .fn()
       .mockResolvedValue(groupPackageSettingsQueryForGroup());
 
     beforeEach(() => {
-      const resolver = jest.fn().mockResolvedValue(resolverResponse);
-      mountComponent({ resolver, groupPackageSettingsResolver });
+      const countResolver = jest.fn().mockResolvedValue(countResolverResponse);
+      mountComponent({ countResolver, groupPackageSettingsResolver });
 
       return waitForFirstRequest();
     });
@@ -539,7 +565,10 @@ describe('PackagesListApp', () => {
       await waitForFirstRequest();
 
       expect(findDeletePackages().props()).toMatchObject({
-        refetchQueries: [{ query: getPackagesQuery, variables: {} }],
+        refetchQueries: [
+          { query: getPackagesQuery, variables: {} },
+          { query: getPackagesCountQuery, variables: {} },
+        ],
         showSuccessAlert: true,
       });
     });

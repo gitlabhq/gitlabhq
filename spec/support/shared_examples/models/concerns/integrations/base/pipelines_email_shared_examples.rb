@@ -114,6 +114,15 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
     # rubocop:enable RSpec/NoExpectationExample
   end
 
+  # aliases for pipeline notification integration shared examples
+  shared_examples 'triggered PipelinesEmail integration' do
+    it_behaves_like 'sending email'
+  end
+
+  shared_examples 'untriggered PipelinesEmail integration' do
+    it_behaves_like 'not sending email'
+  end
+
   describe '#test' do
     def run
       subject.test(data)
@@ -241,6 +250,10 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
 
           it_behaves_like 'not sending email'
         end
+      end
+
+      context 'with pipeline and ref status' do
+        it_behaves_like 'pipeline notification integration', 'PipelinesEmail'
       end
 
       context 'when the pipeline failed' do

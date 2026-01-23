@@ -32563,6 +32563,7 @@ Duo Agent Platform enablement status checks.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowenablementchecks"></a>`checks` | [`[DuoWorkflowEnablementCheck!]`](#duoworkflowenablementcheck) | Enablement checks. |
+| <a id="duoworkflowenablementcreateduoworkflowforciallowed"></a>`createDuoWorkflowForCiAllowed` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.9. **Status**: Experiment. Indicates whether the user can create Duo Workflows for CI in the project. |
 | <a id="duoworkflowenablementenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether Duo Agent Platform is enabled for current user and the project. |
 | <a id="duoworkflowenablementfoundationalflowsenabled"></a>`foundationalFlowsEnabled` | [`Boolean`](#boolean) | Indicates if Duo Agent Platform foundational flows are enabled for the project. |
 | <a id="duoworkflowenablementremoteflowsenabled"></a>`remoteFlowsEnabled` | [`Boolean`](#boolean) | Indicates if Duo Agent Platform remote flows are enabled for the project. |

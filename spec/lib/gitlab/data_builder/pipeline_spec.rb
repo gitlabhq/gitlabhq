@@ -35,6 +35,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
       expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
       expect(attributes[:protected_ref]).to eq(pipeline.protected_ref?)
+      expect(attributes[:ref_status_name]).to eq(pipeline.ref_status_name)
       expect(attributes[:url]).to eq(Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline))
       expect(attributes[:detailed_status]).to eq('passed')
       expect(build_data).to be_a(Hash)
@@ -149,6 +150,14 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
 
       it { expect(attributes[:variables]).to be_a(Array) }
       it { expect(attributes[:variables]).to contain_exactly({ key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1' }) }
+    end
+
+    context 'when pipeline does not have a ci_ref' do
+      let_it_be(:pipeline) { create(:ci_pipeline, ci_ref_presence: false) }
+
+      it 'returns nil' do
+        expect(attributes[:ref_status_name]).to be_nil
+      end
     end
 
     context 'when pipeline is a detached merge request pipeline' do

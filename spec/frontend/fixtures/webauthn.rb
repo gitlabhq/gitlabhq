@@ -16,7 +16,7 @@ RSpec.context 'WebAuthn' do
       set_devise_mapping(context: @request)
     end
 
-    it 'webauthn/authenticate.html' do
+    it 'webauthn/authenticate.html', feature_category: :system_access do
       allow(controller).to receive(:find_user).and_return(user)
       post :create, params: { user: { login: user.username, password: user.password } }
 
