@@ -91,6 +91,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           it_behaves_like 'project commits'
 
+          it_behaves_like 'authorizing granular token permissions', :read_commit do
+            let(:boundary_object) { project }
+            let(:request) do
+              get api(route, personal_access_token: pat)
+            end
+          end
+
           context 'when repository does not have commits' do
             let_it_be(:project) { create(:project, :empty_repo) }
 
@@ -608,6 +615,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     let(:url) { "/projects/#{project_id}/repository/commits/authorize" }
 
     subject(:request) { post api(url, user), headers: workhorse_headers }
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_commit do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(url, personal_access_token: pat), headers: workhorse_headers
+      end
+    end
 
     context 'with workhorse headers' do
       it 'authorizes the upload' do
@@ -2023,6 +2037,36 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(json_response['message']).to include('Unsupported Content-Type: application/octet-stream')
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_commit do
+      let(:url) { "/projects/#{project_id}/repository/commits" }
+      let(:boundary_object) { project }
+
+      let(:granular_commit_params) do
+        {
+          branch: 'master',
+          commit_message: 'Created via granular PAT',
+          actions: [
+            {
+              action: 'create',
+              file_path: "files/test/granular-#{SecureRandom.hex(4)}.rb",
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      let(:request) do
+        workhorse_body_upload(
+          api("/projects/#{project_id}/repository/commits", personal_access_token: pat),
+          granular_commit_params
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/refs' do
@@ -2130,6 +2174,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response.headers['x-next-page']).to eq('')
           expect(response.headers['x-prev-page']).to include('1')
         end
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_ref do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
       end
     end
   end
@@ -2404,6 +2455,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(json_response['id']).to eq(commit.id)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/diff' do
@@ -2521,6 +2579,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_diff do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/comments' do
@@ -2563,6 +2628,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         it_behaves_like '404 response' do
           let(:request) { get api(route, current_user) }
         end
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_comment do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
       end
     end
 
@@ -2670,6 +2742,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     let(:commit) { project.repository.commit }
     let(:commit_id) { commit.id }
     let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/sequence" }
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_sequence do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api(route, personal_access_token: pat)
+      end
+    end
 
     context 'when commit does not exist' do
       let(:commit_id) { 'unknown' }
@@ -2893,6 +2972,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :cherry_pick_commit do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { branch: branch }
+      end
+    end
   end
 
   describe 'POST :id/repository/commits/:sha/revert' do
@@ -2901,6 +2987,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     let(:commit)    { project.commit(commit_id) }
     let(:branch)    { 'master' }
     let(:route)     { "/projects/#{project_id}/repository/commits/#{commit_id}/revert" }
+
+    it_behaves_like 'authorizing granular token permissions', :revert_commit do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { branch: branch }
+      end
+    end
 
     shared_examples_for 'ref revert' do
       context 'when ref exists' do
@@ -3185,6 +3278,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_commit_comment do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api(route, personal_access_token: pat), params: { note: note }
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
@@ -3272,6 +3372,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_limited_pagination_headers
         expect(json_response.length).to eq(0)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_commit_merge_request do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", personal_access_token: pat)
       end
     end
   end
@@ -3378,6 +3485,14 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(Time.parse(json_response['key']['created_at'])).to be_like_time(key.created_at)
           expect(Time.parse(json_response['key']['expires_at'])).to be_like_time(key.expires_at)
           expect(json_response['commit_source']).to eq('gitaly')
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_commit_signature do
+        let(:boundary_object) { project }
+        let(:user) { create(:user, email: commit.committer_email) }
+        let(:request) do
+          get api(route, personal_access_token: pat)
         end
       end
     end

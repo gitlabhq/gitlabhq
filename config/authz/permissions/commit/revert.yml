@@ -1,0 +1,5 @@
+---
+name: revert_commit
+description: Grants the ability to revert commits
+boundaries:
+  - project

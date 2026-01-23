@@ -672,12 +672,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Gets a list of all notes for a project wiki page. Project wiki notes are comments users can post to a wiki page.
 
-{{< alert type="note" >}}
-
-The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
-error. You can retrieve the meta ID from the [project wikis API](wikis.md).
-
-{{< /alert >}}
+> [!note]
+> The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
+> error. You can retrieve the meta ID from the [project wikis API](wikis.md).
 
 ```plaintext
 GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes
@@ -825,12 +822,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Gets a list of all notes for a group wiki page. Group wiki notes are comments users can post to a wiki page.
 
-{{< alert type="note" >}}
-
-The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
-error. You can retrieve the meta ID from the [group wikis API](group_wikis.md).
-
-{{< /alert >}}
+> [!note]
+> The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
+> error. You can retrieve the meta ID from the [group wikis API](group_wikis.md).
 
 ```plaintext
 GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes

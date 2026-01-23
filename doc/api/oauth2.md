@@ -187,12 +187,9 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    }
    ```
 
-{{< alert type="note" >}}
-
-The `redirect_uri` must match the `redirect_uri` used in the original
-authorization request.
-
-{{< /alert >}}
+> [!note]
+> The `redirect_uri` must match the `redirect_uri` used in the original
+> authorization request.
 
 You can now make requests to the API with the access token.
 
@@ -206,12 +203,9 @@ You can now make requests to the API with the access token.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
-detailed flow description.
-
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
+> detailed flow description.
 
 The authorization code flow is essentially the same as
 [authorization code flow with PKCE](#authorization-code-with-proof-key-for-code-exchange-pkce),
@@ -283,12 +277,9 @@ be used as a CSRF token.
    }
    ```
 
-{{< alert type="note" >}}
-
-The `redirect_uri` must match the `redirect_uri` used in the original
-authorization request.
-
-{{< /alert >}}
+> [!note]
+> The `redirect_uri` must match the `redirect_uri` used in the original
+> authorization request.
 
 You can now make requests to the API with the access token returned.
 
@@ -302,12 +293,9 @@ You can now make requests to the API with the access token returned.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
-description of the device authorization grant flow, from device authorization request to token response from the browser login.
-
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
+> description of the device authorization grant flow, from device authorization request to token response from the browser login.
 
 The device authorization grant flow makes it possible to securely authenticate your GitLab identity from input constrained devices where browser interactions are not an option.
 
@@ -424,12 +412,9 @@ A sample application that implements the client side device flow can be found at
 
 ### Resource owner password credentials flow
 
-{{< alert type="note" >}}
-
-Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
-detailed flow description.
-
-{{< /alert >}}
+> [!note]
+> Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
+> detailed flow description.
 
 {{< alert type="note" >}}
 

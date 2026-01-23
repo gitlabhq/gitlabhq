@@ -1,0 +1,5 @@
+---
+name: authorize_commit
+description: Grants the ability to authorize commits
+boundaries:
+  - project

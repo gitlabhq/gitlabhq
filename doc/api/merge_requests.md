@@ -1512,12 +1512,9 @@ Example response:
 
 Shows information about the merge request dependencies that must be resolved before merging.
 
-{{< alert type="note" >}}
-
-If the user does not have access to the blocking merge request, no `blocking_merge_request`
-attribute is returned.
-
-{{< /alert >}}
+> [!note]
+> If the user does not have access to the blocking merge request, no `blocking_merge_request`
+> attribute is returned.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/blocks
@@ -2371,12 +2368,9 @@ Example response:
 ]
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
-Merge requests that exceed the diff limits return limited results.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+> Merge requests that exceed the diff limits return limited results.
 
 ## Show merge request raw diffs
 
@@ -2435,12 +2429,9 @@ index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb73
      before { authenticate_non_get! }
 ```
 
-{{< alert type="note" >}}
-
-This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
-Merge requests that exceed the diff limits return limited results.
-
-{{< /alert >}}
+> [!note]
+> This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+> Merge requests that exceed the diff limits return limited results.
 
 ## List merge request pipelines
 

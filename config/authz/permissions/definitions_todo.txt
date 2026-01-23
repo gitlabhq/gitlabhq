@@ -447,10 +447,8 @@ read_cloud_connector_status
 read_cluster_environments
 read_code
 read_code_review_analytics
-read_commit
 read_commit_committer_check
 read_commit_committer_name_check
-read_commit_status
 read_compliance_adherence_report
 read_compliance_dashboard
 read_compliance_framework

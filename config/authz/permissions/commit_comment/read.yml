@@ -1,0 +1,5 @@
+---
+name: read_commit_comment
+description: Grants the ability to read commit comments
+boundaries:
+  - project

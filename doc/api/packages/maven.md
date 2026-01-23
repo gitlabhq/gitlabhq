@@ -14,12 +14,9 @@ title: Maven API
 
 Use this API to interact with the [Maven package manager client](../../user/packages/maven_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [Maven package manager client](https://maven.apache.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [Maven package manager client](https://maven.apache.org/)
+> and is generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 

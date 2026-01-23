@@ -55,7 +55,7 @@ module Admin
       results_json = Rails.cache.read(cache_key)
 
       if results_json.present?
-        results = Gitlab::Json.parse(results_json)
+        results = Gitlab::Json.safe_parse(results_json)
         render json: results
       else
         render json: { error: 'No results available yet' }, status: :not_found

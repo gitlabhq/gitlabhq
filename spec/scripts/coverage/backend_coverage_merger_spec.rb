@@ -295,6 +295,34 @@ RSpec.describe BackendCoverageMerger, feature_category: :tooling do
         expect(coverage['./app/models/user.rb']).to be_nil
       end
     end
+
+    context 'with absolute paths from Coverband' do
+      let(:coverband_data) do
+        {
+          "spec_location" => {
+            "/builds/gitlab-org/gitlab/app/models/user.rb" => { "1" => "5" },
+            "/home/gdk/gitlab-development-kit/gitlab/lib/api/api.rb" => { "1" => "3" }
+          }
+        }
+      end
+
+      let(:coverband_path) { File.join(temp_dir, 'coverband.json') }
+
+      before do
+        File.write(coverband_path, coverband_data.to_json)
+      end
+
+      it 'normalizes absolute paths to relative paths' do
+        coverage = {}
+        merger.send(:parse_coverband_json, coverband_path, coverage)
+
+        expect(coverage['app/models/user.rb'][:lines]).to eq({ 1 => 5 })
+        expect(coverage['lib/api/api.rb'][:lines]).to eq({ 1 => 3 })
+        # Should not have absolute paths
+        expect(coverage['/builds/gitlab-org/gitlab/app/models/user.rb']).to be_nil
+        expect(coverage['/home/gdk/gitlab-development-kit/gitlab/lib/api/api.rb']).to be_nil
+      end
+    end
   end
 
   describe '#write_lcov (private)' do

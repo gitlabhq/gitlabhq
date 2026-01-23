@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module Partitioning
       class IntRangeStrategy < BaseStrategy
+        include Gitlab::Utils::StrongMemoize
+
         attr_reader :model, :partitioning_key, :partition_size, :analyze_interval
 
         # We create this many partitions in the future
@@ -12,11 +14,16 @@ module Gitlab
 
         delegate :table_name, to: :model
 
-        def initialize(model, partitioning_key, partition_size:, analyze_interval: nil)
+        def initialize(model, partitioning_key, partition_size:, analyze_interval: nil, sequence_name: nil)
           @model = model
           @partitioning_key = partitioning_key
           @partition_size = partition_size
           @analyze_interval = analyze_interval
+          @sequence_name = sequence_name
+        end
+
+        def sequence_name
+          @sequence_name || model.sequence_name
         end
 
         def current_partitions
@@ -82,13 +89,16 @@ module Gitlab
         end
 
         def min_id
-          return MIN_ID unless model.sequence_name
+          return MIN_ID unless sequence_name
 
-          sequence_name = model.sequence_name.split('.').last
+          seq_name = sequence_name.split('.').last
 
           model.connection
-            .select_value("SELECT min_value FROM pg_sequences WHERE sequencename = '#{sequence_name}'") || MIN_ID
+            .select_value(
+              "SELECT min_value FROM pg_sequences WHERE sequencename = $1", :select_seq_start, [seq_name]
+            ) || MIN_ID
         end
+        strong_memoize_attr :min_id
 
         def max_id
           last_partition&.to || min_id

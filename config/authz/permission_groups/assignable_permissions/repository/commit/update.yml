@@ -1,0 +1,7 @@
+---
+name: update_commit
+description: Grants the ability to update commits
+permissions:
+  - create_commit_comment
+boundaries:
+  - project

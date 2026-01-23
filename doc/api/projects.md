@@ -2203,12 +2203,9 @@ Marks a project for deletion. Projects are deleted at the end of the retention p
 
 This endpoint can also immediately delete a project that was previously marked for deletion.
 
-{{< alert type="warning" >}}
-
-On GitLab.com, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
-If you really need to delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
-
-{{< /alert >}}
+> [!warning]
+> On GitLab.com, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
+> If you really need to delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
 
 ```plaintext
 DELETE /projects/:id

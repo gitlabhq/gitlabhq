@@ -14,12 +14,9 @@ title: npm API
 
 Use this API to interact with the [npm package manager client](../../user/packages/npm_registry/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [npm package manager client](https://docs.npmjs.com/)
-and is not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [npm package manager client](https://docs.npmjs.com/)
+> and is not meant for manual consumption.
 
 {{< alert type="note" >}}
 

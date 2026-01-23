@@ -20,12 +20,9 @@ Get a list of jobs in a project.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)
 
-{{< alert type="note" >}}
-
-This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination, but keyset-based
-pagination is strongly recommended when requesting consecutive pages of results.
-
-{{< /alert >}}
+> [!note]
+> This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination, but keyset-based
+> pagination is strongly recommended when requesting consecutive pages of results.
 
 ```plaintext
 GET /projects/:id/jobs
@@ -965,12 +962,9 @@ Example of response:
 }
 ```
 
-{{< alert type="note" >}}
-
-You can't delete archived jobs with the API, but you can
-[delete job artifacts and logs from jobs completed before a specific date](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)
-
-{{< /alert >}}
+> [!note]
+> You can't delete archived jobs with the API, but you can
+> [delete job artifacts and logs from jobs completed before a specific date](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)
 
 ## Run a job
 

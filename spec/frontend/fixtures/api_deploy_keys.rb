@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::DeployKeys, '(JavaScript fixtures)', type: :request do
+RSpec.describe API::DeployKeys, '(JavaScript fixtures)', type: :request, feature_category: :continuous_delivery do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 

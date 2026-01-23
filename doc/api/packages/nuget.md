@@ -14,12 +14,9 @@ title: NuGet API
 
 Use this API to interact with the [NuGet package manager client](../../user/packages/nuget_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [NuGet package manager client](https://www.nuget.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [NuGet package manager client](https://www.nuget.org/)
+> and is generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 
@@ -86,12 +83,9 @@ curl --user <username>:<personal_access_token> \
 
 This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current directory.
 
-{{< alert type="note" >}}
-
-This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to
-[install packages](../../user/packages/nuget_repository/_index.md#install-a-package) with group endpoints to avoid this error.
-
-{{< /alert >}}
+> [!note]
+> This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to
+> [install packages](../../user/packages/nuget_repository/_index.md#install-a-package) with group endpoints to avoid this error.
 
 ## Upload a package file
 

@@ -25277,6 +25277,7 @@ A user with add-on data.
 | <a id="addonusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="addonusercompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="addonusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="addonusercustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="addonuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="addonuseremail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="addonuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -27093,6 +27094,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="autocompletedusercompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean!`](#boolean) | Indicates if the user has composite identity enforcement enabled. |
 | <a id="autocompletedusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="autocompletedusercustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="autocompleteduserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="autocompleteduseremail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="autocompleteduseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -30444,6 +30446,7 @@ The currently authenticated GitLab user.
 | <a id="currentusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="currentusercompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="currentusercustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="currentuserduochatavailable"></a>`duoChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to AI chat feature. |
 | <a id="currentuserduochatavailablefeatures"></a>`duoChatAvailableFeatures` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. List of available features for AI chat. |
@@ -38097,6 +38100,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestassigneecompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="mergerequestassigneecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestassigneecustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestassigneediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestassigneeemail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestassigneeemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -38558,6 +38562,7 @@ The author of the merge request.
 | <a id="mergerequestauthorcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestauthorcompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="mergerequestauthorcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestauthorcustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestauthordiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestauthoremail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestauthoremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -39070,6 +39075,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestparticipantcompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="mergerequestparticipantcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestparticipantcustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestparticipantdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestparticipantemail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestparticipantemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -39550,6 +39556,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestreviewercompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="mergerequestreviewercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="mergerequestreviewercustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestreviewerdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="mergerequestrevieweremail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestrevieweremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
@@ -48395,6 +48402,7 @@ Core representation of a GitLab user.
 | <a id="usercorecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="usercorecompositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="usercorecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
+| <a id="usercorecustomattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="usercorediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="usercoreemail"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="usercoreemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |

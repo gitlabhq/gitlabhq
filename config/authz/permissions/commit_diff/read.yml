@@ -1,0 +1,5 @@
+---
+name: read_commit_diff
+description: Grants the ability to read commit diffs
+boundaries:
+  - project

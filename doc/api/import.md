@@ -20,21 +20,15 @@ description: "Import repositories from GitHub or Bitbucket Server with the REST 
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to [import repositories from external sources](../user/import/_index.md).
 
-{{< alert type="note" >}}
-
-User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
-
-{{< /alert >}}
+> [!note]
+> User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
+> When you import to a personal namespace, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
 
 ## Import repository from GitHub
 

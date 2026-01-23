@@ -97,8 +97,10 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
         sequence_name = model.sequence_name.split('.').last
 
         allow(connection).to receive(:select_value)
-          .with("SELECT min_value FROM pg_sequences WHERE sequencename = '#{sequence_name}'")
-          .and_return(100)
+          .with(
+            "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
+            :select_seq_start, [sequence_name]
+          ).and_return(100)
       end
 
       it 'returns missing partitions starting from the min_id' do
@@ -130,6 +132,33 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
           Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 31, 41),
           Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 41, 51),
           Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 51, 61)
+        )
+      end
+    end
+
+    context 'when explicit sequence_name is provided' do
+      subject(:missing_partitions) do
+        described_class.new(model, partitioning_key, partition_size: 10, sequence_name: 'custom_seq').missing_partitions
+      end
+
+      before do
+        allow(connection).to receive(:select_value)
+          .with(
+            "SELECT min_value FROM pg_sequences WHERE sequencename = $1",
+            :select_seq_start, ['custom_seq']
+          ).and_return(1000000000000)
+      end
+
+      it 'returns missing partitions starting from the explicit sequence min_value' do
+        expect(missing_partitions.size).to eq(6)
+
+        expect(missing_partitions).to include(
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000000, 1000000000010),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000010, 1000000000020),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000020, 1000000000030),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000030, 1000000000040),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000040, 1000000000050),
+          Gitlab::Database::Partitioning::IntRangePartition.new(model.table_name, 1000000000050, 1000000000060)
         )
       end
     end
@@ -291,7 +320,35 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
         model: model,
         partitioning_key: partitioning_key,
         partition_size: partition_size,
-        analyze_interval: analyze_interval
+        analyze_interval: analyze_interval,
+        sequence_name: model.sequence_name
+      })
+    end
+  end
+
+  describe 'attributes with sequence_name' do
+    let(:partitioning_key) { :partition }
+    let(:table_name) { :_test_partitioned_test }
+    let(:partition_size) { 5 }
+    let(:analyze_interval) { 1.week }
+    let(:sequence_name) { 'custom_sequence' }
+
+    subject(:strategy) do
+      described_class.new(
+        model, partitioning_key,
+        partition_size: partition_size,
+        analyze_interval: analyze_interval,
+        sequence_name: sequence_name
+      )
+    end
+
+    specify do
+      expect(strategy).to have_attributes({
+        model: model,
+        partitioning_key: partitioning_key,
+        partition_size: partition_size,
+        analyze_interval: analyze_interval,
+        sequence_name: sequence_name
       })
     end
   end

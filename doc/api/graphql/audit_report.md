@@ -80,12 +80,9 @@ You can use GraphiQL to query information about a subset of users.
 
 1. Select **Play**.
 
-{{< alert type="note" >}}
-
-[The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
-It also expects a GlobalID as an input rather than a single integer.
-
-{{< /alert >}}
+> [!note]
+> [The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
+> It also expects a GlobalID as an input rather than a single integer.
 
 This query returns the groups and projects that the user has been explicitly made a member of.
 

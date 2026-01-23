@@ -35,12 +35,9 @@ Parameters:
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects in a group, use the [list a group's projects endpoint](#list-projects).) |
 
-{{< alert type="note" >}}
-
-The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
-To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
-
-{{< /alert >}}
+> [!note]
+> The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
+> To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
@@ -1278,12 +1275,9 @@ Group audit events can be accessed via the [Group audit events API](audit_events
 
 ### Create a group
 
-{{< alert type="note" >}}
-
-On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
-use the API to do this.
-
-{{< /alert >}}
+> [!note]
+> On GitLab SaaS, you must use the GitLab UI to create groups without a parent group. You cannot
+> use the API to do this.
 
 Creates a new project group. Available only for users who can create groups.
 
@@ -1896,12 +1890,9 @@ PUT /groups/:id
 | `only_allow_merge_if_all_discussions_are_resolved`  | boolean           | no       | Only allow merging merge requests when all discussions are resolved. When enabled for a group, applies to all projects in the group. Premium and Ultimate only. |
 | `allow_personal_snippets`                           | boolean           | no       | Allow enterprise users in this group to create personal snippets. When disabled, enterprise users are restricted from creating snippets in their personal namespace. |
 
-{{< alert type="note" >}}
-
-The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
-To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
-
-{{< /alert >}}
+> [!note]
+> The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
+> To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -2058,12 +2049,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Revoke a token, if it has access to the group or any of its subgroups
 and projects. If the token is revoked, or was already revoked, its

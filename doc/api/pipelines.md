@@ -539,12 +539,9 @@ Response:
 POST /projects/:id/pipelines/:pipeline_id/cancel
 ```
 
-{{< alert type="note" >}}
-
-This endpoint returns a success response `200` regardless of the pipeline's state.
-For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
-
-{{< /alert >}}
+> [!note]
+> This endpoint returns a success response `200` regardless of the pipeline's state.
+> For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/issues/414963).
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|

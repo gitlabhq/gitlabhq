@@ -132,12 +132,9 @@ GET /templates/licenses/:key
 | `project`  | string | no       | The copyrighted project name |
 | `fullname` | string | no       | The full-name of the copyright holder |
 
-{{< alert type="note" >}}
-
-If you omit the `fullname` parameter but authenticate your request, the name of
-the authenticated user replaces the copyright holder placeholder.
-
-{{< /alert >}}
+> [!note]
+> If you omit the `fullname` parameter but authenticate your request, the name of
+> the authenticated user replaces the copyright holder placeholder.
 
 Example request:
 

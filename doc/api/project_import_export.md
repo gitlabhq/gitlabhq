@@ -226,12 +226,9 @@ requests.post(url, headers=headers, data=data, files=files)
 }
 ```
 
-{{< alert type="note" >}}
-
-The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
-
-{{< /alert >}}
+> [!note]
+> The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
+> As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
 
 ## Import a file from a remote object storage
 
@@ -247,12 +244,9 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags/_index.md) named `import_project_from_remote_file`.
+> On GitLab.com and GitLab Dedicated, this feature is available.
 
 ```plaintext
 POST /projects/remote-import

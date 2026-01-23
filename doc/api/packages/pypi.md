@@ -14,12 +14,9 @@ title: PyPI API
 
 Use this API to interact with the [PyPI package manager client](../../user/packages/pypi_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [PyPI package manager client](https://pypi.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [PyPI package manager client](https://pypi.org/)
+> and is generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 

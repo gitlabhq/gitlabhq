@@ -27,12 +27,9 @@ signature information from signed tags.
 Get a list of repository tags from a project, sorted by update date and time in
 descending order.
 
-{{< alert type="note" >}}
-
-If the repository is publicly accessible, authentication
-(`--header "PRIVATE-TOKEN: <your_access_token>"`) is not required.
-
-{{< /alert >}}
+> [!note]
+> If the repository is publicly accessible, authentication
+> (`--header "PRIVATE-TOKEN: <your_access_token>"`) is not required.
 
 ```plaintext
 GET /projects/:id/repository/tags

@@ -1,0 +1,5 @@
+---
+name: cherry_pick_commit
+description: Grants the ability to cherry-pick commits
+boundaries:
+  - project

@@ -41,6 +41,63 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
           .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
       end
     end
+
+    context "when admin changes email_otp_required_after" do
+      let(:new_datetime) { 1.day.from_now.change(usec: 0) }
+
+      it 'can be set to a datetime' do
+        expect do
+          patch admin_user_path(user), params: { user: { email_otp_required_after: new_datetime } }
+        end.to change { user.reload.email_otp_required_after }.to(new_datetime)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:notice]).to eq('User was successfully updated.')
+      end
+
+      it 'can be set to nil' do
+        user.update!(email_otp_required_after: 1.day.ago)
+
+        expect do
+          patch admin_user_path(user), params: { user: { email_otp_required_after: nil } }
+        end.to change { user.reload.email_otp_required_after }.to(nil)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:notice]).to eq('User was successfully updated.')
+      end
+
+      context "when email OTP is required" do
+        before do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        end
+
+        it 'cannot be set to nil' do
+          user.update!(email_otp_required_after: 1.day.ago)
+
+          expect do
+            patch admin_user_path(user), params: { user: { email_otp_required_after: nil } }
+          end.not_to change { user.reload.email_otp_required_after }
+
+          expect(response).to redirect_to(admin_user_path(user))
+        end
+      end
+
+      context "when email OTP is not permitted" do
+        let(:admin) { create(:admin, :two_factor) }
+        let(:user) { create(:user, :two_factor) }
+
+        before do
+          stub_application_setting(require_two_factor_authentication: true)
+        end
+
+        it 'cannot be set to a datetime' do
+          expect do
+            patch admin_user_path(user), params: { user: { email_otp_required_after: new_datetime } }
+          end.not_to change { user.reload.email_otp_required_after }
+
+          expect(response).to redirect_to(admin_user_path(user))
+        end
+      end
+    end
   end
 
   describe 'PUT #block' do

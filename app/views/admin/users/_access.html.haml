@@ -52,3 +52,13 @@
         s_('AdminUsers|Validate user account'),
         help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free compute minutes on instance runners.'),
         checkbox_options: { checked: @user.credit_card_validated_at.present? }
+
+  - if Feature.enabled?(:email_based_mfa, @user)
+    .form-group.gl-form-group{ role: 'group' }
+      = f.label :email_otp_required_after, s_('AdminUsers|Email OTP required after'), class: 'gl-block col-form-label'
+      = f.datetime_field :email_otp_required_after,
+        class: 'form-control gl-form-input gl-form-input-md'
+      .gl-text-secondary.gl-text-md.gl-mt-2
+        = s_('AdminUsers|Control when a user will need to enter an OTP during sign in.')
+        - if @user.must_require_email_otp?
+          = s_('AdminUsers|Cannot be nil.')

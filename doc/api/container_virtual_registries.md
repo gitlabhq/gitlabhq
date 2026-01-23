@@ -20,12 +20,9 @@ description: Create and manage virtual registries for the container registry, an
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of these endpoints is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of these endpoints is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to:
 

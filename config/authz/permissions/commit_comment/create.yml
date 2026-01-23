@@ -1,0 +1,5 @@
+---
+name: create_commit_comment
+description: Grants the ability to create commit comments
+boundaries:
+  - project

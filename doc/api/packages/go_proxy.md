@@ -17,12 +17,9 @@ This API is behind a feature flag that is disabled by default. GitLab administra
 the GitLab Rails console can [enable](../../administration/feature_flags/_index.md)
 this API for your GitLab instance.
 
-{{< alert type="warning" >}}
-
-This API is used by the [`go` command](https://go.dev/ref/mod#go-get)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [`go` command](https://go.dev/ref/mod#go-get)
+> and is generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 

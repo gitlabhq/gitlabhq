@@ -58,12 +58,9 @@ You can create a new external status check service for a project using the follo
 POST /projects/:id/external_status_checks
 ```
 
-{{< alert type="warning" >}}
-
-External status checks send information about all applicable merge requests to the
-defined external service. This includes confidential merge requests.
-
-{{< /alert >}}
+> [!warning]
+> External status checks send information about all applicable merge requests to the
+> defined external service. This includes confidential merge requests.
 
 | Attribute              | Type             | Required | Description                                    |
 |------------------------|------------------|----------|------------------------------------------------|

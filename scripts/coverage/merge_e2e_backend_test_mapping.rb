@@ -7,6 +7,7 @@ require 'stringio'
 require 'fileutils'
 
 require_relative '../../tooling/lib/tooling/test_map_packer'
+require_relative 'path_normalizer'
 
 # Merges E2E test mappings with Crystalball RSpec mappings.
 #
@@ -89,11 +90,14 @@ class BackendTestMappingMerger
   end
 
   # Inverts mapping from test -> sources to source -> tests.
+  # Also normalizes source file paths to ensure consistent format.
   def invert_mapping(test_to_sources)
     test_to_sources.each_with_object({}) do |(test_file, source_files), source_to_tests|
       Array(source_files).each do |source_file|
-        source_to_tests[source_file] ||= []
-        source_to_tests[source_file] << test_file unless source_to_tests[source_file].include?(test_file)
+        # Normalize paths to handle absolute paths from Coverband and ./ prefix from Crystalball
+        normalized_source = PathNormalizer.normalize(source_file)
+        source_to_tests[normalized_source] ||= []
+        source_to_tests[normalized_source] << test_file unless source_to_tests[normalized_source].include?(test_file)
       end
     end
   end

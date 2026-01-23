@@ -82,7 +82,7 @@ module Ci
 
           Gitlab::Redis::SharedState
             .with { |redis| redis.hvals(key) }
-            .map { |request| Gitlab::Json.parse(request) }
+            .map { |request| Gitlab::Json.safe_parse(request) }
         end
 
         def get_request(project, request_id)
@@ -128,7 +128,7 @@ module Ci
         end
 
         def hget(request)
-          Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.parse(redis.hget(request['key'], request['id'])) }
+          Gitlab::Redis::SharedState.with { |redis| Gitlab::Json.safe_parse(redis.hget(request['key'], request['id'])) }
         end
 
         def generate_id

@@ -16,6 +16,11 @@ module Types
     end
 
     present_using UserPresenter
+
+    field :custom_attributes, [Types::CustomAttributeType],
+      null: true,
+      description: 'Custom attributes of the user. Only available to admins.',
+      authorize: :read_custom_attribute
   end
 end
 

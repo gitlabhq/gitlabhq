@@ -33,12 +33,9 @@ Prerequisites:
 POST /chat/completions
 ```
 
-{{< alert type="note" >}}
-
-Requests to this endpoint are proxied to the
-[AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
-
-{{< /alert >}}
+> [!note]
+> Requests to this endpoint are proxied to the
+> [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
 
 Supported attributes:
 

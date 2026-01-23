@@ -22,9 +22,9 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     File.write(file_path, {
       name: feature_flag_name,
       milestone: feature_flag_milestone,
-      rollout_issue: 'issue_url',
+      rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123',
       group: groups.dig(:foo, :label),
-      default_enabled: true
+      default_enabled: false
     }.to_yaml)
 
     file_path.to_s
@@ -36,8 +36,6 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
   before do
     stub_request(:get, Keeps::Helpers::Groups::GROUPS_JSON_URL).to_return(status: 200, body: groups.to_json)
-    stub_request(:get, format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123'))
-      .to_return(status: 200, body: { labels: [] }.to_json)
 
     allow(keep).to receive(:all_feature_flag_files).and_return([feature_flag_file])
     allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
@@ -77,6 +75,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     end
 
     let(:identifiers) { ['DeleteOldFeatureFlags', feature_flag_name] }
+    let(:rollout_issue) { { labels: [] } }
 
     before do
       allow(keep).to receive(:can_remove_ff?).and_call_original
@@ -101,7 +100,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be false
       end
     end
 
@@ -114,7 +113,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns false for enabled flag' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be false
       end
     end
 
@@ -127,7 +126,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns false for disabled flag' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled, rollout_issue)).to be false
       end
     end
 
@@ -137,7 +136,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be false
       end
     end
 
@@ -156,19 +155,19 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns true' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be true
       end
     end
 
     context 'when latest feature flag status is nil' do
       it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, nil)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, nil, rollout_issue)).to be false
       end
     end
 
     context 'when latest feature flag status is conditional' do
       it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :conditional)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :conditional, rollout_issue)).to be false
       end
     end
 
@@ -179,7 +178,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
             milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
           .and_return(true)
 
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be true
       end
     end
 
@@ -190,7 +189,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
             milestones_ago: described_class::CUTOFF_MILESTONE_FOR_DISABLED_FLAG)
           .and_return(true)
 
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :disabled, rollout_issue)).to be true
       end
     end
 
@@ -221,7 +220,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be false
       end
     end
 
@@ -240,7 +239,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns true when other conditions are met' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be true
       end
     end
 
@@ -262,7 +261,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       # the condition and allows removal
       it 'returns true when other conditions are met' do
         expect(keep.send(:parse_date, '2020')).to be_nil
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be true
       end
     end
 
@@ -280,11 +279,9 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         )
       end
 
-      before do
-        stub_request(:get,
-          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
-        ).to_return(status: 200, body: { labels: ['feature flag::ready for removal'] }.to_json)
+      let(:rollout_issue) { { labels: ['feature flag::ready for removal'] } }
 
+      before do
         # Make milestone cutoff check fail to prove it's bypassed
         allow(milestones_helper)
           .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
@@ -293,16 +290,14 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'bypasses rollout date, milestone, and cutoff checks and returns true' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be true
       end
     end
 
     context 'when feature flag does not have ready for removal label' do
-      before do
-        stub_request(:get,
-          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
-        ).to_return(status: 200, body: { labels: ['some other label'] }.to_json)
+      let(:rollout_issue) { { labels: ['some other label'] } }
 
+      before do
         # Make milestone cutoff check fail
         allow(milestones_helper)
           .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
@@ -311,78 +306,45 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'respects milestone cutoff check and returns false' do
-        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled, rollout_issue)).to be false
       end
     end
   end
 
   describe '#has_ready_for_removal_label?' do
-    let(:feature_flag) do
-      instance_double(
-        Feature::Definition,
-        name: feature_flag_name,
-        rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123'
-      )
-    end
-
     before do
       allow(keep).to receive(:logger).and_return(double.as_null_object)
-      allow(keep).to receive(:feature_flag_rollout_issue_url).and_return(feature_flag.rollout_issue_url)
     end
 
     context 'when rollout issue has ready for removal label' do
-      before do
-        stub_request(:get,
-          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
-        ).to_return(status: 200, body: { labels: ['feature flag::ready for removal',
-          'other label'] }.to_json)
-      end
+      let(:rollout_issue) { { labels: ['feature flag::ready for removal', 'other label'] } }
 
       it 'returns true' do
-        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be true
+        expect(keep.send(:has_ready_for_removal_label?, rollout_issue)).to be true
       end
     end
 
     context 'when rollout issue does not have ready for removal label' do
-      before do
-        stub_request(:get,
-          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
-        ).to_return(status: 200, body: { labels: ['some other label'] }.to_json)
-      end
+      let(:rollout_issue) { { labels: ['some other label'] } }
 
       it 'returns false' do
-        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
+        expect(keep.send(:has_ready_for_removal_label?, rollout_issue)).to be false
       end
     end
 
-    context 'when rollout issue URL is missing' do
-      let(:feature_flag) do
-        instance_double(
-          Feature::Definition,
-          name: feature_flag_name,
-          milestone: feature_flag_milestone,
-          rollout_issue_url: nil
-        )
-      end
-
-      before do
-        allow(keep).to receive(:feature_flag_rollout_issue_url).and_return('(missing URL)')
-      end
+    context 'when rollout issue is nil' do
+      let(:rollout_issue) { nil }
 
       it 'returns false' do
-        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
+        expect(keep.send(:has_ready_for_removal_label?, rollout_issue)).to be false
       end
     end
 
-    context 'when API request fails' do
-      before do
-        stub_request(:get,
-          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123'))
-          .to_return(status: 404)
-      end
+    context 'when rollout issue has no labels' do
+      let(:rollout_issue) { { labels: [] } }
 
       it 'returns false' do
-        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
+        expect(keep.send(:has_ready_for_removal_label?, rollout_issue)).to be false
       end
     end
   end
@@ -397,6 +359,9 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       let(:ai_helper) { instance_double(Keeps::Helpers::AiEditor) }
 
       before do
+        api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        stub_request(:get, api_url)
+          .to_return(status: 200, body: { labels: ['type::feature', 'feature flag state::enabled'] }.to_json)
         allow(keep).to receive(:ai_helper).and_return(ai_helper)
         allow(keep).to receive(:files_mentioning_feature_flag).and_return(['app/controllers/feature_controller.rb'])
         allow(keep).to receive(:remove_feature_flag_prompts).and_return(
@@ -420,8 +385,8 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
         actual_change = actual_changes.first
         expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
-        expect(actual_change.changelog_type).to eq('removed')
-        expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
+        expect(actual_change.changelog_type).to eq('added')
+        expect(actual_change.title).to eq("Enable and remove the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
         expect(actual_change.assignees).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
@@ -431,11 +396,96 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
     end
 
+    context 'when feature flag is disabled' do
+      let(:disabled_feature_flag_file) do
+        file_path = tmp_dir.join('disabled_feature_flag.yml')
+
+        File.write(file_path, {
+          name: 'disabled_feature_flag_name',
+          milestone: feature_flag_milestone,
+          rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123',
+          group: groups.dig(:foo, :label),
+          default_enabled: false
+        }.to_yaml)
+
+        file_path.to_s
+      end
+
+      let(:ai_helper) { instance_double(Keeps::Helpers::AiEditor) }
+
+      before do
+        api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        stub_request(:get, api_url)
+          .to_return(status: 200, body: { labels: ['type::maintenance', 'feature flag state::disabled'] }.to_json)
+        allow(keep).to receive(:all_feature_flag_files).and_return([disabled_feature_flag_file])
+        allow(keep).to receive(:ai_helper).and_return(ai_helper)
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return([])
+        allow(keep).to receive(:can_remove_ff?).and_return(true)
+      end
+
+      it 'sets changelog_type to "other" and title reflects removal for disabled non-default flags' do
+        allow(keep).to receive(:execute_grep).and_return("grep results")
+
+        actual_changes = []
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_changes << change
+        end
+
+        expect(actual_changes.first.changelog_type).to eq('other')
+        expect(actual_changes.first.title).to eq("Remove the `disabled_feature_flag_name` feature flag")
+      end
+    end
+
+    context 'when default_enabled flag is disabled' do
+      let(:default_enabled_flag_file) do
+        file_path = tmp_dir.join('default_enabled_flag.yml')
+
+        File.write(file_path, {
+          name: 'default_enabled_flag_name',
+          milestone: feature_flag_milestone,
+          rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/124',
+          group: groups.dig(:foo, :label),
+          default_enabled: true
+        }.to_yaml)
+
+        file_path.to_s
+      end
+
+      let(:ai_helper) { instance_double(Keeps::Helpers::AiEditor) }
+
+      before do
+        api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '124')
+        stub_request(:get, api_url)
+          .to_return(status: 200, body: { labels: ['type::feature', 'feature flag state::disabled'] }.to_json)
+        allow(keep).to receive(:all_feature_flag_files).and_return([default_enabled_flag_file])
+        allow(keep).to receive(:ai_helper).and_return(ai_helper)
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return([])
+        allow(keep).to receive(:can_remove_ff?).and_return(true)
+      end
+
+      it 'sets changelog_type to "removed" for disabled default_enabled flags' do
+        allow(keep).to receive(:execute_grep).and_return("grep results")
+
+        actual_changes = []
+        keep.each_identified_change do |change|
+          keep.make_change!(change)
+          actual_changes << change
+        end
+
+        expect(actual_changes.first.changelog_type).to eq('removed')
+        expect(actual_changes.first.title).to eq("Disable and remove the `default_enabled_flag_name` feature flag")
+      end
+    end
+
     context 'when we have feature flag patch path present' do
       let(:expected_change) { instance_double(Gitlab::Housekeeper::Change) }
       let(:feature_flag_patch_path) { feature_flag_file.sub(/.yml$/, '.patch') }
 
       before do
+        api_url = format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        stub_request(:get, api_url)
+          .to_return(status: 200, body: { labels: ['type::feature', 'feature flag state::enabled'] }.to_json)
         File.write(feature_flag_patch_path, <<~DIFF)
         diff --git a/foobar.txt b/foobar.txt
         index 2ef267e25bd6..0fecdb8e98f3 100644
@@ -463,8 +513,8 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
         actual_change = actual_changes.first
         expect(actual_change).to be_a(Gitlab::Housekeeper::Change)
-        expect(actual_change.changelog_type).to eq('removed')
-        expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
+        expect(actual_change.changelog_type).to eq('added')
+        expect(actual_change.title).to eq("Enable and remove the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
         expect(actual_change.changed_files).to match_array([feature_flag_file, feature_flag_patch_path, 'foobar.txt'])
         expect(actual_change.assignees).to match_array(['@john_doe'])
@@ -735,7 +785,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     end
 
     let(:change) do
-      instance_double(Gitlab::Housekeeper::Change, changed_files: [])
+      instance_double(Gitlab::Housekeeper::Change, changed_files: [], context: { latest_feature_flag_status: :enabled })
     end
 
     let(:ai_helper) { instance_double(Keeps::Helpers::AiEditor) }
@@ -940,6 +990,193 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
       expect(yielded_flags.map(&:name)).to eq(%w[feature_flag_2 feature_flag_3 feature_flag_1])
       expect(yielded_flags.map(&:name)).not_to include('feature_flag_4')
+    end
+  end
+
+  describe '#determine_changelog_type' do
+    let(:feature_flag) do
+      instance_double(
+        Feature::Definition,
+        default_enabled: default_enabled,
+        name: feature_flag_name
+      )
+    end
+
+    let(:rollout_issue) do
+      { labels: type_labels }
+    end
+
+    before do
+      allow(keep).to receive(:logger).and_return(double.as_null_object)
+    end
+
+    context 'when feature flag is enabled and NOT default_enabled' do
+      let(:default_enabled) { false }
+
+      context 'with type::feature label' do
+        let(:type_labels) { ['type::feature', 'feature flag state::enabled'] }
+
+        it 'returns "added"' do
+          result = keep.send(:determine_changelog_type, feature_flag, :enabled, rollout_issue)
+          expect(result).to eq('added')
+        end
+      end
+
+      context 'with type::bug label' do
+        let(:type_labels) { ['type::bug', 'feature flag state::enabled'] }
+
+        it 'returns "fixed"' do
+          result = keep.send(:determine_changelog_type, feature_flag, :enabled, rollout_issue)
+          expect(result).to eq('fixed')
+        end
+      end
+
+      context 'with other type labels' do
+        let(:type_labels) { ['type::maintenance', 'feature flag state::enabled'] }
+
+        it 'returns "changed"' do
+          result = keep.send(:determine_changelog_type, feature_flag, :enabled, rollout_issue)
+          expect(result).to eq('other')
+        end
+      end
+    end
+
+    context 'when feature flag is disabled and NOT default_enabled' do
+      let(:default_enabled) { false }
+      let(:type_labels) { ['type::feature', 'feature flag state::disabled'] }
+
+      it 'returns "other"' do
+        result = keep.send(:determine_changelog_type, feature_flag, :disabled, rollout_issue)
+        expect(result).to eq('other')
+      end
+    end
+
+    context 'when feature flag is enabled and IS default_enabled' do
+      let(:default_enabled) { true }
+      let(:type_labels) { ['type::feature', 'feature flag state::enabled'] }
+
+      it 'returns "other"' do
+        result = keep.send(:determine_changelog_type, feature_flag, :enabled, rollout_issue)
+        expect(result).to eq('other')
+      end
+    end
+
+    context 'when feature flag is disabled and IS default_enabled' do
+      let(:default_enabled) { true }
+      let(:type_labels) { ['type::feature', 'feature flag state::disabled'] }
+
+      it 'returns "removed"' do
+        result = keep.send(:determine_changelog_type, feature_flag, :disabled, rollout_issue)
+        expect(result).to eq('removed')
+      end
+    end
+  end
+
+  describe '#get_type_label_from_rollout_issue' do
+    let(:logger) { instance_double(Gitlab::Housekeeper::Logger) }
+
+    before do
+      keep.instance_variable_set(:@logger, logger)
+      allow(logger).to receive(:puts)
+    end
+
+    context 'when rollout issue has type label' do
+      let(:rollout_issue) { { labels: ['type::feature', 'other label'] } }
+
+      it 'returns the type label' do
+        result = keep.send(:get_type_label_from_rollout_issue, rollout_issue)
+        expect(result).to eq('type::feature')
+      end
+    end
+
+    context 'when rollout issue has no type label' do
+      let(:rollout_issue) { { labels: ['other label'] } }
+
+      it 'returns nil' do
+        result = keep.send(:get_type_label_from_rollout_issue, rollout_issue)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when rollout issue is nil' do
+      let(:rollout_issue) { nil }
+
+      it 'returns nil' do
+        result = keep.send(:get_type_label_from_rollout_issue, rollout_issue)
+        expect(result).to be_nil
+      end
+    end
+  end
+
+  describe '#map_type_label_to_changelog_type' do
+    context 'when type label is type::feature' do
+      it 'returns "added"' do
+        result = keep.send(:map_type_label_to_changelog_type, 'type::feature')
+        expect(result).to eq('added')
+      end
+    end
+
+    context 'when type label is type::bug' do
+      it 'returns "fixed"' do
+        result = keep.send(:map_type_label_to_changelog_type, 'type::bug')
+        expect(result).to eq('fixed')
+      end
+    end
+
+    context 'when type label is other' do
+      it 'returns "changed"' do
+        result = keep.send(:map_type_label_to_changelog_type, 'type::maintenance')
+        expect(result).to eq('other')
+      end
+    end
+
+    context 'when type label is nil' do
+      it 'returns "changed"' do
+        result = keep.send(:map_type_label_to_changelog_type, nil)
+        expect(result).to eq('other')
+      end
+    end
+  end
+
+  describe '#build_change_title' do
+    let(:feature_flag) do
+      instance_double(Feature::Definition, name: 'test_feature_flag', default_enabled: default_enabled)
+    end
+
+    context 'when feature flag is enabled and NOT default_enabled' do
+      let(:default_enabled) { false }
+
+      it 'returns "Enable and remove" title' do
+        result = keep.send(:build_change_title, feature_flag, :enabled)
+        expect(result).to eq('Enable and remove the `test_feature_flag` feature flag')
+      end
+    end
+
+    context 'when feature flag is enabled and IS default_enabled' do
+      let(:default_enabled) { true }
+
+      it 'returns "Remove" title' do
+        result = keep.send(:build_change_title, feature_flag, :enabled)
+        expect(result).to eq('Remove the `test_feature_flag` feature flag')
+      end
+    end
+
+    context 'when feature flag is disabled and NOT default_enabled' do
+      let(:default_enabled) { false }
+
+      it 'returns "Remove" title' do
+        result = keep.send(:build_change_title, feature_flag, :disabled)
+        expect(result).to eq('Remove the `test_feature_flag` feature flag')
+      end
+    end
+
+    context 'when feature flag is disabled and IS default_enabled' do
+      let(:default_enabled) { true }
+
+      it 'returns "Disable and remove" title' do
+        result = keep.send(:build_change_title, feature_flag, :disabled)
+        expect(result).to eq('Disable and remove the `test_feature_flag` feature flag')
+      end
     end
   end
 end

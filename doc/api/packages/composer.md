@@ -14,12 +14,9 @@ title: Composer API
 
 Use this API to interact with the [Composer package manager client](../../user/packages/composer_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the [Composer package manager client](https://getcomposer.org/)
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
+> [!warning]
+> This API is used by the [Composer package manager client](https://getcomposer.org/)
+> and is generally not meant for manual consumption.
 
 {{< alert type="note" >}}
 

@@ -163,5 +163,33 @@ RSpec.describe BackendTestMappingMerger, feature_category: :tooling do
         expect(merger).to have_received(:warn).with(/Failed to parse/)
       end
     end
+
+    context 'when E2E mapping contains absolute paths' do
+      let(:e2e_mapping_with_absolute_paths) do
+        {
+          'qa/specs/login_spec.rb' => [
+            '/builds/gitlab-org/gitlab/app/models/user.rb',
+            '/home/gdk/gitlab-development-kit/gitlab/lib/api/api.rb'
+          ]
+        }
+      end
+
+      before do
+        create_e2e_mapping(e2e_mapping_with_absolute_paths)
+        create_described_class_mapping(described_class_mapping)
+      end
+
+      it 'normalizes absolute paths to relative paths' do
+        merger.run
+
+        loaded = read_merged_mapping
+        # Should have normalized paths, not absolute paths
+        expect(loaded['app/models/user.rb']).to be_present
+        expect(loaded['lib/api/api.rb']).to be_present
+        # Should not have absolute paths
+        expect(loaded['/builds/gitlab-org/gitlab/app/models/user.rb']).to be_nil
+        expect(loaded['/home/gdk/gitlab-development-kit/gitlab/lib/api/api.rb']).to be_nil
+      end
+    end
   end
 end

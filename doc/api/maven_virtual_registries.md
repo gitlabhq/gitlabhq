@@ -22,12 +22,9 @@ title: Maven virtual registry API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of these endpoints is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of these endpoints is controlled by a feature flag.
+> For more information, see the history.
 
 Use this API to:
 

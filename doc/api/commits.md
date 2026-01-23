@@ -1034,12 +1034,9 @@ When you set a commit status:
 
 For more information, see [external commit statuses](../ci/ci_cd_for_external_repos/external_commit_statuses.md).
 
-{{< alert type="note" >}}
-
-When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
-Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
-
-{{< /alert >}}
+> [!note]
+> When duplicate pipelines exist for the same commit, it can be ambiguous which pipeline receives the external status.
+> Configure your pipeline to [avoid duplicates](../ci/jobs/job_rules.md#avoid-duplicate-pipelines).
 
 If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
 

@@ -39,6 +39,12 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     it { expect(subject.message).to eq('Not permitted to create') }
     it { expect(token).to be_nil }
 
+    it 'does not notify the user' do
+      expect(NotificationService).not_to receive(:new)
+
+      subject
+    end
+
     it 'does not track the creation event' do
       expect { execute }.not_to trigger_internal_events('create_pat')
     end

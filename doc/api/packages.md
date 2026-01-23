@@ -457,12 +457,9 @@ If a package is protected by a [protection rule](../user/packages/package_regist
 
 ## Delete a package file
 
-{{< alert type="warning" >}}
-
-Deleting a package file may corrupt your package making it unusable or unpullable from your package
-manager client. When deleting a package file, be sure that you understand what you're doing.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a package file may corrupt your package making it unusable or unpullable from your package
+> manager client. When deleting a package file, be sure that you understand what you're doing.
 
 Delete a package file:
 

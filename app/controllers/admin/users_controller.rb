@@ -385,6 +385,7 @@ class Admin::UsersController < Admin::ApplicationController
       :color_scheme_id,
       :discord,
       :email,
+      :email_otp_required_after,
       :extern_uid,
       :external,
       :force_random_password,

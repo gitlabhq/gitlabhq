@@ -186,6 +186,17 @@ module QA
           element 'author-link'
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals_summary.vue' do
+          element 'approvals-summary-content'
+        end
+
+        def approval_status_loaded?
+          wait_until(reload: false, max_duration: 5, sleep_interval: 1) do
+            has_element?('approvals-summary-content', wait: 1) &&
+              find_element('approvals-summary-content').text.exclude?('Checking')
+          end
+        end
+
         def has_assignee?(username)
           wait_assignees_block_finish_loading do
             has_text?(username)

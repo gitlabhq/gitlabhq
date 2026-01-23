@@ -694,12 +694,9 @@ GET /groups/:id/integrations/external-wiki
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`.
-On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`.
+> On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
