@@ -536,7 +536,7 @@ RSpec.shared_examples "redis_shared_examples" do
 
     context 'when configuration does not have TLS related options' do
       it 'returns the coniguration as-is' do
-        expect(subject.send(:parse_client_tls_options,
+        expect(Gitlab::Redis::ConfigGenerator.parse_client_tls_options(
           resque_yaml_config_without_tls)).to eq(resque_yaml_config_without_tls)
       end
     end
@@ -549,10 +549,10 @@ RSpec.shared_examples "redis_shared_examples" do
 
       it 'raises error about missing certificate file' do
         expect do
-          subject.send(:parse_client_tls_options,
+          Gitlab::Redis::ConfigGenerator.parse_client_tls_options(
             resque_yaml_config_with_tls)
-        end.to raise_error(Gitlab::Redis::Wrapper::InvalidPathError,
-          "Certificate file /tmp/client.crt specified in in `resque.yml` does not exist.")
+        end.to raise_error(Gitlab::Redis::ConfigGenerator::InvalidPathError,
+          "Certificate file /tmp/client.crt specified in Redis configuration does not exist.")
       end
     end
 
@@ -566,10 +566,10 @@ RSpec.shared_examples "redis_shared_examples" do
 
       it 'raises error about missing key file' do
         expect do
-          subject.send(:parse_client_tls_options,
+          Gitlab::Redis::ConfigGenerator.parse_client_tls_options(
             resque_yaml_config_with_tls)
-        end.to raise_error(Gitlab::Redis::Wrapper::InvalidPathError,
-          "Key file /tmp/client.key specified in in `resque.yml` does not exist.")
+        end.to raise_error(Gitlab::Redis::ConfigGenerator::InvalidPathError,
+          "Key file /tmp/client.key specified in Redis configuration does not exist.")
       end
     end
 
@@ -582,7 +582,7 @@ RSpec.shared_examples "redis_shared_examples" do
       end
 
       it 'renders resque.yml correctly' do
-        expect(subject.send(:parse_client_tls_options,
+        expect(Gitlab::Redis::ConfigGenerator.parse_client_tls_options(
           resque_yaml_config_with_only_cert)).to eq(parsed_config_with_only_cert)
       end
     end
@@ -596,7 +596,7 @@ RSpec.shared_examples "redis_shared_examples" do
       end
 
       it 'renders resque.yml correctly' do
-        expect(subject.send(:parse_client_tls_options,
+        expect(Gitlab::Redis::ConfigGenerator.parse_client_tls_options(
           resque_yaml_config_with_only_key)).to eq(parsed_config_with_only_key)
       end
     end
@@ -612,7 +612,8 @@ RSpec.shared_examples "redis_shared_examples" do
       end
 
       it "converts cert_file and key_file appropriately" do
-        expect(subject.send(:parse_client_tls_options, resque_yaml_config_with_tls)).to eq(parsed_config_with_tls)
+        expect(Gitlab::Redis::ConfigGenerator.parse_client_tls_options(resque_yaml_config_with_tls))
+          .to eq(parsed_config_with_tls)
       end
     end
   end
