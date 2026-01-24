@@ -693,6 +693,96 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_deployment_merge_requests
+(
+    `deployment_id` Int64,
+    `merge_request_id` Int64,
+    `environment_id` Nullable(Int64),
+    `project_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false,
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY
+            deployment_id,
+            merge_request_id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, deployment_id, merge_request_id)
+ORDER BY (traversal_path, deployment_id, merge_request_id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 8192;
+
+CREATE TABLE siphon_deployments
+(
+    `id` Int64,
+    `iid` Int64,
+    `project_id` Int64,
+    `environment_id` Int64,
+    `ref` String,
+    `tag` Bool,
+    `sha` String,
+    `user_id` Nullable(Int64),
+    `deployable_type` String DEFAULT '',
+    `created_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `on_stop` Nullable(String),
+    `status` Int8,
+    `finished_at` Nullable(DateTime64(6, 'UTC')),
+    `deployable_id` Nullable(Int64),
+    `archived` Bool DEFAULT false,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false,
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 8192;
+
+CREATE TABLE siphon_environments
+(
+    `id` Int64,
+    `project_id` Int64,
+    `name` String,
+    `created_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `external_url` Nullable(String),
+    `environment_type` Nullable(String),
+    `state` String DEFAULT 'available',
+    `slug` String,
+    `auto_stop_at` Nullable(DateTime64(6, 'UTC')),
+    `auto_delete_at` Nullable(DateTime64(6, 'UTC')),
+    `tier` Nullable(Int8),
+    `merge_request_id` Nullable(Int64),
+    `cluster_agent_id` Nullable(Int64),
+    `kubernetes_namespace` Nullable(String),
+    `flux_resource_path` Nullable(String),
+    `description` Nullable(String),
+    `description_html` Nullable(String),
+    `cached_markdown_version` Nullable(Int64),
+    `auto_stop_setting` Int8 DEFAULT 0,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false,
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS deduplicate_merge_projection_mode = 'rebuild', index_granularity = 8192;
+
 CREATE TABLE siphon_events
 (
     `project_id` Nullable(Int64),
