@@ -14,31 +14,21 @@ title: Helm API
 
 Use this API to interact with [Helm package clients](../../user/packages/helm_repository/_index.md).
 
-{{< alert type="warning" >}}
-
-This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
-and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
-and is generally not meant for manual consumption.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]
+> This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
+> and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
+> and is generally not meant for manual consumption.
 
 These endpoints do not adhere to the standard API authentication methods.
 See the [Helm registry documentation](../../user/packages/helm_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-{{< /alert >}}
-
 ## Download a chart index
 
-{{< alert type="note" >}}
-
-To ensure consistent chart download URLs, the `contextPath` field in `index.yaml` responses
-always uses the numeric project ID, whether you access the API with the project ID or the
-full project path.
-
-{{< /alert >}}
+> [!note]
+> To ensure consistent chart download URLs, the `contextPath` field in `index.yaml` responses
+> always uses the numeric project ID, whether you access the API with the project ID or the
+> full project path.
 
 Download a chart index:
 

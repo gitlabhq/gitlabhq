@@ -26,13 +26,10 @@ request on that project results in a `404` status code.
 
 Responses in this API are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
-{{< alert type="note" >}}
-
-The `references.relative` attribute is relative to the group or project of the issue being requested.
-When an issue is fetched from its project, the `relative` format is the same as the `short` format.
-When requested across groups or projects, it's expected to be the same as the `full` format.
-
-{{< /alert >}}
+> [!note]
+> The `references.relative` attribute is relative to the group or project of the issue being requested.
+> When an issue is fetched from its project, the `relative` format is the same as the `short` format.
+> When requested across groups or projects, it's expected to be the same as the `full` format.
 
 ## List all issues
 

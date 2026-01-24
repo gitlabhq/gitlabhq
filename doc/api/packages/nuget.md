@@ -18,13 +18,9 @@ Use this API to interact with the [NuGet package manager client](../../user/pack
 > This API is used by the [NuGet package manager client](https://www.nuget.org/)
 > and is generally not meant for manual consumption.
 
-{{< alert type="note" >}}
-
 These endpoints do not adhere to the standard API authentication methods.
 See the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
 
 ## Package index
 

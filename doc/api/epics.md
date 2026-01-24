@@ -55,13 +55,10 @@ Lists all epics for a specified group and its subgroups.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
-{{< alert type="note" >}}
-
-`references.relative` is relative to the group that the epic is being requested from. When an epic
-is fetched from its origin group, the `relative` format is the same as the `short` format.
-When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
-
-{{< /alert >}}
+> [!note]
+> `references.relative` is relative to the group that the epic is being requested from. When an epic
+> is fetched from its origin group, the `relative` format is the same as the `short` format.
+> When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
 
 ```plaintext
 GET /groups/:id/epics
@@ -287,13 +284,10 @@ Example response:
 
 Creates an epic for a specified group.
 
-{{< alert type="note" >}}
-
-Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
-directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
-`*_fixed` fields instead.
-
-{{< /alert >}}
+> [!note]
+> Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
+> directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
+> `*_fixed` fields instead.
 
 ```plaintext
 POST /groups/:id/epics

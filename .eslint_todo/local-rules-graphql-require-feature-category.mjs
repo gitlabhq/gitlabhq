@@ -1022,7 +1022,6 @@ export default {
     'ee/app/assets/javascripts/boards/graphql/group_members.query.graphql',
     'ee/app/assets/javascripts/boards/graphql/issue_move_list.mutation.graphql',
     'ee/app/assets/javascripts/boards/graphql/list_update_limit_metrics.mutation.graphql',
-    'ee/app/assets/javascripts/boards/graphql/lists_epics.query.graphql',
     'ee/app/assets/javascripts/boards/graphql/lists_epics_with_color.query.graphql',
     'ee/app/assets/javascripts/boards/graphql/update_board_epic_user_preferences.mutation.graphql',
     'ee/app/assets/javascripts/burndown_chart/graphql/iteration_issues_summary.query.graphql',

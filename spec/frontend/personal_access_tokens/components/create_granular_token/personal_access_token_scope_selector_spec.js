@@ -10,6 +10,12 @@ describe('PersonalAccessTokenScopeSelector', () => {
       propsData: {
         ...props,
       },
+      slots: {
+        'namespace-selector': '<div class="namespace-selector-slot">Add group or project</div>',
+        'namespace-permissions':
+          '<div class="namespace-permissions-slot">Group and project permissions</div>',
+        'user-permissions': '<div class="user-permissions-slot">User Permissions</div>',
+      },
     });
   };
 
@@ -18,6 +24,7 @@ describe('PersonalAccessTokenScopeSelector', () => {
   const findRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findGroupTab = () => wrapper.findAllComponents(GlTab).at(0);
+  const findUserTab = () => wrapper.findAllComponents(GlTab).at(1);
 
   beforeEach(() => {
     createComponent();
@@ -27,11 +34,18 @@ describe('PersonalAccessTokenScopeSelector', () => {
     expect(wrapper.text()).toContain('Define scope');
   });
 
-  it('renders tabs for group/project and user scopes', () => {
+  it('renders tabs', () => {
     expect(findTabs().exists()).toBe(true);
+  });
 
+  it('renders group and project tab', () => {
     expect(findGroupTab().exists()).toBe(true);
     expect(findGroupTab().attributes('title')).toBe('Group and project');
+  });
+
+  it('renders user tab', () => {
+    expect(findUserTab().exists()).toBe(true);
+    expect(findUserTab().attributes('title')).toBe('User');
   });
 
   it('renders form group for group access options', () => {
@@ -58,6 +72,18 @@ describe('PersonalAccessTokenScopeSelector', () => {
     expect(findRadioButtons().at(2).text()).toContain(
       "Only specific groups or projects that I'm a member of",
     );
+  });
+
+  it('renders namespace selector slot in group tab', () => {
+    expect(findGroupTab().find('.namespace-selector-slot').exists()).toBe(true);
+  });
+
+  it('renders group permissions slot in group tab', () => {
+    expect(findGroupTab().find('.namespace-permissions-slot').exists()).toBe(true);
+  });
+
+  it('renders user permissions slot in user tab', () => {
+    expect(findUserTab().find('.user-permissions-slot').exists()).toBe(true);
   });
 
   describe('error handling', () => {

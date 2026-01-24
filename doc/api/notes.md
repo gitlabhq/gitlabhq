@@ -525,13 +525,10 @@ This change is a breaking change.
 
 Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.
 
-{{< alert type="note" >}}
-
-The epics notes API uses the epic ID instead of epic IID. If you use the epic's IID, GitLab returns either a 404
-error or notes for the wrong epic. It's different from the [issue notes API](#issues) and
-[merge requests notes API](#merge-requests).
-
-{{< /alert >}}
+> [!note]
+> The epics notes API uses the epic ID instead of epic IID. If you use the epic's IID, GitLab returns either a 404
+> error or notes for the wrong epic. It's different from the [issue notes API](#issues) and
+> [merge requests notes API](#merge-requests).
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/notes

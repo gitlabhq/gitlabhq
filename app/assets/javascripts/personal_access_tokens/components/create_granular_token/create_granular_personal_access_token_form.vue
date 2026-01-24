@@ -8,6 +8,7 @@ import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/
 import {
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   MAX_DESCRIPTION_LENGTH,
+  ACCESS_USER_ENUM,
 } from '~/personal_access_tokens/constants';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
@@ -39,7 +40,10 @@ export default {
         expirationDate: null,
         access: null,
         namespaceIds: [],
-        permissions: [],
+        permissions: {
+          namespace: [],
+          user: [],
+        },
       },
       errors: {
         name: '',
@@ -59,6 +63,32 @@ export default {
     },
     renderNamespaceSelector() {
       return this.form.access === ACCESS_SELECTED_MEMBERSHIPS_ENUM;
+    },
+    targetBoundaries() {
+      return {
+        namespace: ['GROUP', 'PROJECT'],
+        user: [ACCESS_USER_ENUM],
+      };
+    },
+    granularScopes() {
+      const scopes = [];
+
+      if (this.form.permissions.namespace.length) {
+        scopes.push({
+          access: this.form.access,
+          resourceIds: this.form.namespaceIds,
+          permissions: this.form.permissions.namespace,
+        });
+      }
+
+      if (this.form.permissions.user.length) {
+        scopes.push({
+          access: ACCESS_USER_ENUM,
+          permissions: this.form.permissions.user,
+        });
+      }
+
+      return scopes;
     },
   },
   methods: {
@@ -87,7 +117,7 @@ export default {
         this.errors.expirationDate = this.$options.i18n.expirationDateError;
       }
 
-      if (!this.form.access) {
+      if (this.form.permissions.namespace.length && !this.form.access) {
         this.errors.access = this.$options.i18n.scopeError;
       }
 
@@ -95,7 +125,7 @@ export default {
         this.errors.namespaceIds = this.$options.i18n.namespaceError;
       }
 
-      if (!this.form.permissions.length) {
+      if (!this.form.permissions.namespace.length && !this.form.permissions.user.length) {
         this.errors.permissions = this.$options.i18n.permissionsError;
       }
 
@@ -116,13 +146,7 @@ export default {
               name: this.form.name,
               description: this.form.description,
               expiresAt: this.form.expirationDate,
-              granularScopes: [
-                {
-                  access: this.form.access,
-                  resourceIds: this.form.namespaceIds,
-                  permissions: this.form.permissions,
-                },
-              ],
+              granularScopes: this.granularScopes,
             },
           },
           update: (_, { data: { personalAccessTokenCreate } }) => {
@@ -211,21 +235,34 @@ export default {
             v-model="form.expirationDate"
             :error="errors.expirationDate"
           />
-
-          <personal-access-token-scope-selector v-model="form.access" :error="errors.access" />
-
-          <personal-access-token-namespace-selector
-            v-if="renderNamespaceSelector"
-            v-model="form.namespaceIds"
-            :error="errors.namespaceIds"
-          />
         </section>
-
         <section>
-          <personal-access-token-permissions-selector
-            v-model="form.permissions"
-            :error="errors.permissions"
-          />
+          <personal-access-token-scope-selector v-model="form.access" :error="errors.access">
+            <template #namespace-selector>
+              <personal-access-token-namespace-selector
+                v-if="renderNamespaceSelector"
+                v-model="form.namespaceIds"
+                :error="errors.namespaceIds"
+                class="gl-mt-4 gl-w-full lg:gl-w-1/2"
+              />
+            </template>
+
+            <template #namespace-permissions>
+              <personal-access-token-permissions-selector
+                v-model="form.permissions.namespace"
+                :error="errors.permissions"
+                :target-boundaries="targetBoundaries.namespace"
+              />
+            </template>
+
+            <template #user-permissions>
+              <personal-access-token-permissions-selector
+                v-model="form.permissions.user"
+                :error="errors.permissions"
+                :target-boundaries="targetBoundaries.user"
+              />
+            </template>
+          </personal-access-token-scope-selector>
         </section>
 
         <section class="gl-mt-6">

@@ -66,13 +66,10 @@ curl --request GET \
 
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
-{{< alert type="note" >}}
-
-All OAuth access tokens are valid for two hours after they are created. You can use the
-`refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
-how to request a new access token using a refresh token.
-
-{{< /alert >}}
+> [!note]
+> All OAuth access tokens are valid for two hours after they are created. You can use the
+> `refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
+> how to request a new access token using a refresh token.
 
 ## Personal, project, and group access tokens
 

@@ -12,13 +12,10 @@ title: Geo Nodes API (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
-and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
+> and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
+> This change is a breaking change.
 
 Use this API to manage [Geo nodes](../administration/geo/_index.md).
 

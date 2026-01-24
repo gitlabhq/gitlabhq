@@ -18,13 +18,9 @@ Use this API to interact with the [Maven package manager client](../../user/pack
 > This API is used by the [Maven package manager client](https://maven.apache.org/)
 > and is generally not meant for manual consumption.
 
-{{< alert type="note" >}}
-
 These endpoints do not adhere to the standard API authentication methods.
 See [Maven package registry documentation](../../user/packages/maven_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
 
 ## Download a package file at the instance-level
 

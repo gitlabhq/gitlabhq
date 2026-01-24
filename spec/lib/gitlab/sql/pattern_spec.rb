@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SQL::Pattern, feature_category: :shared do
+RSpec.describe Gitlab::SQL::Pattern, feature_category: :database do
   using RSpec::Parameterized::TableSyntax
 
   describe '.fuzzy_search' do

@@ -2,7 +2,7 @@ package objectstore
 
 import (
 	"context"
-	"crypto/md5"
+	"crypto/md5" //nolint:gosec // G501: MD5 required for S3 ETag verification per AWS S3 protocol
 	"encoding/hex"
 	"fmt"
 	"hash"
@@ -92,7 +92,7 @@ func (u *uploader) consume(outerCtx context.Context, reader io.Reader, deadLine 
 
 	var hasher hash.Hash
 	if u.checkETag {
-		hasher = md5.New()
+		hasher = md5.New() //nolint:gosec // G401: MD5 required for S3 ETag verification
 		reader = io.TeeReader(reader, hasher)
 	}
 

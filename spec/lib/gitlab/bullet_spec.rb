@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Bullet, feature_category: :shared do
+RSpec.describe Gitlab::Bullet, feature_category: :acquisition do
   context 'with bullet installed' do
     around do |example|
       bullet_enabled = ::Bullet.enabled?

@@ -743,13 +743,10 @@ Prerequisites:
 
 - You must be an administrator.
 
-{{< alert type="note" >}}
-
-`private_profile` defaults to the value of the
-[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)
-setting. `bio` defaults to `""` instead of `null`.
-
-{{< /alert >}}
+> [!note]
+> `private_profile` defaults to the value of the
+> [Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)
+> setting. `bio` defaults to `""` instead of `null`.
 
 ```plaintext
 POST /users

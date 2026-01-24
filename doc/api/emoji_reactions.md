@@ -233,13 +233,10 @@ curl --request DELETE \
 
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
-{{< alert type="note" >}}
-
-The examples below describe working with emoji reactions on an issue's comments, but can be
-adapted to comments on merge requests and snippets. Therefore, you have to replace
-`issue_iid` either with `merge_request_iid` or with the `snippet_id`.
-
-{{< /alert >}}
+> [!note]
+> The examples below describe working with emoji reactions on an issue's comments, but can be
+> adapted to comments on merge requests and snippets. Therefore, you have to replace
+> `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
 ### List a comment's emoji reactions
 

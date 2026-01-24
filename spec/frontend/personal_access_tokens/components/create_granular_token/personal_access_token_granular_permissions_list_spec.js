@@ -11,6 +11,7 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
   const createComponent = ({ props = {} } = {}) => {
     wrapper = mountExtended(PersonalAccessTokenGranularPermissionsList, {
       propsData: {
+        targetBoundaries: ['GROUP', 'PROJECT'],
         permissions: mockGroupPermissions,
         resources: mockGroupResources,
         ...props,
@@ -27,11 +28,21 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
   });
 
   describe('rendering', () => {
-    it('renders crud component with correct title and description', () => {
+    it('renders crud component for group scope', () => {
       expect(findCrudComponent().exists()).toBe(true);
       expect(findCrudComponent().text()).toContain('Group and project permissions');
       expect(findCrudComponent().text()).toContain(
         'Grant permissions only to specific resources in your groups or projects.',
+      );
+    });
+
+    it('renders crud component for user scope', () => {
+      createComponent({ props: { targetBoundaries: ['USER'] } });
+
+      expect(findCrudComponent().exists()).toBe(true);
+      expect(findCrudComponent().text()).toContain('User permissions');
+      expect(findCrudComponent().text()).toContain(
+        'Grant permissions to resources in your GitLab user account.',
       );
     });
 
@@ -54,12 +65,14 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     });
 
     it('renders correct list of permissions for each resource', () => {
-      expect(findListbox(0).props('items')).toStrictEqual([
-        mockGroupPermissions[0],
-        mockGroupPermissions[1],
+      expect(findListbox(0).props('items')).toMatchObject([
+        { value: 'read_project', text: 'read' },
+        { value: 'write_project', text: 'write' },
       ]);
 
-      expect(findListbox(1).props('items')).toStrictEqual([mockGroupPermissions[2]]);
+      expect(findListbox(1).props('items')).toMatchObject([
+        { value: 'read_repository', text: 'read repository' },
+      ]);
     });
 
     it('renders correct toggle text', async () => {

@@ -768,8 +768,8 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.2 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
+We're running Ruby 3.3 on GitLab.com, as well as for the default branch.
+<!-- To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
 See the roadmap at
 [Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
 for more details.
@@ -780,7 +780,7 @@ suite on dedicated 2-hourly scheduled pipelines for each supported versions.
 For merge requests, you can add the following labels to run the respective
 Ruby version only:
 
-- `pipeline:run-in-ruby3_3`
+- `pipeline:run-in-ruby3_3` -->
 
 ### PostgreSQL versions testing
 
@@ -795,12 +795,12 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 
 | Where?                                                                                          | PostgreSQL version                  | Ruby version          |
 |-------------------------------------------------------------------------------------------------|-------------------------------------|-----------------------|
-| Merge requests                                                                                  | 16 (default version)                | 3.2 (default version) |
-| `master` branch commits                                                                         | 16 (default version)                | 3.2 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
+| Merge requests                                                                                  | 16 (default version)                | 3.3 (default version) |
+| `master` branch commits                                                                         | 16 (default version)                | 3.3 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.3 (default version) |
 | `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
-| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 17 and 18     | 3.2 (default version) |
-| `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.2 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 17 and 18     | 3.3 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.3 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.

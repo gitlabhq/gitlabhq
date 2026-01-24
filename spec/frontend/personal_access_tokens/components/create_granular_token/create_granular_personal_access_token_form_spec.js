@@ -51,22 +51,33 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     wrapper.findComponent(PersonalAccessTokenExpirationDate);
   const findScopeSelectorComponent = () => wrapper.findComponent(PersonalAccessTokenScopeSelector);
   const findNamespaceSelector = () => wrapper.findComponent(PersonalAccessTokenNamespaceSelector);
-  const findPermissionsSelector = () =>
-    wrapper.findComponent(PersonalAccessTokenPermissionsSelector);
+  const findPermissionsSelectors = () =>
+    wrapper.findAllComponents(PersonalAccessTokenPermissionsSelector);
+  const findGroupPermissionsSelector = () => findPermissionsSelectors().at(0);
+  const findUserPermissionsSelector = () => findPermissionsSelectors().at(1);
   const findCancelButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findCreateButton = () => wrapper.findAllComponents(GlButton).at(1);
   const findCreatedToken = () => wrapper.findComponent(CreatedPersonalAccessToken);
 
-  const fillFormWithValidData = async () => {
+  const fillFormWithValidData = async (
+    options = { groupPermissions: true, userPermissions: true },
+  ) => {
     findNameInput().vm.$emit('input', mockCreateMutationInput.name);
     findDescriptionTextarea().vm.$emit('input', mockCreateMutationInput.description);
     findExpirationDateComponent().vm.$emit('input', mockCreateMutationInput.expirationDate);
-    findScopeSelectorComponent().vm.$emit('input', mockCreateMutationInput.access);
 
-    await nextTick();
+    if (options.groupPermissions) {
+      findScopeSelectorComponent().vm.$emit('input', mockCreateMutationInput.group.access);
 
-    findNamespaceSelector().vm.$emit('input', mockCreateMutationInput.resourceIds);
-    findPermissionsSelector().vm.$emit('input', mockCreateMutationInput.permissions);
+      await nextTick();
+
+      findNamespaceSelector().vm.$emit('input', mockCreateMutationInput.group.resourceIds);
+      findGroupPermissionsSelector().vm.$emit('input', mockCreateMutationInput.group.permissions);
+    }
+
+    if (options.userPermissions) {
+      findUserPermissionsSelector().vm.$emit('input', mockCreateMutationInput.user.permissions);
+    }
   };
 
   beforeEach(() => {
@@ -120,8 +131,14 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(findNamespaceSelector().exists()).toBe(true);
     });
 
-    it('renders permissions selector component', () => {
-      expect(findPermissionsSelector().exists()).toBe(true);
+    it('renders permissions selectors for group and user scope', () => {
+      expect(findPermissionsSelectors()).toHaveLength(2);
+
+      expect(findGroupPermissionsSelector().props('targetBoundaries')).toEqual([
+        'GROUP',
+        'PROJECT',
+      ]);
+      expect(findUserPermissionsSelector().props('targetBoundaries')).toEqual(['USER']);
     });
   });
 
@@ -179,7 +196,9 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(findExpirationDateComponent().props('error')).toBe('');
     });
 
-    it('validates scope is required', async () => {
+    it('validates scope is required when group permissions are selected', async () => {
+      findGroupPermissionsSelector().vm.$emit('input', mockCreateMutationInput.group.permissions);
+
       await findCreateButton().vm.$emit('click');
 
       expect(findScopeSelectorComponent().props('error')).toBe('At least one scope is required.');
@@ -197,7 +216,12 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
     it('validates permissions are required', async () => {
       await findCreateButton().vm.$emit('click');
 
-      expect(findPermissionsSelector().props('error')).toBe('At least one permission is required.');
+      expect(findGroupPermissionsSelector().props('error')).toBe(
+        'At least one permission is required.',
+      );
+      expect(findUserPermissionsSelector().props('error')).toBe(
+        'At least one permission is required.',
+      );
     });
   });
 
@@ -211,7 +235,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
       expect(mockMutationHandler).not.toHaveBeenCalled();
     });
 
-    it('submits form with correct variables when valid', async () => {
+    it('submits form with correct variables when both group & user permissions are selected', async () => {
       await fillFormWithValidData();
       await findCreateButton().vm.$emit('click');
 
@@ -222,9 +246,52 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
           expiresAt: mockCreateMutationInput.expirationDate,
           granularScopes: [
             {
-              access: mockCreateMutationInput.access,
-              resourceIds: mockCreateMutationInput.resourceIds,
-              permissions: mockCreateMutationInput.permissions,
+              access: mockCreateMutationInput.group.access,
+              resourceIds: mockCreateMutationInput.group.resourceIds,
+              permissions: mockCreateMutationInput.group.permissions,
+            },
+            {
+              access: mockCreateMutationInput.user.access,
+              permissions: mockCreateMutationInput.user.permissions,
+            },
+          ],
+        },
+      });
+    });
+
+    it('submits form with correct variables when only group permissions are selected', async () => {
+      await fillFormWithValidData({ groupPermissions: false, userPermissions: true });
+      await findCreateButton().vm.$emit('click');
+
+      expect(mockMutationHandler).toHaveBeenCalledWith({
+        input: {
+          name: mockCreateMutationInput.name,
+          description: mockCreateMutationInput.description,
+          expiresAt: mockCreateMutationInput.expirationDate,
+          granularScopes: [
+            {
+              access: mockCreateMutationInput.user.access,
+              permissions: mockCreateMutationInput.user.permissions,
+            },
+          ],
+        },
+      });
+    });
+
+    it('submits form with correct variables when only user permissions are selected', async () => {
+      await fillFormWithValidData({ groupPermissions: true, userPermissions: false });
+      await findCreateButton().vm.$emit('click');
+
+      expect(mockMutationHandler).toHaveBeenCalledWith({
+        input: {
+          name: mockCreateMutationInput.name,
+          description: mockCreateMutationInput.description,
+          expiresAt: mockCreateMutationInput.expirationDate,
+          granularScopes: [
+            {
+              access: mockCreateMutationInput.group.access,
+              resourceIds: mockCreateMutationInput.group.resourceIds,
+              permissions: mockCreateMutationInput.group.permissions,
             },
           ],
         },

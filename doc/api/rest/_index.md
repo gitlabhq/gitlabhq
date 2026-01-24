@@ -445,13 +445,10 @@ when available.
 The type of filter depends on the
 `order_by` option used, and you can have more than one additional filter.
 
-{{< alert type="warning" >}}
-
-The `Links` header was removed to be aligned with the
-[W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
-header should be used instead.
-
-{{< /alert >}}
+> [!warning]
+> The `Links` header was removed to be aligned with the
+> [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
+> header should be used instead.
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is

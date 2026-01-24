@@ -4207,6 +4207,9 @@ msgstr ""
 msgid "AccessTokens|Grant permissions only to specific resources in your groups or projects."
 msgstr ""
 
+msgid "AccessTokens|Grant permissions to resources in your GitLab user account."
+msgstr ""
+
 msgid "AccessTokens|Group and project access"
 msgstr ""
 
@@ -4453,6 +4456,9 @@ msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr ""
 
 msgid "AccessTokens|User permissions"
+msgstr ""
+
+msgid "AccessTokens|User resources"
 msgstr ""
 
 msgid "AccessTokens|View details"
@@ -21122,6 +21128,9 @@ msgid "CreateGroup|You don’t have permission to create groups."
 msgstr ""
 
 msgid "CreateGroup|You have reached the group limit until you verify your account."
+msgstr ""
+
+msgid "CreateGroup|You have reached the limit of three top-level groups. To create another group, reduce the number of groups you have, or upgrade to a paid tier."
 msgstr ""
 
 msgid "CreateTag|Tag"
@@ -39940,6 +39949,9 @@ msgid "Learn more about custom project templates"
 msgstr ""
 
 msgid "Learn more about deploying to a cluster"
+msgstr ""
+
+msgid "Learn more about free user limits"
 msgstr ""
 
 msgid "Learn more about group-level project templates"
@@ -70775,6 +70787,9 @@ msgstr ""
 msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
 msgstr ""
 
+msgid "To create another group, reduce the number of groups you have, or upgrade to a paid tier."
+msgstr ""
+
 msgid "To delete the item from the UI:"
 msgstr ""
 
@@ -71775,6 +71790,9 @@ msgid "TransferGroup|Transfer failed: %{error_message}"
 msgstr ""
 
 msgid "TransferGroup|You don't have enough permissions."
+msgstr ""
+
+msgid "TransferGroup|You have reached the limit of three top-level groups. To transfer this group to the top-level, reduce the number of top-level groups you have, or upgrade to a paid tier."
 msgstr ""
 
 msgid "TransferOrganization|Cannot transfer users because the existing organization could not be found."
@@ -80108,6 +80126,9 @@ msgid "You have no comment templates yet."
 msgstr ""
 
 msgid "You have no permissions"
+msgstr ""
+
+msgid "You have reached the limit of three top-level groups"
 msgstr ""
 
 msgid "You have successfully purchased %{product}. You'll receive a receipt by email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."

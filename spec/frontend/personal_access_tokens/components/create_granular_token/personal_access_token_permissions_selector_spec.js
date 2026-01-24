@@ -9,7 +9,11 @@ import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/com
 import PersonalAccessTokenResourcesList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resources_list.vue';
 import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
 import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
-import { mockAccessTokenPermissionsQueryResponse, mockGroupPermissions } from '../../mock_data';
+import {
+  mockAccessTokenPermissionsQueryResponse,
+  mockGroupPermissions,
+  mockUserPermissions,
+} from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -27,6 +31,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     wrapper = shallowMountExtended(PersonalAccessTokenPermissionsSelector, {
       apolloProvider: mockApollo,
       propsData: {
+        targetBoundaries: ['GROUP', 'PROJECT'],
         ...props,
       },
     });
@@ -43,6 +48,16 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
   });
 
   describe('rendering', () => {
+    it('shows group resource title for group scope', () => {
+      expect(wrapper.text()).toContain('Group and project resources');
+    });
+
+    it('shows user resource title for user scope', () => {
+      createComponent({ props: { targetBoundaries: ['USER'] } });
+
+      expect(wrapper.text()).toBe('User resources');
+    });
+
     it('renders the search box', () => {
       expect(findSearchBox().exists()).toBe(true);
       expect(findSearchBox().attributes('placeholder')).toBe('Search for resources to add');
@@ -94,9 +109,20 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('filters permissions by GROUP and PROJECT boundaries', () => {
+    it('filters permissions by target boundaries', () => {
       expect(findResourcesList().props('permissions')).toStrictEqual(mockGroupPermissions);
       expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
+      expect(findPermissionsList().props('targetBoundaries')).toEqual(['GROUP', 'PROJECT']);
+    });
+
+    it('filters user permissions correctly', async () => {
+      createComponent({ props: { targetBoundaries: ['USER'] } });
+
+      await waitForPromises();
+
+      expect(findResourcesList().props('permissions')).toStrictEqual(mockUserPermissions);
+      expect(findPermissionsList().props('permissions')).toStrictEqual(mockUserPermissions);
+      expect(findPermissionsList().props('targetBoundaries')).toEqual(['USER']);
     });
 
     it('searches by permission description', async () => {

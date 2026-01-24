@@ -111,6 +111,13 @@ export default {
             </gl-form-radio>
           </gl-form-radio-group>
         </gl-form-group>
+
+        <slot name="namespace-selector"></slot>
+        <slot name="namespace-permissions"></slot>
+      </gl-tab>
+
+      <gl-tab :title="$options.i18n.userTab">
+        <slot name="user-permissions"></slot>
       </gl-tab>
     </gl-tabs>
   </div>

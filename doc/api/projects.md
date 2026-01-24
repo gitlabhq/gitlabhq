@@ -361,13 +361,10 @@ List projects.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with simple fields

@@ -80,6 +80,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 		}
 	}()
 
+	//nolint:gosec // G204: fileName comes from trusted internal FileHandler, not user input
 	zipMd := exec.CommandContext(ctx, "gitlab-zip-metadata", "-zip-reader-limit", strconv.FormatInt(readerLimit, 10), fileName)
 	zipMd.Stderr = logWriter
 	zipMd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}

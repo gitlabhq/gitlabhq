@@ -250,13 +250,10 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]`   | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `platform_kubernetes_attributes[namespace]` | string  | no       | The unique namespace related to the project                                                |
 
-{{< alert type="note" >}}
-
-`name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
-through the [Add existing instance cluster](#add-existing-instance-cluster) endpoint.
-
-{{< /alert >}}
+> [!note]
+> `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
+> through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
+> through the [Add existing instance cluster](#add-existing-instance-cluster) endpoint.
 
 Example request:
 

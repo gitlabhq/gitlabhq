@@ -19,13 +19,10 @@ title: Virtual registries cleanup policies API
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of these endpoints is controlled by a feature flag.
-For more information, see the history.
-Review the documentation carefully before you use them.
-
-{{< /alert >}}
+> [!flag]
+> The availability of these endpoints is controlled by a feature flag.
+> For more information, see the history.
+> Review the documentation carefully before you use them.
 
 Use this API to:
 

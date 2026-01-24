@@ -21,13 +21,9 @@ this API for your GitLab instance.
 > This API is used by the [`go` command](https://go.dev/ref/mod#go-get)
 > and is generally not meant for manual consumption.
 
-{{< alert type="note" >}}
-
 These endpoints do not adhere to the standard API authentication methods.
 See the [Go Proxy package documentation](../../user/packages/go_proxy/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
 
 ## List
 

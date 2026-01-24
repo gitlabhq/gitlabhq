@@ -327,13 +327,10 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
-{{< alert type="note" >}}
-
-Deleting a branch does not completely erase all related data.
-Some information persists to maintain project history and to support recovery processes.
-For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
-
-{{< /alert >}}
+> [!note]
+> Deleting a branch does not completely erase all related data.
+> Some information persists to maintain project history and to support recovery processes.
+> For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
 ## Delete merged branches
 

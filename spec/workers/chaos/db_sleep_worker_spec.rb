@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Chaos::DbSleepWorker, feature_category: :shared do
+RSpec.describe Chaos::DbSleepWorker, feature_category: :sidekiq do
   describe '#perform' do
     it 'calls Gitlab::Chaos.db_sleep' do
       expect(Gitlab::Chaos).to receive(:db_sleep).with(5).and_call_original

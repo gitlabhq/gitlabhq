@@ -25,7 +25,7 @@ module EnumInheritableTestCase
   class Cat < Animal; end
 end
 
-RSpec.describe EnumInheritance, feature_category: :shared do
+RSpec.describe EnumInheritance, feature_category: :database do
   describe '.sti_class_to_enum_map' do
     it 'is the inverse of sti_class_to_enum_map' do
       expect(EnumInheritableTestCase::Animal.sti_class_to_enum_map).to include({

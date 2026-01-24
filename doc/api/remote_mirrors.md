@@ -18,13 +18,10 @@ can query and modify the state of these mirrors with the remote mirror API.
 For security reasons, the `url` attribute in the API response is always scrubbed of username
 and password information.
 
-{{< alert type="note" >}}
-
-[Pull mirrors](../user/project/repository/mirror/pull.md) use
-[a different API endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) to
-display and update them.
-
-{{< /alert >}}
+> [!note]
+> [Pull mirrors](../user/project/repository/mirror/pull.md) use
+> [a different API endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) to
+> display and update them.
 
 ## List a project's remote mirrors
 

@@ -79,21 +79,15 @@ GET /runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` and `paused` values in the `status` query parameter are deprecated
-and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` query parameter instead.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The `active` attribute in the response is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> Deprecations:
+>
+> - The `active` and `paused` values in the `status` query parameter are deprecated
+>   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` query parameter instead.
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -175,21 +169,15 @@ GET /runners/all?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` and `paused` values in the `status` query parameter are deprecated
-and are scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` query parameter instead.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The `active` attribute in the response is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> Deprecations:
+>
+> - The `active` and `paused` values in the `status` query parameter are deprecated
+>   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` query parameter instead.
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -288,13 +276,10 @@ GET /runners/:id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` attribute in the response is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> The `active` attribute in the response is deprecated
+> and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -394,13 +379,10 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
      --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` query parameter is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> The `active` query parameter is deprecated
+> and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -492,13 +474,10 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` form attribute is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> The `active` form attribute is deprecated
+> and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> Use the `paused` attribute instead.
 
 ## List jobs processed by a runner
 
@@ -668,21 +647,15 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` and `paused` values in the `status` query parameter are deprecated
-and are scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` query parameter instead.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The `active` attribute in the response is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> Deprecations:
+>
+> - The `active` and `paused` values in the `status` query parameter are deprecated
+>   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` query parameter instead.
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -843,21 +816,15 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
-{{< alert type="warning" >}}
-
-The `active` and `paused` values in the `status` query parameter are deprecated
-and are scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` query parameter instead.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-The `active` attribute in the response is deprecated
-and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-Use the `paused` attribute instead.
-
-{{< /alert >}}
+> [!warning]
+> Deprecations:
+>
+> - The `active` and `paused` values in the `status` query parameter are deprecated
+>   and scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` query parameter instead.
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
 
 {{< alert type="warning" >}}
 
@@ -915,13 +882,10 @@ Example response:
 
 ## Create a runner
 
-{{< alert type="warning" >}}
-
-The endpoint uses registration tokens ([deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)),
-which are disabled by default in GitLab 17.0 and later.
-Use [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) instead to create runners with the recommended workflow.
-
-{{< /alert >}}
+> [!warning]
+> The endpoint uses registration tokens ([deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872)),
+> which are disabled by default in GitLab 17.0 and later.
+> Use [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) instead to create runners with the recommended workflow.
 
 {{< alert type="warning" >}}
 

@@ -29,13 +29,10 @@ for production use due to limited functionality.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-These endpoints do not adhere to the standard API authentication methods.
-See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
-for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
-
-{{< /alert >}}
+> [!note]
+> These endpoints do not adhere to the standard API authentication methods.
+> See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
+> for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Debian API
 

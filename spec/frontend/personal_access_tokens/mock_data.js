@@ -93,9 +93,15 @@ export const mockCreateMutationInput = {
   name: 'Test Token',
   description: 'Test description',
   expirationDate: '2025-12-31',
-  access: 'SELECTED_MEMBERSHIPS',
-  resourceIds: ['gid://gitlab/Project/1', 'gid://gitlab/Group/1'],
-  permissions: ['read_project', 'write_project'],
+  group: {
+    access: 'SELECTED_MEMBERSHIPS',
+    resourceIds: ['gid://gitlab/Project/1', 'gid://gitlab/Group/1'],
+    permissions: ['read_project', 'write_project'],
+  },
+  user: {
+    access: 'USER',
+    permissions: ['read_user', 'follow_user'],
+  },
 };
 
 export const mockCreateMutationResponse = {
@@ -194,7 +200,7 @@ export const mockGroupPermissions = [
   {
     value: 'read_repository',
     description: 'Grants the ability to read repository',
-    text: 'read',
+    text: 'read_repository',
     category: 'merge_request',
     resource: 'repository',
     boundaries: ['PROJECT'],

@@ -1,8 +1,8 @@
 package destination
 
 import (
-	"crypto/md5"
-	"crypto/sha1"
+	"crypto/md5"  //nolint:gosec // G501: MD5 used for content checksums and S3 ETag compatibility, not security
+	"crypto/sha1" //nolint:gosec // G505: SHA1 used for content checksums, not security
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/hex"

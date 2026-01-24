@@ -4,6 +4,7 @@ import { groupBy } from 'lodash';
 import { s__ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { ACCESS_USER_ENUM } from '~/personal_access_tokens/constants';
 
 export default {
   name: 'PersonalAccessTokenGranularPermissionsList',
@@ -12,6 +13,10 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
+    targetBoundaries: {
+      type: Array,
+      required: true,
+    },
     permissions: {
       type: Array,
       required: false,
@@ -41,10 +46,32 @@ export default {
     permissionsByResource() {
       return groupBy(this.permissions, 'resource');
     },
+    isUserScope() {
+      return this.targetBoundaries.includes(ACCESS_USER_ENUM);
+    },
+    permissionsTitle() {
+      return this.isUserScope
+        ? this.$options.i18n.user.permissionsTitle
+        : this.$options.i18n.namespace.permissionsTitle;
+    },
+    permissionsDescription() {
+      return this.isUserScope
+        ? this.$options.i18n.user.permissionsDescription
+        : this.$options.i18n.namespace.permissionsDescription;
+    },
   },
   methods: {
     listboxItems(resource) {
-      return this.permissionsByResource[resource];
+      const items = this.permissionsByResource[resource];
+
+      if (!items) {
+        return [];
+      }
+
+      return items?.map((item) => ({
+        ...item,
+        text: this.removeUnderscore(item.text),
+      }));
     },
     dropdownText(resource) {
       // permissions is an array of all selected permissions -> [read_badge, read_member]
@@ -64,10 +91,16 @@ export default {
     },
   },
   i18n: {
-    group: {
+    namespace: {
       permissionsTitle: s__('AccessTokens|Group and project permissions'),
       permissionsDescription: s__(
         'AccessTokens|Grant permissions only to specific resources in your groups or projects.',
+      ),
+    },
+    user: {
+      permissionsTitle: s__('AccessTokens|User permissions'),
+      permissionsDescription: s__(
+        'AccessTokens|Grant permissions to resources in your GitLab user account.',
       ),
     },
     noResourcesSelected: s__('AccessTokens|No resources selected'),
@@ -78,11 +111,11 @@ export default {
 <template>
   <crud-component class="gl-w-2/3">
     <template #title>
-      {{ $options.i18n.group.permissionsTitle }}
+      {{ permissionsTitle }}
     </template>
 
     <template #description>
-      {{ $options.i18n.group.permissionsDescription }}
+      {{ permissionsDescription }}
     </template>
 
     <template v-if="!resources.length" #empty>

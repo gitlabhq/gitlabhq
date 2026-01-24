@@ -120,13 +120,10 @@ Members from an invited group are returned if either:
 - The requester is also a member of the invited group.
 - The requester is a member of the shared group or project.
 
-{{< alert type="note" >}}
-
-The invited group members have shared membership in the shared group or project.
-This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
-then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
-
-{{< /alert >}}
+> [!note]
+> The invited group members have shared membership in the shared group or project.
+> This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+> then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -286,13 +283,10 @@ Example response:
 
 Gets a member of a project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-project-including-inherited-and-invited-members) for details.
 
-{{< alert type="note" >}}
-
-The invited group members have shared membership in the shared group or project.
-This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
-then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
-
-{{< /alert >}}
+> [!note]
+> The invited group members have shared membership in the shared group or project.
+> This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+> then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 ```plaintext
 GET /projects/:id/members/all/:user_id

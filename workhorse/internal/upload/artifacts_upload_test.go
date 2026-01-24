@@ -46,76 +46,94 @@ func TestMain(m *testing.M) {
 	testhelper.VerifyNoGoroutines(m)
 }
 
-func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
-	mux := http.NewServeMux()
-	mux.HandleFunc(Path+"/authorize", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			t.Fatal("Expected POST request")
-		}
+func handleAuthorize(t *testing.T, w http.ResponseWriter, r *http.Request, authResponse *api.Response) {
+	if r.Method != "POST" {
+		t.Fatal("Expected POST request")
+	}
 
-		w.Header().Set("Content-Type", api.ResponseContentType)
+	w.Header().Set("Content-Type", api.ResponseContentType)
 
-		data, err := json.Marshal(&authResponse)
-		if err != nil {
-			t.Fatal("Expected to marshal")
-		}
-		w.Write(data)
-	})
-	mux.HandleFunc(Path, func(w http.ResponseWriter, r *http.Request) {
-		opts, err := destination.GetOpts(authResponse)
-		assert.NoError(t, err)
+	data, err := json.Marshal(&authResponse)
+	if err != nil {
+		t.Fatal("Expected to marshal")
+	}
+	w.Write(data)
+}
 
-		if r.Method != "POST" {
-			t.Fatal("Expected POST request")
-		}
-		if opts.IsLocalTempFile() {
-			if r.FormValue("file.path") == "" {
-				t.Fatal("Expected file to be present")
-				return
-			}
-
-			_, err := os.ReadFile(r.FormValue("file.path"))
-			if err != nil {
-				t.Fatal("Expected file to be readable")
-				return
-			}
-		} else if r.FormValue("file.remote_url") == "" {
-			t.Fatal("Expected file to be remote accessible")
+func validateFilePresence(t *testing.T, r *http.Request, opts *destination.UploadOpts) {
+	if opts.IsLocalTempFile() {
+		if r.FormValue("file.path") == "" {
+			t.Fatal("Expected file to be present")
 			return
 		}
 
-		if r.FormValue("metadata.path") != "" {
-			metadata, err := os.ReadFile(r.FormValue("metadata.path"))
-			if err != nil {
-				t.Fatal("Expected metadata to be readable")
-				return
-			}
-			gz, err := gzip.NewReader(bytes.NewReader(metadata))
-			if err != nil {
-				t.Fatal("Expected metadata to be valid gzip")
-				return
-			}
-			defer gz.Close()
-			metadata, err = io.ReadAll(gz)
-			if err != nil {
-				t.Fatal("Expected metadata to be valid")
-				return
-			}
-			if !bytes.HasPrefix(metadata, []byte(zipartifacts.MetadataHeaderPrefix+zipartifacts.MetadataHeader)) {
-				t.Fatal("Expected metadata to be of valid format")
-				return
-			}
-
-			w.Header().Set(MetadataHeaderKey, MetadataHeaderPresent)
-		} else {
-			w.Header().Set(MetadataHeaderKey, MetadataHeaderMissing)
+		_, err := os.ReadFile(r.FormValue("file.path"))
+		if err != nil {
+			t.Fatal("Expected file to be readable")
 		}
+	} else if r.FormValue("file.remote_url") == "" {
+		t.Fatal("Expected file to be remote accessible")
+	}
+}
 
-		w.WriteHeader(http.StatusOK)
+func validateMetadata(t *testing.T, w http.ResponseWriter, r *http.Request) {
+	if r.FormValue("metadata.path") == "" {
+		w.Header().Set(MetadataHeaderKey, MetadataHeaderMissing)
+		return
+	}
 
-		if bodyProcessor != nil {
-			bodyProcessor(w, r)
-		}
+	metadata, err := os.ReadFile(r.FormValue("metadata.path"))
+	if err != nil {
+		t.Fatal("Expected metadata to be readable")
+		return
+	}
+
+	gz, err := gzip.NewReader(bytes.NewReader(metadata))
+	if err != nil {
+		t.Fatal("Expected metadata to be valid gzip")
+		return
+	}
+	defer gz.Close()
+
+	metadata, err = io.ReadAll(gz)
+	if err != nil {
+		t.Fatal("Expected metadata to be valid")
+		return
+	}
+
+	if !bytes.HasPrefix(metadata, []byte(zipartifacts.MetadataHeaderPrefix+zipartifacts.MetadataHeader)) {
+		t.Fatal("Expected metadata to be of valid format")
+		return
+	}
+
+	w.Header().Set(MetadataHeaderKey, MetadataHeaderPresent)
+}
+
+func handleUpload(t *testing.T, w http.ResponseWriter, r *http.Request, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) {
+	opts, err := destination.GetOpts(authResponse)
+	require.NoError(t, err)
+
+	if r.Method != "POST" {
+		t.Fatal("Expected POST request")
+	}
+
+	validateFilePresence(t, r, opts)
+	validateMetadata(t, w, r)
+
+	w.WriteHeader(http.StatusOK)
+
+	if bodyProcessor != nil {
+		bodyProcessor(w, r)
+	}
+}
+
+func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
+	mux := http.NewServeMux()
+	mux.HandleFunc(Path+"/authorize", func(w http.ResponseWriter, r *http.Request) {
+		handleAuthorize(t, w, r, authResponse)
+	})
+	mux.HandleFunc(Path, func(w http.ResponseWriter, r *http.Request) {
+		handleUpload(t, w, r, authResponse, bodyProcessor)
 	})
 	return testhelper.TestServerWithHandler(t, nil, mux.ServeHTTP)
 }

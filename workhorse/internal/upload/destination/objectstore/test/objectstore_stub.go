@@ -1,7 +1,7 @@
 package test
 
 import (
-	"crypto/md5"
+	"crypto/md5" //nolint:gosec // G501: MD5 required for S3 ETag simulation in tests
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
@@ -166,7 +166,7 @@ func (o *ObjectstoreStub) putObject(w http.ResponseWriter, r *http.Request) {
 	if !overwritten {
 		buf, _ := io.ReadAll(r.Body)
 		o.contents[objectPath] = buf
-		hasher := md5.New()
+		hasher := md5.New() //nolint:gosec // G401: MD5 required for S3 ETag simulation
 		hasher.Write(buf)
 		etag = hex.EncodeToString(hasher.Sum(nil))
 	}

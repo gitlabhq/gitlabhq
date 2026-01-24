@@ -32,7 +32,7 @@ default:
 
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
-  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
+  OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
   FF_TIMESTAMPS: "true"
 
 .next-ruby-variables: &next-ruby-variables
@@ -89,7 +89,7 @@ workflow:
     # they serve no purpose and will run anyway when the changes are merged.
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_3/ || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: [*default-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'

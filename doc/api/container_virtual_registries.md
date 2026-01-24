@@ -456,13 +456,10 @@ PATCH /virtual_registries/container/upstreams/:id
 | `url` | string | No | The URL of the upstream registry. |
 | `username` | string | No | The username of the upstream registry. |
 
-{{< alert type="note" >}}
-
-You must provide at least one of the optional parameters in your request.
-
-The `username` and `password` must be provided together, or not at all. If not set, a public (anonymous) request is used to access the upstream.
-
-{{< /alert >}}
+> [!note]
+> You must provide at least one of the optional parameters in your request.
+> 
+> The `username` and `password` must be provided together, or not at all. If not set, a public (anonymous) request is used to access the upstream.
 
 Example request:
 

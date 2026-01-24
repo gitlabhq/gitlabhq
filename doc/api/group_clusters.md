@@ -266,13 +266,10 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]` | string         | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `environment_scope`                       | string         | no       | The associated environment to the cluster. Premium and Ultimate only.                      |
 
-{{< alert type="note" >}}
-
-`name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
-through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
-
-{{< /alert >}}
+> [!note]
+> `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
+> through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
+> through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
 
 Example request:
 

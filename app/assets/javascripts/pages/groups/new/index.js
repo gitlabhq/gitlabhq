@@ -23,6 +23,7 @@ function initNewGroupCreation(el) {
   const {
     hasErrors,
     rootPath,
+    enforceTopLevelGroupLimit,
     groupsUrl,
     parentGroupUrl,
     parentGroupName,
@@ -45,6 +46,7 @@ function initNewGroupCreation(el) {
   const provide = {
     identityVerificationRequired: parseBoolean(identityVerificationRequired),
     identityVerificationPath,
+    enforceTopLevelGroupLimit: parseBoolean(enforceTopLevelGroupLimit),
   };
 
   const apolloProvider = new VueApollo({

@@ -121,13 +121,10 @@ Members from an invited group are returned if either:
 - The requester is also a member of the invited group.
 - The requester is a member of the shared group.
 
-{{< alert type="note" >}}
-
-The invited group members have shared membership in the shared group.
-This means that if the requester is a member of a shared group, but not a member of an invited private group,
-then using this endpoint the requester can get all the shared group members, including the invited private group members.
-
-{{< /alert >}}
+> [!note]
+> The invited group members have shared membership in the shared group.
+> This means that if the requester is a member of a shared group, but not a member of an invited private group,
+> then using this endpoint the requester can get all the shared group members, including the invited private group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -286,13 +283,10 @@ Example response:
 
 Gets a member of a group, including members inherited or invited through ancestor groups. For more information, see [List all inherited members](#list-all-members-of-a-group-including-inherited-and-invited-members).
 
-{{< alert type="note" >}}
-
-The invited group members have shared membership in the shared group.
-This means that if the requester is a member of a shared group, but not a member of an invited private group,
-then using this endpoint the requester can get all the shared group members, including the invited private group members.
-
-{{< /alert >}}
+> [!note]
+> The invited group members have shared membership in the shared group.
+> This means that if the requester is a member of a shared group, but not a member of an invited private group,
+> then using this endpoint the requester can get all the shared group members, including the invited private group members.
 
 ```plaintext
 GET /groups/:id/members/all/:user_id
