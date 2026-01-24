@@ -13,12 +13,13 @@ module Integrations
 
       SUPPORTED_EVENTS = %w[
         push issue confidential_issue merge_request note confidential_note
-        tag_push pipeline wiki_page deployment incident
+        tag_push pipeline wiki_page deployment incident work_item confidential_work_item
       ].freeze
 
       GROUP_ONLY_SUPPORTED_EVENTS = %w[group_mention group_confidential_mention].freeze
 
-      SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note].freeze
+      SUPPORTED_EVENTS_FOR_LABEL_FILTER = %w[issue confidential_issue merge_request note confidential_note
+        incident work_item confidential_work_item].freeze
 
       EVENT_CHANNEL = proc { |event| "#{event}_channel" }
 
@@ -98,6 +99,12 @@ module Integrations
         end
       end
 
+      override :configurable_events
+      def configurable_events
+        # Exclude work item events from UI - they use issue event settings
+        super - %w[work_item confidential_work_item]
+      end
+
       def confidential_issue_channel
         properties['confidential_issue_channel'].presence || properties['issue_channel']
       end
@@ -127,15 +134,17 @@ module Integrations
 
         return false unless message
 
+        # Map work_item events to issue consistently for event routing
         event = data[:event_type] || object_kind
-        channels = channels_for_event(event)
+        mapped_event = map_work_item_event(event)
+        channels = channels_for_event(mapped_event)
 
         opts = {}
         opts[:channel] = channels if channels.present?
         opts[:username] = username if username
 
         if notify(message, opts)
-          log_usage(event, user_id_from_hook_data(data))
+          log_usage(mapped_event, user_id_from_hook_data(data))
           return true
         end
 
@@ -213,8 +222,21 @@ module Integrations
       private
 
       def should_execute?(object_kind)
-        supported_events.include?(object_kind) &&
+        mapped_event_type = map_work_item_event(object_kind)
+
+        supported_events.include?(mapped_event_type) &&
           (!self.class.requires_webhook? || webhook.present?)
+      end
+
+      def map_work_item_event(event)
+        case event
+        when 'work_item'
+          'issue'
+        when 'confidential_work_item'
+          'confidential_issue'
+        else
+          event
+        end
       end
 
       def log_usage(_, _)
@@ -228,7 +250,10 @@ module Integrations
       end
 
       def notify_label?(data)
-        unless SUPPORTED_EVENTS_FOR_LABEL_FILTER.include?(data[:object_kind]) && labels_to_be_notified.present?
+        object_kind = data[:object_kind]
+        mapped_object_kind = map_work_item_event(object_kind)
+
+        unless SUPPORTED_EVENTS_FOR_LABEL_FILTER.include?(mapped_object_kind) && labels_to_be_notified.present?
           return true
         end
 
@@ -266,7 +291,12 @@ module Integrations
         case object_kind
         when "push", "tag_push"
           Integrations::ChatMessage::PushMessage.new(data) if notify_for_ref?(data)
-        when "issue", "incident"
+        when "issue", "work_item", "confidential_work_item"
+          # Skip incidents in work_item events - they should be handled separately
+          return if skip_work_item_incident?(object_kind, data)
+
+          Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
+        when "incident"
           Integrations::ChatMessage::IssueMessage.new(data) unless update?(data)
         when "merge_request"
           Integrations::ChatMessage::MergeMessage.new(data) unless update?(data)
@@ -337,7 +367,9 @@ module Integrations
       end
 
       def channels_for_event(event)
-        channel_names = event_channel_value(event).presence || channel.presence
+        # Map work_item events to appropriate issue channels
+        mapped_event = map_work_item_event(event)
+        channel_names = event_channel_value(mapped_event).presence || channel.presence
         return [] unless channel_names
 
         channel_names.split(',').map(&:strip).uniq
@@ -362,6 +394,11 @@ module Integrations
             )
           )
         end
+      end
+
+      def skip_work_item_incident?(object_kind, data)
+        object_kind.in?(%w[work_item confidential_work_item]) &&
+          data.dig(:object_attributes, :type) == "Incident"
       end
     end
   end
