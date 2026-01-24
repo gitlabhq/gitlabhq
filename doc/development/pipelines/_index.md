@@ -769,9 +769,9 @@ Exceptions to this general guideline should be motivated and documented.
 ### Ruby versions testing
 
 We're running Ruby 3.3 on GitLab.com, as well as for the default branch.
-<!-- To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
+To prepare for the next Ruby version, we run merge requests in Ruby 3.4.
 See the roadmap at
-[Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
+[Ruby 3.4 epic](https://gitlab.com/groups/gitlab-org/-/work_items/16601)
 for more details.
 
 To make sure all supported Ruby versions are working, we also run our test
@@ -780,7 +780,7 @@ suite on dedicated 2-hourly scheduled pipelines for each supported versions.
 For merge requests, you can add the following labels to run the respective
 Ruby version only:
 
-- `pipeline:run-in-ruby3_3` -->
+- `pipeline:run-in-ruby3_3`
 
 ### PostgreSQL versions testing
 
