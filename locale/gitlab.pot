@@ -16779,6 +16779,9 @@ msgstr ""
 msgid "Collapse all files"
 msgstr ""
 
+msgid "Collapse directory / Move to parent"
+msgstr ""
+
 msgid "Collapse eligible approvers"
 msgstr ""
 
@@ -28673,10 +28676,16 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
+msgid "Expand all directories on the same level"
+msgstr ""
+
 msgid "Expand all files"
 msgstr ""
 
 msgid "Expand all lines"
+msgstr ""
+
+msgid "Expand directory / Move to first child"
 msgstr ""
 
 msgid "Expand eligible approvers"
@@ -29772,6 +29781,9 @@ msgid "File %{current} of %{total}"
 msgstr ""
 
 msgid "File Tree"
+msgstr ""
+
+msgid "File Tree Browser"
 msgstr ""
 
 msgid "File actions"
@@ -43900,6 +43912,12 @@ msgid "Move"
 msgstr ""
 
 msgid "Move down"
+msgstr ""
+
+msgid "Move focus to the next file or directory"
+msgstr ""
+
+msgid "Move focus to the previous file or directory"
 msgstr ""
 
 msgid "Move issue"
@@ -64211,6 +64229,9 @@ msgid "Select target branch or tag"
 msgstr ""
 
 msgid "Select target project"
+msgstr ""
+
+msgid "Select the focused file or directory"
 msgstr ""
 
 msgid "Select timezone"

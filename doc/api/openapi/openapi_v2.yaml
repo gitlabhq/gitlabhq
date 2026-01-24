@@ -51108,6 +51108,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -51272,6 +51275,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -51406,6 +51412,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -51688,6 +51697,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -51822,6 +51834,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       notify_only_default_branch:
         type: boolean
         description: Send notifications for the default branch.
@@ -51869,6 +51884,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52042,6 +52060,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52154,6 +52175,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52209,6 +52233,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52363,6 +52390,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52422,6 +52452,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -52471,6 +52504,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -57819,6 +57855,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -57983,6 +58022,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58117,6 +58159,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58399,6 +58444,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58533,6 +58581,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       notify_only_default_branch:
         type: boolean
         description: Send notifications for the default branch.
@@ -58580,6 +58631,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58753,6 +58807,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58865,6 +58922,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -58920,6 +58980,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -59074,6 +59137,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -59133,6 +59199,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -59182,6 +59251,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -59703,6 +59775,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -59867,6 +59942,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60001,6 +60079,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60283,6 +60364,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60417,6 +60501,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       notify_only_default_branch:
         type: boolean
         description: Send notifications for the default branch.
@@ -60464,6 +60551,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60637,6 +60727,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60749,6 +60842,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60804,6 +60900,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -60958,6 +61057,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -61017,6 +61119,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,
@@ -61066,6 +61171,9 @@ definitions:
       notify_only_broken_pipelines:
         type: boolean
         description: Send notifications for broken pipelines.
+      notify_only_when_pipeline_status_changes:
+        type: boolean
+        description: Send notifications only when the pipeline status changes.
       branches_to_be_notified:
         type: string
         description: Branches to send notifications for. Valid options are `all`,

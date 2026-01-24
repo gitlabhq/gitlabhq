@@ -430,6 +430,42 @@ export const TOGGLE_FILE_TREE_BROWSER_VISIBILITY = {
   defaultKeys: ['shift+f'],
 };
 
+export const NAVIGATE_UP_FILE_TREE_BROWSER = {
+  id: 'projectFiles.navigateUpFTB',
+  description: __('Move focus to the previous file or directory'),
+  defaultKeys: ['up'],
+};
+
+export const NAVIGATE_DOWN_FILE_TREE_BROWSER = {
+  id: 'projectFiles.navigateDownFTB',
+  description: __('Move focus to the next file or directory'),
+  defaultKeys: ['down'],
+};
+
+export const EXPAND_FILE_TREE_BROWSER_DIRECTORY = {
+  id: 'projectFiles.expandFTBDirectory',
+  description: __('Expand directory / Move to first child'),
+  defaultKeys: ['right'],
+};
+
+export const COLLAPSE_FILE_TREE_BROWSER_DIRECTORY = {
+  id: 'projectFiles.collapseFTBDirectory',
+  description: __('Collapse directory / Move to parent'),
+  defaultKeys: ['left'],
+};
+
+export const SELECT_FILE_TREE_BROWSER_ITEMS = {
+  id: 'projectFiles.selectFTBItems',
+  description: __('Select the focused file or directory'),
+  defaultKeys: ['enter', 'space'],
+};
+
+export const EXPAND_ALL_FILE_TREE_BROWSER_DIRECTORIES = {
+  id: 'projectFiles.expandAllFTBDirectories',
+  description: __('Expand all directories on the same level'),
+  defaultKeys: ['*'],
+};
+
 export const ISSUABLE_COMMENT_OR_REPLY = {
   id: 'issuables.commentReply',
   description: __('Comment/Reply (quoting selected text)'),
@@ -773,6 +809,19 @@ const WEB_IDE_SHORTCUTS_GROUP = {
   keybindings: [WEB_IDE_GO_TO_FILE, WEB_IDE_COMMIT],
 };
 
+const FILE_TREE_BROWSER_GROUP = {
+  id: 'fileTreeBrowser',
+  name: __('File Tree Browser'),
+  keybindings: [
+    NAVIGATE_UP_FILE_TREE_BROWSER,
+    NAVIGATE_DOWN_FILE_TREE_BROWSER,
+    EXPAND_FILE_TREE_BROWSER_DIRECTORY,
+    COLLAPSE_FILE_TREE_BROWSER_DIRECTORY,
+    SELECT_FILE_TREE_BROWSER_ITEMS,
+    EXPAND_ALL_FILE_TREE_BROWSER_DIRECTORIES,
+  ],
+};
+
 export const MISC_SHORTCUTS_GROUP = {
   id: 'misc',
   name: __('Miscellaneous'),
@@ -793,6 +842,7 @@ export const keybindingGroups = [
   MR_COMMITS_SHORTCUTS_GROUP,
   ISSUES_SHORTCUTS_GROUP,
   WEB_IDE_SHORTCUTS_GROUP,
+  FILE_TREE_BROWSER_GROUP,
   MISC_SHORTCUTS_GROUP,
 ];
 
