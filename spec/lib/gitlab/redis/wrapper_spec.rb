@@ -45,4 +45,10 @@ RSpec.describe Gitlab::Redis::Wrapper do
       end
     end
   end
+
+  describe '.active?' do
+    it 'returns true by default' do
+      expect(described_class.active?).to be true
+    end
+  end
 end
