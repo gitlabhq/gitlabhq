@@ -2150,7 +2150,7 @@ The docs should match the case in the UI, and the page name should be bold. For 
 
 ## panel
 
-Use **panel** to refer to a main area of the [redesigned](../../../user/interface_redesign.md) GitLab UI
+Use **panel** to refer to a main area of the GitLab UI
 that is not fixed on the side of the screen. The content of a panel changes depending on the context.
 
 See also: [names for UI elements](_index.md#names-for-ui-elements), [**top bar**, and **sidebar**](#sidebar-top-bar).
@@ -2605,7 +2605,7 @@ Do not confuse **set up** with [**configure**](#configure).
 
 ## sidebar, top bar
 
-Use **sidebar** to refer to the fixed areas on the left and right of the [redesigned](../../../user/interface_redesign.md) GitLab UI.
+Use **sidebar** to refer to the fixed areas on the left and right of the GitLab UI.
 Use **top bar** to refer to the top fixed area that contains the search box and a user's avatar.
 
 For the main areas that change depending on the context, use [**panel**](#panel).

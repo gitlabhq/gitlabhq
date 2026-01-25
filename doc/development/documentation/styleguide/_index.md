@@ -1265,7 +1265,7 @@ When documenting how to navigate the GitLab UI:
 
 ### Names for UI elements
 
-In the [redesigned](../../../user/interface_redesign.md) GitLab UI, use the following names:
+In the GitLab UI, use the following names:
 
 ![Wireframe of a typical GitLab application page composition.](img/layout_external_names_v18_6.svg)
 

@@ -24,7 +24,7 @@ Use this API to interact with [deploy keys](../user/project/deploy_keys/_index.m
 
 Some endpoints return public key fingerprints as part of the response. You can use these fingerprints
 to identify the user that created the deploy key. For more information,
-see [get user by deploy key fingerprint](keys.md#get-user-by-deploy-key-fingerprint).
+see [get user by deploy key fingerprint](keys.md#retrieve-user-by-deploy-key-fingerprint).
 
 The following attributes contain the deploy key fingerprint:
 

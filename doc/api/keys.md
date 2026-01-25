@@ -17,13 +17,13 @@ deploy key fingerprints also retrieve information about the projects using that 
 
 If you use a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
 
-## Get SSH key with user by ID
+## Retrieve user by SSH key ID
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can get an SSH key and information about the user who owns the key.
+Retrieves information about a user that owns a specified SSH key.
 
 ```plaintext
 GET /keys/:id
@@ -114,13 +114,13 @@ Example response:
 }
 ```
 
-## Get user by SSH key fingerprint
+## Retrieve user by SSH key fingerprint
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can search for a user that owns a specific SSH key.
+Retrieves information about a user that owns a specified SSH key.
 
 ```plaintext
 GET /keys
@@ -227,9 +227,9 @@ Example response:
 }
 ```
 
-## Get user by deploy key fingerprint
+## Retrieve user by deploy key fingerprint
 
-Deploy keys are bound to the creating user. When you query with a deploy key fingerprint, you get additional information about the projects using that key.
+Retrieves information about a user and projects using a specified deploy key fingerprint. Deploy keys are bound to the creating user.
 
 ```plaintext
 GET /keys
