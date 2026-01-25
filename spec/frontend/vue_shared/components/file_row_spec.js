@@ -358,4 +358,34 @@ describe('File row component', () => {
       expect(findChevronButton().exists()).toBe(false);
     });
   });
+
+  describe('linked files', () => {
+    it('renders as button element when no fileUrl or filePaths', () => {
+      createComponent({
+        file: file('test.rb'),
+        level: 0,
+      });
+
+      expect(findFileButton().element.tagName).toBe('BUTTON');
+      expect(findFileButton().attributes('href')).toBeUndefined();
+    });
+
+    it('emits clickFile when clicking file link', () => {
+      createComponent({
+        file: {
+          ...file('test.rb'),
+          type: 'blob',
+          filePaths: {
+            old: 'app/models/user.rb',
+            new: 'app/models/user.rb',
+          },
+        },
+        level: 0,
+      });
+
+      findFileButton().trigger('click');
+
+      expect(wrapper.emitted('clickFile')).toHaveLength(1);
+    });
+  });
 });

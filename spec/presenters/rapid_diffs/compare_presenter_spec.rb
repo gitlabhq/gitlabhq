@@ -41,10 +41,47 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   end
 
   describe 'stream urls' do
+    let(:diffs_count) { 20 }
+
+    before do
+      allow(compare).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
+    end
+
     describe '#diffs_stream_url' do
       subject(:url) { presenter.diffs_stream_url }
 
       it { is_expected.to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}") }
+
+      context 'when linked file is present and page has more diffs to stream' do
+        let(:diffs_count) { 2 }
+        let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
+
+        before do
+          allow(compare).to receive(:diffs).and_return(diff_files)
+        end
+
+        it 'includes skip parameters' do
+          expect(url).to include('skip_new_path=test.txt')
+          expect(url).to include('skip_old_path=test.txt')
+          expect(url).to include('from=a')
+          expect(url).to include('to=b')
+        end
+      end
+
+      context 'when linked file is the only file' do
+        let(:diffs_count) { 1 }
+        let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
+
+        before do
+          allow(compare).to receive(:diffs).and_return(diff_files)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe '#reload_stream_url' do

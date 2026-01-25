@@ -69,7 +69,7 @@ export default {
         'is-active': this.isBlob && this.file.active,
         folder: this.isTree,
         'is-open': this.file.opened,
-        'is-linked': this.file.linked,
+        '!gl-bg-feedback-info': this.file.linked,
         'pl-3': addFilePadding,
       };
     },
@@ -210,7 +210,7 @@ export default {
       :class="fileClass"
       :title="textForTitle"
       :data-level="level"
-      class="file-row gl-flex-grow-1"
+      class="file-row gl-flex-grow-1 hover:gl-text-inherit hover:gl-no-underline"
       :data-file-row="file.fileHash"
       data-testid="file-row"
       :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
@@ -235,7 +235,7 @@ export default {
       >
         <gl-icon
           v-if="file.linked"
-          v-gl-tooltip="
+          v-gl-tooltip.right="
             __('This file was linked in the page URL and will appear as the first one in the list')
           "
           name="link"

@@ -6,3 +6,14 @@ export const removeLinkedFileUrlParams = (originalUrl) => {
   if (url.hash.startsWith('#line_')) url.hash = '';
   return url;
 };
+
+export const withLinkedFileUrlParams = (originalUrl, { oldPath, newPath }) => {
+  const url = removeLinkedFileUrlParams(originalUrl);
+  if (oldPath === newPath) {
+    url.searchParams.set('file_path', oldPath);
+  } else {
+    url.searchParams.set('old_path', oldPath);
+    url.searchParams.set('new_path', newPath);
+  }
+  return url;
+};

@@ -61,6 +61,32 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
 
         it { is_expected.to be_nil }
       end
+
+      context 'when linked file is present and page has more diffs to stream' do
+        let(:diffs_count) { 2 }
+        let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
+
+        before do
+          allow(commit).to receive(:diffs).and_return(diff_files)
+        end
+
+        it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=new.txt&skip_old_path=old.txt&view=inline") }
+      end
+
+      context 'when linked file is the only file' do
+        let(:diffs_count) { 1 }
+        let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
+
+        before do
+          allow(commit).to receive(:diffs).and_return(diff_files)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     describe '#reload_stream_url' do

@@ -891,11 +891,6 @@ table.code {
   }
 }
 
-// This is not inside page_bundles because then it won't receive a proper color value for the dark theme
-.diff-file-row.is-active.is-linked {
-  @apply gl-bg-feedback-info;
-}
-
 .collapsed-file-warning {
   color: var(--diff-warning-text-color);
   background-color: var(--diff-warning-background-color);

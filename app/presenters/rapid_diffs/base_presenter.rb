@@ -13,14 +13,23 @@ module RapidDiffs
     attr_reader :environment
 
     def diffs_stream_url
+      return if linked_file && diffs_count == 1
+
+      if linked_file
+        return reload_stream_url(
+          offset: nil,
+          diff_view: @diff_view,
+          skip_old_path: linked_file_params[:old_path],
+          skip_new_path: linked_file_params[:new_path]
+        )
+      end
+
       return reload_stream_url(diff_view: @diff_view) if offset == 0
       return if offset.nil? || offset >= diffs_count
 
       reload_stream_url(
-        offset: linked_file ? nil : offset,
-        diff_view: @diff_view,
-        skip_old_path: linked_file_params[:old_path],
-        skip_new_path: linked_file_params[:new_path]
+        offset: offset,
+        diff_view: @diff_view
       )
     end
 

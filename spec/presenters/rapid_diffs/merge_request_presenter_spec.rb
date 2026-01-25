@@ -61,7 +61,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         it { is_expected.to be_nil }
       end
 
-      context 'when linked_file is present' do
+      context 'when linked file is present and page has more diffs to stream' do
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
         let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
         let(:request_params) { { file_path: 'test.txt' } }
@@ -71,6 +71,19 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         end
 
         it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=test.txt&skip_old_path=test.txt&view=inline") }
+      end
+
+      context 'when linked file is the only file' do
+        let(:diffs_count) { 1 }
+        let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
+        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:request_params) { { file_path: 'test.txt' } }
+
+        before do
+          allow(merge_request).to receive(:diffs).and_return(diff_files)
+        end
+
+        it { is_expected.to be_nil }
       end
     end
 
