@@ -70403,6 +70403,10 @@ definitions:
       glql_yaml:
         type: string
         description: The full GLQL code block containing YAML configuration and query
+      after:
+        type: string
+        description: Cursor for forward pagination. Use the `endCursor` from previous
+          response to fetch the next page
     required:
     - glql_yaml
     description: Execute GLQL query

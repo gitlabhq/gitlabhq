@@ -975,7 +975,7 @@ Use:
 
 - Configure GitLab editor extensions in your IDE.
 - Code Suggestions is available in the following editor extensions.
-- On the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
+- In the left sidebar, select **Settings** > **General**, and then expand **Editor Extensions**.
 
 ## e.g.
 

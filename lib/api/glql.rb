@@ -83,6 +83,7 @@ module API
 
         variables = get_variables(compiled_glql['variables'])
         variables['limit'] = get_limit(config['limit'])
+        variables['after'] = params[:after] if params[:after].present?
 
         query_service.execute(query: compiled_glql['output'], variables: variables)
       end
@@ -131,6 +132,9 @@ module API
       params do
         requires :glql_yaml, type: String, desc: 'The full GLQL code block containing YAML configuration and query',
           allow_blank: false
+
+        optional :after, type: String,
+          desc: 'Cursor for forward pagination. Use the `endCursor` from previous response to fetch the next page'
       end
       post do
         parsed_glql = parse_glql_yaml(params[:glql_yaml])

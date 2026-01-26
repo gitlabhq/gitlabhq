@@ -10,6 +10,10 @@ RSpec.describe 'ActionCable', feature_category: :redis do
     ActionCable.server.restart
   end
 
+  after(:all) do
+    ActionCable.server.restart
+  end
+
   describe 'redis_config_command' do
     subject(:secondary) { redis_connection.secondary_store }
 
@@ -36,7 +40,7 @@ RSpec.describe 'ActionCable', feature_category: :redis do
     end
 
     it 'process config_command on the secondary store' do
-      ::ActionCable.server.config.cable = fake_cable_config
+      allow(::ActionCable.server.config).to receive(:cable).and_return(fake_cable_config)
 
       connection_options = secondary.instance_variable_get(:@options)
 

@@ -32125,6 +32125,28 @@ CREATE SEQUENCE work_item_custom_statuses_id_seq
 
 ALTER SEQUENCE work_item_custom_statuses_id_seq OWNED BY work_item_custom_statuses.id;
 
+CREATE TABLE work_item_custom_types (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint,
+    namespace_id bigint,
+    icon_name smallint DEFAULT 0 NOT NULL,
+    converted_from_system_defined_type_identifier smallint,
+    name text NOT NULL,
+    CONSTRAINT check_26af0900e6 CHECK ((char_length(name) <= 48)),
+    CONSTRAINT check_8d909174fb CHECK ((num_nonnulls(namespace_id, organization_id) = 1))
+);
+
+CREATE SEQUENCE work_item_custom_types_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_custom_types_id_seq OWNED BY work_item_custom_types.id;
+
 CREATE TABLE work_item_date_field_values (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -35151,6 +35173,8 @@ ALTER TABLE ONLY work_item_custom_lifecycles ALTER COLUMN id SET DEFAULT nextval
 ALTER TABLE ONLY work_item_custom_status_mappings ALTER COLUMN id SET DEFAULT nextval('work_item_custom_status_mappings_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_custom_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_custom_statuses_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_custom_types ALTER COLUMN id SET DEFAULT nextval('work_item_custom_types_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_date_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_date_field_values_id_seq'::regclass);
 
@@ -39347,6 +39371,9 @@ ALTER TABLE ONLY work_item_custom_status_mappings
 ALTER TABLE ONLY work_item_custom_statuses
     ADD CONSTRAINT work_item_custom_statuses_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY work_item_custom_types
+    ADD CONSTRAINT work_item_custom_types_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY work_item_date_field_values
     ADD CONSTRAINT work_item_date_field_values_pkey PRIMARY KEY (id);
 
@@ -42694,6 +42721,10 @@ CREATE INDEX idx_wi_type_custom_lifecycles_on_lifecycle_id ON work_item_type_cus
 CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_and_work_item_type ON work_item_type_custom_lifecycles USING btree (namespace_id, work_item_type_id);
 
 CREATE INDEX idx_wi_type_custom_lifecycles_on_work_item_type_id ON work_item_type_custom_lifecycles USING btree (work_item_type_id);
+
+CREATE UNIQUE INDEX idx_work_item_custom_types_on_ns_id_and_name ON work_item_custom_types USING btree (namespace_id, lower(name)) WHERE (namespace_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_work_item_custom_types_on_org_id_and_name ON work_item_custom_types USING btree (organization_id, lower(name)) WHERE (organization_id IS NOT NULL);
 
 CREATE INDEX idx_workflows_status_updated_at_id ON duo_workflows_workflows USING btree (status, updated_at, id);
 
@@ -53467,6 +53498,9 @@ ALTER TABLE ONLY wiki_page_slugs
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_3e78b9a150 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_custom_types
+    ADD CONSTRAINT fk_3eb8ff21e3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_3fe6467b93 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -53568,6 +53602,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_4b97267a3e FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_custom_types
+    ADD CONSTRAINT fk_4bb3a3cc16 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_offline_configurations
     ADD CONSTRAINT fk_4c2f23efc7 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

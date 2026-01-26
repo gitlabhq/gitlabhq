@@ -286,7 +286,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/import/user_from_mention.rb'
     - 'lib/gitlab/import_export/json/ndjson_reader.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'
-    - 'lib/gitlab/jira_import.rb'
     - 'lib/gitlab/kas/user_access.rb'
     - 'lib/gitlab/lfs/client.rb'
     - 'lib/gitlab/manifest_import/metadata.rb'

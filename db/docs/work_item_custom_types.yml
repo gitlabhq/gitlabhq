@@ -1,0 +1,15 @@
+---
+table_name: work_item_custom_types
+classes:
+- WorkItems::TypesFramework::Custom::Type
+feature_categories:
+- team_planning
+description: Stores namespace-level or organization-level custom work item type definitions
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/581932
+milestone: '18.9'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+  organization_id: organizations
+organization_transfer_support: supported
+table_size: small

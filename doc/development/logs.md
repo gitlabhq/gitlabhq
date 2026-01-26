@@ -53,7 +53,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. Create an access token:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Access tokens**.
    1. Create an access token with the `api` scope and **Developer** role or greater.
       Save the access token value for later.
@@ -78,7 +78,7 @@ When you run your application, the OpenTelemetry exporter sends logs to GitLab.
 
 You can view the logs for a given project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Logs**.
 
 A list of logs is displayed. Currently log date, level, service, and message are supported.
@@ -99,7 +99,7 @@ It is also possible to see log line details such as metadata and resource attrib
 
 You can create an issue to track any action taken to resolve or investigate a log. To create an issue for a log:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Logs**.
 1. From the list of logs, select a log.
 1. In the details drawer, select **Create issue**.
@@ -109,7 +109,7 @@ You can edit the issue title and description.
 
 ### View issues related to a log
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Logs**.
 1. From the list of logs, select a log.
 1. In the details drawer, scroll to **Related issues**.
