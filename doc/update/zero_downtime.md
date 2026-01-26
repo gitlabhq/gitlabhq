@@ -59,8 +59,10 @@ When considering a zero-downtime upgrade, be aware that:
 
 - Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not
   the latest. For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You
-  should verify the version-specific upgrade notes relevant to your [upgrade path](upgrade_paths.md) and be
+  should verify the [version-specific upgrade notes](versions/_index.md) relevant to your [upgrade path](upgrade_paths.md) and be
   aware of any required upgrade stops:
+
+  - [GitLab 18 upgrade notes](versions/gitlab_18_changes.md)
   - [GitLab 17 upgrade notes](versions/gitlab_17_changes.md)
   - [GitLab 16 upgrade notes](versions/gitlab_16_changes.md)
   - [GitLab 15 upgrade notes](versions/gitlab_15_changes.md)
