@@ -1,7 +1,0 @@
----
-name: read_pipeline_bridge
-description: Grants the ability to read pipeline bridges
-permissions:
-  - read_pipeline_bridge
-boundaries:
-  - project

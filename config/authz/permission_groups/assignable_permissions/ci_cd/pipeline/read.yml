@@ -3,5 +3,10 @@ name: read_pipeline
 description: Grants the ability to read pipelines
 permissions:
   - read_pipeline
+  - read_pipeline_bridge
+  - read_pipeline_job
+  - read_pipeline_variable
+  - read_pipeline_test_report
+  - read_pipeline_test_report_summary
 boundaries:
   - project

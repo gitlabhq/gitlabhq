@@ -62,7 +62,7 @@ def perform(project_id, iid = nil)
     scope.update_all(updated_at: Time.current)
 
     if runtime_limiter.over_time?
-      MyJob.perform_in(2.minutes, project_id, iid)
+      MyJob.perform_in(2.minutes, project_id, max_iid)
 
       break
     end
@@ -92,7 +92,7 @@ def perform(project_id, iid = nil)
     updates += scope.update_all(updated_at: Time.current)
 
     if runtime_limiter.over_time? || updates >= max_updates
-      MyJob.perform_in(2.minutes, project_id, iid)
+      MyJob.perform_in(2.minutes, project_id, max_iid)
       status = :limit_reached
 
       break

@@ -1,7 +1,0 @@
----
-name: read_pipeline_job
-description: Grants the ability to read pipeline jobs
-permissions:
-  - read_pipeline_job
-boundaries:
-  - project

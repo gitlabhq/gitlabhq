@@ -359,6 +359,37 @@ which pipelines can run.
 
 ## Pipeline errors
 
+### Error: `Identity verification is required in order to run CI jobs`
+
+{{< details >}}
+
+- Tier: Free
+- Offering: GitLab.com
+
+{{< /details >}}
+
+When using GitLab-hosted runners on GitLab.com with a free plan,
+if you see an error message that says `Identity verification is required in order to run CI jobs`,
+you must complete identity verification.
+
+This requirement helps prevent abuse of free compute resources.
+Depending on your risk score, you may need to verify your email, phone number, or add a payment method.
+For more information, see [identity verification](../security/identity_verification.md).
+
+To complete validation:
+
+1. In the alert banner, select **Verify my account**.
+1. When prompted, follow the identity verification steps.
+   You might be required to verify your phone number or add a payment method.
+1. Create a new commit or manually trigger a new pipeline.
+
+Alternatively, you can:
+
+- Upgrade to a paid plan.
+- Purchase additional compute minutes for your namespace.
+- Use project or group runners instead of GitLab-hosted runners.
+- Ask your group owner to set up self-managed runners.
+
 ### `A CI/CD pipeline must run and be successful before merge` message
 
 This message is shown if the [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)

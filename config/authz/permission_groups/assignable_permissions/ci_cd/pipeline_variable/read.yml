@@ -1,7 +1,0 @@
----
-name: read_pipeline_variable
-description: Grants the ability to read pipeline variables
-permissions:
-  - read_pipeline_variable
-boundaries:
-  - project

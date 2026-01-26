@@ -33,6 +33,9 @@ can [bypass email verification](../user/group/saml_sso/_index.md#bypass-user-ema
 by adding a custom domain. GitLab automatically confirms user accounts when their email
 domain matches.
 
+If you encounter identity verification errors when running CI/CD pipelines,
+see [debugging pipeline errors](../ci/debugging.md#error-identity-verification-is-required-in-order-to-run-ci-jobs).
+
 ## Email verification
 
 To register an account, you must provide a valid email address.

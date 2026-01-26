@@ -1,7 +1,0 @@
----
-name: cancel_pipeline
-description: Grants the ability to cancel pipelines
-permissions:
-  - cancel_pipeline
-boundaries:
-  - project
