@@ -73,13 +73,10 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
    cd <new directory>
    ```
 
-{{< alert type="note" >}}
-
-On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
-add your namespace (username or group) to the path:
-`git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
-
-{{< /alert >}}
+> [!note]
+> On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
+> add your namespace (username or group) to the path:
+> `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
 
 ### Clone using a token
 

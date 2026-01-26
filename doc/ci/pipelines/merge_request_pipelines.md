@@ -158,13 +158,10 @@ To prevent users from running new pipelines for fork projects in the parent proj
 use [the projects API](../../api/projects.md#edit-a-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`
 setting.
 
-{{< alert type="warning" >}}
-
-Pipelines created before the setting was disabled are not affected and continue to run.
-If you rerun a job in an older pipeline, the job uses the same context as when the
-pipeline was originally created.
-
-{{< /alert >}}
+> [!warning]
+> Pipelines created before the setting was disabled are not affected and continue to run.
+> If you rerun a job in an older pipeline, the job uses the same context as when the
+> pipeline was originally created.
 
 ## Available predefined variables
 

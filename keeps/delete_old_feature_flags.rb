@@ -37,6 +37,8 @@ module Keeps
     def each_identified_change
       each_feature_flag do |feature_flag|
         identifiers = build_ff_identifiers(feature_flag)
+        next unless matches_filter_identifiers?(identifiers)
+
         rollout_issue = fetch_rollout_issue(feature_flag)
         latest_feature_flag_status = extract_feature_flag_status(feature_flag, rollout_issue)
         next unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status, rollout_issue)

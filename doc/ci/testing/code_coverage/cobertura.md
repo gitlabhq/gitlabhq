@@ -132,13 +132,10 @@ Automatic class path correction also works for a Java project with:
   <class name="com.gitlab.security_products.tests.App" filename="com/gitlab/security_products/tests/App.java" line-rate="0.0" branch-rate="0.0" complexity="6.0">
   ```
 
-{{< alert type="note" >}}
-
-Automatic class path correction only works on `source` paths in the format `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`.
-The `source` is ignored if the path does not follow this pattern. The parser assumes that the
-`filename` of a `class` element contains the full path relative to the project root.
-
-{{< /alert >}}
+> [!note]
+> Automatic class path correction only works on `source` paths in the format `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`.
+> The `source` is ignored if the path does not follow this pattern. The parser assumes that the
+> `filename` of a `class` element contains the full path relative to the project root.
 
 ## Example test coverage configurations
 

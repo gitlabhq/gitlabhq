@@ -495,13 +495,10 @@ Unexpected inputs are rejected.
 Inputs for pipelines must be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
 of the main `.gitlab-ci.yml` file. You cannot use inputs defined in included files for pipeline-level configuration.
 
-{{< alert type="note" >}}
-
-In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
-and later, pipeline inputs are recommended over passing [pipeline variables](../variables/_index.md#use-pipeline-variables).
-For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
-
-{{< /alert >}}
+> [!note]
+> In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+> and later, pipeline inputs are recommended over passing [pipeline variables](../variables/_index.md#use-pipeline-variables).
+> For enhanced security, you should [disable pipeline variables](../variables/_index.md#restrict-pipeline-variables) when using inputs.
 
 You should always set default values when defining inputs for pipelines.
 Otherwise the pipeline could fail to start if a new pipeline triggers automatically.
@@ -572,13 +569,10 @@ trigger-job:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can reuse input definitions across multiple CI/CD configurations by defining them in external files
 and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).

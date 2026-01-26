@@ -45,13 +45,10 @@ To add a secure file to a project:
 
 ## Use secure files in CI/CD jobs
 
-{{< alert type="warning" >}}
-
-The content of secure files are not [masked](../variables/_index.md#mask-a-cicd-variable)
-in the job log output. Make sure to avoid outputting secure file contents in the job log,
-especially when logging output that could contain sensitive information.
-
-{{< /alert >}}
+> [!warning]
+> The content of secure files are not [masked](../variables/_index.md#mask-a-cicd-variable)
+> in the job log output. Make sure to avoid outputting secure file contents in the job log,
+> especially when logging output that could contain sensitive information.
 
 ### With the `glab` tool
 

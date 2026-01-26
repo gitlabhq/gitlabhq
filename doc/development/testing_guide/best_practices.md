@@ -876,13 +876,10 @@ you can follow.
 
 Use `rubocop_spec_helper` for RuboCop related specs.
 
-{{< alert type="warning" >}}
-
-To verify that code and its specs are well-isolated from Rails, run the spec
-individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
-`spec_helper` automatically.
-
-{{< /alert >}}
+> [!warning]
+> To verify that code and its specs are well-isolated from Rails, run the spec
+> individually via `bin/rspec`. Don't use `bin/spring rspec` as it loads
+> `spec_helper` automatically.
 
 #### Maintaining fast_spec_helper specs
 
@@ -1349,13 +1346,10 @@ Most tests for Elasticsearch logic relate to:
 
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
-{{< alert type="note" >}}
-
-Indexing for advanced search uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
-Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
-You do not need to add `:clean_gitlab_redis_shared_state` manually.
-
-{{< /alert >}}
+> [!note]
+> Indexing for advanced search uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
+> Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
+> You do not need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 
@@ -1391,13 +1385,10 @@ This section describes how to test with events that have yet to convert to
 
 ##### Backend
 
-{{< alert type="warning" >}}
-
-Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
-Because Snowplow is **by default disabled in tests and development**, it can be hard to
-**catch exceptions** when mocking `Gitlab::Tracking`.
-
-{{< /alert >}}
+> [!warning]
+> Snowplow performs **runtime type checks** by using the [contracts gem](https://rubygems.org/gems/contracts).
+> Because Snowplow is **by default disabled in tests and development**, it can be hard to
+> **catch exceptions** when mocking `Gitlab::Tracking`.
 
 To catch runtime errors due to type checks you can use `expect_snowplow_event`, which checks for
 calls to `Gitlab::Tracking#event`.
@@ -1549,13 +1540,10 @@ That indicates that you need to include the line `using RSpec::Parameterized::Ta
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-{{< alert type="warning" >}}
-
-Only use simple values as input in the `where` block. Using procs, stateful
-objects, FactoryBot-created objects, and similar items can lead to
-[unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
-
-{{< /alert >}}
+> [!warning]
+> Only use simple values as input in the `where` block. Using procs, stateful
+> objects, FactoryBot-created objects, and similar items can lead to
+> [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
 
 <!-- vale gitlab_base.Spelling = YES -->
 

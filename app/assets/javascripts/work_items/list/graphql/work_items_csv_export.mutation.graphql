@@ -1,3 +1,4 @@
+# @feature_category: portfolio_management
 mutation WorkItemsCsvExport($input: WorkItemsCsvExportInput!) {
   workItemsCsvExport(input: $input) {
     message

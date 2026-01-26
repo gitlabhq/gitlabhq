@@ -343,13 +343,10 @@ Previously, GitLab encouraged the use of
 manually generated webpack bundles. However under this new system you should
 not ever need to manually add an entry point to the `webpack.config.js` file.
 
-{{< alert type="note" >}}
-
-When unsure what controller and action corresponds to a page,
-inspect `document.body.dataset.page` in your
-browser's developer console from any page in GitLab.
-
-{{< /alert >}}
+> [!note]
+> When unsure what controller and action corresponds to a page,
+> inspect `document.body.dataset.page` in your
+> browser's developer console from any page in GitLab.
 
 TROUBLESHOOTING:
 If using Vite, keep in mind that support for it is new and you may encounter unexpected effects from time to

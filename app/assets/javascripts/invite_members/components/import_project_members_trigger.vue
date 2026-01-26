@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openProjectMembersModal');
+      eventHub.$emit('open-project-members-modal');
     },
   },
 };

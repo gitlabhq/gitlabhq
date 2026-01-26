@@ -173,13 +173,10 @@ we would have to calculate the condition twice - since they are for different us
 then the result of the condition is cached globally only based on the subject - so it is not
 calculated repeatedly for different users. Similarly, `scope: :user` caches only based on the user.
 
-{{< alert type="warning" >}}
-
-If you use a `:scope` option when the condition actually uses data from both user and subject
-(including a simple anonymous check!) your result is cached at too global of a scope and
-results in cache bugs.
-
-{{< /alert >}}
+> [!warning]
+> If you use a `:scope` option when the condition actually uses data from both user and subject
+> (including a simple anonymous check!) your result is cached at too global of a scope and
+> results in cache bugs.
 
 Sometimes we are checking permissions for a lot of users for one subject, or a lot of subjects for
 one user. In this case, we want to set a *preferred scope* - that is, tell the system that we

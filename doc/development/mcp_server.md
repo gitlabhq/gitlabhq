@@ -266,13 +266,10 @@ For tools with distinct functionality that should remain separate from API expos
 1. **Permission model:** How does this tool interact with your permission/pricing model? Does it create complexity?
 1. **Semantic distinctness:** Is this tool clearly distinguishable from others in your toolset?
 
-{{< alert type="warning" >}}
-
-More tools aren't always better. The research shows that both context size and tool count have diminishing returns and
-eventually lead to performance degradation. Consider tool consolidation, specialized sub-agents, or dynamic tool routing
-instead of continuously expanding your toolset.
-
-{{< /alert >}}
+> [!warning]
+> More tools aren't always better. The research shows that both context size and tool count have diminishing returns and
+> eventually lead to performance degradation. Consider tool consolidation, specialized sub-agents, or dynamic tool routing
+> instead of continuously expanding your toolset.
 
 ### Modifying an existing tool
 

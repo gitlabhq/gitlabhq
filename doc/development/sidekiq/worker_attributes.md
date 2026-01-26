@@ -470,13 +470,10 @@ class LimitedWorker
 end
 ```
 
-{{< alert type="warning" >}}
-
-Setting `max_concurrency_limit_percentage` only sets the concurrency limit for GitLab.com.
-The default concurrency limit on Dedicated and self-managed instances is currently not supported.
-This work is tracked in [this issue](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/237).
-
-{{< /alert >}}
+> [!warning]
+> Setting `max_concurrency_limit_percentage` only sets the concurrency limit for GitLab.com.
+> The default concurrency limit on Dedicated and self-managed instances is currently not supported.
+> This work is tracked in [this issue](https://gitlab.com/gitlab-com/gl-infra/tenant-scale/tenant-services/team/-/issues/237).
 
 ## Skip execution of workers in Geo secondary
 

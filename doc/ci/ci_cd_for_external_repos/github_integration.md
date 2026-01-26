@@ -20,13 +20,10 @@ GitLab.
 <i class="fa-youtube-play" aria-hidden="true"></i>
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
-{{< alert type="note" >}}
-
-Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
-[GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
-cannot be used to authenticate with GitHub as an external CI/CD repository.
-
-{{< /alert >}}
+> [!note]
+> Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/9147),
+> [GitHub OAuth](../../integration/github.md#enable-github-oauth-in-gitlab)
+> cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 ## Connect with personal access token
 

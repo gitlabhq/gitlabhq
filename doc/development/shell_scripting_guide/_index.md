@@ -71,13 +71,10 @@ shell check:
     - shellcheck scripts/**/*.sh  # path to your shell scripts
 ```
 
-{{< alert type="note" >}}
-
-By default, ShellCheck uses the [shell detection](https://github.com/koalaman/shellcheck/wiki/SC2148#rationale)
-to determine the shell dialect in use. If the shell file is out of your control and ShellCheck cannot
-detect the dialect, use `-s` flag to specify it: `-s sh` or `-s bash`.
-
-{{< /alert >}}
+> [!note]
+> By default, ShellCheck uses the [shell detection](https://github.com/koalaman/shellcheck/wiki/SC2148#rationale)
+> to determine the shell dialect in use. If the shell file is out of your control and ShellCheck cannot
+> detect the dialect, use `-s` flag to specify it: `-s sh` or `-s bash`.
 
 ### Formatting
 
@@ -102,13 +99,10 @@ shfmt:
     - shfmt -i 2 -ci -d scripts  # path to your shell scripts
 ```
 
-{{< alert type="note" >}}
-
-By default, shfmt uses the [shell detection](https://github.com/mvdan/sh#shfmt) similar to one of ShellCheck
-and ignore files starting with a period. To override this, use `-ln` flag to specify the shell dialect:
-`-ln posix` or `-ln bash`.
-
-{{< /alert >}}
+> [!note]
+> By default, shfmt uses the [shell detection](https://github.com/mvdan/sh#shfmt) similar to one of ShellCheck
+> and ignore files starting with a period. To override this, use `-ln` flag to specify the shell dialect:
+> `-ln posix` or `-ln bash`.
 
 ## Testing
 

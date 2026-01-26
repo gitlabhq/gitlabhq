@@ -2,9 +2,9 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
+import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import getSubsribedSavedViewsQuery from '~/work_items/graphql/work_item_saved_views_namespace.query.graphql';
+import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 
 describe('WorkItemsSavedViewsSelectors', () => {
   let wrapper;

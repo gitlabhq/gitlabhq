@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
+import WorkItemListHeading from '~/work_items/list/components/work_item_list_heading.vue';
 
 describe('WorkItemListHeading', () => {
   let wrapper;

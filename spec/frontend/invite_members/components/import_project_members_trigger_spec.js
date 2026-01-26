@@ -39,7 +39,7 @@ describe('ImportProjectMembersTrigger', () => {
     });
 
     it('emits event that triggers opening the modal', () => {
-      expect(eventHub.$emit).toHaveBeenLastCalledWith('openProjectMembersModal');
+      expect(eventHub.$emit).toHaveBeenLastCalledWith('open-project-members-modal');
     });
   });
 });

@@ -1,6 +1,6 @@
 import { GlForm, GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemsNewSavedViewModal from '~/work_items/components/work_items_new_saved_view_modal.vue';
+import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 
 import waitForPromises from 'helpers/wait_for_promises';
 

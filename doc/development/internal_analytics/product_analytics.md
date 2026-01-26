@@ -31,13 +31,10 @@ title: Product analytics
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is not ready for production use.
 
 The product analytics feature empowers you to track user behavior and gain insights into how your
 applications are used and how users interact with your product.

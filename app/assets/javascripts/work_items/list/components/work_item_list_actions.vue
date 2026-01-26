@@ -97,6 +97,7 @@ export default {
       default: false,
     },
   },
+  emits: ['error'],
   data() {
     return {
       showTooltip: false,

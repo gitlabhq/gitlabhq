@@ -137,13 +137,10 @@ To retry or roll back a deployment:
    - To retry a deployment, select **Re-deploy to environment**.
    - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
 
-{{< alert type="note" >}}
-
-If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
-the rollback buttons might be hidden or disabled.
-In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
-
-{{< /alert >}}
+> [!note]
+> If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
+> the rollback buttons might be hidden or disabled.
+> In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
 
 ## Related topics
 

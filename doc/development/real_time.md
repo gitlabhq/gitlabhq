@@ -18,13 +18,10 @@ to receive state updates in real-time over a WebSocket.
 The following documentation tells you how to build and deploy view components that
 receive updates in real-time from the GitLab Ruby on Rails server.
 
-{{< alert type="note" >}}
-
-Action Cable and GraphQL subscriptions are a work-in-progress and under active development.
-Developers must evaluate their use case to check if these are the right tools to use.
-If you are not sure, ask for help in the [`#f_real-time` internal Slack channel](https://gitlab.slack.com/archives/CUX9Z2N66).
-
-{{< /alert >}}
+> [!note]
+> Action Cable and GraphQL subscriptions are a work-in-progress and under active development.
+> Developers must evaluate their use case to check if these are the right tools to use.
+> If you are not sure, ask for help in the [`#f_real-time` internal Slack channel](https://gitlab.slack.com/archives/CUX9Z2N66).
 
 ## Working Safely with WebSockets
 
@@ -68,13 +65,10 @@ To build a real-time view component on GitLab, you must:
 
 ### Integrate a Vue component with Apollo subscriptions
 
-{{< alert type="note" >}}
-
-Our current real-time stack assumes that client code is built using Vue as the rendering layer and
-Apollo as the state and networking layer. If you are working with a part of
-the GitLab frontend that has not been migrated to Vue + Apollo yet, complete that task first.
-
-{{< /alert >}}
+> [!note]
+> Our current real-time stack assumes that client code is built using Vue as the rendering layer and
+> Apollo as the state and networking layer. If you are working with a part of
+> the GitLab frontend that has not been migrated to Vue + Apollo yet, complete that task first.
 
 Consider a hypothetical `IssueView` Vue component that observes and renders GitLab `Issue` data.
 For simplicity, we assume here that all it does is render an issue's title and description:
@@ -420,13 +414,10 @@ Because a push initiated by the server needs to propagate over the network and t
 in the client without any user interaction whatsoever, real-time features can only be understood
 by looking at the entire stack including frontend and backend.
 
-{{< alert type="note" >}}
-
-For historic reasons, the controller routes that service updates in response to clients polling
-for changes are called `realtime_changes`. They use conditional GET requests and are unrelated
-to the real-time behavior covered in this guide.
-
-{{< /alert >}}
+> [!note]
+> For historic reasons, the controller routes that service updates in response to clients polling
+> for changes are called `realtime_changes`. They use conditional GET requests and are unrelated
+> to the real-time behavior covered in this guide.
 
 Any real-time update pushed into a client originates from the GitLab Rails application. We use the following
 technologies to initiate and service these updates:

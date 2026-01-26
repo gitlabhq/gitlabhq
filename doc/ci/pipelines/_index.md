@@ -190,13 +190,10 @@ In this example:
 - `DEPLOY_ENVIRONMENT` is pre-filled in the **New pipeline** page with `canary` as the default value,
   and the message explains the other options.
 
-{{< alert type="note" >}}
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/compliance/compliance_pipelines.md) can have prefilled variables not appear
-when running a pipeline manually. To workaround this issue,
-[change the compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#prefilled-variables-are-not-shown).
-
-{{< /alert >}}
+> [!note]
+> Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/compliance/compliance_pipelines.md) can have prefilled variables not appear
+> when running a pipeline manually. To workaround this issue,
+> [change the compliance pipeline configuration](../../user/compliance/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
 #### Configure a list of selectable prefilled variable values
 
@@ -312,13 +309,10 @@ Users with the Owner role for a project can delete a pipeline:
 Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
 
-{{< alert type="warning" >}}
-
-Deleting a pipeline expires all pipeline caches, and deletes all immediately
-related objects, such as jobs, logs, artifacts, and triggers.
-**This action cannot be undone**.
-
-{{< /alert >}}
+> [!warning]
+> Deleting a pipeline expires all pipeline caches, and deletes all immediately
+> related objects, such as jobs, logs, artifacts, and triggers.
+> **This action cannot be undone**.
 
 ### Pipeline security on protected branches
 

@@ -8,13 +8,10 @@ title: Efficient `IN` operator queries
 This document describes a technique for building efficient ordered database queries with the `IN`
 SQL operator and the usage of a GitLab utility module to help apply the technique.
 
-{{< alert type="note" >}}
-
-The described technique makes heavy use of
-[keyset pagination](pagination_guidelines.md#keyset-pagination).
-It's advised to get familiar with the topic first.
-
-{{< /alert >}}
+> [!note]
+> The described technique makes heavy use of
+> [keyset pagination](pagination_guidelines.md#keyset-pagination).
+> It's advised to get familiar with the topic first.
 
 ## Motivation
 
@@ -54,13 +51,10 @@ ORDER BY "issues"."created_at" ASC,
 LIMIT 20
 ```
 
-{{< alert type="note" >}}
-
-For pagination, ordering by the `created_at` column is not enough,
-we must add the `id` column as a
-[tie-breaker](pagination_performance_guidelines.md#tie-breaker-column).
-
-{{< /alert >}}
+> [!note]
+> For pagination, ordering by the `created_at` column is not enough,
+> we must add the `id` column as a
+> [tie-breaker](pagination_performance_guidelines.md#tie-breaker-column).
 
 The execution of the query can be largely broken down into three steps:
 
@@ -1112,10 +1106,7 @@ Performance comparison for the `gitlab-org` group:
 | `IN` query           | 240833                        | 1.2s                    | 660ms                 |
 | Optimized `IN` query | 9783                          | 450ms                   | 22ms                  |
 
-{{< alert type="note" >}}
-
-Before taking measurements, the group lookup query was executed separately to make
-the group data available in the buffer cache. Since it's a frequently called query, it
-hits many shared buffers during the query execution in the production environment.
-
-{{< /alert >}}
+> [!note]
+> Before taking measurements, the group lookup query was executed separately to make
+> the group data available in the buffer cache. Since it's a frequently called query, it
+> hits many shared buffers during the query execution in the production environment.

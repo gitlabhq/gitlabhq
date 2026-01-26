@@ -731,13 +731,10 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
 
 Because we're not using NFS for shared storage, we use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. Our documentation includes [instructions on how to configure object storage](../../administration/object_storage.md) for each of these data types, and other information about using object storage with GitLab.
 
-{{< alert type="note" >}}
-
-Because we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked previously.
-
-When using IAM roles for S3 access, GitLab supports both IMDSv1 and IMDSv2 and automatically uses IMDSv2 when available.
-
-{{< /alert >}}
+> [!note]
+> Because we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked previously.
+> 
+> When using IAM roles for S3 access, GitLab supports both IMDSv1 and IMDSv2 and automatically uses IMDSv2 when available.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 

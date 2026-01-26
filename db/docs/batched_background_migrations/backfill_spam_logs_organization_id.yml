@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSpamLogsOrganizationId
+description: Backfill the organization_id sharding key on the spam_logs table from the associated user
+feature_category: instance_resiliency
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212438
+milestone: '18.9'
+queued_migration_version: 20260112234864
+finalized_by:

@@ -6,8 +6,8 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
-import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
-import workItemsCsvImportMutation from '~/work_items/graphql/work_items_csv_import.mutation.graphql';
+import WorkItemsCsvImportModal from '~/work_items/list/components/work_items_csv_import_modal.vue';
+import workItemsCsvImportMutation from '~/work_items/list/graphql/work_items_csv_import.mutation.graphql';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));

@@ -323,13 +323,10 @@ finalize it.
 See the below [Examples](#examples) for specific details on what the actual
 migration code should be.
 
-{{< alert type="note" >}}
-
-If the migration is being finalized before one required stop since it was enqueued, an early finalization
-error will be raised. If the migration requires to be finalized before one required stop,
-use `skip_early_finalization_validation: true` option to skip this check.
-
-{{< /alert >}}
+> [!note]
+> If the migration is being finalized before one required stop since it was enqueued, an early finalization
+> error will be raised. If the migration requires to be finalized before one required stop,
+> use `skip_early_finalization_validation: true` option to skip this check.
 
 ### Deleting batched background migration code
 
@@ -1119,13 +1116,10 @@ In extremely limited circumstances, a GitLab administrator can disable the [feat
 This flag is enabled by default. Disable it only as a last resort
 to limit database operations in special circumstances, like database host maintenance.
 
-{{< alert type="warning" >}}
-
-Do not disable this flag unless you fully understand the ramifications. If you disable
-the `execute_batched_migrations_on_schedule` feature flag,
-GitLab upgrades might fail and data loss might occur.
-
-{{< /alert >}}
+> [!warning]
+> Do not disable this flag unless you fully understand the ramifications. If you disable
+> the `execute_batched_migrations_on_schedule` feature flag,
+> GitLab upgrades might fail and data loss might occur.
 
 ## Batched background migrations for EE-only features
 
@@ -1134,13 +1128,10 @@ For this purpose, create an empty class for GitLab FOSS, and extend it for GitLa
 as explained in the guidelines for
 [implementing Enterprise Edition features](../ee_features.md#code-in-libgitlabbackground_migration).
 
-{{< alert type="note" >}}
-
-Background migration classes for EE-only features that use job arguments should define them
-in the GitLab FOSS class. Definitions are required to prevent job arguments validation from failing when
-migration is scheduled in the GitLab FOSS context.
-
-{{< /alert >}}
+> [!note]
+> Background migration classes for EE-only features that use job arguments should define them
+> in the GitLab FOSS class. Definitions are required to prevent job arguments validation from failing when
+> migration is scheduled in the GitLab FOSS context.
 
 You can use the [generator](#generate-a-batched-background-migration) to generate an EE-only migration scaffold by passing
 `--ee-only` flag when generating a new batched background migration.

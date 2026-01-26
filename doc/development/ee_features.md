@@ -1691,13 +1691,10 @@ export default {
 </template>
 ```
 
-{{< alert type="note" >}}
-
-An EE component can be imported
-[asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
-its rendering within CE codebase relies on some check (for example, a feature flag check).
-
-{{< /alert >}}
+> [!note]
+> An EE component can be imported
+> [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
+> its rendering within CE codebase relies on some check (for example, a feature flag check).
 
 Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
 the license is present.

@@ -116,13 +116,10 @@ The user must not be assigned any other role, anywhere in the instance for GitLa
   The project is under the user's personal namespace and does not relate to the group with the Ultimate subscription.
 - On GitLab Self-Managed, a user's highest assigned role is updated asynchronously and may take some time to update.
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, if a user creates a project, they are assigned the Maintainer or Owner role.
-To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../administration/external_users.md).
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, if a user creates a project, they are assigned the Maintainer or Owner role.
+> To prevent a user from creating projects, as an administrator, you can mark the user
+> as [external](../administration/external_users.md).
 
 ## Buy more seats
 

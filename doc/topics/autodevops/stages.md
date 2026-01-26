@@ -63,13 +63,10 @@ language:
 For the requirements of other languages and frameworks, read the
 [Heroku buildpacks documentation](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
 
-{{< alert type="note" >}}
-
-Auto Test still uses Herokuish, as test suite detection is not
-yet part of the Cloud Native Buildpack specification. For more information, see
-[issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
-
-{{< /alert >}}
+> [!note]
+> Auto Test still uses Herokuish, as test suite detection is not
+> yet part of the Cloud Native Buildpack specification. For more information, see
+> [issue 212689](https://gitlab.com/gitlab-org/gitlab/-/issues/212689).
 
 #### Mount volumes into the build container
 

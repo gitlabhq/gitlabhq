@@ -101,13 +101,10 @@ used together.
 For example, if you add the `status::backlog` label to an issue that already has `status::in review`, the
 previous one is removed.
 
-{{< alert type="note" >}}
-
-Scoped labels are available in the Premium and Ultimate tier.
-If you're on the Free tier, you can use regular labels instead.
-However, they aren't mutually exclusive.
-
-{{< /alert >}}
+> [!note]
+> Scoped labels are available in the Premium and Ultimate tier.
+> If you're on the Free tier, you can use regular labels instead.
+> However, they aren't mutually exclusive.
 
 To create each label:
 

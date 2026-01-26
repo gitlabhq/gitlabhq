@@ -175,13 +175,10 @@ administrators and subscription owners:
 
 You can access the dashboard in the Customers Portal and in GitLab.
 
-{{< alert type="note" >}}
-
-Usage data is not displayed in real time.
-Data is synchronized to the dashboards periodically, so usage data should appear within a few hours of actual consumption.
-This means your dashboard shows recent usage, but might not reflect actions taken in the last few hours.
-
-{{< /alert >}}
+> [!note]
+> Usage data is not displayed in real time.
+> Data is synchronized to the dashboards periodically, so usage data should appear within a few hours of actual consumption.
+> This means your dashboard shows recent usage, but might not reflect actions taken in the last few hours.
 
 ### In Customers Portal
 

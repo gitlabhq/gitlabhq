@@ -175,13 +175,10 @@ Executing background migration `ci_10`...
 Done.
 ```
 
-{{< alert type="warning" >}}
-
-This task executes the migration synchronously in the foreground. The migration runs until completion
-or failure. This can take a significant amount of time for large migrations and may impact database
-performance. Use this task during maintenance windows when possible.
-
-{{< /alert >}}
+> [!warning]
+> This task executes the migration synchronously in the foreground. The migration runs until completion
+> or failure. This can take a significant amount of time for large migrations and may impact database
+> performance. Use this task during maintenance windows when possible.
 
 The task prompts for confirmation before executing. If the migration fails to complete, check the
 migration status with `gitlab:background_migrations:show[<migration_id>]` for more details.
@@ -231,13 +228,10 @@ Do not remove the two-space nesting.
   [ci_10]: Done.
   ```
 
-{{< alert type="warning" >}}
-
-This task executes all unfinished migrations synchronously in the foreground. This can take a very
-long time and significantly impact database performance. Only use this task during planned maintenance
-windows. The task continues even if individual migrations fail, but reports failures in the output.
-
-{{< /alert >}}
+> [!warning]
+> This task executes all unfinished migrations synchronously in the foreground. This can take a very
+> long time and significantly impact database performance. Only use this task during planned maintenance
+> windows. The task continues even if individual migrations fail, but reports failures in the output.
 
 The task:
 
@@ -558,13 +552,10 @@ use the information in the failure error logs or the database:
 
 #### Mark a failed migration finished
 
-{{< alert type="warning" >}}
-
-[Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
-these instructions. This action can cause data loss, and make your instance fail
-in ways that are difficult to recover from.
-
-{{< /alert >}}
+> [!warning]
+> [Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
+> these instructions. This action can cause data loss, and make your instance fail
+> in ways that are difficult to recover from.
 
 There can be cases where the background migration fails: when jumping too many version upgrades,
 or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).

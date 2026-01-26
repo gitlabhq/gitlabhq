@@ -66,13 +66,10 @@ To subscribe to GitLab for a GitLab Self-Managed instance:
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
    You must [add this code to your GitLab instance](../administration/license.md).
 
-{{< alert type="note" >}}
-
-If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
-instance, ensure you're purchasing enough seats to
-[cover your users](../administration/admin_area.md#administering-users).
-
-{{< /alert >}}
+> [!note]
+> If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
+> instance, ensure you're purchasing enough seats to
+> [cover your users](../administration/admin_area.md#administering-users).
 
 ## View subscription
 

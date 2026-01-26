@@ -448,13 +448,10 @@ Why this ordering?
 - **Context flow**: Resource → User → Action follows the natural question: "What is being modified, by whom, and how?"
 - **Flexibility**: Using hash parameters for non-core parameters allows adding new parameters without breaking compatibility
 
-{{< alert type="note" >}}
-
-This guideline applies to **new workers only**. Do not refactor existing workers to match this format,
-as changing parameter order or structure can break compatibility with jobs already in the queue.
-See [Sidekiq compatibility across updates](compatibility_across_updates.md) for more details.
-
-{{< /alert >}}
+> [!note]
+> This guideline applies to **new workers only**. Do not refactor existing workers to match this format,
+> as changing parameter order or structure can break compatibility with jobs already in the queue.
+> See [Sidekiq compatibility across updates](compatibility_across_updates.md) for more details.
 
 ## Tests
 

@@ -226,13 +226,10 @@ Use two MRs to create the index in a post-deployment migration and make the appl
 - The second MR makes application code changes. It should merge only after the first MR's
   post-deployment migrations are executed on GitLab.com.
 
-{{< alert type="note" >}}
-
-If you can use a feature flag, you might be able to use a single MR
-to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
-After the post-deployment migration executes, you can enable the feature flag.
-
-{{< /alert >}}
+> [!note]
+> If you can use a feature flag, you might be able to use a single MR
+> to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
+> After the post-deployment migration executes, you can enable the feature flag.
 
 For GitLab.com, we execute post-deployment migrations throughout a single release through continuous integration:
 
@@ -771,13 +768,10 @@ migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-{{< alert type="warning" >}}
-
-Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
-If the second migration is deployed before the index has been created,
-the index is created synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the index exists in production before merging a second migration with `add_concurrent_index`.
+> If the second migration is deployed before the index has been created,
+> the index is created synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/
@@ -900,13 +894,10 @@ The synchronous migration results in a no-op on GitLab.com, but you should still
 migration as expected for other installations. For example, to
 create the second migration for the previous asynchronous example:
 
-{{< alert type="warning" >}}
-
-Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
-If the second migration is deployed before the index has been destroyed,
-the index is destroyed synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the index no longer exists in production before merging a second migration with `remove_concurrent_index_by_name`.
+> If the second migration is deployed before the index has been destroyed,
+> the index is destroyed synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/

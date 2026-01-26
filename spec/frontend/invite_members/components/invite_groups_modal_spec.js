@@ -80,7 +80,7 @@ describe('InviteGroupsModal', () => {
     wrapper.findByTestId(testId).vm.$emit('click', { preventDefault: jest.fn() });
 
   const triggerOpenModal = async ({ source } = {}) => {
-    eventHub.$emit('openGroupModal', { source });
+    eventHub.$emit('open-group-modal', { source });
     await nextTick();
   };
 

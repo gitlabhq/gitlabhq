@@ -1,10 +1,10 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
-import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
-import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
-import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
+import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
+import WorkItemCsvExportModal from '~/work_items/list/components/work_items_csv_export_modal.vue';
+import WorkItemsCsvImportModal from '~/work_items/list/components/work_items_csv_import_modal.vue';
+import WorkItemByEmail from '~/work_items/list/components/work_item_by_email.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 
 describe('WorkItemsListActions component', () => {

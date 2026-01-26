@@ -57,13 +57,10 @@ To enable Code Quality, either:
 
   Code Quality now runs in pipelines.
 
-{{< alert type="warning" >}}
-
-On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
-could execute privileged Docker commands on the runner host. Having proper access control policies
-mitigates this attack vector by allowing access only to trusted actors.
-
-{{< /alert >}}
+> [!warning]
+> On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
+> could execute privileged Docker commands on the runner host. Having proper access control policies
+> mitigates this attack vector by allowing access only to trusted actors.
 
 ## Disable CodeClimate-based scanning
 
@@ -554,13 +551,10 @@ For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.c
 To give the Docker daemon in the service container permissions to initialize its storage,
 you must mount the `/var/lib` directory as a volume mount.
 
-{{< alert type="note" >}}
-
-If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
-If you opt for the `vfs` value, it might have a negative
-impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
-
-{{< /alert >}}
+> [!note]
+> If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
+> If you opt for the `vfs` value, it might have a negative
+> impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
 
 To configure permissions for the Docker daemon:
 

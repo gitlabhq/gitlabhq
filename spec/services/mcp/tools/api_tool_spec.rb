@@ -51,6 +51,15 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
     end
   end
 
+  describe '#icons' do
+    it 'returns icons array' do
+      icons = api_tool.icons
+
+      expect(icons).to be_an(Array)
+      expect(icons.first).to include(:mimeType, :src, :theme)
+    end
+  end
+
   describe '#input_schema' do
     context 'with standard types' do
       it 'returns a valid JSON schema with required fields' do

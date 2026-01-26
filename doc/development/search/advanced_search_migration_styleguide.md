@@ -199,13 +199,10 @@ Requirements:
 - For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
 - For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
 
-{{< alert type="note" >}}
-
-This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
-result limit. This constraint significantly impacts performance when backfilling large datasets,
-as the migration must iterate slowly through the data in smaller batches.
-
-{{< /alert >}}
+> [!note]
+> This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
+> result limit. This constraint significantly impacts performance when backfilling large datasets,
+> as the migration must iterate slowly through the data in smaller batches.
 
 Single field example:
 

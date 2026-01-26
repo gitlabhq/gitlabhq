@@ -54,6 +54,10 @@ module Mcp
         }
       end
 
+      def icons
+        IconConfig.gitlab_icons
+      end
+
       def execute(request: nil, params: nil)
         args = params[:arguments]&.slice(*settings[:params]) || {}
         request.env[Grape::Env::GRAPE_ROUTING_ARGS].merge!(args)

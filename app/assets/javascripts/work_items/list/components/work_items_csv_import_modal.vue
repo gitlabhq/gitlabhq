@@ -6,6 +6,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemsCsvImportMutation from '../graphql/work_items_csv_import.mutation.graphql';
 
 export default {
+  name: 'WorkItemsCsvImportModal',
   i18n: {
     maximumFileSizeText: __('The maximum file size allowed is %{size}.'),
     importWorkItemsText: s__('WorkItem|Import work items'),

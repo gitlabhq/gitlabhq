@@ -155,7 +155,7 @@ export default {
       displaySuccessfulInvitationAlert();
     }
 
-    eventHub.$on('openProjectMembersModal', () => {
+    eventHub.$on('open-project-members-modal', () => {
       this.openModal();
     });
   },

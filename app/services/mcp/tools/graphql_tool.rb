@@ -30,6 +30,10 @@ module Mcp
         raise NotImplementedError, "build_variables must be implemented"
       end
 
+      def icons
+        IconConfig.gitlab_icons
+      end
+
       def execute
         result = GitlabSchema.execute(
           graphql_operation_for_version,

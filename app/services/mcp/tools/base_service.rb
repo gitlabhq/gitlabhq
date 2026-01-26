@@ -35,11 +35,17 @@ module Mcp
       end
 
       def to_h
-        {
+        tool_hash = {
           name: name,
           description: description,
           inputSchema: input_schema
         }
+        tool_hash[:icons] = [icons.first] if icons.present?
+        tool_hash
+      end
+
+      def icons
+        IconConfig.gitlab_icons
       end
 
       # Tool availability check, returns `true` by default.

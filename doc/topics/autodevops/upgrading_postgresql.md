@@ -41,13 +41,10 @@ involves:
    any existing channel 1 database. For more information, see
    [Detected an existing PostgreSQL database](troubleshooting.md#detected-an-existing-postgresql-database).
 
-{{< alert type="note" >}}
-
-If you have configured Auto DevOps to have staging,
-consider trying out the backup and restore steps on staging first, or
-trying this out on a review app.
-
-{{< /alert >}}
+> [!note]
+> If you have configured Auto DevOps to have staging,
+> consider trying out the backup and restore steps on staging first, or
+> trying this out on a review app.
 
 ## Take your application offline
 
@@ -174,13 +171,10 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 
 ## Install new PostgreSQL
 
-{{< alert type="warning" >}}
-
-Using the newer version of PostgreSQL deletes
-the older 0.7.1 PostgreSQL. To prevent the underlying data from being
-deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
-
-{{< /alert >}}
+> [!warning]
+> Using the newer version of PostgreSQL deletes
+> the older 0.7.1 PostgreSQL. To prevent the underlying data from being
+> deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
 {{< alert type="note" >}}
 

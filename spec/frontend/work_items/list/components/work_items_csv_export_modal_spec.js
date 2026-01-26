@@ -7,9 +7,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { createAlert } from '~/alert';
 import { formatNumber } from '~/locale';
-import WorkItemsCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
-import workItemsCsvExportMutation from '~/work_items/graphql/work_items_csv_export.mutation.graphql';
-import { workItemsCsvExportResponse, workItemsCsvExportFailureResponse } from '../mock_data';
+import WorkItemsCsvExportModal from '~/work_items/list/components/work_items_csv_export_modal.vue';
+import workItemsCsvExportMutation from '~/work_items/list/graphql/work_items_csv_export.mutation.graphql';
+import {
+  workItemsCsvExportResponse,
+  workItemsCsvExportFailureResponse,
+} from 'jest/work_items/mock_data';
 
 jest.mock('~/alert');
 

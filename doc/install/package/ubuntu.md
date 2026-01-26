@@ -93,13 +93,10 @@ To install GitLab, first add the GitLab package repository.
 
 Install GitLab using your system's package manager.
 
-{{< alert type="note" >}}
-
-Setting the `EXTERNAL_URL` is optional but recommended.
-If you don't set it during the installation, you can
-[set it afterwards](https://docs.gitlab.com/omnibus/settings/configuration/#configure-the-external-url-for-gitlab).
-
-{{< /alert >}}
+> [!note]
+> Setting the `EXTERNAL_URL` is optional but recommended.
+> If you don't set it during the installation, you can
+> [set it afterwards](https://docs.gitlab.com/omnibus/settings/configuration/#configure-the-external-url-for-gitlab).
 
 {{< tabs >}}
 

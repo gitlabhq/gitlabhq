@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import HealthStatus from '~/work_items/list/components/health_status.vue';
 import { WIDGET_TYPE_HEALTH_STATUS } from '~/work_items/constants';
 
 const IssueHealthStatus = { template: '<div></div>', props: ['healthStatus'] };
 
-describe('WorkItemHealthStatus', () => {
+describe('HealthStatus', () => {
   let wrapper;
 
   const issueWithHealthStatus = {
@@ -25,7 +25,7 @@ describe('WorkItemHealthStatus', () => {
   const findIssueHealthStatus = () => wrapper.findComponent(IssueHealthStatus);
 
   const mountComponent = ({ issue, hasIssuableHealthStatusFeature = false } = {}) =>
-    shallowMount(WorkItemHealthStatus, {
+    shallowMount(HealthStatus, {
       provide: { hasIssuableHealthStatusFeature },
       propsData: { issue },
       stubs: { IssueHealthStatus },

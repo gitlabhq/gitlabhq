@@ -85,10 +85,7 @@ Here is an example setup that creates a `success` deployment record in GitLab wh
    kubectl patch app <your-app-name> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.gitlab":""}}}' --type merge
    ```
 
-{{< alert type="note" >}}
-
-If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/troubleshooting/).
-For example, `argocd-notifications template notify gitlab-deployment-status <your-app-name> --recipient gitlab:argocd-notifications`
-triggers API request immediately and renders an error message from GitLab API server if any.
-
-{{< /alert >}}
+> [!note]
+> If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/troubleshooting/).
+> For example, `argocd-notifications template notify gitlab-deployment-status <your-app-name> --recipient gitlab:argocd-notifications`
+> triggers API request immediately and renders an error message from GitLab API server if any.

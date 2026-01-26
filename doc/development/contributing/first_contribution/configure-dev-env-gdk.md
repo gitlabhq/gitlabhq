@@ -164,13 +164,10 @@ In case you want to continue using a different tool version manager, you need to
 
 ## Troubleshoot GDK
 
-{{< alert type="note" >}}
-
-For more advanced troubleshooting, see
-the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
-and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
-
-{{< /alert >}}
+> [!note]
+> For more advanced troubleshooting, see
+> the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
+> and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
 
 If you encounter issues, go to the `gdk/gitlab`
 directory and run `gdk doctor`.

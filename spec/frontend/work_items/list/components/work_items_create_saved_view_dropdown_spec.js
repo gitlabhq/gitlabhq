@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemsCreateSavedViewDropdown from '~/work_items/components/work_items_create_saved_view_dropdown.vue';
-import WorkItemsNewSavedViewModal from '~/work_items/components/work_items_new_saved_view_modal.vue';
-import WorkItemsExistingSavedViewsModal from '~/work_items/components/work_items_existing_saved_views_modal.vue';
+import WorkItemsCreateSavedViewDropdown from '~/work_items/list/components/work_items_create_saved_view_dropdown.vue';
+import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
+import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 
 import waitForPromises from 'helpers/wait_for_promises';
 

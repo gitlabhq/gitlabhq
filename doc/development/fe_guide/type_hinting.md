@@ -139,13 +139,10 @@ let wrapper;
 wrapper = shallowMount(/* ... */);
 ```
 
-{{< alert type="note" >}}
-
-`import()` is [not a native JSDoc construct](https://github.com/jsdoc/jsdoc/issues/1645), but it is
-recognized by many IDEs and tools. In this case we're aiming for better clarity in the code and
-improved Developer Experience with an IDE.
-
-{{< /alert >}}
+> [!note]
+> `import()` is [not a native JSDoc construct](https://github.com/jsdoc/jsdoc/issues/1645), but it is
+> recognized by many IDEs and tools. In this case we're aiming for better clarity in the code and
+> improved Developer Experience with an IDE.
 
 #### JSDoc is limited
 

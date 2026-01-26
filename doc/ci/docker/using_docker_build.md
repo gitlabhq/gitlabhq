@@ -109,13 +109,10 @@ You can use the Docker executor to run jobs in a Docker container.
 
 The Docker daemon supports connections over TLS. TLS is the default in Docker 19.03.12 and later.
 
-{{< alert type="warning" >}}
-
-This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
-escalation. This action can cause container breakout. For more information, see
-[runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
-
-{{< /alert >}}
+> [!warning]
+> This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
+> escalation. This action can cause container breakout. For more information, see
+> [runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
 
 To use Docker-in-Docker with TLS enabled:
 

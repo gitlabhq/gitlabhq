@@ -722,7 +722,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_links/work_item_projects_listbox.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_rolled_up_data.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_tree.vue',
-    'app/assets/javascripts/work_items/components/work_item_list_actions.vue',
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
     'app/assets/javascripts/work_items/components/work_item_notes.vue',
     'app/assets/javascripts/work_items/components/work_item_notifications_widget.vue',

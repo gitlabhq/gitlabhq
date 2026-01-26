@@ -84,7 +84,7 @@ Example response:
 
 ## Search for a Conan package
 
-Searches the instance for a Conan package with a specified name.
+Searches the instance for a specified Conan package.
 
 ```plaintext
 GET /packages/conan/v1/conans/search
@@ -119,7 +119,7 @@ Example response:
 
 ## Verify authentication credentials
 
-Verifies the validity of Basic Auth credentials or a Conan JWT generated from the [`/authenticate`](#create-an-authentication-token) endpoint.
+Verifies the validity of Basic Auth credentials or a specified Conan JWT generated from the [`/authenticate`](#create-an-authentication-token) endpoint.
 
 ```plaintext
 GET /packages/conan/v1/users/check_credentials
@@ -141,9 +141,9 @@ Example response:
 ok
 ```
 
-## Get a recipe snapshot
+## Retrieve a recipe snapshot
 
-Gets a snapshot of the files for a specified Conan recipe. The snapshot is a list of filenames
+Retrieves a snapshot of the files for a specified Conan recipe. The snapshot is a list of filenames
 with their associated MD5 hash.
 
 ```plaintext
@@ -174,9 +174,9 @@ Example response:
 }
 ```
 
-## Get a package snapshot
+## Retrieve a package snapshot
 
-Gets a snapshot of the files for a specified Conan package and reference. The snapshot is a list of filenames
+Retrieves a snapshot of the files for a specified Conan package and reference. The snapshot is a list of filenames
 with their associated MD5 hash.
 
 ```plaintext
@@ -208,9 +208,9 @@ Example response:
 }
 ```
 
-## Get a recipe manifest
+## Retrieve a recipe manifest
 
-Gets a manifest that includes a list of files and associated download URLs for a specified recipe.
+Retrieves a manifest that includes a list of files and associated download URLs for a specified recipe.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest
@@ -240,9 +240,9 @@ Example response:
 }
 ```
 
-## Get a package manifest
+## Retrieve a package manifest
 
-Gets a manifest that includes a list of files and associated download URLs for a specified package.
+Retrieves a manifest that includes a list of files and associated download URLs for a specified package.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
@@ -276,7 +276,7 @@ Example response:
 ## List all recipe download URLs
 
 Lists all files and associated download URLs for a specified recipe.
-Returns the same payload as the [recipe manifest](#get-a-recipe-manifest) endpoint.
+Returns the same payload as the [recipe manifest](#retrieve-a-recipe-manifest) endpoint.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
@@ -309,7 +309,7 @@ Example response:
 ## List all package download URLs
 
 Lists all files and associated download URLs for a specified package.
-Returns the same payload as the [package manifest](#get-a-package-manifest) endpoint.
+Returns the same payload as the [package manifest](#retrieve-a-package-manifest) endpoint.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
@@ -435,9 +435,9 @@ Example response:
 }
 ```
 
-## Get a recipe file
+## Retrieve a recipe file
 
-Gets a recipe file from the package registry. You must use the download URL returned from the
+Retrieves a specified recipe file from the package registry. You must use the download URL returned from the
 [recipe download URLs](#list-all-recipe-download-urls) endpoint.
 
 ```plaintext
@@ -472,7 +472,7 @@ This example writes to `conanfile.py` in the current directory.
 
 ## Upload a recipe file
 
-Uploads a specified recipe file in the package registry. You must use the upload URL returned from the
+Uploads a specified recipe file to the package registry. You must use the upload URL returned from the
 [recipe upload URLs](#list-all-recipe-upload-urls) endpoint.
 
 ```plaintext
@@ -499,9 +499,9 @@ curl --request PUT \
      --url "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conanfile.py"
 ```
 
-## Get a package file
+## Retrieve a package file
 
-Gets a package file from the package registry. You must use the download URL returned from the
+Retrieves a specified package file from the package registry. You must use the download URL returned from the
 [package download URLs](#list-all-package-download-urls) endpoint.
 
 ```plaintext
@@ -538,7 +538,7 @@ This example writes to `conaninfo.txt` in the current directory.
 
 ## Upload a package file
 
-Uploads a specified package file in the package registry. You must use the upload URL returned from the
+Uploads a specified package file to the package registry. You must use the upload URL returned from the
 [package upload URLs](#list-all-package-upload-urls) endpoint.
 
 ```plaintext
@@ -569,7 +569,7 @@ curl --request PUT \
 
 ## Delete a recipe and package
 
-Deletes a specified Conan recipe and the associated package files from the package registry.
+Deletes a specified Conan recipe and associated package files from the package registry.
 
 ```plaintext
 DELETE /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
@@ -606,9 +606,9 @@ Example response:
 }
 ```
 
-## Get package references metadata
+## Retrieve package references metadata
 
-Gets the metadata for all package references of a package.
+Retrieves the metadata for all package references of a specified package.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search

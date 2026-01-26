@@ -2,6 +2,7 @@
 import { findHealthStatusWidget } from '~/work_items/utils';
 
 export default {
+  name: 'HealthStatus',
   components: {
     IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
   },

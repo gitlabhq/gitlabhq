@@ -183,13 +183,10 @@ To configure SAML:
 
 The basic SAML connection is now configured.
 
-{{< alert type="note" >}}
-
-You can set the default membership role to any role. All new users are assigned this role when
-they first sign in through SAML. Setting the default to [**Minimal Access**](../../user/permissions.md#users-with-minimal-access)
-and promoting users later reduces the risk of users having too much access.
-
-{{< /alert >}}
+> [!note]
+> You can set the default membership role to any role. All new users are assigned this role when
+> they first sign in through SAML. Setting the default to [**Minimal Access**](../../user/permissions.md#users-with-minimal-access)
+> and promoting users later reduces the risk of users having too much access.
 
 ## Step 5: Test the SAML configuration
 

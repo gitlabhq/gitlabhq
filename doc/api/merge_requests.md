@@ -1807,17 +1807,36 @@ POST /projects/:id/merge_requests/:merge_request_iid/blocks
 
 Supported attributes:
 
-| Attribute                   | Type              | Required | Description |
-|-----------------------------|-------------------|----------|-------------|
-| `id`                        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) owned by the authenticated user. |
-| `merge_request_iid`         | integer           | Yes      | The internal ID of the merge request. |
-| `blocking_merge_request_id` | integer           | Yes      | The internal ID of the blocking merge request. |
+| Attribute                    | Type              | Required    | Description |
+|------------------------------|-------------------|-------------|-------------|
+| `id`                         | integer or string | Yes         | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) owned by the authenticated user. |
+| `merge_request_iid`          | integer           | Yes         | The internal ID of the merge request to be blocked. |
+| `blocking_merge_request_id`  | integer           | Conditional | The global ID of the blocking merge request. Required if `blocking_merge_request_iid` is not provided. |
+| `blocking_merge_request_iid` | integer           | Conditional | The IID of the blocking merge request. Required if `blocking_merge_request_id` is not provided. |
+| `blocking_project_id`        | integer or string | No          | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) that contains the blocking merge request. Required when `blocking_merge_request_iid` refers to a merge request in a different project. Defaults to the current project. |
 
-Example request:
+Example request using IID (same project):
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks?blocking_merge_request_id=2"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks?blocking_merge_request_iid=2"
+```
+
+Example request using IID (cross-project):
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks?blocking_merge_request_iid=5&blocking_project_id=2"
+```
+
+Example request using global ID (legacy method):
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/blocks?blocking_merge_request_id=12345"
 ```
 
 Returns:

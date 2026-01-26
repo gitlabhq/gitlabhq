@@ -2503,7 +2503,7 @@ msgstr ""
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr ""
 
-msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the flow."
+msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the %{itemType}."
 msgstr ""
 
 msgid "AICatalog|A new version is available"
@@ -25832,6 +25832,9 @@ msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo AI assistant"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"

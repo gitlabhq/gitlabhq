@@ -13,9 +13,9 @@ import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_sta
 import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
 import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import WorkItemBulkEditSidebar from '~/work_items/list/components/work_item_bulk_edit_sidebar.vue';
-import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
-import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
-import WorkItemsSavedViewsSelectors from '~/work_items/components/shared/work_items_saved_views_selectors.vue';
+import HealthStatus from '~/work_items/list/components/health_status.vue';
+import WorkItemListHeading from '~/work_items/list/components/work_item_list_heading.vue';
+import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import EmptyStateWithoutAnyIssues from '~/work_items/list/components/empty_state_without_any_issues.vue';
 import EmptyStateWithAnyIssues from '~/work_items/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -62,10 +62,10 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
+import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
-import WorkItemsNewSavedViewModal from '~/work_items/components/work_items_new_saved_view_modal.vue';
-import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
+import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
+import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
@@ -160,7 +160,7 @@ const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyR
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
-const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
+const findHealthStatus = () => wrapper.findComponent(HealthStatus);
 const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
 const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
@@ -376,7 +376,7 @@ describe('when work items are fetched', () => {
   });
 
   it('renders IssueHealthStatus component', () => {
-    expect(findWorkItemHealthStatus().exists()).toBe(true);
+    expect(findHealthStatus().exists()).toBe(true);
   });
 
   it('renders work items', () => {

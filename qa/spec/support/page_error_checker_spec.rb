@@ -218,48 +218,80 @@ RSpec.describe QA::Support::PageErrorChecker do
         "</div>"
     end
 
+    let(:error_502_pre_str) do
+      "<html><head><meta name=\"color-scheme\" content=\"light dark\"></head>" \
+        "<body><pre style=\"word-wrap: break-word; white-space: pre-wrap;\">502 Bad Gateway</pre></body></html>"
+    end
+
+    let(:no_error_pre_str) do
+      "<html><head><meta name=\"color-scheme\" content=\"light dark\"></head>" \
+        "<body><pre style=\"word-wrap: break-word; white-space: pre-wrap;\">123 projects in group</pre></body></html>"
+    end
+
     let(:project_name_500_str) { "<head><title>Project</title></head><h1 class=\"home-panel-title gl-mt-3 gl-mb-2\" itemprop=\"name\">qa-test-2022-05-25-12-12-16-d4500c2e79c37289</h1>" }
     let(:backtrace_str) { "<head><title>Error::Backtrace</title></head><body><section class=\"backtrace\">foo</section></body>" }
     let(:no_error_str) { "<head><title>Nothing wrong here</title></head><body>no 404 or 500 or backtrace</body>" }
 
-    it 'calls report with 404 if 404 found' do
-      allow(page).to receive(:html).and_return(error_404_str)
-      allow(Nokogiri::HTML).to receive(:parse).with(error_404_str).and_return(NokogiriParse.parse(error_404_str))
+    shared_examples 'error detection' do |error_code|
+      it "calls report with #{error_code} if #{error_code} found" do
+        allow(page).to receive(:html).and_return(html_string)
+        allow(Nokogiri::HTML).to receive(:parse).with(html_string).and_return(NokogiriParse.parse(html_string))
 
-      expect(described_class).to receive(:report!).with(page, 404)
-      described_class.check_page_for_error_code(page)
+        expect(described_class).to receive(:report!).with(page, error_code)
+        described_class.check_page_for_error_code(page)
+      end
     end
 
-    it 'calls report with 500 if 500 found' do
-      allow(page).to receive(:html).and_return(error_500_str)
-      allow(Nokogiri::HTML).to receive(:parse).with(error_500_str).and_return(NokogiriParse.parse(error_500_str))
+    shared_examples 'no error detection' do |description|
+      it "does not call report if #{description}" do
+        allow(page).to receive(:html).and_return(html_string)
+        allow(Nokogiri::HTML).to receive(:parse).with(html_string).and_return(NokogiriParse.parse(html_string))
 
-      expect(described_class).to receive(:report!).with(page, 500)
-      described_class.check_page_for_error_code(page)
+        expect(described_class).not_to receive(:report!)
+        described_class.check_page_for_error_code(page)
+      end
     end
 
-    it 'calls report with 500 if GDK backtrace found' do
-      allow(page).to receive(:html).and_return(backtrace_str)
-      allow(Nokogiri::HTML).to receive(:parse).with(backtrace_str).and_return(NokogiriParse.parse(backtrace_str))
+    context 'when 404 error found' do
+      let(:html_string) { error_404_str }
 
-      expect(described_class).to receive(:report!).with(page, 500)
-      described_class.check_page_for_error_code(page)
+      include_examples 'error detection', 404
     end
 
-    it 'does not call report if 500 found in project name' do
-      allow(page).to receive(:html).and_return(project_name_500_str)
-      allow(Nokogiri::HTML).to receive(:parse).with(project_name_500_str).and_return(NokogiriParse.parse(project_name_500_str))
+    context 'when 500 error found' do
+      let(:html_string) { error_500_str }
 
-      expect(described_class).not_to receive(:report!)
-      described_class.check_page_for_error_code(page)
+      include_examples 'error detection', 500
     end
 
-    it 'does not call report if no 404, 500 or backtrace found' do
-      allow(page).to receive(:html).and_return(no_error_str)
-      allow(Nokogiri::HTML).to receive(:parse).with(no_error_str).and_return(NokogiriParse.parse(no_error_str))
+    context 'when GDK backtrace found' do
+      let(:html_string) { backtrace_str }
 
-      expect(described_class).not_to receive(:report!)
-      described_class.check_page_for_error_code(page)
+      include_examples 'error detection', 500
+    end
+
+    context 'when 502 error found in pre tag' do
+      let(:html_string) { error_502_pre_str }
+
+      include_examples 'error detection', 502
+    end
+
+    context 'when pre tag found with no error' do
+      let(:html_string) { no_error_pre_str }
+
+      include_examples 'no error detection', 'pre tag found with no error'
+    end
+
+    context 'when 500 found in project name' do
+      let(:html_string) { project_name_500_str }
+
+      include_examples 'no error detection', '500 found in project name'
+    end
+
+    context 'when no 404, 500 or backtrace found' do
+      let(:html_string) { no_error_str }
+
+      include_examples 'no error detection', 'no 404, 500 or backtrace found'
     end
   end
 

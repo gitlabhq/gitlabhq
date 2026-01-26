@@ -51,7 +51,7 @@ Private flows:
 - Can be viewed only by members of the managing project who have at least the Developer role, and by users with the Owner role for the top-level group.
 - Cannot be enabled in projects other than the managing project, or in groups other than the top-level group.
 
-You cannot change a private flow to public if the flow is currently enabled.
+You cannot change a public flow to private if the flow is enabled.
 
 ## View the flows for your project
 

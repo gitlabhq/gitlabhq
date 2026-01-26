@@ -109,7 +109,6 @@ import {
   TOKEN_TYPE_PARENT,
   TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -119,14 +118,14 @@ import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_i
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
-import WorkItemsNewSavedViewModal from '../components/work_items_new_saved_view_modal.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
-import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
-import WorkItemListHeading from '../components/work_item_list_heading.vue';
-import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
-import WorkItemListActions from '../components/work_item_list_actions.vue';
-import WorkItemsSavedViewsSelectors from '../components/shared/work_items_saved_views_selectors.vue';
+import HealthStatus from '../list/components/health_status.vue';
+import WorkItemListHeading from '../list/components/work_item_list_heading.vue';
+import WorkItemUserPreferences from '../list/components/work_item_user_preferences.vue';
+import WorkItemListActions from '../list/components/work_item_list_actions.vue';
+import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
+import WorkItemsSavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -146,6 +145,7 @@ import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import { combineWorkItemLists, findHierarchyWidget } from '../utils';
 import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 
+const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 const GroupToken = () =>
@@ -186,7 +186,7 @@ export default {
     WorkItemBulkEditSidebar: () =>
       import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
     WorkItemDrawer,
-    WorkItemHealthStatus,
+    HealthStatus,
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     EmptyStateWithAnyTickets,
@@ -1859,7 +1859,7 @@ export default {
         </template>
 
         <template #health-status="{ issuable = {} }">
-          <work-item-health-status
+          <health-status
             v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.HEALTH)"
             :issue="issuable"
           />

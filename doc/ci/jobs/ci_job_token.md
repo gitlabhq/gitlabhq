@@ -193,13 +193,10 @@ To set a feature to be only visible to project members:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
-a pipeline created in an unauthorized project. If the pipeline was created by one of
-your maintainers, the job token could be used in an attempt to access your project.
-
-{{< /alert >}}
+> [!warning]
+> It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
+> a pipeline created in an unauthorized project. If the pipeline was created by one of
+> your maintainers, the job token could be used in an attempt to access your project.
 
 If you disable the CI/CD job token allowlist, jobs from any project can access your project
 with a job token. The user that triggers the pipeline must have permission to access your project.
@@ -250,13 +247,10 @@ The job token has the same access permissions as the user who started the job.
 
 If you use the `semantic-release` tool, [this setting might prevent pipeline creation](#the-semantic-release-tool-and-job-tokens).
 
-{{< alert type="warning" >}}
-
-Do not enable this setting on projects configured as [pull mirrors](../../user/project/repository/mirror/pull.md),
-especially if [pipelines are triggered for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates).
-The upstream repository owner could attempt to use the `CI_JOB_TOKEN` to push commits to the mirrored project.
-
-{{< /alert >}}
+> [!warning]
+> Do not enable this setting on projects configured as [pull mirrors](../../user/project/repository/mirror/pull.md),
+> especially if [pipelines are triggered for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates).
+> The upstream repository owner could attempt to use the `CI_JOB_TOKEN` to push commits to the mirrored project.
 
 Prerequisites:
 

@@ -132,13 +132,10 @@ z.sync
 # => will run 1 query
 ```
 
-{{< alert type="note" >}}
-
-There is no dependency analysis in the use of batch-loading. There is
-a pending queue of requests, and as soon as any one result is needed, all pending
-requests are evaluated.
-
-{{< /alert >}}
+> [!note]
+> There is no dependency analysis in the use of batch-loading. There is
+> a pending queue of requests, and as soon as any one result is needed, all pending
+> requests are evaluated.
 
 You should never call `batch.sync` or use `Lazy.force` in resolver code.
 If you depend on a lazy value, use `Lazy.with_value` instead:

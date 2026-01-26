@@ -10,7 +10,7 @@ import {
   GlFormRadio,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { SAVED_VIEW_VISIBILITY } from '../constants';
+import { SAVED_VIEW_VISIBILITY } from '~/work_items/constants';
 
 export default {
   name: 'WorkItemsNewSavedViewModal',

@@ -78,13 +78,13 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 > The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 > For more information, see the history.
 
-{{< alert type="warning" >}}
+A project access token gives access to just one project, while a group access token
+gives access to all projects in the group.
 
-Project access tokens are treated as [internal users](../../administration/internal_users.md).
-If an internal user creates a project access token, that token is able to access
-all projects that have visibility level set to [Internal](../../user/public_access.md).
-
-{{< /alert >}}
+> [!warning]
+> Project access tokens are treated as [internal users](../../administration/internal_users.md).
+> If an internal user creates a project access token, that token is able to access
+> all projects that have visibility level set to [Internal](../../user/public_access.md).
 
 To create a project access token:
 

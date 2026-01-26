@@ -17,13 +17,10 @@ can change often. The code better explains these details. The components
 mentioned here are the major parts of the application for how merge request diffs
 are generated, stored, and returned to users.
 
-{{< alert type="note" >}}
-
-This page is a living document. Update it accordingly when the parts
-of the codebase touched in this document are changed or removed, or when new components
-are added.
-
-{{< /alert >}}
+> [!note]
+> This page is a living document. Update it accordingly when the parts
+> of the codebase touched in this document are changed or removed, or when new components
+> are added.
 
 ## Data model
 

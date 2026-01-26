@@ -5,13 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Claiming an attribute for a cell
 ---
 
-{{< alert type="flag" >}}
-
-Both [cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
-and feature flag `Feature.enabled?(:cells_unique_claims)` have to be enabled
-for this to take effect.
-
-{{< /alert >}}
+> [!flag]
+> Both [cells](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/cells.md#setting-up-cells-locally)
+> and feature flag `Feature.enabled?(:cells_unique_claims)` have to be enabled
+> for this to take effect.
 
 ## Why we need to claim attributes
 

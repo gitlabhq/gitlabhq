@@ -288,13 +288,10 @@ PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find
 end
 ```
 
-{{< alert type="note" >}}
-
-To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
-`if token.user.blocked?`. However, this action does not leave an audit event,
-unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
-
-{{< /alert >}}
+> [!note]
+> To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
+> `if token.user.blocked?`. However, this action does not leave an audit event,
+> unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ### Find tokens expiring in a given month
 

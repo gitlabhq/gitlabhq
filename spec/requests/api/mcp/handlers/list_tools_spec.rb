@@ -79,6 +79,23 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    it 'includes icon for all tools' do
+      post_list_tools
+
+      tools = json_response['result']['tools']
+
+      expect(tools).not_to be_empty, 'No tools returned'
+
+      expected_icon = Mcp::Tools::IconConfig.gitlab_icons.first.stringify_keys
+
+      tools.each do |tool|
+        expect(tool).to have_key('icons')
+        expect(tool['icons']).to be_an(Array)
+        expect(tool['icons'].length).to eq(1)
+        expect(tool['icons'].first).to eq(expected_icon)
+      end
+    end
+
     context 'when a service tool is not available' do
       before do
         # We have to use `allow_any_instance_of` since tools are initialized
@@ -91,6 +108,21 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
         tool_names = json_response['result']['tools'].pluck('name')
         expect(tool_names).not_to include('get_mcp_server_version')
+      end
+    end
+
+    context 'when a tool has no icons' do
+      before do
+        allow_any_instance_of(::Mcp::Tools::GetServerVersionService).to receive(:icons).and_return([]) # rubocop: disable RSpec/AnyInstanceOf -- tools are initialized on class definition time
+      end
+
+      it 'does not include icons key for that tool' do
+        post_list_tools
+
+        tools = json_response['result']['tools']
+        version_tool = tools.find { |tool| tool['name'] == 'get_mcp_server_version' }
+
+        expect(version_tool).not_to have_key('icons')
       end
     end
 

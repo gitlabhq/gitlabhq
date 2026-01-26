@@ -311,13 +311,10 @@ end
 To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
 add a line like this to the `Gitlab::EventStore.configure!` method:
 
-{{< alert type="warning" >}}
-
-To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
-when registering subscriptions, the Sidekiq workers must be introduced in a previous deployment or we must
-use a feature flag.
-
-{{< /alert >}}
+> [!warning]
+> To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
+> when registering subscriptions, the Sidekiq workers must be introduced in a previous deployment or we must
+> use a feature flag.
 
 ```ruby
 module Gitlab

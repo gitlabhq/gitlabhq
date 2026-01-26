@@ -19,13 +19,10 @@ title: SLSA provenance specification
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 The [SLSA provenance specification](https://slsa.dev/spec/v1.1/provenance) requires
 the `buildType` reference to be documented and published. This reference is to assist consumers of

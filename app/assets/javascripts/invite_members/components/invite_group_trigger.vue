@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     openModal() {
-      eventHub.$emit('openGroupModal', { source: this.triggerSource });
+      eventHub.$emit('open-group-modal', { source: this.triggerSource });
     },
   },
 };

@@ -243,21 +243,14 @@ Exceptions to this ordering may be appropriate when:
 - Methods are grouped by a domain concept that's more important than abstraction level
 - Alphabetical ordering provides significant value for a large number of similar methods
 
-{{< alert type="note" >}}
-
 When a class has multiple high-level methods that serve different, unrelated purposes,
 group each high-level method with its supporting helper methods. Alternatively, consider extracting
 the implementation into separate service classes where each class has a single clear responsibility.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Beyond two levels of method calls (a method calling a method calling a method),
-this pattern can become unwieldy and hard to follow. If you find yourself with deep nesting,
-consider refactoring into separate classes or simplifying the logic.
-
-{{< /alert >}}
+> [!note]
+> Beyond two levels of method calls (a method calling a method calling a method),
+> this pattern can become unwieldy and hard to follow. If you find yourself with deep nesting,
+> consider refactoring into separate classes or simplifying the logic.
 
 ## Rails / ActiveRecord
 

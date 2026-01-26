@@ -361,13 +361,10 @@ To define the external providers list, use the full name of the provider,
 for example, `google_oauth2` for Google. For provider names, see the
 **OmniAuth provider name** column in the [supported providers table](#supported-providers).
 
-{{< alert type="note" >}}
-
-If you remove an OmniAuth provider from the external providers list,
-you must manually update the users that use this sign-in method so their
-accounts are upgraded to full internal accounts.
-
-{{< /alert >}}
+> [!note]
+> If you remove an OmniAuth provider from the external providers list,
+> you must manually update the users that use this sign-in method so their
+> accounts are upgraded to full internal accounts.
 
 {{< tabs >}}
 

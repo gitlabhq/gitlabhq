@@ -799,13 +799,10 @@ returned per page if no limiting arguments (`first:` or `last:`) are provided by
 The `max_page_size` argument can be used to specify a different page size limit
 for a connection.
 
-{{< alert type="warning" >}}
-
-It's better to change the frontend client, or product requirements, to not need large amounts of
-records per page than it is to raise the `max_page_size`, as the default is set to ensure
-the GraphQL API remains performant.
-
-{{< /alert >}}
+> [!warning]
+> It's better to change the frontend client, or product requirements, to not need large amounts of
+> records per page than it is to raise the `max_page_size`, as the default is set to ensure
+> the GraphQL API remains performant.
 
 For example:
 

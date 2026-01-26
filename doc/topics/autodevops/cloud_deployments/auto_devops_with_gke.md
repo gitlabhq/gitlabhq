@@ -234,13 +234,10 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and selecting the square
 takes you to the pod's logs page.
 
-{{< alert type="note" >}}
-
-The example shows only one pod hosting the application at the moment, but you can add
-more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
-in **Settings** > **CI/CD** > **Variables**.
-
-{{< /alert >}}
+> [!note]
+> The example shows only one pod hosting the application at the moment, but you can add
+> more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
+> in **Settings** > **CI/CD** > **Variables**.
 
 ### Work with branches
 

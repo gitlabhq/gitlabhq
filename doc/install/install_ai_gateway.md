@@ -97,13 +97,10 @@ Newer features are available from nightly builds, but backwards compatibility is
 
 ## Set up Docker with NGINX and SSL
 
-{{< alert type="note" >}}
-
-This method of deploying NGINX or Caddy as a reverse proxy is a temporary workaround to support SSL
-until [issue 455854](https://gitlab.com/gitlab-org/gitlab/-/issues/455854)
-is implemented.
-
-{{< /alert >}}
+> [!note]
+> This method of deploying NGINX or Caddy as a reverse proxy is a temporary workaround to support SSL
+> until [issue 455854](https://gitlab.com/gitlab-org/gitlab/-/issues/455854)
+> is implemented.
 
 To use SSL for an AI Gateway instance, use:
 

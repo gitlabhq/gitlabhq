@@ -30,7 +30,7 @@ for details on which headers and token types are supported. Undocumented authent
 > always uses the numeric project ID, whether you access the API with the project ID or the
 > full project path.
 
-Download a chart index:
+Downloads a specified chart index for a project.
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/index.yaml
@@ -56,7 +56,7 @@ curl --user <username>:<personal_access_token> \
 
 ## Download a chart
 
-Download a chart:
+Downloads a specified chart for a project.
 
 ```plaintext
 GET projects/:id/packages/helm/:channel/charts/:file_name.tgz
@@ -76,7 +76,7 @@ curl --user <username>:<personal_access_token> \
 
 ## Upload a chart
 
-Upload a chart:
+Uploads a specified chart for a project.
 
 ```plaintext
 POST projects/:id/packages/helm/api/:channel/charts

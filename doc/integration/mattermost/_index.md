@@ -342,13 +342,10 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-{{< alert type="note" >}}
-
-When upgrading the Mattermost version, it is essential to check the
-[Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
-for Mattermost to address any changes or migrations that need to be performed.
-
-{{< /alert >}}
+> [!note]
+> When upgrading the Mattermost version, it is essential to check the
+> [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
+> for Mattermost to address any changes or migrations that need to be performed.
 
 GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
 GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`

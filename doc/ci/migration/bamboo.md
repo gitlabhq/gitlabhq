@@ -566,13 +566,10 @@ though secrets stored in plain text are susceptible to accidental exposure.
 You should always store sensitive information in masked and protected variables,
 which mitigates some of the risk.
 
-{{< alert type="note" >}}
-
-Never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
-users with access to the project. Storing sensitive information in variables should
-only be done in the project, group, or instance settings.
-
-{{< /alert >}}
+> [!note]
+> Never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
+> users with access to the project. Storing sensitive information in variables should
+> only be done in the project, group, or instance settings.
 
 ## Create a migration plan
 

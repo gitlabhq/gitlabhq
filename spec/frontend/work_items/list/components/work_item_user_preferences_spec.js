@@ -5,7 +5,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
+import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';

@@ -5,13 +5,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Tiered Storages in ClickHouse
 ---
 
-{{< alert type="note" >}}
-
-The MergeTree table engine in ClickHouse supports tiered storage.
-See the documentation for [Using Multiple Block Devices for Data Storage](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes)
-for details on setup and further explanation.
-
-{{< /alert >}}
+> [!note]
+> The MergeTree table engine in ClickHouse supports tiered storage.
+> See the documentation for [Using Multiple Block Devices for Data Storage](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes)
+> for details on setup and further explanation.
 
 Quoting from the [MergeTree documentation](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes):
 

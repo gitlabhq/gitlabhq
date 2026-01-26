@@ -6,6 +6,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemsCsvExportMutation from '../graphql/work_items_csv_export.mutation.graphql';
 
 export default {
+  name: 'WorkItemsCsvExportModal',
   actionCancel: {
     text: __('Cancel'),
   },

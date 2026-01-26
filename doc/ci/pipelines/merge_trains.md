@@ -245,13 +245,10 @@ When you merge a merge request immediately:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../administration/feature_flags/_index.md)
-named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature,
+> an administrator can [disable the feature flag](../../administration/feature_flags/_index.md)
+> named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can allow merge requests to be merged without completely restarting a running merge train.
 Use this feature to quickly merge changes that can safely skip the pipeline, for example

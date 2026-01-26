@@ -217,13 +217,10 @@ docker build:
 
 ### `only:kubernetes` / `except:kubernetes`
 
-{{< alert type="note" >}}
-
-`only:kubernetes` and `except:kubernetes` are deprecated. To control if jobs are added to the pipeline
-when the Kubernetes service is active in the project, use [`rules:if`](_index.md#rulesif) with the
-[`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
-
-{{< /alert >}}
+> [!note]
+> `only:kubernetes` and `except:kubernetes` are deprecated. To control if jobs are added to the pipeline
+> when the Kubernetes service is active in the project, use [`rules:if`](_index.md#rulesif) with the
+> [`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
 
 Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
 when the Kubernetes service is active in the project.
@@ -254,13 +251,10 @@ keywords instead.
 
 ## `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
 
-{{< alert type="note" >}}
-
-`environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path` are deprecated
-when used directly under `kubernetes`. To configure dashboard settings use `environment:kubernetes:dashboard:namespace` and `environment:kubernetes:dashboard:flux_resource_path`
-instead. For more information, see [`environment:kubernetes`](_index.md#environmentkubernetes).
-
-{{< /alert >}}
+> [!note]
+> `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path` are deprecated
+> when used directly under `kubernetes`. To configure dashboard settings use `environment:kubernetes:dashboard:namespace` and `environment:kubernetes:dashboard:flux_resource_path`
+> instead. For more information, see [`environment:kubernetes`](_index.md#environmentkubernetes).
 
 You can use `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
 to configure Kubernetes dashboard settings, but using them directly under the `kubernetes`

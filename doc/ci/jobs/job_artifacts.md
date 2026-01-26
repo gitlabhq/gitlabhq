@@ -322,13 +322,10 @@ Replace `<full-project-path>` with a valid project path, you can find it in the 
 
 ## Delete job log and artifacts
 
-{{< alert type="warning" >}}
-
-Deleting the job log and artifacts is a destructive action that cannot be reverted. Use with caution.
-Deleting certain files, including report artifacts, job logs, and metadata files, affects
-GitLab features that use these files as data sources.
-
-{{< /alert >}}
+> [!warning]
+> Deleting the job log and artifacts is a destructive action that cannot be reverted. Use with caution.
+> Deleting certain files, including report artifacts, job logs, and metadata files, affects
+> GitLab features that use these files as data sources.
 
 You can delete a job's artifacts and log.
 

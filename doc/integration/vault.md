@@ -115,13 +115,10 @@ The `oidc_scopes` field must include `openid`.
 This configuration is saved under the name of the role you are creating. This
 example creates a `demo` role.
 
-{{< alert type="warning" >}}
-
-If you're using a public GitLab instance, such as GitLab.com, you must specify
-the `bound_claims` to allow access only to members of your group or project.
-Otherwise, anyone with a public account can access your Vault instance.
-
-{{< /alert >}}
+> [!warning]
+> If you're using a public GitLab instance, such as GitLab.com, you must specify
+> the `bound_claims` to allow access only to members of your group or project.
+> Otherwise, anyone with a public account can access your Vault instance.
 
 ## Sign in to Vault
 

@@ -195,13 +195,10 @@ The authentication method you choose depends on your GitLab Runner executor type
   configuration changes persist between jobs. This can cause authentication conflicts
   if different jobs use different credentials.
 
-{{< alert type="warning" >}}
-
-When using shell executors, avoid `git config --global` commands that persist authentication
-credentials. These settings remain active between jobs and can cause authentication failures
-or security issues if different jobs use different credentials.
-
-{{< /alert >}}
+> [!warning]
+> When using shell executors, avoid `git config --global` commands that persist authentication
+> credentials. These settings remain active between jobs and can cause authentication failures
+> or security issues if different jobs use different credentials.
 
 You can use one of the following token types:
 

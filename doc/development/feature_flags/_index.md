@@ -391,13 +391,10 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 ### Risk of a broken master (main) branch
 
-{{< alert type="warning" >}}
-
-Feature flags **must** be used in the MR that introduces them. Not doing so causes a
-[broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
-to the `rspec:feature-flags` job that only runs on the `master` branch.
-
-{{< /alert >}}
+> [!warning]
+> Feature flags **must** be used in the MR that introduces them. Not doing so causes a
+> [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+> to the `rspec:feature-flags` job that only runs on the `master` branch.
 
 ### Optionally add a `.patch` file for automated removal of feature flags
 

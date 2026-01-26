@@ -36944,6 +36944,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE epic_issues
     ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE spam_logs
+    ADD CONSTRAINT check_0c0873a24a CHECK ((organization_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE bulk_import_batch_trackers
     ADD CONSTRAINT check_13004cd9a8 CHECK ((num_nonnulls(namespace_id, organization_id, project_id) = 1)) NOT VALID;
 

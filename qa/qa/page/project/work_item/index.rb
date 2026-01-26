@@ -18,13 +18,13 @@ module QA
             element 'closed-issuables-tab', ':data-testid="`${tab.name}-issuables-tab`"' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/assets/javascripts/work_items/components/work_item_list_actions.vue' do
+          view 'app/assets/javascripts/work_items/list/components/work_item_list_actions.vue' do
             element 'export-as-csv-button'
             element 'import-from-jira-link'
             element 'work-items-list-more-actions-dropdown'
           end
 
-          view 'app/assets/javascripts/work_items/components/work_items_csv_export_modal.vue' do
+          view 'app/assets/javascripts/work_items/list/components/work_items_csv_export_modal.vue' do
             element 'export-work-items-button'
             element 'export-work-items-modal'
           end

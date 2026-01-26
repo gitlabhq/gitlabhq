@@ -1,6 +1,6 @@
 import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemsSavedViewSelector from '~/work_items/components/work_items_saved_view_selector.vue';
+import WorkItemsSavedViewSelector from '~/work_items/list/components/work_items_saved_view_selector.vue';
 
 const mockSavedView = {
   __typename: 'SavedView',

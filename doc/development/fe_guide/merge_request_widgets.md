@@ -87,13 +87,10 @@ export default {
 To fetch data when the widget is mounted, pass the `:fetch-collapsed-data` property a function
 that performs an API call.
 
-{{< alert type="warning" >}}
-
-The function must return a `Promise` that resolves to the `response` object.
-The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
-important not to alter the status code and headers.
-
-{{< /alert >}}
+> [!warning]
+> The function must return a `Promise` that resolves to the `response` object.
+> The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
+> important not to alter the status code and headers.
 
 ```vue
 <script>

@@ -165,13 +165,10 @@ With that information at hand:
    1. If `block_auto_created_users` is false, the Kerberos user is
       authenticated and is signed in to GitLab.
 
-{{< alert type="warning" >}}
-
-We recommend that you retain the default for `block_auto_created_users`.
-Kerberos users who create accounts on GitLab without administrator
-knowledge can be a security risk.
-
-{{< /alert >}}
+> [!warning]
+> We recommend that you retain the default for `block_auto_created_users`.
+> Kerberos users who create accounts on GitLab without administrator
+> knowledge can be a security risk.
 
 ## Link Kerberos and LDAP accounts together
 
@@ -262,13 +259,10 @@ with current Git versions, it is possible to offer Kerberos ticket-based
 authentication on a different port (for example, `8443`) while the standard port
 offers only `basic` authentication.
 
-{{< alert type="note" >}}
-
-[Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
-username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
-this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
-
-{{< /alert >}}
+> [!note]
+> [Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
+> username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
+> this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
 {{< tabs >}}
 

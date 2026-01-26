@@ -353,10 +353,7 @@ To view mapped pages from a commit:
 1. Select the review app icon ({{< icon name="external-link" >}}) next to a filename that matches your route map.
    The icon opens the corresponding page in your review app.
 
-{{< alert type="note" >}}
-
-Merged results pipelines create an internal commit that merges your branch with the target branch.
-To access review app links for these pipelines, use the commit from the **Pipelines** tab,
-not the **Commits** tab.
-
-{{< /alert >}}
+> [!note]
+> Merged results pipelines create an internal commit that merges your branch with the target branch.
+> To access review app links for these pipelines, use the commit from the **Pipelines** tab,
+> not the **Commits** tab.

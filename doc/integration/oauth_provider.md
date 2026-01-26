@@ -145,13 +145,10 @@ At any time you can revoke any access by selecting **Revoke**.
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The ability to opt out of expiring access tokens was
-[removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0. All
-existing integrations must be updated to support access token refresh.
-
-{{< /alert >}}
+> [!warning]
+> The ability to opt out of expiring access tokens was
+> [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0. All
+> existing integrations must be updated to support access token refresh.
 
 Access tokens expire after two hours. Integrations that use access tokens must
 generate new ones using the `refresh_token` attribute. Refresh tokens may be

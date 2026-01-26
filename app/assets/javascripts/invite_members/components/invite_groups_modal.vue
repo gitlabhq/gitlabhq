@@ -131,7 +131,7 @@ export default {
       displaySuccessfulInvitationAlert();
     }
 
-    eventHub.$on('openGroupModal', (options) => {
+    eventHub.$on('open-group-modal', (options) => {
       this.openModal(options);
     });
   },

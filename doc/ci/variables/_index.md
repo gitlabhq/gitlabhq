@@ -461,13 +461,10 @@ To enable variable expansion for the variable:
 1. Select the **Expand variable reference** checkbox.
 1. Select **Update variable**.
 
-{{< alert type="note" >}}
-
-Do not [mask](#mask-a-cicd-variable) a variable value if you want to use variable expansion.
-If both masking and variable expansion are combined, character limitations prevent
-the use of the `$` to reference other variables.
-
-{{< /alert >}}
+> [!note]
+> Do not [mask](#mask-a-cicd-variable) a variable value if you want to use variable expansion.
+> If both masking and variable expansion are combined, character limitations prevent
+> the use of the `$` to reference other variables.
 
 ## CI/CD variable precedence
 
@@ -523,13 +520,10 @@ have higher precedence than default variables.
 
 Pipeline variables are variables that are specified when running a new pipeline.
 
-{{< alert type="note" >}}
-
-In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
-and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
-For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
-
-{{< /alert >}}
+> [!note]
+> In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+> and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
+> For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
 
 Prerequisites:
 

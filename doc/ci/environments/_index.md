@@ -404,13 +404,10 @@ When using the `on_stop` action to stop an environment, the job runs if it's not
 
 ### Stop an environment by using the UI
 
-{{< alert type="note" >}}
-
-To trigger an `on_stop` action and manually stop an environment from the
-Environments view, the stop and deploy jobs must be in the same
-[`resource_group`](../yaml/_index.md#resource_group).
-
-{{< /alert >}}
+> [!note]
+> To trigger an `on_stop` action and manually stop an environment from the
+> Environments view, the stop and deploy jobs must be in the same
+> [`resource_group`](../yaml/_index.md#resource_group).
 
 To stop an environment in the GitLab UI:
 
@@ -512,13 +509,10 @@ stop_review:
 
 You can set an environment to stop automatically after a certain time period.
 
-{{< alert type="note" >}}
-
-Due to resource limitations, a background worker for stopping environments runs only once every
-hour. This means that environments may not be stopped after the exact time period specified, but are
-instead stopped when the background worker detects expired environments.
-
-{{< /alert >}}
+> [!note]
+> Due to resource limitations, a background worker for stopping environments runs only once every
+> hour. This means that environments may not be stopped after the exact time period specified, but are
+> instead stopped when the background worker detects expired environments.
 
 In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
@@ -685,13 +679,10 @@ To configure multiple **parallel** stop actions on an environment, specify the
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
-{{< alert type="note" >}}
-
-All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
-[downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
-the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
-
-{{< /alert >}}
+> [!note]
+> All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
+> [downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
+> the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
 
 In the following example, for the `test` environment there are two deployment jobs:
 

@@ -86,17 +86,13 @@ variant, and 25% would be assigned the _blue_ variant:
 For an even distribution in this example, change the command to set it to 66% instead
 of 50.
 
-> [!note]
-> To immediately stop running an experiment, use the
-> `/chatops run feature set pill_color false` command.
+To immediately stop running an experiment, use the
+`/chatops run feature set pill_color false` command.
 
-{{< alert type="warning" >}}
-
-We strongly recommend using the `--actors` flag when using the ChatOps commands,
-as anything else may give odd behaviors due to how the caching of variant assignment is
-handled.
-
-{{< /alert >}}
+> [!warning]
+> We strongly recommend using the `--actors` flag when using the ChatOps commands,
+> as anything else may give odd behaviors due to how the caching of variant assignment is
+> handled.
 
 We can also implement this experiment in a HAML file with HTML wrappings:
 
@@ -155,13 +151,10 @@ results of the experience we've rendered to that context key. These concepts are
 somewhat abstract and hard to understand initially, but this approach enables us to
 communicate about experiments as something that's wider than just user behavior.
 
-{{< alert type="note" >}}
-
-Using `actor:` uses cookies if the `current_user` is nil. If you don't need
-cookies though - meaning that the exposed functionality would only be visible to
-authenticated users - `{ user: current_user }` would be just as effective.
-
-{{< /alert >}}
+> [!note]
+> Using `actor:` uses cookies if the `current_user` is nil. If you don't need
+> cookies though - meaning that the exposed functionality would only be visible to
+> authenticated users - `{ user: current_user }` would be just as effective.
 
 {{< alert type="warning" >}}
 

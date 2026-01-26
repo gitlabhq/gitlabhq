@@ -50,7 +50,7 @@ const expectTracking = (action) =>
   });
 
 const triggerOpenModal = async () => {
-  eventHub.$emit('openProjectMembersModal');
+  eventHub.$emit('open-project-members-modal');
   await nextTick();
 };
 

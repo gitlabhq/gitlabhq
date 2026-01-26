@@ -83,7 +83,7 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
   end
 
   describe '#to_h' do
-    it 'returns tool metadata' do
+    it 'returns tool metadata with icon' do
       result = test_service.to_h
 
       expect(result).to eq({
@@ -96,8 +96,30 @@ RSpec.describe Mcp::Tools::BaseService, feature_category: :mcp_server do
             optional_field: { type: 'integer' }
           },
           required: ['required_field']
-        }
+        },
+        icons: [Mcp::Tools::IconConfig.gitlab_icons.first]
       })
+    end
+
+    context 'when icons returns empty array' do
+      before do
+        allow(test_service).to receive(:icons).and_return([])
+      end
+
+      it 'does not include icons key' do
+        result = test_service.to_h
+
+        expect(result).not_to have_key(:icons)
+      end
+    end
+  end
+
+  describe '#icons' do
+    it 'returns icons array' do
+      icons = test_service.icons
+
+      expect(icons).to be_an(Array)
+      expect(icons.first).to include(:mimeType, :src, :theme)
     end
   end
 

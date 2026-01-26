@@ -1,9 +1,9 @@
 <script>
-import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { queryToObject } from '~/lib/utils/url_utility';
-import { MEMBERS_TAB_TYPES, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
+import { ACTIVE_TAB_QUERY_PARAM_NAME, MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
 
@@ -80,6 +80,12 @@ export default {
         tabCanBeShown && requiredPermissions.every((requiredPermission) => this[requiredPermission])
       );
     },
+    tabPath(value) {
+      return setUrlParams({ tab: value, page: null });
+    },
+    titleLinkAttrs({ attrs, queryParamValue: value }) {
+      return { ...attrs, href: this.tabPath(value) };
+    },
   },
 };
 </script>
@@ -94,13 +100,19 @@ export default {
     <gl-tab
       v-for="tab in tabs"
       :key="tab.namespace"
-      :title-link-attributes="tab.attrs"
+      :title-link-attributes="titleLinkAttrs(tab)"
+      title-link-class="gl-p-0"
       :query-param-value="tab.queryParamValue"
       :lazy="tab.lazy"
     >
       <template #title>
-        <span>{{ tab.title }}</span>
-        <gl-badge class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
+        <span
+          :data-testid="`${tab.namespace}-tab-title`"
+          class="gl-px-4 gl-py-5"
+          @click.stop="() => {}"
+        >
+          {{ tab.title }} <gl-badge class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
+        </span>
       </template>
       <component
         :is="tab.component"

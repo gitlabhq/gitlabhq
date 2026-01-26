@@ -47,13 +47,10 @@ Maintainer role:
 1. In the **Merge options** section, select **Enable merged results pipelines**.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-If you select the checkbox but don't configure your pipeline to use
-merge request pipelines, your merge requests may become stuck in an
-unresolved state or your pipelines may be dropped.
-
-{{< /alert >}}
+> [!warning]
+> If you select the checkbox but don't configure your pipeline to use
+> merge request pipelines, your merge requests may become stuck in an
+> unresolved state or your pipelines may be dropped.
 
 ## Troubleshooting
 

@@ -251,13 +251,10 @@ REST response:
 
 GraphQL request:
 
-{{< alert type="note" >}}
-
-The GitLab GraphiQL implementation doesn't allow passing of headers, so we must write
-this as a `curl` query. Here, `--data-binary` is used to properly handle escaped double quotes
-in the JSON-embedded query.
-
-{{< /alert >}}
+> [!note]
+> The GitLab GraphiQL implementation doesn't allow passing of headers, so we must write
+> this as a `curl` query. Here, `--data-binary` is used to properly handle escaped double quotes
+> in the JSON-embedded query.
 
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from HTML page to render CAPTCHA>"

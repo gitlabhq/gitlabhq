@@ -7,7 +7,7 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ROUTES } from '../constants';
+import { ROUTES } from '~/work_items/constants';
 
 export default {
   name: 'WorkItemsSavedViewSelector',

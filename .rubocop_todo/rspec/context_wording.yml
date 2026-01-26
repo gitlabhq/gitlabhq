@@ -549,7 +549,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/app_sec/dast/builds/associate_service_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'
     - 'ee/spec/services/application_settings/update_service_spec.rb'
-    - 'ee/spec/services/approval_rules/create_service_spec.rb'
     - 'ee/spec/services/approval_rules/merge_request_rule_destroy_service_spec.rb'
     - 'ee/spec/services/approval_rules/params_filtering_service_spec.rb'
     - 'ee/spec/services/approval_rules/project_rule_destroy_service_spec.rb'
