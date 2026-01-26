@@ -527,7 +527,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/support/shared_examples/services/wikis/create_attachment_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/gcs_signed_url_metadata_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/gitlab_uploader_shared_examples.rb'
-    - 'spec/tooling/danger/gitlab_schema_validation_suggestion_spec.rb'
     - 'spec/tooling/danger/sidekiq_queues_spec.rb'
     - 'spec/tooling/lib/tooling/api/job_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
