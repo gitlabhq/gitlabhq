@@ -79,11 +79,6 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
     context 'when cloning work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:opened] }
 
-      let(:service_desk_alias_address) do
-        target_namespace.respond_to?(:project) &&
-          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
-      end
-
       let!(:original_work_item_attrs) do
         {
           project: target_namespace.try(:project),
@@ -109,7 +104,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
           promoted_to_epic_id: nil,
           upvotes_count: 0,
           blocking_issues_count: 0,
-          service_desk_reply_to: service_desk_alias_address
+          service_desk_reply_to: original_work_item.service_desk_reply_to
         }
       end
 
@@ -119,5 +114,19 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
 
     it_behaves_like 'tracks work item event', :original_work_item, :current_user,
       Gitlab::WorkItems::Instrumentation::EventActions::CLONE
+
+    context 'when cloning a service desk ticket with external author' do
+      let_it_be(:support_bot) { create(:support_bot) }
+      let_it_be_with_reload(:original_work_item) do
+        create(:work_item, :ticket, project: project, author: support_bot, service_desk_reply_to: 'user@example.com')
+      end
+
+      it 'preserves the external author' do
+        new_work_item = service.execute[:work_item]
+
+        expect(new_work_item.service_desk_reply_to).to eq('user@example.com')
+        expect(new_work_item.external_author).to eq('user@example.com')
+      end
+    end
   end
 end

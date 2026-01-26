@@ -39,7 +39,7 @@ module WorkItems
             confidential: work_item.confidential,
             cached_markdown_version: work_item.cached_markdown_version,
             lock_version: work_item.lock_version,
-            service_desk_reply_to: service_desk_reply_to,
+            service_desk_reply_to: work_item.service_desk_reply_to,
             imported_from: :none
           }.merge(overwritten_params)
         end
@@ -70,12 +70,6 @@ module WorkItems
 
         def project
           target_namespace.project if target_namespace.is_a?(Namespaces::ProjectNamespace)
-        end
-
-        def service_desk_reply_to
-          return unless target_namespace.respond_to?(:project) # only for ProjectNamespace
-
-          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
         end
       end
     end
