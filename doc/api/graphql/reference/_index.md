@@ -43320,6 +43320,7 @@ Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectcipipelinecreationinputsfailoncachemiss"></a>`failOnCacheMiss` | [`Boolean`](#boolean) | Whether to throw an error for a cache miss. |
 | <a id="projectcipipelinecreationinputsref"></a>`ref` | [`String!`](#string) | Ref where to create the pipeline. |
 
 ##### `Project.ciPipelineCreationRequest`

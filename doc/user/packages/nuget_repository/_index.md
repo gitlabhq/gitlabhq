@@ -621,13 +621,10 @@ to install the correct package.
 
 {{< tab title=".NET CLI" >}}
 
-{{< alert type="note" >}}
-
-If the GitLab package registry has a NuGet package with the same name as a package at
-a different source, verify the order in which `dotnet` checks sources during
-install. This behavior is defined in the `nuget.config` file.
-
-{{< /alert >}}
+> [!note]
+> If the GitLab package registry has a NuGet package with the same name as a package at
+> a different source, verify the order in which `dotnet` checks sources during
+> install. This behavior is defined in the `nuget.config` file.
 
 Install the latest version of a package by running this command:
 

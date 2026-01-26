@@ -59,7 +59,7 @@ describe('Delete branch button', () => {
 
     await findDeleteButton().trigger('click');
 
-    expect(eventHubSpy).toHaveBeenCalledWith('openModal', {
+    expect(eventHubSpy).toHaveBeenCalledWith('open-modal', {
       branchName: 'test',
       defaultBranchName: 'main',
       deletePath: '/path/to/branch',

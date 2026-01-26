@@ -367,7 +367,7 @@ Prerequisites:
 
 To enable ClickHouse for Analytics:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Select **Enable ClickHouse for Analytics**.
@@ -383,7 +383,7 @@ Prerequisites:
 
 To disable:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Clear the **Enable ClickHouse for Analytics** checkbox.
@@ -445,7 +445,7 @@ Prerequisites:
 
 To check the status of ClickHouse migrations:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **ClickHouse**.
 1. Review the **Migration status** section if available.

@@ -6572,4 +6572,26 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
   end
+
+  describe '.by_ref' do
+    subject(:with_ref) { described_class.with_ref(ref) }
+
+    let_it_be(:build2) do
+      create(:ci_build, pipeline: pipeline, yaml_variables: [])
+    end
+
+    context 'when matching ref exists' do
+      let(:ref) { project.default_branch }
+
+      it 'returns the matching build' do
+        is_expected.to contain_exactly(build, build2)
+      end
+    end
+
+    context 'when matching ref does not exist' do
+      let(:ref) { 'nonexistent_ref' }
+
+      it { is_expected.to be_empty }
+    end
+  end
 end

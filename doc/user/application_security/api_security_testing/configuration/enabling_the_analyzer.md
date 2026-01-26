@@ -373,13 +373,10 @@ Variable scopes in Postman can be a daunting topic and not everyone is familiar 
 
 As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
-{{< alert type="note" >}}
-
-If a variable with the same name is declared in two different scopes, the value stored in the variable
-with narrowest scope is used. For example, if there is a global variable named `username` and
-a local variable named `username`, the local value is used when the request runs.
-
-{{< /alert >}}
+> [!note]
+> If a variable with the same name is declared in two different scopes, the value stored in the variable
+> with narrowest scope is used. For example, if there is a global variable named `username` and
+> a local variable named `username`, the local value is used when the request runs.
 
 The following is a summary of the variable scopes supported by the Postman Client and API security testing:
 

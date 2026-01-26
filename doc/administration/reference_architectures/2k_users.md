@@ -432,13 +432,10 @@ are supported and can be added if needed.
 [Gitaly](../gitaly/_index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
-{{< alert type="warning" >}}
-
-Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
-If you believe this applies to you, contact us for additional guidance as required.
-
-{{< /alert >}}
+> [!warning]
+> Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 
@@ -455,13 +452,10 @@ Be sure to note the following items:
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-{{< alert type="note" >}}
-
-The token referred to throughout the Gitaly documentation is an arbitrary
-password selected by the administrator. This token is unrelated to tokens
-created for the GitLab API or other similar web API tokens.
-
-{{< /alert >}}
+> [!note]
+> The token referred to throughout the Gitaly documentation is an arbitrary
+> password selected by the administrator. This token is unrelated to tokens
+> created for the GitLab API or other similar web API tokens.
 
 The following procedure describes how to configure a single Gitaly server named
 `gitaly1.internal` with the secret token `gitalysecret`. We assume your GitLab

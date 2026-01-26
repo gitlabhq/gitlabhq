@@ -211,13 +211,10 @@ Once saved, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-packag
 
 ### Temporarily changing the statement timeout
 
-{{< alert type="warning" >}}
-
-The following advice does not apply in case
-[PgBouncer](../postgresql/pgbouncer.md) is enabled,
-because the changed timeout might affect more transactions than intended.
-
-{{< /alert >}}
+> [!warning]
+> The following advice does not apply in case
+> [PgBouncer](../postgresql/pgbouncer.md) is enabled,
+> because the changed timeout might affect more transactions than intended.
 
 In some situations, it may be desirable to set a different statement timeout
 without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation),

@@ -43,13 +43,10 @@ information useful for troubleshooting. However, if you are experiencing trouble
 GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
 before referring to these documents.
 
-{{< alert type="warning" >}}
-
-The commands in the following documentation might result in data loss or
-other damage to a GitLab instance. They should be used only by experienced administrators
-who are aware of the risks.
-
-{{< /alert >}}
+> [!warning]
+> The commands in the following documentation might result in data loss or
+> other damage to a GitLab instance. They should be used only by experienced administrators
+> who are aware of the risks.
 
 - [Diagnostics tools](diagnostics_tools.md)
 - [Linux commands](linux_cheat_sheet.md)

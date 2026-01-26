@@ -68,7 +68,7 @@ to check a commit's signature.
 
 GitLab uses SSH to sign commits created through the web UI.
 To verify these commits locally, obtain the GitLab public key for signing web commits
-using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-key).
+using the [Web Commits API](../../../../api/web_commits.md#retrieve-public-signing-key).
 
 ### Use `gitmailmap` with verified commits
 

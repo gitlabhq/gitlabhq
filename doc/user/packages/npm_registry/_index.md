@@ -164,13 +164,10 @@ Before configuring the registry URL, it's important to understand the scope of d
 - `npm config set` command: This modifies the global npm configuration and affects all npm commands run on your system.
 - `publishConfig` in `package.json`: This configuration is specific to the package and only applies when publishing that package.
 
-{{< alert type="warning" >}}
-
-Running `npm config set` changes the global npm configuration. The change affects all npm commands
-run on your system, regardless of the current working directory. Be cautious when using this method,
-especially on shared systems.
-
-{{< /alert >}}
+> [!warning]
+> Running `npm config set` changes the global npm configuration. The change affects all npm commands
+> run on your system, regardless of the current working directory. Be cautious when using this method,
+> especially on shared systems.
 
 ### For publishing packages
 

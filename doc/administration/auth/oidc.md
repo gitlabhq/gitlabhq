@@ -1413,13 +1413,10 @@ To configure a custom duration for your ID tokens:
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 In some cases, default authentication methods don't protect critical resources or high-risk actions.
 Step-up authentication adds an extra layer for privileged actions or sensitive operations.
@@ -1505,13 +1502,10 @@ To enable step-up authentication for Admin Mode:
 
 1. Save the configuration file and restart GitLab for the changes to take effect.
 
-{{< alert type="note" >}}
-
-Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
-The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
-These values can vary based on the requirements for each IdP.
-
-{{< /alert >}}
+> [!note]
+> Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
+> The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
+> These values can vary based on the requirements for each IdP.
 
 ### Require step-up authentication with Keycloak
 

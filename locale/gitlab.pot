@@ -2806,9 +2806,6 @@ msgstr ""
 msgid "AICatalog|Enable in group"
 msgstr ""
 
-msgid "AICatalog|Enable in project"
-msgstr ""
-
 msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
@@ -34080,6 +34077,9 @@ msgstr ""
 msgid "Groups are the best way to manage projects and members."
 msgstr ""
 
+msgid "Groups couldn't be loaded. Refresh the page to try again."
+msgstr ""
+
 msgid "GroupsEmptyState|A group is a collection of several projects"
 msgstr ""
 
@@ -34260,6 +34260,12 @@ msgstr ""
 msgid "Groups|Avatar will be removed. Are you sure?"
 msgstr ""
 
+msgid "Groups|Browse groups that are archived or pending deletion."
+msgstr ""
+
+msgid "Groups|Browse groups to learn from and contribute to."
+msgstr ""
+
 msgid "Groups|Cancel, keep group"
 msgstr ""
 
@@ -34285,6 +34291,9 @@ msgid "Groups|Enter a descriptive name for your group."
 msgstr ""
 
 msgid "Groups|Enter a path for your group."
+msgstr ""
+
+msgid "Groups|Explore active groups"
 msgstr ""
 
 msgid "Groups|Group ID"
@@ -34324,6 +34333,9 @@ msgid "Groups|Members, projects, trials, and paid subscriptions are tied to a sp
 msgstr ""
 
 msgid "Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgstr ""
+
+msgid "Groups|No inactive groups found"
 msgstr ""
 
 msgid "Groups|Remove avatar"
@@ -53479,6 +53491,9 @@ msgstr ""
 msgid "ProjectSettings|Delete project"
 msgstr ""
 
+msgid "ProjectSettings|Describe what this regex enforces. Include examples of valid titles."
+msgstr ""
+
 msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
 msgstr ""
 
@@ -53722,10 +53737,7 @@ msgstr ""
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr ""
 
-msgid "ProjectSettings|Regex explanation"
-msgstr ""
-
-msgid "ProjectSettings|Regex that all merge request titles must match"
+msgid "ProjectSettings|Regular expression that all merge request titles must match. %{link_start}What is a regex?%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|Relative path:"
@@ -53839,9 +53851,6 @@ msgstr ""
 msgid "ProjectSettings|The host of your data collector instance."
 msgstr ""
 
-msgid "ProjectSettings|The plain language explanation of what this expression enforces. Consider including examples that will pass."
-msgstr ""
-
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."
 msgstr ""
 
@@ -53864,6 +53873,12 @@ msgid "ProjectSettings|This setting will be applied to all projects unless overr
 msgstr ""
 
 msgid "ProjectSettings|Title regex"
+msgstr ""
+
+msgid "ProjectSettings|Title regex description"
+msgstr ""
+
+msgid "ProjectSettings|Titles must start with a tag, e.g. [Feature] Add login"
 msgstr ""
 
 msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."
@@ -78089,6 +78104,9 @@ msgstr ""
 msgid "WorkItem|Development"
 msgstr ""
 
+msgid "WorkItem|Disable list item"
+msgstr ""
+
 msgid "WorkItem|Discard changes"
 msgstr ""
 
@@ -78138,6 +78156,9 @@ msgid "WorkItem|Email work item to this project"
 msgstr ""
 
 msgid "WorkItem|Emoji reactions"
+msgstr ""
+
+msgid "WorkItem|Enable list item"
 msgstr ""
 
 msgid "WorkItem|Enter the work item description"

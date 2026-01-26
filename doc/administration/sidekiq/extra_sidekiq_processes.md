@@ -135,13 +135,10 @@ processes:
 
 ## Troubleshoot using the CLI
 
-{{< alert type="warning" >}}
-
-It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
-If you experience a problem, you should contact GitLab support. Use the command
-line at your own risk.
-
-{{< /alert >}}
+> [!warning]
+> It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
+> If you experience a problem, you should contact GitLab support. Use the command
+> line at your own risk.
 
 For debugging purposes, you can start extra Sidekiq processes by using the command
 `/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command

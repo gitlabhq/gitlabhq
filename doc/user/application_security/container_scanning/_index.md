@@ -96,13 +96,10 @@ To enable the analyzer, either:
 This method automatically prepares a merge request that includes the container scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable container scanning.
 
-{{< alert type="note" >}}
-
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
-If you have a complex GitLab configuration file it might not be parsed successfully, and an error
-might occur. In that case, use the manual method instead.
-
-{{< /alert >}}
+> [!note]
+> This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+> If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+> might occur. In that case, use the manual method instead.
 
 To enable container scanning:
 
@@ -277,13 +274,10 @@ See [Use security scanning tools with merge request pipelines](../detect/securit
 To customize container scanning, use CI/CD variables. The following table lists CI/CD variables
 specific to container scanning. You can also use any of the [predefined CI/CD variables](../../../ci/variables/predefined_variables.md).
 
-{{< alert type="warning" >}}
-
-Test customization of GitLab analyzers in a merge request before merging these changes to the
-default branch. Failure to do so can give unexpected results, including a large number of false
-positives.
-
-{{< /alert >}}
+> [!warning]
+> Test customization of GitLab analyzers in a merge request before merging these changes to the
+> default branch. Failure to do so can give unexpected results, including a large number of false
+> positives.
 
 | CI/CD Variable                           | Default                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                   |
 |------------------------------------------|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

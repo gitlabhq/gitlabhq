@@ -253,13 +253,10 @@ For more information, see:
 
 ## Storage layout
 
-{{< alert type="warning" >}}
-
-The storage layout is an internal detail of Gitaly Cluster (Praefect) and is not guaranteed to remain stable between releases.
-The information here is only for informational purposes and to help with debugging. Performing changes in the
-repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
-
-{{< /alert >}}
+> [!warning]
+> The storage layout is an internal detail of Gitaly Cluster (Praefect) and is not guaranteed to remain stable between releases.
+> The information here is only for informational purposes and to help with debugging. Performing changes in the
+> repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
 
 Gitaly Cluster (Praefect) virtual storages provide an abstraction that looks like a single storage but actually consists of
 multiple physical storages. Gitaly Cluster (Praefect) has to replicate each operation to each physical storage. Operations

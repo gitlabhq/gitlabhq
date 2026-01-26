@@ -416,13 +416,10 @@ registry['database'] = {
 
 ## Backup with metadata database
 
-{{< alert type="note" >}}
-
-If you have configured your own database for container registry metadata,
-you must manage backups manually. `gitlab-backup` does not backup the metadata database.
-For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
-
-{{< /alert >}}
+> [!note]
+> If you have configured your own database for container registry metadata,
+> you must manage backups manually. `gitlab-backup` does not backup the metadata database.
+> For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
 
 When the metadata database is enabled, backups must capture both the object storage
 used by the registry, as before, but also the database. Backups of object storage

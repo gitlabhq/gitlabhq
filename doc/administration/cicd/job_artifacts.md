@@ -124,13 +124,10 @@ Most artifacts are compressed by GitLab Runner before being sent to the coordina
 If you're using the Linux package or have a self-compiled installation, you
 can change the location where the artifacts are stored locally.
 
-{{< alert type="note" >}}
-
-For Docker installations, you can change the path where your data is mounted.
-For the Helm chart, use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For Docker installations, you can change the path where your data is mounted.
+> For the Helm chart, use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 {{< tabs >}}
 

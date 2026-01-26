@@ -59,13 +59,10 @@ The following table lists:
 - The GitLab version required to use the feature on GitLab Duo Self-Hosted.
 - The feature status. A feature status for GitLab Duo Self-Hosted might be different to the status listed in the [Feature summary](../../user/gitlab_duo/feature_summary.md).
 
-{{< alert type="note" >}}
-
-You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
-This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
-when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../../administration/gitlab_duo/gateway.md).
-
-{{< /alert >}}
+> [!note]
+> You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
+> This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
+> when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../../administration/gitlab_duo/gateway.md).
 
 | Feature                                                                                                                                | GitLab version          | Status              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|

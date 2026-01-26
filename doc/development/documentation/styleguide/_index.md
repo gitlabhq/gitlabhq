@@ -559,7 +559,7 @@ Include punctuation in the bold tag when it's part of the UI element itself.
 
 For example:
 
-- `**Start a review**: This a description of the button that starts a review.`
+- `**Start a review**: This is a description of the button that starts a review.`
 - `Select **Overview** > **Users**.`
 
 ### Inline code
@@ -670,7 +670,7 @@ Use lists to present information in a format that is easier to scan.
 
 - Do not use [bold](#bold) formatting to define keywords or concepts in a list. Use bold for UI element labels only. For example:
 
-  - `**Start a review**: This a description of the button that starts a review.`
+  - `**Start a review**: This is a description of the button that starts a review.`
   - `Offline environments: This is a description of offline environments.`
 
   For keywords and concepts, consider a [reference topic](../topic_types/reference.md) or

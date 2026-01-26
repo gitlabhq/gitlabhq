@@ -25,6 +25,8 @@ class Projects::CompareController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:show, :create, :signatures]
 
+  helper_method :rapid_diffs_presenter
+
   def index
     compare_params
   end
@@ -33,12 +35,6 @@ class Projects::CompareController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         apply_diff_view_cookie!
-        @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(
-          compare,
-          diff_view: diff_view,
-          diff_options: diff_options,
-          request_params: compare_params
-        )
       end
 
       format.patch do
@@ -93,6 +89,15 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   private
+
+  def rapid_diffs_presenter
+    @rapid_diffs_presenter ||= ::RapidDiffs::ComparePresenter.new(
+      compare,
+      diff_view: diff_view,
+      diff_options: diff_options,
+      request_params: compare_params
+    )
+  end
 
   def build_from_to_vars
     {

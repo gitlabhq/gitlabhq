@@ -170,13 +170,10 @@ All backups are encrypted. After 90 days, backups are deleted.
   - Labels
   - Additional items
 
-{{< alert type="note" >}}
-
-You should not use [direct transfer](../user/group/import/_index.md) or
-[project export files](../user/project/settings/import_export.md) to back up your data.
-Project export files do not always work for data backups, and not all items are exported.
-
-{{< /alert >}}
+> [!note]
+> You should not use [direct transfer](../user/group/import/_index.md) or
+> [project export files](../user/project/settings/import_export.md) to back up your data.
+> Project export files do not always work for data backups, and not all items are exported.
 
 ### Alternative backup strategies
 

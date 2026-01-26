@@ -19,10 +19,13 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['id', 'issuableType'],
+  inject: ['id', 'issuableType', 'enabled'],
   computed: {
     showConvertToTaskItem() {
       return allowedTypes.includes(this.issuableType);
+    },
+    isEnabledTaskListItem() {
+      return this.enabled;
     },
   },
   methods: {
@@ -31,6 +34,12 @@ export default {
     },
     deleteTaskListItem() {
       eventHub.$emit('delete-task-list-item', this.eventPayload());
+    },
+    disableTaskListItem() {
+      eventHub.$emit('disable-task-list-item', this.eventPayload());
+    },
+    enableTaskListItem() {
+      eventHub.$emit('enable-task-list-item', this.eventPayload());
     },
     eventPayload() {
       return {
@@ -55,13 +64,33 @@ export default {
     :toggle-text="s__('WorkItem|Task actions')"
   >
     <gl-disclosure-dropdown-item
-      v-if="showConvertToTaskItem"
+      v-if="showConvertToTaskItem && isEnabledTaskListItem"
       class="!gl-ml-2"
       data-testid="convert"
       @action="convertToTask"
     >
       <template #list-item>
         {{ s__('WorkItem|Convert to child item') }}
+      </template>
+    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      v-if="isEnabledTaskListItem"
+      class="!gl-ml-2"
+      data-testid="disable"
+      @action="disableTaskListItem"
+    >
+      <template #list-item>
+        {{ s__('WorkItem|Disable list item') }}
+      </template>
+    </gl-disclosure-dropdown-item>
+    <gl-disclosure-dropdown-item
+      v-if="!isEnabledTaskListItem"
+      class="!gl-ml-2"
+      data-testid="enable"
+      @action="enableTaskListItem"
+    >
+      <template #list-item>
+        {{ s__('WorkItem|Enable list item') }}
       </template>
     </gl-disclosure-dropdown-item>
     <gl-disclosure-dropdown-item

@@ -1975,4 +1975,104 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
   end
+
+  describe 'ci_pipeline_creation_inputs field' do
+    include ReactiveCachingHelpers
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let(:ref) { project.default_branch }
+    let(:fail_on_cache_miss) { nil }
+
+    let(:query) do
+      fail_on_cache_miss_arg = fail_on_cache_miss.nil? ? '' : ", failOnCacheMiss: #{fail_on_cache_miss}"
+      %(
+      query {
+        project(fullPath: "#{project.full_path}") {
+          ciPipelineCreationInputs(ref: "#{ref}"#{fail_on_cache_miss_arg}) {
+            name
+            default
+            required
+          }
+        }
+      }
+    )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    def mock_service_response(return_value)
+      allow_next_instance_of(::Ci::PipelineCreation::FindPipelineInputsService) do |service|
+        allow(service).to receive(:execute).and_return(return_value)
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is true' do
+      let(:fail_on_cache_miss) { true }
+
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns GraphQL error with expected message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Failed to retrieve pipeline inputs from cache.')
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is false' do
+      let(:fail_on_cache_miss) { false }
+
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns nil without error' do
+        expect(subject['errors']).to be_nil
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns nil (cache miss) and fail_on_cache_miss is not specified' do
+      before do
+        mock_service_response(nil)
+      end
+
+      it 'returns nil without error (default behavior)' do
+        expect(subject['errors']).to be_nil
+        expect(subject['data']['project']['ciPipelineCreationInputs']).to be_nil
+      end
+    end
+
+    context 'when service returns an error response' do
+      before do
+        mock_service_response(ServiceResponse.error(message: 'Some error'))
+      end
+
+      it 'returns GraphQL error with the service error message' do
+        expect(subject['errors']).to be_present
+        expect(subject['errors'].first['message']).to eq('Some error')
+      end
+    end
+
+    context 'when service returns success with inputs' do
+      let(:inputs_builder) do
+        Ci::Inputs::Builder.new({
+          'environment' => { type: 'string', default: 'production' }
+        })
+      end
+
+      before do
+        mock_service_response(ServiceResponse.success(payload: { inputs: inputs_builder }))
+      end
+
+      it 'returns the inputs' do
+        inputs = subject.dig('data', 'project', 'ciPipelineCreationInputs')
+        expect(inputs).to be_present
+        expect(inputs.first['name']).to eq('environment')
+        expect(inputs.first['default']).to eq('production')
+      end
+    end
+  end
 end

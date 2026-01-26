@@ -17,22 +17,19 @@ This document describes the minimal required steps to replicate your primary
 GitLab database to a secondary site's database. You may have to change some
 values, based on attributes including your database's setup and size.
 
-{{< alert type="note" >}}
-
-If your GitLab installation uses external PostgreSQL instances (not managed by a Linux package installation),
-the roles cannot perform all necessary configuration steps. In this case, use the
-[Geo with external PostgreSQL instances](external_database.md) process instead.
-
-{{< /alert >}}
-
 > [!note]
-> The stages of the setup process must be completed in the documented order.
-> If not, [complete all prior stages](_index.md#using-linux-package-installations) before proceeding.
+> If your GitLab installation uses external PostgreSQL instances (not managed by a Linux package installation),
+> the roles cannot perform all necessary configuration steps. In this case, use the
+> [Geo with external PostgreSQL instances](external_database.md) process instead.
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.
+
+> [!note]
+> The stages of the setup process must be completed in the documented order.
+> If not, [complete all prior stages](_index.md#using-linux-package-installations) before proceeding.
 
 ## Database password consistency requirements
 
@@ -85,13 +82,10 @@ The following guide assumes that:
   [versions of PostgreSQL](../_index.md#requirements-for-running-geo),
   OS, and GitLab on all sites.
 
-{{< alert type="warning" >}}
-
-Geo works with streaming replication. Logical replication is not supported,
-but [epic 18022](https://gitlab.com/groups/gitlab-org/-/epics/18022) proposes to
-change this behavior.
-
-{{< /alert >}}
+> [!warning]
+> Geo works with streaming replication. Logical replication is not supported,
+> but [epic 18022](https://gitlab.com/groups/gitlab-org/-/epics/18022) proposes to
+> change this behavior.
 
 #### Step 1. Configure the **primary** site
 

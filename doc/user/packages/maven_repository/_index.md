@@ -509,13 +509,10 @@ correct location:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message.
-Ensure the Maven package is not protected when publishing.
-For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
-
-{{< /alert >}}
+> [!note]
+> If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message.
+> Ensure the Maven package is not protected when publishing.
+> For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 ## Install a package
 

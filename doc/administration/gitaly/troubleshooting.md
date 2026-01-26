@@ -619,13 +619,10 @@ The new rule takes effect after the daemon restarts.
 In GitLab 17.0, support for configuring storages with duplicate paths [was removed](https://gitlab.com/gitlab-org/gitaly/-/issues/5598). This can mean that you
 must remove duplicate storage configuration from `gitaly` configuration.
 
-{{< alert type="warning" >}}
-
-Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
-causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
-projects between storages in all other situations.
-
-{{< /alert >}}
+> [!warning]
+> Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
+> causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
+> projects between storages in all other situations.
 
 When removing from the Gitaly configuration a storage that used the same path as another storage,
 the projects associated with the old storage must be reassigned to the new one.

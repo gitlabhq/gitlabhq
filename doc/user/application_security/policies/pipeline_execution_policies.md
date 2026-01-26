@@ -332,13 +332,10 @@ variables_override:
 
 This configuration allows all user-defined variables except those that could disable security scans.
 
-{{< alert type="warning" >}}
-
-While this configuration can provide flexibility, it is discouraged due to the security implications.
-Any variable that is not explicitly listed in the `exceptions` can be injected by the users. As a result,
-the policy configuration is not as well protected as when using the `allowlist` approach.
-
-{{< /alert >}}
+> [!warning]
+> While this configuration can provide flexibility, it is discouraged due to the security implications.
+> Any variable that is not explicitly listed in the `exceptions` can be injected by the users. As a result,
+> the policy configuration is not as well protected as when using the `allowlist` approach.
 
 ### `policy scope` schema
 
@@ -371,13 +368,10 @@ To link the project:
 
 The project becomes a security policy project, and the setting becomes available.
 
-{{< alert type="note" >}}
-
-To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
-In the security policy project, go to **Settings** > **CI/CD** > **Job token permissions** and add the authorized groups and projects to the allowlist.
-If you don't see the **CI/CD** settings, go to **Settings** > **General** > **Visibility, project features, permissions** and enable **CI/CD**.
-
-{{< /alert >}}
+> [!note]
+> To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
+> In the security policy project, go to **Settings** > **CI/CD** > **Job token permissions** and add the authorized groups and projects to the allowlist.
+> If you don't see the **CI/CD** settings, go to **Settings** > **General** > **Visibility, project features, permissions** and enable **CI/CD**.
 
 #### Configuration
 
@@ -429,13 +423,10 @@ When you use this strategy, a project CI/CD configuration cannot override any be
 For projects without a `.gitlab-ci.yml` file, this strategy creates `.gitlab-ci.yml` file
 implicitly. The executed pipeline contains only the jobs defined in the pipeline execution policy.
 
-{{< alert type="note" >}}
-
-When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the only jobs that
-run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
-the only jobs that run are the pipeline execution policy jobs.
-
-{{< /alert >}}
+> [!note]
+> When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the only jobs that
+> run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
+> the only jobs that run are the pipeline execution policy jobs.
 
 #### Stages injection
 
@@ -605,13 +596,10 @@ For projects without a `.gitlab-ci.yml` file, this strategy creates a `.gitlab-c
 implicitly. This allows a pipeline containing only the jobs defined in the pipeline execution policy to
 execute.
 
-{{< alert type="note" >}}
-
-When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the only jobs that
-run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
-the only jobs that run are the pipeline execution policy jobs.
-
-{{< /alert >}}
+> [!note]
+> When a pipeline execution policy uses workflow rules that prevent policy jobs from running, the only jobs that
+> run are the project's CI/CD jobs. If the project uses workflow rules that prevent project CI/CD jobs from running,
+> the only jobs that run are the pipeline execution policy jobs.
 
 ### `override_project_ci`
 
@@ -725,13 +713,10 @@ PolicyVariablesYAML -- "Inject <code>policy-job</code> if Test Stage exists" -->
 ProjectVariablesYAML -- "Basis of the resulting pipeline" --> ResultingProjectVariablesYAML
 ```
 
-{{< alert type="note" >}}
-
-The workflow rules in the pipeline execution policy override the project's original CI/CD configuration.
-By defining workflow rules in the policy, you can set rules that are enforced across all linked projects,
-like preventing the use of branch pipelines.
-
-{{< /alert >}}
+> [!note]
+> The workflow rules in the pipeline execution policy override the project's original CI/CD configuration.
+> By defining workflow rules in the policy, you can set rules that are enforced across all linked projects,
+> like preventing the use of branch pipelines.
 
 #### Pipeline name
 

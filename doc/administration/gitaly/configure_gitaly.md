@@ -113,13 +113,10 @@ the default ports for HTTP and HTTPs communication.
 
 ![Two Gitaly servers and a GitLab Rails exchanging information.](img/gitaly_network_v13_9.png)
 
-{{< alert type="warning" >}}
-
-Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
-by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
-Another option is to [use TLS](tls_support.md).
-
-{{< /alert >}}
+> [!warning]
+> Gitaly servers must not be exposed to the public internet as Gitaly network traffic is unencrypted
+> by default. The use of firewall is highly recommended to restrict access to the Gitaly server.
+> Another option is to [use TLS](tls_support.md).
 
 In the following sections, we describe how to configure two Gitaly servers with secret token
 `abc123secret`:
@@ -537,13 +534,10 @@ Configure Gitaly clients in one of two ways. These instructions are for unencryp
 When you tail the Gitaly logs on your Gitaly server, you should see requests coming in. One sure way
 to trigger a Gitaly request is to clone a repository from GitLab over HTTP or HTTPS.
 
-{{< alert type="warning" >}}
-
-If you have [server hooks](../server_hooks.md) configured, either per repository or globally, you
-must move these to the Gitaly servers. If you have multiple Gitaly servers, copy your server hooks
-to all Gitaly servers.
-
-{{< /alert >}}
+> [!warning]
+> If you have [server hooks](../server_hooks.md) configured, either per repository or globally, you
+> must move these to the Gitaly servers. If you have multiple Gitaly servers, copy your server hooks
+> to all Gitaly servers.
 
 #### Mixed configuration
 
@@ -1155,13 +1149,10 @@ Configure the `cat-file` cache in the Gitaly configuration file.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`.
-On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is available. To hide the feature,
+> an administrator can [disable the feature flag](../feature_flags/_index.md) named `gitaly_gpg_signing`.
+> On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 

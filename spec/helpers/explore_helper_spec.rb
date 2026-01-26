@@ -56,4 +56,14 @@ RSpec.describe ExploreHelper do
       })
     end
   end
+
+  describe '#explore_groups_app_data' do
+    it 'returns the correct data hash' do
+      expect(helper.explore_groups_app_data).to eq({
+        endpoint: '/explore/groups.json',
+        initial_sort: 'created_desc',
+        base_path: '/explore/groups'
+      })
+    end
+  end
 end

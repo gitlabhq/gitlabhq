@@ -9,6 +9,7 @@ module Packages
       CHANNEL = 'channel'
       INDEX_YAML_SUFFIX = "/#{CHANNEL}/index.yaml".freeze
       EMPTY_HASH = {}.freeze
+      PACKAGES_BATCH_SIZE = 300
 
       def initialize(project_id_param, channel, packages)
         @project_id_param = project_id_param
@@ -40,14 +41,15 @@ module Packages
 
         result = Hash.new { |h, k| h[k] = [] }
 
-        # this .each is safe as we have max 300 objects
-        most_recent_package_files.each do |package_file|
-          name = package_file.helm_metadata['name']
-          result[name] << package_file.helm_metadata.merge({
-            'created' => package_file.created_at.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'),
-            'digest' => package_file.file_sha256,
-            'urls' => ["charts/#{package_file.file_name}"]
-          })
+        packages.each_batch(of: PACKAGES_BATCH_SIZE) do |chunk_packages|
+          most_recent_package_files(chunk_packages).each do |package_file|
+            name = package_file.helm_metadata['name']
+            result[name] << package_file.helm_metadata.merge({
+              'created' => package_file.created_at.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'),
+              'digest' => package_file.file_sha256,
+              'urls' => ["charts/#{package_file.file_name}"]
+            })
+          end
         end
 
         result
@@ -67,11 +69,9 @@ module Packages
         }
       end
 
-      def most_recent_package_files
-        ::Packages::PackageFile.most_recent_for(
-          packages,
-          extra_join: :helm_file_metadatum,
-          extra_where: { packages_helm_file_metadata: { channel: channel } }
+      def most_recent_package_files(packages)
+        ::Packages::PackageFile.most_recent_for_helm_with_channel(
+          packages, channel
         ).preload_helm_file_metadata
       end
     end

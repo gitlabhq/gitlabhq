@@ -118,13 +118,10 @@ with high availability configurations.
 
 GitLab matches your instance to the closest reference architecture size based on your number of users.
 
-{{< alert type="note" >}}
-
-GitLab Dedicated environments use additional cloud provider services beyond
-the standard reference architectures to enhance security and stability.
-As a result, GitLab Dedicated costs differ from standard reference architecture costs.
-
-{{< /alert >}}
+> [!note]
+> GitLab Dedicated environments use additional cloud provider services beyond
+> the standard reference architectures to enhance security and stability.
+> As a result, GitLab Dedicated costs differ from standard reference architecture costs.
 
 ## Related topics
 

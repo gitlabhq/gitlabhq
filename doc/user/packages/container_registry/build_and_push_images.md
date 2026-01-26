@@ -226,10 +226,7 @@ deploy:
   environment: production
 ```
 
-{{< alert type="note" >}}
-
-The previous example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
-and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executor,
-make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#set-the-always-pull-policy) is set to `always`.
-
-{{< /alert >}}
+> [!note]
+> The previous example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
+> and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executor,
+> make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#set-the-always-pull-policy) is set to `always`.

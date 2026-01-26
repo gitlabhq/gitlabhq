@@ -34,13 +34,10 @@ Upgrading Geo sites involves performing:
 
 ## General upgrade steps
 
-{{< alert type="note" >}}
-
-These general upgrade steps require downtime in a multi-node setup.
-If you want to avoid downtime, consider using
-[zero-downtime upgrades](../../../update/zero_downtime.md#upgrade-multi-node-geo-instances).
-
-{{< /alert >}}
+> [!note]
+> These general upgrade steps require downtime in a multi-node setup.
+> If you want to avoid downtime, consider using
+> [zero-downtime upgrades](../../../update/zero_downtime.md#upgrade-multi-node-geo-instances).
 
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:

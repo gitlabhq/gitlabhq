@@ -209,6 +209,106 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
       end
     end
 
+    context 'with default branch' do
+      before do
+        create(:protected_branch, project: project, name: project.default_branch)
+        create(:protected_branch, project: project, name: 'zzz-branch-a')
+        create(:protected_branch, project: project, name: 'zzz-branch-b')
+      end
+
+      describe 'first page' do
+        it 'prioritises default branch' do
+          page = finder.execute(cursor: nil, limit: 3)
+
+          expect(page.rules.second.protected_branch.name).to eq(project.default_branch)
+        end
+      end
+
+      describe 'second page' do
+        it 'excludes the default branch' do
+          first_page = finder.execute(cursor: nil, limit: 3)
+          second_page = finder.execute(cursor: first_page.end_cursor, limit: 3)
+
+          branch_names = second_page.rules.filter_map { |rule| rule.protected_branch&.name }
+          expect(branch_names).not_to include(project.default_branch)
+        end
+      end
+
+      describe 'after custom rule cursor' do
+        it 'includes default branch on first page' do
+          cursor = encode_cursor('all_branches')
+          page = finder.execute(cursor: cursor, limit: 2)
+
+          expect(page.rules.first.protected_branch.name).to eq(project.default_branch)
+        end
+
+        it 'excludes default branch on subsequent pages' do
+          cursor = encode_cursor('all_branches')
+          first_page = finder.execute(cursor: cursor, limit: 2)
+          second_page = finder.execute(cursor: first_page.end_cursor, limit: 2)
+
+          branch_names = second_page.rules.filter_map { |rule| rule.protected_branch&.name }
+          expect(branch_names).not_to include(project.default_branch)
+        end
+
+        it 'shows next page when more results exist' do
+          cursor = encode_cursor('all_branches')
+          page = finder.execute(cursor: cursor, limit: 2)
+
+          expect(page.has_next_page).to be true
+          expect(page.end_cursor).to be_present
+        end
+      end
+
+      context 'when default branch is protected' do
+        describe 'after custom rule cursor' do
+          it 'excludes default branch from query when paginating' do
+            cursor = encode_cursor('all_branches')
+            page = finder.execute(cursor: cursor, limit: 2)
+
+            # Default branch should be first, then other branches
+            branch_names = page.rules.map { |rule| rule.protected_branch&.name }
+            expect(branch_names.first).to eq(project.default_branch)
+            expect(branch_names.second).to eq('zzz-branch-a')
+          end
+        end
+      end
+
+      context 'when default branch is not protected' do
+        before do
+          ProtectedBranch.where(project: project, name: project.default_branch).delete_all
+          allow(ProtectedBranch).to receive(:default_branch_for).with(project).and_return(nil)
+        end
+
+        describe 'after custom rule cursor' do
+          it 'returns protected branches without prioritizing default branch' do
+            cursor = encode_cursor('all_branches')
+            page = finder.execute(cursor: cursor, limit: 2)
+
+            expect(page.rules.first.protected_branch.name).to eq('zzz-branch-a')
+          end
+
+          it 'does not exclude any branches from query' do
+            cursor = encode_cursor('all_branches')
+            page = finder.execute(cursor: cursor, limit: 10)
+
+            branch_names = page.rules.filter_map { |rule| rule.protected_branch&.name }
+            expect(branch_names).to include('zzz-branch-a', 'zzz-branch-b')
+          end
+        end
+
+        describe 'after protected branch cursor' do
+          it 'returns next protected branches without filtering default branch' do
+            first_page = finder.execute(cursor: nil, limit: 2)
+            second_page = finder.execute(cursor: first_page.end_cursor, limit: 2)
+
+            expect(second_page.rules).not_to be_empty
+            expect(second_page.rules.first).to be_a(Projects::BranchRule)
+          end
+        end
+      end
+    end
+
     context 'for cursor edge cases' do
       let!(:protected_branch) { create(:protected_branch, project: project, name: 'main') }
 
@@ -283,14 +383,14 @@ RSpec.describe Projects::BranchRulesFinder, feature_category: :source_code_manag
 
     it 'encodes cursor with name and id' do
       cursor = finder.send(:encode_cursor, 'test', 123)
-      decoded = Gitlab::Json.parse(Base64.strict_decode64(cursor))
+      decoded = Gitlab::Json.safe_parse(Base64.strict_decode64(cursor))
 
       expect(decoded).to eq({ 'name' => 'test', 'id' => 123 })
     end
 
     it 'encodes cursor with name only' do
       cursor = finder.send(:encode_cursor, 'test')
-      decoded = Gitlab::Json.parse(Base64.strict_decode64(cursor))
+      decoded = Gitlab::Json.safe_parse(Base64.strict_decode64(cursor))
 
       expect(decoded).to eq({ 'name' => 'test', 'id' => nil })
     end

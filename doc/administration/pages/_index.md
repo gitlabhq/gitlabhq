@@ -1099,13 +1099,10 @@ your main application server.
 
 To configure GitLab Pages on a separate server:
 
-{{< alert type="warning" >}}
-
-The following procedure includes steps to back up and edit the
-`gitlab-secrets.json` file. This file contains secrets that control
-database encryption. Proceed with caution.
-
-{{< /alert >}}
+> [!warning]
+> The following procedure includes steps to back up and edit the
+> `gitlab-secrets.json` file. This file contains secrets that control
+> database encryption. Proceed with caution.
 
 1. Optional. To enable access control, add the following to `/etc/gitlab/gitlab.rb` and [reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 

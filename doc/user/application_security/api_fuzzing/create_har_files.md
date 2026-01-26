@@ -19,13 +19,10 @@ with a web site. The file extension `.har` is commonly used.
 HAR files can be used to perform [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har)
 in CI/CD pipelines.
 
-{{< alert type="warning" >}}
-
-A HAR file stores information exchanged between web client and web server. It could also
-store sensitive information such as authentication tokens, API keys, and session cookies. We
-recommend that you review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> A HAR file stores information exchanged between web client and web server. It could also
+> store sensitive information such as authentication tokens, API keys, and session cookies. We
+> recommend that you review the HAR file contents before adding them to a repository.
 
 ## HAR file creation
 

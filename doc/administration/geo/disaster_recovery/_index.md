@@ -37,13 +37,10 @@ order to avoid unnecessary data loss.
 
 ### Step 2. Permanently disable the **primary** site
 
-{{< alert type="warning" >}}
-
-If the **primary** site goes offline, there may be data saved on the **primary** site
-that have not been replicated to the **secondary** site. This data should be treated
-as lost if you proceed.
-
-{{< /alert >}}
+> [!warning]
+> If the **primary** site goes offline, there may be data saved on the **primary** site
+> that have not been replicated to the **secondary** site. This data should be treated
+> as lost if you proceed.
 
 If an outage on the **primary** site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
@@ -435,13 +432,10 @@ The following sections assume you are using the `gitlab` namespace. If you used 
 
 ### Step 1. Permanently disable the **primary** cluster
 
-{{< alert type="warning" >}}
-
-If the **primary** site goes offline, there may be data saved on the **primary** site
-that has not been replicated to the **secondary** site. This data should be treated
-as lost if you proceed.
-
-{{< /alert >}}
+> [!warning]
+> If the **primary** site goes offline, there may be data saved on the **primary** site
+> that has not been replicated to the **secondary** site. This data should be treated
+> as lost if you proceed.
 
 If an outage on the **primary** site happens, you should do everything possible to
 avoid a split-brain situation where writes can occur in two different GitLab
@@ -469,13 +463,10 @@ must disable the **primary** site:
 
 ### Step 2. Promote all **secondary** site nodes external to the cluster
 
-{{< alert type="warning" >}}
-
-If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
-a point-in-time recovery to the last known state.
-Data that was created on the primary while the secondary was paused is lost.
-
-{{< /alert >}}
+> [!warning]
+> If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
+> a point-in-time recovery to the last known state.
+> Data that was created on the primary while the secondary was paused is lost.
 
 1. For each node (such as PostgreSQL or Gitaly) outside of the **secondary** Kubernetes cluster using the Linux
    package, SSH into the node and run one of the following commands:

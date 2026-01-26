@@ -61,13 +61,10 @@ What is not covered:
 
 ### Preparation
 
-{{< alert type="note" >}}
-
-Before following any of those steps, make sure you have `root` access to the
-**secondary** to promote it, because there isn't provided an automated way to
-promote a Geo replica and perform a failover.
-
-{{< /alert >}}
+> [!note]
+> Before following any of those steps, make sure you have `root` access to the
+> **secondary** to promote it, because there isn't provided an automated way to
+> promote a Geo replica and perform a failover.
 
 On the **secondary** site:
 

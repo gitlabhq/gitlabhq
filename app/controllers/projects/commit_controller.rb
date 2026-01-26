@@ -31,6 +31,8 @@ class Projects::CommitController < Projects::ApplicationController
   feature_category :source_code_management
   urgency :low, [:pipelines, :merge_requests, :show]
 
+  helper_method :rapid_diffs_presenter
+
   def show
     apply_diff_view_cookie!
 
@@ -39,14 +41,6 @@ class Projects::CommitController < Projects::ApplicationController
         if rapid_diffs_enabled? && !rapid_diffs_force_disabled?
           @js_action_name = 'rapid_diffs'
           @files_changed_count = @commit.stats.files
-          @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
-            @commit,
-            diff_view: diff_view,
-            diff_options: commit_diff_options,
-            request_params: params,
-            current_user: current_user,
-            environment: define_environment
-          )
           render action: :rapid_diffs
         else
           @ref = commit_params_safe[:id]
@@ -185,6 +179,17 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   private
+
+  def rapid_diffs_presenter
+    @rapid_diffs_presenter ||= RapidDiffs::CommitPresenter.new(
+      @commit,
+      diff_view: diff_view,
+      diff_options: commit_diff_options,
+      request_params: params,
+      current_user: current_user,
+      environment: define_environment
+    )
+  end
 
   def rapid_diffs_enabled?
     ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)

@@ -34,9 +34,9 @@ By default, Jira imports commits and branches for GitLab projects every 60 minut
 To refresh the data manually in Jira:
 
 1. Sign in to your Jira instance as the user you configured the integration with.
-1. On the top bar, in the upper-right corner,
+1. In the top bar, in the upper-right corner,
    select **Administration** ({{< icon name="settings" >}}) > **Applications**.
-1. On the left sidebar, select **DVCS accounts**.
+1. In the left sidebar, select **DVCS accounts**.
 1. To refresh one or more repositories in a DVCS account:
    - **For all repositories**, next to the account,
      select the ellipsis ({{< icon name="ellipsis_h" >}}) > **Refresh repositories**.

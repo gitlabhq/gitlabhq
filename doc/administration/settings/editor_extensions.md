@@ -43,13 +43,10 @@ To create an OAuth application:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `enforce_language_server_version`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-On GitLab Dedicated, this feature is available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `enforce_language_server_version`.
+> On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+> On GitLab Dedicated, this feature is available.
 
 By default, any GitLab Language Server version can connect to your GitLab instance when
 personal access tokens are enabled. To block requests from clients on older versions,
@@ -84,10 +81,7 @@ To allow any GitLab Language Server clients:
 1. Uncheck **Language Server restrictions enabled**.
 1. Under **Minimum GitLab Language Server client version**, enter a valid GitLab Language Server version.
 
-{{< alert type="note" >}}
-
-Allowing all requests is not recommended. It can cause incompatibility if your
-GitLab version is ahead of your extension version. You should update your extensions
-to receive the latest feature improvements, bug fixes, and security fixes.
-
-{{< /alert >}}
+> [!note]
+> Allowing all requests is not recommended. It can cause incompatibility if your
+> GitLab version is ahead of your extension version. You should update your extensions
+> to receive the latest feature improvements, bug fixes, and security fixes.

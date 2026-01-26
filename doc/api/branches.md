@@ -249,7 +249,7 @@ response attributes:
 | `commit.title`             | string  | Title of the commit message. |
 | `commit.trailers`          | object  | Git trailers parsed from the commit message. |
 | `commit.web_url`           | string  | URL to view the commit in the GitLab UI. |
-| `default`                  | boolean | If `true`, sets this branch is the default branch for the project. |
+| `default`                  | boolean | If `true`, sets this branch as the default branch for the project. |
 | `developers_can_merge`     | boolean | If `true`, users with the Developer role can merge to this branch. |
 | `developers_can_push`      | boolean | If `true`, users with the Developer role can push to this branch. |
 | `merged`                   | boolean | If `true`, the branch merged into the default branch. |

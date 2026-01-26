@@ -140,13 +140,10 @@ customizations. The method you can use depends on your GitLab license tier.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
-have a complex configuration, the tool might fail to parse it. In that case,
-[edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
-
-{{< /alert >}}
+> [!note]
+> The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
+> have a complex configuration, the tool might fail to parse it. In that case,
+> [edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
 
 To enable and configure SAST with customizations:
 
@@ -168,13 +165,10 @@ appear under the `test` stage in the project's pipeline.
 
 #### Enable SAST with default settings only
 
-{{< alert type="note" >}}
-
-The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
-have a complex configuration, the tool might fail to parse it. In that case,
-[edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
-
-{{< /alert >}}
+> [!note]
+> The UI configuration method works best with minimal or no existing `.gitlab-ci.yml` file. If you
+> have a complex configuration, the tool might fail to parse it. In that case,
+> [edit the CI/CD file](#enable-sast-by-editing-the-cicd-file) instead.
 
 To enable and configure SAST with default settings:
 
@@ -789,13 +783,10 @@ spotbugs-sast:
 
 SAST can be configured using the `variables` parameter in `.gitlab-ci.yml`.
 
-{{< alert type="warning" >}}
-
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All customization of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results,
+> including a large number of false positives.
 
 The following example includes the SAST template to override the `SEARCH_MAX_DEPTH` variable to `10`
 in all jobs. The template is evaluated before the pipeline configuration, so the last mention of the

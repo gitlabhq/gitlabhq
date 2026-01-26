@@ -5,13 +5,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Processing specific job classes
 ---
 
-{{< alert type="warning" >}}
-
-These are advanced settings. While they are used on GitLab.com, most GitLab
-instances should only add more processes that listen to all queues. This is the
-same approach described in the [Reference Architectures](../reference_architectures/_index.md).
-
-{{< /alert >}}
+> [!warning]
+> These are advanced settings. While they are used on GitLab.com, most GitLab
+> instances should only add more processes that listen to all queues. This is the
+> same approach described in the [Reference Architectures](../reference_architectures/_index.md).
 
 Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 

@@ -20,13 +20,10 @@ For more information about this feature, see also [DevOps adoption by group](../
 
 ## DevOps score
 
-{{< alert type="note" >}}
-
-To view the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
-DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
-If Service Ping is not activated, the DevOps score value is 0.
-
-{{< /alert >}}
+> [!note]
+> To view the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping).
+> DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
+> If Service Ping is not activated, the DevOps score value is 0.
 
 You can use the DevOps score to compare your DevOps status to other organizations.
 

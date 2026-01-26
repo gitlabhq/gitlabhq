@@ -29,13 +29,10 @@ Depending on your [subscription tier](_index.md#availability) and configuration 
 
 To change how the analyzer behaves, define variables using the [`variables`](../../../../ci/yaml/_index.md#variables) parameter in `.gitlab-ci.yml`.
 
-{{< alert type="warning" >}}
-
-All configuration of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All configuration of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results,
+> including a large number of false positives.
 
 ### Add new patterns
 
@@ -680,13 +677,10 @@ path = "/gitleaks.toml"
   keywords = ["pwd", "passwd", "password"]
 ```
 
-{{< alert type="note" >}}
-
-This example configuration is provided only for convenience, and might not work
-for all use cases. If you configure your ruleset to detect complex strings, you might
-create a large number of false positives, or fail to capture certain patterns.
-
-{{< /alert >}}
+> [!note]
+> This example configuration is provided only for convenience, and might not work
+> for all use cases. If you configure your ruleset to detect complex strings, you might
+> create a large number of false positives, or fail to capture certain patterns.
 
 ### Demonstrations
 

@@ -161,13 +161,10 @@ except for the storage types not supported by the consolidated form. When workin
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.
 
-{{< alert type="note" >}}
-
-For the storage-specific form,
-[direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
-because it does not require a shared folder.
-
-{{< /alert >}}
+> [!note]
+> For the storage-specific form,
+> [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
+> because it does not require a shared folder.
 
 For storage types not
 supported by the consolidated form, refer to the following guides:

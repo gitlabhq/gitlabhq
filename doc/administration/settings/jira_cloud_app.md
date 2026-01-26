@@ -185,13 +185,10 @@ to check if Jira Cloud is linked to:
 
 ## Install the GitLab for Jira Cloud app manually
 
-{{< alert type="warning" >}}
-
-In GitLab 17.5 and earlier, you might encounter an issue when you install the GitLab for Jira Cloud app manually.
-For more information, see [issue 505372](https://gitlab.com/gitlab-org/gitlab/-/issues/505372).
-This issue does not affect [installations from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
-
-{{< /alert >}}
+> [!warning]
+> In GitLab 17.5 and earlier, you might encounter an issue when you install the GitLab for Jira Cloud app manually.
+> For more information, see [issue 505372](https://gitlab.com/gitlab-org/gitlab/-/issues/505372).
+> This issue does not affect [installations from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
 
 If you do not want to [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
 install the GitLab for Jira Cloud app manually.

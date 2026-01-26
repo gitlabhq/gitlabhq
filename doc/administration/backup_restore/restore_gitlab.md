@@ -526,13 +526,10 @@ specify a group path, all repositories in all projects in the group and
 descendant groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
-{{< alert type="note" >}}
-
-The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
-They do not apply to project or group database entries. If you created a repositories backup
-with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
-
-{{< /alert >}}
+> [!note]
+> The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
+> They do not apply to project or group database entries. If you created a repositories backup
+> with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
 
 For example, to restore all repositories for all projects in Group A (`group-a`), the repository for
 Project C in Group B (`group-b/project-c`), and skip the Project D in Group A (`group-a/project-d`):

@@ -13,16 +13,10 @@ title: Conan 1 packages in the package registry
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Conan package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
-
-> [!note]
-> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
+> [!warning]
+> The Conan package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
+> work and timelines to make it production ready.
 
 Publish Conan packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -32,6 +26,9 @@ remote and authenticate with it.
 
 Then you can run `conan` commands and publish your package to the
 package registry.
+
+> [!note]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 For documentation of the specific API endpoints that the Conan package manager client uses, see [Conan v1 API](../../../api/packages/conan_v1.md) or [Conan v2 API](../../../api/packages/conan_v2.md).
 
@@ -274,13 +271,10 @@ Prerequisites:
    conan install .. <options>
    ```
 
-{{< alert type="note" >}}
-
-If you try installing the package you created in this tutorial, the install command
-has no effect because the package already exists.
-Delete `~/.conan/data` to clean up the packages stored in the cache.
-
-{{< /alert >}}
+> [!note]
+> If you try installing the package you created in this tutorial, the install command
+> has no effect because the package already exists.
+> Delete `~/.conan/data` to clean up the packages stored in the cache.
 
 ## Remove a Conan package
 

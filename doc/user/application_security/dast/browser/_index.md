@@ -38,13 +38,10 @@ deployed environments.
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [DAST - advanced security testing](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
-{{< alert type="warning" >}}
-
-Do not run DAST scans against a production server. Not only can it perform any function that a
-user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
-modification or loss of production data. Only run DAST scans against a test server.
-
-{{< /alert >}}
+> [!warning]
+> Do not run DAST scans against a production server. Not only can it perform any function that a
+> user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
+> modification or loss of production data. Only run DAST scans against a test server.
 
 The DAST browser-based analyzer was built by GitLab to scan modern-day web applications for
 vulnerabilities. Scans run in a browser to optimize testing applications heavily dependent on

@@ -20,9 +20,9 @@ title: Web Commits API
 
 Use this API to retrieve information about [web commits](../user/project/repository/web_editor.md).
 
-## Get public signing key
+## Retrieve public signing key
 
-Get the GitLab public key for signing web commits.
+Retrieves the GitLab public key for signing web commits.
 
 ```plaintext
 GET /web_commits/public_key

@@ -16639,6 +16639,22 @@ CREATE SEQUENCE ci_resources_id_seq
 
 ALTER SEQUENCE ci_resources_id_seq OWNED BY ci_resources.id;
 
+CREATE TABLE ci_runner_controller_instance_level_scopings (
+    id bigint NOT NULL,
+    runner_controller_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE ci_runner_controller_instance_level_scopings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_runner_controller_instance_level_scopings_id_seq OWNED BY ci_runner_controller_instance_level_scopings.id;
+
 CREATE TABLE ci_runner_controller_tokens (
     id bigint NOT NULL,
     description text,
@@ -33982,6 +33998,8 @@ ALTER TABLE ONLY ci_resource_groups ALTER COLUMN id SET DEFAULT nextval('ci_reso
 
 ALTER TABLE ONLY ci_resources ALTER COLUMN id SET DEFAULT nextval('ci_resources_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_runner_controller_instance_level_scopings ALTER COLUMN id SET DEFAULT nextval('ci_runner_controller_instance_level_scopings_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_runner_controller_tokens ALTER COLUMN id SET DEFAULT nextval('ci_runner_controller_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_runner_controllers ALTER COLUMN id SET DEFAULT nextval('ci_runner_controllers_id_seq'::regclass);
@@ -37117,6 +37135,9 @@ ALTER TABLE ONLY ci_resource_groups
 
 ALTER TABLE ONLY ci_resources
     ADD CONSTRAINT ci_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_runner_controller_instance_level_scopings
+    ADD CONSTRAINT ci_runner_controller_instance_level_scopings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_runner_controller_tokens
     ADD CONSTRAINT ci_runner_controller_tokens_pkey PRIMARY KEY (id);
@@ -43607,6 +43628,8 @@ CREATE INDEX index_ci_project_mirrors_on_namespace_id ON ci_project_mirrors USIN
 CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_project_monthly_usages_on_project_id_and_date ON ci_project_monthly_usages USING btree (project_id, date);
+
+CREATE UNIQUE INDEX index_ci_rc_instance_level_scopings_on_runner_controller_id ON ci_runner_controller_instance_level_scopings USING btree (runner_controller_id);
 
 CREATE UNIQUE INDEX index_ci_refs_on_project_id_and_ref_path ON ci_refs USING btree (project_id, ref_path);
 
@@ -57079,6 +57102,9 @@ ALTER TABLE ONLY approval_project_rules_users
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_rails_baed5f39b7 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_runner_controller_instance_level_scopings
+    ADD CONSTRAINT fk_rails_bb47c7999d FOREIGN KEY (runner_controller_id) REFERENCES ci_runner_controllers(id) ON DELETE CASCADE;
 
 ALTER TABLE security_findings
     ADD CONSTRAINT fk_rails_bb63863cf1 FOREIGN KEY (scan_id) REFERENCES security_scans(id) ON DELETE CASCADE;

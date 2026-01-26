@@ -129,7 +129,7 @@ If you're not an administrator:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Connect Kerberos**.
    If you don't see a **Service sign-in** Kerberos option, follow the
    requirements in [Enable single sign-on](#enable-single-sign-on).

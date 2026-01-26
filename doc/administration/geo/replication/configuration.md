@@ -13,13 +13,10 @@ title: Configure a new **secondary** site
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This is the final step in setting up a **secondary** Geo site. Stages of the
-setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
-
-{{< /alert >}}
+> [!note]
+> This is the final step in setting up a **secondary** Geo site. Stages of the
+> setup process must be completed in the documented order.
+> If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -36,13 +33,10 @@ Prerequisites for **both primary and secondary sites**:
 - [Set up the database replication](../setup/database.md)
 - [Configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md)
 
-{{< alert type="note" >}}
-
-**Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
-Any change that requires access to the **Admin** area needs to be done in the
-**primary** site because the **secondary** site is a read-only replica.
-
-{{< /alert >}}
+> [!note]
+> **Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
+> Any change that requires access to the **Admin** area needs to be done in the
+> **primary** site because the **secondary** site is a read-only replica.
 
 ## Step 1. Manually replicate secret GitLab values
 

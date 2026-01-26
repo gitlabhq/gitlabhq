@@ -75,13 +75,10 @@ information, see the following endpoints:
 
 ## Use GitLab CI/CD
 
-{{< alert type="note" >}}
-
-GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
-third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
-For assistance with this third-party tool, see [the issue tracker for regclient](https://github.com/regclient/regclient/issues).
-
-{{< /alert >}}
+> [!note]
+> GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
+> third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
+> For assistance with this third-party tool, see [the issue tracker for regclient](https://github.com/regclient/regclient/issues).
 
 The following example defines two stages: `build`, and `clean`. The `build_image` job builds a container
 image for the branch, and the `delete_image` job deletes it. The `reg` executable is downloaded and used to

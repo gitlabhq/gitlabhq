@@ -403,13 +403,10 @@ The script uses the default Linux package directories.
 If you changed the defaults, replace the directory and path
 names in the script below with your own names.
 
-{{< alert type="warning" >}}
-
-Run the replication script on only the secondary site.
-The script removes all PostgreSQL data before it runs `pg_basebackup`,
-which can lead to data loss.
-
-{{< /alert >}}
+> [!warning]
+> Run the replication script on only the secondary site.
+> The script removes all PostgreSQL data before it runs `pg_basebackup`,
+> which can lead to data loss.
 
 To replicate the database:
 
@@ -460,13 +457,10 @@ Follow the documentation to [configure fast lookup of authorized SSH keys](../..
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-{{< alert type="note" >}}
-
-Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the **Admin** area should be made in the primary site, because the
-secondary site is a read-only copy.
-
-{{< /alert >}}
+> [!note]
+> Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
+> Any change that requires access to the **Admin** area should be made in the primary site, because the
+> secondary site is a read-only copy.
 
 ### Manually replicate secret GitLab values
 

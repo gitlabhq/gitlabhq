@@ -275,13 +275,10 @@ PlantUML integration is ready and listening for requests on port `8005`:
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
-{{< alert type="note" >}}
-
-The default URL is different when using this approach. The Docker-based image
-makes the service available at the root URL, with no relative path. Adjust
-the configuration below accordingly.
-
-{{< /alert >}}
+> [!note]
+> The default URL is different when using this approach. The Docker-based image
+> makes the service available at the root URL, with no relative path. Adjust
+> the configuration below accordingly.
 
 Next, you can:
 

@@ -51,7 +51,7 @@ const triggerFormInput = (branch) => {
 };
 
 const emitOpenModal = (data = {}) =>
-  eventHub.$emit('openModal', {
+  eventHub.$emit('open-modal', {
     isProtectedBranch,
     branchName,
     defaultBranchName,
@@ -97,7 +97,7 @@ describe('Delete branch modal', () => {
       expect(submitSpy).toHaveBeenCalled();
     });
 
-    it('calls show on the modal when a `openModal` event is received through the event hub', () => {
+    it('calls show on the modal when a `open-modal` event is received through the event hub', () => {
       expect(showMock).not.toHaveBeenCalled();
 
       emitOpenModal();

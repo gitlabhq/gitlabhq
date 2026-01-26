@@ -162,23 +162,19 @@ module Packages
     skip_callback :commit, :after, :remove_previously_stored_file, if: :execute_move_in_object_storage?
     after_commit :move_in_object_storage, if: :execute_move_in_object_storage?
 
-    # Returns the most recent installable package file for *each* of the given packages.
-    # The order is not guaranteed.
-    def self.most_recent_for(packages, extra_join: nil, extra_where: nil)
-      cte_name = :packages_cte
-      cte = Gitlab::SQL::CTE.new(cte_name, packages.select(:id))
-
-      package_files = ::Packages::PackageFile.installable
-                                             .limit_recent(1)
-                                             .where(arel_table[:package_id].eq(Arel.sql("#{cte_name}.id")))
-
-      package_files = package_files.joins(extra_join) if extra_join
-      package_files = package_files.where(extra_where) if extra_where
-
-      query = select('finder.*')
-                .from([Arel.sql(cte_name.to_s), package_files.arel.lateral.as('finder')])
-
-      query.with(cte.to_arel)
+    # Returns the most recent installable package file for each package in the given set,
+    # filtered by Helm channel.
+    #
+    # Uses DISTINCT ON to select only the newest file per package (by package file ID).
+    # Results are ordered by package_id descending.
+    def self.most_recent_for_helm_with_channel(packages, channel)
+      ::Packages::PackageFile
+        .installable
+        .joins(:helm_file_metadatum)
+        .where(packages_helm_file_metadata: { channel: channel })
+        .where(package_id: packages)
+        .select('DISTINCT ON (packages_package_files.package_id) packages_package_files.*')
+        .order('packages_package_files.package_id DESC, packages_package_files.id DESC')
     end
 
     def self.installable_statuses

@@ -76,13 +76,10 @@ allow the following for Gitaly Cluster (Praefect) to function properly:
 | Gitaly                 | Praefect               | `2305`       | `3305`   |
 | Gitaly                 | Gitaly                 | `8075`       | `9999`   |
 
-{{< alert type="note" >}}
-
-Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
-load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
-the Gitaly nodes.
-
-{{< /alert >}}
+> [!note]
+> Gitaly does not directly connect to Praefect. However, requests from Gitaly to the Praefect
+> load balancer may still be blocked unless firewalls on the Praefect nodes allow traffic from
+> the Gitaly nodes.
 
 ### Praefect database storage
 

@@ -255,6 +255,7 @@ module Ci
     scope :updated_after, ->(time) { where(arel_table[:updated_at].gt(time)) }
     scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
     scope :with_token_present, -> { where.not(token_encrypted: nil) }
+    scope :with_ref, ->(ref) { joins(:pipeline).where(pipeline: { ref: ref }) }
 
     add_authentication_token_field :token,
       encrypted: :required,

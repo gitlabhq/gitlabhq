@@ -63,13 +63,10 @@ To disable Prometheus and all of its exporters, and any exporters added in the f
 
 ### Changing the port and address Prometheus listens on
 
-{{< alert type="warning" >}}
-
-You can change the port Prometheus listens on, but you should not.
-This change might affect or conflict with other services that run on the GitLab
-server. Proceed at your own risk.
-
-{{< /alert >}}
+> [!warning]
+> You can change the port Prometheus listens on, but you should not.
+> This change might affect or conflict with other services that run on the GitLab
+> server. Proceed at your own risk.
 
 To access Prometheus from outside the GitLab server,
 change the address/port that Prometheus

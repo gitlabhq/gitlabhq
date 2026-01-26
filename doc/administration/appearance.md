@@ -106,7 +106,7 @@ To customize the logo on your sign-in and register pages:
 1. Under **Logo**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
-You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
+You can also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
 
 ### Disable cookie-based language selector
 

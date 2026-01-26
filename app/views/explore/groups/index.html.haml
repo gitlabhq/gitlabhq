@@ -17,6 +17,6 @@
         = _("New group")
 
 - if @explore_groups_vue_enabled
-  #js-explore-groups
+  #js-explore-groups{ data: explore_groups_app_data }
 - else
   = render 'groups'

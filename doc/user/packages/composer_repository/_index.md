@@ -13,13 +13,10 @@ title: Composer packages in the package registry
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Composer package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
+> [!warning]
+> The Composer package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
+> work and timelines to make it production ready.
 
 Publish [Composer](https://getcomposer.org/) packages in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.

@@ -625,13 +625,10 @@ For example:
 
 How to customize the analyzer varies depending on the enablement solution.
 
-{{< alert type="warning" >}}
-
-Test all customization of GitLab analyzers in a merge request before merging these changes to the
-default branch. Failure to do so can give unexpected results, including a large number of false
-positives.
-
-{{< /alert >}}
+> [!warning]
+> Test all customization of GitLab analyzers in a merge request before merging these changes to the
+> default branch. Failure to do so can give unexpected results, including a large number of false
+> positives.
 
 ### Customizing behavior with the CI/CD template
 

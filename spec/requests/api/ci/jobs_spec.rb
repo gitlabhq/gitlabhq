@@ -588,6 +588,56 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
+  describe 'filtering jobs by ref' do
+    subject(:perform_request) do
+      get api("/projects/#{project.id}/jobs", user), params: query
+    end
+
+    let_it_be(:pipeline_first) { create(:ci_pipeline, project: project, ref: 'add_images_and_changes') }
+    let_it_be(:pipeline_second) { create(:ci_pipeline, project: project, ref: 'main') }
+    let_it_be(:job_matching_ref) do
+      create(:ci_build, :success, project: project, pipeline: pipeline_first, ref: 'add_images_and_changes')
+    end
+
+    let_it_be(:job_other_ref) do
+      create(:ci_build, :success, project: project, pipeline: pipeline_second, ref: 'main')
+    end
+
+    context 'when ref exists' do
+      let(:query) { { ref: 'add_images_and_changes' } }
+
+      it 'returns only jobs matching the given ref' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+
+        refs = json_response.pluck('ref')
+        expect(refs).to contain_exactly('add_images_and_changes')
+      end
+    end
+
+    context 'when ref does not exist' do
+      let(:query) { { ref: 'non-existent-ref' } }
+
+      it 'returns no jobs' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'when ref is blank' do
+      let(:query) { { ref: ' ' } }
+
+      it 'returns all jobs' do
+        perform_request
+        expect(response).to have_gitlab_http_status(:ok)
+
+        refs = json_response.pluck('ref')
+        expect(refs).to contain_exactly('main', 'add_images_and_changes', 'master', 'master', 'master')
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs offset pagination' do
     it 'returns one record for the first page' do
       get api("/projects/#{project.id}/jobs", api_user), params: { per_page: 1 }

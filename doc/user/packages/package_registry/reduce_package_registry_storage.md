@@ -51,13 +51,10 @@ The package is permanently deleted.
 
 To delete a package, you can also use [the API](../../../api/packages.md#delete-a-project-package).
 
-{{< alert type="note" >}}
-
-You can introduce a dependency confusion risk
-if you delete a package while
-[request forwarding](supported_functionality.md#forwarding-requests) is turned on.
-
-{{< /alert >}}
+> [!note]
+> You can introduce a dependency confusion risk
+> if you delete a package while
+> [request forwarding](supported_functionality.md#forwarding-requests) is turned on.
 
 ## Delete package assets
 

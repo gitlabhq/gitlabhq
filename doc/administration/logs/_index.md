@@ -1179,13 +1179,10 @@ The `llm.log` file logs information related to
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 To log the LLM prompt input and response output, enable the `expanded_ai_logging` feature flag. This flag is intended for use on GitLab.com only, and not on GitLab Self-Managed instances.
 
@@ -1409,13 +1406,10 @@ For example:
 
 ## Product Usage Data log
 
-{{< alert type="note" >}}
-
-We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
-
-The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
-
-{{< /alert >}}
+> [!note]
+> We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
+> 
+> The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
 
 This log is located:
 

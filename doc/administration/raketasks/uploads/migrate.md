@@ -91,13 +91,10 @@ The Rake task uses three parameters to find uploads to migrate:
 | `model_class`    | string        | Type of the model to migrate from.                     |
 | `mount_point`    | string/symbol | Name of the model's column the uploader is mounted on. |
 
-{{< alert type="note" >}}
-
-These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
-instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
-to migrate any uploads not included in the listed types.
-
-{{< /alert >}}
+> [!note]
+> These parameters are mainly internal to the structure of GitLab, you may want to refer to the task list
+> instead below. After running these individual tasks, we recommend that you run the [all-in-one Rake task](#all-in-one-rake-task)
+> to migrate any uploads not included in the listed types.
 
 This task also accepts an environment variable which you can use to override
 the default batch size:

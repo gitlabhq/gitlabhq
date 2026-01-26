@@ -559,13 +559,10 @@ Ensure that all migrations ran:
 gitlab-rake gitlab:db:configure
 ```
 
-{{< alert type="note" >}}
-
-If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to PostgreSQL it may be that your PgBouncer node's IP address is missing from
-PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
-
-{{< /alert >}}
+> [!note]
+> If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to PostgreSQL it may be that your PgBouncer node's IP address is missing from
+> PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
+> [PgBouncer error `ERROR:  pgbouncer cannot connect to server`](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
 
 ### Backups
 
@@ -1066,13 +1063,10 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 If issues are encountered upgrading the replicas,
 [there is a troubleshooting section](replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
 
-{{< alert type="note" >}}
-
-Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
-`gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
-then reverting the leader, and finally reverting the replicas.
-
-{{< /alert >}}
+> [!note]
+> Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
+> `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
+> then reverting the leader, and finally reverting the replicas.
 
 ### Near-zero-downtime upgrade of PostgreSQL in a Patroni cluster
 

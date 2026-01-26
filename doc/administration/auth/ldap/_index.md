@@ -325,13 +325,10 @@ The following basic settings are available:
 | `lowercase_usernames`           | {{< icon name="dotted-circle" >}} No | Boolean                       | If enabled, GitLab converts the name to lowercase. |
 | `retry_empty_result_with_codes` | {{< icon name="dotted-circle" >}} No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
 
-{{< alert type="note" >}}
-
-GitLab is unaffected by the stricter binding requirements for Microsoft Active Directory
-Services introduced with [Microsoft advisory ADV190023](https://msrc.microsoft.com/update-guide/en-us/advisory/ADV190023).
-For more information, see [issue 201894](https://gitlab.com/gitlab-org/gitlab/-/issues/201894#note_2807513217).
-
-{{< /alert >}}
+> [!note]
+> GitLab is unaffected by the stricter binding requirements for Microsoft Active Directory
+> Services introduced with [Microsoft advisory ADV190023](https://msrc.microsoft.com/update-guide/en-us/advisory/ADV190023).
+> For more information, see [issue 201894](https://gitlab.com/gitlab-org/gitlab/-/issues/201894#note_2807513217).
 
 ### SSL configuration settings
 

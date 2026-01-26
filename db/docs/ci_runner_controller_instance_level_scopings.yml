@@ -1,0 +1,11 @@
+---
+table_name: ci_runner_controller_instance_level_scopings
+classes:
+  - Ci::RunnerControllerInstanceLevelScoping
+feature_categories:
+    - continuous_integration
+description: Manages instance-level scoping for GitLab Runner controllers.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219040
+milestone: '18.9'
+gitlab_schema: gitlab_ci_cell_local
+table_size: small

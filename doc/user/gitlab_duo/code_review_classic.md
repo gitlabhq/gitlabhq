@@ -72,7 +72,7 @@ There is a feature request to add this functionality, see [issue 560116](https:/
 You can create custom MR review instructions to ensure consistent and specific
 code review standards in your project.
 
-For more information, see [customize review instructions for GitLab Duo](../../user/gitlab_duo/customize_duo/review_instructions.md)
+For more information, see [customize review instructions for GitLab Duo](../../user/gitlab_duo/customize_duo/review_instructions.md).
 
 ## Automatic reviews from GitLab Duo for a project
 

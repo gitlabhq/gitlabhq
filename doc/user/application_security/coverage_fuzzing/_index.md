@@ -250,13 +250,10 @@ Use the following customization options to optimize coverage-guided fuzz testing
 
 Use the following variables to configure coverage-guided fuzz testing in your CI/CD pipeline.
 
-{{< alert type="warning" >}}
-
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results, including
-a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All customization of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results, including
+> a large number of false positives.
 
 | CI/CD variable            | Description                                                                     |
 |---------------------------|---------------------------------------------------------------------------------|

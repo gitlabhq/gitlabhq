@@ -282,13 +282,10 @@ Prerequisites:
    - Only HTTP(S).
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-GitLab [allows the HTTP(S) protocol](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
-for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md).
-This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jobs require this setting.
-
-{{< /alert >}}
+> [!warning]
+> GitLab [allows the HTTP(S) protocol](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
+> for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md).
+> This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jobs require this setting.
 
 ## Customize Git clone URL for HTTP(S)
 

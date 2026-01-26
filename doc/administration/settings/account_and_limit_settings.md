@@ -380,13 +380,10 @@ You can also configure the prefix by using the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can set a custom prefix that is prepended to all tokens generated on your instance. Benefits of
 using a custom prefix include:
@@ -447,13 +444,10 @@ To set a custom token prefix:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-The feature flag is not available on GitLab Dedicated.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
+> The feature flag is not available on GitLab Dedicated.
 
 Users can optionally specify a maximum lifetime in days for
 access tokens, this includes [personal](../../user/profile/personal_access_tokens.md),
@@ -510,13 +504,10 @@ After a lifetime for access tokens is set, GitLab:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-For more information, see the history.
-The feature flag is not available on GitLab Dedicated.
-
-{{< /alert >}}
+> [!flag]
+> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+> For more information, see the history.
+> The feature flag is not available on GitLab Dedicated.
 
 Users can optionally specify a lifetime for
 [SSH keys](../../user/ssh.md).
@@ -643,13 +634,10 @@ When selected, GitLab administrators can still update usernames in the
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](../feature_flags/_index.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
-this feature is not available. This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
+> can [enable the feature flag](../feature_flags/_index.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated,
+> this feature is not available. This feature is not ready for production use.
 
 By default, users can create organizations. GitLab administrators can prevent users from creating organizations.
 

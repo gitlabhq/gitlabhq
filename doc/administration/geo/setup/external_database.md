@@ -91,13 +91,10 @@ cloud providers:
 
 When your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
 
-{{< alert type="warning" >}}
-
-The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/)
-or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance,
-replicate from an on-premise primary database to an RDS secondary are not supported.
-
-{{< /alert >}}
+> [!warning]
+> The use of logical replication methods such as [AWS Database Migration Service](https://aws.amazon.com/dms/)
+> or [Google Cloud Database Migration Service](https://cloud.google.com/database-migration) to, for instance,
+> replicate from an on-premise primary database to an RDS secondary are not supported.
 
 #### Manually configure the primary database for replication
 

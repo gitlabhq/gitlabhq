@@ -468,13 +468,10 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 
 ### `exec format error` when running images from the dependency proxy
 
-{{< alert type="note" >}}
-
-This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
-For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
-or use the workaround documented below.
-
-{{< /alert >}}
+> [!note]
+> This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
+> For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
+> or use the workaround documented below.
 
 This error occurs if you try to use the dependency proxy on an ARM-based Docker install in GitLab 16.2 or earlier.
 The dependency proxy only supports the x86_64 architecture when pulling an image with a specific tag.

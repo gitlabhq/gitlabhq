@@ -16,6 +16,8 @@ module Projects
       @project = project
       @custom_rules = custom_rules
       @protected_branches = protected_branches
+      @default_branch = project.default_branch
+      @default_protected_branch = ProtectedBranch.default_branch_for(project) if @default_branch
     end
 
     def execute(cursor: nil, limit: DEFAULT_LIMIT)
@@ -30,7 +32,7 @@ module Projects
 
     private
 
-    attr_reader :project, :custom_rules, :protected_branches
+    attr_reader :project, :custom_rules, :protected_branches, :default_branch, :default_protected_branch
 
     def paginate_from_start(limit)
       return custom_rules_page(limit) if custom_rules.size > limit
@@ -40,25 +42,53 @@ module Projects
 
     def paginate_after_custom_rule(cursor, limit)
       index = custom_rule_index(cursor['name'])
-      # If there are no more custom rules after the cursor, return protected branches
-      return paginate_after_protected_branch_rule(nil, limit) if index.nil? || index >= custom_rules.size - 1
+
+      # No more custom rules to paginate, transition to protected branches
+      return paginate_protected_branches_after_custom_rule(limit) if index.nil? || index >= custom_rules.size - 1
 
       build_page_from_custom_rules(limit, custom_rules[(index + 1)..])
     end
 
-    def paginate_after_protected_branch_rule(after_cursor, limit)
+    def paginate_protected_branches_after_custom_rule(limit)
       query = protected_branches
 
-      # Only apply cursor if we have both name and id
-      query = query.after_name_and_id(after_cursor['name'], after_cursor['id']) if after_cursor && after_cursor['id']
+      query = query.excluding_name(default_branch) if default_protected_branch
 
-      # Add one extra to check if a next page exists
       branches = query.limit(limit + 1).to_a
 
+      paginate_protected_branches(branches, limit,
+        prioritize_default_branch: default_protected_branch.present?)
+    end
+
+    def paginate_after_protected_branch_rule(after_cursor, limit)
+      query = protected_branches
+      query = query.after_name_and_id(after_cursor['name'], after_cursor['id']) if after_cursor && after_cursor['id']
+
+      prioritize_default_branch = first_page_with_default_branch?(after_cursor)
+      query = query.excluding_name(default_branch) if after_cursor && after_cursor['id'] && default_branch
+
+      fetch_limit = prioritize_default_branch ? limit : limit + 1
+      branches = query.limit(fetch_limit).to_a
+
+      paginate_protected_branches(branches, limit, prioritize_default_branch: prioritize_default_branch)
+    end
+
+    def paginate_protected_branches(branches, limit, prioritize_default_branch: false)
       return Page.new if branches.empty?
 
-      has_next = branches.size > limit
-      page_branches = branches.first(limit)
+      if prioritize_default_branch
+        has_next = branches.size > (limit - 1)
+        page_branches = branches.first(limit - 1)
+        page_branches = prioritise_default_branch(page_branches)
+      else
+        has_next = branches.size > limit
+        page_branches = branches.first(limit)
+      end
+
+      create_protected_branch_page(page_branches, has_next)
+    end
+
+    def create_protected_branch_page(page_branches, has_next)
       cursor = has_next ? encode_cursor(page_branches.last.name, page_branches.last.id) : nil
 
       Page.new(
@@ -66,6 +96,15 @@ module Projects
         end_cursor: cursor,
         has_next_page: has_next
       )
+    end
+
+    def first_page_with_default_branch?(after_cursor)
+      default_protected_branch && !after_cursor
+    end
+
+    def prioritise_default_branch(page_branches)
+      filtered = page_branches - [default_protected_branch]
+      [default_protected_branch] + filtered
     end
 
     def custom_rules_page(limit)
@@ -115,9 +154,9 @@ module Projects
     end
 
     def identifier_for_rule(rule)
-      return unless rule
+      return ALL_BRANCHES_IDENTIFIER if rule.is_a?(Projects::AllBranchesRule)
 
-      ALL_BRANCHES_IDENTIFIER if rule.is_a?(Projects::AllBranchesRule)
+      nil
     end
 
     def custom_rule_names
@@ -129,7 +168,7 @@ module Projects
 
       decoded_cursor = Base64.strict_decode64(encoded_cursor)
 
-      Gitlab::Json.parse(decoded_cursor)
+      Gitlab::Json.safe_parse(decoded_cursor)
     rescue ArgumentError, JSON::ParserError => e
       raise Gitlab::Graphql::Errors::ArgumentError, "Invalid cursor: #{e.message}"
     end

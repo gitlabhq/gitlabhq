@@ -121,13 +121,10 @@ LFS is enabled by default. To disable it:
 Git LFS objects can be large in size. By default, they are stored on the server
 GitLab is installed on.
 
-{{< alert type="note" >}}
-
-For Docker installations, you can change the path where your data is mounted.
-For the Helm chart, use
-[object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
-
-{{< /alert >}}
+> [!note]
+> For Docker installations, you can change the path where your data is mounted.
+> For the Helm chart, use
+> [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
 To change the default local storage path location:
 

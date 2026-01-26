@@ -213,13 +213,10 @@ observe problems with clients that have slow internet connections.
 You can limit these processes from overwhelming your Gitaly server by setting pack-objects concurrency limits in the Gitaly configuration file. This setting limits the
 number of in-flight pack-object processes per remote IP address.
 
-{{< alert type="warning" >}}
-
-Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
-disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
-[reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
-
-{{< /alert >}}
+> [!warning]
+> Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
+> disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
+> [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 Example configuration:
 

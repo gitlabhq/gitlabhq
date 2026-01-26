@@ -17,9 +17,9 @@ An API for [group wikis](group_wikis.md) is also available.
 
 Comments on a wiki page are called `notes`. To interact with them, use the [notes API](notes.md#project-wikis).
 
-## List wiki pages
+## List all wiki pages
 
-Get all wiki pages for a given project.
+Lists all wiki pages for a specified project.
 
 ```plaintext
 GET /projects/:id/wikis
@@ -62,9 +62,9 @@ Example response:
 ]
 ```
 
-## Get a wiki page
+## Retrieve a wiki page
 
-Get a wiki page for a given project.
+Retrieves a specified wiki page for a project.
 
 ```plaintext
 GET /projects/:id/wikis/:slug
@@ -94,9 +94,9 @@ Example response:
 }
 ```
 
-## Create a new wiki page
+## Create a wiki page
 
-Creates a new wiki page for the given repository with the given title, slug, and content.
+Creates a wiki page for a specified project with the given title, slug, and content.
 
 ```plaintext
 POST /projects/:id/wikis
@@ -157,9 +157,9 @@ Example response:
 }
 ```
 
-## Edit an existing wiki page
+## Update a wiki page
 
-Updates an existing wiki page. At least one parameter is required to update the wiki page.
+Updates a specified wiki page. At least one parameter is required to update the wiki page.
 
 ```plaintext
 PUT /projects/:id/wikis/:slug
@@ -194,7 +194,7 @@ Example response:
 
 ## Delete a wiki page
 
-Deletes a wiki page with a given slug.
+Deletes a specified wiki page.
 
 ```plaintext
 DELETE /projects/:id/wikis/:slug

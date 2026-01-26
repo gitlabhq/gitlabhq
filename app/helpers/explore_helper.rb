@@ -44,9 +44,17 @@ module ExploreHelper
 
   def explore_projects_app_data
     {
-      initial_sort: project_list_sort_by,
+      initial_sort: group_project_list_sort_by,
       programming_languages: programming_languages.to_json,
       base_path: explore_projects_path
+    }
+  end
+
+  def explore_groups_app_data
+    {
+      endpoint: explore_groups_path(format: :json),
+      initial_sort: group_project_list_sort_by,
+      base_path: explore_groups_path
     }
   end
 

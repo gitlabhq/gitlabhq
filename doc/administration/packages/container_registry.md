@@ -146,13 +146,10 @@ to configure the container registry:
 Ensure you choose a port different than the one that Registry listens to (`5000` by default),
 otherwise conflicts occur.
 
-{{< alert type="note" >}}
-
-Host and container firewall rules must be configured to allow traffic in through the port listed
-under the `registry_external_url` line, rather than the port listed under
-`gitlab_rails['registry_port']` (default `5000`).
-
-{{< /alert >}}
+> [!note]
+> Host and container firewall rules must be configured to allow traffic in through the port listed
+> under the `registry_external_url` line, rather than the port listed under
+> `gitlab_rails['registry_port']` (default `5000`).
 
 {{< tabs >}}
 
@@ -587,13 +584,10 @@ you can configure one of the supported storage drivers.
 
 For more information, see [Object storage](../object_storage.md).
 
-{{< alert type="warning" >}}
-
-GitLab does not back up Docker images that are not stored on the
-file system. Enable backups with your object storage provider if
-desired.
-
-{{< /alert >}}
+> [!warning]
+> GitLab does not back up Docker images that are not stored on the
+> file system. Enable backups with your object storage provider if
+> desired.
 
 #### Configure object storage for Linux package installations
 

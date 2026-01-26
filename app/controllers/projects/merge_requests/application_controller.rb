@@ -7,6 +7,8 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   feature_category :code_review_workflow
 
+  helper_method :rapid_diffs_presenter
+
   before_action do
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
   end
@@ -14,6 +16,15 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   private
 
   PIPELINE_DISPLAY_LIMIT = 100
+
+  def rapid_diffs_presenter
+    @rapid_diffs_presenter ||= ::RapidDiffs::MergeRequestPresenter.new(
+      @merge_request,
+      diff_view: diff_view,
+      diff_options: diff_options,
+      request_params: params
+    )
+  end
 
   # Normally the methods with `check_(\w+)_available!` pattern are
   # handled by the `method_missing` defined in `ProjectsController::ApplicationController`

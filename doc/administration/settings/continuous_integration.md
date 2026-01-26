@@ -510,13 +510,10 @@ To restrict runner registration:
    - **Members of the group can create runners**
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-When you disable runner registration for project members, the registration
-token automatically rotates. The previous token becomes invalid and you must
-use the new registration token for the project.
-
-{{< /alert >}}
+> [!note]
+> When you disable runner registration for project members, the registration
+> token automatically rotates. The previous token becomes invalid and you must
+> use the new registration token for the project.
 
 ### Restrict runner registration for a specific group
 
@@ -671,13 +668,10 @@ Projects not in the allowlist receive a `not authorized to publish` error when a
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
-and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
-Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
+> and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
+> Use [compliance pipelines](../../user/compliance/compliance_pipelines.md) instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../ci/examples/_index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can

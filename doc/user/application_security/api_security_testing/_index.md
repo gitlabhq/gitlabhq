@@ -23,13 +23,10 @@ Use API security testing in addition to other security scanners and your own tes
 run API security testing tests either as part your CI/CD workflow,
 [on-demand](../dast/on-demand_scan.md), or both.
 
-{{< alert type="warning" >}}
-
-Do not run API security testing against a production server. Not only can it perform any function that
-the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-data. Only run API security testing against a test server.
-
-{{< /alert >}}
+> [!warning]
+> Do not run API security testing against a production server. Not only can it perform any function that
+> the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+> data. Only run API security testing against a test server.
 
 ## Getting started
 

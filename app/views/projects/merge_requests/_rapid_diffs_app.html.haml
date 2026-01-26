@@ -1,3 +1,0 @@
-= render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter) do |c|
-  - c.with_diffs_list do
-    = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @merge_request, parallel_view: c.diff_view == :parallel)

@@ -1,0 +1,10 @@
+---
+name: ci_pipeline_inputs_reactive_cache
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/581342
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218758
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587022
+milestone: '18.9'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

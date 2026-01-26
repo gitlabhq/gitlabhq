@@ -21,13 +21,10 @@ that they can be served as efficiently as possible. Housekeeping tasks include:
 - Maintaining data structures that improve performance.
 - Updating object pools to improve object deduplication across forks.
 
-{{< alert type="warning" >}}
-
-Do not manually execute Git commands to perform housekeeping in Git
-repositories that are controlled by GitLab. Doing so may lead to corrupt
-repositories and data loss.
-
-{{< /alert >}}
+> [!warning]
+> Do not manually execute Git commands to perform housekeeping in Git
+> repositories that are controlled by GitLab. Doing so may lead to corrupt
+> repositories and data loss.
 
 ## Housekeeping strategy
 

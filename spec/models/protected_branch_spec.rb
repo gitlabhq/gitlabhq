@@ -316,6 +316,31 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.excluding_name' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'a') }
+    let_it_be(:branch_b) { create(:protected_branch, project: project, name: 'b') }
+    let_it_be(:branch_c) { create(:protected_branch, project: project, name: 'c') }
+
+    it 'excludes the branch with the given name' do
+      result = described_class.where(project: project).excluding_name('b')
+
+      expect(result).to contain_exactly(branch_a, branch_c)
+    end
+
+    it 'returns all branches when name is nil' do
+      result = described_class.where(project: project).excluding_name(nil)
+
+      expect(result).to contain_exactly(branch_a, branch_b, branch_c)
+    end
+
+    it 'returns all branches when name is empty string' do
+      result = described_class.where(project: project).excluding_name('')
+
+      expect(result).to contain_exactly(branch_a, branch_b, branch_c)
+    end
+  end
+
   describe '#default_branch?' do
     context 'when group level' do
       subject { build_stubbed(:protected_branch, project: nil, group: build(:group)) }

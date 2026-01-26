@@ -99,13 +99,10 @@ If the **Allow this secondary site to replicate content on Object Storage** sett
 is disabled, and if you have migrated all your files from local storage to object storage,
 then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to synchronize**.
 
-{{< alert type="warning" >}}
-
-To avoid data loss, you should only enable the **Allow this secondary site to replicate content on
-Object Storage** setting if you are using separate object stores for the Primary and Secondary
-sites.
-
-{{< /alert >}}
+> [!warning]
+> To avoid data loss, you should only enable the **Allow this secondary site to replicate content on
+> Object Storage** setting if you are using separate object stores for the Primary and Secondary
+> sites.
 
 GitLab does not support the case where both:
 

@@ -288,13 +288,10 @@ After the initial replication process is complete, follow the steps to
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-{{< alert type="note" >}}
-
-Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the **Admin** area should be made in the primary site, because the
-secondary site is a read-only copy.
-
-{{< /alert >}}
+> [!note]
+> Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
+> Any change that requires access to the **Admin** area should be made in the primary site, because the
+> secondary site is a read-only copy.
 
 #### Add the secondary site
 

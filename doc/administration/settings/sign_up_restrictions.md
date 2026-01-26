@@ -178,13 +178,10 @@ You can still independently configure [project sharing for the group and its sub
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
-{{< alert type="note" >}}
-
-For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
-is enabled or disabled, downtime might occur due to changes in the Rails configuration.
-You can set a user cap to enforce approvals for new users.
-
-{{< /alert >}}
+> [!note]
+> For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
+> is enabled or disabled, downtime might occur due to changes in the Rails configuration.
+> You can set a user cap to enforce approvals for new users.
 
 ### Set a user cap
 

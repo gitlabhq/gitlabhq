@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category: :pipeline_composition do
+  include ReactiveCachingHelpers
+
   let(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -11,6 +13,10 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
 
   subject(:service) do
     described_class.new(current_user: user, project: project, ref: ref, pipeline_source: pipeline_source)
+  end
+
+  before do
+    synchronous_reactive_cache(service)
   end
 
   describe '#execute' do
@@ -338,6 +344,68 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           expect(spec_inputs.all_inputs.first.default).to eq('production')
         end
       end
+
+      context 'with reactive caching' do
+        it 'sets reactive_cache_work_type to external_dependency' do
+          expect(described_class.reactive_cache_work_type).to eq(:external_dependency)
+        end
+
+        it 'uses custom reactive_cache_key' do
+          expect(described_class.reactive_cache_key.call(service)).to eq(
+            [described_class.name, service.id]
+          )
+        end
+
+        context 'when ci_pipeline_inputs_reactive_cache feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_pipeline_inputs_reactive_cache: false)
+            project.repository.create_file(
+              project.creator, '.gitlab-ci.yml', config_yaml,
+              message: 'Add CI', branch_name: 'master')
+          end
+
+          it 'returns inputs directly without caching' do
+            expect(service).not_to receive(:with_reactive_cache)
+            result = service.execute
+            expect(result).to be_success
+          end
+        end
+
+        context 'when ci_pipeline_inputs_reactive_cache feature flag is enabled' do
+          before do
+            stub_feature_flags(ci_pipeline_inputs_reactive_cache: true)
+          end
+
+          context 'when cache is not populated' do
+            before do
+              allow(service).to receive(:with_reactive_cache).and_return(nil)
+            end
+
+            it 'returns nil' do
+              expect(service.execute).to be_nil
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#id' do
+    it 'returns a composite id with project, user, pipeline_source, and ref' do
+      expect(service.id).to eq("#{project.id}|#{user.id}|web|master")
+    end
+  end
+
+  describe '.from_cache' do
+    let(:cache_id) { "#{project.id}|#{user.id}|web|master" }
+
+    it 'reconstructs the service from the cache id' do
+      reconstructed = described_class.from_cache(cache_id)
+
+      expect(reconstructed.send(:project)).to eq(project)
+      expect(reconstructed.send(:current_user)).to eq(user)
+      expect(reconstructed.send(:ref)).to eq('master')
+      expect(reconstructed.send(:pipeline_source)).to eq(:web)
     end
   end
 end

@@ -10,7 +10,7 @@ module ActiveContext
           return enum_for(:each) unless block_given?
 
           result['hits']['hits'].each do |hit|
-            yield hit['_source']
+            yield hit['_source'].merge('score' => hit['_score'])
           end
         end
       end

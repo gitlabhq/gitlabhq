@@ -24,25 +24,34 @@ RSpec.describe Gitlab::Database::Batch::Strategies::PrimaryKey, '#next_batch', f
 
   context 'when starting on the first batch' do
     it 'returns the bounds of the next batch' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [0], batch_size: 3,
+      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace1.id], batch_size: 3,
         job_class: job_class)
 
       expect(batch_bounds).to match_array([[namespace1.id], [namespace3.id]])
     end
   end
 
-  context 'when on the final batch' do
+  context 'when additional batches batch' do
     it 'returns the bounds of the next batch' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace3.id], batch_size: 3,
+      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace2.id], batch_size: 3,
         job_class: job_class)
 
-      expect(batch_bounds).to match_array([[namespace4.id], [namespace4.id]])
+      expect(batch_bounds).to match_array([[namespace2.id], [namespace4.id]])
+    end
+  end
+
+  context 'when on the final batch' do
+    it 'returns the bounds of the next batch' do
+      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace4.id], batch_size: 3,
+        job_class: job_class)
+
+      expect(batch_bounds).to eq([[namespace4.id], [namespace4.id]])
     end
   end
 
   context 'when no additional batches remain' do
     it 'returns nil' do
-      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace4.id], batch_size: 1,
+      batch_bounds = batching_strategy.next_batch(:namespaces, batch_min_value: [namespace4.id + 1], batch_size: 1,
         job_class: job_class)
 
       expect(batch_bounds).to be_nil

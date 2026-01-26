@@ -627,13 +627,10 @@ Example configurations for Microsoft Office 365 with IMAP enabled.
 
 ##### Sub-addressing mailbox
 
-{{< alert type="note" >}}
-
-As of September 2020 sub-addressing support
-[has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
-enabled by default, and must be enabled through PowerShell.
-
-{{< /alert >}}
+> [!note]
+> As of September 2020 sub-addressing support
+> [has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
+> enabled by default, and must be enabled through PowerShell.
 
 This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization

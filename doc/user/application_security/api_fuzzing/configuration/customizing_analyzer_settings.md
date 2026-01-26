@@ -9,13 +9,10 @@ The API fuzzing behavior can be changed through CI/CD variables.
 
 The API fuzzing configuration files must be in your repository's `.gitlab` directory.
 
-{{< alert type="warning" >}}
-
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
-
-{{< /alert >}}
+> [!warning]
+> All customization of GitLab security scanning tools should be tested in a merge request before
+> merging these changes to the default branch. Failure to do so can give unexpected results,
+> including a large number of false positives.
 
 ## Authentication
 

@@ -406,7 +406,7 @@ Supported attributes:
 | `order_by`                      | string         | No       | Returns requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. |
 | `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/_index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.  |
 | `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/_index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. |
-| `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, or `all`. |
+| `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, `reviews_for_me`, or `all`. `reviews_for_me` returns merge requests where the current user is assigned as a reviewer. |
 | `search`                        | string         | No       | Search merge requests against their `title` and `description`. |
 | `sort`                          | string         | No       | Returns requests sorted in `asc` or `desc` order. Default is `desc`. |
 | `source_branch`                 | string         | No       | Returns merge requests with the given source branch. |

@@ -29,13 +29,10 @@ You can use this information if you have a complex environment to select an appr
 You might not require this level of detail, and you can assess the size of your environment by using the
 [information for less complex environments](_index.md).
 
-{{< alert type="note" >}}
-
-Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
-[Professional Services](https://about.gitlab.com/professional-services/) team can evaluate your specific architecture
-and provide tailored recommendations for performance, stability, and availability optimization.
-
-{{< /alert >}}
+> [!note]
+> Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
+> [Professional Services](https://about.gitlab.com/professional-services/) team can evaluate your specific architecture
+> and provide tailored recommendations for performance, stability, and availability optimization.
 
 To follow this documentation, you must have Prometheus monitoring deployed with the GitLab instance. Prometheus
 provides the accurate metrics required for proper sizing assessment.

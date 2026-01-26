@@ -304,13 +304,10 @@ When component resources fail to sync or verify, you can trigger bulk actions to
 These actions reset the retry count and schedule time back to 0, causing the system to process the failed resources
 sooner rather than waiting up to 1 hour.
 
-{{< alert type="note" >}}
-
-These actions don't immediately process the resources. Instead, they re-queue the background jobs that
-handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
-replication process.
-
-{{< /alert >}}
+> [!note]
+> These actions don't immediately process the resources. Instead, they re-queue the background jobs that
+> handle synchronization and verification. The actual replication work happens asynchronously through the standard Geo
+> replication process.
 
 #### How resync and reverification works
 
@@ -1246,13 +1243,10 @@ This requires infrastructure team intervention to add the `ListBucket` permissio
 
 ### Message: `Synchronization failed - Error syncing repository`
 
-{{< alert type="warning" >}}
-
-If large repositories are affected by this problem,
-their resync may take a long time and cause significant load on your Geo sites,
-storage and network systems.
-
-{{< /alert >}}
+> [!warning]
+> If large repositories are affected by this problem,
+> their resync may take a long time and cause significant load on your Geo sites,
+> storage and network systems.
 
 The following error message indicates a consistency check error when syncing the repository:
 
@@ -1450,13 +1444,10 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true)
 
 ## Hard delete a repository from Gitaly Cluster and resync
 
-{{< alert type="warning" >}}
-
-This procedure is risky, and heavy-handed. Use it as a last resort only when other
-troubleshooting methods have failed. This procedure causes temporary data loss until the
-repository is resynced.
-
-{{< /alert >}}
+> [!warning]
+> This procedure is risky, and heavy-handed. Use it as a last resort only when other
+> troubleshooting methods have failed. This procedure causes temporary data loss until the
+> repository is resynced.
 
 This procedure deletes the repository from the secondary site's Gitaly cluster, and re-syncs it.
 You should consider using it only if you understand the risks, and if these conditions are all true:

@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
         let_it_be(:event3) { create(:event) }
 
         it 'runs the job for the first batch' do
-          worker.update!(min_cursor: [0], max_cursor: [event2.id])
+          worker.update!(min_cursor: [event1.id], max_cursor: [event2.id])
 
           expect(executor).to receive(:perform) do |job_record|
             expect(job_record).to eq(operation_jobs.first)
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
         let(:event2) { events[1] }
 
         it 'clamps the batch maximum to the operation maximum' do
-          worker.update!(min_cursor: [0], max_cursor: [event2.id], batch_size: 5, sub_batch_size: 5)
+          worker.update!(min_cursor: [event1.id], max_cursor: [event2.id], batch_size: 5, sub_batch_size: 5)
 
           expect(executor).to receive(:perform)
           expect(worker).to receive(:execute!)
@@ -161,12 +161,12 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
       let_it_be(:event3) { create(:event) }
 
       let!(:worker) do
-        create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2, min_cursor: [0],
+        create(:background_operation_worker, :active, batch_size: 2, sub_batch_size: 2, min_cursor: [event1.id],
           max_cursor: [event2.id])
       end
 
       let!(:previous_job) do
-        create(:background_operation_job, :succeeded, worker: worker, min_cursor: [0], max_cursor: [event2.id],
+        create(:background_operation_job, :succeeded, worker: worker, min_cursor: [event1.id], max_cursor: [event2.id],
           batch_size: 2, sub_batch_size: 1)
       end
 
@@ -194,7 +194,7 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
           expect { runner.run_operation_job(worker) }.to change { operation_jobs.count }.by(1)
 
           expect(new_job).to have_attributes(
-            min_cursor: [event3.id],
+            min_cursor: [event2.id],
             max_cursor: [event3.id],
             batch_size: worker.batch_size,
             sub_batch_size: worker.sub_batch_size)

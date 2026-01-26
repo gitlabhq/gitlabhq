@@ -598,13 +598,10 @@ approval_policy:
 
 ##### Example of `policy_tuning` with a pipeline execution policy
 
-{{< alert type="warning" >}}
-
-This feature does not work with pipeline execution policies created before GitLab 17.10.
-To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
-For more information, see [Recreate pipeline execution policies created before GitLab 17.10](#recreate-pipeline-execution-policies-created-before-gitlab-1710).
-
-{{< /alert >}}
+> [!warning]
+> This feature does not work with pipeline execution policies created before GitLab 17.10.
+> To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+> For more information, see [Recreate pipeline execution policies created before GitLab 17.10](#recreate-pipeline-execution-policies-created-before-gitlab-1710).
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](enforcement/security_policy_projects.md):

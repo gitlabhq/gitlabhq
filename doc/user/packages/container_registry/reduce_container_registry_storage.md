@@ -183,13 +183,10 @@ The cleanup policy:
 1. Excludes [immutable tags](immutable_container_tags.md).
 1. Deletes the remaining tags in the list from the container registry.
 
-{{< alert type="warning" >}}
-
-On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
-the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
-It may take multiple runs to delete all tags.
-
-{{< /alert >}}
+> [!warning]
+> On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
+> the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
+> It may take multiple runs to delete all tags.
 
 {{< alert type="warning" >}}
 

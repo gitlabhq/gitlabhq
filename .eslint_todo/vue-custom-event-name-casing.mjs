@@ -33,7 +33,6 @@ export default {
     'app/assets/javascripts/boards/components/config_toggle.vue',
     'app/assets/javascripts/boards/components/issue_board_filtered_search.vue',
     'app/assets/javascripts/boards/components/project_select.vue',
-    'app/assets/javascripts/branches/components/branch_more_actions.vue',
     'app/assets/javascripts/captcha/captcha_modal.vue',
     'app/assets/javascripts/ci/artifacts/components/artifact_row.vue',
     'app/assets/javascripts/ci/artifacts/components/artifacts_bulk_delete.vue',

@@ -87,13 +87,10 @@ and add the following text. Replace the variables in `< >` with your values.
 
 If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 
-{{< alert type="warning" >}}
-
-If you use an environment variable called `NETRC`, Go uses its value
-as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in
-the GitLab CI do not use `NETRC` as an environment variable name.
-
-{{< /alert >}}
+> [!warning]
+> If you use an environment variable called `NETRC`, Go uses its value
+> as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in
+> the GitLab CI do not use `NETRC` as an environment variable name.
 
 ```plaintext
 machine <url> login <username> password <token>

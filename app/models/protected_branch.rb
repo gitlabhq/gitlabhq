@@ -29,6 +29,8 @@ class ProtectedBranch < ApplicationRecord
     where('(name > ?) OR (name = ? AND id > ?)', name, name, id).order(:name, :id)
   }
 
+  scope :excluding_name, ->(name) { where.not(name: name) if name.present? }
+
   protected_ref_access_levels :merge, :push
 
   def self.get_ids_by_name(name)

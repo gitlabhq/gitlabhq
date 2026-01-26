@@ -11445,6 +11445,12 @@ paths:
         - pending
         - running
       - in: query
+        name: ref
+        description: The branch name (ref) to filter jobs by
+        type: string
+        required: false
+        example: feature-branch
+      - in: query
         name: page
         description: Current page number
         type: integer

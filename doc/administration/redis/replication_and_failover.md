@@ -197,13 +197,10 @@ It is assumed that you have installed GitLab and all its components from scratch
 If you already have Redis installed and running, read how to
 [switch from a single-machine installation](#switching-from-an-existing-single-machine-installation).
 
-{{< alert type="note" >}}
-
-Redis nodes (both primary and replica) need the same password defined in
-`redis['password']`. At any time during a failover the Sentinels can
-reconfigure a node and change its status from primary to replica and vice versa.
-
-{{< /alert >}}
+> [!note]
+> Redis nodes (both primary and replica) need the same password defined in
+> `redis['password']`. At any time during a failover the Sentinels can
+> reconfigure a node and change its status from primary to replica and vice versa.
 
 ### Requirements
 
@@ -283,13 +280,10 @@ If you fail to replicate first, you may loose data (unprocessed background jobs)
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-{{< alert type="note" >}}
-
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
-
-{{< /alert >}}
+> [!note]
+> You can specify multiple roles like sentinel and Redis as:
+> `roles ['redis_sentinel_role', 'redis_master_role']`.
+> Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 
 ### Step 2. Configuring the replica Redis instances
 
@@ -344,13 +338,10 @@ Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. Go through the steps again for all the other replica nodes.
 
-{{< alert type="note" >}}
-
-You can specify multiple roles like sentinel and Redis as:
-`roles ['redis_sentinel_role', 'redis_master_role']`.
-Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
-
-{{< /alert >}}
+> [!note]
+> You can specify multiple roles like sentinel and Redis as:
+> `roles ['redis_sentinel_role', 'redis_master_role']`.
+> Read more about [roles](https://docs.gitlab.com/omnibus/roles/).
 
 These values don't have to be changed again in `/etc/gitlab/gitlab.rb` after
 a failover, as the nodes are managed by the Sentinels, and even after a
@@ -743,13 +734,10 @@ To make this work with Sentinel:
    sudo gitlab-ctl reconfigure
    ```
 
-{{< alert type="note" >}}
-
-For each persistence class, GitLab defaults to using the
-configuration specified in `gitlab_rails['redis_sentinels']` unless
-overridden by the previously described settings.
-
-{{< /alert >}}
+> [!note]
+> For each persistence class, GitLab defaults to using the
+> configuration specified in `gitlab_rails['redis_sentinels']` unless
+> overridden by the previously described settings.
 
 ### Control running services
 

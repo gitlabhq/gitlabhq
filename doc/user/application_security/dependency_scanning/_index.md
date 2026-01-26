@@ -95,13 +95,10 @@ To enable the analyzer, either:
 This method automatically prepares a merge request that includes the dependency scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
 
-{{< alert type="note" >}}
-
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
-If you have a complex GitLab configuration file it might not be parsed successfully, and an error
-might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
-
-{{< /alert >}}
+> [!note]
+> This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+> If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+> might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
 
 To enable dependency scanning:
 
@@ -516,13 +513,10 @@ See [Use security scanning tools with merge request pipelines](../detect/securit
 
 To customize dependency scanning, use [CI/CD variables](#available-cicd-variables).
 
-{{< alert type="warning" >}}
-
-Test all customization of GitLab analyzers in a merge request before merging these changes to the
-default branch. Failure to do so can give unexpected results, including a large number of false
-positives.
-
-{{< /alert >}}
+> [!warning]
+> Test all customization of GitLab analyzers in a merge request before merging these changes to the
+> default branch. Failure to do so can give unexpected results, including a large number of false
+> positives.
 
 ### Overriding dependency scanning jobs
 

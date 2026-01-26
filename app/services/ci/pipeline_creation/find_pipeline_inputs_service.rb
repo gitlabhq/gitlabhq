@@ -4,6 +4,22 @@ module Ci
   module PipelineCreation
     class FindPipelineInputsService
       include Gitlab::Utils::StrongMemoize
+      include ReactiveCaching
+
+      self.reactive_cache_key = ->(service) { [service.class.name, service.id] }
+      self.reactive_cache_work_type = :external_dependency
+      self.reactive_cache_worker_finder = ->(id, *_args) { from_cache(id) }
+
+      def self.from_cache(id)
+        # The id format is: "project_id|user_id|pipeline_source|ref"
+        # Eg: "278964|12345|web|master"
+        project_id, user_id, pipeline_source, ref = id.split('|', 4)
+
+        project = Project.find(project_id)
+        user = User.find(user_id)
+
+        new(current_user: user, project: project, ref: ref, pipeline_source: pipeline_source.to_sym)
+      end
 
       # This service is used by the frontend to display inputs as an HTML form
       # when creating a pipeline as a web request.
@@ -20,27 +36,48 @@ module Ci
           return error_response(s_('Pipelines|Insufficient permissions to read inputs'))
         end
 
+        sha = project.commit(ref)&.sha
+
         if !project.repository.branch_or_tag?(ref) || sha.blank?
           return error_response(s_('Pipelines|The branch or tag does not exist'))
         end
 
+        if Feature.enabled?(:ci_pipeline_inputs_reactive_cache, project)
+          with_reactive_cache(sha) { |result| result }
+        else
+          fetch_inputs(sha)
+        end
+      end
+
+      def calculate_reactive_cache(sha)
+        fetch_inputs(sha)
+      end
+
+      def id
+        "#{project.id}|#{current_user.id}|#{pipeline_source}|#{ref}"
+      end
+
+      private
+
+      def fetch_inputs(sha)
         # The project config may not exist if the project is using a policy.
         # We currently don't support inputs for policies.
-        return success_response(Ci::Inputs::Builder.new([])) unless project_config.exists?
+        config = build_project_config(sha)
+        return success_response(Ci::Inputs::Builder.new([])) unless config.exists?
 
         # Since CI Config path is configurable (local, other project, URL) we translate
         # all supported config types into an `include: {...}` statement.
         # The inputs we are looking for are not directly defined at this level of YAML
         # but inside the included file.
-        if project_config.internal_include_prepended?
+        if config.internal_include_prepended?
           # We need to read the uninterpolated YAML of the included file.
           yaml_context = ::Gitlab::Ci::Config::Yaml::Context.new
-          yaml_content = ::Gitlab::Ci::Config::Yaml.load!(project_config.content, yaml_context)
-          yaml_result = yaml_result_of_internal_include(yaml_content)
+          yaml_content = ::Gitlab::Ci::Config::Yaml.load!(config.content, yaml_context)
+          yaml_result = yaml_result_of_internal_include(yaml_content, sha)
           return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 
           # Process header includes to merge external input definitions
-          spec = process_header_includes(yaml_result.spec)
+          spec = process_header_includes(yaml_result.spec, sha)
 
           spec_inputs = Ci::Inputs::Builder.new(spec[:inputs])
           return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
@@ -55,8 +92,6 @@ module Ci
         error_response(e.message)
       end
 
-      private
-
       attr_reader :current_user, :project, :ref, :pipeline_source
 
       def success_response(inputs)
@@ -67,13 +102,15 @@ module Ci
         ServiceResponse.error(message: message)
       end
 
-      def project_config
-        ::Gitlab::Ci::ProjectConfig.new(project: project, ref: ref, sha: sha, pipeline_source: pipeline_source)
+      def build_project_config(sha)
+        ::Gitlab::Ci::ProjectConfig.new(project: project, ref: ref, sha: sha,
+          pipeline_source: pipeline_source)
       end
-      strong_memoize_attr :project_config
 
       # TODO: temporary technical debt until https://gitlab.com/gitlab-org/gitlab/-/issues/520828
-      def yaml_result_of_internal_include(content)
+      def yaml_result_of_internal_include(content, sha)
+        context = build_context(sha)
+
         locations = content[:include]
         return if locations.blank?
 
@@ -84,24 +121,18 @@ module Ci
         files.first&.load_uninterpolated_yaml
       end
 
-      def context
+      def build_context(sha)
         ::Gitlab::Ci::Config::External::Context.new(
           project: project,
           sha: sha,
           user: current_user)
       end
-      strong_memoize_attr :context
 
-      def sha
-        project.commit(ref)&.sha
-      end
-      strong_memoize_attr :sha
-
-      def process_header_includes(spec)
+      def process_header_includes(spec, sha)
         return spec unless Feature.enabled?(:ci_file_inputs, project)
         return spec unless spec[:include].present?
 
-        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, context)
+        processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, build_context(sha))
         processor.perform
       end
     end

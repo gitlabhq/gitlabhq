@@ -176,13 +176,10 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-{{< alert type="warning" >}}
-
-In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
-the response body of the Liveness check was changed
-to match the example below.
-
-{{< /alert >}}
+> [!warning]
+> In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
+> the response body of the Liveness check was changed
+> to match the example below.
 
 Checks whether the application server is running.
 This probe is used to know if Rails Controllers

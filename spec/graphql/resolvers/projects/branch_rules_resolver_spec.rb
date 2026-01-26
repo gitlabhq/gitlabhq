@@ -41,7 +41,8 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
         resolver_class: described_class,
         connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
         null: true,
-        max_page_size: max_page_size
+        max_page_size: max_page_size,
+        calls_gitaly: true
       )
 
       resolve_field(field, project, args: arguments, object_type: resolver_parent, schema: schema)
@@ -94,7 +95,8 @@ RSpec.describe Resolvers::Projects::BranchRulesResolver, feature_category: :sour
           connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
           null: true,
           max_page_size: max_page_size,
-          default_page_size: default_page_size
+          default_page_size: default_page_size,
+          calls_gitaly: true
         )
 
         resolve_field(field, project, args: { first: 2 }, object_type: resolver_parent, schema: schema)

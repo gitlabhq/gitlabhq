@@ -1195,13 +1195,10 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
-{{< alert type="warning" >}}
-
-Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
-If you believe this applies to you, contact us for additional guidance as required.
-
-{{< /alert >}}
+> [!warning]
+> Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
 Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect).
@@ -1537,13 +1534,10 @@ To configure the Praefect nodes, on each one:
 The [Gitaly](../gitaly/_index.md) server nodes that make up the cluster have
 requirements that are dependent on data and load.
 
-{{< alert type="warning" >}}
-
-Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
-However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
-If you believe this applies to you, contact us for additional guidance as required.
-
-{{< /alert >}}
+> [!warning]
+> Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
+> However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact the performance of the environment and further adjustments may be required.
+> If you believe this applies to you, contact us for additional guidance as required.
 
 Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 

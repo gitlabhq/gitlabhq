@@ -377,13 +377,10 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 
 ### Delete old builds and artifacts
 
-{{< alert type="warning" >}}
-
-These commands remove data permanently. Before running them in a production environment,
-you should try them in a test environment first and make a backup of the instance
-that can be restored if needed.
-
-{{< /alert >}}
+> [!warning]
+> These commands remove data permanently. Before running them in a production environment,
+> you should try them in a test environment first and make a backup of the instance
+> that can be restored if needed.
 
 #### Delete old artifacts for a project
 
@@ -511,13 +508,10 @@ Ci::DeletedObject.count
 
 ### Delete old pipelines
 
-{{< alert type="warning" >}}
-
-These commands remove data permanently. Before running them in a production environment,
-consider seeking guidance from a Support Engineer. You should also try them in a test environment first
-and make a backup of the instance that can be restored if needed.
-
-{{< /alert >}}
+> [!warning]
+> These commands remove data permanently. Before running them in a production environment,
+> consider seeking guidance from a Support Engineer. You should also try them in a test environment first
+> and make a backup of the instance that can be restored if needed.
 
 Deleting a pipeline also removes that pipeline's:
 

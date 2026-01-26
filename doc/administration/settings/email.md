@@ -83,13 +83,10 @@ To change the hostname used in private commit emails:
 1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-After the hostname is configured, every private commit email using the previous hostname is not
-recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
-`Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
-
-{{< /alert >}}
+> [!note]
+> After the hostname is configured, every private commit email using the previous hostname is not
+> recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
+> `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
 ## Custom additional text
 

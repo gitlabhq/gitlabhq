@@ -23,25 +23,22 @@ title: Conan 2 packages in the package registry
 > [!flag]
 > The availability of this feature is controlled by a feature flag. For more information, see the history.
 
-{{< alert type="warning" >}}
-
-The Conan 2 package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/8258) details the remaining
-work and timelines to make it production ready.
-
-{{< /alert >}}
-
-> [!note]
-> The Conan 2 registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-
 Publish Conan 2 packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
+
+> [!warning]
+> The Conan 2 package registry for GitLab is under development and isn't ready for production use due to
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/8258) details the remaining
+> work and timelines to make it production ready.
 
 To publish Conan 2 packages to the package registry, add the package registry as a
 remote and authenticate with it.
 
 Then you can run `conan` commands and publish your package to the
 package registry.
+
+> [!note]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 For documentation of the specific API endpoints that the Conan 2 package manager client uses, see [Conan v2 API](../../../api/packages/conan_v2.md)
 

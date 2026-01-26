@@ -20,13 +20,10 @@ storage is either:
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
 - [Virtual storage](gitaly/praefect/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster (Praefect).
 
-{{< alert type="warning" >}}
-
-Repository storage could be configured as a `path` that points directly to the directory where the repositories are
-stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
-access repositories through a physical or virtual storage.
-
-{{< /alert >}}
+> [!warning]
+> Repository storage could be configured as a `path` that points directly to the directory where the repositories are
+> stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
+> access repositories through a physical or virtual storage.
 
 For more information on:
 
@@ -335,13 +332,10 @@ By default, if repository weights have not been configured earlier:
 - `default` is weighted `100`.
 - All other storages are weighted `0`.
 
-{{< alert type="note" >}}
-
-If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
-create new repositories on `default`, regardless of the configuration or if `default` exists.
-See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
-
-{{< /alert >}}
+> [!note]
+> If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
+> create new repositories on `default`, regardless of the configuration or if `default` exists.
+> See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
 
 ## Move repositories
 
