@@ -31,13 +31,10 @@ For information about webhook events and JSON payloads, see [webhook events](web
 Use public tools to inspect and test webhook payloads.
 These tools provide catch-all endpoints for HTTP requests and respond with a `200 OK` status code.
 
-{{< alert type="warning" >}}
-
-Exercise caution when using public tools, as you might send sensitive data to external services.
-Use test tokens and rotate any secrets inadvertently sent to third parties.
-For enhanced privacy, [create a private webhook receiver](#create-a-private-webhook-receiver).
-
-{{< /alert >}}
+> [!warning]
+> Exercise caution when using public tools, as you might send sensitive data to external services.
+> Use test tokens and rotate any secrets inadvertently sent to third parties.
+> For enhanced privacy, [create a private webhook receiver](#create-a-private-webhook-receiver).
 
 Public webhook inspection tools include:
 

@@ -148,13 +148,10 @@ For example:
   request can be merged.
 - If the merge request author is different from the lock owner, the merge request is blocked.
 
-{{< alert type="note" >}}
-
-Users other than the merge request author can push changes to the merge request branch that
-update or change locked files or directories. The lock check only considers the merge request
-author, so the merge request is not blocked.
-
-{{< /alert >}}
+> [!note]
+> Users other than the merge request author can push changes to the merge request branch that
+> update or change locked files or directories. The lock check only considers the merge request
+> author, so the merge request is not blocked.
 
 To prevent unauthorized changes to locked files:
 

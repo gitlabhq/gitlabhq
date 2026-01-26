@@ -248,13 +248,10 @@ We use description templates for issues and merge requests in the
 [`.gitlab` folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab) of the
 GitLab project, which you can refer to for some examples.
 
-{{< alert type="note" >}}
-
-It's possible to use [quick actions](quick_actions.md) in description templates to quickly add
-labels, assignees, and milestones. The quick actions are only executed if the user submitting
-the issue or merge request has the permissions to perform the relevant actions.
-
-{{< /alert >}}
+> [!note]
+> It's possible to use [quick actions](quick_actions.md) in description templates to quickly add
+> labels, assignees, and milestones. The quick actions are only executed if the user submitting
+> the issue or merge request has the permissions to perform the relevant actions.
 
 Here is an example of a bug report template:
 

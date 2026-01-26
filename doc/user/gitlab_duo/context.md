@@ -106,13 +106,10 @@ The following context is available to Code Suggestions.
 - Code selected in your editor.
 - [Repository X-Ray files](../project/repository/code_suggestions/repository_xray.md).
 
-{{< alert type="note" >}}
-
-Secrets and sensitive values that match known formats are redacted before
-they are used to generate code.
-This applies to files added by using `/include`.
-
-{{< /alert >}}
+> [!note]
+> Secrets and sensitive values that match known formats are redacted before
+> they are used to generate code.
+> This applies to files added by using `/include`.
 
 #### Change what Code Suggestions uses for context
 

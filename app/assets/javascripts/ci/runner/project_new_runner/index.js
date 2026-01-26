@@ -20,6 +20,7 @@ export const initProjectNewRunner = (selector = '#js-project-new-runner') => {
 
   return new Vue({
     el,
+    name: 'ProjectNewRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(ProjectNewRunnerApp, {

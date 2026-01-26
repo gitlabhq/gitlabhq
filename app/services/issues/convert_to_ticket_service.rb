@@ -84,11 +84,12 @@ module Issues
     end
 
     def work_item_type
-      return WorkItems::Type.default_issue_type unless Feature.enabled?(:service_desk_ticket, container)
+      provider = ::WorkItems::TypesFramework::Provider.new(container)
+      return provider.default_issue_type unless Feature.enabled?(:service_desk_ticket, container)
 
       # Replace with configuration check
       # See https://gitlab.com/groups/gitlab-org/-/work_items/19879
-      WorkItems::Type.default_by_type(:ticket)
+      provider.find_by_base_type(:ticket)
     end
 
     def error(message)

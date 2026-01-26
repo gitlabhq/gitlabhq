@@ -123,13 +123,10 @@ Append the section name with a number `n` in brackets, for example, `[2]` or `[3
 This requires `n` approvals from the Code Owners in this section.
 Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the default. Invalid values for `n` are treated as `1`.
 
-{{< alert type="warning" >}}
-
-[Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
-to the behavior of this setting. Do not intentionally set invalid values. They may
-become valid in the future and cause unexpected behavior.
-
-{{< /alert >}}
+> [!warning]
+> [Issue 384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
+> to the behavior of this setting. Do not intentionally set invalid values. They may
+> become valid in the future and cause unexpected behavior.
 
 To require multiple approvals from Code Owners:
 

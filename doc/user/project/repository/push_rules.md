@@ -37,13 +37,10 @@ Each regular expression is limited to 511 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
-{{< alert type="note" >}}
-
-Push rules are bypassed during fork synchronization.
-When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
-are applied directly without validation against the fork's push rules.
-
-{{< /alert >}}
+> [!note]
+> Push rules are bypassed during fork synchronization.
+> When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
+> are applied directly without validation against the fork's push rules.
 
 Push rules work as templates, not inherited settings:
 
@@ -57,13 +54,10 @@ Push rules work as templates, not inherited settings:
 To apply updated global push rules to existing projects, you must [override the global push rules](#override-global-push-rules-per-project)
 for each project individually.
 
-{{< alert type="note" >}}
-
-If you delete push rules from a project, the project has no push rules at all.
-The project does not automatically inherit rules from the group or instance.
-To restore push rules, you must configure them again for the project.
-
-{{< /alert >}}
+> [!note]
+> If you delete push rules from a project, the project has no push rules at all.
+> The project does not automatically inherit rules from the group or instance.
+> To restore push rules, you must configure them again for the project.
 
 ## Enable global push rules
 

@@ -71,7 +71,8 @@ module Ci
         show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s,
         pipelines_analytics_path: charts_project_pipelines_path(project),
         uses_external_config: uses_external_config?(project).to_s,
-        empty_state_illustration_path: image_path('illustrations/empty-state/empty-pipeline-md.svg')
+        empty_state_illustration_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
+        project_pipelines_etag_path: graphql_etag_project_pipelines_path(project)
       }
     end
 

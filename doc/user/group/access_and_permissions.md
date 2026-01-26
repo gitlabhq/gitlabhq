@@ -2,6 +2,7 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure and manage group access and permissions.
 title: Group access and permissions
 ---
 
@@ -116,7 +117,18 @@ To restrict group access by IP address:
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
-   address ranges in CIDR notation. This list:
+   address ranges in CIDR notation:
+
+   ```txt
+   192.168.1.0/24
+   10.0.0.0/8
+   2001:db8::/32
+   203.0.113.5/32
+   ```
+
+   You must manually add each IP address entry. Adding multiple entries separated by a comma or space is not supported. Support for bulk entries is proposed in [issue 468998](https://gitlab.com/gitlab-org/gitlab/-/work_items/468998).
+ 
+   This list:
    - Has no limit on the number of IP address ranges.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by type of authorization.
@@ -194,13 +206,10 @@ You cannot restrict the most popular public email domains, such as:
 
 When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
 
-{{< alert type="note" >}}
-
-Removing a domain from the **Restrict membership by email domain** list does not remove existing users with that domain from the group or its projects.
-Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
-Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email domain** list.
-
-{{< /alert >}}
+> [!note]
+> Removing a domain from the **Restrict membership by email domain** list does not remove existing users with that domain from the group or its projects.
+> Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
+> Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email domain** list.
 
 ## Prevent users from requesting access to a group
 

@@ -17,6 +17,7 @@ import PipelinesFilteredSearch from '~/ci/pipelines_page/components/pipelines_fi
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import getPipelinesQuery from '~/ci/pipelines_page/graphql/queries/get_pipelines.query.graphql';
+import getSinglePipelineQuery from '~/ci/pipelines_page/graphql/queries/get_single_pipeline.query.graphql';
 import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
@@ -41,6 +42,7 @@ import {
   mockPipelinesFilteredSearch,
   mockPipelineWithDownstream,
   mockBatchResponse,
+  mockSinglePipelineResponse,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -63,6 +65,7 @@ describe('Pipelines app', () => {
   const downstreamHandler = jest.fn().mockResolvedValue(mockPipelineWithDownstream);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const emptyHandler = jest.fn().mockResolvedValue(mockPipelinesDataEmpty);
+  const singlePipelineHandler = jest.fn().mockResolvedValue(mockSinglePipelineResponse);
 
   const clearCacheMutationSuccessHandler = jest.fn().mockResolvedValue(mockRunnerCacheClearPayload);
   const clearCacheMutationFailedHandler = jest
@@ -714,7 +717,9 @@ describe('Pipelines app', () => {
 
       mockSubscription.next({
         data: {
-          ciPipelineStatusesUpdated: { id: 'gid://gitlab/Ci::Pipeline/701' },
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/701',
+          },
         },
       });
 
@@ -743,13 +748,45 @@ describe('Pipelines app', () => {
 
       mockSubscription.next({
         data: {
-          ciPipelineStatusesUpdated: { id: 'gid://gitlab/Ci::Pipeline/99999' },
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/1',
+          },
         },
       });
 
       await waitForPromises();
 
       expect(successDynamicHandler).not.toHaveBeenCalled();
+      expect(singlePipelineHandler).not.toHaveBeenCalled();
+    });
+
+    it('fetches newly created pipelines when on the first page', async () => {
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [getSinglePipelineQuery, singlePipelineHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/20000',
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(singlePipelineHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        id: 'gid://gitlab/Ci::Pipeline/20000',
+      });
     });
 
     it('shows error alert when batch query fails', async () => {
@@ -763,7 +800,11 @@ describe('Pipelines app', () => {
       await waitForPromises();
 
       mockSubscription.next({
-        data: { ciPipelineStatusesUpdated: { id: 'gid://gitlab/Ci::Pipeline/701' } },
+        data: {
+          ciPipelineStatusesUpdated: {
+            id: 'gid://gitlab/Ci::Pipeline/701',
+          },
+        },
       });
 
       await waitForPromises();

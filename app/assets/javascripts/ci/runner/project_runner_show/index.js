@@ -22,6 +22,7 @@ export const initProjectRunnerShow = (selector = '#js-project-runner-show') => {
 
   return new Vue({
     el,
+    name: 'ProjectRunnerShowAppRoot',
     apolloProvider,
     render(h) {
       return h(ProjectRunnerShowApp, {

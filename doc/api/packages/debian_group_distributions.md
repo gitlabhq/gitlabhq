@@ -38,7 +38,7 @@ See [Authenticate to the Debian distributions APIs](../../user/packages/debian_r
 
 ## List all Debian distributions in a group
 
-Lists Debian distributions in the given group.
+Lists all Debian distributions for a specified group.
 
 ```plaintext
 GET /groups/:id/-/debian_distributions
@@ -79,9 +79,9 @@ Example response:
 ]
 ```
 
-## Single Debian group distribution
+## Retrieve a Debian group distribution
 
-Gets a single Debian group distribution.
+Retrieves a specified Debian group distribution for a group.
 
 ```plaintext
 GET /groups/:id/-/debian_distributions/:codename
@@ -119,9 +119,9 @@ Example response:
 }
 ```
 
-## Single Debian group distribution key
+## Retrieve a Debian group distribution key
 
-Gets a single Debian group distribution key.
+Retrieves a specified Debian group distribution key for a group.
 
 ```plaintext
 GET /groups/:id/-/debian_distributions/:codename/key.asc
@@ -159,7 +159,7 @@ DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
 
 ## Create a Debian group distribution
 
-Creates a Debian group distribution.
+Creates a Debian group distribution for a specified group.
 
 ```plaintext
 POST /groups/:id/-/debian_distributions
@@ -208,7 +208,7 @@ Example response:
 
 ## Update a Debian group distribution
 
-Updates a Debian group distribution.
+Updates a specified Debian group distribution for a group.
 
 ```plaintext
 PUT /groups/:id/-/debian_distributions/:codename
@@ -257,7 +257,7 @@ Example response:
 
 ## Delete a Debian group distribution
 
-Deletes a Debian group distribution.
+Deletes a specified Debian group distribution for a group.
 
 ```plaintext
 DELETE /groups/:id/-/debian_distributions/:codename

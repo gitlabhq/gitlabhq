@@ -23,6 +23,7 @@ export const initGroupRegisterRunner = (selector = '#js-group-register-runner') 
 
   return new Vue({
     el,
+    name: 'GroupRegisterRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(GroupRegisterRunnerApp, {

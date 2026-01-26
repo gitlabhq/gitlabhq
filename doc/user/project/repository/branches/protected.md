@@ -114,13 +114,10 @@ aspects of branch protection:
 | **Allowed to merge**          | Controls who can merge changes through merge requests and create new protected branches through the UI and API | No one can merge (unless they have **Allowed to push and merge**). |
 | **Allowed to push and merge** | Controls who can push directly to existing protected branches and merge through merge requests                 | No one can push.                  |
 
-{{< alert type="note" >}}
-
-**Allowed to push and merge** grants both push and merge capabilities.
-Users with this permission can merge through merge requests even without
-**Allowed to merge** permission.
-
-{{< /alert >}}
+> [!note]
+> **Allowed to push and merge** grants both push and merge capabilities.
+> Users with this permission can merge through merge requests even without
+> **Allowed to merge** permission.
 
 When you select **No one** for either **Allowed to merge** or **Allowed to push and merge**, the UI
 clears other role selections.
@@ -150,13 +147,10 @@ For active development branches:
 With this configuration, developers can merge approved merge requests while requiring
 all changes to go through code review.
 
-{{< alert type="note" >}}
-
-When **Allowed to push and merge** is not configured, it does not restrict
-push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
-to **No one**.
-
-{{< /alert >}}
+> [!note]
+> When **Allowed to push and merge** is not configured, it does not restrict
+> push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
+> to **No one**.
 
 ### Permission combinations for Developer role
 

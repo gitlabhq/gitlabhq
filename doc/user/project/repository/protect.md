@@ -51,13 +51,10 @@ interface for protected branches, approval rules, and status checks.
 Use the **Branch rules** page in your project settings to configure all branch protections from one
 location, view protection status across branches, and manage complex protection combinations.
 
-{{< alert type="note" >}}
-
-For group protection, configure protected branches and push rules in your group settings.
-The **Branch rules** page is available only in projects. Group rules apply to all projects
-in the group and work alongside any project-specific rules you create.
-
-{{< /alert >}}
+> [!note]
+> For group protection, configure protected branches and push rules in your group settings.
+> The **Branch rules** page is available only in projects. Group rules apply to all projects
+> in the group and work alongside any project-specific rules you create.
 
 ## Configure your protection strategy
 

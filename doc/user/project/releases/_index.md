@@ -319,13 +319,10 @@ Here is an example of milestones with no releases, one release, and two releases
 
 ![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
 
-{{< alert type="note" >}}
-
-A subgroup's project releases cannot be associated with a parent group's milestone. To learn
-more, read issue #328054,
-[Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
-
-{{< /alert >}}
+> [!note]
+> A subgroup's project releases cannot be associated with a parent group's milestone. To learn
+> more, read issue #328054,
+> [Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
 
 ## Get notified when a release is created
 
@@ -337,7 +334,7 @@ To subscribe to notifications for releases:
 1. Select **Notification setting** (the bell icon).
 1. In the list, select **Custom**.
 1. Select the **New release** checkbox.
-1. Close the dialog box to save.
+1. Close the dialog to save.
 
 ## Prevent unintentional releases by setting a deploy freeze
 

@@ -237,13 +237,10 @@ For more information, see the [Cisco Duo API documentation](https://duo.com/docs
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_authenticator`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
+> [enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_authenticator`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
 
 You can use FortiAuthenticator as an OTP provider in GitLab. Users must:
 

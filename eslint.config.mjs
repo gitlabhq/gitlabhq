@@ -465,6 +465,7 @@ export default [
       'unicorn/no-array-callback-reference': 'off',
       'local-rules/require-valid-help-page-path': 'error',
       'local-rules/vue-require-valid-help-page-link-component': 'error',
+      'local-rules/vue-require-vue-constructor-name': 'error',
     },
   },
   {

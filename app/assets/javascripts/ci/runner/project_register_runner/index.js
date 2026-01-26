@@ -23,6 +23,7 @@ export const initProjectRegisterRunner = (selector = '#js-project-register-runne
 
   return new Vue({
     el,
+    name: 'ProjectRegisterRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(ProjectRegisterRunnerApp, {

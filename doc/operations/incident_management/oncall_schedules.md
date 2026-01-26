@@ -121,6 +121,6 @@ See [Paging](paging.md#paging) for more details.
 ## Removal or deletion of on-call user
 
 If an on-call user is removed from the project or group, or their account is deleted, the
-confirmation modal displays the list of that user's on-call schedules. If the user's removal or
+confirmation dialog displays the list of that user's on-call schedules. If the user's removal or
 deletion is confirmed, GitLab recalculates the on-call rotation and sends an email to the project
 owners and the rotation's participants.

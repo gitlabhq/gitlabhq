@@ -44,7 +44,7 @@ For more information, you can [talk to an expert](https://page.gitlab.com/usage_
 
 ## Top-level group limits
 
-Accounts created after #{ User::FREE_USER_TOP_LEVEL_GROUP_LIMIT_FROM_DATE.to_formatted_s(:long) } on the Free tier are limited to three top-level groups (group namespaces).
+Accounts created after January 27, 2026 on the Free tier are limited to three top-level groups (group namespaces).
 Your [personal namespace](namespace/_index.md#types-of-namespaces) does not count toward this limit.
 This limit also applies to accounts that are on an Ultimate trial.
 

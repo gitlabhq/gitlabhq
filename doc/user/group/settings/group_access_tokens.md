@@ -87,13 +87,10 @@ To create a group access token:
 
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
-{{< alert type="warning" >}}
-
-Group access tokens are treated as internal users.
-If an internal user creates a group access token, that token is able to access
-all projects that have visibility level set to Internal.
-
-{{< /alert >}}
+> [!warning]
+> Group access tokens are treated as internal users.
+> If an internal user creates a group access token, that token is able to access
+> all projects that have visibility level set to Internal.
 
 ### With the Rails console
 

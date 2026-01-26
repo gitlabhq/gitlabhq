@@ -20,6 +20,7 @@ export const initAdminNewRunner = (selector = '#js-admin-new-runner') => {
 
   return new Vue({
     el,
+    name: 'AdminNewRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(AdminNewRunnerApp, {

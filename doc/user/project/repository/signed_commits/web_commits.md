@@ -20,13 +20,10 @@ title: Signed commits from the GitLab UI
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 When you create a commit using the GitLab user interface, the commit is not pushed directly by you.
 Instead, the commit is created on your behalf.

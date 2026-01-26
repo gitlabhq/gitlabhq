@@ -33,7 +33,7 @@ and example server responses. Some parameters include a default or a list of all
 
 A [personal access token](../../user/profile/personal_access_tokens.md) (PAT) is one way to
 start an interactive session. To do this, select **Authorize** from the main page, and a
-dialog box prompts you to enter your PAT, which is valid for the current web session.
+dialog prompts you to enter your PAT, which is valid for the current web session.
 
 To test the endpoint, first select **Try it out** on the endpoint definition page. Input the parameters
 as required, then select **Execute**. The following example executes a request for the `version`

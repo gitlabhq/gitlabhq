@@ -25,6 +25,7 @@ export const initGroupRunnerShow = (selector = '#js-group-runner-show') => {
 
   return new Vue({
     el,
+    name: 'GroupRunnerShowAppRoot',
     apolloProvider,
     render(h) {
       return h(GroupRunnerShowApp, {

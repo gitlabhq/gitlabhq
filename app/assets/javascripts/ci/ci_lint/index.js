@@ -17,6 +17,7 @@ export default (containerId = '#js-ci-lint') => {
 
   return new Vue({
     el: containerEl,
+    name: 'CiLintRoot',
     apolloProvider,
     render(createElement) {
       return createElement(CiLint, {

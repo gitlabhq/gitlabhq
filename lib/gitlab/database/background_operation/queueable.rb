@@ -100,7 +100,7 @@ module Gitlab
               job_class_name: job_class_name,
               table_name: table_name,
               column_name: column_name,
-              job_arguments: job_arguments,
+              job_arguments: job_arguments.presence || [],
               interval: interval,
               min_cursor: min_cursor,
               max_cursor: max_cursor,

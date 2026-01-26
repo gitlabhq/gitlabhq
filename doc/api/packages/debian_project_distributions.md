@@ -37,7 +37,7 @@ See [Authenticate to the Debian distributions APIs](../../user/packages/debian_r
 
 ## List all Debian distributions in a project
 
-Lists Debian distributions in the given project.
+Lists all Debian distributions for a specified project.
 
 ```plaintext
 GET /projects/:id/debian_distributions
@@ -78,9 +78,9 @@ Example response:
 ]
 ```
 
-## Single Debian project distribution
+## Retrieve a Debian project distribution
 
-Gets a single Debian project distribution.
+Retrieves a specified Debian project distribution for a project.
 
 ```plaintext
 GET /projects/:id/debian_distributions/:codename
@@ -118,9 +118,9 @@ Example response:
 }
 ```
 
-## Single Debian project distribution key
+## Retrieve a Debian project distribution key
 
-Gets a single Debian project distribution key.
+Retrieves a specified Debian project distribution key for a project.
 
 ```plaintext
 GET /projects/:id/debian_distributions/:codename/key.asc
@@ -158,7 +158,7 @@ DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
 
 ## Create a Debian project distribution
 
-Creates a Debian project distribution.
+Creates a Debian project distribution for a specified project.
 
 ```plaintext
 POST /projects/:id/debian_distributions
@@ -207,7 +207,7 @@ Example response:
 
 ## Update a Debian project distribution
 
-Updates a Debian project distribution.
+Updates a specified Debian project distribution for a project.
 
 ```plaintext
 PUT /projects/:id/debian_distributions/:codename
@@ -256,7 +256,7 @@ Example response:
 
 ## Delete a Debian project distribution
 
-Deletes a Debian project distribution.
+Deletes a specified Debian project distribution for a project.
 
 ```plaintext
 DELETE /projects/:id/debian_distributions/:codename

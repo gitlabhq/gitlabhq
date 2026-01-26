@@ -18,14 +18,6 @@ title: GitLab-managed clusters (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
-To manage applications, use the [Cluster Project Management Template](../../clusters/management_project_template.md).
-
-{{< /alert >}}
-
 > [!flag]
 > On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
@@ -34,18 +26,20 @@ is managed by GitLab, resources for your projects are automatically created. See
 the [Access controls](cluster_access.md) section for
 details about the created resources.
 
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
+> To manage applications, use the [Cluster Project Management Template](../../clusters/management_project_template.md).
+
 If you choose to manage your own cluster, project-specific resources aren't created
 automatically. If you are using [Auto DevOps](../../../topics/autodevops/_index.md), you must
 explicitly provide the `KUBE_NAMESPACE` [deployment variable](deploy_to_cluster.md#deployment-variables)
 for your deployment jobs to use. Otherwise, a namespace is created for you.
 
-{{< alert type="warning" >}}
-
-Be aware that manually managing resources that have been created by GitLab, like
-namespaces and service accounts, can cause unexpected errors. If this occurs, try
-[clearing the cluster cache](#clearing-the-cluster-cache).
-
-{{< /alert >}}
+> [!warning]
+> Be aware that manually managing resources that have been created by GitLab, like
+> namespaces and service accounts, can cause unexpected errors. If this occurs, try
+> [clearing the cluster cache](#clearing-the-cluster-cache).
 
 ## Clearing the cluster cache
 

@@ -14,7 +14,7 @@ module Gitlab
         super
         @imported_items_cache_key = JiraImport.already_imported_cache_key(:issues, project.id)
         @job_waiter = JobWaiter.new
-        @issue_type = ::WorkItems::Type.default_issue_type
+        @issue_type = ::WorkItems::TypesFramework::Provider.new(project).default_issue_type
         @jira_integration = project.jira_integration
       end
 

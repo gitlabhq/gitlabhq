@@ -36,7 +36,7 @@ module Gitlab
       # @retun [Array<GitLab::GitHubImport::Representation::IssueEvent>] List of issue events
       def events(record)
         events = Gitlab::Cache::Import::Caching.values_from_list(events_cache_key(record)).map do |event|
-          Representation::IssueEvent.from_json_hash(Gitlab::Json.parse(event))
+          Representation::IssueEvent.from_json_hash(Gitlab::Json.safe_parse(event))
         end
 
         events.sort_by(&:created_at)

@@ -22,7 +22,7 @@ module Database
           args['job_class_name'],
           args['table_name'],
           args['column_name'],
-          job_arguments: args['job_arguments'],
+          job_arguments: args['job_arguments'] || [],
           **options
         )
       end

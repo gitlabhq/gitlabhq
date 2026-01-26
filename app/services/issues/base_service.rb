@@ -5,6 +5,7 @@ module Issues
     extend ::Gitlab::Utils::Override
     include IncidentManagement::UsageData
     include IssueTypeHelpers
+    include Gitlab::Utils::StrongMemoize
 
     EpicAssignmentError = Class.new(::ArgumentError)
 
@@ -58,8 +59,8 @@ module Issues
     end
 
     def find_work_item_type_id(issue_type)
-      work_item_type = WorkItems::Type.default_by_type(issue_type)
-      work_item_type ||= WorkItems::Type.default_issue_type
+      work_item_type = work_item_type_provider.find_by_base_type(issue_type)
+      work_item_type ||= work_item_type_provider.default_issue_type
 
       work_item_type.id
     end
@@ -164,6 +165,11 @@ module Issues
         params.delete(param) unless current_user.can?(:"set_issue_#{param}", container)
       end
     end
+
+    def work_item_type_provider
+      ::WorkItems::TypesFramework::Provider.new(container)
+    end
+    strong_memoize_attr :work_item_type_provider
   end
 end
 

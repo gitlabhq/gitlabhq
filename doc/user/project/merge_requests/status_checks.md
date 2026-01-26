@@ -179,7 +179,7 @@ and ensures they come from a legitimate source.
 
 Within the **Status checks** sub-section, select **Remove** ({{< icon name="remove" >}})
 next to the status check you want to delete.
-The **Remove status check?** modal is then shown.
+The **Remove status check?** dialog is then shown.
 
 ![Status checks delete modal](img/status_checks_delete_modal_v14_0.png)
 

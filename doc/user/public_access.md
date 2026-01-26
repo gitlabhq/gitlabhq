@@ -70,13 +70,10 @@ For public projects, any user, including unauthenticated users, can:
 
 Public groups can have public, internal, or private subgroups and projects.
 
-{{< alert type="note" >}}
-
-If an administrator restricts the
-[**Public** visibility level](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
-then the public access directory (`/public`) is visible only to authenticated users.
-
-{{< /alert >}}
+> [!note]
+> If an administrator restricts the
+> [**Public** visibility level](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
+> then the public access directory (`/public`) is visible only to authenticated users.
 
 ## Change project visibility
 

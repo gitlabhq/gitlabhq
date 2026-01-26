@@ -30,13 +30,10 @@ Personal access tokens are:
 - Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
   to a user rather than a project or group.
 
-{{< alert type="note" >}}
-
-Though required, GitLab usernames are ignored when authenticating with a personal access token.
-There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
-use the username.
-
-{{< /alert >}}
+> [!note]
+> Though required, GitLab usernames are ignored when authenticating with a personal access token.
+> There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
+> use the username.
 
 For examples of how you can use a personal access token to authenticate with the API, see the API documentation.
 
@@ -403,26 +400,20 @@ You can now create personal access tokens for a service account user with no exp
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Demonstrating Proof of Possession (DPoP) enhances the security of your personal access tokens,
 and minimizes the effects of unintended token leaks. When you enable this feature on your
 account, all REST and GraphQL API requests containing a PAT must also provide a signed DPoP header. Creating a
 signed DPoP header requires your corresponding private SSH key.
 
-{{< alert type="note" >}}
-
-If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
-
-DPoP header is not required for Git operations over HTTPS that include an access token.
-
-{{< /alert >}}
+> [!note]
+> If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
+> 
+> DPoP header is not required for Git operations over HTTPS that include an access token.
 
 Prerequisites:
 

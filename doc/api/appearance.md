@@ -18,9 +18,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get details on current application appearance
+## Retrieve application appearance
 
-Gets details on the current appearance configuration for this GitLab instance.
+Retrieves the appearance configuration for this GitLab instance.
 
 ```plaintext
 GET /application/appearance
@@ -60,7 +60,7 @@ Example response:
 
 ## Update application appearance
 
-Updates the current appearance configuration for this GitLab instance.
+Updates the appearance configuration for this GitLab instance.
 
 ```plaintext
 PUT /application/appearance
@@ -120,7 +120,7 @@ Example response:
 
 ## Update application logo
 
-Updates the current logo for this GitLab instance with an included image file.
+Updates the logo for this GitLab instance with an included image file.
 
 To upload an avatar from your local file system, use the `--form` argument to include the file.
 This causes cURL to post data using the header `Content-Type: multipart/form-data`.

@@ -40,13 +40,10 @@ If you are near or over the repository size limit, you can:
 - [Reduce your repository size with Git](../project/repository/repository_size.md#methods-to-reduce-repository-size).
 - [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
-{{< alert type="note" >}}
-
-`git push` and GitLab project imports are limited to 5 GiB for each request through
-Cloudflare. Imports other than a file upload are not affected by
-this limit. Repository limits apply to both public and private projects.
-
-{{< /alert >}}
+> [!note]
+> `git push` and GitLab project imports are limited to 5 GiB for each request through
+> Cloudflare. Imports other than a file upload are not affected by
+> this limit. Repository limits apply to both public and private projects.
 
 ## Backups
 

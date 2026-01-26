@@ -53,6 +53,8 @@ module Gitlab
 
         PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
+        # TODO: check how the WorkItems::Type is being used here and if it needs to stay in the array
+        # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
         EXISTING_OBJECT_RELATIONS = %i[
           milestone
           milestones
@@ -75,6 +77,8 @@ module Gitlab
           WorkItems::Type
         ].freeze
 
+        # TODO: check how the WorkItems::Type is being used here and if it needs to stay in the array
+        # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
         RELATIONS_WITH_REWRITABLE_USERNAMES = %i[
           milestones
           milestone
@@ -213,7 +217,10 @@ module Gitlab
           @relation_hash['relative_position'] = compute_relative_position
 
           issue_type = @relation_hash.delete('issue_type')
-          @relation_hash['work_item_type'] ||= ::WorkItems::Type.default_by_type(issue_type) if issue_type
+          if issue_type
+            type = ::WorkItems::TypesFramework::Provider.new(@importable).find_by_base_type(issue_type)
+            @relation_hash['work_item_type'] ||= type
+          end
         end
 
         def setup_release

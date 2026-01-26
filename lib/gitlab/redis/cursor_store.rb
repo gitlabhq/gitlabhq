@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def cursor
-        Gitlab::Json.parse(value_on_redis).to_h
+        Gitlab::Json.safe_parse(value_on_redis).to_h
       end
 
       private

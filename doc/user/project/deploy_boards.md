@@ -18,14 +18,6 @@ title: Deploy boards (deprecated)
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-[An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
-to add this functionality to the [agent](../clusters/agent/_index.md).
-
-{{< /alert >}}
-
 > [!flag]
 > On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `certificate_based_clusters`.
 
@@ -34,6 +26,11 @@ status of each CI [environment](../../ci/environments/_index.md) running on [Kub
 of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use
 without any need to access Kubernetes.
+
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
+> to add this functionality to the [agent](../clusters/agent/_index.md).
 
 If you have a Kubernetes cluster, you can Auto Deploy applications to production
 environments by using [Auto DevOps](../../topics/autodevops/_index.md).
@@ -154,13 +151,10 @@ spec:
 
 The annotations are applied to the deployments, replica sets, and pods. By changing the number of replicas, like `kubectl scale --replicas=3 deploy APPLICATION_NAME -n ${KUBE_NAMESPACE}`, you can follow the instances' pods from the board.
 
-{{< alert type="note" >}}
-
-The YAML file is static. If you apply it using `kubectl apply`, you must
-manually provide the project and environment slugs, or create a script to
-replace the variables in the YAML before applying.
-
-{{< /alert >}}
+> [!note]
+> The YAML file is static. If you apply it using `kubectl apply`, you must
+> manually provide the project and environment slugs, or create a script to
+> replace the variables in the YAML before applying.
 
 ## Canary Deployments
 

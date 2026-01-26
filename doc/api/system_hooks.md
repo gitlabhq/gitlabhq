@@ -21,9 +21,9 @@ Prerequisites:
 
 - You must be an administrator.
 
-## List system hooks
+## List all system hooks
 
-Get a list of all system hooks.
+Lists all system hooks.
 
 ```plaintext
 GET /hooks
@@ -57,9 +57,9 @@ Example response:
 ]
 ```
 
-## Get system hook
+## Retrieve system hook
 
-Get a system hook by its ID.
+Retrieves a system hook by its ID.
 
 ```plaintext
 GET /hooks/:id
@@ -97,7 +97,7 @@ Example response:
 
 ## Add new system hook
 
-Add a new system hook.
+Adds a new system hook.
 
 ```plaintext
 POST /hooks
@@ -147,7 +147,7 @@ Example response:
 
 ## Update system hook
 
-Update an existing system hook.
+Updates an existing system hook.
 
 ```plaintext
 PUT /hooks/:hook_id

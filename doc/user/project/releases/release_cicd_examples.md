@@ -67,13 +67,10 @@ release_job:
     ref: '$CI_COMMIT_SHA'                          # The tag is created from the pipeline SHA.
 ```
 
-{{< alert type="note" >}}
-
-Environment variables set in `before_script` or `script` are not available for expanding
-in the same job. Read more about
-[potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
-
-{{< /alert >}}
+> [!note]
+> Environment variables set in `before_script` or `script` are not available for expanding
+> in the same job. Read more about
+> [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
 
 ## Create release metadata in a custom script
 

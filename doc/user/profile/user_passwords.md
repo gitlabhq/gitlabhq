@@ -115,13 +115,10 @@ To reset your password:
 You are redirected to the sign-in page. If the provided email is verified and associated with an
 existing account, GitLab sends a password reset email.
 
-{{< alert type="note" >}}
-
-Your account can have more than one verified email address, and any email address
-associated with your account can be verified. However, only the primary email address
-can be used to sign in once the password is reset.
-
-{{< /alert >}}
+> [!note]
+> Your account can have more than one verified email address, and any email address
+> associated with your account can be verified. However, only the primary email address
+> can be used to sign in once the password is reset.
 
 ## Credential storage
 

@@ -58,7 +58,7 @@ Private agents:
 - Can be viewed only by members of the managing project who have at least the Developer role.
 - Cannot be enabled in projects other than the managing project.
 
-You cannot make a private agent public if the agent is currently enabled.
+You cannot make a public agent private if the agent is currently enabled.
 
 ## View the agents for your project
 

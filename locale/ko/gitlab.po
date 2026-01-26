@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-01-12 11:01\n"
+"PO-Revision-Date: 2026-01-23 11:02\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -833,6 +833,12 @@ msgstr "%{group_name} 활동"
 msgid "%{group_name} is approaching the limit of available seats"
 msgstr "%{group_name}이 사용 가능한 좌석 한도에 가까워지고 있습니다."
 
+msgid "%{group_name} is being deleted."
+msgstr ""
+
+msgid "%{group_name} moved to pending deletion."
+msgstr ""
+
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr "%{group_name}&%{epic_iid} &middot; %{author}가 %{epic_created}를 생성함"
 
@@ -1148,6 +1154,12 @@ msgstr "%{projectLength} %{projects}:"
 msgid "%{project_name}"
 msgstr "%{project_name}"
 
+msgid "%{project_name} is being deleted."
+msgstr ""
+
+msgid "%{project_name} moved to pending deletion."
+msgstr ""
+
 msgid "%{project_name} project members"
 msgstr "%{project_name} 프로젝트 멤버"
 
@@ -1189,7 +1201,7 @@ msgid "%{relation_type} epic is not present."
 msgstr "%{relation_type} 에픽이 존재하지 않습니다."
 
 msgid "%{relative_time} ago"
-msgstr ""
+msgstr "%{relative_time} 전"
 
 msgid "%{releases} release"
 msgid_plural "%{releases} releases"
@@ -1556,6 +1568,9 @@ msgstr "'%{lock_path}'는 @%{lock_user_name}에 의해 잠겨 있습니다."
 
 msgid "'%{lock_path}' is locked in Git LFS by @%{lock_user_name}"
 msgstr "'%{lock_path}'은 @%{lock_user_name}에 의해 Git LFS에 잠겨 있습니다."
+
+msgid "'%{slug}' is a reserved name"
+msgstr "'%{slug}' 은 예약된 이름입니다"
 
 msgid "'%{source}' is not a import source"
 msgstr "'%{source}' 는 임포트 소스가 아닙니다."
@@ -2315,6 +2330,9 @@ msgstr "에이전트 업데이트"
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
 msgstr "에이전트의 시스템 프롬프트가 채팅 입력에 적용됩니다."
 
+msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the flow."
+msgstr ""
+
 msgid "AICatalog|A new version is available"
 msgstr "새 버전을 사용할 수 있습니다."
 
@@ -2384,6 +2402,9 @@ msgstr "%{name} 내의 에이전트 활성화됨."
 msgid "AICatalog|Agent enabled in %{targetType}."
 msgstr "%{targetType}의 에이전트 활성화됨."
 
+msgid "AICatalog|Agent hidden."
+msgstr ""
+
 msgid "AICatalog|Agent is now at version %{newVersion}."
 msgstr "에이전트는 이제 버전 %{newVersion}입니다."
 
@@ -2434,6 +2455,9 @@ msgstr "플로우 %{name}을 비활성화 하시겠습니까? 이 플로우는 �
 
 msgid "AICatalog|Are you sure you want to disable flow %{name}? The flow, its service account, and any associated triggers will no longer work in this project."
 msgstr "플로우 %{name}를 비활성화하시겠습니까? 이 플로우, 해당 서비스 계정 및 연관된 트리거는 이 프로젝트에서 더 이상 작동하지 않습니다."
+
+msgid "AICatalog|Are you sure you want to hide %{itemType} %{name}?"
+msgstr ""
 
 msgid "AICatalog|Basic information"
 msgstr "기본 정보"
@@ -2513,20 +2537,14 @@ msgstr "플로우를 활성화 할 수 없음"
 msgid "AICatalog|Could not enable flow in the %{target}. Check that the %{target} meets the %{linkStart}prerequisites%{linkEnd} and try again."
 msgstr "%{target}에서 플로우를 활성화할 수 없습니다. %{target}이 %{linkStart}사전 요구 사항%{linkEnd}을 충족하는지 확인한 후 다시 시도하세요."
 
-msgid "AICatalog|Could not update agent in the %{target}."
-msgstr "%{target}내에서 에이전트를 없데이트 할 수 없습니다."
+msgid "AICatalog|Could not update %{itemType} in the %{target}."
+msgstr ""
 
-msgid "AICatalog|Could not update agent."
-msgstr "에이전트를 업데이트 할 수 없음."
+msgid "AICatalog|Could not update %{itemType}."
+msgstr ""
 
 msgid "AICatalog|Could not update agent. Try again."
-msgstr "에이전트를 없데이트 할 수 없습니다. 다시 시도해 보세요."
-
-msgid "AICatalog|Could not update flow in the %{target}."
-msgstr "%{target}내에서 플로우를 없데이트 할 수 없습니다."
-
-msgid "AICatalog|Could not update flow."
-msgstr "플로우를 업데이트 할 수 없음."
+msgstr "에이전트를 업데이트 할 수 없습니다. 다시 시도해 보세요."
 
 msgid "AICatalog|Could not update flow. Try again."
 msgstr "플로우를 업데이트 할 수 없습니다. 다시 시도해 보세요."
@@ -2564,9 +2582,6 @@ msgstr "삭제 방법"
 msgid "AICatalog|Describe any relevant information for your admin"
 msgstr "관리자에게 관련 정보를 설명하세요"
 
-msgid "AICatalog|Description"
-msgstr "설명"
-
 msgid "AICatalog|Description is required."
 msgstr "설명이 필요합니다."
 
@@ -2578,9 +2593,6 @@ msgstr "이 %{namespaceType}에서 에이전트를 비활성화"
 
 msgid "AICatalog|Disable flow from this %{namespaceType}"
 msgstr "이 %{namespaceType}에서 플로우를 비활성화"
-
-msgid "AICatalog|Display name"
-msgstr "표시 이름"
 
 msgid "AICatalog|Duplicate"
 msgstr "복제"
@@ -2699,6 +2711,9 @@ msgstr "%{name}내의 플로우 활성화됨."
 msgid "AICatalog|Flow enabled in %{targetType}."
 msgstr "%{targetType}의 플로우 활성화됨."
 
+msgid "AICatalog|Flow hidden."
+msgstr "플로우 숨겨짐."
+
 msgid "AICatalog|Flow is now at version %{newVersion}."
 msgstr "플로우는 이제 버전 %{newVersion}입니다."
 
@@ -2743,6 +2758,9 @@ msgstr "AI 카탈로그 시작하기"
 
 msgid "AICatalog|Group is required."
 msgstr "그룹이 필요합니다."
+
+msgid "AICatalog|Hide %{itemType}"
+msgstr ""
 
 msgid "AICatalog|Hide from the AI Catalog"
 msgstr "AI 카탈로그에서 숨기기"
@@ -2822,6 +2840,9 @@ msgstr "오픈 소스 프로젝트."
 msgid "AICatalog|Other"
 msgstr "기타"
 
+msgid "AICatalog|Pending approval"
+msgstr "승인 대기중"
+
 msgid "AICatalog|Please describe below."
 msgstr "아래에 설명해 주세요."
 
@@ -2851,6 +2872,9 @@ msgstr "프로젝트별 자동화."
 
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
 msgstr "공개 %{itemTypePlural}는 다음에 최적:"
+
+msgid "AICatalog|Ready to enable"
+msgstr "활성화 준비됨"
 
 msgid "AICatalog|Reason for reporting"
 msgstr "보고하는 이유"
@@ -2975,6 +2999,12 @@ msgstr "버전 문제를 방지하려면 이 에이전트의 최신 버전만 �
 msgid "AICatalog|To prevent versioning issues, you can edit only the latest version of this flow. To edit an earlier version, %{linkStart}duplicate the flow%{linkEnd}."
 msgstr "버전 문제를 방지하려면 이 플로우의 최신 버전만 편집할 수 있습니다. 이전 버전을 편집하려면 %{linkStart}플로우를 복제하십시오%{linkEnd}."
 
+msgid "AICatalog|To use this %{itemType}, a user with at least the Maintainer role must enable it in this project."
+msgstr ""
+
+msgid "AICatalog|To use this %{itemType}, a user with the Owner role must enable it in the top-level group."
+msgstr ""
+
 msgid "AICatalog|Tools"
 msgstr "도구"
 
@@ -3068,6 +3098,9 @@ msgstr "이 %{itemType}을 보고하는 이유는 무엇입니까?"
 msgid "AICatalog|Working with sensitive data."
 msgstr "민감한 데이터로 작업"
 
+msgid "AICatalog|YAML configuration"
+msgstr ""
+
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr "당신은 [domain]의 전문가 입니다. 당신의 커뮤니케이션 스타일은 [style] 입니다. 사용자를 도와줄때, 당신은 항상 ... 합니다. 당신의 주요 장점은 ... 당신은 ... 방식으로 문제에 접근합니다."
 
@@ -3132,7 +3165,7 @@ msgid "AISummary|View summary"
 msgstr "요약 보기"
 
 msgid "AI|AI vulnerability management"
-msgstr ""
+msgstr "AI 취약점 관리"
 
 msgid "AI|Accept & Insert"
 msgstr "확인 & 삽입"
@@ -3448,9 +3481,6 @@ msgstr "AWS 비밀 액세스 키(선택 사항)"
 
 msgid "Abort"
 msgstr "중지"
-
-msgid "About"
-msgstr "정보"
 
 msgid "About GitLab"
 msgstr "GitLab에 대하여"
@@ -3842,11 +3872,17 @@ msgstr "정말로 %{accessTokenType} \"%{tokenName}\"를 해지 하시겠습니�
 msgid "AccessTokens|Are you sure you want to revoke the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr "정말로 %{tokenName} 토큰을 해지 하시겠습니까? 이 동작은 되돌릴 수 없습니다. 이 액세스 토큰에 의존하는 모든 도구가 작동을 멈출 것입니다."
 
+msgid "AccessTokens|Are you sure you want to revoke the token %{tokenName}? This action cannot be undone. Any tools that rely on this token will no longer have access to GitLab."
+msgstr ""
+
 msgid "AccessTokens|Are you sure you want to rotate the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr "정말로 %{accessTokenType} \"%{tokenName}\"을 교체하시겠습니까? 이 동작은되돌릴 수 없습니다. 이 액세스 토큰에 의존하는 모든 도구가 작동을 멈출 것입니다."
 
 msgid "AccessTokens|Are you sure you want to rotate the token %{tokenName}? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr "%{tokenName} 토큰을 정말로 교체하시겠습니까? 이 작업은 되돌릴 수 없습니다. 이 액세스 토큰을 사용하는 모든 도구가 작동을 멈출 수 있습니다."
+
+msgid "AccessTokens|Are you sure you want to rotate the token %{tokenName}? This action cannot be undone. Any tools that rely on this token will no longer have access to GitLab."
+msgstr ""
 
 msgid "AccessTokens|Are you sure?"
 msgstr "확실한가요?"
@@ -4005,7 +4041,7 @@ msgid "AccessTokens|Group and project permissions"
 msgstr "그룹과 프로젝트 권한"
 
 msgid "AccessTokens|Group and project resources"
-msgstr ""
+msgstr "그릅과 프로젝트 리소스"
 
 msgid "AccessTokens|How do I use DPoP?"
 msgstr "DPoP를 어떻게 사용하나요?"
@@ -4078,10 +4114,10 @@ msgid "AccessTokens|No description provided."
 msgstr "설명이 없습니다."
 
 msgid "AccessTokens|No groups or projects added."
-msgstr ""
+msgstr "그룹 또는 프로젝트가 추가되지 않았습니다."
 
 msgid "AccessTokens|No resources selected"
-msgstr ""
+msgstr "선택된 리소스가 없음"
 
 msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by the user"
 msgstr "사용자가 보유하지 않은 권한으로 토큰을 교체할 수 없습니다."
@@ -4099,7 +4135,7 @@ msgid "AccessTokens|Personal access tokens"
 msgstr "개인 액세스 토큰"
 
 msgid "AccessTokens|Remove group %{name}"
-msgstr ""
+msgstr "%{name} 그룹 제거"
 
 msgid "AccessTokens|Remove project %{name}"
 msgstr ""
@@ -4156,7 +4192,7 @@ msgid "AccessTokens|Select a role"
 msgstr "역할 선택"
 
 msgid "AccessTokens|Select permissions"
-msgstr ""
+msgstr "권한 선택"
 
 msgid "AccessTokens|Select scopes"
 msgstr "범위 선택"
@@ -4181,6 +4217,9 @@ msgstr "토큰이 마지막으로 사용된 시간"
 
 msgid "AccessTokens|The token was revoked successfully."
 msgstr "토큰이 성공적으로 해지되었습니다."
+
+msgid "AccessTokens|The token was rotated successfully."
+msgstr ""
 
 msgid "AccessTokens|This token expires soon. If still needed, generate a new token with the same settings."
 msgstr "이 토큰은 곧 만료됩니다. 여전히 필요하다면 동일한 설정으로 새 토큰을 생성하세요."
@@ -4211,6 +4250,15 @@ msgstr "토큰 이름"
 
 msgid "AccessTokens|Token name is required."
 msgstr "토큰 이름은 필수사항입니다."
+
+msgid "AccessTokens|Token revocation unsuccessful. Please try again."
+msgstr ""
+
+msgid "AccessTokens|Token rotated successfully. Make sure you copy your token - you won't be able to access it again."
+msgstr ""
+
+msgid "AccessTokens|Token rotation unsuccessful. Please try again."
+msgstr ""
 
 msgid "AccessTokens|Token scope"
 msgstr "토큰 범위"
@@ -4255,7 +4303,7 @@ msgid "AccessTokens|Your new token has been created"
 msgstr ""
 
 msgid "AccessTokens|Your personal access token"
-msgstr ""
+msgstr "당신의 개인 억세스 토큰"
 
 msgid "AccessTokens|Your static object token authenticates you when repository static objects (such as archives or blobs) are served from an external storage."
 msgstr "정적 개체 토큰은 리포지토리 정적 개체(예: 아카이브 또는 Blob)가 외부 스토리지에서 제공될 때 사용자를 인증합니다."
@@ -4537,7 +4585,7 @@ msgid "Add a related issue"
 msgstr "관련 이슈 추가"
 
 msgid "Add a related ticket"
-msgstr ""
+msgstr "관련 티켓 추가"
 
 msgid "Add a reply"
 msgstr "답글 추가"
@@ -6224,6 +6272,9 @@ msgstr "봇"
 msgid "AdminUsers|Can create top-level group"
 msgstr "최상위 그룹을 생성할 수 있음"
 
+msgid "AdminUsers|Cannot be nil."
+msgstr ""
+
 msgid "AdminUsers|Cannot sign in or access instance information"
 msgstr "로그인할 수 없거나, 인스턴스 정보에 액세스 할 수 없습니다."
 
@@ -6244,6 +6295,9 @@ msgstr "사용자 승인"
 
 msgid "AdminUsers|Confirm user %{username}?"
 msgstr "%{username} 사용자를 승인할까요?"
+
+msgid "AdminUsers|Control when a user will need to enter an OTP during sign in."
+msgstr ""
 
 msgid "AdminUsers|Could not load custom admin roles."
 msgstr "커스텀 운영자 역할을 로딩할 수 없습니다."
@@ -6301,6 +6355,9 @@ msgstr "편집"
 
 msgid "AdminUsers|Edit service account"
 msgstr "서비스 계정 편집"
+
+msgid "AdminUsers|Email OTP required after"
+msgstr ""
 
 msgid "AdminUsers|Export permissions as CSV (max 100,000 users)"
 msgstr "CSV로 권한목록 내보내기(최대 100,000명의 사용자)"
@@ -6885,13 +6942,13 @@ msgid "AiCommitMessage|An unexpected error has occurred. Please try again."
 msgstr "예상하지 못한 오류가 발생했습니다. 다시 시도해 주세요."
 
 msgid "AiFlowTriggers|✅ %{flow_name} has started. You can view progress %{link_start}here%{link_end}."
-msgstr ""
+msgstr "✅ %{flow_name} 시작됨. 진행 상황은 %{link_start}여기%{link_end}에서 볼 수 있습니다."
 
 msgid "AiFlowTriggers|❌ Could not start processing due to this error: %{error}"
-msgstr ""
+msgstr "❌ 다음 오류로 인해 처리를 시작할 수 없습니다: %{error}"
 
 msgid "AiFlowTriggers|🔄 Processing the request..."
-msgstr ""
+msgstr "🔄 요청 처리중.."
 
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
 msgstr "지정된 Duo 좌석 참여"
@@ -6996,16 +7053,13 @@ msgid "AiPowered|AI logs"
 msgstr "AI 로그"
 
 msgid "AiPowered|Add group"
-msgstr ""
+msgstr "그룹 추가"
 
 msgid "AiPowered|After the conversation was created"
 msgstr "대화가 생성된 이후"
 
 msgid "AiPowered|After the conversation was last updated"
 msgstr "대화가 최종 업데이트된 이후"
-
-msgid "AiPowered|Agent & Flow Permissions"
-msgstr "에이전트 & 플로우 권한"
 
 msgid "AiPowered|Allow GitLab Duo agents to execute flows for the instance. %{linkStart}What are flows%{linkEnd}?"
 msgstr "GitLab Duo 에이전트가 인스턴스에 대한 플로우를 실행하도록 허용합니다. %{linkStart}플로우란 무엇입니까%{linkEnd}?"
@@ -7100,14 +7154,20 @@ msgstr "AI 기반 기능의 사용 여부를 컨트롤 합니다."
 msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
 msgstr "GitLab이 AI 기반 기능에 컨텍스트를 제공하기 위해 귀하의 코드와 프로젝트 데이터를 처리할 수 있는지 여부를 제어합니다."
 
-msgid "AiPowered|Define the minimum role level to perform each of the following actions"
-msgstr "다음 작업을 수행하기 위한 최소 역할 수준을 정의하세요"
+msgid "AiPowered|Control who can use AI features that run using CI/CD pipelines."
+msgstr ""
+
+msgid "AiPowered|Control who can use AI features that run without using CI/CD pipelines."
+msgstr ""
+
+msgid "AiPowered|Define the minimum role for the following actions"
+msgstr ""
 
 msgid "AiPowered|Direct connections"
 msgstr "직접 연결"
 
-msgid "AiPowered|Enable"
-msgstr "활성화"
+msgid "AiPowered|Duo Agent Platform Permissions"
+msgstr ""
 
 msgid "AiPowered|Enable AI logs"
 msgstr "AI 로그 활성화"
@@ -7121,14 +7181,20 @@ msgstr "자체 호스팅 베타 모델과 기능을 활성화하면 %{linkStart}
 msgid "AiPowered|End date: %{endDate}"
 msgstr "종료일 : %{endDate}"
 
+msgid "AiPowered|Ensure members can be added to the group that contains the project."
+msgstr ""
+
 msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoint is used for GitLab Duo Agent Platform requests. %{br} The URL must not include the \"http://\" or \"https://\" protocol. For example \"example.com:50052\"."
 msgstr "Duo Agent Platform 서비스의 URL을 입력하세요. 이 엔드포인트는 GitLab Duo Agent Platform 요청에 사용됩니다. %{br}URL은 \"http://\" 또는 \"https://\" 프로토콜을 포함하지 않아야 합니다. 예를 들어, \"example.com:50052\"과 같은 형식입니다."
 
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
 msgstr "로컬 AI Gateway의 URL을 입력하세요. 이 엔드포인트는 GitLab Duo 자체 호스팅 요청에 사용됩니다.%{br}URL은 \"http://\" 또는 \"https://\" 프로토콜을 포함한 전체 URL이어야 합니다. 예: \"http://EXAMPLE-URL\".%{br}자세한 내용은 %{linkStart}GitLab AI Gateway를 설치%{linkEnd}하는 방법을 참조하세요."
 
-msgid "AiPowered|Execute"
-msgstr "실행"
+msgid "AiPowered|Execute Duo Agent Platform"
+msgstr ""
+
+msgid "AiPowered|Execute Duo Agent Platform with CI/CD pipelines"
+msgstr ""
 
 msgid "AiPowered|Experiment and beta features"
 msgstr "실험기능 및 베타 기능"
@@ -7214,26 +7280,14 @@ msgstr "GitLab Duo Agent Platform 서비스의 로컬 URL"
 msgid "AiPowered|Lock tooltip icon"
 msgstr "툴팁 아이콘 잠금"
 
-msgid "AiPowered|Manage"
-msgstr "관리"
-
 msgid "AiPowered|Maximum time in seconds to wait for responses from the AI Gateway (up to 600 seconds).%{br}Increasing this value might result in degraded user experience."
 msgstr "AI 게이트웨이에서 응답을 기다리는 최대 시간(최대 600초). %{br} 이 값을 증가시키면 사용자 경험이 나빠질 수 있습니다."
 
 msgid "AiPowered|Member access"
-msgstr ""
+msgstr "멤버 억세스"
 
 msgid "AiPowered|Membership grants access to"
 msgstr "억세스가 허가된 멤버쉽"
-
-msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
-msgstr "에이전트와 플로우를 생성, 복제, 편집, 삭제 및 표시하기 위해 필요한 최소 권한."
-
-msgid "AiPowered|Minimum role required to enable agents and flows on projects."
-msgstr "프로젝트에서 에이전트와 플로우를 활성화하기 위해 필요한 최소 역할."
-
-msgid "AiPowered|Minimum role required to execute agents and flows."
-msgstr "에이전트와 플로우를 실행하는 데 필요한 최소 역할."
 
 msgid "AiPowered|Model Selection"
 msgstr "모델 선택"
@@ -7245,10 +7299,10 @@ msgid "AiPowered|Never allow GitLab to process your code and project data for AI
 msgstr "GitLab이 AI 기반 기능을 위해 당신의 코드와 프로젝트 데이터를 처리하지 않도록 합니다. 이 네임스페이스 내에서 당신의 데이터는 GitLab Duo로 전송되지 않습니다."
 
 msgid "AiPowered|No access rules configured"
-msgstr ""
+msgstr "구성된 억세스 규칙이 없습니다"
 
 msgid "AiPowered|No groups found"
-msgstr ""
+msgstr "그룹을 찾을 수 없음"
 
 msgid "AiPowered|Not enabled"
 msgstr "활성화되지 않음"
@@ -7269,10 +7323,10 @@ msgid "AiPowered|Remove"
 msgstr "삭제"
 
 msgid "AiPowered|Select a group to continue"
-msgstr ""
+msgstr "계속하려면 그룹을 선택"
 
 msgid "AiPowered|Select group"
-msgstr ""
+msgstr "그룹 선택"
 
 msgid "AiPowered|Self-hosted beta models and features"
 msgstr "자체 호스팅 베타 모델과 기능"
@@ -8871,6 +8925,9 @@ msgstr "GitLab Advanced SAST 분석기를 사용하여 소스 코드의 취약�
 msgid "Analyze your source code for vulnerabilities."
 msgstr "소스 코드에 취약점이 있는지 분석하세요."
 
+msgid "Analyzer type"
+msgstr "분석기 유형"
+
 msgid "Analyzing file…"
 msgstr "파일 분석중..."
 
@@ -9251,6 +9308,9 @@ msgstr "라벨 적용"
 
 msgid "Apply a template"
 msgstr "템플릿 적용"
+
+msgid "Apply default profile to all"
+msgstr "전체에 기본 프로필 적용"
 
 msgid "Apply selected attributes to projects (keeps existing attributes)"
 msgstr "선택한 속성을 프로젝트에 적용합니다 (기존 속성은 유지됨)."
@@ -10016,103 +10076,103 @@ msgid "Attempted to update the pipeline trigger token but failed"
 msgstr "파이프라인 트리거 토큰 업데이트를 시도했지만 실패했습니다."
 
 msgid "Attestations"
-msgstr ""
+msgstr "증명서"
 
 msgid "Attestations|Attestation"
-msgstr ""
+msgstr "증명서"
 
 msgid "Attestations|Attestations"
 msgstr "증명서"
 
 msgid "Attestations|Build"
-msgstr ""
+msgstr "빌드"
 
 msgid "Attestations|Build Config Digest"
-msgstr ""
+msgstr "빌드 구성 다이제스트"
 
 msgid "Attestations|Build Config URI"
-msgstr ""
+msgstr "빌드 구성 URI"
 
 msgid "Attestations|Build Signer Digest"
-msgstr ""
+msgstr "빌드 서명자 다이제스트"
 
 msgid "Attestations|Build Signer URI"
-msgstr ""
+msgstr "빌드 서명자 URI"
 
 msgid "Attestations|Build Trigger"
-msgstr ""
+msgstr "빌드 트리거"
 
 msgid "Attestations|Certificate"
-msgstr ""
+msgstr "인증서"
 
 msgid "Attestations|Commit"
-msgstr ""
+msgstr "커밋"
 
 msgid "Attestations|Created"
-msgstr ""
+msgstr "생성됨"
 
 msgid "Attestations|Digest"
-msgstr ""
+msgstr "다이제스트"
 
 msgid "Attestations|Issuer"
-msgstr ""
+msgstr "발행자"
 
 msgid "Attestations|No attestations found for this project"
 msgstr "이 프로젝트에서 증명서를 찾을 수 없습니다"
 
 msgid "Attestations|Predicate"
-msgstr ""
+msgstr "검증 내용"
 
 msgid "Attestations|Runner Environment"
-msgstr ""
+msgstr "러너 환경"
 
 msgid "Attestations|Runner Invocation URI"
-msgstr ""
+msgstr "러너 호출 URI"
 
 msgid "Attestations|Sign and verify SLSA provenance with a CI/CD Component."
 msgstr "CI/CD 구성 요소로 SLSA 출처에 서명하고 검증합니다."
 
 msgid "Attestations|Source Repository Digest"
-msgstr ""
+msgstr "소스 리포지토리 다이제스트"
 
 msgid "Attestations|Source Repository Identifier"
-msgstr ""
+msgstr "소스 리포지토리 식별자"
 
 msgid "Attestations|Source Repository Owner Identifier"
-msgstr ""
+msgstr "소스 리포지토리 소유자 식별자"
 
 msgid "Attestations|Source Repository Owner URI"
-msgstr ""
+msgstr "소스 리포지토리 소유자 URI"
 
 msgid "Attestations|Source Repository Ref"
-msgstr ""
+msgstr "소스 리포지토리 참조"
 
 msgid "Attestations|Source Repository URI"
-msgstr ""
+msgstr "소스 리포지토리 URI"
 
 msgid "Attestations|Source Repository Visibility"
-msgstr ""
+msgstr "소스 리포지토리 공개범위"
 
 msgid "Attestations|Subject"
-msgstr ""
+msgstr "검증 대상"
 
 msgid "Attestations|Subjects"
-msgstr ""
+msgstr "검증 대상"
 
 msgid "Attestations|This attestation does not exist"
-msgstr ""
+msgstr "해당 증명서가 존재하지 않음"
 
 msgid "Attestations|Unable to parse attestation certificate."
-msgstr ""
+msgstr "증명서를 파싱할 수 없습니다."
 
 msgid "Attestations|Unable to parse attestation metadata"
-msgstr ""
+msgstr "증명서 메타데이터를 파싱할 수 없습니다"
 
 msgid "Attestations|View SLSA Component documentation"
 msgstr "SLSA 구성 요소 문서 보기"
 
 msgid "Attestations|View job for this attestation"
-msgstr ""
+msgstr "이 증명서의 작업 보기"
 
 msgid "Attestations|Workflow"
 msgstr "워크플로"
@@ -10134,6 +10194,9 @@ msgstr "당신히 생성한 속성이 여기 표시됩니다."
 
 msgid "Audit events"
 msgstr "감사 이벤트"
+
+msgid "Audit events:"
+msgstr "감사 이벤트:"
 
 msgid "AuditLogs|(removed)"
 msgstr "(삭제됨)"
@@ -11031,7 +11094,7 @@ msgid "BillingPlans|Add-ons"
 msgstr "추가"
 
 msgid "BillingPlans|Additional features"
-msgstr ""
+msgstr "추가 기능"
 
 msgid "BillingPlans|Advanced CI/CD"
 msgstr "고급 CI/CD"
@@ -11133,7 +11196,7 @@ msgid "BillingPlans|Explore %{feature}"
 msgstr "%{feature} 탐색"
 
 msgid "BillingPlans|Explore plans"
-msgstr ""
+msgstr "요금제 살펴보기"
 
 msgid "BillingPlans|Explore these Premium features to optimize your GitLab experience."
 msgstr "이 프리미엄 기능들을 탐색하여 GitLab 경험을 최적화하세요."
@@ -11346,7 +11409,7 @@ msgid "BillingPlans|You have successfully started an Ultimate and GitLab Duo Ent
 msgstr "Ultimate 및 GitLab Duo Enterprise 평가판을 성공적으로 시작했으며, 이 평가판은 %{exp_date}에 만료됩니다. 멤버에게 새로운 GitLab Duo Enterprise 기능에 대한 액세스 권한을 부여하려면 %{assign_link_start}GitLab Duo Enterprise 좌석을%{assign_link_end} 할당하세요."
 
 msgid "BillingPlans|Your %{platform} is on %{planName}"
-msgstr ""
+msgstr "%{platform}에서 %{planName} 요금제를 사용 중입니다"
 
 msgid "BillingPlans|a trial of Ultimate + Duo Enterprise"
 msgstr "Ultimate + Duo Enterprise 체험판"
@@ -11358,7 +11421,7 @@ msgid "BillingPlans|group"
 msgstr "그룹"
 
 msgid "BillingPlans|groups"
-msgstr ""
+msgstr "그룹"
 
 msgid "BillingPlans|instance"
 msgstr "인스턴스"
@@ -11379,7 +11442,7 @@ msgid "BillingPlans|projects"
 msgstr "프로젝트"
 
 msgid "BillingPlans|users"
-msgstr ""
+msgstr "사용자"
 
 msgid "BillingPlan|Upgrade"
 msgstr "업그레이드"
@@ -13190,6 +13253,9 @@ msgstr "월별 인스턴스 러너 파이프라인 시간 (분)"
 msgid "CICDAnalytics|Median duration"
 msgstr "기간 중간값"
 
+msgid "CICDAnalytics|Other pipelines rate"
+msgstr ""
+
 msgid "CICDAnalytics|Projects with releases"
 msgstr "릴리스된 프로젝트"
 
@@ -13217,6 +13283,9 @@ msgstr "파이프라인이 성공적으로 완료된 비율."
 
 msgid "CICDAnalytics|The percentage of pipelines that failed."
 msgstr "파이프라인이 실패한 비율."
+
+msgid "CICDAnalytics|The percentage of pipelines that were skipped or canceled."
+msgstr ""
 
 msgid "CICDAnalytics|The total number of pipelines that have run in the selected time period."
 msgstr "선택한 기간 동안 실행된 파이프라인의 총 수."
@@ -13676,6 +13745,9 @@ msgstr "이 하위 유형을 상위 유형에 할당할 수 없습니다."
 
 msgid "Cannot be merged automatically"
 msgstr "자동으로 머지할 수 없습니다."
+
+msgid "Cannot create an immutable tag rule from a protection rule"
+msgstr ""
 
 msgid "Cannot create organization. The `o` namespace is a reserved path. Please rename the group or user before creating an organization."
 msgstr "조직을 만들 수 없습니다. `o` 네임스페이스는 예약된 경로입니다. 조직을 만들기 전에 그룹 또는 사용자의 이름을 변경하세요."
@@ -14220,8 +14292,8 @@ msgstr "필수"
 msgid "CiCatalogComponent|Name"
 msgstr "이름"
 
-msgid "CiCatalogComponent|The number of projects that used the component in the last 30 days."
-msgstr "최근 30일간 이 컴포넌트를 사용한 프로젝트 개수"
+msgid "CiCatalogComponent|The number of projects that used this version of the component in the last 30 days."
+msgstr ""
 
 msgid "CiCatalogComponent|There was an error fetching this resource's components"
 msgstr "이 리소스의 구성 요소를 가져오는 중 오류가 발생했습니다."
@@ -14232,8 +14304,18 @@ msgstr "이 탭은 리포지토리의 컴포넌트에 대해 자동 수집된 �
 msgid "CiCatalogComponent|Type"
 msgstr "유형"
 
+msgid "CiCatalog|%d project"
+msgid_plural "CiCatalog|%d projects"
+msgstr[0] "%d 프로젝트"
+
 msgid "CiCatalog|All"
 msgstr "모두"
+
+msgid "CiCatalog|Analytics"
+msgstr "분석"
+
+msgid "CiCatalog|Analytics unavailable"
+msgstr "분석을 사용할 수 없음"
 
 msgid "CiCatalog|Back to the CI/CD Catalog"
 msgstr "CI/CD 카탈로그로 돌아가기"
@@ -14307,6 +14389,9 @@ msgstr "파트너"
 msgid "CiCatalog|Private - This component project can only be viewed by project members."
 msgstr "비공개 - 이 컴포넌트 프로젝트는 프로젝트 멤버만 볼 수 있습니다."
 
+msgid "CiCatalog|Projects"
+msgstr "프로젝트"
+
 msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
 msgstr "이 프로젝트의 CI/CD 컴포넌트를 CI/CD 카탈로그에 게시합니다."
 
@@ -14336,6 +14421,9 @@ msgstr "컴포넌트 프로젝트를 CI/CD 카탈로그 프로젝트로 설정�
 
 msgid "CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days."
 msgstr "지난 30일 동안 이 카탈로그 리소스의 구성 요소를 파이프라인에 사용한 프로젝트 수입니다."
+
+msgid "CiCatalog|The number of unique projects that used a component from this catalog in a pipeline in the last 30 days."
+msgstr ""
 
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
 msgstr "프로젝트 및 릴리스된 버전이 CI/CD 카탈로그에서 제거됩니다. 이 토글을 다시 활성화하면 프로젝트의 기존 릴리스가 카탈로그에 다시 추가되지 않습니다. %{linkStart}새 릴리스를 만들어야 합니다%{linkEnd}."
@@ -14382,6 +14470,9 @@ msgstr "프로젝트를 CI/CD 카탈로그 프로젝트로 설정할 수 없습�
 msgid "CiCatalog|Unreleased"
 msgstr "릴리스되지 않음"
 
+msgid "CiCatalog|Usage statistics"
+msgstr "사용 통계"
+
 msgid "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog."
 msgstr "CI/CD 카탈로그에 게시하려면 CI/CD 작업에서 '릴리스' 키워드를 사용하세요."
 
@@ -14393,6 +14484,9 @@ msgstr "우리는 파이프라인 컴포넌트 리포지토리를 만들고 관�
 
 msgid "CiCatalog|What are verified component creators?"
 msgstr "인증된 컴포넌트 작성자란 무엇입니까?"
+
+msgid "CiCatalog|You need maintainer access to at least one CI/CD catalog project to view usage analytics."
+msgstr "적어도 하나의 CI/CD 카탈로그 프로젝트에 대한 유지 관리자 액세스 권한이 있어야 사용 분석을 볼 수 있습니다."
 
 msgid "CiCatalog|Your groups"
 msgstr "귀하의 그룹"
@@ -18994,6 +19088,9 @@ msgstr "고급 검색을 위한 설정 구성."
 msgid "Configure settings for exact code search."
 msgstr "정확한 코드 검색을 위한 설정을 구성합니다."
 
+msgid "Configure settings for semantic search."
+msgstr ""
+
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
 msgstr "일반 사용자 및 IP 속도 제한을 대체하는 Files API 요청에 대한 특정 한도를 설정합니다."
 
@@ -19194,6 +19291,9 @@ msgstr "이 GitLab 인스턴스에서 컨테이너 레지스트리가 활성화�
 
 msgid "Container scanning"
 msgstr "컨테이너 스캐닝"
+
+msgid "Container virtual registry not available"
+msgstr ""
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr "이 기능을 활성화하려면 %{linkStart}관리 설정%{linkEnd} 을 방문하십시오."
@@ -20206,8 +20306,8 @@ msgstr "복사 %{name}"
 msgid "Copy %{protocol} clone URL"
 msgstr "%{protocol} 클론 URL 복사"
 
-msgid "Copy Chat Session ID (%{id})"
-msgstr "채팅 세션 ID (%{id}) 복사"
+msgid "Copy Chat Session ID: %{id}"
+msgstr ""
 
 msgid "Copy ID"
 msgstr "ID 복사"
@@ -21235,9 +21335,6 @@ msgstr "원시 데이터 보기"
 msgid "Current"
 msgstr "현재"
 
-msgid "Current Chat"
-msgstr "현재 채팅"
-
 msgid "Current GitLab Duo Chat"
 msgstr "현재 GitLab Duo 채팅"
 
@@ -21652,9 +21749,6 @@ msgstr "시간 경과에 따른 심각한 취약점"
 msgid "DORA4Metrics|Cycle time"
 msgstr "사이클 타임"
 
-msgid "DORA4Metrics|DORA metrics have moved to %{dashboardsLinkStart}Analytics dashboards%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}DORA metrics%{doraMetricsLinkEnd}."
-msgstr "DORA 측정항목은 %{dashboardsLinkStart}분석 대시보드%{dashboardsLinkEnd}&gt; %{doraMetricsLinkStart}DORA 측정항목%{doraMetricsLinkEnd}으로 이동되었습니다."
-
 msgid "DORA4Metrics|Deployment frequency"
 msgstr "배포 빈도"
 
@@ -21715,9 +21809,6 @@ msgstr "변경을 위한 리드 타임 (median days)"
 
 msgid "DORA4Metrics|Learn more"
 msgstr "자세히 알아보기"
-
-msgid "DORA4Metrics|Looking for DORA metrics?"
-msgstr "DORA 측정항목을 찾고 있나요?"
 
 msgid "DORA4Metrics|Low"
 msgstr "낮음"
@@ -24966,6 +25057,9 @@ msgstr "디렉토리 이름"
 msgid "Disable"
 msgstr "사용 안 함"
 
+msgid "Disable %{name}"
+msgstr "%{name} 비활성화"
+
 msgid "Disable 2FA"
 msgstr "2FA 비활성화"
 
@@ -24984,11 +25078,17 @@ msgstr "새로운 기능 메뉴 비활성화"
 msgid "Disable fetching cloud alerts if this GitLab instance is isolated from the public internet, or does not use observe.gitlab.com for Observability features."
 msgstr "이 GitLab 인스턴스가 공용 인터넷과 격리되어 있거나 통합관찰 기능에 대해 observe.gitlab.com을 사용하지 않는 경우 클라우드 경고 수집을 비활성화합니다."
 
+msgid "Disable for all"
+msgstr "모두 비활성화"
+
 msgid "Disable inviting new members to group or project by group/project owners or project maintainers"
 msgstr "그룹/프로젝트 소유자 또는 프로젝트 유지 관리자가 그룹이나 프로젝트에 새 멤버를 초대하는 기능을 비활성화합니다."
 
 msgid "Disable password authentication for users with an SSO identity"
 msgstr "SSO ID를 사용하는 사용자에 대한 비밀번호 인증 비활성화"
+
+msgid "Disable semantic search"
+msgstr "시멘틱 검색 비활성화"
 
 msgid "Disabled"
 msgstr "비활성화됨"
@@ -25154,7 +25254,7 @@ msgid "Do not show again"
 msgstr "다시 보지 않기"
 
 msgid "Do you still want to merge?"
-msgstr ""
+msgstr "아직도 머지를 원하십니까?"
 
 msgid "Do you want to remove this deploy key?"
 msgstr "이 배포 키를 삭제하시겠습니까?"
@@ -25369,12 +25469,6 @@ msgstr "업로드를 시작하려면 파일을 드롭하세요."
 msgid "DropdownWidget|An error occurred while fetching the assigned %{issuableAttribute} of the selected %{issuableType}."
 msgstr "선택된 %{issuableType}중 지정된 %{issuableAttribute}을 가져오는 동안 오류가 발생했습니다."
 
-msgid "DropdownWidget|Cancel"
-msgstr "취소"
-
-msgid "DropdownWidget|Edit %{issuableAttribute}"
-msgstr "%{issuableAttribute} 편집"
-
 msgid "DropdownWidget|Failed to fetch the %{issuableAttribute} for this %{issuableType}. Please try again."
 msgstr "%{issuableType}에 대한 %{issuableAttribute}를 가져오지 못했습니다. 다시 시도하세요."
 
@@ -25392,12 +25486,6 @@ msgstr "열린 %{issuableAttribute}를 찾을 수 없음"
 
 msgid "DropdownWidget|Select %{issuableAttribute}"
 msgstr "%{issuableAttribute} 선택"
-
-msgid "DropdownWidget|You do not have permission to view the currently assigned %{issuableAttribute} and will not be able to choose it again if you reassign it."
-msgstr "현재 지정된 %{issuableAttribute} 을 볼 수 있는 권한이 없으며 재지정하면 다시 선택할 수 없습니다."
-
-msgid "DropdownWidget|You don't have permission to view this %{issuableAttribute}."
-msgstr "이 %{issuableAttribute}을 볼 권한이 없습니다."
 
 msgid "Due Date"
 msgstr "마감일"
@@ -25498,6 +25586,9 @@ msgstr "GitLab Duo"
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr "GitLab Duo 에이전트 채팅"
 
+msgid "DuoAgenticChat|GitLab Duo Agentic Chat is unavailable"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
 msgstr "GitLab Duo가 이미 다른 탭이나 위치에서 이 채팅에 응답 중입니다. 새 채팅을 시작하거나, GitLab Duo가 완료될 때까지 기다렸다가 새 메시지를 보내세요."
 
@@ -25519,13 +25610,22 @@ msgstr "이 청구 기간 동안 남은 GitLab 크레딧이 없습니다. %{agen
 msgid "DuoAgenticChat|No credits remain for this billing period. To continue collaborating with GitLab Duo, turn off the Agentic mode toggle. You can still get AI assistance, just without the advanced agentic features. %{linkStart}Learn more%{linkEnd}."
 msgstr "이 청구 기간 동안 사용할 수 있는 크레딧이 남아 있지 않습니다. GitLab Duo와 계속 협업하려면 에이전트 모드 토글을 끄세요. 고급 에이전트 기능 없이도 AI 지원을 받을 수 있습니다. %{linkStart}자세히 알아보기%{linkEnd}."
 
+msgid "DuoAgenticChat|Return to Classic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|Select default namespace"
+msgstr ""
+
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr "이 대화와 관련된 에이전트를 더 이상 이용할 수 없습니다. 대화 이력은 볼 수 있지만 새로운 메시지를 보낼 수는 없습니다."
 
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr "채팅이 삭제됨."
 
-msgid "DuoAgenticChat|To use GitLab Duo Agentic Chat, please select a default namespace in your %{linkStart}User Profile Preferences%{linkEnd}."
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
 msgstr ""
 
 msgid "DuoAgenticChat|Turn off Agentic mode"
@@ -25699,9 +25799,6 @@ msgstr "소유자"
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr "구성 파일로 가는 경로"
 
-msgid "DuoAgentsPlatform|Prompt"
-msgstr "프롬프트"
-
 msgid "DuoAgentsPlatform|Read file"
 msgstr "파일 읽기"
 
@@ -25719,9 +25816,6 @@ msgstr "세션 검색"
 
 msgid "DuoAgentsPlatform|Search issues"
 msgstr "이슈 검색"
-
-msgid "DuoAgentsPlatform|Select a flow"
-msgstr "플로우 선택"
 
 msgid "DuoAgentsPlatform|Select a service account user"
 msgstr "서비스 계정 사용자를 선택하세요"
@@ -25746,9 +25840,6 @@ msgstr "소프트웨어 개발"
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr "에이전트 플로우를 가져오는 동안 문제가 발생했습니다"
-
-msgid "DuoAgentsPlatform|Start agent session"
-msgstr "에이전트 세션 시작"
 
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
 msgstr "트리거를 생성할 수 없습니다. 다시 시도하세요."
@@ -25801,9 +25892,6 @@ msgstr "에이전트 모드"
 msgid "DuoChat|Agentic mode (Beta)"
 msgstr "에이전트 모드 (Beta)"
 
-msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
-msgstr "운영자가 다음과 같은 이유로 GitLab Duo를 비활성화했습니다: %{reason}"
-
 msgid "DuoChat|Ask a question about GitLab"
 msgstr "GitLab에 대해 질문하세요"
 
@@ -25815,9 +25903,6 @@ msgstr "예를 들어 %{linkStart}포크가 뭐예요%{linkEnd}?"
 
 msgid "DuoChat|GitLab Duo Chat"
 msgstr "GitLab Duo Chat"
-
-msgid "DuoChat|GitLab Duo with Amazon Q"
-msgstr "GitLab Duo와 Amazon Q"
 
 msgid "DuoChat|Give feedback"
 msgstr "의견 보내기"
@@ -25846,11 +25931,8 @@ msgstr "GitLab Duo Chat과 통신하는 중에 오류가 발생했습니다. 나
 msgid "DuoChat|What is a fork?"
 msgstr "포크란 무엇인가요?"
 
-msgid "DuoChat|group"
-msgstr "그룹"
-
-msgid "DuoChat|project"
-msgstr "프로젝트"
+msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service account needs to be verified. Contact your administrator."
+msgstr ""
 
 msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the Code Review foundational flow in the top-level group."
 msgstr ""
@@ -25888,8 +25970,8 @@ msgstr "GitLab Duo에서 자동 검토 활성화"
 msgid "DuoCodeReview|GitLab Duo Code Review"
 msgstr "GitLab Duo 코드 리뷰"
 
-msgid "DuoCodeReview|GitLab Duo Code Review was not automatically added because your account requires GitLab Duo Enterprise. Contact your administrator to upgrade your account."
-msgstr "GitLab Duo 코드 리뷰는 귀하의 계정에 GitLab Duo Enterprise가 필요하기 때문에 자동으로 추가되지 않았습니다. 계정을 업그레이드하려면 관리자에게 문의하십시오."
+msgid "DuoCodeReview|GitLab Duo Code Review was not automatically added. Contact your administrator to verify your account has access to this feature."
+msgstr ""
 
 msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
 msgstr "귀하의 질의에 답변하는 동안 몇 가지 문제가 발생했습니다. 나중에 다시 시도해 주세요."
@@ -25906,14 +25988,17 @@ msgstr "활성화하면 GitLab Duo가 모든 그룹과 프로젝트의 새로운
 msgid "DuoCodeReview|When enabled, GitLab Duo will automatically review new merge requests. Draft merge requests and merge requests without changes are skipped."
 msgstr "이 기능을 활성화하면 GitLab Duo가 새로운 머지 리퀘스트를 자동으로 검토합니다. 초안 머지 리퀘스트와 변경 사항이 없는 머지 리퀘스트는 건너뜁니다."
 
-msgid "DuoCodeReview|You don't have access to GitLab Duo Code Review. This feature requires GitLab Duo Enterprise. Contact your administrator to upgrade your account."
-msgstr "GitLab Duo 코드 리뷰에 액세스할 수 없습니다. 이 기능은 GitLab Duo Enterprise가 필요합니다. 계정을 업그레이드하려면 관리자에게 문의하세요."
+msgid "DuoCodeReview|You don't have access to GitLab Duo Code Review. Contact your administrator to verify your account has access to this feature."
+msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
 msgstr "머지 리퀘스트를 검토 중이며 완료되면 알려드리겠습니다."
 
 msgid "DuoCodeReview|is working on a reply"
 msgstr "회신 작업을 하고 있습니다"
+
+msgid "DuoCodeReview|started %{session_link} and will let you know when it's finished"
+msgstr ""
 
 msgid "DuoCoreTrialDiscover|Accelerate learning and collaboration through AI interaction"
 msgstr "AI 상호작용을 통해 학습 및 협업 가속화"
@@ -26284,17 +26369,23 @@ msgstr "이 그룹, 하위 그룹 및 프로젝트의 기본 브랜치에서 취
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "질문을 하고, 개념을 탐구하고, 아이디어를 테스트하고, 워크플로에서 직접 즉각적인 피드백을 받으세요."
 
+msgid "DuoWorkflowSettings|Allow external MCP tools"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Allow the IDE to access external MCP tools."
+msgstr ""
+
 msgid "DuoWorkflowSettings|Control how GitLab Duo handles potential prompt injection attempts."
 msgstr "GitLab Duo가 잠재적인 프롬프트 인젝션 시도를 어떻게 처리할지 제어합니다."
+
+msgid "DuoWorkflowSettings|External MCP tools"
+msgstr ""
 
 msgid "DuoWorkflowSettings|Interrupt"
 msgstr "인터럽트"
 
 msgid "DuoWorkflowSettings|Log only"
 msgstr "로그만 기록"
-
-msgid "DuoWorkflowSettings|Model Context Protocol"
-msgstr "Model Context Protocol"
 
 msgid "DuoWorkflowSettings|No checks"
 msgstr "점검 없음"
@@ -26310,12 +26401,6 @@ msgstr "결과를 스캔하고 로그를 기록하지만, 요청을 차단하지
 
 msgid "DuoWorkflowSettings|Turn off scanning entirely. No prompt data is sent to third-party services."
 msgstr "스캔을 완전히 비활성화합니다. 프롬프트 데이터는 제3자에게 전송되지 않습니다."
-
-msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Chat (Agentic) and GitLab Duo Agent Platform."
-msgstr "GitLab Duo Chat(Agentic)와 GitLab Duo 에이전트 플랫폼에 대한 MCP 지원을 활성화하세요."
-
-msgid "DuoWorkflowSettings|Turn on support for Model Context Protocol (MCP)"
-msgstr "Model Context Protocol (MCP) 지원 켜기"
 
 msgid "Duplicate entries found for compliance controls for the requirement."
 msgstr "요구사항에 규정준수 컨트롤이 중복된 항목이 있습니다."
@@ -26579,6 +26664,9 @@ msgstr "편집기 도구 모음"
 msgid "Editor|Code Editor. Press %{keyCombo} to toggle tab key behavior between indentation and navigation. Editing %{blobPath}."
 msgstr "코드 편집기. %{keyCombo}를 눌러 들여쓰기와 탐색 간에 탭 키 동작을 전환합니다. %{blobPath}를 편집합니다."
 
+msgid "Editor|Editor accessibility guide"
+msgstr ""
+
 msgid "Edits"
 msgstr "편집"
 
@@ -26613,10 +26701,13 @@ msgid "Email Notification"
 msgstr "이메일 알림"
 
 msgid "Email OTP:"
-msgstr ""
+msgstr "이메일 OTP:"
 
 msgid "Email address copied"
 msgstr "이메일 주소 복사됨"
+
+msgid "Email address is required."
+msgstr ""
 
 msgid "Email address suffix"
 msgstr "이메일 도메인 주소"
@@ -28939,6 +29030,9 @@ msgstr "프로젝트를 로드하지 못했습니다"
 msgid "Failed to load related branches"
 msgstr "관련 브랜치를 불러올 수 없습니다"
 
+msgid "Failed to load security configuration"
+msgstr ""
+
 msgid "Failed to load stack trace."
 msgstr "스택 트레이스 로드 실패."
 
@@ -29619,8 +29713,8 @@ msgstr "경로로 찾기"
 msgid "Find file"
 msgstr "파일 찾기"
 
-msgid "Find the activation code for a purchased or renewed subscription in the Customers Portal or purchase confirmation email."
-msgstr "고객 포털이나 구매 확인 이메일에서 구매 또는 갱신된 구독에 대한 활성화 코드를 찾으세요."
+msgid "Find the activation code for a purchased or renewed subscription in the %{linkStart}Customers Portal%{linkEnd} or purchase confirmation email."
+msgstr ""
 
 msgid "FindFile|Switch branch/tag"
 msgstr "브랜치/태그 전환"
@@ -31133,6 +31227,9 @@ msgstr "Git LFS 속도 제한"
 msgid "Git LFS status:"
 msgstr "Git LFS 상태:"
 
+msgid "Git SSH operations"
+msgstr ""
+
 msgid "Git global setup"
 msgstr "Git 글로벌 설정"
 
@@ -31315,9 +31412,6 @@ msgstr "GitLab 가져오기"
 
 msgid "GitLab KAS"
 msgstr "GitLab KAS"
-
-msgid "GitLab Next|Next"
-msgstr "다음"
 
 msgid "GitLab Observability Backend requests"
 msgstr "GitLab 통합관찰 백엔드 요청"
@@ -31903,6 +31997,9 @@ msgstr "커밋"
 
 msgid "GlobalSearch|Could not load search results. Refresh the page to try again."
 msgstr "검색 결과를 로드할 수 없습니다. 페이지를 새로 고쳐 다시 시도하세요."
+
+msgid "GlobalSearch|Dead queue length"
+msgstr ""
 
 msgid "GlobalSearch|Epics"
 msgstr "에픽"
@@ -32822,9 +32919,6 @@ msgstr "'%{group_name}' 그룹을 삭제하는 중입니다."
 msgid "Group '%{group_name}' was successfully updated."
 msgstr "그룹 '%{group_name}'이(가) 성공적으로 업데이트되었습니다."
 
-msgid "Group '%{group_name}' will be deleted on %{date}."
-msgstr "그룹 '%{group_name}'은 %{date}에 삭제됩니다."
-
 msgid "Group Git LFS status:"
 msgstr "그룹 Git LFS 상태:"
 
@@ -32940,7 +33034,7 @@ msgid "Group overview content"
 msgstr "그룹 개요 콘텐츠"
 
 msgid "Group path"
-msgstr ""
+msgstr "그룹 경로"
 
 msgid "Group project URLs are prefixed with the group namespace"
 msgstr "그룹 프로젝트 URL에는 그룹 네임스페이스가 접두사가 붙습니다."
@@ -36479,6 +36573,9 @@ msgstr "통합을 재설정할 수 없습니다."
 msgid "Integrations|Integration details"
 msgstr "통합 세부 정보"
 
+msgid "Integrations|Integration properties exceed maximum size of %{max_size}"
+msgstr ""
+
 msgid "Integrations|Issues created in Jira are shown here once you have created the issues in project setup in Jira."
 msgstr "Jira에서 생성된 이슈는 Jira의 프로젝트 설정에서 이슈를 생성하면 여기에 표시됩니다."
 
@@ -36556,6 +36653,12 @@ msgstr "제외 없음"
 
 msgid "Integrations|There are no projects using custom settings"
 msgstr "커스텀 설정을 사용하는 프로젝트가 없습니다."
+
+msgid "Integrations|This integration is deprecated and replaced with the %{linkStart}GitLab for Slack app%{linkEnd}. Contact your GitLab administrator for help."
+msgstr ""
+
+msgid "Integrations|This integration is deprecated. Install the %{linkStart}GitLab for Slack app%{linkEnd} instead."
+msgstr ""
 
 msgid "Integrations|This integration, and inheriting projects were reset."
 msgstr "이 통합 및 상속 프로젝트가 리셋되었습니다."
@@ -38668,10 +38771,10 @@ msgid "Job|Scroll to next failure"
 msgstr "다음 실패로 스크롤"
 
 msgid "Job|Scroll to next result"
-msgstr ""
+msgstr "다음 결과로 스크롤"
 
 msgid "Job|Scroll to previous result"
-msgstr ""
+msgstr "이전 결과로 스크롤"
 
 msgid "Job|Scroll to top"
 msgstr "맨 위로 스크롤"
@@ -39582,7 +39685,7 @@ msgid "Learn more about linking issues and incidents"
 msgstr "이슈 및 인시던트 링크에 대해 자세히 알아보기"
 
 msgid "Learn more about linking tickets"
-msgstr ""
+msgstr "티켓 링크하기에 대해 자세히 알아보기"
 
 msgid "Learn more about max seats used"
 msgstr "사용 최대 좌석에 대해 자세히 알아보기"
@@ -39832,9 +39935,6 @@ msgstr "Let's Encrypt는 example.com에서 이메일을 받지 않습니다."
 
 msgid "Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
 msgstr "Let's Encrypt는 웹 사이트에서 HTTPS(SSL/TLS)를 활성화하기 위해 디지털 인증서를 제공하는 무료 자동화 개방형 인증 기관(CA)입니다. GitLab Pages%{docs_link_end}의 %{docs_link_start}설명서를 따라 Let's Encrypt 구성에 대해 자세히 알아보세요."
-
-msgid "Let's create your first group and project"
-msgstr "첫 번째 그룹과 프로젝트를 만들어봅시다"
 
 msgid "License"
 msgstr "라이선스"
@@ -40313,9 +40413,6 @@ msgstr "토론을 잠급니다."
 
 msgid "LoggedOutMarketingHeader|Contact Sales"
 msgstr "영업팀에 문의"
-
-msgid "LoggedOutMarketingHeader|Explore GitLab"
-msgstr "GitLab 살펴보기"
 
 msgid "LoggedOutMarketingHeader|Pricing"
 msgstr "가격"
@@ -41565,8 +41662,8 @@ msgstr "플래너 역할은 프로젝트를 관리하고 작업 항목을 추적
 msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
 msgstr "리포터 역할은 프로젝트나 그룹에 대한 정보를 얻어야 하지만 코드에 적극적으로 기여하지 않는 팀원에게 적합합니다."
 
-msgid "MemberRole|The Security Manager role provides comprehensive visibility and management over security aspects of the group or project."
-msgstr "보안 관리자 역할은 그룹 또는 프로젝트의 보안 측면에 대한 포괄적인 가시성과 관리 기능을 제공합니다."
+msgid "MemberRole|The Security Manager role is for security team members who need to view and manage security features for the group or project."
+msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr "이 멤버는 LDAP 사용자입니다. 역할을 변경하면 LDAP 그룹 동기화의 설정이 오버라이드 됩니다."
@@ -42737,6 +42834,9 @@ msgstr "SSH 키를 프로필에 추가하지 않으면 SSH를 사용하여 리�
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
 msgstr "SSH 키를 프로필에 추가하지 않으면 SSH를 통해 리포지토리를 풀 또는 푸시할 수 없습니다."
 
+msgid "Mixed"
+msgstr "혼합됨"
+
 msgid "MlExperimentTracking|%d experiment"
 msgid_plural "MlExperimentTracking|%d experiments"
 msgstr[0] "%d 실험기능"
@@ -43515,7 +43615,7 @@ msgid "Move this item to another group or project"
 msgstr "이 항목을 다른 그룹이나 프로젝트로 이동하세요"
 
 msgid "Move ticket"
-msgstr ""
+msgstr "티켓 이동"
 
 msgid "Move up"
 msgstr "위로 이동"
@@ -44256,7 +44356,7 @@ msgid "New public deploy key"
 msgstr "새 공개 배포 키"
 
 msgid "New related item"
-msgstr ""
+msgstr "새 관련 항목"
 
 msgid "New release"
 msgstr "새 릴리스"
@@ -44687,6 +44787,9 @@ msgstr "해당 이름이나 설명이 포함된 우선순위 라벨이 없습니
 msgid "No prioritized labels yet!"
 msgstr "아직 우선 순위 라벨이 없습니다!"
 
+msgid "No profile applied"
+msgstr "적용된 프로필 없음"
+
 msgid "No project found"
 msgstr "프로젝트를 찾을 수 없음"
 
@@ -44721,7 +44824,7 @@ msgid "No repository"
 msgstr "리포지토리 없음"
 
 msgid "No resources found"
-msgstr ""
+msgstr "리소스를 찾을 수 없음"
 
 msgid "No results"
 msgstr "결과 없음"
@@ -47024,6 +47127,9 @@ msgstr "reCAPTCHA v2만 지원됩니다:"
 msgid "Only required if not using role instance credentials."
 msgstr "역할 인스턴스 자격 증명을 사용하지 않는 경우에만 필요."
 
+msgid "Only the author can change visibility settings"
+msgstr ""
+
 msgid "Only track method calls that take longer to complete than the given duration."
 msgstr "주어진 기간보다 완료되는 데 더 오랜 시간이 걸리는 메서드 호출만 추적합니다."
 
@@ -48814,6 +48920,9 @@ msgstr "First Contentful Paint"
 msgid "PerformanceBar|Frontend resources"
 msgstr "프런트엔드 리소스"
 
+msgid "PerformanceBar|GitLab running in SaaS mode"
+msgstr ""
+
 msgid "PerformanceBar|Gitaly calls"
 msgstr "Gitaly 호출"
 
@@ -48840,6 +48949,9 @@ msgstr "Canary에서 요청됨"
 
 msgid "PerformanceBar|SQL queries"
 msgstr "SQL 쿼리"
+
+msgid "PerformanceBar|SaaS"
+msgstr ""
 
 msgid "PerformanceBar|Show stats"
 msgstr "통계 표시"
@@ -49843,6 +49955,9 @@ msgstr "선택됨"
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr "Runner의 캐시를 비우던 중 오류가 발생하였습니다."
+
+msgid "Pipelines|Something went wrong while updating pipeline information"
+msgstr ""
 
 msgid "Pipelines|Start using inputs"
 msgstr "입력을 사용하여 시작"
@@ -51060,6 +51175,9 @@ msgstr "마크다운 미리보기"
 msgid "Preview changes"
 msgstr "변경 내용 미리보기"
 
+msgid "Preview default profile"
+msgstr "기본 프로필 미리보기"
+
 msgid "Preview diagram"
 msgstr "다이어그램 미리보기"
 
@@ -51501,8 +51619,8 @@ msgstr "패스키"
 msgid "ProfilesAuthentication|Passkeys"
 msgstr "패스키"
 
-msgid "ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. Learn more about passkeys."
-msgstr "패스키를 사용하면 비밀번호 대신 기기로 안전하게 로그인할 수 있습니다. 패스키에 대해 자세히 알아보세요."
+msgid "ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. %{link_start}Learn more about passkeys%{link_end}."
+msgstr ""
 
 msgid "ProfilesAuthentication|Passkeys sign-in"
 msgstr "패스키 로그인"
@@ -52253,9 +52371,6 @@ msgstr "'%{project_name}'프로젝트가 성공적으로 생성되었습니다."
 
 msgid "Project '%{project_name}' was successfully updated."
 msgstr "'%{project_name}'프로젝트가 성공적으로 업데이트되었습니다."
-
-msgid "Project '%{project_name}' will be deleted on %{date}."
-msgstr "'%{project_name}' 프로젝트가 %{date}에 삭제됩니다."
 
 msgid "Project Badges"
 msgstr "프로젝트 배지"
@@ -53262,6 +53377,9 @@ msgstr "공개"
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr "프로젝트에서 패키지 게시, 저장 및 보기"
 
+msgid "ProjectSettings|Regex explanation"
+msgstr ""
+
 msgid "ProjectSettings|Regex that all merge request titles must match"
 msgstr "모든 머지 리퀘스트 제목이 일치해야 하는 정규식"
 
@@ -53375,6 +53493,9 @@ msgstr "저장 시 기본 템플릿이 적용됩니다."
 
 msgid "ProjectSettings|The host of your data collector instance."
 msgstr "데이터 수집기 인스턴스의 호스트입니다."
+
+msgid "ProjectSettings|The plain language explanation of what this expression enforces. Consider including examples that will pass."
+msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."
 msgstr "이 검사는 머지 리퀘스트를 머지하기전에 통과해야 합니다."
@@ -53601,6 +53722,9 @@ msgstr "프로젝트는 리포지토리에 대한 리소스를 갖고 있습니�
 msgid "Projects contributed to"
 msgstr "기여 프로젝트"
 
+msgid "Projects could not be loaded. Refresh the page to try again."
+msgstr ""
+
 msgid "Projects help you organize your work. They contain your file repository, issues, merge requests, and so much more."
 msgstr "프로젝트는 작업을 구성하는 데 도움이 됩니다. 여기에는 파일 리포지토리, 이슈, 머지 리퀘스트 등이 포함됩니다."
 
@@ -53635,7 +53759,7 @@ msgid "Projects with write access"
 msgstr "쓰기 권한이 있는 프로젝트"
 
 msgid "Projects you visit will appear here."
-msgstr ""
+msgstr "방문한 프로젝트가 여기 나타납니다."
 
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr "이 프로젝트를 업데이트하는 동안 오류가 발생했습니다. 다시 시도해 주세요."
@@ -53667,9 +53791,6 @@ msgstr[0] "%d 그룹 또는 네임스페이스가 발견됨"
 
 msgid "ProjectsNew|(optional)"
 msgstr "(옵션)"
-
-msgid "ProjectsNew|Add a Getting Started README"
-msgstr "README로 시작하기 추가"
 
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr "이 프로젝트의 리포지토리를 즉시 복제할 수 있습니다. 기존 리포지토리를 푸시할 계획이라면 이 단계를 건너뜁니다."
@@ -53761,9 +53882,6 @@ msgstr "Gitea 호스트 URL"
 msgid "ProjectsNew|Group name"
 msgstr "그룹 이름"
 
-msgid "ProjectsNew|Groups organize your team members and projects."
-msgstr "그룹은 팀원과 프로젝트를 조직화합니다."
-
 msgid "ProjectsNew|Import"
 msgstr "가져오기"
 
@@ -53794,9 +53912,6 @@ msgstr "README로 시작하기 포함"
 msgid "ProjectsNew|Initialize repository with a README"
 msgstr "README 파일을 포함하여 리포지토리 초기화"
 
-msgid "ProjectsNew|Learn more about %{groups_and_projects_link_start}setting up your organization%{groups_and_projects_link_end} with groups and projects."
-msgstr "그룹과 프로젝트를 사용하여 조직을 설정하는 방법에 대해 %{groups_and_projects_link_start} 자세히 알아보기 %{groups_and_projects_link_end}."
-
 msgid "ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm."
 msgstr "다른 리포지토리 또는 API의 기존 기능이 중단될 수 있습니다. SHA-256 리포지토리를 기본 SHA-1 해싱 알고리즘으로 다시 변경할 수 없습니다."
 
@@ -53805,9 +53920,6 @@ msgstr "GitHub, Bitbucket 또는 다른 GitLab 인스턴스와 같은 외부 소
 
 msgid "ProjectsNew|Migrate your data from another GitLab instance."
 msgstr "다른 GitLab 인스턴스로부터 당신의 데이터를 마이그레이션하세요."
-
-msgid "ProjectsNew|Mobile apps - "
-msgstr "모바일 앱 - "
 
 msgid "ProjectsNew|More templates are available after sign-up."
 msgstr "가입 후 더 많은 템플릿을 사용할 수 있습니다."
@@ -53823,9 +53935,6 @@ msgstr "새 프로젝트"
 
 msgid "ProjectsNew|No import options available"
 msgstr "사용할 수 있는 가져오기 옵션 없음"
-
-msgid "ProjectsNew|One group can contain multiple projects, for example:"
-msgstr "한 그룹에는 여러 프로젝트가 포함될 수 있습니다. 예:"
 
 msgid "ProjectsNew|Password/Personal access token"
 msgstr "암호/개인 억세스 토큰"
@@ -53890,9 +53999,6 @@ msgstr "프로젝트"
 msgid "ProjectsNew|Projects are organized into groups"
 msgstr "프로젝트는 그룹으로 구성됩니다."
 
-msgid "ProjectsNew|Projects contain your repository and management tools."
-msgstr "프로젝트는 리포지토리와 관리 도구를 포함합니다."
-
 msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr "GitLab을 처음 사용하는 경우 권장"
 
@@ -53913,9 +54019,6 @@ msgstr "전체 GitLab 프로젝트를 다른 GitLab 설치에서 이 설치로 �
 
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
 msgstr "경로를 제안할 수 없습니다. 새로고침하고 다시 시도해 주세요."
-
-msgid "ProjectsNew|Understanding groups and projects"
-msgstr "그룹과 프로젝트 이해"
 
 msgid "ProjectsNew|Use SHA-256 for repository hashing algorithm"
 msgstr "저장소 해싱 알고리즘에 SHA-256 사용"
@@ -53938,20 +54041,11 @@ msgstr "생성한 프로젝트 수가 %{limit}로 제한에 도달했습니다. 
 msgid "ProjectsNew|Your project will be created at:"
 msgstr "귀하의 프로젝트는 다음 위치에 생성됩니다:"
 
-msgid "ProjectsNew|api-backend - "
-msgstr "api-backend - "
-
 msgid "ProjectsNew|https://mycompany.fogbugz.com"
 msgstr "https://mycompany.fogbugz.com"
 
-msgid "ProjectsNew|mobile-ios - "
-msgstr "mobile-ios - "
-
 msgid "ProjectsNew|my-awesome-project"
 msgstr "my-awesome-project"
-
-msgid "ProjectsNew|ui-frontend - "
-msgstr "ui-frontend - "
 
 msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."
 msgstr "프로젝트 아카이빙 중 오류가 발생했습니다. 페이지를 새로 고쳐 다시 시도하세요."
@@ -53968,11 +54062,23 @@ msgstr "프로젝트 아카이빙 해제 중 오류가 발생했습니다. 페�
 msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
 msgstr "%{nameWithNamespace} 프로젝트에 대한 접근 요청을 철회하시겠습니까?"
 
+msgid "Projects|Browse projects to learn from and contribute to."
+msgstr ""
+
 msgid "Projects|Copy project ID: %{id}"
 msgstr "프로젝트 ID 복사: %{id}"
 
+msgid "Projects|Explore and collaborate on open-source projects"
+msgstr ""
+
+msgid "Projects|No inactive projects found"
+msgstr ""
+
 msgid "Projects|No projects found."
 msgstr "프로젝트를 찾을 수 없음."
+
+msgid "Projects|No trending projects found"
+msgstr ""
 
 msgid "Projects|Project ID copied to clipboard."
 msgstr "프로젝트 ID가 클립보드에 복사되었습니다."
@@ -53982,6 +54088,12 @@ msgstr "여기에는 아카이브되거나 삭제 대기 중인 프로젝트가 
 
 msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
 msgstr "코드를 기여하거나, 이슈 또는 에픽을 생성하거나, 토론에 참여한 프로젝트가 여기 나타납니다."
+
+msgid "Projects|View projects that are archived or pending deletion."
+msgstr ""
+
+msgid "Projects|View projects that are trending."
+msgstr ""
 
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
 msgstr "프로젝트를 방문하고 별점 아이콘을 선택하여 나중에 찾고 싶은 프로젝트를 저장하세요."
@@ -54994,7 +55106,7 @@ msgid "Queued"
 msgstr "대기열에 추가됨"
 
 msgid "Quick access"
-msgstr ""
+msgstr "빠른 액세스"
 
 msgid "Quick actions can be used in description and comment boxes."
 msgstr "빠른 동작은 설명 및 댓글 상자에서 사용할 수 있습니다."
@@ -55121,6 +55233,9 @@ msgstr "요청 속도 제한 주기 (초 단위)"
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr "속도 제한은 크롤러 또는 악의적인 봇의 요청 볼륨을 줄이는 데 도움이 될 수 있습니다."
 
+msgid "Rate limits for Repository files API endpoints."
+msgstr ""
+
 msgid "Rate limits for specific Groups API endpoints."
 msgstr ""
 
@@ -55177,6 +55292,9 @@ msgstr "읽기"
 
 msgid "Read documentation"
 msgstr "문서를 읽으세요"
+
+msgid "Read less"
+msgstr ""
 
 msgid "Read more"
 msgstr "더 읽기"
@@ -56322,6 +56440,12 @@ msgstr "리포지토리 정리가 시작되었습니다. 정리 작업이 완료
 
 msgid "Repository clone URL"
 msgstr "리포지토리 클론 URL"
+
+msgid "Repository files API (Authenticated)"
+msgstr ""
+
+msgid "Repository files API (Unauthenticated)"
+msgstr ""
 
 msgid "Repository files count over the limit"
 msgstr "리포지토리 파일 개수가 한도를 초과합니다."
@@ -58418,6 +58542,12 @@ msgstr "내부 노트 저장"
 msgid "Save password"
 msgstr "비밀번호 저장"
 
+msgid "Saved view limit exceeded."
+msgstr ""
+
+msgid "Saved views are not enabled for this namespace."
+msgstr ""
+
 msgid "Saving"
 msgstr "저장중"
 
@@ -58643,6 +58773,48 @@ msgstr "Kubernetes 에이전트 포드 상에서"
 msgid "ScanExecutionPolicy|selected automatically"
 msgstr "자동으로 선택됨"
 
+msgid "ScanProfiles|Apply profile"
+msgstr "프로필 적용"
+
+msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
+msgstr ""
+
+msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
+msgstr ""
+
+msgid "ScanProfiles|Currently active"
+msgstr ""
+
+msgid "ScanProfiles|General Details"
+msgstr ""
+
+msgid "ScanProfiles|Git Push Events"
+msgstr ""
+
+msgid "ScanProfiles|Information about this configuration profile."
+msgstr ""
+
+msgid "ScanProfiles|Scan all Git push events and block pushes with detected secrets."
+msgstr ""
+
+msgid "ScanProfiles|Scan triggers"
+msgstr "스캔 트리거"
+
+msgid "ScanProfiles|Secret push protection profile"
+msgstr ""
+
+msgid "ScanProfiles|View documentation"
+msgstr "문서 보기"
+
+msgid "ScanProfiles|View profile settings and associated projects."
+msgstr ""
+
+msgid "ScanProfiles|What are configuration profiles?"
+msgstr ""
+
+msgid "ScanProfiles|When and how scans are run."
+msgstr ""
+
 msgid "ScanResultPolicy|%{count} licenses"
 msgstr "%{count} 라이센스"
 
@@ -58833,7 +59005,7 @@ msgid "ScanResultPolicy|For scanners that require builds, when a project does no
 msgstr "빌드가 필요한 스캐너의 경우 프로젝트에 빌드 파이프라인이 없는 경우."
 
 msgid "ScanResultPolicy|Global Settings"
-msgstr ""
+msgstr "전역 설정"
 
 msgid "ScanResultPolicy|Grant bypass permissions to users based on their organizational role or custom role assignments."
 msgstr "조직 역할이나 사용자 정의 역할 할당에 따라 사용자에게 우회 권한을 부여합니다."
@@ -59373,7 +59545,7 @@ msgid "Search groups"
 msgstr "그룹 검색"
 
 msgid "Search groups or projects"
-msgstr ""
+msgstr "그룹 또는 프로젝트 검색"
 
 msgid "Search iterations"
 msgstr "이터레이션 검색"
@@ -59915,6 +60087,9 @@ msgstr "보안 대시보드"
 msgid "Security Finding not found"
 msgstr "보안 문제 검출을 찾을 수 없음"
 
+msgid "Security Manager"
+msgstr "보안 관리자"
+
 msgid "Security Policy project already exists, but is not linked."
 msgstr "보안 정책 프로젝트가 이미 존재하지만 링크되어 있지 않습니다."
 
@@ -60247,6 +60422,9 @@ msgstr "머지 리퀘스트 생성"
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
 msgstr "당신의 요구 사항에 맞게 공통 SAST 설정을 커스터마이징합니다. 여기에서 수행한 구성 변경 사항은 GitLab에서 제공한 설정 변경 사항을 오버라이드 하여 업데이트에서 제외됩니다. 고급 설정 옵션에 대한 자세한 내용은 %{linkStart}GitLab SAST 문서%{linkEnd}을 참조하십시오."
 
+msgid "SecurityConfiguration|Define security settings once, reuse them everywhere. Update a profile and changes automatically apply to every project using it, ensuring consistent, predictable security coverage with minimal effort."
+msgstr ""
+
 msgid "SecurityConfiguration|Enable %{feature}"
 msgstr "%{feature} 활성화"
 
@@ -60291,6 +60469,9 @@ msgstr "활성화되지 않음"
 
 msgid "SecurityConfiguration|Once you've enabled a scan for the default branch, any subsequent feature branch you create will include the scan. An enabled scanner will not be reflected as such until the pipeline has been successfully executed and it has generated valid artifacts."
 msgstr "일단 기본 브랜치에 대한 스캔을 활성화하면 생성하는 모든 후속 기능브랜치에 스캔이 포함됩니다. 활성화된 스캐너는 파이프라인이 성공적으로 실행되고 유효한 아티팩트가 생성될 때까지 그대로 반영되지 않습니다."
+
+msgid "SecurityConfiguration|Profile-based scanner configuration"
+msgstr ""
 
 msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
 msgstr "%{linkStart}Auto DevOps%{linkEnd}을 활성화하여 모든 지속적인 테스트 및 규정 준수 도구를 빠르게 활성화"
@@ -60494,6 +60675,12 @@ msgstr "프로젝트 이름 검색"
 msgid "SecurityInventoryFilter|Search projects…"
 msgstr "프로젝트 검색..."
 
+msgid "SecurityInventory|%{name} applied"
+msgstr "%{name} 적용됨"
+
+msgid "SecurityInventory|%{name} disabled"
+msgstr "%{name} 비활성화됨"
+
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr "이 그룹에 프로젝트를 추가하여 보안 상태를 추적하기 시작합니다."
 
@@ -60502,6 +60689,12 @@ msgstr "고급 SAST"
 
 msgid "SecurityInventory|Advanced SAST (SAST)"
 msgstr "고급 SAST (SAST)"
+
+msgid "SecurityInventory|An error has occurred while applying the scan profile."
+msgstr ""
+
+msgid "SecurityInventory|An error has occurred while disabling the scan profile."
+msgstr ""
 
 msgid "SecurityInventory|An error occurred while fetching subgroups and projects. Please try again."
 msgstr "하위 그룹과 프로젝트를 가져오는 동안 오류가 발생했습니다. 다시 시도해 주세요."
@@ -60554,6 +60747,10 @@ msgstr "동적 애플리케이션 보안 테스트 (DAST)"
 msgid "SecurityInventory|Edit security attributes"
 msgstr "보안 속성 편집"
 
+msgid "SecurityInventory|Edit security scanners for %d item"
+msgid_plural "SecurityInventory|Edit security scanners for %d items"
+msgstr[0] ""
+
 msgid "SecurityInventory|GitLab Advanced SAST"
 msgstr "GitLab 고급 SAST"
 
@@ -60572,8 +60769,14 @@ msgstr "코드형 인프라 스캐닝 (IaC)"
 msgid "SecurityInventory|Load more"
 msgstr "추가 로딩"
 
-msgid "SecurityInventory|Manage tool coverage"
-msgstr "도구 커버리지 관리"
+msgid "SecurityInventory|Manage security configuration"
+msgstr ""
+
+msgid "SecurityInventory|Manage security scanners"
+msgstr ""
+
+msgid "SecurityInventory|Manage security scanners for subgroup projects"
+msgstr ""
 
 msgid "SecurityInventory|No projects found"
 msgstr "프로젝트를 찾을 수 없습니다"
@@ -60608,8 +60811,17 @@ msgstr "비밀 푸시 방지"
 msgid "SecurityInventory|Secret push protection (SD)"
 msgstr "비밀 푸시 방지 (SD)"
 
+msgid "SecurityInventory|Security configuration"
+msgstr ""
+
+msgid "SecurityInventory|Security configuration: %{projectName}"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
 msgstr "보안 인벤토리"
+
+msgid "SecurityInventory|Select bulk action"
+msgstr ""
 
 msgid "SecurityInventory|Severity critical"
 msgstr "심각도 치명적"
@@ -60673,6 +60885,10 @@ msgstr "취약성 개수 중간"
 
 msgid "SecurityInventory|Vulnerability count unknown"
 msgstr "취약성 개수 알수없음"
+
+msgid "SecurityInventory|You are about to disable %{name} for %{count} item. Are you sure you want to proceed?"
+msgid_plural "SecurityInventory|You are about to disable %{name} for %{count} items. Are you sure you want to proceed?"
+msgstr[0] ""
 
 msgid "SecurityInventory|You're already viewing this subgroup"
 msgstr "현재 이 하위 그룹을 보고 있습니다"
@@ -61069,14 +61285,14 @@ msgstr "파이프라인 실행 파일에서 조건을 구성합니다. %{linkSta
 msgid "SecurityOrchestration|Create custom variable"
 msgstr "커스텀 변수 생성"
 
-msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
-msgstr "보다 강력한 취약성 규칙을 만들어 모든 프로젝트에 적용합니다."
-
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "새 프레임워크 라벨 만들기"
 
 msgid "SecurityOrchestration|Create new project with the new policy"
 msgstr "새 정책과 함께 새 프로젝트 생성"
+
+msgid "SecurityOrchestration|Create security policies to enforce security and compliance controls that help keep your project secure."
+msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"
 msgstr "보안 정책 생성"
@@ -61329,6 +61545,9 @@ msgstr "%{namespace}에서 상속됨"
 
 msgid "SecurityOrchestration|Inherited policy"
 msgstr "상속된 정책"
+
+msgid "SecurityOrchestration|Input only one value. Wildcards are supported."
+msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
 msgstr "잘못된 규정 준수 프레임워크 ID"
@@ -61777,6 +61996,9 @@ msgstr "프레임워크 선택"
 
 msgid "SecurityOrchestration|Select list type"
 msgstr "목록 유형 선택"
+
+msgid "SecurityOrchestration|Select one of the criteria"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policies"
 msgstr "정책 선택"
@@ -62426,6 +62648,57 @@ msgstr "예외 없음"
 msgid "SecurityPolicies|Invalid or empty policy"
 msgstr "잘못되었거나 비어 있는 정책"
 
+msgid "SecurityProfiles|Active"
+msgstr "활성"
+
+msgid "SecurityProfiles|Apply default profile"
+msgstr "기본 프로필 적용"
+
+msgid "SecurityProfiles|Apply profile to enable"
+msgstr ""
+
+msgid "SecurityProfiles|Disable"
+msgstr "비활성화"
+
+msgid "SecurityProfiles|Disable %{scannerName}"
+msgstr ""
+
+msgid "SecurityProfiles|Error applying profile. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|Error detaching profile. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|Error loading profiles. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|No profile applied"
+msgstr "적용된 프로필 없음"
+
+msgid "SecurityProfiles|Not configured"
+msgstr "구성되지 않음"
+
+msgid "SecurityProfiles|Prevents secrets from being pushed to your repository"
+msgstr ""
+
+msgid "SecurityProfiles|Preview default profile"
+msgstr ""
+
+msgid "SecurityProfiles|Profile applied successfully."
+msgstr ""
+
+msgid "SecurityProfiles|Profile disabled successfully."
+msgstr ""
+
+msgid "SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects"
+msgstr ""
+
+msgid "SecurityProfiles|Secret Push Protection"
+msgstr ""
+
+msgid "SecurityProfiles|You are about to disable %{scannerName} for this project. Are you sure you want to proceed?"
+msgstr ""
+
 msgid "SecurityReports|%{count} Selected"
 msgstr "%{count}개 선택됨"
 
@@ -62643,6 +62916,9 @@ msgstr "해지됨 (모든 이유)"
 msgid "SecurityReports|Dismissed as…"
 msgstr "다음 이유로 해지됨…"
 
+msgid "SecurityReports|Dismissed by vulnerability policy"
+msgstr ""
+
 msgid "SecurityReports|Dismissed in MR"
 msgstr "MR에서 해지됨"
 
@@ -62706,6 +62982,9 @@ msgstr "PDF로 내보내기"
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr "보안 보고서 정보를 가져오지 못했습니다. 페이지를 다시 로드하거나 나중에 다시 시도하십시오."
 
+msgid "SecurityReports|Failed to load tracked refs."
+msgstr ""
+
 msgid "SecurityReports|Failed to retrieve the vulnerability data. Please refresh the page."
 msgstr "취약성 데이터를 검색하지 못했습니다. 페이지를 새로고침하세요."
 
@@ -62721,8 +63000,14 @@ msgstr "GitLab Duo (AI)"
 msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
 msgstr "GitLab Duo SAST 거짓 양성 탐지 - 무료 베타에서 제한된 시간 동안 이용 가능"
 
-msgid "SecurityReports|GitLab Duo will automatically review new critical and high severity %{linkStart}SAST vulnerabilities on the default branch to identify potential false positives%{linkEnd}. GitLab Duo assigns each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The service is a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
-msgstr "GitLab Duo는 기본 브랜치에서 새로운 심각 및 높은 심각도의 %{linkStart} SAST 취약점을 자동으로 검토하여 잠재적인 거짓 양성을 식별합니다 %{linkEnd}. GitLab Duo는 각 거짓 양성에 신뢰 점수를 할당하며, %{dismissLinkStart} 취약점 보고서에서 식별된 거짓 양성을 일괄적으로 해제할 수 있습니다 %{dismissLinkEnd}. 이 서비스는 제한된 시간 동안 무료 베타로 제공되며 기본적으로 비활성화되어 있습니다. GitLab Duo에서 이 기능을 활성화할 수 있습니다."
+msgid "SecurityReports|GitLab Duo can automatically review new critical and high severity SAST vulnerabilities on the default branch to %{linkStart}identify potential false positives%{linkEnd}. GitLab Duo can assign each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The feature is available as a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings."
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo security features are here!"
+msgstr ""
 
 msgid "SecurityReports|Go to policies"
 msgstr "정책으로 이동"
@@ -62854,6 +63139,9 @@ msgstr "없음"
 msgid "SecurityReports|Not available"
 msgstr "사용 불가"
 
+msgid "SecurityReports|Not dismissed by vulnerability policy"
+msgstr ""
+
 msgid "SecurityReports|Not found"
 msgstr "찾을 수 없음"
 
@@ -62868,6 +63156,9 @@ msgstr "위험 점수가 가장 높은 상위 %{count}개의 프로젝트만 표
 
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr "이런, 뭔가 잘못된 것 같습니다."
+
+msgid "SecurityReports|Open vulnerabilities by the amount of time since they were opened."
+msgstr ""
 
 msgid "SecurityReports|Open vulnerability trends over time. To interact with a link in a chart popover, click to pin the popover first."
 msgstr "시간에 따른 공개 취약점 추세를 확인하세요. 차트 팝오버에서 링크와 상호작용하려면, 먼저 팝오버를 고정하세요."
@@ -62886,6 +63177,9 @@ msgstr "파이프라인의 구문 분석 오류"
 
 msgid "SecurityReports|Parsing warnings in pipeline"
 msgstr "파이프라인의 경고 구문 분석"
+
+msgid "SecurityReports|Policy actions"
+msgstr ""
 
 msgid "SecurityReports|Policy violations"
 msgstr "정책 위반"
@@ -62940,9 +63234,6 @@ msgstr "위험 점수"
 
 msgid "SecurityReports|Risk score formula"
 msgstr "위험 점수 공식"
-
-msgid "SecurityReports|Risk scores are being calculated. Please try again later."
-msgstr "위험 점수를 계산중입니다. 나중에 다시 시도해 보세요."
 
 msgid "SecurityReports|Scan details"
 msgstr "스캔 세부 정보"
@@ -62999,8 +63290,8 @@ msgstr "죄송합니다, 필터링 결과가 없습니다"
 msgid "SecurityReports|Starting 2025-05-15, we will gradually migrate vulnerabilities that have not been updated in the last 12 months to the vulnerability archive. Archived vulnerabilities are stored for 3 years before deletion. To access the archive, on the left sidebar, select Secure &gt; Security Configuration &gt; Vulnerability Management."
 msgstr "2025년 5월 15일부터 지난 12개월 동안 업데이트되지 않은 취약점을 취약점 아카이브로 점진적으로 이전합니다. 아카이빙된 취약점은 삭제되기 전 3년간 저장됩니다. 아카이브에 접근하려면 왼쪽 사이드바에서 보안 &gt;보안 구성 &gt; 취약점 관리를 선택하세요."
 
-msgid "SecurityReports|Starting in GitLab 18.8, the Vulnerabilities over time chart excludes no longer detected vulnerabilities, which might result in a drop in the total number of vulnerabilities shown in the chart. %{linkStart}Learn more%{linkEnd}"
-msgstr "GitLab 18.8부터 시간 경과에 따른 취약점 차트는 더 이상 감지되지 않는 취약점을 제외하며, 이는 차트에 표시되는 총 취약점 수가 감소할 수 있습니다. %{linkStart}자세히 알아보기%{linkEnd}"
+msgid "SecurityReports|Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This change might result in a drop in the total number of vulnerabilities shown in the chart. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
 
 msgid "SecurityReports|Status"
 msgstr "상태"
@@ -63103,6 +63394,9 @@ msgstr "유효성 검증"
 
 msgid "SecurityReports|Validity check couldn't confirm whether the secret is active or inactive."
 msgstr "유효성 검증으로 비밀이 활성 상태인지 비활성 상태인지 확인할 수 없습니다."
+
+msgid "SecurityReports|Vulnerabilities by age"
+msgstr ""
 
 msgid "SecurityReports|Vulnerabilities over time"
 msgstr "시간에 따른 취약점"
@@ -63556,6 +63850,9 @@ msgstr "자체 호스팅 AI 게이트웨이 URL이 %{url}로 설정되었습니�
 msgid "Semantic search"
 msgstr "시맨틱 검색"
 
+msgid "Semantic search will be disabled soon."
+msgstr ""
+
 msgid "Send"
 msgstr "전송"
 
@@ -63853,9 +64150,6 @@ msgstr "잘못된 인증 토큰"
 msgid "ServiceDesk|Invalid credentials"
 msgstr "잘못된 자격 증명"
 
-msgid "ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
-msgstr "서비스 데스크 이메일에서 생성된 이슈가 여기에 나타납니다. 각 댓글은 이메일 대화의 일부가 됩니다."
-
 msgid "ServiceDesk|Keep custom email"
 msgstr "커스텀 이메일 유지"
 
@@ -63978,6 +64272,9 @@ msgstr "이 이슈는 외부 참가자로부터 새로운 의견을 받았기 �
 
 msgid "ServiceDesk|Ticket visibility"
 msgstr "티켓 공개범위"
+
+msgid "ServiceDesk|Tickets created from Service Desk emails will appear here. Each comment becomes part of the email conversation."
+msgstr ""
 
 msgid "ServiceDesk|To use a custom email address for this Service Desk, you'll need to configure and verify an email address again."
 msgstr "이 서비스 데스크에 커스텀 이메일 주소를 사용하려면 이메일 주소를 다시 구성하고 확인해야 합니다."
@@ -64313,7 +64610,7 @@ msgid "Setting high package limits can impact database performance. Consider the
 msgstr "높은 패키지 한도를 설정하면 데이터베이스 성능에 영향을 미칠 수 있습니다. 이러한 값을 구성할 때 인스턴스 크기를 고려하세요."
 
 msgid "Setting inherited"
-msgstr ""
+msgstr "상속된 설정"
 
 msgid "Settings"
 msgstr "설정"
@@ -66547,8 +66844,8 @@ msgstr "성공적으로 차단되었습니다."
 msgid "Successfully confirmed"
 msgstr "성공적으로 확인되었습니다."
 
-msgid "Successfully created connection for semantic search."
-msgstr "시맨틱 검색을 위한 연결이 성공적으로 생성되었습니다."
+msgid "Successfully created connection for semantic search. Indexing will start soon."
+msgstr ""
 
 msgid "Successfully deactivated"
 msgstr "비활성화했습니다."
@@ -66789,6 +67086,9 @@ msgstr "온라인 라이선스"
 
 msgid "SuperSonics|Ready to get started? A GitLab plan is ideal for scaling organizations and for multi team usage."
 msgstr "시작할 준비가 되셨습니까? GitLab 요금제는 조직 확장 및 다중 팀 사용에 이상적입니다."
+
+msgid "SuperSonics|Received a license key? %{linkStart}Go to license settings%{linkEnd} to add it to your GitLab instance."
+msgstr ""
 
 msgid "SuperSonics|Select that you agree before activating the subscription."
 msgstr "구독을 활성화하기 전에 동의를 선택하세요."
@@ -67897,7 +68197,7 @@ msgid "The current issue"
 msgstr "현재 이슈"
 
 msgid "The current ticket"
-msgstr ""
+msgstr "현재 티켓"
 
 msgid "The current user is not authorized to access the job log."
 msgstr "현재 사용자는 작업 log에 접근할 권한이 없습니다."
@@ -68213,6 +68513,9 @@ msgstr "전체 인덱싱을 기다리는 문서 수입니다. 여기에는 새 �
 msgid "The number of documents waiting for updates to existing indexed content. These represent changes to previously indexed files, commits, or metadata."
 msgstr "기존 인덱싱된 콘텐츠의 업데이트를 기다리는 문서 수입니다. 이는 이전에 인덱싱된 파일, 커밋 또는 메타데이터의 변경 사항을 나타냅니다."
 
+msgid "The number of items that failed after being retried once. Items in the dead queue are not automatically retried. %{help_link_start}Reindex these items manually%{help_link_end} or contact GitLab Support with relevant logs for help."
+msgstr ""
+
 msgid "The number of projects that have no repository data indexed. A value of 0 means all projects have had repository data indexed at least once, though some may need updates. This metric tracks only projects completely missing repository data from the index, not those needing incremental updates."
 msgstr "리포지토리 데이터가 인덱싱되지 않은 프로젝트의 수입니다. 값이 0이면 모든 프로젝트에서 리포지토리 데이터가 최소 한 번 이상 인덱싱되었지만, 일부 프로젝트는 업데이트가 필요할 수 있음을 의미합니다. 이 지표는 인덱스에서 리포지토리 데이터가 완전히 누락된 프로젝트만 추적하며, 증분 업데이트가 필요한 프로젝트는 추적하지 않습니다."
 
@@ -68330,6 +68633,9 @@ msgstr "선택한 이미지가 너무 큽니다."
 
 msgid "The selected project is not available"
 msgstr "선택한 프로젝트를 사용할 수 없습니다."
+
+msgid "The selected projects use different configuration profiles. Choosing a new profile will replace their existing ones."
+msgstr ""
 
 msgid "The snippet can be accessed without any authentication."
 msgstr "이 프로젝트는 인증없이 액세스 할 수 있습니다."
@@ -68843,6 +69149,9 @@ msgstr "이 동작은 취소할 수 없으며 %{key} SSH 키를 영구적으로 
 
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr "이 동작은 실행 취소할 수 없으며 %{key} SSH 키를 영구적으로 삭제합니다. 이 SSH 키를 사용하여 서명된 모든 커밋은 확인되지 않음으로 마킹됩니다."
+
+msgid "This action is destructive. Disabling semantic search will remove all indexed data. If you reconnect in the future, a full index will be performed."
+msgstr ""
 
 msgid "This action will permanently delete this group, including its subgroups and projects, on %{date}. Scheduled pipelines will not run during deletion."
 msgstr "이 작업은 %{date}에 이 그룹과 하위 그룹 및 프로젝트를 영구적으로 삭제합니다. 삭제 중에는 예약된 파이프라인이 실행되지 않습니다."
@@ -69569,7 +69878,7 @@ msgid "Thursday"
 msgstr "목요일"
 
 msgid "Ticket cannot be found."
-msgstr ""
+msgstr "티켓을 찾을 수 없습니다."
 
 msgid "TierBadgePopover|Enhance team productivity"
 msgstr "팀 생산성 향상"
@@ -71145,6 +71454,12 @@ msgstr "허용되는 문자: +, 0-9, - 및 공백."
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
 msgstr "\"%{buttonText}\"을 클릭하면 %{gitlabSubscriptionAgreement} 에 동의하고 %{privacyStatement} 와 %{cookiePolicy}을 인정하는 것입니다."
 
+msgid "Trial|By clicking %{buttonText} or registering through a third party, you accept the %{subscriptionAgreement} and acknowledge the %{privacyStatement}."
+msgstr ""
+
+msgid "Trial|Company name"
+msgstr ""
+
 msgid "Trial|Continue"
 msgstr "계속"
 
@@ -71157,14 +71472,38 @@ msgstr "체험판으로 계속"
 msgid "Trial|Cookie Policy."
 msgstr "쿠키 정책."
 
+msgid "Trial|Country or region"
+msgstr ""
+
+msgid "Trial|First name"
+msgstr ""
+
+msgid "Trial|Get started"
+msgstr ""
+
 msgid "Trial|GitLab Subscription Agreement"
 msgstr "GitLab 구독 약관"
+
+msgid "Trial|Having trouble with this form? You can also request a trial on %{link}."
+msgstr ""
 
 msgid "Trial|Help us personalize your GitLab experience by answering a few questions"
 msgstr "GitLab 경험을 개인화할 수 있도록 몇 가지 질문에 답해주세요"
 
+msgid "Trial|I agree that GitLab can contact me by email about its product, services, or events."
+msgstr ""
+
+msgid "Trial|Last name"
+msgstr ""
+
+msgid "Trial|Note: You must have an internet connection."
+msgstr ""
+
 msgid "Trial|Privacy Statement"
 msgstr "개인정보 보호정책"
+
+msgid "Trial|Select a country or region"
+msgstr ""
 
 msgid "Trial|Select state or province"
 msgstr "주 또는 도 선택"
@@ -71172,11 +71511,17 @@ msgstr "주 또는 도 선택"
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr "무료 Ultimate 및 GitLab Duo Enterprise 평가판 시작"
 
+msgid "Trial|Start your free Ultimate trial!"
+msgstr ""
+
 msgid "Trial|Start your free trial"
 msgstr "무료 체험판을 시작하세요"
 
 msgid "Trial|State or province"
 msgstr "주 또는 도"
+
+msgid "Trial|We need a few more details from you to activate your trial for your GitLab instance."
+msgstr ""
 
 msgid "Trial|We need a few more details from you to activate your trial."
 msgstr "당신의 평가판을 활성하기 위해서는 좀더 상세한 정보가 필요합니다."
@@ -71186,6 +71531,9 @@ msgstr "GitLab에 오신 것을 환영합니다"
 
 msgid "Trial|What's your reason for joining GitLab?"
 msgstr "GitLab에 가입한 이유는 무엇인가요?"
+
+msgid "Trial|Work email address"
+msgstr ""
 
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for %{duration} days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
 msgstr "무료 Ultimate 및 GitLab Duo Enterprise 평가판은 %{duration}일 동안 지속됩니다. 이 기간 후에는 GitLab Free 계정을 영구적으로 유지하거나 유료 플랜으로 업그레이드할 수 있습니다."
@@ -71977,6 +72325,12 @@ msgstr "자세히 알아보세요"
 msgid "UpdateProject|New visibility level not allowed!"
 msgstr "새로운 공개 수준이 허용되지 않습니다!"
 
+msgid "UpdateProject|Pages access level cannot be public when public access is disabled"
+msgstr ""
+
+msgid "UpdateProject|Pages access level is not allowed for the project visibility level"
+msgstr ""
+
 msgid "UpdateProject|Project could not be updated!"
 msgstr "프로젝트를 업데이트할 수 없습니다!"
 
@@ -72331,10 +72685,10 @@ msgid "UsageQuota|Excess storage usage"
 msgstr "초과 스토리지 사용량"
 
 msgid "UsageQuota|Failed to fetch repository health, try again later."
-msgstr ""
+msgstr "리포지토리 상태를 가져오지 못했습니다. 나중에 다시 시도해주세요."
 
 msgid "UsageQuota|Failed to parse Project ID from Repository."
-msgstr ""
+msgstr "리포지토리에서 프로젝트 ID를 파싱하지 못했습니다."
 
 msgid "UsageQuota|Filter charts by year"
 msgstr "연도별 차트 필터링"
@@ -72343,7 +72697,7 @@ msgid "UsageQuota|Filter projects data by month"
 msgstr "월별 프로젝트 데이터 필터"
 
 msgid "UsageQuota|Generate Report"
-msgstr ""
+msgstr "리보트 생성"
 
 msgid "UsageQuota|Git repository."
 msgstr "Git 레포지토리"
@@ -72740,9 +73094,6 @@ msgstr "템플릿 사용"
 
 msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
 msgstr "이벤트를 생성하려면 위의 %{strongStart}Test%{strongEnd} 옵션을 사용하십시오."
-
-msgid "Use the advanced search cluster for semantic search."
-msgstr "고급 검색 클러스터를 사용하여 시멘틱 검색을 수행하세요."
 
 msgid "Use the link below to confirm your email address (%{email})"
 msgstr "아래 링크를 사용하여 이메일 주소(%{email})를 확인하십시오."
@@ -74104,6 +74455,9 @@ msgstr "현재 리소스를 사용 중인 작업 보기"
 msgid "View labels"
 msgstr "라벨보기"
 
+msgid "View logs"
+msgstr "로그 보기"
+
 msgid "View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following."
 msgstr "\"주의가 필요\" 요청과 \"팔로우\" 중인 요청을 강조 표시하여 시작부터 끝까지 관련된 머지 리퀘스트를 확인하세요."
 
@@ -74201,6 +74555,15 @@ msgstr "API 엔드포인트 속도 제한"
 msgid "VirtualRegistries|Configure Virtual Registries settings."
 msgstr "가상 레지스트리 설정을 구성합니다."
 
+msgid "VirtualRegistries|Container registries"
+msgstr "컨테이너 레지스트리"
+
+msgid "VirtualRegistries|Container upstreams"
+msgstr "컨테이너 업스트림"
+
+msgid "VirtualRegistries|Edit registry"
+msgstr ""
+
 msgid "VirtualRegistries|Virtual Registries"
 msgstr "가상 레지스트리"
 
@@ -74232,7 +74595,7 @@ msgid "VirtualRegistryCleanupPolicy|Cache cleanup failed. No cache entries were 
 msgstr ""
 
 msgid "VirtualRegistryCleanupPolicy|Create policy"
-msgstr ""
+msgstr "정책 생성"
 
 msgid "VirtualRegistryCleanupPolicy|Delete caches not accessed in last %{strongStart}%{days} day%{strongEnd}"
 msgid_plural "VirtualRegistryCleanupPolicy|Delete caches not accessed in last %{strongStart}%{days} days%{strongEnd}"
@@ -74251,7 +74614,7 @@ msgid "VirtualRegistryCleanupPolicy|No cleanup policy yet. Create a policy to de
 msgstr ""
 
 msgid "VirtualRegistryCleanupPolicy|Running"
-msgstr ""
+msgstr "실행중"
 
 msgid "VirtualRegistryCleanupPolicy|Runs %{strongStart}every day%{strongEnd}:"
 msgstr ""
@@ -74287,20 +74650,16 @@ msgid "VirtualRegistry|%d artifact"
 msgid_plural "VirtualRegistry|%d artifacts"
 msgstr[0] "%d 아티팩트"
 
-msgid "VirtualRegistry|%{count} artifact"
-msgid_plural "VirtualRegistry|%{count} artifacts"
-msgstr[0] "%{count} 개의 아티팩트"
+msgid "VirtualRegistry|%d registry"
+msgid_plural "VirtualRegistry|%d registries"
+msgstr[0] "%d 레지스트리"
+
+msgid "VirtualRegistry|%d upstream"
+msgid_plural "VirtualRegistry|%d upstreams"
+msgstr[0] "%d 업스트림"
 
 msgid "VirtualRegistry|%{count} of %{max}"
 msgstr "%{count} / %{max}"
-
-msgid "VirtualRegistry|%{count} registry"
-msgid_plural "VirtualRegistry|%{count} registries"
-msgstr[0] "%{count} 레지스트리"
-
-msgid "VirtualRegistry|%{count} upstream"
-msgid_plural "VirtualRegistry|%{count} upstreams"
-msgstr[0] "%{count} 업스트림"
 
 msgid "VirtualRegistry|%{hours} hour"
 msgid_plural "VirtualRegistry|%{hours} hours"
@@ -74343,9 +74702,6 @@ msgstr "%{group_name}에 대한 캐시 정리가 실패했습니다"
 msgid "VirtualRegistry|Cache revalidation is disabled. Upstream URL is known to have immutable responses."
 msgstr "캐시 재검증이 비활성화되었습니다. 업스트림 URL에 변경 불가능한 응답이 있는 것으로 알려져 있습니다."
 
-msgid "VirtualRegistry|Cache: %{size}"
-msgstr "캐시: %{size}"
-
 msgid "VirtualRegistry|Changing the URL will clear the username and password."
 msgstr "URL을 변경하면 사용자명과 암호가 지워집니다."
 
@@ -74364,14 +74720,23 @@ msgstr "%{upstreamName}에 대한 캐시를 삭제할까요?"
 msgid "VirtualRegistry|Clearing the cache deletes all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs might fail. Are you sure you want to continue?"
 msgstr "캐시를 삭제하면 이 업스트림의 모든 캐시된 패키지가 삭제되고 소스에서 다시 가져옵니다. 업스트림이 사용 불가능하거나 잘못 구성된 경우 작업이 실패할 수 있습니다. 계속 진행하시겠습니까?"
 
+msgid "VirtualRegistry|Configure an upstream registry to manage Container artifacts and cache entries."
+msgstr ""
+
 msgid "VirtualRegistry|Configure an upstream registry to manage Maven artifacts and cache entries."
 msgstr "상위 레지스트리를 구성하여 Maven 아티팩트와 캐시 항목을 관리합니다."
+
+msgid "VirtualRegistry|Connect Container virtual registry to an upstream"
+msgstr ""
 
 msgid "VirtualRegistry|Connect Maven virtual registry to an upstream"
 msgstr "Maven 가상 레지스트리를 업스트림에 연결"
 
 msgid "VirtualRegistry|Connection successful."
 msgstr "성공적으로 연결됨."
+
+msgid "VirtualRegistry|Container virtual registries"
+msgstr ""
 
 msgid "VirtualRegistry|Copy virtual registry ID: %{id}"
 msgstr "가상 레지스트리 ID: %{id} 복사"
@@ -74460,11 +74825,11 @@ msgstr ""
 msgid "VirtualRegistry|Failed to fetch cache entries."
 msgstr "캐시 항목을 가져오는 데 실패했습니다."
 
-msgid "VirtualRegistry|Failed to fetch list of maven upstream registries."
-msgstr "Maven 업스트림 레지스트리 목록을 가져오는데 실패함."
+msgid "VirtualRegistry|Failed to fetch list of upstreams."
+msgstr ""
 
-msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
-msgstr "Maven 가상 레지스트리 목록을 가져오는 데 실패했습니다."
+msgid "VirtualRegistry|Failed to fetch list of virtual registries."
+msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch upstream summary."
 msgstr "업스트림 요약 가져오기를 실패하였습니다."
@@ -74548,6 +74913,15 @@ msgstr "업스트림을 위로 이동"
 msgid "VirtualRegistry|Name"
 msgstr "이름"
 
+msgid "VirtualRegistry|Name cannot be longer than %{length} characters."
+msgstr ""
+
+msgid "VirtualRegistry|Name is required."
+msgstr ""
+
+msgid "VirtualRegistry|New container virtual registry"
+msgstr ""
+
 msgid "VirtualRegistry|New maven virtual registry"
 msgstr "새 Maven 가상 레지스트리"
 
@@ -74620,11 +74994,11 @@ msgstr "캐시 정리 정책이 %{group_link}에 대해 성공적으로 완료�
 msgid "VirtualRegistry|The scheduled cache cleanup for %{group_link} could not be completed."
 msgstr "%{group_link}에 대한 예약된 캐시 정리가 완료되지 않았습니다."
 
+msgid "VirtualRegistry|There are no container virtual registries yet"
+msgstr ""
+
 msgid "VirtualRegistry|There are no maven virtual registries yet"
 msgstr "아직 Maven 가상 레지스트리가 없습니다."
-
-msgid "VirtualRegistry|There is a problem with this cached upstream"
-msgstr "이 캐시된 업스트림에 문제가 있습니다."
 
 msgid "VirtualRegistry|This action cannot be undone. Deleting this upstream might impact registries associated with it."
 msgstr "사용자 제한을 초과하여 추가되거나 액세스를 요청하는 사용자는 그룹 소유자의 승인을 받아야 합니다."
@@ -74658,6 +75032,9 @@ msgstr "업스트림 캐시가 성공적으로 삭제됨."
 
 msgid "VirtualRegistry|Upstream created successfully."
 msgstr "업스트림이 성공적으로 생성됨."
+
+msgid "VirtualRegistry|Upstream has been deleted."
+msgstr ""
 
 msgid "VirtualRegistry|Upstream summary"
 msgstr "업스트림 요약"
@@ -75197,16 +75574,13 @@ msgstr "'소스'는 사용자 데이터나 외부 데이터 소스와 같은 신
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr "이 취약점에 대한 솔루션을 사용할 수 있습니다."
 
-msgid "Vulnerability|AI Confidence Score"
-msgstr "AI 신뢰도 점수"
-
-msgid "Vulnerability|AI detected false positive"
-msgstr "AI가 거짓 양성을 감지함"
-
-msgid "Vulnerability|AI false positive assessment details"
+msgid "Vulnerability|AI false positive confidence score"
 msgstr ""
 
-msgid "Vulnerability|AI false positive confidence score"
+msgid "Vulnerability|AI false positive reasoning:"
+msgstr ""
+
+msgid "Vulnerability|AI false positive scan complete"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
@@ -75323,23 +75697,26 @@ msgstr "증거:"
 msgid "Vulnerability|External Security Report"
 msgstr "외부 보안 보고서"
 
+msgid "Vulnerability|FP scanning found that this vulnerability is "
+msgstr ""
+
 msgid "Vulnerability|False positive detected"
 msgstr "거짓 양성이 탐지됨"
 
-msgid "Vulnerability|False positive flag dismissed successfully."
-msgstr "거짓 양성 플래그가 성공적으로 해제되었습니다."
-
 msgid "Vulnerability|File:"
 msgstr "파일:"
+
+msgid "Vulnerability|For more information, view vulnerability details."
+msgstr ""
+
+msgid "Vulnerability|GitLab Duo scanned this vulnerability to identify the likelihood that it is a false positive (FP) and found that this vulnerability is %{falsePositiveResult}."
+msgstr ""
 
 msgid "Vulnerability|GitLab Security Report"
 msgstr "GitLab 보안 보고서"
 
 msgid "Vulnerability|GitLab checks if detected secrets are active. You should revoke and replace active secrets immediately, because they can be used to impersonate legitimate activity."
 msgstr "GitLab은 감지된 비밀이 활성 상태인지 확인합니다. 활성 비밀은 즉시 취소하고 교체해야 합니다. 왜냐하면 이를 사용하여 합법적인 활동을 가장할 수 있기 때문입니다."
-
-msgid "Vulnerability|Gitlab Duo has identified this vulnerability as a false positive"
-msgstr "GitLab Duo가 이 취약점을 거짓 양성으로 인식하였습니다"
 
 msgid "Vulnerability|Identifier"
 msgstr "식별자"
@@ -75377,8 +75754,14 @@ msgstr "링크"
 msgid "Vulnerability|Location"
 msgstr "위치"
 
+msgid "Vulnerability|NOT a false positive"
+msgstr ""
+
 msgid "Vulnerability|Namespace:"
 msgstr "네임스페이스:"
+
+msgid "Vulnerability|Not an FP"
+msgstr "거짓양성(FP) 아님"
 
 msgid "Vulnerability|Policy violation detected"
 msgstr "정책 위반이 탐지됨"
@@ -75392,11 +75775,14 @@ msgstr "활성 비밀일 가능성있음"
 msgid "Vulnerability|Project:"
 msgstr "프로젝트:"
 
-msgid "Vulnerability|Remove False Positive Flag"
-msgstr "거짓 양성 플래그 제거"
+msgid "Vulnerability|Remove false positive flag"
+msgstr ""
 
 msgid "Vulnerability|Remove identifier row"
 msgstr "식별자 행 제거"
+
+msgid "Vulnerability|Remove the false positive flag from this vulnerability"
+msgstr ""
 
 msgid "Vulnerability|Removing this flag will not change the vulnerability's status. The vulnerability will remain in its current state but will no longer be marked as a false positive."
 msgstr "이 플래그를 제거해도 취약점의 상태는 변경되지 않습니다. 해당 취약점은 현재 상태를 유지하지만 더 이상 거짓 긍정으로 표시되지 않습니다."
@@ -75539,14 +75925,20 @@ msgstr "유효성 검사란 무엇인가요?"
 msgid "Vulnerability|What is code flow?"
 msgstr "코드 흐름이란 무엇인가?"
 
-msgid "Vulnerability|Why it is likely a false positive"
-msgstr "왜 거짓 양성으로 보이는가"
-
 msgid "Vulnerability|circular dependency"
 msgstr "원형 의존성"
 
 msgid "Vulnerability|code_flow"
 msgstr "코드 흐름"
+
+msgid "Vulnerability|likely a false positive"
+msgstr ""
+
+msgid "Vulnerability|not a false positive"
+msgstr ""
+
+msgid "Vulnerability|possibly a false positive"
+msgstr ""
 
 msgid "WARNING:"
 msgstr "경고:"
@@ -76399,6 +76791,9 @@ msgstr "템플릿 \"%{pageTitle}\"을 삭제할까요?"
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
 msgstr "당신과 같은 시간에 누군가가 페이지를 수정했습니다. %{wikiLinkStart}페이지%{wikiLinkEnd}를 확인한 뒤, 변경 사항으로 인해 의도하지 않게 삭제되는 것이 있는지 확인하십시오."
 
+msgid "WikiPage|Add a commit message"
+msgstr "커밋 메시지 추가"
+
 msgid "WikiPage|Cancel"
 msgstr "취소"
 
@@ -76438,8 +76833,17 @@ msgstr "페이지 제목"
 msgid "WikiPage|Path"
 msgstr "경로"
 
+msgid "WikiPage|Review and write a commit message"
+msgstr ""
+
 msgid "WikiPage|Save changes"
 msgstr "변경사항 저장"
+
+msgid "WikiPage|Save changes directly"
+msgstr ""
+
+msgid "WikiPage|Save changes with message"
+msgstr ""
 
 msgid "WikiPage|Template title"
 msgstr "템플릿 제목"
@@ -76462,6 +76866,9 @@ msgstr "%{pageTitle} 업데이트"
 msgid "WikiPage|Update template %{pageTitle}"
 msgstr "%{pageTitle} 템플릿 업데이트"
 
+msgid "WikiPage|Uses the default commit message"
+msgstr ""
+
 msgid "WikiPage|Write your content or drag files here…"
 msgstr "여기에 내용을 작성하거나 파일을 드래그하세요…"
 
@@ -76470,6 +76877,9 @@ msgstr "{Give this page a title}"
 
 msgid "Wiki|Add custom sidebar"
 msgstr "커스텀 사이드바 추가"
+
+msgid "Wiki|Close sidebar"
+msgstr ""
 
 msgid "Wiki|Commit message"
 msgstr "커밋 메시지"
@@ -76491,6 +76901,9 @@ msgstr "커스텀 사이드바 편집"
 
 msgid "Wiki|Edit page"
 msgstr "페이지 편집"
+
+msgid "Wiki|Edit page options"
+msgstr ""
 
 msgid "Wiki|Edit template"
 msgstr "템플릿 편집"
@@ -76642,9 +77055,6 @@ msgstr "작업 항목을 이메일을 통해 생성하는 것은 프로젝트에
 msgid "Work item not supported"
 msgstr "작업 항목이 지원되지 않습니다."
 
-msgid "Work item settings"
-msgstr ""
-
 msgid "Work item type %{work_item_type_name} can only have a maximum of %{limit} active custom fields."
 msgstr "%{work_item_type_name} 작업 항목 유형은 활성 커스텀 필드를 최대 %{limit}개까지만 가질 수 있습니다."
 
@@ -76747,6 +77157,10 @@ msgstr "당신의 사전 설정"
 msgid "WorkItem|%d item"
 msgid_plural "WorkItem|%d items"
 msgstr[0] "%d 항목"
+
+msgid "WorkItem|%d more..."
+msgid_plural "WorkItem|%d more..."
+msgstr[0] ""
 
 msgid "WorkItem|%{count} epics closed"
 msgstr "%{count} 에픽 닫힘"
@@ -76861,7 +77275,7 @@ msgid "WorkItem|Add view"
 msgstr "뷰 추가"
 
 msgid "WorkItem|Added"
-msgstr ""
+msgstr "추가됨"
 
 msgid "WorkItem|All activity"
 msgstr "모든 활동"
@@ -76981,7 +77395,10 @@ msgid "WorkItem|Blue"
 msgstr "파란색"
 
 msgid "WorkItem|Browse views"
-msgstr ""
+msgstr "뷰 탐색"
+
+msgid "WorkItem|Bug"
+msgstr "버그"
 
 msgid "WorkItem|Cancel"
 msgstr "취소"
@@ -77082,6 +77499,9 @@ msgstr "%{workItemType} 이메일 주소 복사"
 msgid "WorkItem|Copy from existing lifecycle"
 msgstr "기존 라이프사이클로 부터 복사"
 
+msgid "WorkItem|Copy link to view"
+msgstr "뷰에 링크 복사"
+
 msgid "WorkItem|Create %{workItemType}"
 msgstr "%{workItemType} 생성"
 
@@ -77139,6 +77559,9 @@ msgstr "라이프사이클 확인 삭제"
 msgid "WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed."
 msgstr "이 %{workItemType} 을 삭제하고 모든 하위 항목을 릴리스 하시겠습니까? 이 작업은 되돌릴 수 없습니다."
 
+msgid "WorkItem|Delete view"
+msgstr "뷰 삭제"
+
 msgid "WorkItem|Description"
 msgstr "설명"
 
@@ -77163,6 +77586,9 @@ msgstr "중복"
 msgid "WorkItem|Duplicate default"
 msgstr "기본값 복제"
 
+msgid "WorkItem|Edit"
+msgstr "편집"
+
 msgid "WorkItem|Edit %{fieldName}"
 msgstr "%{fieldName} 수정"
 
@@ -77178,11 +77604,14 @@ msgstr "상태 편집"
 msgid "WorkItem|Edit statuses"
 msgstr "상태 편집"
 
+msgid "WorkItem|Edit type name and icon"
+msgstr "유형 이름과 아이콘 편집"
+
 msgid "WorkItem|Edit work item"
 msgstr "작업 항목 편집"
 
 msgid "WorkItem|Edit your search and try again."
-msgstr ""
+msgstr "검색을 수정하고 다시 시도하세요."
 
 msgid "WorkItem|Email participants"
 msgstr "이메일 참가자"
@@ -77280,11 +77709,14 @@ msgstr "사이드바 숨기기"
 msgid "WorkItem|History only"
 msgstr "히스토리 만"
 
-msgid "WorkItem|How do I use configure work item types?"
-msgstr "작업 항목 유형 구성을 어떻게 사용하나요?"
-
 msgid "WorkItem|How do I use custom fields?"
 msgstr "커스텀 필드를 어떻게 사용하나요?"
+
+msgid "WorkItem|How do I use or configure work item types?"
+msgstr "작업 항목 유형 구성하거나 사용하는 방법?"
+
+msgid "WorkItem|Icon"
+msgstr "아이콘"
 
 msgid "WorkItem|Import CSV"
 msgstr "CSV 가져오기"
@@ -77304,12 +77736,18 @@ msgstr "인시던트"
 msgid "WorkItem|Inherited"
 msgstr "상속됨"
 
+msgid "WorkItem|Introducing Tickets"
+msgstr "티켓 소개"
+
 msgid "WorkItem|Issue"
 msgstr "이슈"
 
 msgid "WorkItem|Issue has 1 related vulnerability"
 msgid_plural "WorkItem|Issue has %{itemCount} related vulnerabilities"
 msgstr[0] "이슈가 %{itemCount}개의 연관된 취약점을 갖고 있습니다"
+
+msgid "WorkItem|Issues created from Service Desk are now Tickets. Filter by type \"Ticket\" to see only these items."
+msgstr "서비스 데스크로부터 생성된 이슈가 현재 티켓입니다. 유형을 \"티켓\"으로 필터링하면 이 항목들만 볼 수 있습니다."
 
 msgid "WorkItem|Issues settings"
 msgstr "이슈 설정"
@@ -77429,8 +77867,14 @@ msgstr "유효한 16진수 코드여야 합니다."
 msgid "WorkItem|Must be a valid hex color."
 msgstr "유효한 16진수 색상이어야 합니다."
 
+msgid "WorkItem|Name"
+msgstr "이름"
+
 msgid "WorkItem|Name is already taken."
 msgstr "이름이 이미 사용되었습니다."
+
+msgid "WorkItem|Name is required"
+msgstr "이름이 필요합니다"
 
 msgid "WorkItem|Name is required."
 msgstr "이름이 필요합니다."
@@ -77448,7 +77892,7 @@ msgid "WorkItem|New %{workItemType}"
 msgstr "신규 %{workItemType}"
 
 msgid "WorkItem|New View"
-msgstr ""
+msgstr "새 뷰"
 
 msgid "WorkItem|New custom field"
 msgstr "새 사용자 정의 필드"
@@ -77529,13 +77973,13 @@ msgid "WorkItem|No parent"
 msgstr "상위 없음"
 
 msgid "WorkItem|No results found"
-msgstr ""
+msgstr "검색 결과가 없음"
 
 msgid "WorkItem|No template"
 msgstr "템플릿 없음"
 
 msgid "WorkItem|No views currently exist"
-msgstr ""
+msgstr "현재 뷰가 없습니다"
 
 msgid "WorkItem|None"
 msgstr "없음"
@@ -77610,7 +78054,7 @@ msgid "WorkItem|Private"
 msgstr "비공개"
 
 msgid "WorkItem|Private: only you can see and edit this view."
-msgstr ""
+msgstr "비공개: 이 뷰는 당신만 보고 편집할 수 있습니다."
 
 msgid "WorkItem|Progress"
 msgstr "진행 상황"
@@ -77629,6 +78073,9 @@ msgstr "관련 취약점"
 
 msgid "WorkItem|Remove"
 msgstr "삭제"
+
+msgid "WorkItem|Remove from list"
+msgstr "리스트에서 제거"
 
 msgid "WorkItem|Remove lifecycle"
 msgstr "라이프사이클 제거"
@@ -77657,8 +78104,14 @@ msgstr "리소스"
 msgid "WorkItem|Rose"
 msgstr "장미빛"
 
+msgid "WorkItem|Save"
+msgstr "저장"
+
 msgid "WorkItem|Save and overwrite"
 msgstr "저장 및 덮어쓰기"
+
+msgid "WorkItem|Save view"
+msgstr ""
 
 msgid "WorkItem|Search by view name or description"
 msgstr ""
@@ -77948,6 +78401,9 @@ msgstr "이 그룹에는 활성 커스텀 필드가 없습니다. 커스텀 필�
 msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr "이것은 %{emailsHelpLinkStart}개인 이메일 주소%{emailsHelpLinkEnd}로, 오직 당신을 위해 생성되었습니다. 이 주소를 가진 사람은 마치 당신인 것처럼 작업 항목을 생성할 수 있습니다. 그런 일이 발생하는 경우 %{resetLinkStart}이 토큰을 재설정하십시오%{resetLinkEnd}."
 
+msgid "WorkItem|This is a system type that cannot be renamed, disabled, or deleted."
+msgstr ""
+
 msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr "이 항목은 작성자가 계정정지되었기 때문에 숨겨져 있습니다."
 
@@ -78029,6 +78485,12 @@ msgstr "작업 항목 업데이트"
 msgid "WorkItem|Usage"
 msgstr "사용"
 
+msgid "WorkItem|Usage is controlled by the Service Desk feature."
+msgstr ""
+
+msgid "WorkItem|Usage is limited to groups."
+msgstr ""
+
 msgid "WorkItem|Usage:"
 msgstr "사용:"
 
@@ -78060,7 +78522,7 @@ msgid "WorkItem|View on a roadmap"
 msgstr "로드맵 보기"
 
 msgid "WorkItem|Views"
-msgstr ""
+msgstr "뷰"
 
 msgid "WorkItem|Views created by you or shared by others will show up here."
 msgstr ""
@@ -78075,7 +78537,7 @@ msgid "WorkItem|Work item not found"
 msgstr "작업 항목을 찾을 수 없음"
 
 msgid "WorkItem|Work item settings"
-msgstr ""
+msgstr "작업 항목 설정"
 
 msgid "WorkItem|Work item types"
 msgstr "작업 항목 유형"
@@ -78282,23 +78744,23 @@ msgid "Workspaces|Devfile"
 msgstr "Devfile"
 
 msgid "Workspaces|Devfile Validation Rules."
-msgstr ""
+msgstr "Devfile 검증 규칙."
 
 msgid "Workspaces|Devfile is invalid."
-msgstr ""
+msgstr "Devfile이 유효하지 않음"
 
 msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr "각 작업 공간은 GitLab 프로젝트를 위한 안전한 클라우드 환경입니다. 모든 기기에서 프로젝트 간을 빠르게 전환하고, 라이브 미리보기를 하고, 코드를 컴파일하세요."
 
 msgid "Workspaces|Encountered error while attempting to validate the Devfile."
-msgstr ""
+msgstr "Devfile의 유효성 검증 도중 오류가 발생하였습니다."
 
 msgid "Workspaces|Error"
 msgstr "오류"
 
 msgid "Workspaces|Error processing the Devfile."
 msgid_plural "Workspaces|%{count} errors processing the Devfile."
-msgstr[0] ""
+msgstr[0] "Devfile 처리중 %{count} 오류."
 
 msgid "Workspaces|Failed"
 msgstr "실패"
@@ -78970,6 +79432,9 @@ msgstr "dora 측정항목에 액세스할 수 있는 권한이 없습니다."
 msgid "You do not have permission to approve a member"
 msgstr "당신은 구성원을 승인할 권한이 없습니다."
 
+msgid "You do not have permission to create saved views in this namespace."
+msgstr ""
+
 msgid "You do not have permission to leave this %{namespaceType}."
 msgstr "이 %{namespaceType}를(를) 떠날 수 있는 권한이 없습니다"
 
@@ -78987,6 +79452,9 @@ msgstr "이를 잠금 해제할 수 있는 권한이 없습니다"
 
 msgid "You do not have permission to update the environment."
 msgstr "당신은 환경을 업데이트할 권한이 없습니다."
+
+msgid "You do not have permission to update this saved view."
+msgstr ""
 
 msgid "You do not have permission to view this embedded view."
 msgstr "이 임베디드 뷰를 볼 수 있는 권한이 없습니다."
@@ -81546,7 +82014,7 @@ msgid "mrWidget|To continue, %{docLinkStart}manage your storage usage%{docLinkEn
 msgstr "계속하려면, %{docLinkStart}당신의 저장공간 사용량을 관리하세요%{docLinkEnd}."
 
 msgid "mrWidget|View merge train."
-msgstr ""
+msgstr "머지 트레인 보기"
 
 msgid "mrWidget|Your merge request is almost ready!"
 msgstr "당신의 머지 레퀘스트가 거의 준비되었습니다."

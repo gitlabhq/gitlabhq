@@ -14,9 +14,9 @@ title: External Status Checks API
 
 Use this API to manage [external status checks](../user/project/merge_requests/status_checks.md).
 
-## Get project external status check services
+## Retrieve project external status check services
 
-You can request information about a project's external status check services using the following endpoint:
+Retrieves information about a project's external status check services using the following endpoint:
 
 ```plaintext
 GET /projects/:id/external_status_checks
@@ -52,7 +52,7 @@ GET /projects/:id/external_status_checks
 
 ## Create external status check service
 
-You can create a new external status check service for a project using the following endpoint:
+Creates a new external status check service for a project using the following endpoint:
 
 ```plaintext
 POST /projects/:id/external_status_checks
@@ -72,7 +72,7 @@ POST /projects/:id/external_status_checks
 
 ## Update external status check service
 
-You can update an existing external status check for a project using the following endpoint:
+Updates an existing external status check for a project using the following endpoint:
 
 ```plaintext
 PUT /projects/:id/external_status_checks/:check_id
@@ -89,7 +89,7 @@ PUT /projects/:id/external_status_checks/:check_id
 
 ## Delete external status check service
 
-You can delete an external status check service for a project using the following endpoint:
+Deletes an external status check service for a project using the following endpoint:
 
 ```plaintext
 DELETE /projects/:id/external_status_checks/:check_id
@@ -100,9 +100,9 @@ DELETE /projects/:id/external_status_checks/:check_id
 | `check_id`             | integer        | yes      | ID of an external status check service |
 | `id`                   | integer        | yes      | ID of a project                        |
 
-## List status checks for a merge request
+## List all status checks for a merge request
 
-For a single merge request, list the external status check services that apply to it and their status.
+Lists the external status check services that apply to a single merge request and their status.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/status_checks
@@ -141,7 +141,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 
 {{< /history >}}
 
-For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
+Sets the status of an external status check for a single merge request, informing GitLab that a merge request has passed a check by an external service.
 To set the status of an external check, the personal access token used must belong to a user with at least the Developer role on the target project of the merge request.
 
 Execute this API call as any user with rights to approve the merge request itself.
@@ -171,7 +171,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 
 {{< /history >}}
 
-For a single merge request, retry the specified failed external status check. Even
+Retries the specified failed external status check for a single merge request. Even
 though the merge request hasn't changed, this endpoint resends the current state of
 merge request to the defined external service.
 

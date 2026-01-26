@@ -128,6 +128,30 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       end
     end
 
+    describe '.find_by_name' do
+      it 'finds issue type' do
+        type = described_class.find_by_name("Issue")
+
+        expect(type).to be_present
+        expect(type.name).to eq('Issue')
+        expect(type.base_type).to eq('issue')
+      end
+
+      it 'returns nil for non-existent type' do
+        expect(described_class.find_by_name("Nonexistent")).to be_nil
+      end
+
+      it 'accepts symbol as argument' do
+        type = described_class.find_by_name(:Task)
+
+        expect(type.name).to eq('Task')
+      end
+
+      it "is case sensitive" do
+        expect(described_class.find_by_name("issue")).to be_nil
+      end
+    end
+
     describe '.default_by_type' do
       it 'works the same as find_by_type' do
         expect(described_class.default_by_type(:issue)).to eq(described_class.find_by_type(:issue))

@@ -396,13 +396,10 @@ For example:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature is enabled by default for GitLab Self-Managed instances. Administrators may disable this feature
-through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
-The feature is always enabled on GitLab.com.
-
-{{< /alert >}}
+> [!note]
+> This feature is enabled by default for GitLab Self-Managed instances. Administrators may disable this feature
+> through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
+> The feature is always enabled on GitLab.com.
 
 When a user successfully signs in from a previously unknown IP address or device,
 GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially

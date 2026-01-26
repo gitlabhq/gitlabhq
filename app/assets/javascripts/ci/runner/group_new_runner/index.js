@@ -20,6 +20,7 @@ export const initGroupNewRunner = (selector = '#js-group-new-runner') => {
 
   return new Vue({
     el,
+    name: 'GroupNewRunnerAppRoot',
     apolloProvider,
     render(h) {
       return h(GroupNewRunnerApp, {

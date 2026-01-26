@@ -213,13 +213,10 @@ This process might take some time to complete.
 However, placeholder users remain in the system if
 they're also associated with other projects or groups.
 
-{{< alert type="note" >}}
-
-There is no other way to delete placeholder users, but support for improvements is proposed in
-[issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
-[issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
-
-{{< /alert >}}
+> [!note]
+> There is no other way to delete placeholder users, but support for improvements is proposed in
+> [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
+> [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
 
 ### Placeholder user limits
 

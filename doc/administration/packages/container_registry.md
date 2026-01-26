@@ -428,7 +428,7 @@ The following table lists active container registry feature flags:
 | `REGISTRY_FF_ONGOING_RENAME_CHECK` | Check Redis for projects undergoing rename operations. | 16.2 | Disabled | |
 | `REGISTRY_FF_DYNAMIC_MEDIA_TYPES` | Allow creation of new media types during runtime. | 17.1 | Disabled | |
 | `REGISTRY_FF_BBM` | Control asynchronous batched background migration processes. | 17.2 | Disabled | |
-| `REGISTRY_FF_ENFORCE_LOCKFILES` | Enable lockfile checking for database or legacy metadata storage. | [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1335) in GitLab 17.6. | Disabled | 18.10 (See [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)) |
+| `REGISTRY_FF_ENFORCE_LOCKFILES` | Enable lockfile checking for database or legacy metadata storage. | [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1335) in GitLab 17.6. | [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/container-registry/-/work_items/1786) in GitLab 18.9. | 18.10 (See [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)) |
 
 To configure container registry feature flags,
 follow the instructions for your platform.

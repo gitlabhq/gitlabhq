@@ -106,24 +106,20 @@ To create a Maven upstream registry:
    - **Create new upstream** to configure the upstream.
    - **Link existing upstream** > **Select existing upstream**.
      1. From the dropdown list, select an upstream.
-1. Configure the Maven upstream registry:
-   - Enter a **Name**.
-   - Enter the **Upstream URL**.
-   - Optional. Enter a **Description**.
-   - Optional. Enter a **Username** and **Password**. You must include both a username and password, or neither. If not set, a public (anonymous) request is used to access the upstream.
-1. Set the **Artifact caching period** and **Metadata caching period**.
-   - The artifact and metadata caching periods default to 24 hours. Set to `0` to disable cache entry checks.
+     1. Optional. Select **Test upstream** to test the upstream connection before you create it.
+     1. Select **Add upstream**. 
+1. Complete the fields.
+   - Include both a **username** and **password**, or neither. If not set, a public (anonymous) request is used to access the upstream.
+   - If you want to connect the upstream to Maven Central, use the following as the **Upstream URL**:
+
+      ```plaintext
+      https://repo1.maven.org/maven2
+      ```
+   
+   - **Artifact caching period** and **Metadata caching period** default to 24 hours. Set to `0` to disable cache entry checks, or if you're using Maven Central.
+   - If you want to test the upstream connection before you create it, select **Test upstream**.
+
 1. Select **Create upstream**.
-
-If you connect the upstream to Maven Central:
-
-- For **Upstream URL**, enter the following URL:
-
-  ```plaintext
-  https://repo1.maven.org/maven2
-  ```
-
-- For **Artifact caching period** and **Metadata caching period**, set the time to `0`. Maven Central files are immutable.
 
 For more information about cache validity settings, see [Set the cache validity period](../../virtual_registry/_index.md#set-the-cache-validity-period).
 

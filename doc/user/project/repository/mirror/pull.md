@@ -41,13 +41,10 @@ local repository, GitLab stops updating the branch. This prevents data loss.
 Deleted branches and tags in the upstream repository are not reflected in the
 downstream repository.
 
-{{< alert type="note" >}}
-
-Items deleted from the downstream pull mirror repository, but still in the upstream repository,
-are restored upon the next pull. For example: a branch deleted only in the mirrored repository
-reappears after the next pull.
-
-{{< /alert >}}
+> [!note]
+> Items deleted from the downstream pull mirror repository, but still in the upstream repository,
+> are restored upon the next pull. For example: a branch deleted only in the mirrored repository
+> reappears after the next pull.
 
 ## How pull mirroring works
 

@@ -11,7 +11,7 @@ RSpec.describe 'config/initializers/user_experience_slis.rb', feature_category: 
     Pathname.new(Labkit::UserExperienceSli.configuration.registry_path).glob('*.yml')
   end
 
-  it 'retrieves each valid covered experience from the registry' do
+  it 'retrieves each valid user experience SLI from the registry' do
     experiences.each do |filepath|
       xp_name = filepath.basename('.yml').to_s
 
@@ -19,7 +19,7 @@ RSpec.describe 'config/initializers/user_experience_slis.rb', feature_category: 
     end
   end
 
-  it 'validates that each covered experience has a valid feature category' do
+  it 'validates that each user experience SLI has a valid feature category' do
     experiences.each do |filepath|
       experience_data = YAML.load_file(filepath)
       feature_category = experience_data['feature_category']
@@ -30,13 +30,13 @@ RSpec.describe 'config/initializers/user_experience_slis.rb', feature_category: 
     end
   end
 
-  it 'fails when covered experience does not exist' do
+  it 'fails when user experience SLI does not exist' do
     expect do
       Labkit::UserExperienceSli.get('non_existent_experience')
     end.to raise_error(Labkit::UserExperienceSli::NotFoundError)
   end
 
-  it 'fails when covered experience in the registry is invalid' do
+  it 'fails when user experience SLI in the registry is invalid' do
     Tempfile.create(['invalid_experience', '.yml'], Labkit::UserExperienceSli.configuration.registry_path) do |f|
       f.write('invalid_key: invalid_value')
       f.close

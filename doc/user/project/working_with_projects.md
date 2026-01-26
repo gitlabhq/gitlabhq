@@ -259,13 +259,10 @@ Prerequisites:
 
 - You must be an administrator or have the Maintainer or Owner role for the project.
 
-{{< alert type="note" >}}
-
-When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
-For more information on redirect duration and its side-effects, see
-[redirects when renaming repositories](repository/_index.md#repository-path-changes).
-
-{{< /alert >}}
+> [!note]
+> When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
+> For more information on redirect duration and its side-effects, see
+> [redirects when renaming repositories](repository/_index.md#repository-path-changes).
 
 To rename a repository:
 

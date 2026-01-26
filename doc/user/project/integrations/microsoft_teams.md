@@ -23,13 +23,10 @@ in Microsoft Teams. To integrate the services, you must:
 
 ## Configure Microsoft Teams
 
-{{< alert type="warning" >}}
-
-New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
-existing integrations must be transitioned to workflow apps by December 2025.
-Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
-
-{{< /alert >}}
+> [!warning]
+> New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
+> existing integrations must be transitioned to workflow apps by December 2025.
+> Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
 
 To configure Microsoft Teams to listen for notifications from GitLab:
 

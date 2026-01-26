@@ -21,13 +21,10 @@ GitLab does it for you, out-of-the-box.
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
 
-{{< alert type="warning" >}}
-
-This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
-[Pages daemon](../../../../administration/pages/_index.md) (GitLab Self-Managed, Free, Premium, and Ultimate only). Wildcard
-certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
-
-{{< /alert >}}
+> [!warning]
+> This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
+> [Pages daemon](../../../../administration/pages/_index.md) (GitLab Self-Managed, Free, Premium, and Ultimate only). Wildcard
+> certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
 
 ## Prerequisites
 

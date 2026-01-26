@@ -8,8 +8,8 @@ query getPipelines(
   $scope: PipelineScopeEnum
   $first: Int
   $last: Int
-  $after: String = ""
-  $before: String = ""
+  $after: String
+  $before: String
   $source: String
   $ref: String
   $username: String

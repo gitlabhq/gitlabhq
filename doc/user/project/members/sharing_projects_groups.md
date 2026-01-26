@@ -267,13 +267,10 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the project.
 
-{{< alert type="note" >}}
-
-The invited group's name and membership source are masked from members who do not have access to the invited group.
-However, even if group Owners cannot access the private invited group, they can see the source of private invited group members.
-This behavior is intended to help group Owners to better manage the memberships of the groups they own.
-
-{{< /alert >}}
+> [!note]
+> The invited group's name and membership source are masked from members who do not have access to the invited group.
+> However, even if group Owners cannot access the private invited group, they can see the source of private invited group members.
+> This behavior is intended to help group Owners to better manage the memberships of the groups they own.
 
 ### Examples
 

@@ -54,13 +54,10 @@ to access the work item or merge request:
   like `@team-name` are added as participants if they have work item or
   merge request access.
 
-{{< alert type="warning" >}}
-
-Group mentions (like `@team-name`) add all direct group members as participants.
-Be careful when using `@` with common words, as this may unintentionally mention
-existing groups.
-
-{{< /alert >}}
+> [!warning]
+> Group mentions (like `@team-name`) add all direct group members as participants.
+> Be careful when using `@` with common words, as this may unintentionally mention
+> existing groups.
 
 ## Participants and email notifications
 

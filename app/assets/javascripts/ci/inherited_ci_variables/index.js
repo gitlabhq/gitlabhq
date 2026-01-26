@@ -24,6 +24,7 @@ export default (containerId = 'js-inherited-group-ci-variables') => {
   // eslint-disable-next-line consistent-return
   return new Vue({
     el,
+    name: 'InheritedCiVariablesRoot',
     apolloProvider,
     provide: {
       isInheritedGroupVars: true,

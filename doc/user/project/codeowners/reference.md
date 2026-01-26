@@ -368,13 +368,10 @@ README.md @username
 internal/README.md
 ```
 
-{{< alert type="note" >}}
-
-When using globstar paths, be cautious of unintended matches.
-For example, `README.md` without a leading `/` matches any `README.md`
-file in any directory or subdirectory of the repository.
-
-{{< /alert >}}
+> [!note]
+> When using globstar paths, be cautious of unintended matches.
+> For example, `README.md` without a leading `/` matches any `README.md`
+> file in any directory or subdirectory of the repository.
 
 ### Directory paths
 

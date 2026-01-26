@@ -215,13 +215,10 @@ To generate certificates manually:
      --work-dir ~/.certbot/work
    ```
 
-{{< alert type="note" >}}
-
-You must renew your certificates when they expire.
-For example, Let's Encrypt certificates expire after three months.
-To automatically renew certificates, see [`cert-manager`](https://cert-manager.io/docs/).
-
-{{< /alert >}}
+> [!note]
+> You must renew your certificates when they expire.
+> For example, Let's Encrypt certificates expire after three months.
+> To automatically renew certificates, see [`cert-manager`](https://cert-manager.io/docs/).
 
 ## Register a GitLab OAuth application
 

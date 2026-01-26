@@ -38,7 +38,8 @@ This way we ensure there are no barriers to what we expect of users.
 
 ### Ensure compliance after changed page structure
 
-User interactions may result in significant changes in page structure. For example, a modal is shown, or a new section is rendered.
+User interactions may result in significant changes in page structure. For example,
+a dialog is shown, or a new section is rendered.
 In that case, add an assertion after any such change.
 We want to make sure that users are able to interact with all available components.
 
@@ -103,7 +104,7 @@ expect(page).to be_axe_clean.within('[data-testid="element"]')
                             .according_to(:wcag21aa)
 ```
 
-Axe does not test hidden regions, such as inactive menus or modal windows. To test
+Axe does not test hidden regions, such as inactive menus or dialogs. To test
 hidden regions for accessibility, write tests that activate or render the regions visible
 and run the matcher again.
 

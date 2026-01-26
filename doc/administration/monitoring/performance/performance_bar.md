@@ -46,18 +46,18 @@ From left to right, the performance bar displays:
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
-  [Gitaly](../../gitaly/_index.md) calls. Select to display a modal window with more
+  [Gitaly](../../gitaly/_index.md) calls. Select to display a dialog with more
   details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
-  Redis calls. Select to display a modal window with more details.
+  Redis calls. Select to display a dialog with more details.
 - **Elasticsearch calls**: the time taken (in milliseconds) and the total number of
-  Elasticsearch calls. Select to display a modal window with more details.
+  Elasticsearch calls. Select to display a dialog with more details.
 - **External HTTP calls**: the time taken (in milliseconds) and the total
-  number of external calls to other systems. Select to display a modal window
+  number of external calls to other systems. Select to display a dialog
   with more details.
 - **Load timings** of the page: if your browser supports load timings, several
   values in milliseconds, separated by slashes.
-  Select to display a modal window with more details. The values, from left to right:
+  Select to display a dialog with more details. The values, from left to right:
   - **Backend**: time needed for the base page to load.
   - [**First Contentful Paint**](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/):
     Time until something was visible to the user. Displays `NaN` if your browser does not

@@ -16,7 +16,8 @@ module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modul
     end
 
     def valid_param_types?
-      (::WorkItems::Type.base_types.keys & param_types).sort == param_types.sort
+      provider = ::WorkItems::TypesFramework::Provider.new(parent)
+      (provider.unfiltered_base_types & param_types).sort == param_types.sort
     end
 
     def param_types

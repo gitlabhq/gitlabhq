@@ -18,13 +18,10 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
-{{< alert type="note" >}}
-
-Certificates are **not** required to add to your custom
-(sub)domain on your GitLab Pages project, though they are
-highly recommendable.
-
-{{< /alert >}}
+> [!note]
+> Certificates are **not** required to add to your custom
+> (sub)domain on your GitLab Pages project, though they are
+> highly recommendable.
 
 Let's start with an introduction to the importance of HTTPS.
 

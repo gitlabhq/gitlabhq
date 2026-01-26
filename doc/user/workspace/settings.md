@@ -241,13 +241,10 @@ For more information about possible CPU and memory values, see:
 
 Workspaces fail when they exceed the values you set for `requests` and `limits`.
 
-{{< alert type="note" >}}
-
-If [`shared_namespace`](#shared_namespace) is set, `max_resources_per_workspace` must be an
-empty hash. Users can create a Kubernetes [Resource quota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
-in the `shared_namespace` to achieve the same result as specifying this value here.
-
-{{< /alert >}}
+> [!note]
+> If [`shared_namespace`](#shared_namespace) is set, `max_resources_per_workspace` must be an
+> empty hash. Users can create a Kubernetes [Resource quota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+> in the `shared_namespace` to achieve the same result as specifying this value here.
 
 Example configuration:
 

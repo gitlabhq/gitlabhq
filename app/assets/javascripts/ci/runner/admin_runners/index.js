@@ -48,6 +48,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
 
   return new Vue({
     el,
+    name: 'AdminRunnersAppRoot',
     apolloProvider,
     provide: {
       ...runnersAppProvide(el.dataset),

@@ -131,13 +131,10 @@ variables:
 
 You can access the GitLab-managed OpenTofu state from your local machine.
 
-{{< alert type="warning" >}}
-
-On clustered deployments of GitLab, you should not use local storage.
-A split state can occur across nodes, making subsequent OpenTofu executions
-inconsistent. Instead, use a remote storage resource.
-
-{{< /alert >}}
+> [!warning]
+> On clustered deployments of GitLab, you should not use local storage.
+> A split state can occur across nodes, making subsequent OpenTofu executions
+> inconsistent. Instead, use a remote storage resource.
 
 1. Ensure the OpenTofu state has been
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).

@@ -172,7 +172,7 @@ DAST cannot scan correctly when:
 Understanding how your application works is vital to figuring out why a DAST scan isn't working. For example, the following situations
 may require additional configuration settings.
 
-- Is there a popup modal that hides elements?
+- Is there a popup dialog that hides elements?
 - Does a loaded page change dramatically after a certain period of time?
 - Is the application especially slow or fast to load?
 - Is the target application jerky while loading?

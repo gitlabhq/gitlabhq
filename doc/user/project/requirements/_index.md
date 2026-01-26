@@ -333,7 +333,7 @@ To export requirements:
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
    then select **Export as CSV** ({{< icon name="export" >}}).
 
-   A confirmation modal appears.
+   A confirmation dialog appears.
 
 1. Under **Advanced export options**, select which fields to export.
 

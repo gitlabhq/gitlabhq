@@ -23,13 +23,10 @@ description: Customer management, organizations, contacts, and permissions.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-This feature is not under active development, but
-[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
-To determine if the feature meets your needs, see the open issues in the [Managing and billing Clients Epic](https://gitlab.com/groups/gitlab-org/-/epics/5323).
-
-{{< /alert >}}
+> [!note]
+> This feature is not under active development, but
+> [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+> To determine if the feature meets your needs, see the open issues in the [Managing and billing Clients Epic](https://gitlab.com/groups/gitlab-org/-/epics/5323).
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.

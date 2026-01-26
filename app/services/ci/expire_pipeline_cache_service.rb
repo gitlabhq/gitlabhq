@@ -68,6 +68,10 @@ module Ci
       url_helpers.graphql_etag_project_on_demand_scan_counts_path(project)
     end
 
+    def graphql_project_pipelines_path(project)
+      url_helpers.graphql_etag_project_pipelines_path(project)
+    end
+
     # Updates ETag caches of a pipeline.
     #
     # This logic resides in a separate method so that EE can more easily extend
@@ -79,7 +83,10 @@ module Ci
       project = pipeline.project
 
       etag_paths = [
+        # rails path
         project_pipelines_path(project),
+        # graphql path
+        graphql_project_pipelines_path(project),
         new_merge_request_pipelines_path(project),
         graphql_project_on_demand_scan_counts_path(project)
       ]

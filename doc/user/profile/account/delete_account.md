@@ -34,13 +34,10 @@ Users can be deleted from a GitLab instance, either by:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-On GitLab Self-Managed, this feature is disabled by default. Use the
-[application settings API](../../../api/settings.md) to enable the
-`delay_user_account_self_deletion` setting for the instance.
-
-{{< /alert >}}
+> [!note]
+> On GitLab Self-Managed, this feature is disabled by default. Use the
+> [application settings API](../../../api/settings.md) to enable the
+> `delay_user_account_self_deletion` setting for the instance.
 
 You can schedule your account for deletion. When you delete your account, it enters a pending
 deletion state. Generally, deletions complete in one or two hours but can take up to seven days for

@@ -127,7 +127,7 @@ Otherwise, anyone with a public account can access your Vault instance.
 
 1. Go to your Vault UI. For example: [http://127.0.0.1:8200/ui/vault/auth?with=oidc](http://127.0.0.1:8200/ui/vault/auth?with=oidc).
 1. If the `OIDC` method is not selected, open the dropdown list and select it.
-1. Select **Sign in With GitLab**, which opens a modal window:
+1. Select **Sign in With GitLab**, which opens a dialog:
 
    ![Sign in to Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 

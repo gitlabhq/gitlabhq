@@ -49,13 +49,10 @@ users with access to the [Rails console](../../../administration/operations/rail
 can rebase a merge request from the Rails console. Replace `<username>`,
 `<namespace/project>`, and `<iid>` with appropriate values:
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -78,13 +75,10 @@ users with access to the [Rails console](../../../administration/operations/rail
 can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
 and `<iid>` with appropriate values:
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -130,13 +124,10 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 If deleting a merge request doesn't work through the UI or API, try deleting it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-{{< alert type="warning" >}}
-
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Any command that changes data directly could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them in a test environment
+> with a backup of the instance ready to be restored, just in case.
 
 ```ruby
 u = User.find_by_username('<username>')

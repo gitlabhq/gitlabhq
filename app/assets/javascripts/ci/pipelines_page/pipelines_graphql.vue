@@ -25,12 +25,14 @@ import {
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
+import { etagQueryHeaders } from '~/graphql_shared/utils';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
 import NavigationControls from './components/nav_controls.vue';
 import getPipelinesQuery from './graphql/queries/get_pipelines.query.graphql';
+import getSinglePipelineQuery from './graphql/queries/get_single_pipeline.query.graphql';
 import getAllPipelinesCountQuery from './graphql/queries/get_all_pipelines_count.query.graphql';
 import clearRunnerCacheMutation from './graphql/mutations/clear_runner_cache.mutation.graphql';
 import retryPipelineMutation from './graphql/mutations/retry_pipeline.mutation.graphql';
@@ -100,6 +102,9 @@ export default {
     hasGitlabCi: {
       default: false,
     },
+    projectPipelinesEtagPath: {
+      default: '',
+    },
   },
   props: {
     params: {
@@ -114,11 +119,14 @@ export default {
   },
   apollo: {
     pipelines: {
+      context() {
+        const headers = etagQueryHeaders('ci/pipelines-page', this.projectPipelinesEtagPath);
+
+        return headers;
+      },
       query: getPipelinesQuery,
-      // we poll only for new pipeline creation
-      // and rely on the subscription for real-time
-      // existing status updates via batched ID fetches
-      pollInterval: 15000,
+      // we poll with eTag caching as a safety net every 60 seconds
+      pollInterval: 60000,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -130,10 +138,10 @@ export default {
 
         const variables = {
           fullPath: this.fullPath,
-          first: this.pagination.first,
-          last: this.pagination.last,
-          after: this.pagination.after,
-          before: this.pagination.before,
+          first: this.pagination.first || null,
+          last: this.pagination.last || null,
+          after: this.pagination.after || null,
+          before: this.pagination.before || null,
           scope: scopeMap[this.scope],
           ...this.transformFilterParams(this.filterParams),
         };
@@ -185,12 +193,20 @@ export default {
           if (ciPipelineStatusesUpdated) {
             const { id: updatedId } = ciPipelineStatusesUpdated;
 
-            const isVisible = this.pipelines.list.some((p) => p.id === updatedId);
+            const { list } = this.pipelines;
 
-            // only fetch pipelines that are visible in the list
+            const isVisible = list.some((p) => p.id === updatedId);
+            const topPipelineId = list[0]?.id;
+
+            const isNewPipeline = this.isIdNewer(updatedId, topPipelineId);
+
             if (isVisible) {
+              // SCENARIO A: Status update for existing pipeline on view
               this.pendingIds.add(updatedId);
               this.fetchUpdatedPipelines();
+            } else if (isNewPipeline && !this.pagination.after) {
+              // SCENARIO B: Brand new pipeline detected while on Page 1
+              this.fetchNewPipeline(updatedId);
             }
           }
           return previousData;
@@ -539,9 +555,30 @@ export default {
         Sentry.captureException(error);
       }
     },
+    async fetchNewPipeline(newPipelineId) {
+      try {
+        const { data } = await this.$apollo.query({
+          query: getSinglePipelineQuery,
+          variables: { fullPath: this.fullPath, id: newPipelineId },
+        });
+
+        const newPipeline = data?.project?.pipeline;
+        const isNotAlreadyInList = this.pipelines.list.every((p) => p.id !== newPipelineId);
+
+        if (newPipeline && isNotAlreadyInList) {
+          this.pipelines.list = [newPipeline, ...this.pipelines.list].slice(0, 15);
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    },
     cancelBatch() {
       this.fetchUpdatedPipelines?.cancel();
       this.pendingIds.clear();
+    },
+    isIdNewer(idA, idB) {
+      if (!idA || !idB) return false;
+      return idA.length > idB.length || (idA.length === idB.length && idA > idB);
     },
   },
 };

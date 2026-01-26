@@ -33,6 +33,10 @@ module WorkItems
 
           alias_method :default_by_type, :find_by_type
 
+          def find_by_name(name)
+            find_by(name: name.to_s)
+          end
+
           def default_issue_type
             find_by_type(:issue)
           end

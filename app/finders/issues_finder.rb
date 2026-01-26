@@ -28,7 +28,7 @@
 #     updated_after: datetime
 #     updated_before: datetime
 #     confidential: boolean
-#     issue_types: array of strings (one of WorkItems::Type.base_types)
+#     issue_types: array of strings (one of ::WorkItems::TypesFramework::Provider.new.unfiltered_base_types)
 #
 class IssuesFinder < IssuableFinder
   extend ::Gitlab::Utils::Override
@@ -137,7 +137,8 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_negated_issue_types(items)
-    issue_type_params = Array(not_params[:issue_types]).map(&:to_s) & WorkItems::Type.base_types.keys
+    provider = ::WorkItems::TypesFramework::Provider.new(params.parent)
+    issue_type_params = Array(not_params[:issue_types]).map(&:to_s) & provider.unfiltered_base_types
     return items if issue_type_params.blank?
 
     items.without_issue_type(issue_type_params)

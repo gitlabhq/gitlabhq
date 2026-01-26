@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Workhorse, feature_category: :shared do
+RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
   let_it_be(:project) { create(:project, :repository) }
   let(:features) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
 

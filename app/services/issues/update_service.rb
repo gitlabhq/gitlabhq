@@ -250,7 +250,7 @@ module Issues
     end
 
     def do_handle_issue_type_change(issue)
-      old_work_item_type = ::WorkItems::Type.find_by_id(issue.work_item_type_id_before_last_save).base_type
+      old_work_item_type = work_item_type_provider.find_by_id(issue.work_item_type_id_before_last_save).base_type
       SystemNoteService.change_issue_type(issue, current_user, old_work_item_type)
 
       ::IncidentManagement::IssuableEscalationStatuses::CreateService.new(issue).execute if issue.supports_escalation?

@@ -150,13 +150,10 @@ To email an issue to a project:
 A new issue is created, with your user as the author.
 You can save this address as a contact in your email client to use it again.
 
-{{< alert type="warning" >}}
-
-The email address you see is a private email address, generated just for you.
-**Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
-were you.
-
-{{< /alert >}}
+> [!warning]
+> The email address you see is a private email address, generated just for you.
+> **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
+> were you.
 
 To regenerate the email address:
 

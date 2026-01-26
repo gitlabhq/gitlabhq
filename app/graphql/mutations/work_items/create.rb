@@ -101,7 +101,7 @@ module Mutations
 
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
-        params = params_with_work_item_type(attributes).merge(author_id: current_user.id,
+        params = params_with_work_item_type(attributes, container).merge(author_id: current_user.id,
           scope_validator: context[:scope_validator])
         params = params_with_resolve_discussion_params(params)
         type = params[:work_item_type]
@@ -163,9 +163,9 @@ module Mutations
         attributes
       end
 
-      def params_with_work_item_type(attributes)
-        work_item_type_id = attributes.delete(:work_item_type_id)&.model_id
-        work_item_type = ::WorkItems::Type.find_by_id(work_item_type_id)
+      def params_with_work_item_type(attributes, container)
+        work_item_type_gid = attributes.delete(:work_item_type_id)
+        work_item_type = ::WorkItems::TypesFramework::Provider.new(container).find_by_gid(work_item_type_gid)
 
         attributes[:work_item_type] = work_item_type
 

@@ -7,6 +7,7 @@ export const initJobLogViewer = async () => {
 
   return new Vue({
     el,
+    name: 'LogViewerAppRoot',
     render(h) {
       return h(LogViewerApp, {
         props: {

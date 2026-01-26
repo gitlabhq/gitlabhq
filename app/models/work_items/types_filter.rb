@@ -15,7 +15,7 @@ module WorkItems
       end
 
       def base_types
-        ::WorkItems::Type.base_types.keys.map(&:to_s)
+        ::WorkItems::TypesFramework::Provider.new.unfiltered_base_types.map(&:to_s)
       end
       strong_memoize_attr :base_types
     end

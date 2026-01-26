@@ -62,13 +62,10 @@ To create a project from a built-in template:
    See the [viewing and access rights](../public_access.md) for users.
 1. Select **Create project**.
 
-{{< alert type="note" >}}
-
-If a user creates a project from a template, or [imports a project](settings/import_export.md#import-a-project-and-its-data),
-they are shown as the author of the imported items, which retain the original timestamp from the template or import.
-This can make items appear as if they were created before the user's account existed.
-
-{{< /alert >}}
+> [!note]
+> If a user creates a project from a template, or [imports a project](settings/import_export.md#import-a-project-and-its-data),
+> they are shown as the author of the imported items, which retain the original timestamp from the template or import.
+> This can make items appear as if they were created before the user's account existed.
 
 Imported objects are labeled as `By <username> on <timestamp>`.
 Before GitLab 17.1, the label was suffixed with `(imported from GitLab)`.
@@ -130,13 +127,10 @@ To create a project from a custom template:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 You can select SHA-256 hashing for a project only when you create the project.
 Git does not support migrating to SHA-256 later, or migrating back to SHA-1.

@@ -39,13 +39,10 @@ You can use GitLab Flavored Markdown in:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-{{< alert type="note" >}}
-
-This Markdown specification is valid for GitLab only. We do our best to render the Markdown faithfully here,
-however the [GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
-use a different Markdown renderer.
-
-{{< /alert >}}
+> [!note]
+> This Markdown specification is valid for GitLab only. We do our best to render the Markdown faithfully here,
+> however the [GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
+> use a different Markdown renderer.
 
 To see exact examples of how GitLab renders any of these examples:
 
@@ -1660,13 +1657,10 @@ or
 - Merge requests.
 - Epics.
 
-{{< alert type="note" >}}
-
-A table of contents renders also when you use the TOC code in single square brackets, regardless of
-being on its own line or not. This behavior is unintended.
-For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
-
-{{< /alert >}}
+> [!note]
+> A table of contents renders also when you use the TOC code in single square brackets, regardless of
+> being on its own line or not. This behavior is unintended.
+> For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077).
 
 <!--
 Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
@@ -2048,13 +2042,10 @@ When rendered, the example looks similar to:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Placeholders can be used to display certain types of changeable data, such as a project's title
 or latest tag. They are filled in each time the Markdown is rendered.

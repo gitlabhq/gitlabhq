@@ -55,13 +55,10 @@ Footnotes:
 | [Project event](#project-events)           | A project is created or deleted in a group. |
 | [Subgroup event](#subgroup-events)         | A subgroup is created or removed from a group. |
 
-{{< alert type="note" >}}
-
-If an author has no public email listed in their
-[GitLab profile](https://gitlab.com/-/user_settings/profile), the `email` attribute in the
-webhook payload displays a value of `[REDACTED]`.
-
-{{< /alert >}}
+> [!note]
+> If an author has no public email listed in their
+> [GitLab profile](https://gitlab.com/-/user_settings/profile), the `email` attribute in the
+> webhook payload displays a value of `[REDACTED]`.
 
 ## Push events
 

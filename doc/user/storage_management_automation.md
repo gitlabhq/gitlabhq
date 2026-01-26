@@ -976,13 +976,10 @@ you can configure:
 - The number of image tags to keep matching the tag name (`keep_n`)
 - The number of days before an image tag can be deleted (`older_than`)
 
-{{< alert type="warning" >}}
-
-On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
-If your container registry has a large number of tags to delete, only some of them are deleted. You might need
-to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
-
-{{< /alert >}}
+> [!warning]
+> On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
+> If your container registry has a large number of tags to delete, only some of them are deleted. You might need
+> to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.
 

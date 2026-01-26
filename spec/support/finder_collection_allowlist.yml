@@ -19,6 +19,7 @@
 - Security::AnalyzerGroupStatusFinder # Reason: To give accurate counts, return all analyzer types, even when there is no DB record
 - Ai::ClickHouseUsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
 - Ai::UsageEventsFinder # Reason: The finder's data is coming from Clickhouse and not Postgres, no ActiveRelation involved
+- WorkItems::TypesFinder # Reason: Types can come from system-defined or ActiveRecord, no ActiveRelation involved
 
 # Temporary excludes (aka TODOs)
 # For example:

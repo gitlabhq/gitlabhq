@@ -51,7 +51,7 @@ To generate an API fuzzing configuration snippet:
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [available CI/CD variables](variables.md).
 1. Select **Generate code snippet**.
-   A modal opens with the YAML snippet corresponding to the options you've selected in the form.
+   A dialog opens with the YAML snippet corresponding to the options you've selected in the form.
 1. Do one of the following:
    1. To copy the snippet to your clipboard, select **Copy code only**.
    1. To add the snippet to your project's `.gitlab-ci.yml` file, select

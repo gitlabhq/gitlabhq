@@ -77561,7 +77561,7 @@ msgstr ""
 msgid "Withdraw access request"
 msgstr ""
 
-msgid "Work Item type with id %{id} was not found"
+msgid "Work Item type %{gid} was not found"
 msgstr ""
 
 msgid "Work in progress (open and unassigned)"

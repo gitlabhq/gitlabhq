@@ -219,9 +219,11 @@ describe('Vue test utils helpers', () => {
         document.createElement('li'),
       ];
       const mockVms = [
+        /* eslint-disable local-rules/vue-require-vue-constructor-name */
         new Vue({ render: (h) => h('li') }).$mount(),
         new Vue({ render: (h) => h('li') }).$mount(),
         new Vue({ render: (h) => h('li') }).$mount(),
+        /* eslint-enable local-rules/vue-require-vue-constructor-name */
       ];
 
       let wrapper;

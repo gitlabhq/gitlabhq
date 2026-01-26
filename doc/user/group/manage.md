@@ -75,13 +75,10 @@ To change your group path (group URL):
 1. Under **Change group URL**, enter a new name.
 1. Select **Change group URL**.
 
-{{< alert type="warning" >}}
-
-It is not possible to rename a namespace if it contains a
-project with [Container Registry](../packages/container_registry/_index.md) tags,
-because the project cannot be moved.
-
-{{< /alert >}}
+> [!warning]
+> It is not possible to rename a namespace if it contains a
+> project with [Container Registry](../packages/container_registry/_index.md) tags,
+> because the project cannot be moved.
 
 {{< alert type="warning" >}}
 
@@ -114,13 +111,10 @@ for the group's projects to meet your group's needs.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 Archive a group and all of its subgroups and projects. When archived, a group and its contents become read-only, and group data is preserved for future reference.
 
