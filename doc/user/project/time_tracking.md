@@ -260,7 +260,7 @@ To delete all the time spent at once, use the [`/remove_time_spent` quick action
 
 To view a time tracking report of time spent on an item:
 
-- On the right sidebar, next to **Spent**, select the time.
+- In the right sidebar, next to **Spent**, select the time.
 
 ![Time tracking report](img/time_tracking_report_v18_3.png)
 

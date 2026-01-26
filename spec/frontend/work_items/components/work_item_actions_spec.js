@@ -49,7 +49,7 @@ describe('WorkItemActions component', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  const getTypeMock = jest.fn();
+
   const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
   const mockWorkItemCreateNoteEmail =
     'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
@@ -132,6 +132,7 @@ describe('WorkItemActions component', () => {
     .mockResolvedValue(updateWorkItemMutationResponse);
 
   const createComponent = ({
+    provide = {},
     canUpdate = true,
     canUpdateMetadata = true,
     canDelete = true,
@@ -206,7 +207,8 @@ describe('WorkItemActions component', () => {
           okrsMvc,
         },
         hasOkrsFeature,
-        getWorkItemTypeConfiguration: getTypeMock,
+        getWorkItemTypeConfiguration: jest.fn(),
+        ...provide,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -525,8 +527,13 @@ describe('WorkItemActions component', () => {
         ${true}           | ${{ canPromoteToObjective: true }} | ${true}     | ${'has permissions'}
         ${false}          | ${{ canPromoteToObjective: true }} | ${false}    | ${'does not have permissions'}
       `('when user $expectationText', ({ canUpdateMetadata, mockConfig, shouldExist }) => {
-        getTypeMock.mockReturnValue(mockConfig);
-        createComponent({ canUpdateMetadata, workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
+        createComponent({
+          canUpdateMetadata,
+          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue(mockConfig),
+          },
+        });
 
         expect(findChangeTypeButton().exists()).toBe(shouldExist);
       });
@@ -539,8 +546,12 @@ describe('WorkItemActions component', () => {
         ${'when config has canPromote `true` and type is OKR'}  | ${WORK_ITEM_TYPE_NAME_KEY_RESULT} | ${{ canPromoteToObjective: true }}  | ${true}
       `('$description', ({ workItemType, mockConfig, shouldShowButton }) => {
         it('shows promote button correctly', async () => {
-          getTypeMock.mockReturnValue(mockConfig);
-          createComponent({ workItemType });
+          createComponent({
+            workItemType,
+            provide: {
+              getWorkItemTypeConfiguration: jest.fn().mockReturnValue(mockConfig),
+            },
+          });
           await waitForPromises();
 
           expect(findPromoteButton().exists()).toBe(shouldShowButton);
@@ -550,7 +561,14 @@ describe('WorkItemActions component', () => {
 
     describe('when button is clicked', () => {
       beforeEach(async () => {
-        createComponent({ workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT });
+        createComponent({
+          workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          provide: {
+            getWorkItemTypeConfiguration: jest
+              .fn()
+              .mockReturnValue({ canPromoteToObjective: true }),
+          },
+        });
         await waitForPromises();
 
         findPromoteButton().vm.$emit('action');
@@ -568,6 +586,11 @@ describe('WorkItemActions component', () => {
       beforeEach(async () => {
         createComponent({
           workItemType: WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          provide: {
+            getWorkItemTypeConfiguration: jest
+              .fn()
+              .mockReturnValue({ canPromoteToObjective: true }),
+          },
           convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
         });
 
@@ -719,6 +742,21 @@ describe('WorkItemActions component', () => {
       },
     );
 
+    describe('with showProjectSelector=true', () => {
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ showProjectSelector: true }),
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('renders create modal with project selector', () => {
+        expect(findCreateWorkItemModal().props('showProjectSelector')).toBe(true);
+      });
+    });
+
     it('emits `workItemCreated` when `CreateWorkItemModal` emits `workItemCreated`', () => {
       createComponent();
 
@@ -774,6 +812,21 @@ describe('WorkItemActions component', () => {
       await waitForPromises();
 
       expect(findMoveButton().text()).toBe('Move');
+    });
+
+    describe('with supportsMoveAction=true', () => {
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ supportsMoveAction: true }),
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('renders the move button', () => {
+        expect(findMoveButton().exists()).toBe(true);
+      });
     });
 
     it('hides move button when `canMove` is false', async () => {

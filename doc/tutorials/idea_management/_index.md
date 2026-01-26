@@ -111,7 +111,7 @@ However, they aren't mutually exclusive.
 
 To create each label:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `status::in review`.
@@ -133,7 +133,7 @@ You'll use it to quickly create issues and add labels to them by dragging cards 
 
 To set up your issue board:
 
-1. On the top bar, select **Search or go to** and find your **Idea management tutorial** project.
+1. In the top bar, select **Search or go to** and find your **Idea management tutorial** project.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -156,21 +156,21 @@ Share your idea management project with stakeholders and invite them to document
 
 To invite your stakeholders:
 
-1. On the left sidebar, select **Manage** > **Members**
+1. In the left sidebar, select **Manage** > **Members**
 1. Select **Invite members**
 1. Type your stakeholders email addresses.
 1. Select **Reporter** role.
 
 Your stakeholders can now access your project to create new ideas:
 
-1. On the left sidebar, select **Plan** > **Issues**
+1. In the left sidebar, select **Plan** > **Issues**
 1. In the upper right, select **New issue**
 1. Enter a title and description.
 1. Select **Create issue**
 
 Stakeholders can also upvote an existing idea to signal that they are interested in an idea:
 
-1. On the left sidebar, select **Plan** > **Issues**.
+1. In the left sidebar, select **Plan** > **Issues**.
 1. Select an issue.
 1. Select the **Thumbs up** [emoji reaction](../../user/emoji_reactions.md) under the issue description.
 

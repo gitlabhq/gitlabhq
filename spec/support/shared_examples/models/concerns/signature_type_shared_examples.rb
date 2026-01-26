@@ -10,7 +10,7 @@ RSpec.shared_examples 'signature with type checking' do |type|
   describe 'signature type checkers' do
     where(:method, :expected) do
       METHODS.map do |method|
-        [method, method == "#{type}?".to_sym]
+        [method, method == :"#{type}?"]
       end
     end
 

@@ -172,6 +172,15 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :pipel
       expect(resource).to eq(key: 'CI_VAR', value: '123', public: false, masked: false)
     end
 
+    it 'supports using a Ci::PipelineVariableItem object' do
+      pipeline = instance_double(::Ci::Pipeline)
+      variable = ::Ci::PipelineVariableItem.new(pipeline: pipeline, key: 'CI_VAR', value: '123')
+      resource = described_class.fabricate(variable)
+
+      expect(resource).to be_a(described_class)
+      expect(resource).to eq(key: 'CI_VAR', value: '123', public: false, masked: false)
+    end
+
     it 'supports using another collection item' do
       item = described_class.new(**variable)
 

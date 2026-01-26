@@ -126,7 +126,7 @@ To change an alert's status:
 
 - From the [alert details page](#alert-details-page):
 
-  1. On the right sidebar, select **Edit**.
+  1. In the right sidebar, select **Edit**.
   1. Select a status.
 
 To stop email notifications for alert recurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts), change the alert's status away from **Triggered**.
@@ -166,7 +166,7 @@ To assign an alert:
 
 1. Display the list of current alerts:
 
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Monitor** > **Alerts**.
 
 1. Select your desired alert to display its details.
@@ -176,7 +176,7 @@ To assign an alert:
 1. If the right sidebar is not expanded, select
    **Expand sidebar** ({{< icon name="chevron-double-lg-right" >}}) to expand it.
 
-1. On the right sidebar, locate the **Assignee**, and then select **Edit**.
+1. In the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the list, select each user you want to assign to the alert.
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
@@ -186,7 +186,7 @@ After completing their portion of investigating or fixing the alert, users can u
 
 You can manually create a [to-do item](../../user/todos.md) for yourself from an alert, and view it later on your **To-Do List**.
 
-To add a to-do item, on the right sidebar, select **Add a to-do item**.
+To add a to-do item, in the right sidebar, select **Add a to-do item**.
 
 ### Trigger actions from alerts
 
@@ -205,7 +205,7 @@ Prerequisites:
 
 To configure the actions:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.

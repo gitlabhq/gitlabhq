@@ -16,7 +16,7 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
         nil | {} | %i[public_group user_public_group]
 
         :regular | { all_available: true } | %i[public_group internal_group user_public_group user_internal_group
-                                                user_private_group]
+          user_private_group]
         :regular | { all_available: false } | %i[user_public_group user_internal_group user_private_group]
         :regular | {} | %i[public_group internal_group user_public_group user_internal_group user_private_group]
         :regular | { min_access_level: Gitlab::Access::DEVELOPER } | %i[user_public_group user_internal_group user_private_group]
@@ -26,15 +26,15 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
         :external | {} | %i[public_group user_public_group user_internal_group user_private_group]
 
         :admin_without_admin_mode | { all_available: true } | %i[public_group internal_group user_public_group
-                                                                 user_internal_group user_private_group]
+          user_internal_group user_private_group]
         :admin_without_admin_mode | { all_available: false } | %i[user_public_group user_internal_group user_private_group]
         :admin_without_admin_mode | {} | %i[public_group internal_group user_public_group user_internal_group user_private_group]
 
         :admin_with_admin_mode | { all_available: true } | %i[public_group internal_group private_group user_public_group
-                                                              user_internal_group user_private_group]
+          user_internal_group user_private_group]
         :admin_with_admin_mode | { all_available: false } | %i[user_public_group user_internal_group user_private_group]
         :admin_with_admin_mode | {} | %i[public_group internal_group private_group user_public_group user_internal_group
-                                         user_private_group]
+          user_private_group]
       end
 
       with_them do

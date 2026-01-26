@@ -881,6 +881,27 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         end
       end
     end
+
+    context 'when default branch is a fully qualified ref' do
+      before do
+        opts[:default_branch] = 'refs/heads/example_branch'
+      end
+
+      it 'creates the correct branch' do
+        expect(project.repository.branch_names).to contain_exactly('example_branch')
+      end
+
+      it_behaves_like 'a repo with a README.md' do
+        let(:expected_content) do
+          <<~MARKDOWN
+            cd existing_repo
+            git remote add origin #{project.http_url_to_repo}
+            git branch -M example_branch
+            git push -uf origin example_branch
+          MARKDOWN
+        end
+      end
+    end
   end
 
   context 'when SAST initialization is requested' do

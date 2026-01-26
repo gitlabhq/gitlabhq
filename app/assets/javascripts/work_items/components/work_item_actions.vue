@@ -258,7 +258,11 @@ export default {
         return data.namespace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;
+        return (
+          !this.canUpdateMetadata ||
+          !this.workItemTypeConfiguration?.canPromoteToObjective ||
+          this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT
+        );
       },
     },
     workItemNotificationsSubscribed: {
@@ -394,7 +398,14 @@ export default {
       return this.canUpdate && !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked);
     },
     showMoveButton() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
+      return (
+        (this.workItemTypeConfiguration?.supportsMoveAction ||
+          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
+        this.canMove
+      );
+    },
+    showProjectSelector() {
+      return this.workItemTypeConfiguration?.showProjectSelector || !this.isEpic;
     },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
@@ -842,7 +853,7 @@ export default {
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
       :preselected-work-item-type="workItemType"
-      :show-project-selector="!isEpic"
+      :show-project-selector="showProjectSelector"
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button

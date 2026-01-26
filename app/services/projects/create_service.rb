@@ -318,7 +318,9 @@ module Projects
     private
 
     def default_branch
-      @default_branch.presence || @project.default_branch_or_main
+      return @project.default_branch_or_main if @default_branch.blank?
+
+      Gitlab::Git.ref_name(@default_branch)
     end
 
     def validate_import_source_enabled!

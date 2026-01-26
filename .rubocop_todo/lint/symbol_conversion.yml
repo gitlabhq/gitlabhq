@@ -1,8 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/SymbolConversion:
-  Exclude:
-    - 'spec/support/shared_examples/models/concerns/featurable_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/signature_type_shared_examples.rb'
-    - 'spec/support/shared_examples/services/migrate_to_ghost_user_service_shared_examples.rb'
-    - 'spec/support/shared_examples/workers/concerns/dependency_proxy/cleanup_worker_shared_examples.rb'

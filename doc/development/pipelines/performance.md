@@ -71,7 +71,7 @@ set `CI_FETCH_REPO_GIT_STRATEGY` to `none`.
 
 Caches in GitLab CI/CD pipelines must follow these criteria:
 
-- **Pull-push vs pull-only configuration**: Jobs in the `sync` stage (which runs at the start of pipelines) responsible for populating cache use pull-push configuration, while jobs that consume cache use pull-only configuration to be branch agnostic and populate cache for specific branch pipeline runs.
+- **Pull-push vs pull-only configuration**: Jobs in the `sync` stage (which runs at the start of pipelines) responsible for populating cache use pull-push configuration, while jobs that consume cache use pull-only configuration to be branch-independent and populate cache for specific branch pipeline runs.
 - **File-specific checksums**: All cache keys should be coupled to their file-specific checksums to ensure caches are invalidated correctly when dependencies change.
 - **Language version coupling**: Cache keys should include respective language-specific versions where applicable to ensure language version upgrades invalidate cache appropriately.
 - **Sync stage placement**: Cache update jobs should be defined in the `sync` stage to run at the very start of the pipeline.

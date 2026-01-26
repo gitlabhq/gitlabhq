@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/ExampleWording:
-  Exclude:
-    - 'spec/workers/container_registry/delete_container_repository_worker_spec.rb'
-    - 'spec/workers/container_registry/record_data_repair_detail_worker_spec.rb'
-    - 'spec/workers/schedule_migrate_external_diffs_worker_spec.rb'

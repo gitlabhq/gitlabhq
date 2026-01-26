@@ -2902,6 +2902,9 @@ msgstr ""
 msgid "AICatalog|Flows use multiple agents to complete tasks automatically."
 msgstr ""
 
+msgid "AICatalog|Foundational"
+msgstr ""
+
 msgid "AICatalog|Foundational agent"
 msgstr ""
 
@@ -41699,7 +41702,7 @@ msgstr ""
 msgid "MemberRole|Admin role is used by one or more LDAP synchronizations. Remove LDAP syncs, then delete role."
 msgstr ""
 
-msgid "MemberRole|Also applies to users that are assigned a custom admin role."
+msgid "MemberRole|Also applies to users that are assigned a custom admin role. To enhance security, enable Admin Mode. Admin Mode requires users to re-authenticate before accessing the Admin area."
 msgstr ""
 
 msgid "MemberRole|Are you sure you want to delete this role?"
@@ -42008,7 +42011,7 @@ msgstr ""
 msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
 msgstr ""
 
-msgid "MemberRole|To enhance security, we recommend enabling %{adminModeLinkStart}Admin Mode%{adminModeLinkEnd} and %{mfaLinkStart}Require administrators to enable 2FA%{mfaLinkEnd} when using custom admin roles. Enabling Admin Mode will require users to re-authenticate in GitLab before accessing the Admin area."
+msgid "MemberRole|To enhance security, we recommend enabling %{adminModeLinkStart}Admin Mode%{adminModeLinkEnd} and %{mfaLinkStart}Enforce two-factor authentication for administrators%{mfaLinkEnd} when using custom admin roles. Admin Mode requires users to re-authenticate before accessing the Admin area."
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
@@ -56988,9 +56991,6 @@ msgstr ""
 msgid "Require additional authentication for administrative tasks."
 msgstr ""
 
-msgid "Require administrators to enable two-factor authentication"
-msgstr ""
-
 msgid "Require email verification when account is locked."
 msgstr ""
 
@@ -70830,6 +70830,9 @@ msgid "To delete the item from the UI:"
 msgstr ""
 
 msgid "To disable the setting, set this value to 0."
+msgstr ""
+
+msgid "To enhance security, enable Admin Mode. Admin Mode requires users to re-authenticate before accessing the Admin area."
 msgstr ""
 
 msgid "To ensure %{project_link} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"

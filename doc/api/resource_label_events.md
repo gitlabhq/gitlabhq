@@ -20,7 +20,7 @@ an issue, merge request, or epic.
 
 ### List project issue label events
 
-Gets a list of all label events for a single issue.
+Lists all label events for a single issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events
@@ -82,9 +82,9 @@ GET /projects/:id/issues/:issue_iid/resource_label_events
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events"
 ```
 
-### Get single issue label event
+### Retrieve a single issue label event
 
-Returns a single label event for a specific project issue
+Retrieves a single label event for a specific project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_label_events/:resource_label_event_id
@@ -124,7 +124,7 @@ This change is a breaking change.
 
 ### List group epic label events
 
-Gets a list of all label events for a single epic.
+Lists all label events for a single epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events
@@ -187,9 +187,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/1/epics/11/resource_label_events"
 ```
 
-### Get single epic label event
+### Retrieve a single epic label event
 
-Returns a single label event for a specific group epic
+Retrieves a single label event for a specific group epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_label_events/:resource_label_event_id
@@ -213,7 +213,7 @@ curl --request POST \
 
 ### List project merge request label events
 
-Gets a list of all label events for a single merge request.
+Lists all label events for a single merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events
@@ -276,9 +276,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/resource_label_events"
 ```
 
-### Get single merge request label event
+### Retrieve a single merge request label event
 
-Returns a single label event for a specific project merge request
+Retrieves a single label event for a specific project merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_label_events/:resource_label_event_id

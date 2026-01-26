@@ -149,7 +149,7 @@ their Bitbucket account in the [GitLab profile service sign-in](https://gitlab.c
 To fix this issue, the user must verify that their Bitbucket external UID in the GitLab database matches their
 current Bitbucket public name, and reconnect if there's a mismatch:
 
-1. [Use the API to get the authenticated user](../../api/users.md#as-a-regular-user-2).
+1. [Use the API to get the authenticated user](../../api/users.md#retrieve-the-current-user).
 1. In the API response, the `identities` attribute contains the Bitbucket account that exists in the GitLab database.
    If the `extern_uid` doesn't match the current Bitbucket public name, the user should reconnect their Bitbucket account
    in the [GitLab profile service sign-in](https://gitlab.com/-/profile/account).

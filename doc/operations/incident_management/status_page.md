@@ -50,7 +50,7 @@ Prerequisites:
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Select the **Active** checkbox.
@@ -78,7 +78,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 1. Fork the [Status Page](https://gitlab.com/gitlab-org/status-page) project.
    You can do this through [Repository Mirroring](https://gitlab.com/gitlab-org/status-page#repository-mirroring),
    which ensures you get the up-to-date Status Page features.
-1. On the left sidebar, select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Add the following variables from your Amazon Console:
    - `S3_BUCKET_NAME` - The name of the Amazon S3 bucket.
@@ -89,7 +89,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
    - `AWS_DEFAULT_REGION` - The AWS region.
    - `AWS_ACCESS_KEY_ID` - The AWS access key ID.
    - `AWS_SECRET_ACCESS_KEY` - The AWS secret.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. To deploy the Status Page to S3, select **New pipeline**.
 
 > [!warning]
@@ -101,7 +101,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 After creating the CI/CD variables, configure the Project you want to use for
 Incidents:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand **Status page**.
 1. Fill in your cloud provider's credentials and make sure to select the **Active** checkbox.

@@ -16,7 +16,7 @@ RSpec.describe 'OAuth Login', :with_current_organization, :allow_forgery_protect
   end
 
   providers = [:github, :bitbucket, :gitlab, :google_oauth2,
-               :auth0, :salesforce, :alicloud]
+    :auth0, :salesforce, :alicloud]
 
   around do |example|
     with_omniauth_full_host { example.run }

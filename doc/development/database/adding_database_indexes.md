@@ -505,7 +505,7 @@ Check our [Constraints naming conventions](constraint_naming_convention.md) page
 
 ### Why explicit names are required
 
-As Rails is database agnostic, it generates an index name only
+As Rails is database-independent, it generates an index name only
 from the required options of all indexes: table name and column names.
 For example, imagine the following two indexes are created in a migration:
 

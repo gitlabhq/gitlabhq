@@ -62,7 +62,7 @@ module Gitlab
 
               next if skip_change_if_aborted(change, branch_name)
 
-              setup_merge_request(change, branch_name) unless @dry_run
+              setup_merge_request(change, branch_name, keep) unless @dry_run
 
               git.in_branch(branch_name) do
                 Gitlab::Housekeeper::Substitutor.perform(change)
@@ -70,7 +70,7 @@ module Gitlab
               end
 
               print_change_details(change, branch_name)
-              create(change, branch_name) unless @dry_run
+              create(change, branch_name, keep) unless @dry_run
 
               mrs_created_count += 1
               break if mrs_created_count >= @max_mrs
@@ -128,8 +128,8 @@ module Gitlab
         true
       end
 
-      def setup_merge_request(change, branch_name)
-        merge_request = get_existing_merge_request(branch_name) || create(change, branch_name)
+      def setup_merge_request(change, branch_name, keep)
+        merge_request = get_existing_merge_request(branch_name) || create(change, branch_name, keep)
         change.mr_web_url = merge_request['web_url']
       end
 
@@ -173,7 +173,7 @@ module Gitlab
         @logger.puts
       end
 
-      def create(change, branch_name)
+      def create(change, branch_name, keep)
         change.non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
@@ -181,7 +181,7 @@ module Gitlab
           target_project_id: housekeeper_target_project_id
         )
 
-        git.push(branch_name, change.push_options) if self.class.should_push_code?(change, @push_when_approved)
+        git.push(branch_name, change.push_options) if keep.should_push_code?(change, @push_when_approved)
 
         gitlab_client.create_or_update_merge_request(
           change: change,
@@ -208,14 +208,6 @@ module Gitlab
           target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
-      end
-
-      # We do not want to push code if the MR already has approvals as it will reset the approvals. Also we do not push
-      # if someone else has added commits already.
-      def self.should_push_code?(change, push_when_approved)
-        return false if change.already_approved? && !push_when_approved
-
-        change.update_required?(:code)
       end
 
       def housekeeper_fork_project_id

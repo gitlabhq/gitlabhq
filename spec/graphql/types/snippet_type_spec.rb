@@ -14,11 +14,11 @@ RSpec.describe GitlabSchema.types['Snippet'], :with_current_organization do
 
   it 'has the correct fields' do
     expected_fields = [:id, :title, :project, :author, :hidden,
-                       :file_name, :description,
-                       :visibility_level, :created_at, :updated_at,
-                       :web_url, :raw_url, :ssh_url_to_repo, :http_url_to_repo,
-                       :notes, :discussions, :user_permissions,
-                       :description_html, :blobs, :commenters, :imported, :imported_from]
+      :file_name, :description,
+      :visibility_level, :created_at, :updated_at,
+      :web_url, :raw_url, :ssh_url_to_repo, :http_url_to_repo,
+      :notes, :discussions, :user_permissions,
+      :description_html, :blobs, :commenters, :imported, :imported_from]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

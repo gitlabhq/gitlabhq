@@ -25,8 +25,8 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
 
     let!(:issuables) do
       timestamps = [{ created_at: 3.minutes.ago, updated_at: 20.seconds.ago },
-                    { created_at: 2.minutes.ago, updated_at: 30.seconds.ago },
-                    { created_at: 4.minutes.ago, updated_at: 10.seconds.ago }]
+        { created_at: 2.minutes.ago, updated_at: 30.seconds.ago },
+        { created_at: 4.minutes.ago, updated_at: 10.seconds.ago }]
 
       timestamps.each_with_index do |ts, i|
         create issuable_type, { title: "#{issuable_type}_#{i}",
@@ -122,8 +122,8 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
 
     let!(:issuables) do
       timestamps = [{ created_at: 3.minutes.ago, updated_at: 20.seconds.ago },
-                    { created_at: 2.minutes.ago, updated_at: 30.seconds.ago },
-                    { created_at: 4.minutes.ago, updated_at: 10.seconds.ago }]
+        { created_at: 2.minutes.ago, updated_at: 30.seconds.ago },
+        { created_at: 4.minutes.ago, updated_at: 10.seconds.ago }]
 
       timestamps.each_with_index do |ts, i|
         create issuable_type, { title: "#{issuable_type}_#{i}",

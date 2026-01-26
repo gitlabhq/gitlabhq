@@ -8,6 +8,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { clearDraft, updateDraft } from '~/lib/utils/autosave';
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -21,6 +22,7 @@ import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_n
 import TitleSuggestions from '~/work_items/components/title_suggestions.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
+  WIDGET_TYPE_START_AND_DUE_DATE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -91,6 +93,7 @@ describe('Create work item component', () => {
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
+  const findDatesWidget = () => wrapper.findComponent(WorkItemDates);
   const findDescriptionWidget = () => wrapper.findComponent(WorkItemDescription);
   const findAssigneesWidget = () => wrapper.findComponent(WorkItemAssignees);
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
@@ -810,8 +813,34 @@ describe('Create work item component', () => {
         expect(findLabelsWidget().exists()).toBe(true);
       });
 
+      it('renders the dates widget', () => {
+        expect(findDatesWidget().props('shouldRollUp')).toBe(true);
+      });
+
       it('renders the work item CRM contacts widget', () => {
         expect(findCrmContactsWidget().exists()).toBe(true);
+      });
+    });
+
+    describe('with canRollUp=true', () => {
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({
+              widgetDefinitions: [
+                {
+                  type: WIDGET_TYPE_START_AND_DUE_DATE,
+                  canRollUp: false,
+                },
+              ],
+            }),
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('renders the dates widget', () => {
+        expect(findDatesWidget().props('shouldRollUp')).toBe(true);
       });
     });
 
@@ -894,6 +923,21 @@ describe('Create work item component', () => {
 
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
+      });
+
+      it('does not renders the work item parent widget', () => {
+        expect(findParentWidget().exists()).toBe(false);
+      });
+    });
+
+    describe('with isIncidentManagement=true', () => {
+      beforeEach(async () => {
+        createComponent({
+          provide: {
+            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ isIncidentManagement: true }),
+          },
+        });
+        await waitForPromises();
       });
 
       it('does not renders the work item parent widget', () => {

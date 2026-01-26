@@ -135,6 +135,9 @@ export default {
     hasEpicsFeature: {
       default: false,
     },
+    getWorkItemTypeConfiguration: {
+      default: () => {},
+    },
   },
   i18n: {
     contributionGuidelinesText: s__(
@@ -357,6 +360,9 @@ export default {
     },
   },
   computed: {
+    workItemTypeConfiguration() {
+      return this.getWorkItemTypeConfiguration?.(this.selectedWorkItemTypeName);
+    },
     workItemTypes() {
       return this.namespace?.workItemTypes?.nodes ?? [];
     },
@@ -424,7 +430,10 @@ export default {
       // detail view instead. Since the legacy view doesn't support setting a parent
       // we need to hide this attribute here until the migration has been finished.
       // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT) {
+      if (
+        this.workItemTypeConfiguration?.isIncidentManagement ||
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT
+      ) {
         return false;
       }
 
@@ -610,7 +619,10 @@ export default {
       );
     },
     shouldDatesRollup() {
-      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
+      const canRollUp = this.workItemTypeConfiguration?.widgetDefinitions?.find(
+        (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE,
+      )?.canRollUp;
+      return canRollUp || this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;

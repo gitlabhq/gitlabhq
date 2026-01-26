@@ -40,6 +40,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       .and_yield(change3)
 
     allow(fake_keep_instance).to receive(:make_change!)
+    allow(fake_keep_instance).to receive(:should_push_code?).and_return(true)
   end
 
   describe '#run' do
@@ -272,79 +273,52 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
     end
   end
 
-  describe '.should_push_code?' do
-    using RSpec::Parameterized::TableSyntax
+  describe 'when a closed merge request exists' do
+    let(:closed_mr_change) { create_change(identifiers: ['closed-mr-branch']) }
+    let(:fake_keep_with_closed_mr) { instance_double(Class) }
+    let(:fake_keep_with_closed_mr_instance) { instance_double(::Gitlab::Housekeeper::Keep) }
+    let(:closed_mr_git) { instance_double(::Gitlab::Housekeeper::Git) }
+    let(:closed_mr_gitlab_client) { instance_double(::Gitlab::Housekeeper::GitlabClient) }
 
-    # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands -- false positive rspec table syntax not binary operator
-    where(:already_approved, :push_when_approved, :code_update_required, :expected_result) do
-      true  | false | true  | false
-      true  | false | false | false
-      true  | true  | true  | true
-      true  | true  | false | false
-      false | true  | true  | true
-      false | true  | false | false
-    end
-    # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+    before do
+      stub_env('HOUSEKEEPER_FORK_PROJECT_ID', '123')
+      stub_env('HOUSEKEEPER_TARGET_PROJECT_ID', '456')
 
-    with_them do
-      it "determines if we should push" do
-        change = instance_double(::Gitlab::Housekeeper::Change)
+      allow(fake_keep_with_closed_mr).to receive(:new).and_return(fake_keep_with_closed_mr_instance)
+      allow(fake_keep_with_closed_mr_instance).to receive(:each_identified_change).and_yield(closed_mr_change)
 
-        allow(change).to receive(:already_approved?).and_return(already_approved)
-        allow(change).to receive(:update_required?).with(:code).and_return(code_update_required)
-
-        result = described_class.should_push_code?(change, push_when_approved)
-        expect(result).to eq(expected_result)
-      end
-    end
-
-    context 'when a closed merge request exists' do
-      let(:closed_mr_change) { create_change(identifiers: ['closed-mr-branch']) }
-      let(:fake_keep_with_closed_mr) { instance_double(Class) }
-      let(:closed_mr_git) { instance_double(::Gitlab::Housekeeper::Git) }
-      let(:closed_mr_gitlab_client) { instance_double(::Gitlab::Housekeeper::GitlabClient) }
-
-      before do
-        stub_env('HOUSEKEEPER_FORK_PROJECT_ID', '123')
-        stub_env('HOUSEKEEPER_TARGET_PROJECT_ID', '456')
-
-        fake_keep_instance = instance_double(::Gitlab::Housekeeper::Keep)
-        allow(fake_keep_with_closed_mr).to receive(:new).and_return(fake_keep_instance)
-        allow(fake_keep_instance).to receive(:each_identified_change).and_yield(closed_mr_change)
-
-        allow(::Gitlab::Housekeeper::Git).to receive(:new).and_return(closed_mr_git)
-        allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new).and_return(closed_mr_gitlab_client)
-        allow(closed_mr_git).to receive(:with_clean_state).and_yield
-        allow(closed_mr_git).to receive(:create_branch).with(closed_mr_change).and_return('closed-mr-branch')
-        allow(closed_mr_git).to receive(:in_branch).and_yield
-        allow(closed_mr_git).to receive(:create_commit)
-        allow(closed_mr_gitlab_client).to receive(:closed_merge_request_exists?)
+      allow(::Gitlab::Housekeeper::Git).to receive(:new).and_return(closed_mr_git)
+      allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new).and_return(closed_mr_gitlab_client)
+      allow(closed_mr_git).to receive(:with_clean_state).and_yield
+      allow(closed_mr_git).to receive(:create_branch).with(closed_mr_change).and_return('closed-mr-branch')
+      allow(closed_mr_git).to receive(:in_branch).and_yield
+      allow(closed_mr_git).to receive(:create_commit)
+      allow(closed_mr_gitlab_client).to receive(:closed_merge_request_exists?)
           .with(
             source_project_id: '123',
             source_branch: 'closed-mr-branch',
             target_branch: 'master',
             target_project_id: '456'
           ).and_return(true)
-      end
+    end
 
-      it 'skips the change when a closed MR exists' do
-        expect(closed_mr_gitlab_client).not_to receive(:get_existing_merge_request)
-        expect(closed_mr_gitlab_client).not_to receive(:create_or_update_merge_request)
-        expect(closed_mr_git).not_to receive(:push)
+    it 'skips the change when a closed MR exists' do
+      expect(closed_mr_gitlab_client).not_to receive(:get_existing_merge_request)
+      expect(closed_mr_gitlab_client).not_to receive(:create_or_update_merge_request)
+      expect(closed_mr_git).not_to receive(:push)
 
-        described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
-      end
+      described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
+    end
 
-      it 'logs the skip message' do
-        logger = instance_double(::Gitlab::Housekeeper::Logger)
-        allow(::Gitlab::Housekeeper::Logger).to receive(:new).and_return(logger)
-        allow(logger).to receive(:puts)
+    it 'logs the skip message' do
+      logger = instance_double(::Gitlab::Housekeeper::Logger)
+      allow(::Gitlab::Housekeeper::Logger).to receive(:new).and_return(logger)
+      allow(logger).to receive(:puts)
 
-        expect(logger).to receive(:puts)
+      expect(logger).to receive(:puts)
           .with('Skipping change: ["closed-mr-branch"] as we have closed an MR for this branch closed-mr-branch')
 
-        described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
-      end
+      described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
     end
   end
 end

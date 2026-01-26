@@ -68,9 +68,9 @@ the guidance of GitLab Support. The metric reports the same database schema inco
 
 For more information, see [issue 467544](https://gitlab.com/gitlab-org/gitlab/-/issues/467544).
 
-## Export metric definitions as a single YAML file
+## Export metric definitions
 
-Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
+Exports all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
 
 ```plaintext
 GET /usage_data/metric_definitions
@@ -101,7 +101,7 @@ Example response:
 ...
 ```
 
-## Export Service Ping SQL queries
+## List all Service Ping SQL queries
 
 {{< history >}}
 
@@ -110,7 +110,7 @@ Example response:
 
 {{< /history >}}
 
-Return all of the raw SQL queries used to compute Service Ping. This action is behind the
+Lists all raw SQL queries used to compute Service Ping. This action is behind the
 `usage_data_queries_api` feature flag and is available only for the GitLab instance
 [Administrator](../user/permissions.md) users.
 

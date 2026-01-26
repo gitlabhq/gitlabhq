@@ -76,12 +76,12 @@ The item is displayed in the **Pinned** section:
 
 ## Use a more focused view
 
-On the left sidebar, you can also choose a more focused view into the areas you have access to.
+In the left sidebar, you can also choose a more focused view into the areas you have access to.
 Select **Search or go to** and then select **Your work**.
 
 ![The search bar and the Your work item.](img/your_work_v18_3.png)
 
-Then, on the left sidebar, **Your work** is displayed.
+Then, in the left sidebar, **Your work** is displayed.
 
 ## Open work items in the details panel
 
@@ -104,7 +104,7 @@ On smaller screens, the detail panel covers the list or board panel.
 By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Issues** or **Epics**.
 1. At the top of the Issues or Epics page, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.
@@ -121,9 +121,9 @@ The **Admin** area is available in the upper-right corner:
 
 The **What's new** feature shows users some of the highlights of new features from the last 10 GitLab versions.
 
-To access the unread **What's new** items, on the left sidebar, at the bottom, select **What's new**.
+To access the unread **What's new** items, in the left sidebar, at the bottom, select **What's new**.
 
 To access previously read **What's new** items:
 
-1. On the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
+1. In the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
 1. Select **What's new** from the menu.

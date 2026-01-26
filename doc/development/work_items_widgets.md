@@ -38,7 +38,7 @@ query workItem($workItemId: WorkItemID!) {
 
 ### GraphQL queries and mutations
 
-GraphQL queries and mutations are work item agnostic. Work item queries and mutations
+GraphQL queries and mutations are work item-independent. Work item queries and mutations
 should happen at the widget level, so widgets are standalone reusable components.
 The work item query and mutation should support any work item type and be dynamic.
 They should allow you to query and mutate any work item attribute by specifying a widget identifier.

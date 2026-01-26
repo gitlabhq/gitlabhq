@@ -413,6 +413,7 @@ export default {
           'gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-mx-0 gl-my-3 gl-flex-grow-0 gl-rotate-90 gl-py-0': list.collapsed,
           'gl-grow': !list.collapsed,
+          'gl-max-w-20': list.collapsed && listType === 'milestone',
         }"
       >
         <!-- EE start -->
@@ -421,7 +422,10 @@ export default {
           v-if="listType === 'milestone'"
           ref="milestoneTrigger"
           data-testid="milestone-trigger"
-          class="board-title-main-text gl-truncate"
+          class="board-title-main-text gl-block gl-truncate"
+          :class="{
+            'gl-max-w-20 gl-text-subtle': list.collapsed,
+          }"
           @mouseenter="showMilestonePopover = true"
           @mouseleave="showMilestonePopover = false"
         >

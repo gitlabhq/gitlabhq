@@ -58,7 +58,7 @@ Prerequisites:
 
 To give a user access to specific features:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Member Access**, select **Add group**. 

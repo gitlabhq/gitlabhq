@@ -394,12 +394,12 @@ on the primary site to give the secondary site time to catch up:
    final replication process now.
 1. On the primary site:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all queues, except
       those with `geo` in the name, to drop to 0.
       These queues contain work submitted by your users. Failing over
       before the queues empty causes the work to be lost.
-   1. On the left sidebar, select **Geo** > **Sites**. Wait for the
+   1. In the left sidebar, select **Geo** > **Sites**. Wait for the
       following conditions to be true of the secondary site you are failing over to:
 
       - All replication meters reach 100% replicated, and 0% failures.
@@ -409,7 +409,7 @@ on the primary site to give the secondary site time to catch up:
 
 1. On the secondary site:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all the `geo`
       queues to drop to 0 queued and 0 running jobs.
    1. [Run an integrity check](../../raketasks/check.md) to verify the integrity

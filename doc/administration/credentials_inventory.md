@@ -56,8 +56,8 @@ To view the credentials inventory:
 
 {{< tab title="For a group" >}}
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure**.
 1. Select **Credentials**.
 
 {{< /tab >}}
@@ -91,8 +91,8 @@ The access token is revoked and the user is notified by email.
 
 {{< tab title="For a group" >}}
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Next to the personal access token, select **Revoke**.
    If the token was previously expired or revoked, the associated date is displayed.
@@ -120,8 +120,8 @@ To revoke a project or group access token:
 
 {{< tab title="For a group" >}}
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Select the **Project and group access tokens** tab.
 1. Next to the project access token, select **Revoke**.
@@ -149,8 +149,8 @@ The SSH key is deleted and the user is notified.
 
 {{< tab title="For a group" >}}
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Secure**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Secure**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. Next to the SSH key, select **Delete**.

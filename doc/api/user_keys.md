@@ -58,7 +58,7 @@ Example response:
 
 ## List all SSH keys for a user
 
-Lists all SSH keys for a given user account. This endpoint does not require authentication.
+Lists all SSH keys for a specified user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id_or_username/keys
@@ -77,9 +77,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1/keys"
 ```
 
-## Get an SSH key
+## Retrieve an SSH key
 
-Gets an SSH key for your user account.
+Retrieves an SSH key for your user account.
 
 Prerequisites:
 
@@ -114,9 +114,9 @@ Example response:
 }
 ```
 
-## Get an SSH key for a user
+## Retrieve an SSH key for a user
 
-Gets an SSH key for a given user account. This endpoint does not require authentication.
+Retrieves an SSH key for a specified user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/keys/:key_id
@@ -212,7 +212,7 @@ Example response:
 
 {{< /history >}}
 
-Adds an SSH key for a given user account.
+Adds an SSH key for a specified user account.
 
 > [!note]
 > This also adds an audit event.
@@ -289,7 +289,7 @@ Returns either:
 
 ## Delete an SSH key for a user
 
-Deletes an SSH key from a given user account.
+Deletes an SSH key from a specified user account.
 
 Prerequisites:
 
@@ -339,7 +339,7 @@ Example response:
 
 ## List all GPG keys for a user
 
-Lists all GPG keys for a given user account. This endpoint does not require authentication.
+Lists all GPG keys for a specified user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys
@@ -370,9 +370,9 @@ Example response:
 ]
 ```
 
-## Get a GPG key
+## Retrieve a GPG key
 
-Gets a GPG key for your user account.
+Retrieves a GPG key for your user account.
 
 Prerequisites:
 
@@ -405,9 +405,9 @@ Example response:
 }
 ```
 
-## Get a GPG key for a user
+## Retrieve a GPG key for a user
 
-Gets a GPG key for a given user account. This endpoint does not require authentication.
+Retrieves a GPG key for a specified user account. This endpoint does not require authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys/:key_id
@@ -478,7 +478,7 @@ Example response:
 
 ## Add a GPG key for a user
 
-Adds a GPG key for a given user account.
+Adds a GPG key for a specified user account.
 
 Prerequisites:
 
@@ -539,7 +539,7 @@ Returns either:
 
 ## Delete a GPG key for a user
 
-Deletes a GPG key from a given user account.
+Deletes a GPG key from a specified user account.
 
 Prerequisites:
 

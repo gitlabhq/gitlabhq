@@ -10,6 +10,7 @@ title: Customize review instructions for GitLab Duo
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Add-on: GitLab Duo Enterprise
 
 {{< /details >}}
 
@@ -24,13 +25,13 @@ title: Customize review instructions for GitLab Duo
 Create custom merge request review instructions to ensure that GitLab Duo applies consistent and
 specific code review standards to your project.
 
-Both Code Review Flow and GitLab Duo Code Review (Classic) support custom review instructions.
-
 For example, you can enforce Ruby style conventions only on Ruby files, and Go style
 conventions on Go files.
 
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
+
+GitLab Duo Code Review (Classic) supports custom review instructions.
 
 ## Configure custom review instructions
 
@@ -38,17 +39,6 @@ To configure custom merge request review instructions:
 
 1. In the root of your repository, create a `.gitlab/duo` directory if one doesn't already exist.
 1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
-1. Optional. Ask [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
-   to analyze the codebase and documentation, and generate custom review instructions.
-
-   Example prompt:
-
-   ```plaintext
-   I need to create custom rules for GitLab Duo Code Review. When you look at the source code,
-   which languages are missing and need to be added to the mr-review-instructions.yaml
-   file?
-   ```
-
 1. Add your custom instructions using the following format:
 
    ```yaml

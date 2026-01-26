@@ -14,6 +14,14 @@ module Gitlab
           comment: :comment
         }.freeze
 
+        # Acts as ActiveRecord::ConnectionAdapters::IndexDefinition when
+        # creating bigint indexes for primary key at #create_primary_key_index method
+        PkIndexDefinition = Struct.new(:name, :unique, :columns, keyword_init: true) do
+          def as_json(*)
+            to_h.stringify_keys
+          end
+        end
+
         def com_or_dev_or_test_but_not_jh?
           return true if Gitlab.dev_or_test_env?
 
@@ -35,10 +43,17 @@ module Gitlab
         end
 
         def add_bigint_column_indexes(table_name, int_column_name)
+          table_name = table_name.to_s
+          int_column_name = int_column_name.to_s
           bigint_column_name = convert_to_bigint_column(int_column_name)
 
-          unless column_exists?(table_name.to_s, bigint_column_name)
-            raise "Bigint column '#{bigint_column_name}' does not exist on #{table_name}"
+          unless column_exists?(table_name, bigint_column_name)
+            say "Bigint column '#{bigint_column_name}' does not exist on #{table_name}"
+            return
+          end
+
+          if primary_key(table_name) == int_column_name
+            return create_primary_key_index(table_name, int_column_name, bigint_column_name)
           end
 
           indexes(table_name).each do |i|
@@ -46,6 +61,25 @@ module Gitlab
 
             create_bigint_index(table_name, i, int_column_name, bigint_column_name)
           end
+        end
+
+        def create_primary_key_index(table_name, int_column_name, bigint_column_name)
+          pk_index = PkIndexDefinition.new(
+            name: "#{table_name}_pkey",
+            columns: [int_column_name],
+            unique: true
+          )
+
+          create_bigint_index(table_name, pk_index, int_column_name, bigint_column_name)
+        end
+
+        def drop_bigint_columns_indexes(table_name, int_columns)
+          columns = Array(int_columns)
+          big_int_columns = columns.map { |c| convert_to_bigint_column(c) }
+
+          connection.indexes(table_name)
+            .select { |idx| (idx.columns & big_int_columns).any? }
+            .each { |idx| remove_index table_name, name: idx.name }
         end
 
         # default 'index_name' method is not used because this method can be reused while swapping/dropping the indexes

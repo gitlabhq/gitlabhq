@@ -1082,9 +1082,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     context 'when the languages were detected before' do
       let(:mock_languages) do
         [{ share: 66.69, name: "Ruby", color: "#701516" },
-         { share: 22.98, name: "JavaScript", color: "#f1e05a" },
-         { share: 7.91, name: "HTML", color: "#e34c26" },
-         { share: 2.42, name: "CoffeeScript", color: "#244776" }]
+          { share: 22.98, name: "JavaScript", color: "#f1e05a" },
+          { share: 7.91, name: "HTML", color: "#e34c26" },
+          { share: 2.42, name: "CoffeeScript", color: "#244776" }]
       end
 
       it 'returns the repository languages' do

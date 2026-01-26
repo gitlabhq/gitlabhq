@@ -107,6 +107,58 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     end
   end
 
+  describe '#should_push_code?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:change) { instance_double(::Gitlab::Housekeeper::Change) }
+    let(:outdated_migration_checker) do
+      instance_double(Keeps::OverdueFinalizeBackgroundMigrations::OutdatedMigrationChecker)
+    end
+
+    before do
+      allow(change).to receive(:identifiers).and_return(%w[OverdueFinalizeBackgroundMigration TestMigration])
+      allow(keep).to receive(:outdated_migration_checker).and_return(outdated_migration_checker)
+    end
+
+    where(:already_approved, :push_when_approved, :code_update_required, :timestamp_outdated, :expected_result) do
+      # When timestamp is outdated, always push regardless of other conditions
+      true  | false | false | true | true
+      true  | false | true  | true | true
+      false | false | false | true | true
+
+      # When timestamp is not outdated, fall back to base Keep behavior
+      true  | false | true  | false | false
+      true  | false | false | false | false
+      true  | true  | true  | false | true
+      true  | true  | false | false | false
+      false | false | true  | false | true
+      false | false | false | false | false
+    end
+
+    with_them do
+      it 'determines if we should push' do
+        allow(change).to receive(:already_approved?).and_return(already_approved)
+        allow(change).to receive(:update_required?).with(:code).and_return(code_update_required)
+        allow(outdated_migration_checker).to receive(:existing_migration_timestamp_outdated?)
+                                         .with(change.identifiers).and_return(timestamp_outdated)
+
+        expect(keep.should_push_code?(change, push_when_approved)).to eq(expected_result)
+      end
+    end
+  end
+
+  describe '#outdated_migration_checker' do
+    it 'returns an OutdatedMigrationChecker instance' do
+      expect(keep.outdated_migration_checker)
+        .to be_a(Keeps::OverdueFinalizeBackgroundMigrations::OutdatedMigrationChecker)
+    end
+
+    it 'memoizes the checker' do
+      checker = keep.outdated_migration_checker
+      expect(keep.outdated_migration_checker).to be(checker)
+    end
+  end
+
   describe '#database_name' do
     let(:migration_record) do
       MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01", gitlab_schema: gitlab_schema)

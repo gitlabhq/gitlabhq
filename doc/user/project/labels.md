@@ -77,13 +77,13 @@ You can also assign and unassign labels with quick actions:
 
 To view the **project's labels**:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Manage** > **Labels**.
 
 Or:
 
 1. View an issue or merge request.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Manage project labels**.
 
 The list of labels includes both the labels created in the project and
@@ -94,13 +94,13 @@ project or group path where it was created.
 
 To view the **group's labels**:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Labels**.
 
 Or:
 
 1. View an epic.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Manage group labels**.
 
 The list includes all labels created only in the group. It does not list any labels created in
@@ -151,7 +151,7 @@ Prerequisites:
 To do so:
 
 1. View an issue or merge request.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Create project label**.
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
@@ -198,7 +198,7 @@ Prerequisites:
 To do so:
 
 1. View an epic.
-1. On the right sidebar, in the **Labels** section, select **Edit**.
+1. In the right sidebar, in the **Labels** section, select **Edit**.
 1. Select **Create group label**.
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).

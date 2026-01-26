@@ -199,7 +199,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
         let(:schedule) do
           basic_param.merge({
             variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
-                                   { key: 'AAA', secret_value: 'BBB123' }]
+              { key: 'AAA', secret_value: 'BBB123' }]
           })
         end
 
@@ -295,7 +295,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
-                                     { key: 'AAA', secret_value: 'BBB123' }]
+                { key: 'AAA', secret_value: 'BBB123' }]
             })
           end
 
@@ -378,7 +378,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
-                                     { key: 'AAA', secret_value: 'AAA123' }]
+                { key: 'AAA', secret_value: 'AAA123' }]
             })
           end
 

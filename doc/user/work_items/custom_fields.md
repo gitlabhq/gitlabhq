@@ -137,7 +137,7 @@ Prerequisites:
 - If you have the Guest role, you can set custom fields only when creating a work item.
 
 1. Go to a work item.
-1. On the right sidebar, find the section for the custom field you want to edit, and then select **Edit**.
+1. In the right sidebar, find the section for the custom field you want to edit, and then select **Edit**.
 1. Enter or select the desired value.
    - A text field value can have at most 1024 characters.
 1. Select any area outside the field.

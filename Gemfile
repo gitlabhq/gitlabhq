@@ -80,7 +80,7 @@ gem 'marginalia', '~> 1.11.1', feature_category: :database
 gem 'declarative_policy', '~> 2.0.1', feature_category: :permissions
 
 # For source code paths mapping
-gem 'coverband', '6.1.5', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'coverband', '6.1.7', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Authentication libraries
 gem 'devise', '~> 4.9.3', feature_category: :system_access

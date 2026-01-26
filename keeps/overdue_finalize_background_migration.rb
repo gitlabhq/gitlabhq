@@ -4,6 +4,7 @@ require_relative '../config/environment'
 require_relative '../lib/generators/post_deployment_migration/post_deployment_migration_generator'
 require_relative './helpers/postgres_ai'
 require_relative 'helpers/groups'
+require_relative 'overdue_finalize_background_migrations/outdated_migration_checker'
 require 'rubocop'
 
 module Keeps
@@ -325,13 +326,22 @@ module Keeps
       # rubocop:enable Gitlab/HttpV2
 
       unless response.success?
-        @logger&.puts(
+        @logger.puts(
           "Get URL: #{merge_request_url} Failed with response code: #{response.code} and body:\n#{response.body}"
         )
         return
       end
 
       Gitlab::Json.safe_parse(response.body, symbolize_names: true)
+    end
+
+    # Override to force push when migration is overdue (3 weeks old or before required stop)
+    def should_push_code?(change, push_when_approved)
+      super || outdated_migration_checker.existing_migration_timestamp_outdated?(change.identifiers)
+    end
+
+    def outdated_migration_checker
+      @outdated_migration_checker ||= OverdueFinalizeBackgroundMigrations::OutdatedMigrationChecker.new(logger: @logger)
     end
   end
 end

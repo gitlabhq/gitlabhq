@@ -69,8 +69,8 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 If GitLab Observability is not yet enabled for your group:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 1. Select **Request Access**.
 1. Select **Enable Observability**.
 1. Wait for an email notification confirming your observability instance is ready.
@@ -81,8 +81,8 @@ The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting yo
 
 Once access is granted:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
 
@@ -311,8 +311,8 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
 
 After you have configured GitLab O11y, to access the dashboard embedded in GitLab:
 
-1. On the top bar, select **Search or go to** and find your group where the feature flag is enabled.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group where the feature flag is enabled.
+1. In the left sidebar, select **Observability**.
 
 If **Observability** isn't displayed on the left sidebar,
 go directly to `http://<gitlab_instance>/groups/<group_path>/-/observability/services`.
@@ -442,7 +442,7 @@ GitLab Observability automatically instruments your CI/CD pipelines when enabled
 
 To enable automatic pipeline instrumentation, add the `GITLAB_OBSERVABILITY_EXPORT` CI/CD variable to your project or group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.
@@ -482,8 +482,8 @@ No changes to your `.gitlab-ci.yml` file are required. The instrumentation happe
 
 After running pipelines with instrumentation enabled:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Observability**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Observability**.
 1. Select **Services** to see your `gitlab-ci` service.
 1. Select the service to view traces, metrics, and logs from your pipeline executions.
 

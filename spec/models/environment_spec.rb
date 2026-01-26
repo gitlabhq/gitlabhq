@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :continuous_delivery do
+RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_category: :environment_management do
   include ReactiveCachingHelpers
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers

@@ -285,7 +285,7 @@ RSpec.describe SnippetsFinder do
       it 'returns only personal snippet' do
         snippets = described_class.new(
           admin, ids: [private_personal_snippet.id,
-                       internal_personal_snippet.id]
+            internal_personal_snippet.id]
         ).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet)

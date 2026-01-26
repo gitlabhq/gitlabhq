@@ -95,7 +95,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -137,7 +137,7 @@ The required role depends on what you want to do:
 
 To view manual pipeline variables:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
 1. Go to **Build** > **Pipelines** and select a pipeline that was run manually.
@@ -303,7 +303,7 @@ For more information, see:
 
 Users with the Owner role for a project can delete a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
@@ -374,7 +374,7 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
@@ -437,7 +437,7 @@ running time is:
 
 To view all the pipelines that ran for your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:

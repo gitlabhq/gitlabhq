@@ -16,7 +16,7 @@ Use this API to perform follower actions for user accounts. For more information
 
 ## Follow a user
 
-Follow a given user account.
+Follows a specified user account.
 
 ```plaintext
 POST /users/:id/follow
@@ -52,7 +52,7 @@ Example response:
 
 ## Unfollow a user
 
-Unfollow a given user account.
+Unfollows a specified user account.
 
 ```plaintext
 POST /users/:id/unfollow
@@ -74,7 +74,7 @@ curl --request POST \
 
 ## List all accounts that follow a user
 
-Lists all users accounts that follow a given user.
+Lists all user accounts that follow a specified user.
 
 ```plaintext
 GET /users/:id/followers
@@ -121,7 +121,7 @@ Example response:
 
 ## List all accounts followed by a user
 
-Lists all users accounts being followed by a given user.
+Lists all user accounts being followed by a specified user.
 
 ```plaintext
 GET /users/:id/following

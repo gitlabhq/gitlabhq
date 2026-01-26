@@ -12,7 +12,7 @@ RSpec.describe ContainerRegistry::RecordDataRepairDetailWorker, :aggregate_failu
     subject(:perform_work) { worker.perform_work }
 
     context 'with no work to do - no projects pending analysis' do
-      it 'will not try to get an exclusive lease and connect to the endpoint' do
+      it 'does not try to get an exclusive lease and connect to the endpoint' do
         allow(Project).to receive(:pending_data_repair_analysis).and_return([])
         expect(::Gitlab::ExclusiveLease).not_to receive(:new)
 
@@ -146,7 +146,7 @@ RSpec.describe ContainerRegistry::RecordDataRepairDetailWorker, :aggregate_failu
       end
 
       context 'when not on Gitlab.com' do
-        it 'will not do anything' do
+        it 'does not do anything' do
           expect(::Gitlab::ExclusiveLease).not_to receive(:new)
           expect(::ContainerRegistry::GitlabApiClient).not_to receive(:each_sub_repositories_with_tag_page)
 

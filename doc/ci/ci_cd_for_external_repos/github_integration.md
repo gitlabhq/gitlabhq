@@ -77,7 +77,7 @@ To manually enable GitLab CI/CD for your repository:
    1. Fill in all the other fields and select **Create project**.
       GitLab automatically configures polling-based pull mirroring.
 1. In GitLab, enable [GitHub project integration](../../user/project/integrations/github.md):
-   1. On the left sidebar, select **Settings** > **Integrations**.
+   1. In the left sidebar, select **Settings** > **Integrations**.
    1. Select the **Active** checkbox.
    1. Paste your personal access token and HTTPS repository URL into the form and select **Save**.
 1. In GitLab, create a personal access token with `API` scope to

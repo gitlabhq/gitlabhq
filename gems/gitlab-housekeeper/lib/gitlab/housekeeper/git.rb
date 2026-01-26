@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def create_branch(change)
-        branch_name = branch_name(change.identifiers)
+        branch_name = self.class.branch_name(change.identifiers)
 
         Shell.execute("git", "branch", "-f", branch_name, @branch_from)
 
@@ -50,6 +50,37 @@ module Gitlab
         Shell.execute(*push_command)
       end
 
+      def remote_branch_changed_files(branch_name, path = nil)
+        remote = housekeeper_remote
+        Shell.execute('git', 'fetch', remote, branch_name)
+
+        remote_ref = "#{remote}/#{branch_name}"
+
+        # Find the merge base to get only the changes introduced in the MR
+        merge_base = Shell.execute('git', 'merge-base', @branch_from, remote_ref).chomp
+
+        diff_command = ['git', 'diff', '--name-only', merge_base, remote_ref]
+        diff_command += ['--', path] if path
+
+        Shell.execute(*diff_command).each_line.map(&:chomp)
+      end
+
+      def self.branch_name(identifiers)
+        # Hyphen-case each identifier then join together with hyphens.
+        branch_name = identifiers
+          .map { |i| i.gsub(/[^\w]+/, '-') }
+          .map { |i| i.gsub(/[[:upper:]]/) { |w| "-#{w.downcase}" } }
+          .join('-')
+          .delete_prefix("-")
+
+        # Truncate if it's too long and add a digest
+        if branch_name.length > 240
+          branch_name = branch_name[0...200] + OpenSSL::Digest::SHA256.hexdigest(branch_name)[0...15]
+        end
+
+        branch_name
+      end
+
       private
 
       def housekeeper_remote
@@ -74,22 +105,6 @@ module Gitlab
 
       def checkout_branch(branch_name)
         Shell.execute("git", "checkout", branch_name)
-      end
-
-      def branch_name(identifiers)
-        # Hyphen-case each identifier then join together with hyphens.
-        branch_name = identifiers
-          .map { |i| i.gsub(/[^\w]+/, '-') }
-          .map { |i| i.gsub(/[[:upper:]]/) { |w| "-#{w.downcase}" } }
-          .join('-')
-          .delete_prefix("-")
-
-        # Truncate if it's too long and add a digest
-        if branch_name.length > 240
-          branch_name = branch_name[0...200] + OpenSSL::Digest::SHA256.hexdigest(branch_name)[0...15]
-        end
-
-        branch_name
       end
 
       def with_return_to_current_branch(stashed: false)

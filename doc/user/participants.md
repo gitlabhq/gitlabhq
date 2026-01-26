@@ -25,20 +25,20 @@ Participants are available for work items (such as issues, tasks, epics) and mer
 
 To view participants of a work item:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Go to your work item:
    - For issues and tasks: Select **Plan** > **Issues**, then select your work item.
    - For epics: Select **Plan** > **Epics**, then select your epic.
-1. On the right sidebar, in the **Participants** section, view all users who
+1. In the right sidebar, in the **Participants** section, view all users who
    participated in the work item.
 
 ### For merge requests
 
 To view participants in a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
-1. On the right sidebar, in the **Participants** section, view all users who
+1. In the right sidebar, in the **Participants** section, view all users who
    participated in the merge request.
 
 ## Participant visibility and permissions

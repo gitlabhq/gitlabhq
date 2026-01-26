@@ -54,8 +54,14 @@ To update the default branch for an individual [project](../../_index.md):
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
 1. Select **Save changes**.
 
-API users can also use the `default_branch` attribute of the
-[Projects API](../../../../api/projects.md) when creating or editing a project.
+You can also use the `default_branch` attribute of the [Projects API](../../../../api/projects.md).
+When you create a project with the API and set `initialize_with_readme` to `true`,
+you can specify the `default_branch` parameter as either:
+
+- A branch name. For example, `main`.
+- A fully qualified reference. For example, `refs/heads/main`.
+
+The API strips the `refs/heads/` prefix if you provide a fully qualified reference.
 
 ## Change the default branch name for new projects in an instance
 

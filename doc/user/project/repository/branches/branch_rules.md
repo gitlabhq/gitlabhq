@@ -134,7 +134,7 @@ To add a merge request approval rule:
 
 1. From the [branch rule details](#view-branch-rule-details) page, go to the **Merge request approvals** section.
 1. In the **Approval rules** section, select **Add approval rule**.
-1. On the right sidebar, complete the fields:
+1. In the right sidebar, complete the fields:
    - Enter a **Rule name**.
    - In **Required number of approvals**, enter a value (`0`-`100`).
 

@@ -91,11 +91,11 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 GitLab provides an RSS feed of a project's releases, in Atom format. To view the feed:
 
 1. For projects you are a member of:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Deploy** > **Releases**.
 1. For all projects:
    1. Go to the **Project overview** page.
-   1. On the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
+   1. In the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
 1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}).
 
 ## Create a release

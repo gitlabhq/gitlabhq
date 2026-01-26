@@ -174,7 +174,7 @@ RSpec.describe GitlabSchema do
 
         expect do
           [described_class.object_from_id(user1.to_global_id),
-           described_class.object_from_id(user2.to_global_id)].map(&:sync)
+            described_class.object_from_id(user2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
       end
 
@@ -204,7 +204,7 @@ RSpec.describe GitlabSchema do
 
         expect do
           [described_class.object_from_id(note1.to_global_id),
-           described_class.object_from_id(note2.to_global_id)].map(&:sync)
+            described_class.object_from_id(note2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
       end
 

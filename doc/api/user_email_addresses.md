@@ -52,7 +52,7 @@ Example response:
 
 {{< /details >}}
 
-Lists all email addresses for a given user account.
+Lists all email addresses for a specified user account.
 
 Prerequisites:
 
@@ -68,9 +68,9 @@ Supported attributes:
 |:----------|:--------|:---------|:------------|
 | `id`      | integer | yes      | ID of user account |
 
-## Get details on an email address
+## Retrieve details on an email address
 
-Gets details on a given email address for your user account.
+Retrieves details on a specified email address for your user account.
 
 ```plaintext
 GET /user/emails/:email_id
@@ -136,7 +136,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 {{< /details >}}
 
-Adds an email address for a given user account.
+Adds an email address for a specified user account.
 
 Prerequisites:
 
@@ -188,7 +188,7 @@ Returns:
 
 {{< /details >}}
 
-Deletes an email address for a given user account. You cannot delete a primary email address.
+Deletes an email address for a specified user account. You cannot delete a primary email address.
 
 Prerequisites:
 

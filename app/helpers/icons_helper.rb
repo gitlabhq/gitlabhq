@@ -235,14 +235,12 @@ module IconsHelper
   end
 
   def parse_sprite_definition(sprite_definition)
-    Gitlab::Json.parse(
-      Rails.application
+    Gitlab::Json.safe_parse(Rails.application
            .assets_manifest
            .find_sources(sprite_definition)
            .first
            .to_s
-           .force_encoding('UTF-8')
-    )
+           .force_encoding('UTF-8'))
   end
 
   def memoized_icon(key)

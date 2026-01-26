@@ -134,6 +134,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    context 'when branch name is fully qualified' do
+      let(:default_branch) { 'refs/heads/full_name' }
+
+      it 'creates project with provided default branch name without refs/heads prefix' do
+        expect { request }.to change { Project.count }.by(1)
+        expect(response).to have_gitlab_http_status(:created)
+
+        project = Project.find(json_response['id'])
+        expect(project.repository_exists?).to be_truthy
+        expect(project.default_branch).to eq('full_name')
+      end
+    end
+
     context 'when initialize with readme is not set' do
       let(:params) { super().merge(initialize_with_readme: nil) }
 

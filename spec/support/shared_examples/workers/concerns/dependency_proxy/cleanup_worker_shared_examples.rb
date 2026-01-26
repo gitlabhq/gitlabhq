@@ -25,7 +25,7 @@ RSpec.shared_examples 'dependency_proxy_cleanup_worker' do
       let_it_be(:artifact4) { create(factory_type, group: group, updated_at: 2.years.ago, created_at: 2.years.ago) }
 
       it 'deletes the oldest artifact pending destruction based on updated_at', :aggregate_failures do
-        expect(worker).to receive(:log_extra_metadata_on_done).with("#{factory_type}_id".to_sym, artifact3.id)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:"#{factory_type}_id", artifact3.id)
         expect(worker).to receive(:log_extra_metadata_on_done).with(:group_id, group.id)
 
         expect { perform_work }.to change { artifact1.class.count }.by(-1)

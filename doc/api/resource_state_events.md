@@ -21,7 +21,7 @@ For a resource that was not closed or re-opened, an empty list is returned.
 
 ### List project issue state events
 
-Gets a list of all state events for a single issue.
+Lists all state events for a single issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_state_events
@@ -79,9 +79,9 @@ Example response:
 ]
 ```
 
-### Get single issue state event
+### Retrieve a single issue state event
 
-Returns a single state event for a specific project issue
+Retrieves a single state event for a specific project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_state_events/:resource_state_event_id
@@ -127,7 +127,7 @@ Example response:
 
 ### List project merge request state events
 
-Gets a list of all state events for a single merge request.
+Lists all state events for a single merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_state_events
@@ -185,9 +185,9 @@ Example response:
 ]
 ```
 
-### Get single merge request state event
+### Retrieve a single merge request state event
 
-Returns a single state event for a specific project merge request
+Retrieves a single state event for a specific project merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/resource_state_events/:resource_state_event_id
@@ -249,7 +249,7 @@ This change is a breaking change.
 
 ### List group epic state events
 
-Returns a list of all state events for a single epic.
+Lists all state events for a single epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_state_events
@@ -307,9 +307,9 @@ Example response:
 ]
 ```
 
-### Get single epic state event
+### Retrieve a single epic state event
 
-Returns a single state event for a specific group epic.
+Retrieves a single epic state event.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/resource_state_events/:resource_state_event_id

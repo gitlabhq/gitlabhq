@@ -85,12 +85,12 @@ When you've finished preparing your changes, it's time to request a review. To a
 your merge request, either use the
 [`/assign_reviewer` quick action](../../quick_actions.md#assign_reviewer) in any text field, or:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
-1. To find a reviewer by name: on the right sidebar, in the **Reviewers** section, select **Edit**.
+1. To find a reviewer by name: in the right sidebar, in the **Reviewers** section, select **Edit**.
 1. To find a reviewer who fulfills an approval rule in GitLab Premium and Ultimate:
-   1. On the right sidebar, in the **Reviewers** section, select **Assign** to open the **Assign reviewers** drawer.
+   1. In the right sidebar, in the **Reviewers** section, select **Assign** to open the **Assign reviewers** drawer.
    1. For each approval rule, select **Edit** to find a reviewer who fulfills that approval rule.
 
 GitLab adds the merge request to the user's review requests.

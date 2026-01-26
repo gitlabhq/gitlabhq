@@ -45,7 +45,7 @@ Prerequisites:
 
 To create a test case in a GitLab project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Test cases**.
 1. Select **New test case**. You are taken to the new test case form. Here you can enter
    the new case's title, [description](../../user/markdown.md), attach a file, and assign [labels](../../user/project/labels.md).
@@ -64,7 +64,7 @@ Prerequisites:
 
 To view a test case:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Test cases**.
 1. Select the title of the test case you want to view. You are taken to the test case page.
 
@@ -111,7 +111,7 @@ Prerequisites:
 To make a test case confidential:
 
 - When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential** checkbox.
-- When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
+- When you [edit a test case](#edit-a-test-case): in the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
 
 You can also use the [`/confidential` quick action](../../user/project/quick_actions.md#confidential) when both creating a new test case
 or editing an existing one.
@@ -134,7 +134,7 @@ To archive a test case, on the test case's page, select **Archive test case**.
 
 To view archived test cases:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Test cases**.
 1. Select **Archived**.
 

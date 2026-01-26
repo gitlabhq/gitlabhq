@@ -117,9 +117,9 @@ Example response:
 ]
 ```
 
-## Get details of a CI/CD template
+## Retrieve details of a CI/CD template
 
-Gets the details of a specific CI/CD template.
+Retrieves the details of a specific CI/CD template.
 
 ```plaintext
 GET /templates/gitlab_ci_ymls/:key

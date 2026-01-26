@@ -91,15 +91,15 @@ To prepare the new server:
 
 1. Disable periodic background jobs:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs** to show the Sidekiq dashboard.
+   1. In the left sidebar, select **Monitoring** > **Background jobs** to show the Sidekiq dashboard.
    1. On the Sidekiq dashboard, on its top menu, select **Cron**.
    1. On the Sidekiq dashboard, on its upper right, select **Disable All**.
 1. Wait for the running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
    To view all running jobs:
-   1. On the left sidebar, select **CI/CD** > **Jobs**.
+   1. In the left sidebar, select **CI/CD** > **Jobs**.
    1. In the filter bar, select **Status** > **Running**.
 1. Wait for Sidekiq jobs to finish:
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, on its top menu, select **Queues**.
    1. On the Sidekiq dashboard, on its upper right, select **Live Poll**.
       Wait for **Busy** and **Enqueued** to drop to 0.
@@ -206,7 +206,7 @@ to the new environment.
 1. [Restore the GitLab backup](restore_gitlab.md).
 1. Verify that the Redis database restored correctly:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
+   1. In the left sidebar, select **Monitoring** > **Background jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**

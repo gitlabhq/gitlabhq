@@ -18,9 +18,9 @@ see the [Git documentation for `.gitignore`](https://git-scm.com/docs/gitignore)
 Users with the Guest role can't access the `.gitignore` templates. For more information, see
 [Project and group visibility](../../user/public_access.md).
 
-## Get all `.gitignore` templates
+## List all `.gitignore` templates
 
-Get a list of all `.gitignore` templates.
+Lists all `.gitignore` templates.
 
 ```plaintext
 GET /templates/gitignores
@@ -126,9 +126,9 @@ Example response:
 ]
 ```
 
-## Get a single `.gitignore` template
+## Retrieve a single `.gitignore` template
 
-Get a single `.gitignore` template.
+Retrieves a single `.gitignore` template.
 
 ```plaintext
 GET /templates/gitignores/:key

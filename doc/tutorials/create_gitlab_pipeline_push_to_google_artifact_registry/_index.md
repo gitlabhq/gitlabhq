@@ -164,7 +164,7 @@ repository with the version `v1.0.0`.
 
 To view your artifact in GitLab:
 
-1. In your GitLab project, on the left sidebar, select
+1. In your GitLab project, in the left sidebar, select
    **Build** > **Artifacts**.
 1. Select the name of the artifact to view the details of the build.
 

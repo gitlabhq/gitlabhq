@@ -61,7 +61,7 @@ number under **Weight**.
 To set the issue weight from an existing issue:
 
 1. Go to the issue.
-1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. In the right sidebar, in the **Weight** section, select **Edit**.
 1. Enter the new weight.
 1. Select any area outside the dropdown list.
 
@@ -71,7 +71,7 @@ To set the issue weight when you [edit an issue from an issue board](../issue_bo
 
 1. Go to your issue board.
 1. Select an issue card (not its title).
-1. On the right sidebar, in the **Weight** section, select **Edit**.
+1. In the right sidebar, in the **Weight** section, select **Edit**.
 1. Enter the new weight.
 1. Select any area outside the dropdown list.
 

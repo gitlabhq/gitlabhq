@@ -77,7 +77,7 @@ module Gitlab
             case resource
             when Hash
               self.new(**resource.symbolize_keys)
-            when ::Ci::HasVariable
+            when ::Ci::HasVariable, ::Ci::PipelineVariableItem
               self.new(**resource.to_hash_variable)
             when self
               resource.dup

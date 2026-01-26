@@ -19,9 +19,9 @@ resources available online.
 
 Users with the Guest role can't access the license templates. For more information, see [Project and group visibility](../../user/public_access.md).
 
-## List license templates
+## List all license templates
 
-Get all license templates.
+Lists all license templates.
 
 ```plaintext
 GET /templates/licenses
@@ -117,9 +117,9 @@ Example response:
 ]
 ```
 
-## Single license template
+## Retrieve a single license template
 
-Get a single license template. You can pass parameters to replace the license
+Retrieves a single license template. You can pass parameters to replace the license
 placeholder.
 
 ```plaintext

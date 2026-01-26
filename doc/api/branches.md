@@ -17,9 +17,9 @@ Use this API to manage [Git branches](../user/project/repository/branches/_index
 
 To change the branch protections configured for a project, use the [protected branches API](protected_branches.md).
 
-## List repository branches
+## List all repository branches
 
-Get a list of repository branches from a project, sorted by name alphabetically. Search by name, or
+Lists all repository branches from a project, sorted by name alphabetically. Search by name, or
 use regular expressions to find specific branch patterns. Returns detailed information about the branch,
 including its protection status, merge status, and commit details.
 
@@ -112,9 +112,9 @@ Example response:
 ]
 ```
 
-## Get single repository branch
+## Retrieve a repository branch
 
-Get a single project repository branch.
+Retrieves a specified project repository branch.
 
 > [!note]
 > This endpoint can be accessed without authentication if the repository is publicly accessible.
@@ -213,7 +213,7 @@ for information on unprotecting repository branches.
 
 ## Create repository branch
 
-Create a new branch in the repository.
+Creates a new branch in the repository.
 
 ```plaintext
 POST /projects/:id/repository/branches
@@ -301,7 +301,7 @@ Example response:
 
 ## Delete repository branch
 
-Delete a branch from the repository.
+Deletes a specified branch from the repository.
 
 > [!note]
 > In the case of an error, an explanation message is provided.
@@ -332,7 +332,7 @@ curl --request DELETE \
 > Some information persists to maintain project history and to support recovery processes.
 > For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
-## Delete merged branches
+## Delete all merged branches
 
 Deletes all branches that are merged into the project's default branch.
 

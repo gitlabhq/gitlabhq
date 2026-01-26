@@ -459,7 +459,7 @@ GEM
     countries (4.0.1)
       i18n_data (~> 0.13.0)
       sixarm_ruby_unaccent (~> 1.1)
-    coverband (6.1.5)
+    coverband (6.1.7)
       base64
       redis (>= 3.0)
     crack (0.4.3)
@@ -2133,7 +2133,7 @@ DEPENDENCIES
   concurrent-ruby (~> 1.1)
   connection_pool (~> 2.5.3)
   countries (~> 4.0.0)
-  coverband (= 6.1.5)
+  coverband (= 6.1.7)
   creole (~> 0.5.0)
   cssbundling-rails (= 1.4.3)
   csv_builder!

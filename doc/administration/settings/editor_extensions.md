@@ -68,7 +68,7 @@ Prerequisites:
 To enforce a minimum GitLab Language Server version:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Check **Language Server restrictions enabled**.
 1. Under **Minimum GitLab Language Server client version**, enter a valid GitLab Language Server version.
@@ -76,7 +76,7 @@ To enforce a minimum GitLab Language Server version:
 To allow any GitLab Language Server clients:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Editor Extensions**.
 1. Uncheck **Language Server restrictions enabled**.
 1. Under **Minimum GitLab Language Server client version**, enter a valid GitLab Language Server version.

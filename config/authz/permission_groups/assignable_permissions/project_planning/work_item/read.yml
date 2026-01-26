@@ -9,6 +9,7 @@ permissions:
   - read_epic_issue
   - read_issue_link
   - read_issue_time_statistic
+  - read_issue_weight_event
   - read_iteration
   - read_label
   - read_merge_request_time_statistic

@@ -73,7 +73,7 @@ a random buffer as a parameter.
 
 To create the two fuzz target files:
 
-1. On the top bar, select **Search or go to** and find the `fuzz-testing-demo` project.
+1. In the top bar, select **Search or go to** and find the `fuzz-testing-demo` project.
 1. Create a file in the root directory of the project.
 1. Name the file `fuzz-sayhello.js` and add the following code:
 
@@ -180,7 +180,7 @@ fuzz test using the pipeline you've just created.
 
 To run the fuzz test:
 
-1. On the left sidebar, select **Code** > **Merge requests**.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select **New merge request**.
 1. In the **Source branch** section, select the `add-fuzz-test` branch.
 1. In the **Target branch** section, make sure that your namespace and the `main` branch are selected.
