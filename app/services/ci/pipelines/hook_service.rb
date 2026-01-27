@@ -32,3 +32,5 @@ module Ci
     end
   end
 end
+
+Ci::Pipelines::HookService.prepend_mod_with('Ci::Pipelines::HookService')

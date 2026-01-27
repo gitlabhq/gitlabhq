@@ -71,5 +71,26 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::Mounter, feature_category
         resolver: 'resolver mock'
       })
     end
+
+    it 'passes block to EngineResolver.build' do
+      customizations_block = proc do
+        define_method(:validate_request!) do |engine_request|
+          raise GraphQL::ExecutionError, 'Custom validation error' if engine_request.dimensions.empty?
+        end
+      end
+
+      expect(Resolvers::Analytics::Aggregation::EngineResolver)
+        .to receive(:build) { |engine, **opts, &block|
+          expect(engine).to eq(engine_class)
+          expect(opts).to include(field_name: :aggregation, types_prefix: :aggregation)
+          expect(block).to eq(customizations_block)
+          'resolver with validation'
+        }
+
+      parent_field.mount_aggregation_engine(engine_class, &customizations_block)
+
+      expect(parent_field.fields.size).to eq(1)
+      expect(parent_field.fields.first[:options][:resolver]).to eq('resolver with validation')
+    end
   end
 end

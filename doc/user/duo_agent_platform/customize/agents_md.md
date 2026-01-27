@@ -80,12 +80,9 @@ instructions. Previously existing conversations do not.
 User-level `AGENTS.md` files apply to all of your projects and workspaces.
 
 1. In your user configuration directory, create an `AGENTS.md` file:
+   - On Linux/macOS, create the file in your home directory at: `~/.gitlab/duo/AGENTS.md`, or on Windows: `%APPDATA%\GitLab\duo\AGENTS.md`.
    - If you have set the `GLAB_CONFIG_DIR` environment variable, create the file at: `$GLAB_CONFIG_DIR/AGENTS.md`
-   - Otherwise, create the file in your platform's default configuration directory:
-     - macOS or Linux:
-       - If you use the `XDG_CONFIG_HOME` environment variable, create the file at: `$XDG_CONFIG_HOME/gitlab/duo/AGENTS.md`
-       - Otherwise, create the file within your home directory at: `~/.gitlab/duo/AGENTS.md`
-     - Windows: `%APPDATA%\GitLab\duo\AGENTS.md`
+   - If you use the `XDG_CONFIG_HOME` environment variable, create the file at: `$XDG_CONFIG_HOME/gitlab/duo/AGENTS.md`
 1. Add instructions to the file. For example:
 
    {{< tabs >}}

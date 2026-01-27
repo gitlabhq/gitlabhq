@@ -82,7 +82,7 @@ module Mcp
       end
 
       def process_response(status, body)
-        parsed_response = Gitlab::Json.parse(body)
+        parsed_response = Gitlab::Json.safe_parse(body)
         if status >= 400
           message = parsed_response['error'] || parsed_response['message'] || "HTTP #{status}"
           ::Mcp::Tools::Response.error(message, parsed_response)

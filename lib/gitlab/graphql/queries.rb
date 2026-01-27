@@ -6,12 +6,6 @@ module Gitlab
   module Graphql
     module Queries
       IMPORT_RE = /^#\s*import "(?<path>[^"]+)"$/m
-      EE_ELSE_CE = /^ee_else_ce/
-      HOME_RE = /^~/
-      HOME_EE = %r{^ee/}
-      DOTS_RE = %r{^(\.\./)+}
-      DOT_RE = %r{^\./}
-      IMPLICIT_ROOT = %r{^app/}
       CONN_DIRECTIVE = /@connection\(key: "\w+"\)/
 
       class WrappedError
@@ -137,11 +131,10 @@ module Gitlab
           @fragments = fragments
           @imports = []
           @errors = []
-          @ee_else_ce = []
         end
 
-        def text(mode: :ce)
-          qs = [query] + all_imports(mode: mode).uniq.sort.map { |p| fragment(p).query }
+        def text
+          qs = [query] + all_imports.uniq.sort.map { |p| fragment(p).query }
           t = qs.join("\n\n").gsub(/\n\n+/, "\n\n")
 
           return t unless /(@client)|(persist)/.match?(t)
@@ -173,12 +166,7 @@ module Gitlab
           # CONN_DIRECTIVEs are purely client-side constructs
           @query = File.read(file).gsub(CONN_DIRECTIVE, '').gsub(IMPORT_RE) do
             path = $~[:path]
-
-            if EE_ELSE_CE.match?(path)
-              @ee_else_ce << path.gsub(EE_ELSE_CE, '')
-            else
-              @imports << fragment_path(path)
-            end
+            @imports << @fragments.resolve(path, file)
 
             ''
           end
@@ -187,30 +175,22 @@ module Gitlab
           @query = nil
         end
 
-        def all_imports(mode: :ce)
+        def all_imports
           return [] if query.nil?
 
-          home = mode == :ee ? @fragments.home_ee : @fragments.home
-          eithers = @ee_else_ce.map { |p| home + p }
-
-          (imports + eithers).flat_map { |p| [p] + @fragments.get(p).all_imports(mode: mode) }
+          imports.flat_map { |p| [p] + @fragments.get(p).all_imports }
         end
 
         def all_errors
           return @errors.to_set if query.nil?
 
-          paths = imports + @ee_else_ce.flat_map { |p| [@fragments.home + p, @fragments.home_ee + p] }
-
-          paths.map { |p| fragment(p).all_errors }.reduce(@errors.to_set) { |a, b| a | b }
+          imports.map { |p| fragment(p).all_errors }.reduce(@errors.to_set) { |a, b| a | b }
         end
 
         def validate(schema)
           return [:client_query, []] if query.present? && text.nil?
 
           errs = all_errors.presence || schema.validate(text)
-          if @ee_else_ce.present?
-            errs += schema.validate(text(mode: :ee))
-          end
 
           [:validated, errs]
         rescue ::GraphQL::ParseError => e
@@ -222,52 +202,52 @@ module Gitlab
         def fragment(path)
           @fragments.get(path)
         end
-
-        def fragment_path(import_path)
-          frag_path = import_path.gsub(HOME_RE, @fragments.home)
-          frag_path = frag_path.gsub(HOME_EE, @fragments.home_ee + '/')
-          frag_path = frag_path.gsub(DOT_RE) do
-            Pathname.new(file).parent.to_s + '/'
-          end
-          frag_path = frag_path.gsub(DOTS_RE) do |dots|
-            rel_dir(dots.split('/').count)
-          end
-          frag_path.gsub(IMPLICIT_ROOT) do
-            (Rails.root / 'app').to_s + '/'
-          end
-        end
-
-        def rel_dir(n_steps_up)
-          path = Pathname.new(file).parent
-          while n_steps_up > 0
-            path = path.parent
-            n_steps_up -= 1
-          end
-
-          path.to_s + '/'
-        end
       end
 
       # TODO: some queries live under app/graphql/queries - we should look there if/when we add fragments there
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/361079
       # for fragments too.
       class Fragments
+        HOME_RE = %r{^(~|ee_else_ce)/}
+        DOTS_RE = %r{^(\.\./)+}
+        DOT_RE = %r{^\./}
+        IMPLICIT_ROOT = %r{^app/}
+
         def initialize(root, dir = 'app/assets/javascripts')
           @root = root
           @store = {}
           @dir = dir
         end
 
-        def home
-          @home ||= (@root / @dir).to_s
-        end
-
-        def home_ee
-          @home_ee ||= (@root / 'ee' / @dir).to_s
-        end
+        attr_reader :root, :dir
 
         def get(frag_path)
           @store[frag_path] ||= Definition.new(frag_path, self)
+        end
+
+        def resolve(import_path, current_file)
+          parent = Pathname.new(current_file).parent
+          frag_path = import_path.gsub(HOME_RE, (root / dir).to_s + '/')
+          frag_path = frag_path.gsub(DOT_RE) do
+            parent.to_s + '/'
+          end
+          frag_path = frag_path.gsub(DOTS_RE) do |dots|
+            rel_dir(parent, dots.split('/').count)
+          end
+          frag_path.gsub(IMPLICIT_ROOT) do
+            (Rails.root / 'app').to_s + '/'
+          end
+        end
+
+        private
+
+        def rel_dir(path, n_steps_up)
+          while n_steps_up > 0
+            path = path.parent
+            n_steps_up -= 1
+          end
+
+          path.to_s + '/'
         end
       end
 
@@ -288,9 +268,7 @@ module Gitlab
       end
 
       def self.all
-        ['.', 'ee'].flat_map do |prefix|
-          find(Rails.root / prefix / 'app/assets/javascripts') + find(Rails.root / prefix / 'app/graphql/queries')
-        end
+        find(Rails.root / 'app/assets/javascripts') + find(Rails.root / 'app/graphql/queries')
       end
 
       def self.known_failure?(path)
@@ -308,3 +286,6 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Graphql::Queries.prepend_mod
+Gitlab::Graphql::Queries::Fragments.prepend_mod

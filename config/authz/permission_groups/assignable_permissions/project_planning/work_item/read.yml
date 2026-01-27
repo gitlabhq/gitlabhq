@@ -7,14 +7,17 @@ permissions:
   - read_epic_board_list
   - read_epic_link
   - read_epic_issue
+  - read_epic_state_event
   - read_issue_link
   - read_issue_milestone_event
+  - read_issue_state_event
   - read_issue_time_statistic
   - read_issue_weight_event
   - read_iteration
   - read_label
   - read_merge_request_milestone_event
   - read_merge_request_time_statistic
+  - read_merge_request_state_event
   - read_milestone
   - read_milestone_issue
   - read_milestone_merge_request

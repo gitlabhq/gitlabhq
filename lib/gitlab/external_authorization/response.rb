@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def parse_response!
-        Gitlab::Json.parse(@response.body)
+        Gitlab::Json.safe_parse(@response.body)
       rescue JSON::JSONError
         # The JSON response is optional, so don't fail when it's missing
         nil

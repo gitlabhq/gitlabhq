@@ -27,6 +27,7 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -136,6 +137,7 @@ export default {
     messageModalTitle: s__('WikiPage|Add a commit message'),
   },
   components: {
+    WikiSidebarToggle,
     GlForm,
     GlFormGroup,
     GlFormCheckbox,
@@ -676,6 +678,7 @@ export default {
                 class="gl-sticky gl-top-0 gl-z-3 gl-flex gl-items-start gl-gap-3 gl-bg-default gl-px-5 gl-pt-3"
                 data-testid="wiki-form-actions"
               >
+                <wiki-sidebar-toggle action="open" class="gl-my-2 gl-shrink-0" />
                 <div
                   class="flexible-input-container gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >

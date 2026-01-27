@@ -10,7 +10,7 @@ RSpec.describe Ci::Pipelines::HookService, feature_category: :continuous_integra
 
     let(:hook_enabled) { true }
     let!(:hook) { create(:project_hook, project: project, pipeline_events: hook_enabled) }
-    let(:hook_data) { double }
+    let(:hook_data) { {} }
 
     subject(:service) { described_class.new(pipeline) }
 

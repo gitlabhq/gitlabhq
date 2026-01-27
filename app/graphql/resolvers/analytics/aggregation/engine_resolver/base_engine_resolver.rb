@@ -17,7 +17,10 @@ module Resolvers
             description: 'Sorting order list for the aggregated data.'
 
           def resolve_with_lookahead(**arguments)
-            response = engine.execute(build_aggregation_request(arguments))
+            request = build_aggregation_request(arguments)
+            validate_request!(request)
+
+            response = engine.execute(request)
 
             raise GraphQL::ExecutionError, response.errors.join(' ') unless response.success?
 
@@ -36,6 +39,11 @@ module Resolvers
 
           def aggregation_scope
             raise NoMethodError # must be overloaded in dynamic class definition
+          end
+
+          def validate_request!(engine_request)
+            # no-op; can be overloaded while mounting an engine to
+            # further limit requests execution
           end
 
           def build_aggregation_request(arguments)

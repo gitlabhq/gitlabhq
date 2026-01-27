@@ -406,14 +406,16 @@ export default {
     >
       <template #header-buttons>
         <slot name="header-buttons"></slot>
-        <markdown-toolbar
-          v-if="immersive"
-          :markdown-docs-path="markdownDocsPath"
-          :can-attach-file="canAttachFile"
-          :show-comment-tool-bar="showCommentToolBar"
-          :show-content-editor-switcher="showContentEditorSwitcher"
-          @enableContentEditor="$emit('enableContentEditor')"
-        />
+        <div class="gl-grow">
+          <markdown-toolbar
+            v-if="immersive"
+            :markdown-docs-path="markdownDocsPath"
+            :can-attach-file="canAttachFile"
+            :show-comment-tool-bar="showCommentToolBar"
+            :show-content-editor-switcher="showContentEditorSwitcher"
+            @enableContentEditor="$emit('enableContentEditor')"
+          />
+        </div>
       </template>
     </markdown-header>
     <div v-show="!previewMarkdown" class="md-write-holder">
@@ -427,17 +429,19 @@ export default {
           :aria-label="__('Exit full screen')"
           ><gl-icon variant="subtle" :size="24" name="minimize"
         /></a>
-        <markdown-toolbar
-          v-if="!immersive"
-          :markdown-docs-path="markdownDocsPath"
-          :can-attach-file="canAttachFile"
-          :show-comment-tool-bar="showCommentToolBar"
-          :show-content-editor-switcher="showContentEditorSwitcher"
-          :class="{ showContentEditorSwitcher: 'gl-border-t' }"
-          @enableContentEditor="$emit('enableContentEditor')"
-        >
-          <template #toolbar><slot name="toolbar"></slot></template>
-        </markdown-toolbar>
+        <div class="gl-border-t">
+          <markdown-toolbar
+            v-if="!immersive"
+            :markdown-docs-path="markdownDocsPath"
+            :can-attach-file="canAttachFile"
+            :show-comment-tool-bar="showCommentToolBar"
+            :show-content-editor-switcher="showContentEditorSwitcher"
+            :class="{ showContentEditorSwitcher: 'gl-border-t' }"
+            @enableContentEditor="$emit('enableContentEditor')"
+          >
+            <template #toolbar><slot name="toolbar"></slot></template>
+          </markdown-toolbar>
+        </div>
       </div>
     </div>
     <div

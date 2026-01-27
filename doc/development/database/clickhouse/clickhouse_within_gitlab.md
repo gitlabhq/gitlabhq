@@ -196,6 +196,55 @@ export SKIP_POST_DEPLOYMENT_MIGRATIONS=true
 bundle exec rake gitlab:clickhouse:migrate
 ```
 
+## Column Compression Guidelines
+
+When creating new tables, consider adjusting the compression settings for specific columns to improve storage efficiency. By default, ClickHouse compresses data using **LZ4** on self-managed instances and ClickHouse Cloud uses [`ZSTD`](https://clickhouse.com/docs/data-compression/compression-in-clickhouse#compression-in-clickhouse-cloud). Depending on the column type and its content, you can achieve significantly better compression ratios using specific codecs.
+
+### Recommended Codecs by Data Type
+
+#### **Primary Keys (or Sorted Columns)**
+
+- **Integers / Timestamps:** `CODEC(DoubleDelta, ZSTD)` - Optimized for monotonically increasing sequences.
+- **Strings:** `CODEC(ZSTD(3))` - Provides a higher compression ratio for high-entropy strings.
+
+#### **Standard Columns**
+
+- **Booleans:** `CODEC(ZSTD(1))`
+- **Incremental Timestamps** (`created_at`, `updated_at`): `CODEC(Delta, ZSTD(1))` - Delta encoding makes incremental values much smaller before ZSTD compresses them.
+- **UUIDs / Hashes (as Strings):** `CODEC(ZSTD(1))`
+- **Longer Text / JSON:** `CODEC(ZSTD(3))` - Higher levels (up to 22) are available, but `3` is the ideal setting for performance/compression ratio.
+
+### Implementation
+
+Codecs are defined directly in the `CREATE TABLE` statement for each column:
+
+```sql
+CREATE TABLE example_table (
+  id         UInt64 CODEC(DoubleDelta, ZSTD),
+  created_at DateTime64(3) CODEC(Delta, ZSTD(1)),
+  payload    String CODEC(ZSTD(3))
+) ENGINE = MergeTree()
+ORDER BY id;
+```
+
+### Measuring Efficiency
+
+If you are unsure which codec to use, experiment by creating a test table with production-like data and run the following query to determine the compression ratio:
+
+```sql
+SELECT
+  name AS column_name,
+  formatReadableSize(sum(data_compressed_bytes)) AS compressed,
+  formatReadableSize(sum(data_uncompressed_bytes)) AS uncompressed,
+  round(sum(data_uncompressed_bytes) / sum(data_compressed_bytes), 2) AS ratio
+FROM system.columns
+WHERE table = 'your_table_name'
+GROUP BY name
+ORDER BY ratio DESC;
+```
+
+**Note:** Don't over-optimize. While higher compression levels (like ZSTD 10+) save disk space, they increase CPU overhead during both writes and reads. Stick to the defaults unless the storage gains are significant.
+
 ## Writing database queries
 
 For the ClickHouse database we don't use ORM (Object Relational Mapping). The main reason is that the GitLab application has many customizations for the `ActiveRecord` PostgreSQL adapter and the application generally assumes that all databases are using `PostgreSQL`. Since ClickHouse-related features are still in a very early stage of development, we decided to implement a simple HTTP client to avoid hard to discover bugs and long debugging time when dealing with multiple `ActiveRecord` adapters.

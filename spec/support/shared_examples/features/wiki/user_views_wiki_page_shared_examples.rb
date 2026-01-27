@@ -61,7 +61,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'shows an old version of a page', :js do
       expect(page).to have_current_path(%r{one/two/three-test})
 
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
 
       expect(find('.wiki-pages')).to have_content('three')
 
@@ -96,7 +96,7 @@ RSpec.shared_examples 'User views a wiki page' do
     before do
       visit(wiki_page_path(wiki, wiki_page))
 
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
     end
 
     it 'shows all the pages' do
@@ -225,7 +225,7 @@ RSpec.shared_examples 'User views a wiki page' do
 
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
 
       expect(page).to have_css('[data-testid="page-heading"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
@@ -269,7 +269,7 @@ RSpec.shared_examples 'User views a wiki page' do
       type: :flaky
     } do
       visit(wiki_page_path(wiki, wiki_page))
-      click_button('Toggle sidebar') if page.has_button?('Toggle sidebar', wait: 1)
+      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
 
       within '.js-wiki-toc' do
         expect(page).to have_content('On this page')

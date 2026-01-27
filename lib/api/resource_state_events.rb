@@ -27,6 +27,7 @@ module API
           use :pagination
         end
 
+        route_setting :authorization, permissions: :"read_#{eventable_type.to_s.underscore}_state_event", boundary_type: parent_type.to_sym
         get ":id/#{eventables_str}/:eventable_id/resource_state_events", feature_category: feature_category, urgency: :low do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 
@@ -43,6 +44,7 @@ module API
           requires :eventable_id, types: Integer, desc: "The #{details[:id_field]} of the #{human_eventable_str}"
           requires :event_id, type: Integer, desc: 'The ID of a resource state event'
         end
+        route_setting :authorization, permissions: :"read_#{eventable_type.to_s.underscore}_state_event", boundary_type: parent_type.to_sym
         get ":id/#{eventables_str}/:eventable_id/resource_state_events/:event_id", feature_category: feature_category do
           eventable = find_noteable(eventable_type, params[:eventable_id])
 

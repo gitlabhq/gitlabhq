@@ -13,12 +13,13 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import wikiPageSubscribeMutation from '~/wikis/graphql/wiki_page_subscribe.mutation.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { toggleWikiSidebar } from '../utils/sidebar_toggle';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 import RestoreVersionModal from './restore_version_modal.vue';
 
 export default {
   components: {
+    WikiSidebarToggle,
     GlButton,
     GlIcon,
     GlLink,
@@ -168,7 +169,6 @@ export default {
       this.$toast.show(message);
       Sentry.captureException(error);
     },
-    toggleWikiSidebar,
   },
   i18n: {
     edit: __('Edit'),
@@ -196,15 +196,7 @@ export default {
   >
     <page-heading class="gl-w-full">
       <template #heading>
-        <gl-button
-          v-gl-tooltip.html
-          data-testid="wiki-sidebar-toggle"
-          icon="list-bulleted"
-          category="tertiary"
-          class="wiki-sidebar-header-toggle js-sidebar-wiki-toggle-open gl-mr-2"
-          :aria-label="__('Toggle sidebar')"
-          @click="toggleWikiSidebar"
-        />
+        <wiki-sidebar-toggle action="open" class="gl-mr-2" />
         <span>
           {{ pageHeadingComputed }}
         </span>

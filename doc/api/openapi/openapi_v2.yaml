@@ -51172,6 +51172,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -51436,6 +51440,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -51908,6 +51916,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -52199,6 +52211,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -52476,6 +52492,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -52528,6 +52548,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -57919,6 +57943,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -58183,6 +58211,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -58655,6 +58687,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -58946,6 +58982,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -59223,6 +59263,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -59275,6 +59319,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -59839,6 +59887,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -60103,6 +60155,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -60575,6 +60631,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -60866,6 +60926,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -61143,6 +61207,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.
@@ -61195,6 +61263,10 @@ definitions:
         type: boolean
         description: Trigger event when a confidential issue is created, updated,
           or closed.
+      work_item_events:
+        type: boolean
+      confidential_work_item_events:
+        type: boolean
       merge_requests_events:
         type: boolean
         description: Trigger event when a merge request is created, updated, or merged.

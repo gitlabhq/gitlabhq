@@ -1,13 +1,9 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiSidebarHeader from '~/wikis/components/wiki_sidebar_header.vue';
-import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 
-jest.mock('~/wikis/utils/sidebar_toggle', () => ({
-  toggleWikiSidebar: jest.fn(),
-}));
-
-describe('WikiSidebarHeader', () => {
+describe('WikiSidebar', () => {
   let wrapper;
 
   const defaultProps = {};
@@ -55,12 +51,9 @@ describe('WikiSidebarHeader', () => {
       expect(wrapper.emitted('toggle-pages-list')).toBeUndefined();
     });
 
-    it('calls toggleWikiSidebar when close button is clicked', async () => {
-      const closeButton = wrapper.findAll('gl-button-stub').at(0);
-
-      await closeButton.vm.$emit('click');
-
-      expect(toggleWikiSidebar).toHaveBeenCalled();
+    it('shows the close toggle', () => {
+      expect(wrapper.findComponent(WikiSidebarToggle).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiSidebarToggle).props('action')).toBe('close');
     });
   });
 

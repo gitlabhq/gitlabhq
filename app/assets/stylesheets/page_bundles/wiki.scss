@@ -37,12 +37,6 @@
     @apply gl-transition-padding;
     @apply motion-reduce:gl-transition-none;
   }
-
-  &:has(.wiki-sidebar.sidebar-expanded) {
-    .wiki-sidebar-header-toggle {
-      @apply gl-hidden;
-    }
-  }
 }
 
 @mixin wiki-screen-lg {

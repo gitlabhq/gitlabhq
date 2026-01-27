@@ -27,10 +27,10 @@ export function toggleWikiSidebar(persistSetting = true) {
   if (isExpanded) {
     sidebarEl.classList.add('sidebar-collapsed');
     sidebarEl.classList.remove('sidebar-expanded');
-    if (persistSetting) localStorage.setItem('wiki-sidebar-open', false);
+    if (persistSetting) localStorage.setItem('wiki-sidebar-open', 'false');
   } else {
     sidebarEl.classList.remove('sidebar-collapsed');
     sidebarEl.classList.add('sidebar-expanded');
-    if (persistSetting) localStorage.setItem('wiki-sidebar-open', true);
+    if (persistSetting) localStorage.setItem('wiki-sidebar-open', 'true');
   }
 }

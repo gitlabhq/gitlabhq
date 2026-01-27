@@ -20,7 +20,7 @@ Use this API to interact with the [Terraform CLI](../../user/packages/terraform_
 
 ## List available versions for a specific module
 
-Get a list of available versions for a specific module.
+List all available versions for a specified module.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/versions
@@ -77,9 +77,9 @@ Example response:
 }
 ```
 
-## Latest version for a specific module
+## Retrieve latest version for a module
 
-Get information about the latest version for a given module.
+Retrieve information about the latest version for a specified module.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system
@@ -117,9 +117,9 @@ Example response:
 }
 ```
 
-## Get specific version for a specific module
+## Retrieve a specific version for a module
 
-Get information about a specific version for a given module.
+Retrieve information about a specific version for a specified module.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/1.0.0
@@ -157,9 +157,9 @@ Example response:
 }
 ```
 
-## Get URL for downloading latest module version
+## Retrieve download URL for latest module version
 
-Get the download URL for latest module version in `X-Terraform-Get` header
+Retrieve the download URL for the latest module version in the `X-Terraform-Get` header.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download
@@ -186,9 +186,9 @@ X-Terraform-Get: /api/v4/packages/terraform/modules/v1/group/hello-world/local/1
 
 Under the hood, this API endpoint redirects to `packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/download`
 
-## Get URL for downloading specific module version
+## Retrieve download URL for a specific module version
 
-Get the download URL for a specific module version in `X-Terraform-Get` header
+Retrieve the download URL for a specified module version in the `X-Terraform-Get` header.
 
 ```plaintext
 GET packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/download
@@ -269,6 +269,8 @@ curl --user "<username>:<personal_access_token>" \
 ```
 
 ## Upload module
+
+Upload a module for a specified project.
 
 ```plaintext
 PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file

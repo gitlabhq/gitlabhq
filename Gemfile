@@ -429,7 +429,7 @@ gem 'snowplow-tracker', '~> 0.8.0', feature_category: :product_analytics
 
 # Metrics
 gem 'webrick', '~> 1.9.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'prometheus-client-mmap', '~> 1.2.8', require: 'prometheus/client', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'prometheus-client-mmap', '~> 1.5.0', require: 'prometheus/client', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Event-driven reactor for Ruby
 # Required manually in config/initializers/require_async_gem

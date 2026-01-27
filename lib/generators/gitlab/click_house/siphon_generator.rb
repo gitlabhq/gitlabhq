@@ -105,8 +105,8 @@ module Gitlab
       def table_definition
         definitions = [
           *table_columns,
-          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now()",
-          "_siphon_deleted Bool DEFAULT FALSE",
+          "_siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1))",
+          "_siphon_deleted Bool DEFAULT FALSE CODEC(ZSTD(1))",
           *table_projection
         ].flatten.compact.join(",\n        ")
 
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
         end
         conditions << "'0/'"
 
-        "traversal_path String DEFAULT multiIf(#{conditions.join(', ')})"
+        "traversal_path String DEFAULT multiIf(#{conditions.join(', ')}) CODEC(ZSTD(3))"
       end
 
       def primary_keys
@@ -147,9 +147,11 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
 
       def table_columns
         cols = pg_fields_metadata.map do |field|
-          ch_field_type = ch_type_for(field)
-
-          "#{field['field_name']} #{ch_field_type}"
+          [
+            field['field_name'],
+            ch_type_for(field),
+            compression_for(field)
+          ].compact.join(' ')
         end
 
         cols << build_traversal_path_field if hierarchy_denormalization?
@@ -248,6 +250,25 @@ PROJECTION pg_pkey_ordered (
           ORDER BY #{primary_keys}
         )
         TEXT
+      end
+
+      def compression_for(field)
+        ch_type = PG_TYPE_MAP[field['field_type_id']]
+        is_pk   = pg_primary_keys.include?(field['field_name'])
+
+        if is_pk
+          return 'CODEC(DoubleDelta, ZSTD)' if ch_type.start_with?('Int', 'DateTime64')
+          return 'CODEC(ZSTD(3))' if ch_type == 'String'
+
+          return
+        end
+
+        # Bool can be compressed in any case
+        return 'CODEC(ZSTD(1))' if ch_type == 'Bool'
+
+        return 'CODEC(Delta, ZSTD(1))' if field['field_name'] == 'created_at' || field['field_name'] == 'updated_at'
+
+        nil
       end
     end
   end

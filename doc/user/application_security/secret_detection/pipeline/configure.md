@@ -38,9 +38,15 @@ To change how the analyzer behaves, define variables using the [`variables`](../
 
 To search for other types of secrets in your repositories, you can [customize analyzer rulesets](#customize-analyzer-rulesets).
 
-To propose a new detection rule for all users of pipeline secret detection, see the GitLab rules [single source of truth](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md) and follow the guidance to create a merge request.
+### Propose new detection rules
 
-If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about the GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
+You can propose new detection rules for all pipeline secret detection users in two ways:
+
+- Request a new rule: Create an issue using the [Secret Detection Pattern Change issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Secret_Detection_Pattern_Change). The GitLab team will review the request, and get in touch with you to decide how and when the new rule will be implemented.
+
+- Contribute a new rule: If you want to contribute the rule yourself, follow the [contribution guidelines](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/README.md#adding-new-rules) in the Secret Detection Rules repository.
+
+If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, see GitLab [partner program for leaked credential notifications](../automatic_response.md#partner-program-for-leaked-credential-notifications).
 
 ### Pin to specific analyzer version
 

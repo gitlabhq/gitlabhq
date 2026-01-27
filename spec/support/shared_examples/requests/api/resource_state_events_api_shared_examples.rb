@@ -31,6 +31,14 @@ RSpec.shared_examples 'resource_state_events API' do |parent_type, eventable_typ
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'authorizing granular token permissions',
+      :"read_#{eventable_type.singularize}_state_event" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("#{base_path}/resource_state_events", personal_access_token: pat)
+      end
+    end
   end
 
   describe "GET /#{parent_type}/:id/#{eventable_type}/:noteable_id/resource_state_events/:event_id" do
@@ -42,6 +50,14 @@ RSpec.shared_examples 'resource_state_events API' do |parent_type, eventable_typ
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(event.id)
       expect(json_response['state']).to eq(event.state.to_s)
+    end
+
+    it_behaves_like 'authorizing granular token permissions',
+      :"read_#{eventable_type.singularize}_state_event" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("#{base_path}/resource_state_events/#{event.id}", personal_access_token: pat)
+      end
     end
 
     it "returns 404 when not authorized" do

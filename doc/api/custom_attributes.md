@@ -18,9 +18,9 @@ Prerequisites:
 
 - You must be an administrator for the instance.
 
-## List custom attributes
+## List all custom attributes
 
-Get all custom attributes on a resource.
+Lists all custom attributes for a specified resource.
 
 ```plaintext
 GET /users/:id/custom_attributes
@@ -53,9 +53,9 @@ Example response:
 ]
 ```
 
-## Single custom attribute
+## Retrieve a custom attribute
 
-Get a single custom attribute on a resource.
+Retrieves a specified custom attribute for a resource.
 
 ```plaintext
 GET /users/:id/custom_attributes/:key
@@ -83,10 +83,9 @@ Example response:
 }
 ```
 
-## Set custom attribute
+## Update a custom attribute
 
-Set a custom attribute on a resource. The attribute is updated if it already exists,
-or newly created otherwise.
+Updates or creates a custom attribute for a specified resource. The attribute is updated if it already exists, or newly created otherwise.
 
 ```plaintext
 PUT /users/:id/custom_attributes/:key
@@ -118,7 +117,7 @@ Example response:
 
 ## Delete custom attribute
 
-Delete a custom attribute on a resource.
+Deletes a specified custom attribute for a resource.
 
 ```plaintext
 DELETE /users/:id/custom_attributes/:key

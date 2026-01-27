@@ -75,7 +75,7 @@ module BulkImports
     def status_from_cache
       status = Gitlab::Cache::Import::Caching.read(cache_key)
 
-      Gitlab::Json.parse(status) if status
+      Gitlab::Json.safe_parse(status) if status
     end
 
     def status_from_remote

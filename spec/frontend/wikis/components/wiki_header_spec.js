@@ -8,6 +8,7 @@ import WikiHeader from '~/wikis/components/wiki_header.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import WikiSidebarToggle from '~/wikis/components/wiki_sidebar_toggle.vue';
 import { queryVariables, wikiPageQueryMockData } from '../notes/mock_data';
 
 Vue.use(VueApollo);
@@ -81,7 +82,7 @@ describe('wikis/components/wiki_header', () => {
   const findEditButton = () => wrapper.findByTestId('wiki-edit-button');
   const findSubscribeButton = () => wrapper.findByTestId('wiki-subscribe-button');
   const findLastVersion = () => wrapper.findByTestId('wiki-page-last-version');
-  const findSidebarToggle = () => wrapper.findByTestId('wiki-sidebar-toggle');
+  const findSidebarToggle = () => wrapper.findComponent(WikiSidebarToggle);
   const findRestoreVersionButton = () => wrapper.findByTestId('wiki-restore-version-button');
   const findCreateFromTemplateButton = () =>
     wrapper.findByTestId('wiki-create-from-template-button');
@@ -159,7 +160,7 @@ describe('wikis/components/wiki_header', () => {
 
     it('renders sidebar toggle', () => {
       expect(findSidebarToggle().exists()).toBe(true);
-      expect(findSidebarToggle().attributes('aria-label')).toBe('Toggle sidebar');
+      expect(findSidebarToggle().props('action')).toBe('open');
     });
   });
 

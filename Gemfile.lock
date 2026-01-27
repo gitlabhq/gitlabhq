@@ -1530,11 +1530,11 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (1.2.10)
+    prometheus-client-mmap (1.5.0)
       base64
       bigdecimal
       logger
-      rb_sys (~> 0.9.109)
+      rb_sys (~> 0.9.124)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -2364,7 +2364,7 @@ DEPENDENCIES
   prawn
   prawn-svg
   premailer-rails (~> 1.12.0)
-  prometheus-client-mmap (~> 1.2.8)
+  prometheus-client-mmap (~> 1.5.0)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.4)

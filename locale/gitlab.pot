@@ -3184,6 +3184,9 @@ msgstr ""
 msgid "AICatalog|Triage Issue, Generate Release Notes, Update Docs"
 msgstr ""
 
+msgid "AICatalog|Trigger this %{itemType} when a pipeline status changes."
+msgstr ""
+
 msgid "AICatalog|Trigger this %{itemType} when the service account user is assigned as a reviewer to a merge request."
 msgstr ""
 
@@ -15292,6 +15295,9 @@ msgid "Close milestone"
 msgstr ""
 
 msgid "Close panel"
+msgstr ""
+
+msgid "Close sidebar"
 msgstr ""
 
 msgid "Close sidebar widget"
@@ -47555,6 +47561,9 @@ msgstr ""
 msgid "Open raw"
 msgstr ""
 
+msgid "Open sidebar"
+msgstr ""
+
 msgid "Open threads must be resolved."
 msgstr ""
 
@@ -49495,6 +49504,9 @@ msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 
 msgid "Pipeline editor"
+msgstr ""
+
+msgid "Pipeline events"
 msgstr ""
 
 msgid "Pipeline job"
@@ -77432,9 +77444,6 @@ msgstr ""
 msgid "Wiki|Add custom sidebar"
 msgstr ""
 
-msgid "Wiki|Close sidebar"
-msgstr ""
-
 msgid "Wiki|Commit message"
 msgstr ""
 
@@ -83233,6 +83242,15 @@ msgid "severity|Minor"
 msgstr ""
 
 msgid "severity|Unknown"
+msgstr ""
+
+msgid "should be a valid Maven artifact ID with optional wildcard characters."
+msgstr ""
+
+msgid "should be a valid Maven group ID with optional wildcard characters."
+msgstr ""
+
+msgid "should be a valid Maven version with optional wildcard characters."
 msgstr ""
 
 msgid "should be a valid NPM package name with optional wildcard characters."

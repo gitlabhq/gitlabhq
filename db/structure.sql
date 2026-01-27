@@ -30855,6 +30855,28 @@ CREATE SEQUENCE virtual_registries_packages_maven_registry_upstreams_id_seq
 
 ALTER SEQUENCE virtual_registries_packages_maven_registry_upstreams_id_seq OWNED BY virtual_registries_packages_maven_registry_upstreams.id;
 
+CREATE TABLE virtual_registries_packages_maven_upstream_rules (
+    id bigint NOT NULL,
+    remote_upstream_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    pattern_type smallint DEFAULT 0 NOT NULL,
+    rule_type smallint DEFAULT 0 NOT NULL,
+    target_coordinate smallint DEFAULT 0 NOT NULL,
+    pattern text NOT NULL,
+    CONSTRAINT check_f0e32df721 CHECK ((char_length(pattern) <= 255))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_upstream_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_upstream_rules_id_seq OWNED BY virtual_registries_packages_maven_upstream_rules.id;
+
 CREATE TABLE virtual_registries_packages_maven_upstreams (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -35095,6 +35117,8 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SE
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_upstream_rules ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_upstream_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_upstreams_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_npm_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_npm_registries_id_seq'::regclass);
@@ -39221,6 +39245,9 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registries
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT virtual_registries_packages_maven_registry_upstreams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_upstream_rules
+    ADD CONSTRAINT virtual_registries_packages_maven_upstream_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_upstreams
     ADD CONSTRAINT virtual_registries_packages_maven_upstreams_pkey PRIMARY KEY (id);
@@ -45071,6 +45098,8 @@ CREATE INDEX index_manifest_states_on_verification_state ON dependency_proxy_man
 
 CREATE INDEX index_manifest_states_pending_verification ON dependency_proxy_manifest_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_maven_upstream_rules_on_group_id ON virtual_registries_packages_maven_upstream_rules USING btree (group_id);
+
 CREATE INDEX index_member_approval_on_member_id ON member_approvals USING btree (member_id);
 
 CREATE INDEX index_member_approval_on_member_namespace_id ON member_approvals USING btree (member_namespace_id);
@@ -48334,6 +48363,8 @@ CREATE UNIQUE INDEX unique_idx_group_destinations_on_name_category_group ON audi
 CREATE UNIQUE INDEX unique_idx_instance_destinations_on_name_category ON audit_events_instance_external_streaming_destinations USING btree (category, name);
 
 CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id) WHERE (status = 0);
+
+CREATE UNIQUE INDEX unique_idx_mvn_upstream_rules_on_remote_upstream_target_pattern ON virtual_registries_packages_maven_upstream_rules USING btree (remote_upstream_id, target_coordinate, pattern, pattern_type, rule_type);
 
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
@@ -56526,6 +56557,9 @@ ALTER TABLE ONLY list_user_preferences
 ALTER TABLE issue_search_data
     ADD CONSTRAINT fk_rails_7149dd9eee FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY virtual_registries_packages_maven_upstream_rules
+    ADD CONSTRAINT fk_rails_715d1bf72b FOREIGN KEY (remote_upstream_id) REFERENCES virtual_registries_packages_maven_upstreams(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT fk_rails_719c3dccc5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -56801,6 +56835,9 @@ ALTER TABLE ONLY organization_details
 
 ALTER TABLE ONLY members_deletion_schedules
     ADD CONSTRAINT fk_rails_8fb4cda076 FOREIGN KEY (scheduled_by_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_upstream_rules
+    ADD CONSTRAINT fk_rails_902a745ece FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT fk_rails_9071e863d1 FOREIGN KEY (approval_project_rule_id) REFERENCES approval_project_rules(id) ON DELETE CASCADE;

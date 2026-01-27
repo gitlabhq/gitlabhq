@@ -171,12 +171,9 @@ To change open files being used as context:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `code_suggestions_include_context_imports`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
+- Feature flag `code_suggestions_include_context_imports` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/536129) in GitLab 18.0.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 

@@ -2291,6 +2291,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def execute_flow_triggers(_, _)
+    # noop in CE
+  end
+
   def has_active_hooks?(hooks_scope = :push_hooks)
     @has_active_hooks ||= {} # rubocop: disable Gitlab/PredicateMemoization
 

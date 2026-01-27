@@ -36,4 +36,22 @@ RSpec.describe "Users", "routing", feature_category: :user_management do
       expect(get('/-/u/1')).to route_to('users/redirect#redirect_from_id', id: '1')
     end
   end
+
+  describe 'GET /users/:username/projects/contributed' do
+    it 'routes to users#projects' do
+      expect(get("/users/#{user.username}/projects/contributed")).to route_to(
+        'users#projects',
+        username: user.username
+      )
+    end
+  end
+
+  describe 'GET /users/:username/projects/starred' do
+    it 'routes to users#projects' do
+      expect(get("/users/#{user.username}/projects/starred")).to route_to(
+        'users#projects',
+        username: user.username
+      )
+    end
+  end
 end

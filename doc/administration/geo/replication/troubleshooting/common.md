@@ -100,6 +100,8 @@ OpenSSH configured to use AuthorizedKeysCommand ... yes
 GitLab configured to disable writing to authorized_keys file ... yes
 GitLab configured to store new projects in hashed storage? ... yes
 All projects are in hashed storage? ... yes
+Container Registry replication enabled ... yes
+Container Registry Geo events ... last event at 2024-01-15 10:30:00 UTC
 
 Checking Geo ... Finished
 ```
@@ -353,6 +355,11 @@ sudo gitlab-rake gitlab:geo:check
   - If you are running the secondary site's tracking database in a Patroni cluster, then follow [Geo database replication - Configuring Patroni cluster for the tracking PostgreSQL database](../../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database)
   - If you are running the secondary site's tracking database in an external database, then follow [Geo with external PostgreSQL instances](../../setup/external_database.md#configure-the-tracking-database)
   - If the Geo check task was run on a node which is not running a service which runs the GitLab Rails app (Puma, Sidekiq, or Geo Log Cursor), then this error can be ignored. The node does not need Rails to be configured.
+
+##### Message: Container Registry Geo events ... none found
+
+If `Container Registry Geo events ... none found` is displayed and you expect Container Registry
+replication events to be present, verify the registry notification configuration on the **primary** site is as per the [Container Registry replication configuration guide](../container_registry.md#configure-primary-site).
 
 ##### Message: Machine clock is synchronized ... Exception
 

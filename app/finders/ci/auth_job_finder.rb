@@ -50,12 +50,6 @@ module Ci
     end
 
     def find_from_database_token
-      if Feature.disabled?(:ci_build_find_token_authenticatable, Feature.current_request)
-        partition_id = ::Ci::Builds::TokenPrefix.decode_partition(token)
-        job = ::Ci::Build.in_partition(partition_id).find_by_token(token) if partition_id.present?
-        return job if job
-      end
-
       ::Ci::Build.find_by_token(token)
     end
 

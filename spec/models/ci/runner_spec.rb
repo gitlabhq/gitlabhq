@@ -1686,22 +1686,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         end
       end
     end
-
-    context 'when ci_build_find_token_authenticatable feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_build_find_token_authenticatable: false)
-      end
-
-      it 'does not use runner_type filter in query' do
-        recorder = ActiveRecord::QueryRecorder.new do
-          expect(described_class.find_by_token(token)).to eq(runner)
-        end
-
-        expect(recorder.count).to eq(1)
-        expect(recorder.log.first).to match(/"ci_runners"."token_encrypted" IN/)
-        expect(recorder.log.first).not_to match(/"ci_runners"."runner_type" =/)
-      end
-    end
   end
 
   describe '#token' do

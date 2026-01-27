@@ -742,6 +742,130 @@ Example response:
 }
 ```
 
+## Search
+
+The following endpoints are used by GitLab search services like Zoekt.
+
+### Zoekt
+
+The following endpoints are called by Zoekt to send heartbeat and indexing callback responses.
+
+#### Sending heartbeat and fetching indexing tasks
+
+Use this endpoint to keep updating the node's `Last seen at` timestamp and fetch Zoekt unprocessed tasks.
+
+```plaintext
+POST /internal/search/zoekt/:uuid/heartbeat
+```
+
+| Attribute                             | Type          | Required | Description                                                              |
+|:--------------------------------------|:--------------|:---------|:-------------------------------------------------------------------------|
+| `node.url`                            | string        | yes      | Location where the indexer can be reached                                    |
+| `node.name`                           | string        | yes      | Name of the indexer node                                                     |
+| `disk.all`                            | integer       | yes      | Total disk space                                                         |
+| `disk.used`                           | integer       | yes      | Disk space used                                                |
+| `node.services`                       | string array | no       | Array of services by the node. Accepts only `zoekt` |
+| `node.schema_version`                 | integer       | no       | Schema version of the node                                               |
+| `node.knowledge_graph_schema_version` | integer       | no       | Knowledge Graph schema version of the node                               |
+| `disk.indexed`                        | integer       | no       | Disk space indexed                                                     |
+
+Example request:
+
+```shell
+curl --location "https://example.com/api/v4/internal/search/3869fe21-36d1-4612-9676-0b783ef2dcd7/heartbeat" \
+--header "Gitlab-Shell-Api-Request: <JWT token>" \
+--header "Content-Type: application/json" \
+--data '{
+    "node.url": "http://localhost:6090",
+    "node.name": "foo.local",
+    "disk.all": "994662584320",
+    "disk.used": "532673712128"
+}'
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "truncate": true,
+  "tasks": [
+    {
+      "name": "index",
+      "payload": {
+        "GitalyConnectionInfo": {
+          "Address": "unix:/praefect.socket",
+          "Token": null,
+          "Storage": "default",
+          "Path": "@hashed/79/02/7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081d9043.git",
+          "Callback": {
+            "name": "index",
+            "Payload": {
+              "task_id": 1,
+              "schema_version": 2531
+            }
+          },
+          "RepoId": 1,
+          "FileSizeLimit": 1048576,
+          "Parallelism": 1,
+          "Timeout": "1800s",
+          "FileCountLimit": 500000,
+          "TrigramMax": 20000,
+          "MissingRepo": false,
+          "Metadata": {
+            "project_id": "1",
+            "traversal_ids": "3-",
+            "visibility_level": "10",
+            "repository_access_level": "20",
+            "forked": "f",
+            "archived": "f"
+          },
+          "Force": true
+        }
+      }
+    }
+  ],
+  "pull_frequency": "5s",
+  "stop_indexing": false
+}
+```
+
+#### Sending callback after processing the indexing task
+
+Use this endpoint to send callback with payload data after processing the indexing task.
+
+```plaintext
+POST /internal/search/zoekt/:uuid/callback
+```
+
+| Attribute            | Type    | Required | Description                                   |
+|:---------------------|:--------|:---------|:----------------------------------------------|
+| `name`               | string  | yes      | Name of the callback                                 |
+| `success`            | boolean | yes      | Set to `true` if the processing is successful   |
+| `error`              | string  | no       | Detailed error message                        |
+| `payload`            | JSON    | yes      | Data payload for the request                  |
+| `additional_payload` | JSON    | no       | Additional payload added by the Zoekt indexer |
+
+Example request:
+
+```shell
+curl --location "https://example.com/api/v4/internal/search/3869fe21-36d1-4612-9676-0b783ef2dcd7/callback" \
+--header "Gitlab-Shell-Api-Request: <JWT token>" \
+--header "Content-Type: application/json" \
+--data '{
+    "name": "index",
+    "success": true,
+    "payload": { "schema_version": 2531, "task_id": 48 },
+    "additional_payload": { "repo_stats": { "index_file_count": 1, "size_in_bytes": 41800 } }
+}'
+```
+
+Example response:
+
+```json
+{ "message": "202 Accepted" }
+```
+
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.

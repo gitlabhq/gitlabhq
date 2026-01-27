@@ -1,8 +1,13 @@
 <script>
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import WikiSidebarHeader from './wiki_sidebar_header.vue';
 import WikiSidebarEntries from './wiki_sidebar_entries.vue';
 
 const LOCAL_STORAGE_STATE_KEY = 'wiki-sidebar-expanded';
+
+const sidebarExpandedByDefault = () => {
+  return PanelBreakpointInstance.getBreakpointSize() === 'xl';
+};
 
 export default {
   name: 'WikiSidebar',
@@ -10,8 +15,15 @@ export default {
   inject: ['hasCustomSidebar'],
   data() {
     return {
+      initialExpandedState:
+        JSON.parse(localStorage.getItem('wiki-sidebar-open')) ?? sidebarExpandedByDefault(),
       pagesListExpanded: this.getInitialPagesListState(),
     };
+  },
+  computed: {
+    initialClasses() {
+      return this.initialExpandedState ? 'sidebar-expanded' : 'sidebar-collapsed';
+    },
   },
   watch: {
     pagesListExpanded(newValue) {
@@ -41,7 +53,8 @@ export default {
 <template>
   <aside
     :aria-label="__('Wiki')"
-    class="wiki-sidebar js-wiki-sidebar sidebar-collapsed"
+    class="wiki-sidebar js-wiki-sidebar"
+    :class="initialClasses"
     data-offset-top="50"
     data-spy="affix"
   >

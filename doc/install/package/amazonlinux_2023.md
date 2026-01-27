@@ -32,6 +32,12 @@ title: Install the Linux package on Amazon Linux 2023
   which requires inbound HTTP access and a valid hostname. You can also use
   [your own certificate](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually),
   or just use `http://` (without the `s`) for an unencrypted URL.
+- Linux packages and other related metadata files are stored and served from
+  Google Cloud Storage. If using a firewall, you will need to allow access to
+  the following URL prefixes:
+      - `https://packages.gitlab.com/*`
+      - `https://storage.googleapis.com/packages-ops/*`
+      - `https://storage.googleapis.com/packages-static-files-ops/*`
 
 ## Enable SSH and open firewall ports
 

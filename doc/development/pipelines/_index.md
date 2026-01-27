@@ -21,8 +21,6 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-**Under active development**: For more information, see [epic 58](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58).
-
 A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
 
 We currently have three tiers:
@@ -66,10 +64,6 @@ In summary:
 
 - RSpec tests are dependent on the backend code.
 - Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
-
-### Predictive Tests Dashboards
-
-- <https://10az.online.tableau.com/#/site/gitlab/views/DRAFTTestIntelligenceAccuracy/TestIntelligenceAccuracy>
 
 ### The `detect-tests` CI job
 
@@ -736,27 +730,23 @@ Coverage data flows through several CI jobs:
 
 For detailed documentation on coverage collection, data flow, and ClickHouse storage, see [Code coverage](code_coverage.md).
 
-## Flaky tests
+## Flaky tests retry and quarantine
 
-### Automatic skipping of flaky tests
+### Automatic retry of failing tests
 
-We used to skip tests that are [known to be flaky](../testing_guide/unhealthy_tests.md#automatic-retries-and-flaky-tests-detection),
-but we stopped doing so since that could actually lead to actual broken `master`.
-Instead, we introduced
-[a fast-quarantining process](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/#fast-quarantine)
-to proactively quarantine any flaky test reported in `#master-broken` incidents.
+Backend tests that fail are automatically retried once in a separate RSpec process. This helps detect flaky tests, defined as tests that fail then pass with the same commit SHA.
 
-This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`
-variable to `false`.
+On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
 
-### Automatic retry of failing tests in a separate process
+The "retrying failed tests in a new RSpec process" can be disabled by setting the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable to `false`.
 
-Unless `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable is set to `false` (`true` by default), RSpec tests that failed are automatically retried once in a separate
-RSpec process. The goal is to get rid of most side-effects from previous tests that may lead to a subsequent test failure.
+### Quarantined tests
 
-We keep track of retried tests in the `$RETRIED_TESTS_REPORT_FILE` file saved as artifact by the `rspec:flaky-tests-report` job.
+GitLab CI pipelines use [fast quarantine](../testing_guide/quarantining_tests.md#fast-quarantine) to skip tests that are blocking pipelines while being investigated.
 
-See the [experiment issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1148).
+The fast quarantine process can be disabled by setting the `$FAST_QUARANTINE` variable to `false`.
+
+For quarantine procedures and syntax, see [Quarantining Tests](../testing_guide/quarantining_tests.md) and the [Quarantine Process handbook](https://handbook.gitlab.com/handbook/engineering/testing/quarantine-process/).
 
 ## Compatibility testing
 
