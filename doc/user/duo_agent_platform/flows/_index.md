@@ -32,12 +32,9 @@ This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 A flow is a combination of one or more agents working together to solve a complex problem.
 

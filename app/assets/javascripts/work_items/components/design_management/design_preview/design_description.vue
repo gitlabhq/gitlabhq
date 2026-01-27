@@ -186,16 +186,15 @@ export default {
       if (isCheckbox(target)) {
         target.disabled = true;
 
-        const { sourcepos } = target.parentElement.dataset;
-
-        if (!sourcepos) return;
-
         // Toggle checkboxes based on user input
-        this.descriptionText = toggleCheckbox({
+        const replacement = toggleCheckbox({
           rawMarkdown: this.descriptionText,
           checkboxChecked: target.checked,
-          sourcepos,
+          target,
         });
+        if (!replacement) return;
+
+        this.descriptionText = replacement.newMarkdown;
 
         // Update the description text using mutation
         this.updateDesignDescription();

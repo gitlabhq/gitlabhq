@@ -405,12 +405,9 @@ A table displays the member's:
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
 
-{{< alert type="note" >}}
-
-The display of group members' **Source** might be inconsistent.
-For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
-
-{{< /alert >}}
+> [!note]
+> The display of group members' **Source** might be inconsistent.
+> For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage quotas** page](../../subscriptions/manage_users_and_seats.md#view-seat-usage).
 

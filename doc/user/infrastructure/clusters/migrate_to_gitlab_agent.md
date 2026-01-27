@@ -34,12 +34,9 @@ This workflow uses an agent to connect to your cluster. The agent:
 - Is not exposed to the internet.
 - Does not require full [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) access to GitLab.
 
-{{< alert type="note" >}}
-
-The certificate-based integration was used for popular GitLab features like
-GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
-
-{{< /alert >}}
+> [!note]
+> The certificate-based integration was used for popular GitLab features like
+> GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
 
 ## Find certificate-based clusters
 

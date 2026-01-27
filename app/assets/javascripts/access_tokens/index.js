@@ -151,6 +151,7 @@ export const initSharedAccessTokenApp = () => {
     accessTokenRevoke,
     accessTokenRotate,
     accessTokenShow,
+    accessTokenTableUrl,
   } = el.dataset;
 
   const router = new VueRouter({
@@ -172,6 +173,7 @@ export const initSharedAccessTokenApp = () => {
       accessTokenRevoke,
       accessTokenRotate,
       accessTokenShow,
+      accessTokenTableUrl,
     },
     render(createElement) {
       return createElement(AccessTokens, {

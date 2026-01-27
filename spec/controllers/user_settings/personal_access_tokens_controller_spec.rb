@@ -188,4 +188,30 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       end
     end
   end
+
+  describe '#legacy_new' do
+    context 'when granular_personal_access_tokens feature flag is disabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens: false)
+      end
+
+      it 'returns 404' do
+        get :legacy_new
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(granular_personal_access_tokens: true)
+      end
+
+      it 'renders the legacy_new template' do
+        get :legacy_new
+
+        expect(response).to render_template(:legacy_new)
+      end
+    end
+  end
 end

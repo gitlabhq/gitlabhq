@@ -445,7 +445,7 @@ class IssuableBaseService < ::BaseContainerService
       issuable.description,
       issuable.description_html,
       line_source: update_task_params[:line_source],
-      line_number: update_task_params[:line_number].to_i,
+      line_sourcepos: update_task_params[:line_sourcepos],
       toggle_as_checked: update_task_params[:checked]
     )
 

@@ -8,14 +8,25 @@
 module Taskable
   # Model class for task items returned by Taskable.get_tasks, Taskable.get_updated_tasks, and
   # #task_list_items on classes included by Taskable.
-  Item = Struct.new(:complete?, :text, :source)
+  #
+  # "complete?" is whether the item is marked complete (checked) or not.
+  #
+  # "text" is the human-friendly text relevant to the task item. It's used in
+  # SystemNotes::IssuablesService to create system notes about checking or unchecking items.
+  #
+  # "source" is the HTML source relevant to the task item. It's used in .get_updated_tasks to
+  # determine whether a task that was checked or unchecked hasn't otherwise changed. Depending on
+  # the kind of task item (task list vs. task table), it might take different forms, and shouldn't
+  # be presented to the user or otherwise stored.
+  Item = Struct.new(:complete?, :text, :source, keyword_init: true)
 
   COMPLETED          = 'completed'
   INCOMPLETE         = 'incomplete'
   COMPLETE_PATTERN   = /\[[xX]\]/
   INCOMPLETE_PATTERN = /\[[[:space:]]\]/
 
-  # Used by TaskListToggleService and WorkItems::TaskListReferenceReplacementService.
+  # Used by WorkItems::TaskListReferenceReplacementService.
+  # Do not add new uses.
   ITEM_PATTERN       = %r{
     ^
     (?:(?:>\s{0,4})*)               # optional blockquote characters

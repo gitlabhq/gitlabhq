@@ -41,12 +41,9 @@ This feature uses [GitLab Credits](../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
 
 GitLab Duo Chat (Agentic) is an enhanced version of GitLab Duo Chat (Classic). This new Chat can autonomously
 perform actions on your behalf, to help you answer complex questions more comprehensively.

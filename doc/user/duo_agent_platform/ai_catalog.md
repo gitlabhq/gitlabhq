@@ -29,12 +29,9 @@ This feature uses [GitLab Credits](../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The AI Catalog is a central list of agents and flows.
 Add these agents and flows to your project to get started orchestrating agentic AI tasks.

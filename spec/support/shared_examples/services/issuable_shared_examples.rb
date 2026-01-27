@@ -43,10 +43,9 @@ RSpec.shared_examples 'updating a single task' do
 
       update_issuable(
         update_task: {
-          index: 1,
           checked: true,
           line_source: '- [ ] Task 1',
-          line_number: 1
+          line_sourcepos: '1:4-1:4'
         }
       )
     end
@@ -54,7 +53,7 @@ RSpec.shared_examples 'updating a single task' do
 
   context 'when a task is marked as completed' do
     before do
-      update_issuable(update_task: { index: 1, checked: true, line_source: '- [ ] Task 1', line_number: 1 })
+      update_issuable(update_task: { checked: true, line_source: '- [ ] Task 1', line_sourcepos: '1:4-1:4' })
     end
 
     it 'creates system note about task status change' do
@@ -70,7 +69,7 @@ RSpec.shared_examples 'updating a single task' do
   context 'when a task is marked as incomplete' do
     before do
       update_issuable(description: "- [x] Task 1\n- [X] Task 2")
-      update_issuable(update_task: { index: 2, checked: false, line_source: '- [X] Task 2', line_number: 2 })
+      update_issuable(update_task: { checked: false, line_source: '- [X] Task 2', line_sourcepos: '2:4-2:4' })
     end
 
     it 'creates system note about task status change' do
@@ -91,7 +90,7 @@ RSpec.shared_examples 'updating a single task' do
     it 'raises an exception' do
       expect(Note.count).to eq(2)
       expect do
-        update_issuable(update_task: { index: 2, checked: true, line_source: '- [ ] Task 2', line_number: 2 })
+        update_issuable(update_task: { checked: true, line_source: '- [ ] Task 2', line_sourcepos: '2:4-2:4' })
       end.to raise_error(ActiveRecord::StaleObjectError)
       expect(Note.count).to eq(2)
     end
@@ -101,7 +100,7 @@ RSpec.shared_examples 'updating a single task' do
     before do
       update_issuable(description: "Paragraph\n\n- [ ] Task 1\n- [x] Task 2")
       update_issuable(description: "Paragraph with more words\n\n- [ ] Task 1\n- [x] Task 2")
-      update_issuable(update_task: { index: 2, checked: false, line_source: '- [x] Task 2', line_number: 4 })
+      update_issuable(update_task: { checked: false, line_source: '- [x] Task 2', line_sourcepos: '4:4-4:4' })
     end
 
     it 'creates system note about task status change' do

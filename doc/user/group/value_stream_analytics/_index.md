@@ -420,12 +420,9 @@ To view the median time spent in each stage by a group:
       - In the **To** field, select an end date.
 1. To view the metrics for each stage, above the **Filter results** text box, hover over a stage.
 
-{{< alert type="note" >}}
-
-The date range selector filters items by the event time. The event time is when the
-selected stage finished for the given item.
-
-{{< /alert >}}
+> [!note]
+> The date range selector filters items by the event time. The event time is when the
+> selected stage finished for the given item.
 
 ## View tasks by type
 
@@ -683,12 +680,9 @@ group(fullPath: "your-group-path") {
 
 Depending how you want to consume the data, you can request metrics for one specific stage or all stages in your value stream.
 
-{{< alert type="note" >}}
-
-Requesting metrics for all stages might be too slow for some installations.
-The recommended approach is to request metrics stage by stage.
-
-{{< /alert >}}
+> [!note]
+> Requesting metrics for all stages might be too slow for some installations.
+> The recommended approach is to request metrics stage by stage.
 
 Requesting metrics for the stage:
 
@@ -719,12 +713,9 @@ group(fullPath: "your-group-path") {
 }
 ```
 
-{{< alert type="note" >}}
-
-You should always request metrics with a given time frame.
-The longest supported time frame is 180 days.
-
-{{< /alert >}}
+> [!note]
+> You should always request metrics with a given time frame.
+> The longest supported time frame is 180 days.
 
 The `metrics` node supports additional filtering options:
 

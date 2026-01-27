@@ -222,12 +222,9 @@ your group.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-Disabling the **Allow users to request access** setting prevents new access requests.
-Existing pending requests are not removed and can still be approved or denied.
-
-{{< /alert >}}
+> [!note]
+> Disabling the **Allow users to request access** setting prevents new access requests.
+> Existing pending requests are not removed and can still be approved or denied.
 
 ## Prevent project forking outside group
 
@@ -241,12 +238,9 @@ Existing pending requests are not removed and can still be approved or denied.
 By default, projects in a group can be forked.
 However, you can prevent the projects in a group from being forked outside of the current top-level group.
 
-{{< alert type="note" >}}
-
-Prevent forking outside the top-level group when possible to reduce potential avenues for bad actors.
-However, if you expect a lot of external collaboration, allowing forks outside the top-level group might be unavoidable.
-
-{{< /alert >}}
+> [!note]
+> Prevent forking outside the top-level group when possible to reduce potential avenues for bad actors.
+> However, if you expect a lot of external collaboration, allowing forks outside the top-level group might be unavoidable.
 
 Prerequisites:
 

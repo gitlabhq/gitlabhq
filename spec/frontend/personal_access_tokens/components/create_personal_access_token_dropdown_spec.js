@@ -9,6 +9,7 @@ describe('CreatePersonalAccessTokenDropdown', () => {
     wrapper = shallowMountExtended(CreatePersonalAccessTokenDropdown, {
       provide: {
         accessTokenGranularNewUrl: '/granular/new',
+        accessTokenLegacyNewUrl: '/legacy/new',
       },
     });
   };
@@ -59,13 +60,17 @@ describe('CreatePersonalAccessTokenDropdown', () => {
 
   describe('legacy token option', () => {
     it('displays the correct title', () => {
-      expect(findLegacyTokenOption().text).toContain('Broad-access token');
+      expect(findLegacyTokenOption().text).toContain('Legacy token');
     });
 
     it('displays the correct description', () => {
       expect(findLegacyTokenOption().description).toContain(
         'Scoped to all groups and projects with broad permissions to resources.',
       );
+    });
+
+    it('displays the correct link', () => {
+      expect(findLegacyTokenOption().href).toBe('/legacy/new');
     });
   });
 });

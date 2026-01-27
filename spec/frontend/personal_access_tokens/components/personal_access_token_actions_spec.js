@@ -231,6 +231,15 @@ describe('PersonalAccessTokenActions', () => {
       expect(wrapper.emitted('close')).toHaveLength(1);
     });
 
+    it('refetches tokens list after successful rotation', async () => {
+      mockTokensHandler.mockClear();
+
+      await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+      await waitForPromises();
+
+      expect(mockTokensHandler).toHaveBeenCalledTimes(1);
+    });
+
     it('displays an error alert and closes modal on error', async () => {
       const mutationError = jest.fn().mockRejectedValue(new Error('Error'));
 

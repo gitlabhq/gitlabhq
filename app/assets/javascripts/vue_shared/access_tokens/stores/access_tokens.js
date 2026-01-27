@@ -46,6 +46,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       page: 1,
       perPage: null,
       showCreateForm: false,
+      showCreateFormInline: true,
       token: null, // New and rotated token
       tokens: [],
       total: 0,
@@ -79,10 +80,15 @@ export const useAccessTokens = defineStore('accessTokens', {
           scopes,
         });
         this.token = data.token;
+
         this.showCreateForm = false;
-        // Reset pagination because after creation the token may appear on a different page.
-        this.page = 1;
-        await this.fetchTokens({ clearAlert: false });
+
+        // The parent component will refetch tokens if showCreateFormInline = false
+        if (this.showCreateFormInline) {
+          // Reset pagination because after creation the token may appear on a different page.
+          this.page = 1;
+          await this.fetchTokens({ clearAlert: false });
+        }
       } catch (error) {
         const message = this.formatErrors(
           error?.response?.data,
@@ -252,6 +258,12 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.showCreateForm = value;
     },
     /**
+     * @param {boolean} value
+     */
+    setShowCreateFormInline(value) {
+      this.showCreateFormInline = value;
+    },
+    /**
      * @param {string} token
      */
     setToken(token) {
@@ -280,6 +292,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       id,
       page,
       showCreateForm,
+      showCreateFormInline,
       sorting,
       urlCreate,
       urlRevoke,
@@ -290,6 +303,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.id = id;
       this.page = page;
       this.showCreateForm = showCreateForm;
+      this.showCreateFormInline = showCreateFormInline;
       this.sorting = sorting;
       this.token = null;
       this.urlCreate = urlCreate;

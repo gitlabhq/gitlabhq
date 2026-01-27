@@ -203,12 +203,9 @@ However, the query matches all possible variations of the string (for example, `
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by feature flags.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
 
 As you type in the search box, autocomplete suggestions are displayed for:
 

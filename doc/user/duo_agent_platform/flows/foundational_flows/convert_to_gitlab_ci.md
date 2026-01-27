@@ -23,12 +23,9 @@ This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
 

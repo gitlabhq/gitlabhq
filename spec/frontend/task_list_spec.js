@@ -1,11 +1,10 @@
-import $ from 'jquery';
+import { TEST_HOST } from 'spec/test_constants';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import TaskList from '~/task_list';
 
 describe('TaskList', () => {
   let taskList;
-  let currentTarget;
   const taskListOptions = {
     selector: '.task-list',
     dataType: 'issue',
@@ -16,25 +15,26 @@ describe('TaskList', () => {
 
   beforeEach(() => {
     setHTMLFixture(`
-      <div class="task-list">
-        <div class="js-task-list-container">
-          <ul data-sourcepos="5:1-5:11" class="task-list" dir="auto">
-            <li data-sourcepos="5:1-5:11" class="task-list-item enabled">
-              <input type="checkbox" class="task-list-item-checkbox" checked=""> markdown task
-            </li>
-          </ul>
+      <form class="js-issuable-update" action="/test/update">
+        <div class="task-list">
+          <div class="js-task-list-container">
+            <ul data-sourcepos="1:1-1:19" class="task-list" dir="auto">
+              <li data-sourcepos="1:1-1:19" class="task-list-item enabled">
+                <input type="checkbox" class="task-list-item-checkbox" data-checkbox-sourcepos="1:4-1:4"> markdown task
+              </li>
+            </ul>
 
-          <ul class="task-list" dir="auto">
-            <li class="task-list-item enabled">
-              <input type="checkbox" class="task-list-item-checkbox"> hand-coded checkbox
-            </li>
-          </ul>
-          <textarea class="hidden js-task-list-field"></textarea>
+            <ul class="task-list" dir="auto">
+              <li class="task-list-item enabled">
+                <input type="checkbox" class="task-list-item-checkbox"> hand-coded checkbox
+              </li>
+            </ul>
+            <textarea class="hidden js-task-list-field" data-value="* [ ] markdown task"></textarea>
+          </div>
         </div>
-      </div>
+      </form>
     `);
 
-    currentTarget = $('<div></div>');
     taskList = createTaskList();
   });
 
@@ -45,33 +45,29 @@ describe('TaskList', () => {
   it('should call init when the class constructed', () => {
     jest.spyOn(TaskList.prototype, 'init');
     jest.spyOn(TaskList.prototype, 'disable').mockImplementation(() => {});
-    jest.spyOn($.prototype, 'taskList').mockImplementation(() => {});
-    jest.spyOn($.prototype, 'on').mockImplementation(() => {});
+    jest.spyOn(TaskList.prototype, 'enable').mockImplementation(() => {});
 
     taskList = createTaskList();
-    const $taskListEl = $(taskList.taskListContainerSelector);
 
     expect(taskList.init).toHaveBeenCalled();
     expect(taskList.disable).toHaveBeenCalled();
-    expect($taskListEl.taskList).toHaveBeenCalledWith('enable');
-    expect($(document).on).toHaveBeenCalledWith(
-      'tasklist:changed',
-      taskList.taskListContainerSelector,
-      taskList.updateHandler,
-    );
+    expect(taskList.enable).toHaveBeenCalled();
   });
 
-  describe('getTaskListTarget', () => {
-    it('should return currentTarget from event object if exists', () => {
-      const $target = taskList.getTaskListTarget({ currentTarget });
+  describe('getTaskListTargets', () => {
+    it('should return the container holding the input if given', () => {
+      const container = document.querySelector(taskList.taskListContainerSelector);
+      const field = document.querySelector('.js-task-list-field');
 
-      expect($target).toEqual(currentTarget);
+      const targets = taskList.getTaskListTargets(field);
+      expect(targets).toEqual([container]);
     });
 
-    it('should return element of the taskListContainerSelector', () => {
-      const $target = taskList.getTaskListTarget();
+    it('should return all task list containers if no input given', () => {
+      const targets = taskList.getTaskListTargets();
 
-      expect($target).toEqual($(taskList.taskListContainerSelector));
+      expect(targets).toHaveLength(1);
+      expect(targets[0]).toEqual(document.querySelector(taskList.taskListContainerSelector));
     });
   });
 
@@ -94,34 +90,27 @@ describe('TaskList', () => {
   });
 
   describe('enable', () => {
-    it('should enable task list items and on document event', () => {
-      jest.spyOn($.prototype, 'on').mockImplementation(() => {});
+    it('should enable task list items and add change event listener', () => {
+      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
 
       taskList.enable();
 
       expect(document.querySelectorAll('.task-list-item input:enabled')).toHaveLength(1);
       expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(1);
 
-      expect($(document).on).toHaveBeenCalledWith(
-        'tasklist:changed',
-        taskList.taskListContainerSelector,
-        taskList.updateHandler,
-      );
+      expect(addEventListenerSpy).toHaveBeenCalledWith('change', taskList.updateHandler);
     });
   });
 
   describe('disable', () => {
-    it('should disable task list items and off document event', () => {
-      jest.spyOn($.prototype, 'off').mockImplementation(() => {});
+    it('should disable task list items and remove change event listener', () => {
+      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
 
       taskList.disable();
 
       expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(2);
 
-      expect($(document).off).toHaveBeenCalledWith(
-        'tasklist:changed',
-        taskList.taskListContainerSelector,
-      );
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('change', taskList.updateHandler);
     });
   });
 
@@ -139,38 +128,34 @@ describe('TaskList', () => {
     };
 
     const performTest = (options) => {
-      const value = 'hello world';
-      const endpoint = '/foo';
-      const target = $(`<input data-update-url="${endpoint}" value="${value}" />`);
-      const detail = {
-        index: 2,
-        checked: true,
-        lineNumber: 8,
-        lineSource: '- [ ] check item',
-      };
-      const event = { target, detail };
+      const value = '* [x] markdown task';
+      const endpoint = `${TEST_HOST}/test/update`;
       const dataType = options.dataType === 'incident' ? 'issue' : options.dataType;
       const patchData = {
         [dataType]: {
           [options.fieldName]: value,
           lock_version: options.lockVersion,
           update_task: {
-            index: detail.index,
-            checked: detail.checked,
-            line_number: detail.lineNumber,
-            line_source: detail.lineSource,
+            checked: true,
+            line_source: '* [ ] markdown task',
+            line_sourcepos: '1:4-1:4',
           },
         },
       };
 
+      const container = document.querySelector(taskList.taskListContainerSelector);
+      const checkbox = container.querySelector('.task-list-item-checkbox');
+      checkbox.checked = true;
+
+      const event = { target: checkbox };
       const update = taskList.update(event);
 
       expect(taskList.onUpdate).toHaveBeenCalled();
 
       return update.then(() => {
-        expect(taskList.disableTaskListItems).toHaveBeenCalledWith(event);
+        expect(taskList.disableTaskListItems).toHaveBeenCalledWith(checkbox);
         expect(axios.patch).toHaveBeenCalledWith(endpoint, patchData);
-        expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
+        expect(taskList.enableTaskListItems).toHaveBeenCalledWith(checkbox);
         expect(taskList.onSuccess).toHaveBeenCalledWith({ lock_version: 3 });
         expect(taskList.lockVersion).toEqual(3);
       });
@@ -218,14 +203,17 @@ describe('TaskList', () => {
     jest.spyOn(taskList, 'onError').mockImplementation(() => {});
     jest.spyOn(axios, 'patch').mockReturnValue(Promise.reject({ response })); // eslint-disable-line prefer-promise-reject-errors
 
-    const event = { detail: {} };
+    const container = document.querySelector(taskList.taskListContainerSelector);
+    const checkbox = container.querySelector('.task-list-item-checkbox');
+    checkbox.checked = true;
 
+    const event = { target: checkbox };
     const update = taskList.update(event);
 
     expect(taskList.onUpdate).toHaveBeenCalled();
 
     return update.then(() => {
-      expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
+      expect(taskList.enableTaskListItems).toHaveBeenCalledWith(checkbox);
       expect(taskList.onError).toHaveBeenCalledWith(response.data);
     });
   });

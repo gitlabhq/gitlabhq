@@ -1,9 +1,8 @@
-import $ from 'jquery';
-import 'deckar01-task_list';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import axios from './lib/utils/axios_utils';
+import { toggleCheckbox } from './behaviors/markdown/utils';
 
 export default class TaskList {
   constructor(options = {}) {
@@ -47,79 +46,101 @@ export default class TaskList {
     this.enable();
   }
 
-  getTaskListTarget(e) {
-    return e && e.currentTarget ? $(e.currentTarget) : $(this.taskListContainerSelector);
+  getTaskListTargets(inputElement) {
+    if (!inputElement) return Array.from(document.querySelectorAll(this.taskListContainerSelector));
+    return [inputElement.closest(this.taskListContainerSelector)];
   }
 
-  // Disable any task items that don't have a data-sourcepos attribute, on the
-  // assumption that if it doesn't then it wasn't generated from our markdown parser.
-  // This covers the case of markdown not being able to handle task lists inside
-  // markdown tables. It also includes hand coded HTML lists.
-  disableNonMarkdownTaskListItems(e) {
-    this.getTaskListTarget(e)
-      .find('.task-list-item')
-      .not('[data-sourcepos]')
-      .find('.task-list-item-checkbox')
-      .prop('disabled', true);
+  disableTaskListItems(inputElement) {
+    this.getTaskListTargets(inputElement).forEach((taskListContainer) => {
+      taskListContainer.querySelectorAll('.task-list-item').forEach((taskListItem) => {
+        taskListItem.classList.remove('enabled');
+      });
+      taskListContainer
+        .querySelectorAll('.task-list-item-checkbox')
+        .forEach((taskListItemCheckbox) => {
+          // eslint-disable-next-line no-param-reassign
+          taskListItemCheckbox.disabled = true;
+        });
+    });
   }
 
-  updateInapplicableTaskListItems(e) {
-    this.getTaskListTarget(e)
-      .find('.task-list-item-checkbox[data-inapplicable]')
-      .prop('disabled', true);
-  }
+  enableTaskListItems(inputElement) {
+    this.getTaskListTargets(inputElement).forEach((taskListContainer) => {
+      // Ensure there is a corresponding textarea field before enabling.
+      if (!taskListContainer.querySelector('.js-task-list-field')) return;
 
-  disableTaskListItems(e) {
-    this.getTaskListTarget(e).taskList('disable');
-    this.updateInapplicableTaskListItems();
-  }
-
-  enableTaskListItems(e) {
-    this.getTaskListTarget(e).taskList('enable');
-    this.disableNonMarkdownTaskListItems(e);
-    this.updateInapplicableTaskListItems(e);
+      taskListContainer.querySelectorAll('.task-list-item').forEach((taskListItem) => {
+        taskListItem.classList.add('enabled');
+      });
+      taskListContainer
+        .querySelectorAll(
+          `.task-list-item[data-sourcepos] .task-list-item-checkbox:not([data-inapplicable]),
+         .task-list-item-checkbox[data-checkbox-sourcepos]:not([data-inapplicable])`,
+        )
+        .forEach((taskListItemCheckbox) => {
+          // eslint-disable-next-line no-param-reassign
+          taskListItemCheckbox.disabled = false;
+        });
+    });
   }
 
   enable() {
     this.enableTaskListItems();
-    $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
+    document.addEventListener('change', this.updateHandler);
   }
 
   disable() {
     this.disableTaskListItems();
-    $(document).off('tasklist:changed', this.taskListContainerSelector);
+    document.removeEventListener('change', this.updateHandler);
   }
 
   update(e) {
-    const $target = $(e.target);
-    const { index, checked, lineNumber, lineSource } = e.detail;
+    const container = e.target.closest(this.taskListContainerSelector);
+    if (!container) return null;
+
+    if (!e.target.classList.contains('task-list-item-checkbox')) return null;
+
+    const { checked } = e.target;
+
+    const field = container.querySelector('.js-task-list-field');
+    const replacement = toggleCheckbox({
+      rawMarkdown: field.value,
+      checkboxChecked: checked,
+      target: e.target,
+    });
+
+    field.value = replacement.newMarkdown;
+
     const patchData = {};
 
     const dataType = this.dataType === TYPE_INCIDENT ? TYPE_ISSUE : this.dataType;
     patchData[dataType] = {
-      [this.fieldName]: $target.val(),
+      [this.fieldName]: field.value,
       lock_version: this.lockVersion,
       update_task: {
-        index,
         checked,
-        line_number: lineNumber,
-        line_source: lineSource,
+        line_source: replacement.oldLine,
+        line_sourcepos: replacement.sourcepos,
       },
     };
 
     this.onUpdate();
-    this.disableTaskListItems(e);
+    this.disableTaskListItems(e.target);
 
     return axios
-      .patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
+      .patch(
+        field.dataset.updateUrl || document.querySelector('form.js-issuable-update').action,
+        patchData,
+      )
       .then(({ data }) => {
         this.lockVersion = data.lock_version;
-        this.enableTaskListItems(e);
+        this.enableTaskListItems(e.target);
 
         return this.onSuccess(data);
       })
       .catch(({ response }) => {
-        this.enableTaskListItems(e);
+        this.enableTaskListItems(e.target);
 
         return this.onError(response.data);
       });

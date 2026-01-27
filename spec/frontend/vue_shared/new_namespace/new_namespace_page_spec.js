@@ -6,8 +6,6 @@ import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_contai
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
-import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
-import { sidebarState } from '~/super_sidebar/constants';
 
 jest.mock('~/super_sidebar/constants');
 describe('Experimental new namespace creation app', () => {
@@ -18,7 +16,6 @@ describe('Experimental new namespace creation app', () => {
   const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
   const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
-  const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
 
@@ -114,26 +111,6 @@ describe('Experimental new namespace creation app', () => {
     await nextTick();
     expect(findWelcomePage().exists()).toBe(false);
     expect(findLegacyContainer().exists()).toBe(true);
-  });
-
-  describe('SuperSidebarToggle', () => {
-    describe('when collapsed', () => {
-      it('shows sidebar toggle', () => {
-        sidebarState.isCollapsed = true;
-        createComponent();
-
-        expect(findSuperSidebarToggle().exists()).toBe(true);
-      });
-    });
-
-    describe('when not collapsed', () => {
-      it('does not show sidebar toggle', () => {
-        sidebarState.isCollapsed = false;
-        createComponent();
-
-        expect(findSuperSidebarToggle().exists()).toBe(false);
-      });
-    });
   });
 
   describe('top level group alert', () => {

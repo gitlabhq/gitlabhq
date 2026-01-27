@@ -375,7 +375,7 @@ class Projects::IssuesController < Projects::ApplicationController
       lock_version
       discussion_locked
       issue_type
-    ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
+    ] + [{ label_ids: [], assignee_ids: [], update_task: [:checked, :line_source, :line_sourcepos] }]
   end
 
   def reorder_params

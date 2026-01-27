@@ -2,7 +2,7 @@ import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import CreatedPersonalAccessToken from '~/personal_access_tokens/components/create_granular_token/created_personal_access_token.vue';
+import CreatedPersonalAccessToken from '~/personal_access_tokens/components/created_personal_access_token.vue';
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
 
 describe('CreatedPersonalAccessToken', () => {

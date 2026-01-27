@@ -339,12 +339,9 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When [restricted access](../manage.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
 
@@ -439,12 +436,9 @@ Alternatively, ask the users to reconnect their SAML account.
 1. Ask relevant users to [unlink their account from the group](#unlink-accounts).
 1. Ask relevant users to [link their account to the new SAML app](#link-saml-to-your-existing-gitlabcom-account).
 
-{{< alert type="warning" >}}
-
-After users have signed into GitLab using SSO SAML, changing the **NameID** value
-breaks the configuration and could lock users out of the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> After users have signed into GitLab using SSO SAML, changing the **NameID** value
+> breaks the configuration and could lock users out of the GitLab group.
 
 For more information on the recommended value and format for specific identity
 providers, see [set up your identity provider](#set-up-your-identity-provider).
@@ -587,12 +581,9 @@ Users can unlink SAML for a group from their profile page. This can be helpful i
 - You no longer want a group to be able to sign you in to GitLab.com.
 - Your SAML **NameID** has changed and so GitLab can no longer find your user.
 
-{{< alert type="warning" >}}
-
-Unlinking an account removes all roles assigned to that user in the group.
-If a user re-links their account, roles need to be reassigned.
-
-{{< /alert >}}
+> [!warning]
+> Unlinking an account removes all roles assigned to that user in the group.
+> If a user re-links their account, roles need to be reassigned.
 
 Groups require at least one owner. If your account is the only owner in the
 group, you are not allowed to unlink the account. In that case, set up another user as a

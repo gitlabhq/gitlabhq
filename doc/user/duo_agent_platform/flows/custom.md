@@ -28,12 +28,9 @@ title: Custom flows
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Custom flows are AI-powered workflows you create and configure to
 automate complex, multi-step tasks across your GitLab projects.
@@ -237,9 +234,6 @@ When you enable a flow in a group, a related service account is automatically cr
 - Is added as a member to any project under the top-level group that enables the flow, so the flow can't access resources outside that group.
 - Is granted access to any additional groups that are shared with the top-level group. The service account is treated like any other group member for group sharing.
 
-{{< alert type="note" >}}
-
-Sharing flow service accounts across multiple top-level groups can create unintended access
-permissions and security risks.
-
-{{< /alert >}}
+> [!note]
+> Sharing flow service accounts across multiple top-level groups can create unintended access
+> permissions and security risks.

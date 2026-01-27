@@ -45,12 +45,9 @@ Share your feedback in the [embedded views, powered by GLQL, feedback issue](htt
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GLQL uses Advanced Search when available to speed up queries. Advanced Search
 provides faster response times for complex queries across large datasets.

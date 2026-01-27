@@ -57,7 +57,9 @@ module AccessTokensHelper
         description: token[:description],
         scopes: token[:scopes].to_json,
         create: user_settings_personal_access_tokens_url,
+        table_url: user_settings_personal_access_tokens_url,
         granular_new: granular_new_user_settings_personal_access_tokens_url,
+        legacy_new: legacy_new_user_settings_personal_access_tokens_url,
         revoke: expose_url(api_v4_personal_access_tokens_path),
         rotate: expose_url(api_v4_personal_access_tokens_path),
         show: "#{expose_url(api_v4_personal_access_tokens_path)}?user_id=:id"

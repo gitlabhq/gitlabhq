@@ -79,6 +79,7 @@ export default {
       ...initializeValuesFromQuery(),
       id: this.id,
       showCreateForm: Boolean(this.tokenName || this.tokenDescription || this.tokenScopes.length),
+      showCreateFormInline: true,
       urlCreate: this.accessTokenCreate,
       urlRevoke: this.accessTokenRevoke,
       urlRotate: this.accessTokenRotate,

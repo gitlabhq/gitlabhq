@@ -10,11 +10,11 @@ import {
   MAX_DESCRIPTION_LENGTH,
   ACCESS_USER_ENUM,
 } from '~/personal_access_tokens/constants';
+import CreatedPersonalAccessToken from '../created_personal_access_token.vue';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from './personal_access_token_namespace_selector.vue';
 import PersonalAccessTokenPermissionsSelector from './personal_access_token_permissions_selector.vue';
-import CreatedPersonalAccessToken from './created_personal_access_token.vue';
 
 export default {
   name: 'CreateGranularPersonalAccessTokenForm',
@@ -266,12 +266,12 @@ export default {
         </section>
 
         <section class="gl-mt-6">
-          <gl-button :href="accessTokenTableUrl">
-            {{ $options.i18n.cancelButton }}
-          </gl-button>
-
           <gl-button variant="confirm" :loading="isSubmitting" @click="createGranularToken">
             {{ $options.i18n.createButton }}
+          </gl-button>
+
+          <gl-button :href="accessTokenTableUrl">
+            {{ $options.i18n.cancelButton }}
           </gl-button>
         </section>
       </gl-form>

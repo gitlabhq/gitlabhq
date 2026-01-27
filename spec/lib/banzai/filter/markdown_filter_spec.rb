@@ -26,9 +26,13 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :markdown do
 
   describe 'parse_sourcepos' do
     where(:sourcepos, :expected) do
-      '1:1-1:4'     | { start: { row: 0, col: 0 }, end: { row: 0, col: 3 } }
-      '12:22-1:456' | { start: { row: 11, col: 21 }, end: { row: 0, col: 455 } }
-      '0:0-0:0'     | { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } }
+      '1:1-1:4'     | { start: { line: 0, column: 0 }, end: { line: 0, column: 3 } }
+      '12:22-1:456' | { start: { line: 11, column: 21 }, end: { line: 0, column: 455 } }
+      '0:0-0:0'     | { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } }
+      nil           | nil
+      '1-2:3'       | nil
+      '1:2'         | nil
+      '1:2-3'       | nil
       '-1:2-3:-4'   | nil
     end
 

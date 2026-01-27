@@ -325,12 +325,9 @@ that belong to the group.
 In GitLab 17.4 and later, follow these instructions to turn on GitLab Duo
 experiment and beta features for your GitLab Self-Managed instance.
 
-{{< alert type="note" >}}
-
-In GitLab 17.4 to 17.6, the GitLab Duo settings page is available for Self-Managed instances.
-Beginning with GitLab 17.7, the settings page includes more configuration options.
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.4 to 17.6, the GitLab Duo settings page is available for Self-Managed instances.
+> Beginning with GitLab 17.7, the settings page includes more configuration options.
 
 Prerequisites:
 

@@ -26,12 +26,9 @@ title: External agents
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab Duo agents work in parallel to help you create code, research results,
 and perform tasks simultaneously.
@@ -222,12 +219,9 @@ If you'd prefer, you can [create an external agent manually](#create-an-external
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Start by creating the external agent in the AI Catalog.
 
@@ -328,12 +322,9 @@ Prerequisites:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 If you prefer to not follow the UI flow, you can create an external agent manually:
 

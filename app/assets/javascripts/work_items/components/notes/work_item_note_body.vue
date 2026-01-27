@@ -76,19 +76,17 @@ export default {
         return;
       }
 
-      const { sourcepos } = target.parentElement.dataset;
-
-      if (!sourcepos) {
-        return;
-      }
-
-      const commentText = toggleCheckbox({
+      const replacement = toggleCheckbox({
         rawMarkdown: this.note.body,
         checkboxChecked: target.checked,
-        sourcepos,
+        target,
       });
+      if (!replacement) return;
 
-      this.$emit('updateNote', { commentText, executeOptimisticResponse: false });
+      this.$emit('updateNote', {
+        commentText: replacement.newMarkdown,
+        executeOptimisticResponse: false,
+      });
     },
   },
   safeHtmlConfig: {

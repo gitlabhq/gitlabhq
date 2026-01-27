@@ -57,7 +57,8 @@ module Banzai
         end
 
         # Gets the HTML corresponding to the task list item text, given the <input> checkbox that declares it.
-        # This should be used for task list item matching **only**.
+        # This should be used for task list item matching **only**; see Taskable.get_tasks. We never return
+        # this to the user.
         def text_html_for_task_item_from_input(input)
           html_content = +''
           yield_next_siblings_until(input, %w[ol ul]) do |el|

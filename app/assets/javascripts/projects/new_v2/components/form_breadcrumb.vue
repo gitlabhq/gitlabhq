@@ -1,13 +1,10 @@
 <script>
 import { GlBreadcrumb } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
-import { JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 
 export default {
   components: {
     GlBreadcrumb,
-    SuperSidebarToggle,
   },
   inject: ['rootPath', 'projectsUrl', 'parentGroupUrl', 'parentGroupName'],
   props: {
@@ -37,14 +34,12 @@ export default {
       return breadcrumbs;
     },
   },
-  JS_TOGGLE_EXPAND_CLASS,
 };
 </script>
 
 <template>
   <div class="top-bar-fixed container-fluid" data-testid="top-bar">
     <div class="top-bar-container gl-border-b gl-flex gl-items-center gl-gap-2">
-      <super-sidebar-toggle :class="$options.JS_TOGGLE_EXPAND_CLASS" class="@xl/panel:gl-hidden" />
       <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
     </div>
   </div>

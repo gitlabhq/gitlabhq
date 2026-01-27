@@ -12,7 +12,7 @@ import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/componen
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_namespace_selector.vue';
 import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
-import CreatedPersonalAccessToken from '~/personal_access_tokens/components/create_granular_token/created_personal_access_token.vue';
+import CreatedPersonalAccessToken from '~/personal_access_tokens/components/created_personal_access_token.vue';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
 import { MAX_DESCRIPTION_LENGTH } from '~/personal_access_tokens/constants';
 import { mockCreateMutationResponse, mockCreateMutationInput } from '../../mock_data';
@@ -43,20 +43,25 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findPageHeading = () => wrapper.findComponent(PageHeading);
+
   const findNameFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(0);
   const findDescriptionFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(1);
   const findNameInput = () => wrapper.findComponent(GlFormInput);
   const findDescriptionTextarea = () => wrapper.findComponent(GlFormTextarea);
   const findExpirationDateComponent = () =>
     wrapper.findComponent(PersonalAccessTokenExpirationDate);
+
   const findScopeSelectorComponent = () => wrapper.findComponent(PersonalAccessTokenScopeSelector);
   const findNamespaceSelector = () => wrapper.findComponent(PersonalAccessTokenNamespaceSelector);
+
   const findPermissionsSelectors = () =>
     wrapper.findAllComponents(PersonalAccessTokenPermissionsSelector);
   const findGroupPermissionsSelector = () => findPermissionsSelectors().at(0);
   const findUserPermissionsSelector = () => findPermissionsSelectors().at(1);
-  const findCancelButton = () => wrapper.findAllComponents(GlButton).at(0);
-  const findCreateButton = () => wrapper.findAllComponents(GlButton).at(1);
+
+  const findCreateButton = () => wrapper.findAllComponents(GlButton).at(0);
+  const findCancelButton = () => wrapper.findAllComponents(GlButton).at(1);
+
   const findCreatedToken = () => wrapper.findComponent(CreatedPersonalAccessToken);
 
   const fillFormWithValidData = async (

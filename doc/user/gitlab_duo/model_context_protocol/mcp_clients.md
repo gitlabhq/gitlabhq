@@ -155,12 +155,9 @@ Both configuration files use the same JSON format, with the details in the `mcpS
 }
 ```
 
-{{< alert type="note" >}}
-
-For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
-For GitLab, use `mcpServers` instead.
-
-{{< /alert >}}
+> [!note]
+> For other MCP clients, the Atlassian documentation uses `mcp.servers` in the sample configuration file.
+> For GitLab, use `mcpServers` instead.
 
 ### Configure tool approval
 

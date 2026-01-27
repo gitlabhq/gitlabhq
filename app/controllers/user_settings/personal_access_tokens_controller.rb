@@ -47,6 +47,10 @@ module UserSettings
       render_404 unless Feature.enabled?(:granular_personal_access_tokens, current_user)
     end
 
+    def legacy_new
+      render_404 unless Feature.enabled?(:granular_personal_access_tokens, current_user)
+    end
+
     def create
       result = ::PersonalAccessTokens::CreateService.new(
         current_user: current_user,

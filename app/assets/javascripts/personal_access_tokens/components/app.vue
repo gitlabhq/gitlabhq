@@ -6,6 +6,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { fetchPolicies } from '~/lib/graphql';
 import getUserPersonalAccessTokens from '../graphql/get_user_personal_access_tokens.query.graphql';
 import {
   DEFAULT_FILTER,
@@ -64,6 +65,7 @@ export default {
   apollo: {
     tokens: {
       query: getUserPersonalAccessTokens,
+      fetchPolicies: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return {
           id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
@@ -103,14 +105,10 @@ export default {
   methods: {
     handleFilter() {
       this.filterObject = convertFiltersToVariables(this.filter);
-
-      this.$apollo.queries.tokens.refetch();
     },
     handleFilterClear() {
       this.filter = [];
       this.filterObject = {};
-
-      this.$apollo.queries.tokens.refetch();
     },
     handleSortChange(value) {
       this.sort.value = value;
@@ -154,8 +152,6 @@ export default {
     handleStatisticsFilter(filter) {
       this.filter = filter;
       this.filterObject = convertFiltersToVariables(this.filter);
-
-      this.$apollo.queries.tokens.refetch();
     },
   },
   i18n: {

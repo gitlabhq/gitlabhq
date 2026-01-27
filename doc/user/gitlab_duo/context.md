@@ -43,12 +43,9 @@ When you have any of these resources open, GitLab Duo knows about them.
 - Epics (GitLab Duo Enterprise only)
 - [Other work item types](../work_items/_index.md#work-item-types) (GitLab Duo Enterprise only)
 
-{{< alert type="note" >}}
-
-In the IDEs, secrets and sensitive values that match known formats are redacted before
-they are sent to GitLab Duo Chat.
-
-{{< /alert >}}
+> [!note]
+> In the IDEs, secrets and sensitive values that match known formats are redacted before
+> they are sent to GitLab Duo Chat.
 
 In the UI, when you're in a merge request, GitLab Duo also knows about:
 
@@ -177,12 +174,9 @@ To change open files being used as context:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use the imported files in your IDE to provide context about your code project. Imported file context is supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 

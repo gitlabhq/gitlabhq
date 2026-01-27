@@ -23,6 +23,7 @@ namespace :user_settings do
 
     collection do
       get 'granular/new', to: 'personal_access_tokens#granular_new'
+      get 'legacy/new', to: 'personal_access_tokens#legacy_new'
     end
   end
 

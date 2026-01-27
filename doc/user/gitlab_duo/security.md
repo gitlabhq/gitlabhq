@@ -13,12 +13,9 @@ title: GitLab Duo authentication and authorization
 
 GitLab Duo with Amazon Q uses a composite identity to authenticate requests.
 
-{{< alert type="note" >}}
-
-Support for a composite identity in other areas of the product
-is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
-
-{{< /alert >}}
+> [!note]
+> Support for a composite identity in other areas of the product
+> is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
 
 The token that authenticates requests is a composite of two identities:
 

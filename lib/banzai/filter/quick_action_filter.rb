@@ -18,7 +18,7 @@ module Banzai
           sourcepos = ::Banzai::Filter::MarkdownFilter.parse_sourcepos(node.attributes['data-sourcepos'].value)
 
           result[:quick_action_paragraphs] <<
-            { start_line: sourcepos[:start][:row], end_line: sourcepos[:end][:row] }
+            { start_line: sourcepos[:start][:line], end_line: sourcepos[:end][:line] }
         end
 
         doc

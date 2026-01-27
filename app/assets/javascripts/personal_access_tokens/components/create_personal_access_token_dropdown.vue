@@ -3,12 +3,12 @@ import { GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 
 export default {
-  name: 'PersonalAccessTokenCreateDropdown',
+  name: 'CreatePersonalAccessTokenDropdown',
   components: {
     GlDisclosureDropdown,
     GlBadge,
   },
-  inject: ['accessTokenGranularNewUrl'],
+  inject: ['accessTokenGranularNewUrl', 'accessTokenLegacyNewUrl'],
   props: {},
   computed: {
     dropdownItems() {
@@ -21,7 +21,7 @@ export default {
         },
         {
           text: this.$options.i18n.legacyToken,
-          href: '',
+          href: this.accessTokenLegacyNewUrl,
           description: this.$options.i18n.legacyTokenDescription,
         },
       ];
@@ -33,7 +33,7 @@ export default {
     fineGrainedTokenDescription: s__(
       'AccessTokens|Limit scope to specific groups and projects and fine-grained permissions to resources.',
     ),
-    legacyToken: s__('AccessTokens|Broad-access token'),
+    legacyToken: s__('AccessTokens|Legacy token'),
     legacyTokenDescription: s__(
       'AccessTokens|Scoped to all groups and projects with broad permissions to resources.',
     ),

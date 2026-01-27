@@ -70,12 +70,9 @@ The SAML application created during [single sign-on](_index.md) set up for
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
-{{< alert type="note" >}}
-
-You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
-and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
-
-{{< /alert >}}
+> [!note]
+> You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
+> and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
 
 To configure Microsoft Entra ID for SCIM:
 
@@ -139,21 +136,15 @@ Under the **Settings** section:
 
 After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
-{{< alert type="warning" >}}
-
-Once synchronized, changing the field mapped to `id` and `externalId` may cause errors. These include
-provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
-
-{{< /alert >}}
+> [!warning]
+> Once synchronized, changing the field mapped to `id` and `externalId` may cause errors. These include
+> provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
 
 #### Configure attribute mappings
 
-{{< alert type="note" >}}
-
-While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
-your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
+> your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
 While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
 attribute mappings. For an example, see [example configuration](example_saml_config.md#scim-mapping).
@@ -244,12 +235,9 @@ During the synchronization process, all new users:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When [restricted access](../manage.md#restricted-access) is enabled and no subscription seats are available, users provisioned through SCIM are assigned the Minimal Access role.
 

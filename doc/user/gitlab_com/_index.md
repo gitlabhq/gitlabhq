@@ -336,12 +336,9 @@ Merge requests enforce these maximums:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab limits each merge request to 1000 [diff versions](../project/merge_requests/versions.md).
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -355,12 +352,9 @@ close the affected merge request and create a new merge request.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 GitLab limits each merge request to 1,000,000 (one million) diff commits.
 Merge requests that reach this limit cannot be updated further. Instead,
@@ -446,12 +440,9 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 
 ## Rate limits on GitLab.com
 
-{{< alert type="note" >}}
-
-See [Rate limits](../../security/rate_limits.md) for administrator
-documentation.
-
-{{< /alert >}}
+> [!note]
+> See [Rate limits](../../security/rate_limits.md) for administrator
+> documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There

@@ -2,15 +2,12 @@
 import { MountingPortal } from 'portal-vue';
 import { GlBreadcrumb, GlIcon, GlAlert } from '@gitlab/ui';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
-import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
-import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import { s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
 export default {
-  JS_TOGGLE_EXPAND_CLASS,
   components: {
     PageHeading,
     NewTopLevelGroupAlert,
@@ -19,7 +16,6 @@ export default {
     GlAlert,
     WelcomePage,
     LegacyContainer,
-    SuperSidebarToggle,
     MountingPortal,
   },
 
@@ -96,9 +92,6 @@ export default {
       return this.isSaas && this.activePanel.detailProps?.parentGroupName === '';
     },
 
-    showSuperSidebarToggle() {
-      return sidebarState.isCollapsed;
-    },
     isUsingPaneledView() {
       return gon.features?.projectStudioEnabled;
     },
@@ -168,11 +161,6 @@ export default {
           class="top-bar-container gl-flex gl-items-center gl-border-b-default gl-border-b-solid"
           :class="isUsingPaneledView ? 'gl-border-b-0' : 'gl-border-b-1'"
         >
-          <super-sidebar-toggle
-            v-if="showSuperSidebarToggle"
-            class="gl-mr-2"
-            :class="$options.JS_TOGGLE_EXPAND_CLASS"
-          />
           <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
         </div>
       </div>

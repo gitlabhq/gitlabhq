@@ -91,6 +91,7 @@ export default {
           variables: {
             id: this.token.id,
           },
+          refetchQueries: [getUserPersonalAccessTokens],
           update: (_, { data: { personalAccessTokenRotate } }) => {
             const { token, errors } = personalAccessTokenRotate;
 

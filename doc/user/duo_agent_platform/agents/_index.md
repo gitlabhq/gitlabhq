@@ -26,12 +26,9 @@ title: Agents
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Agents are AI-powered assistants that help you accomplish specific
 tasks and answer complex questions.

@@ -107,7 +107,7 @@ export default {
 
 <template>
   <div class="gl-mb-5">
-    <gl-loading-icon v-if="isLoading" size="lg" class="gl-my-5" />
+    <gl-loading-icon v-if="isLoading" size="md" class="gl-my-5" />
 
     <div v-else class="gl-my-5 gl-grid gl-gap-4 @sm/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-4">
       <gl-card v-for="statistic in statisticsCards" :key="statistic.title">

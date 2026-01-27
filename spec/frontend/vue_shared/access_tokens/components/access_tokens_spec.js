@@ -80,6 +80,7 @@ describe('AccessTokens', () => {
       id: 235,
       page: 1,
       showCreateForm: false,
+      showCreateFormInline: true,
       sorting: DEFAULT_SORT,
       urlCreate: 'http://localhost/api/v4/groups/1/service_accounts/:id/personal_access_tokens/',
       urlRevoke: 'http://localhost/api/v4/groups/2/service_accounts/:id/personal_access_tokens/',

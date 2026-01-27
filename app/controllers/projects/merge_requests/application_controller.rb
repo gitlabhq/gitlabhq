@@ -82,7 +82,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       { label_ids: [],
         assignee_ids: [],
         reviewer_ids: [],
-        update_task: [:index, :checked, :line_number, :line_source] }
+        update_task: [:checked, :line_source, :line_sourcepos] }
     ]
   end
 

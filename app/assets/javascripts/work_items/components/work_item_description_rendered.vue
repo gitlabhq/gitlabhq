@@ -353,17 +353,14 @@ export default {
       if (isCheckbox(target)) {
         target.disabled = true;
 
-        const { sourcepos } = target.parentElement.dataset;
-
-        if (!sourcepos) return;
-
-        const newDescriptionText = toggleCheckbox({
+        const replacement = toggleCheckbox({
           rawMarkdown: this.descriptionText,
-          sourcepos,
           checkboxChecked: target.checked,
+          target,
         });
+        if (!replacement) return;
 
-        this.$emit('descriptionUpdated', newDescriptionText);
+        this.$emit('descriptionUpdated', replacement.newMarkdown);
       }
     },
     truncateLongDescription() {

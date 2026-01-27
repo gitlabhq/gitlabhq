@@ -3,7 +3,7 @@ import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
+import { CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
   bindSuperSidebarCollapsedEvents,
@@ -11,7 +11,6 @@ import {
 } from './super_sidebar_collapsed_state_manager';
 import SuperSidebar from './components/super_sidebar.vue';
 import SuperTopbar from './components/super_topbar.vue';
-import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
 
 export { initPageBreadcrumbs } from './super_sidebar_breadcrumbs';
 
@@ -168,30 +167,6 @@ export const initSuperSidebar = ({
           sidebarData,
         },
       });
-    },
-  });
-};
-
-/**
- * Guard against multiple instantiations, since the js-* class is persisted
- * in the Vue component.
- */
-let toggleInstantiated = false;
-
-export const initSuperSidebarToggle = () => {
-  const el = document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`);
-
-  if (!el || toggleInstantiated) return false;
-
-  toggleInstantiated = true;
-
-  return new Vue({
-    el,
-    name: 'SuperSidebarToggleRoot',
-    render(h) {
-      // Copy classes from HAML-defined button to ensure same positioning,
-      // including JS_TOGGLE_EXPAND_CLASS.
-      return h(SuperSidebarToggle, { class: el.className });
     },
   });
 };

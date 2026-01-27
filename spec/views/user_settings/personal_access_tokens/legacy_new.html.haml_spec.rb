@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'user_settings/personal_access_tokens/granular_new.html.haml', feature_category: :system_access do
+RSpec.describe 'user_settings/personal_access_tokens/legacy_new.html.haml', feature_category: :system_access do
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- we need these objects to be persisted
   let_it_be(:user) { create(:user) }
   # rubocop:enable RSpec/FactoryBot/AvoidCreate
@@ -11,9 +11,9 @@ RSpec.describe 'user_settings/personal_access_tokens/granular_new.html.haml', fe
     sign_in(user)
   end
 
-  it 'shows the granular personal access token form' do
+  it 'shows the legacy personal access token form' do
     render
 
-    expect(rendered).to have_selector('div#js-create-granular-token-app')
+    expect(rendered).to have_selector('div#js-create-legacy-token-app')
   end
 end

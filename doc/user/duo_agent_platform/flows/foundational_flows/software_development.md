@@ -29,12 +29,9 @@ This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 The Software Development Flow helps you create AI-generated solutions for
 work across the software development lifecycle.

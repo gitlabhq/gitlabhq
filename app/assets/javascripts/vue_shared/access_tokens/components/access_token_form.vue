@@ -14,6 +14,7 @@ import { formValidators } from '@gitlab/ui/src/utils';
 import { mapActions, mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { toISODateFormat, setUTCTime } from '~/lib/utils/datetime_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import ErrorsAlert from '~/vue_shared/components/errors_alert.vue';
 
@@ -35,7 +36,12 @@ export default {
     MaxExpirationDateMessage: () =>
       import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
-  inject: ['accessTokenMaxDate', 'accessTokenMinDate', 'accessTokenAvailableScopes'],
+  inject: [
+    'accessTokenMaxDate',
+    'accessTokenMinDate',
+    'accessTokenAvailableScopes',
+    'accessTokenTableUrl',
+  ],
   props: {
     name: {
       type: String,
@@ -72,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useAccessTokens, ['busy']),
+    ...mapState(useAccessTokens, ['busy', 'showCreateFormInline']),
   },
   methods: {
     ...mapActions(useAccessTokens, ['createToken', 'setShowCreateForm']),
@@ -81,6 +87,10 @@ export default {
     },
     reset() {
       this.setShowCreateForm(false);
+
+      if (!this.showCreateFormInline) {
+        visitUrl(this.accessTokenTableUrl);
+      }
     },
     // this cannot be handled with 'submit' event
     // since 'submit' event is only triggered when there are no validation errors
@@ -162,7 +172,7 @@ export default {
 
     <gl-form
       id="token-create-form"
-      class="gl-rounded-base gl-bg-subtle gl-p-5"
+      :class="{ 'gl-rounded-base gl-bg-subtle gl-p-5': showCreateFormInline }"
       @submit.prevent
       @reset="reset"
     >
@@ -239,7 +249,7 @@ export default {
           data-testid="create-token-button"
           @click="setFormErrors"
         >
-          {{ s__('AccessTokens|Create token') }}
+          {{ s__('AccessTokens|Generate token') }}
         </gl-button>
         <gl-button variant="default" type="reset">
           {{ __('Cancel') }}

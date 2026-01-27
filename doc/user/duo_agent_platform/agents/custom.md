@@ -30,12 +30,9 @@ This feature uses [GitLab Credits](../../../subscriptions/gitlab_credits.md).
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Agents use AI to perform tasks and answer complex questions. Create
 custom agents to accomplish specific tasks, like creating merge
