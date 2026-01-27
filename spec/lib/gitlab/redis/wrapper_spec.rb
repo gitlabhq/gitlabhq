@@ -8,4 +8,10 @@ RSpec.describe Gitlab::Redis::Wrapper do
       expect { described_class.instrumentation_class }.to raise_error(NameError)
     end
   end
+
+  describe '.active?' do
+    it 'returns true by default' do
+      expect(described_class.active?).to be true
+    end
+  end
 end

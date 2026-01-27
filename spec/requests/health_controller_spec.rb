@@ -153,8 +153,8 @@ RSpec.describe HealthController, feature_category: :database do
             expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
           end
 
-          it 'checks all redis instances' do
-            expected_redis_checks = Gitlab::Redis::ALL_CLASSES.map do |redis|
+          it 'checks all active redis instances' do
+            expected_redis_checks = Gitlab::Redis::ALL_CLASSES.select(&:active?).map do |redis|
               { "#{redis.store_name.underscore}_check" => [{ 'status' => 'ok' }] }
             end
 

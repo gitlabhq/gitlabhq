@@ -15,6 +15,16 @@ RSpec.describe Admin::DashboardController do
       expect(assigns[:redis_versions].length).to be > 0
     end
 
+    context 'with inactive Redis instances' do
+      it 'only includes active Redis instances' do
+        allow(Gitlab::Redis::ActionCable).to receive(:active?).and_return(false)
+
+        get :index
+
+        expect(assigns[:redis_versions]).not_to include(nil)
+      end
+    end
+
     context 'with pending_delete projects' do
       render_views
 
