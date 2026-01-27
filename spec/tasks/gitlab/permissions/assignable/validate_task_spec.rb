@@ -37,6 +37,15 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
       # values matches defined raw permissions
       allow(Authz::Permission).to receive(:defined?).with(anything).and_return(false)
       allow(Authz::Permission).to receive(:defined?).with('update_wiki').and_return(true)
+
+      # Stubs to make _metadata.yml file validation pass
+      allow(Authz::PermissionGroups::Resource).to receive(:get).and_return(
+        instance_double(Authz::PermissionGroups::Resource, definition: {})
+      )
+      allow(JSONSchemer).to receive(:schema).and_call_original
+      allow(JSONSchemer).to receive(:schema)
+        .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+        .and_return(instance_double(JSONSchemer::Schema, validate: []))
     end
 
     context 'when all permissions are valid' do
@@ -139,6 +148,63 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
           #
           #######################################################################
         OUTPUT
+      end
+    end
+
+    describe 'permission resource validation' do
+      let(:category) { 'wiki_category' }
+      let(:resource) { 'wiki' }
+      let(:permission_source_file) do
+        "config/authz/permission_groups/assignable_permissions/#{category}/#{resource}/modify.yml"
+      end
+
+      context 'when resource metadata for the permission does not exist' do
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with("#{category}/#{resource}")
+            .and_return(nil)
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following assignable permission resource directories are missing a _metadata.yml file.
+            #
+            #    - config/authz/permission_groups/assignable_permissions/wiki_category/wiki/
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when resource metadata for the permission is not in the correct schema' do
+        let(:resource_definition) do
+          definition = { name: 'Wiki Resource' } # Missing required 'description' field
+          Authz::PermissionGroups::Resource.new(definition, 'source_file')
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with("#{category}/#{resource}")
+            .and_return(resource_definition)
+          allow(JSONSchemer).to receive(:schema)
+            .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
+            .and_call_original
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following assignable permission resource metadata file failed schema validation.
+            #
+            #    - wiki_category/wiki
+            #        - root is missing required keys: description
+            #
+            #######################################################################
+          OUTPUT
+        end
       end
     end
   end

@@ -17,7 +17,7 @@ module Authz
         end
 
         def config_path
-          Rails.root.join(BASE_PATH, '**/*.yml')
+          Rails.root.join(BASE_PATH, '**/[a-z]?*.yml')
         end
 
         def definitions

@@ -188,6 +188,15 @@ export default {
     allowForcePush() {
       return this.branchProtection?.allowForcePush;
     },
+    deleteBranchRuleTooltip() {
+      return this.modificationBlockedByPolicy
+        ? s__(
+            "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd}. %{linkStart}Learn more%{linkEnd}.",
+          )
+        : s__(
+            "SecurityOrchestration|If one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd} become enforced, you can't unprotect this branch. %{linkStart}Learn more%{linkEnd}.",
+          );
+    },
     forcePushAttributes() {
       const title = this.allowForcePush
         ? this.$options.i18n.allowForcePushTitle
@@ -265,6 +274,9 @@ export default {
     isDeleteButtonDisabled() {
       return this.$apollo.loading || this.modificationBlockedByPolicy;
     },
+    isModificationAffectedByPolicy() {
+      return this.modificationBlockedByPolicy || this.warnModificationBlockedByPolicy;
+    },
     isPredefinedRule() {
       return this.isAllBranchesRule || this.isAllProtectedBranchesRule;
     },
@@ -301,6 +313,14 @@ export default {
         !this.isAllBranchesRule &&
         !this.branchProtection?.isGroupLevel
       );
+    },
+    // needed to override EE component
+    warnModificationBlockedByPolicy() {
+      return false;
+    },
+    // needed to override EE component
+    warnProtectedFromPushBySecurityPolicy() {
+      return false;
     },
   },
   methods: {
@@ -523,7 +543,7 @@ export default {
   <div>
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
-        <span :id="$options.deleteButtonId">
+        <div :id="$options.deleteButtonId">
           <gl-button
             v-if="showDeleteRuleBtn"
             v-gl-modal="$options.deleteModalId"
@@ -533,10 +553,10 @@ export default {
             :disabled="isDeleteButtonDisabled"
             >{{ $options.i18n.deleteRule }}
           </gl-button>
-        </span>
+        </div>
         <!-- EE only-->
-        <gl-popover v-if="modificationBlockedByPolicy" :target="$options.deleteButtonId">
-          <gl-sprintf :message="$options.i18n.disabledDeleteTooltip">
+        <gl-popover v-if="isModificationAffectedByPolicy" :target="$options.deleteButtonId">
+          <gl-sprintf :message="deleteBranchRuleTooltip">
             <template #securityPoliciesPath="{ content }">
               <gl-link :href="securityPoliciesPath">{{ content }}</gl-link>
             </template>
@@ -628,6 +648,7 @@ export default {
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
           :is-protected-by-policy="protectedFromPushBySecurityPolicy"
+          :is-protected-by-warn-policy="warnProtectedFromPushBySecurityPolicy"
           :roles="pushAccessLevels.roles"
           :users="pushAccessLevels.users"
           :groups="pushAccessLevels.groups"
@@ -648,6 +669,7 @@ export default {
           data-test-id-prefix="force-push"
           :is-protected="allowForcePush"
           :is-protected-by-policy="protectedFromPushBySecurityPolicy"
+          :is-protected-by-warn-policy="warnProtectedFromPushBySecurityPolicy"
           :label="$options.i18n.allowForcePushLabel"
           :icon-title="forcePushAttributes.title"
           :description="forcePushAttributes.description"

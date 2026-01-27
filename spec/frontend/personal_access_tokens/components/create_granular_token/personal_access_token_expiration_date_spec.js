@@ -65,7 +65,7 @@ describe('PersonalAccessTokenExpirationDate', () => {
       createComponent({ mountFn: mountExtended });
 
       expect(wrapper.text()).toContain(
-        'An administrator has set the maximum expiration date to 365 days (Dec 11, 2026). Learn more.',
+        'An administrator has set the maximum expiration date to 365 days (Dec 11, 2026).',
       );
     });
   });

@@ -15,6 +15,15 @@ RSpec.shared_examples Integrations::Base::MicrosoftTeams do
   let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
+  describe '.supported_events' do
+    it 'includes all supported events' do
+      expect(described_class.supported_events).to contain_exactly(
+        'push', 'issue', 'confidential_issue', 'work_item', 'confidential_work_item', 'merge_request',
+        'note', 'confidential_note', 'tag_push', 'pipeline', 'wiki_page'
+      )
+    end
+  end
+
   describe "#execute" do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
@@ -62,6 +71,17 @@ RSpec.shared_examples Integrations::Base::MicrosoftTeams do
 
       it "calls Microsoft Teams API" do
         chat_integration.execute(issues_sample_data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
+    end
+
+    context 'with work item events' do
+      let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+      let(:work_item_sample_data) { work_item.to_hook_data(user) }
+
+      it "calls Microsoft Teams API for work item events" do
+        chat_integration.execute(work_item_sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end

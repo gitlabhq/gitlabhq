@@ -35,123 +35,13 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   end
 
   context 'with namespace_traversal_ids_filtering' do
-    include_context '{Issues|WorkItems}Finder#execute context', :work_item
-
-    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
     let_it_be(:group_project_work_item) { create(:work_item, project: project1, author: user) }
 
-    let_it_be(:subgroup_work_item) { create(:work_item, :group_level, namespace: subgroup, author: user) }
-
-    let(:params) { { group_id: group, include_descendants: true } }
-    let(:scope) { 'all' }
-
-    before do
-      group.add_developer(user)
-    end
-
-    it 'only returns project level work_items' do
-      expect(items).to contain_exactly(item1, item4, item5, group_project_work_item)
-    end
-
-    context 'with a search param and attempt_group_search_optimizations = true' do
-      let(:params) do
-        { group_id: group, include_descendants: true, search: "test", attempt_group_search_optimizations: true }
-      end
-
-      it 'overrides use_cte_for_search?' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    it 'generates query with condition to filter out work_items without project_id' do
-      result_sql = items.to_sql
-      expect(result_sql).to include('"issues"."project_id" IS NOT NULL')
-    end
-
-    it_behaves_like 'generates query with namespace_traversal_id filtering'
-
-    context 'with conditional traversal_ids filtering' do
-      context 'when no group is specified' do
-        let(:params) { { project_id: project1.id } }
-        let(:scope) { 'all' }
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when feature flag is disabled' do
-        let(:params) { { group_id: group, include_descendants: true } }
-        let(:scope) { 'all' }
-
-        before do
-          stub_feature_flags(use_namespace_traversal_ids_for_work_items_finder: false)
-        end
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when include_descendants is false' do
-        let(:params) { { group_id: group, include_descendants: false } }
-        let(:scope) { 'all' }
-
-        it_behaves_like 'generates query without namespace_traversal_id filtering'
-      end
-
-      context 'when all basic conditions are met' do
-        let(:scope) { 'all' }
-
-        context 'for a sub-group' do
-          let(:group) { subgroup }
-          let(:params) { { group_id: subgroup, include_descendants: true } }
-
-          it_behaves_like 'generates query with namespace_traversal_id filtering'
-
-          context 'with name sorting' do
-            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'title_asc' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-
-          context 'with updated sorting' do
-            let(:params) { { group_id: subgroup, include_descendants: true, sort: 'updated_desc' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-        end
-
-        context 'for a root group' do
-          context 'with updated/created sorting' do
-            %w[updated_asc updated_desc created_asc created_desc].each do |sort_value|
-              context "with sort: #{sort_value}" do
-                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
-
-                it_behaves_like 'generates query with namespace_traversal_id filtering'
-              end
-            end
-          end
-
-          context 'with other sorting' do
-            %w[name_asc name_desc priority_asc priority_desc].each do |sort_value|
-              context "with sort: #{sort_value}" do
-                let(:params) { { group_id: group, include_descendants: true, sort: sort_value } }
-
-                it_behaves_like 'generates query without namespace_traversal_id filtering'
-              end
-            end
-          end
-
-          context 'with no sort specified' do
-            let(:params) { { group_id: group, include_descendants: true } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-
-          context 'with blank sort' do
-            let(:params) { { group_id: group, include_descendants: true, sort: '' } }
-
-            it_behaves_like 'generates query with namespace_traversal_id filtering'
-          end
-        end
-      end
+    it_behaves_like 'issues or work items finder with namespace_traversal_ids filtering',
+      :work_item,
+      include_subgroups_param: :include_descendants,
+      unsupported_sort_options: %w[name_asc name_desc priority_asc priority_desc] do
+      let(:expected_items) { [item1, item4, item5, group_project_work_item] }
     end
   end
 

@@ -203,7 +203,8 @@ POST /projects/:id/boards
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards?name=newboard"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards" \
+  --data "name=newboard"
 ```
 
 Example response:
@@ -255,7 +256,8 @@ PUT /projects/:id/boards/:board_id
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1" \
+  --data "name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4"
 ```
 
 Example response:
@@ -466,7 +468,8 @@ for more information regarding the required license for each list type.
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists" \
+  --data "label_id=5"
 ```
 
 Example response:
@@ -504,7 +507,8 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1?position=2"
+  --url "https://gitlab.example.com/api/v4/projects/5/boards/1/lists/1" \
+  --data "position=2"
 ```
 
 Example response:

@@ -32,6 +32,14 @@
 #
 class IssuesFinder < IssuableFinder
   extend ::Gitlab::Utils::Override
+  include Gitlab::Utils::StrongMemoize
+
+  # Both short (created_desc) and long (created_at_desc) formats are needed because
+  # the GraphQL API uses short format while the REST API uses long format.
+  ROOT_TRAVERSAL_IDS_SORTING_OPTIONS = %w[
+    updated_asc updated_desc created_asc created_desc
+    updated_at_asc updated_at_desc created_at_asc created_at_desc
+  ].freeze
 
   def self.scalar_params
     @scalar_params ||= super + [:due_date]
@@ -45,7 +53,81 @@ class IssuesFinder < IssuableFinder
     self.class.const_get(:Params, false)
   end
 
+  def use_cte_for_search?
+    # It's more performant to directly filter on the `issues` table without a CTE
+    use_namespace_traversal_ids_filtering? ? false : super
+  end
+
   private
+
+  override :by_parent
+  def by_parent(items)
+    return super unless use_namespace_traversal_ids_filtering?
+
+    items_within_hierarchy = items
+      .within_namespace_hierarchy(ancestor_group)
+      .join_project
+      .merge(Project.with_issues_enabled)
+
+    items_within_hierarchy = filter_by_projects(items_within_hierarchy)
+
+    ensure_state_filter_for_index(items_within_hierarchy)
+  end
+
+  def filter_by_projects(items)
+    return items unless params[:projects].present?
+
+    items.in_projects(params[:projects])
+  end
+
+  # If the state filter is not present in the params we manually add it to filter all available states
+  # This is needed because state_id is required for index utilization
+  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/562319
+  def ensure_state_filter_for_index(items)
+    return items if state_filter_passed?
+
+    items.with_state(*klass.available_state_names)
+  end
+
+  def use_namespace_traversal_ids_filtering?
+    return false unless params.group?
+    return false unless include_subgroups_or_descendants?
+    return false unless ::Feature.enabled?(:use_namespace_traversal_ids_for_work_items_finder, current_user)
+    return false unless user_can_access_all_subgroup_items?
+
+    # For sub-groups it's performant enough to use the traversal_ids and sort in memory.
+    return true unless params.group.root?
+
+    # For root groups with include_subgroups, we don't have an index on all columns that we support sorting for.
+    # For all columns we don't have an index for, we need to fallback to the old query.
+    sorting_covered_by_index?
+  end
+  strong_memoize_attr :use_namespace_traversal_ids_filtering?
+
+  def include_subgroups_or_descendants?
+    params[:include_subgroups].present?
+  end
+
+  def user_can_access_all_subgroup_items?
+    return false unless ancestor_group
+
+    Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user)
+  end
+
+  def ancestor_group
+    params.group
+  end
+  strong_memoize_attr :ancestor_group
+
+  def state_filter_passed?
+    params[:state].present? && params[:state].to_s != 'all'
+  end
+
+  def sorting_covered_by_index?
+    return true if params[:sort].blank?
+
+    params[:sort].to_s.in?(ROOT_TRAVERSAL_IDS_SORTING_OPTIONS)
+  end
 
   def filter_items(items)
     issues = by_service_desk(items) # Call before super because we remove params

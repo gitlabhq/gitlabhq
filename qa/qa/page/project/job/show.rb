@@ -86,13 +86,13 @@ module QA
             click_element('pipeline-path')
           end
 
-          private
-
           def loaded?(wait: 180)
             wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
               has_job_log?
             end
           end
+
+          private
 
           def job_log
             find_element('job-log-content').text

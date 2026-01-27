@@ -87,7 +87,7 @@ describe('ProtectionToggle', () => {
       });
     });
 
-    describe('when protected by security policies', () => {
+    describe('when protected by enforced security policies', () => {
       beforeEach(() => {
         createComponent({
           props: { isProtected: true, isProtectedByPolicy: true },
@@ -98,6 +98,24 @@ describe('ProtectionToggle', () => {
       it('renders disabled by policy popover and disabled toggle, when protection is on', () => {
         expect(findToggle().props('disabled')).toBe(true);
         expect(findDisabledByPolicyPopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when protected by warn mode security policies', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isProtected: true, isProtectedByWarnPolicy: true },
+          provided: { canAdminProtectedBranches: true },
+        });
+      });
+
+      it('renders disabled by policy popover with warn mode', () => {
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
+        expect(findDisabledByPolicyPopover().props('isProtectedByPolicy')).toBe(false);
+      });
+
+      it('does not disable the toggle', () => {
+        expect(findToggle().props('disabled')).toBe(false);
       });
     });
   });

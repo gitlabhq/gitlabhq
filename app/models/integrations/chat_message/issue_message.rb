@@ -49,6 +49,10 @@ module Integrations
         '#C95823'
       end
 
+      def issue_type
+        @issue_type ||= type || fallback_type
+      end
+
       private
 
       def message
@@ -81,10 +85,6 @@ module Integrations
 
       def issue_title
         "#{Issue.reference_prefix}#{issue_iid} #{strip_markup(title)}"
-      end
-
-      def issue_type
-        @issue_type ||= type || fallback_type
       end
 
       def fallback_type

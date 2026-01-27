@@ -56,7 +56,7 @@ export default {
   i18n: {
     defineScopeLabel: s__('AccessTokens|Define scope'),
     scopesDescription: s__(
-      'AccessTokens|Scopes set the permissions granted to your token. Add only the minimum permissions needed for your token. %{linkStart}Learn more%{linkEnd}.',
+      'AccessTokens|Add only the %{linkStart}minimum resource and permissions %{linkEnd} needed for your token. Permissions that exceed your assigned role will have no effect.',
     ),
     groupTab: __('Group and project'),
     groupAccess: s__('AccessTokens|Group and project access'),
@@ -76,7 +76,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-text-lg gl-font-bold">{{ $options.i18n.defineScopeLabel }}</div>
+    <h2 class="gl-heading-2 gl-mt-7">{{ $options.i18n.defineScopeLabel }}</h2>
     <p class="gl-text-subtle">
       <gl-sprintf :message="$options.i18n.scopesDescription">
         <template #link="{ content }">

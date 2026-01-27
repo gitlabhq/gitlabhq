@@ -1,4 +1,4 @@
-import { GlFormGroup, GlFormRadioGroup, GlFormRadio, GlTabs, GlTab } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadioGroup, GlFormRadio, GlTabs, GlTab, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
 
@@ -9,6 +9,9 @@ describe('PersonalAccessTokenScopeSelector', () => {
     wrapper = shallowMountExtended(PersonalAccessTokenScopeSelector, {
       propsData: {
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
       slots: {
         'namespace-selector': '<div class="namespace-selector-slot">Add group or project</div>',
@@ -32,6 +35,9 @@ describe('PersonalAccessTokenScopeSelector', () => {
 
   it('renders the scope selector with title', () => {
     expect(wrapper.text()).toContain('Define scope');
+    expect(wrapper.text()).toContain(
+      'Add only the minimum resource and permissions  needed for your token. Permissions that exceed your assigned role will have no effect.',
+    );
   });
 
   it('renders tabs', () => {

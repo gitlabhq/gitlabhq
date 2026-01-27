@@ -34,7 +34,8 @@ module Integrations
         end
 
         def supported_events
-          %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
+          %w[push issue confidential_issue work_item confidential_work_item merge_request
+            note confidential_note tag_push pipeline wiki_page]
         end
       end
 
@@ -91,7 +92,7 @@ module Integrations
         when Integrations::ChatMessage::NoteMessage
           message.target
         when Integrations::ChatMessage::IssueMessage
-          "issue #{message.project_name}#{Issue.reference_prefix}#{message.issue_iid}"
+          "#{message.issue_type.downcase} #{message.project_name}#{Issue.reference_prefix}#{message.issue_iid}"
         when Integrations::ChatMessage::MergeMessage
           "merge request #{message.project_name}#{MergeRequest.reference_prefix}#{message.merge_request_iid}"
         when Integrations::ChatMessage::PushMessage

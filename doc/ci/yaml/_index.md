@@ -5640,7 +5640,7 @@ You can also provide optional environment variables and inputs.
 
 - An array of hashes, where each hash represents a step with the following possible keys:
   - `name`: A string representing the name of the step.
-  - `script`: A string or array of strings containing shell commands to execute.
+  - `script`: A string containing shell commands to execute.
   - `step`: A string identifying a predefined step to run.
   - `env`: Optional. A hash of environment variables specific to this step.
   - `inputs`: Optional. A hash of input parameters for predefined steps.

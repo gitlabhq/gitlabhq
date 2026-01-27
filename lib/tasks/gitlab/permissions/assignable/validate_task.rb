@@ -11,19 +11,23 @@ module Tasks
             @violations = {
               schema: {},
               duplicate_name: [],
-              file: {}
+              file: {},
+              missing_resource_metadata: [],
+              resource_metadata_schema: {}
             }
+            @resources = []
           end
 
           private
 
-          attr_reader :violations
+          attr_reader :violations, :resources
 
           def validate!
             defined_permissions = ::Authz::PermissionGroups::Assignable.all.values
             defined_permissions.each { |p| validate_permission(p) }
 
             validate_names
+            validate_resources
 
             super
           end
@@ -31,6 +35,11 @@ module Tasks
           def validate_permission(permission)
             validate_schema(permission)
             validate_file(permission)
+
+            # Collect unique resources for metadata validation
+            return unless permission.category.present? && permission.resource.present?
+
+            @resources << { category: permission.category, resource: permission.resource }
           end
 
           def validate_file(permission)
@@ -54,6 +63,29 @@ module Tasks
             violations[:duplicate_name] = with_duplicates
           end
 
+          def validate_resources
+            resources.uniq.each do |resource_data|
+              category = resource_data[:category]
+              resource = resource_data[:resource]
+
+              resource_identifier = "#{category}/#{resource}"
+              assignable_resource = ::Authz::PermissionGroups::Resource.get(resource_identifier)
+
+              unless assignable_resource
+                violations[:missing_resource_metadata] <<
+                  "#{PERMISSION_DIR}/#{category}/#{resource}/"
+                next
+              end
+
+              @resource_metadata_schema_validator ||= JSONSchemer.schema(
+                Rails.root.join("#{PERMISSION_DIR}/resource_metadata_schema.json")
+              )
+
+              errors = @resource_metadata_schema_validator.validate(assignable_resource.definition)
+              violations[:resource_metadata_schema][resource_identifier] = errors if errors.any?
+            end
+          end
+
           def expected_file_path_data(permission)
             source_file = permission.source_file
             actual_path = source_file.slice(source_file.index(PERMISSION_DIR)..)
@@ -73,7 +105,9 @@ module Tasks
           def format_all_errors
             out = format_schema_errors
             out += format_error_list(:duplicate_name)
-            out + format_file_errors
+            out += format_file_errors
+            out += format_error_list(:missing_resource_metadata)
+            out + format_schema_errors(:resource_metadata_schema)
           end
 
           def error_messages
@@ -81,7 +115,11 @@ module Tasks
               schema: "The following permissions failed schema validation.",
               duplicate_name: "The following permissions have duplicate names." \
                 "\nAssignable permissions must have unique names.",
-              file: "The following permission definitions do not exist at the expected path."
+              file: "The following permission definitions do not exist at the expected path.",
+              missing_resource_metadata:
+                "The following assignable permission resource directories are missing a _metadata.yml file.",
+              resource_metadata_schema:
+                "The following assignable permission resource metadata file failed schema validation."
             }
           end
 

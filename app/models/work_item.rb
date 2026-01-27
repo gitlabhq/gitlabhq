@@ -35,20 +35,6 @@ class WorkItem < Issue
     )
   }
 
-  scope :within_namespace_hierarchy, ->(namespace) do
-    return none if namespace.nil? || namespace.traversal_ids.blank?
-
-    if namespace.traversal_ids.length == 1
-      # For root groups
-      where("namespace_traversal_ids[1] = ?", namespace.id)
-    else
-      # For subgroups
-      ids = namespace.traversal_ids
-      next_ids = ids[0..-2] + [ids[-1] + 1]
-      where(namespace_traversal_ids: ids...next_ids)
-    end
-  end
-
   scope :within_timeframe, ->(start_date, due_date, with_namespace_cte: false) do
     date_filtered_issue_ids = ::WorkItems::DatesSource
                                 .select('issue_id')

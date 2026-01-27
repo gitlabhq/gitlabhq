@@ -60,6 +60,11 @@ export default {
       required: false,
       default: false,
     },
+    isProtectedByWarnPolicy: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     roles: {
       type: Array,
       required: false,
@@ -125,6 +130,9 @@ export default {
     isEditDisabled() {
       return this.isGroupLevel || this.isProtectedByPolicy;
     },
+    isProtectedByAnyPolicy() {
+      return this.isProtectedByPolicy || this.isProtectedByWarnPolicy;
+    },
     showDivider() {
       return this.hasRoles || this.hasUsers;
     },
@@ -160,7 +168,10 @@ export default {
           @click="$emit('edit')"
           >{{ __('Edit') }}
         </gl-button>
-        <disabled-by-policy-popover v-if="isProtectedByPolicy" />
+        <disabled-by-policy-popover
+          v-if="isProtectedByAnyPolicy"
+          :is-protected-by-policy="isProtectedByPolicy"
+        />
         <group-inheritance-popover
           v-else-if="isGroupLevel"
           :has-group-permissions="canAdminGroupProtectedBranches"

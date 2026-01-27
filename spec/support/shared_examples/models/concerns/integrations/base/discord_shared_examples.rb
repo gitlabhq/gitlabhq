@@ -133,12 +133,21 @@ RSpec.shared_examples Integrations::Base::Discord do
     end
   end
 
+  describe '.supported_events' do
+    it 'includes all supported events' do
+      expect(described_class.supported_events).to contain_exactly(
+        'push', 'issue', 'confidential_issue', 'work_item', 'confidential_work_item', 'merge_request',
+        'note', 'confidential_note', 'tag_push', 'pipeline', 'wiki_page', 'deployment'
+      )
+    end
+  end
+
   describe '#execute' do
     include StubRequests
 
     let_it_be(:project) { create(:project, :repository) }
 
-    let(:user) { build_stubbed(:user) }
+    let_it_be(:user) { create(:user) }
     let(:webhook_url) { "https://discord.com/" }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
@@ -225,6 +234,31 @@ RSpec.shared_examples Integrations::Base::Discord do
               }.once
             end
           end
+        end
+      end
+    end
+
+    context 'with issue and work item notifications' do
+      let_it_be(:issue) { create(:issue, project: project, author: user) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project, author: user) }
+
+      context 'with issue' do
+        let(:sample_data) { issue.to_hook_data(user) }
+
+        it 'calls Discord webhook' do
+          discord_integration.execute(sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+      end
+
+      context 'with work item' do
+        let(:sample_data) { work_item.to_hook_data(user) }
+
+        it 'calls Discord webhook' do
+          discord_integration.execute(sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
     end

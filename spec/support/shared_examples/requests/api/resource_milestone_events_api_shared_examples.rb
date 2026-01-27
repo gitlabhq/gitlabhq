@@ -16,6 +16,13 @@ RSpec.shared_examples 'resource_milestone_events API' do |parent_type, eventable
       expect(json_response.first['action']).to eq(event.action)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :"read_#{eventable_type.singularize}_milestone_event" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{eventable_type}/#{eventable[id_name]}/resource_milestone_events", personal_access_token: pat)
+      end
+    end
+
     context 'when there is an event with a milestone which is not visible for requesting user' do
       let!(:private_project) { create(:project, :private) }
       let!(:private_milestone) { create(:milestone, project: private_project) }
@@ -65,6 +72,13 @@ RSpec.shared_examples 'resource_milestone_events API' do |parent_type, eventable
       expect(json_response['id']).to eq(event.id)
       expect(json_response['milestone']['id']).to eq(event.milestone.id)
       expect(json_response['action']).to eq(event.action)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :"read_#{eventable_type.singularize}_milestone_event" do
+      let(:boundary_object) { parent }
+      let(:request) do
+        get api("/#{parent_type}/#{parent.id}/#{eventable_type}/#{eventable[id_name]}/resource_milestone_events/#{event.id}", personal_access_token: pat)
+      end
     end
 
     it "returns 404 when not authorized" do

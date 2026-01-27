@@ -29,8 +29,8 @@ module Integrations
         end
 
         def supported_events
-          %w[push issue confidential_issue merge_request note confidential_note tag_push
-            pipeline wiki_page]
+          %w[push issue confidential_issue work_item confidential_work_item merge_request
+            note confidential_note tag_push pipeline wiki_page]
         end
       end
 

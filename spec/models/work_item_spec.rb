@@ -126,34 +126,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
-  describe '.within_namespace_hierarchy' do
-    let_it_be(:root_group) { reusable_group }
-    let_it_be(:subgroup) { create(:group, parent: root_group) }
-    let_it_be(:other_group) { create(:group) }
-
-    let_it_be(:root_group_work_item) { create(:work_item, namespace: root_group) }
-    let_it_be(:subgroup_work_item) { create(:work_item, :issue, project: reusable_project, namespace: subgroup) }
-    let_it_be(:other_group_work_item) { create(:work_item, namespace: other_group) }
-
-    context 'when filtering by root group' do
-      it 'returns work items within the hierarchy' do
-        result = described_class.within_namespace_hierarchy(root_group)
-
-        expect(result).to contain_exactly(root_group_work_item, subgroup_work_item)
-        expect(result).not_to include(other_group_work_item)
-      end
-    end
-
-    context 'when filtering by subgroup' do
-      it 'returns work items within the subgroup hierarchy only' do
-        result = described_class.within_namespace_hierarchy(subgroup)
-
-        expect(result).to contain_exactly(subgroup_work_item)
-        expect(result).not_to include(root_group_work_item, other_group_work_item)
-      end
-    end
-  end
-
   describe '.with_group_level_and_project_issues_enabled' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project_with_issues) { create(:project, group: group) }

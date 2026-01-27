@@ -302,7 +302,8 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             throttle_unauthenticated_files_api_period_in_seconds: 1047,
             throttle_authenticated_files_api_enabled: true,
             throttle_authenticated_files_api_requests_per_period: 1048,
-            throttle_authenticated_files_api_period_in_seconds: 1049
+            throttle_authenticated_files_api_period_in_seconds: 1049,
+            create_organization_api_limit: 1050
           )
         end
 
@@ -352,6 +353,20 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
           expect(rate_limits[:git_ssh_operations]).to eq({ enabled: true, requests_per_period: 1045, period_in_seconds: 60 })
           expect(rate_limits[:files_api_unauthenticated]).to eq({ enabled: true, requests_per_period: 1046, period_in_seconds: 1047 })
           expect(rate_limits[:files_api_authenticated]).to eq({ enabled: true, requests_per_period: 1048, period_in_seconds: 1049 })
+          expect(rate_limits[:organizations_api]).to eq({ enabled: true, requests_per_period: 1050, period_in_seconds: 60 })
+        end
+
+        context 'when :create_organization_api_limit is nil' do
+          before do
+            mock_settings = Gitlab::CurrentSettings.current_application_settings.dup
+            mock_settings[:create_organization_api_limit] = nil
+            allow(subject).to receive(:application_settings).and_return(mock_settings)
+          end
+
+          it 'returns rate limits from application settings' do
+            rate_limits = subject.settings[:rate_limits]
+            expect(rate_limits[:organizations_api]).to be_nil
+          end
         end
       end
     end

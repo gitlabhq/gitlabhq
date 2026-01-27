@@ -164,6 +164,18 @@ class Issue < ApplicationRecord
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
 
+  scope :within_namespace_hierarchy, ->(namespace) do
+    return none if namespace.nil? || namespace.traversal_ids.blank?
+
+    if namespace.traversal_ids.length == 1
+      where("namespace_traversal_ids[1] = ?", namespace.id)
+    else
+      ids = namespace.traversal_ids
+      next_ids = ids[0..-2] + [ids[-1] + 1]
+      where(namespace_traversal_ids: ids...next_ids)
+    end
+  end
+
   scope :join_project_through_namespace, -> do
     joins("JOIN projects ON projects.project_namespace_id = issues.namespace_id")
   end

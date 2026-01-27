@@ -9,12 +9,18 @@ title: Runner controllers API
 
 - Tier: Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
 
 {{< /details >}}
 
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218229) in GitLab 18.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218229) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `FF_USE_JOB_ROUTER`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 {{< /history >}}
 
@@ -42,7 +48,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 |--------------------|--------------|-------------|
 | `id`               | integer      | The unique identifier of the runner controller. |
 | `description`      | string       | A description for the runner controller. |
-| `enabled`          | boolean      | Indicates whether the runner controller is enabled. |
+| `state`            | string       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 | `created_at`       | datetime     | The date and time when the runner controller was created. |
 | `updated_at`       | datetime     | The date and time when the runner controller was last updated. |
 
@@ -61,14 +67,14 @@ Example response:
     {
         "id": 1,
         "description": "Runner controller",
-        "enabled": true,
+        "state": "enabled",
         "created_at": "2026-01-01T00:00:00Z",
         "updated_at": "2026-01-02T00:00:00Z"
     },
     {
         "id": 2,
         "description": "Another runner controller",
-        "enabled": false,
+        "state": "disabled",
         "created_at": "2026-01-03T00:00:00Z",
         "updated_at": "2026-01-04T00:00:00Z"
     }
@@ -91,7 +97,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 |--------------------|--------------|-------------|
 | `id`               | integer      | The unique identifier of the runner controller. |
 | `description`      | string       | A description for the runner controller. |
-| `enabled`          | boolean      | Indicates whether the runner controller is enabled. |
+| `state`            | string       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 | `created_at`       | datetime     | The date and time when the runner controller was created. |
 | `updated_at`       | datetime     | The date and time when the runner controller was last updated. |
 
@@ -109,7 +115,7 @@ Example response:
 {
     "id": 1,
     "description": "Runner controller",
-    "enabled": true,
+    "state": "enabled",
     "created_at": "2026-01-01T00:00:00Z",
     "updated_at": "2026-01-02T00:00:00Z"
 }
@@ -128,7 +134,7 @@ Supported attributes:
 | Attribute          | Type         | Required | Description |
 |--------------------|--------------|----------|-------------|
 | `description`      | string       | No       | A description for the runner controller. |
-| `enabled`          | boolean      | No       | Indicates whether the runner controller is enabled. |
+| `state`            | string       | No       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 
 Response:
 
@@ -138,7 +144,7 @@ If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) wit
 |--------------------|--------------|-------------|
 | `id`               | integer      | The unique identifier of the runner controller. |
 | `description`      | string       | A description for the runner controller. |
-| `enabled`          | boolean      | Indicates whether the runner controller is enabled. |
+| `state`            | string       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 | `created_at`       | datetime     | The date and time when the runner controller was created. |
 | `updated_at`       | datetime     | The date and time when the runner controller was last updated. |
 
@@ -148,7 +154,7 @@ Example request:
 curl --request POST \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data '{"description": "New runner controller"}' \
+     --data '{"description": "New runner controller", "state": "dry_run"}' \
      --url "https://gitlab.example.com/api/v4/runner_controllers"
 ```
 
@@ -158,7 +164,7 @@ Example response:
 {
     "id": 3,
     "description": "New runner controller",
-    "enabled": false,
+    "state": "dry_run",
     "created_at": "2026-01-05T00:00:00Z",
     "updated_at": "2026-01-05T00:00:00Z"
 }
@@ -177,7 +183,7 @@ Supported attributes:
 | Attribute          | Type         | Required | Description |
 |--------------------|--------------|----------|-------------|
 | `description`      | string       | No       | A description for the runner controller. |
-| `enabled`          | boolean      | No       | Indicates whether the runner controller is enabled. |
+| `state`            | string       | No       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the following response attributes:
 
@@ -185,7 +191,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 |--------------------|--------------|-------------|
 | `id`               | integer      | The unique identifier of the runner controller. |
 | `description`      | string       | A description for the runner controller. |
-| `enabled`          | boolean      | Indicates whether the runner controller is enabled. |
+| `state`            | string       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
 | `created_at`       | datetime     | The date and time when the runner controller was created. |
 | `updated_at`       | datetime     | The date and time when the runner controller was last updated. |
 
@@ -195,7 +201,7 @@ Example request:
 curl --request PUT \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     --data '{"description": "Updated runner controller", "enabled": true}' \
+     --data '{"description": "Updated runner controller", "state": "enabled"}' \
      --url "https://gitlab.example.com/api/v4/runner_controllers/3"
 ```
 
@@ -205,7 +211,7 @@ Example response:
 {
     "id": 3,
     "description": "Updated runner controller",
-    "enabled": true,
+    "state": "enabled",
     "created_at": "2026-01-05T00:00:00Z",
     "updated_at": "2026-01-06T00:00:00Z"
 }

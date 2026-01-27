@@ -400,6 +400,46 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.within_namespace_hierarchy' do
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: root_group) }
+    let_it_be(:other_group) { create(:group) }
+
+    let_it_be(:root_group_project) { create(:project, group: root_group) }
+    let_it_be(:subgroup_project) { create(:project, group: subgroup) }
+    let_it_be(:other_group_project) { create(:project, group: other_group) }
+
+    let_it_be(:root_group_issue) { create(:issue, project: root_group_project) }
+    let_it_be(:subgroup_issue) { create(:issue, project: subgroup_project) }
+    let_it_be(:other_group_issue) { create(:issue, project: other_group_project) }
+
+    context 'when filtering by root group' do
+      it 'returns issues within the hierarchy' do
+        result = described_class.within_namespace_hierarchy(root_group)
+
+        expect(result).to contain_exactly(root_group_issue, subgroup_issue)
+        expect(result).not_to include(other_group_issue)
+      end
+    end
+
+    context 'when filtering by subgroup' do
+      it 'returns issues within the subgroup hierarchy only' do
+        result = described_class.within_namespace_hierarchy(subgroup)
+
+        expect(result).to contain_exactly(subgroup_issue)
+        expect(result).not_to include(root_group_issue, other_group_issue)
+      end
+    end
+
+    context 'when namespace is nil' do
+      it 'returns no issues' do
+        result = described_class.within_namespace_hierarchy(nil)
+
+        expect(result).to be_empty
+      end
+    end
+  end
+
   context 'order by upvotes' do
     let!(:issue) { create(:issue) }
     let!(:issue2) { create(:issue) }

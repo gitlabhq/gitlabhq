@@ -81,7 +81,7 @@ class InstanceConfiguration
   end
 
   def rate_limits
-    {
+    rate_limits = {
       unauthenticated: {
         enabled: application_settings[:throttle_unauthenticated_enabled],
         requests_per_period: application_settings[:throttle_unauthenticated_requests_per_period],
@@ -166,6 +166,12 @@ class InstanceConfiguration
         period_in_seconds: application_settings[:throttle_authenticated_files_api_period_in_seconds]
       }
     }
+
+    unless application_settings[:create_organization_api_limit].nil?
+      rate_limits[:organizations_api] = application_setting_limit_per_minute(:create_organization_api_limit)
+    end
+
+    rate_limits
   end
 
   def ci_cd_limits

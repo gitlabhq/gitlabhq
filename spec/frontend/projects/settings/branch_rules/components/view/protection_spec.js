@@ -134,7 +134,7 @@ describe('Branch rule protection', () => {
       });
     });
 
-    describe('when protected by security policies', () => {
+    describe('when protected by enforced security policies', () => {
       beforeEach(() => {
         createComponent(
           { editBranchRules: true },
@@ -145,6 +145,24 @@ describe('Branch rule protection', () => {
       it('renders disabled by policy popover and disabled `Edit` button, when protection is on', () => {
         expect(findEditButton().props('disabled')).toBe(true);
         expect(findDisabledByPolicyPopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when protected by warn mode security policies', () => {
+      beforeEach(() => {
+        createComponent(
+          { editBranchRules: true },
+          { isEditAvailable: true, isProtectedByWarnPolicy: true },
+        );
+      });
+
+      it('renders disabled by policy popover with warn mode', () => {
+        expect(findDisabledByPolicyPopover().exists()).toBe(true);
+        expect(findDisabledByPolicyPopover().props('isProtectedByPolicy')).toBe(false);
+      });
+
+      it('does not disable the `Edit` button', () => {
+        expect(findEditButton().props('disabled')).toBe(false);
       });
     });
   });

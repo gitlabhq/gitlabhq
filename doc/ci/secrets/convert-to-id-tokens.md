@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to convert from deprecated `CI_JOB_JWT` variable to ID tokens
 title: 'Tutorial: Update HashiCorp Vault configuration to use ID Tokens'
 ---
 

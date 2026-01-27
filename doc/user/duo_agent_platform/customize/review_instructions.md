@@ -703,3 +703,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md)
