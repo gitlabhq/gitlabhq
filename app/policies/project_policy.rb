@@ -739,7 +739,6 @@ class ProjectPolicy < BasePolicy
     enable :manage_merge_request_settings
     enable :manage_protected_tags
     enable :change_restrict_user_defined_variables
-    enable :create_protected_branch
     enable :create_branch_rule
     enable :admin_protected_branch
     enable :admin_protected_environments
@@ -759,6 +758,13 @@ class ProjectPolicy < BasePolicy
     enable :create_protected_tags
     enable :update_protected_tags
     enable :destroy_protected_tags
+  end
+
+  rule { can?(:admin_protected_branch) }.policy do
+    enable :read_protected_branch
+    enable :create_protected_branch
+    enable :update_protected_branch
+    enable :destroy_protected_branch
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

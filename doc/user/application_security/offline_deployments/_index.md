@@ -140,12 +140,9 @@ This method requires a runner with access to both `gitlab.com` (including
 to be able to use the `docker` command inside the jobs. This runner can be installed in a DMZ or on
 a bastion, and used only for this specific project.
 
-{{< alert type="warning" >}}
-
-This template does not include updates for the container scanning analyzer. See
-[Container scanning offline directions](../container_scanning/_index.md#offline-environment).
-
-{{< /alert >}}
+> [!warning]
+> This template does not include updates for the container scanning analyzer. See
+> [Container scanning offline directions](../container_scanning/_index.md#offline-environment).
 
 #### Scheduling the updates
 

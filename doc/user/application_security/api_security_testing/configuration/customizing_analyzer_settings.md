@@ -398,12 +398,9 @@ to execute. The provided command creates the overrides JSON file as defined prev
 
 You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for your overrides command. In this case, you should set the `APISEC_PRE_SCRIPT` to the file path of a script which provides those prerequisites. The script provided by `APISEC_PRE_SCRIPT` is executed once before the analyzer starts.
 
-{{< alert type="note" >}}
-
-When performing actions that require elevated permissions, make use of the `sudo` command.
-For example, `sudo apk add nodejs`.
-
-{{< /alert >}}
+> [!note]
+> When performing actions that require elevated permissions, make use of the `sudo` command.
+> For example, `sudo apk add nodejs`.
 
 See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management) page for information about installing Alpine Linux packages.
 

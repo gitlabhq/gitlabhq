@@ -40,12 +40,9 @@ automatically record your network activity and generate the HAR file:
 - Chrome web browser
 - Firefox web browser
 
-{{< alert type="warning" >}}
-
-HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. You should review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> HAR files may contain sensitive information such as authentication tokens, API keys, and session
+> cookies. You should review the HAR file contents before adding them to a repository.
 
 ### GitLab HAR recorder
 

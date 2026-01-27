@@ -55,7 +55,7 @@ module Gitlab
       return false unless can_access_git?
 
       if protected?(ProtectedBranch, ref)
-        user.can?(:push_to_delete_protected_branch, container)
+        user.can?(:destroy_protected_branch, container)
       else
         can_push?
       end

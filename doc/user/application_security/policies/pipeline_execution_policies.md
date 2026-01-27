@@ -93,12 +93,9 @@ If you don't require this behavior for your workflow, you can use the `.pre` sta
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-This feature is experimental and might change in future releases. Test it thoroughly in
-non-production environments only, as it might be unstable in production.
-
-{{< /alert >}}
+> [!note]
+> This feature is experimental and might change in future releases. Test it thoroughly in
+> non-production environments only, as it might be unstable in production.
 
 To ensure that `.pipeline-policy-pre` completes and succeeds, enable the `ensure_pipeline_policy_pre_succeeds`
 experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML
@@ -749,12 +746,9 @@ compliance_job:
 
 ## CI/CD variables
 
-{{< alert type="warning" >}}
-
-Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
-in a Git repository.
-
-{{< /alert >}}
+> [!warning]
+> Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
+> in a Git repository.
 
 Pipeline execution policy variables cannot be overridden from the outside. Pipeline execution jobs are executed in isolation, so variables defined in another policy or in the project's `.gitlab-ci.yml` file are never available to the pipeline execution policy.
 

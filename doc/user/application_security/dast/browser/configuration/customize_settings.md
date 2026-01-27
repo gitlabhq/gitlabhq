@@ -253,12 +253,9 @@ When you configure grouped URL patterns, DAST's crawler optimizes the crawl:
    for reporting.
 1. Security coverage: The security analysis performed on the representative URL applies to the entire group.
 
-{{< alert type="warning" >}}
-
-A URL that gets skipped because of the grouped URLs configuration might appear as **visited** or **failed** in the crawl
-graph. This is a known issue. For more information, see [issue 577252](https://gitlab.com/gitlab-org/gitlab/-/issues/577252).
-
-{{< /alert >}}
+> [!warning]
+> A URL that gets skipped because of the grouped URLs configuration might appear as **visited** or **failed** in the crawl
+> graph. This is a known issue. For more information, see [issue 577252](https://gitlab.com/gitlab-org/gitlab/-/issues/577252).
 
 ### Example configuration guide
 

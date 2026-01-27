@@ -149,12 +149,9 @@ GitLab application security tools have up to two template editions:
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
 
-{{< alert type="note" >}}
-
-Don't mix security templates in the same project. Mixing different security template editions can
-cause both merge request and branch pipelines to run.
-
-{{< /alert >}}
+> [!note]
+> Don't mix security templates in the same project. Mixing different security template editions can
+> cause both merge request and branch pipelines to run.
 
 ### Override the default registry base address
 

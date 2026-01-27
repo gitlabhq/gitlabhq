@@ -163,12 +163,9 @@ the following sections and tables provide an alternative.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-This feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> This feature is controlled by a feature flag.
+> For more information, see the history.
 
 | Field          | Type                                         | Required | Description |
 |----------------|----------------------------------------------|----------|-------------|
@@ -213,12 +210,9 @@ from bypassing the pipeline execution policies.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -464,12 +458,9 @@ The following settings are supported by the `scan_settings` parameter:
 
 ## CI/CD variables
 
-{{< alert type="warning" >}}
-
-Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
-in a Git repository.
-
-{{< /alert >}}
+> [!warning]
+> Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
+> in a Git repository.
 
 Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
 

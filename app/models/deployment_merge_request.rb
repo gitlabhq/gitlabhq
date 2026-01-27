@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class DeploymentMergeRequest < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
-
   ignore_column :deployment_id_convert_to_bigint, :merge_request_id_convert_to_bigint,
     :environment_id_convert_to_bigint, remove_with: '18.5', remove_after: '2025-11-01'
 

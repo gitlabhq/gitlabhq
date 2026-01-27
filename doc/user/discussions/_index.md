@@ -69,12 +69,9 @@ When you mention someone, in a work item or merge request, they become a [partic
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Avoid mentioning `@all` in comments and descriptions. `@all` mentions more than
 just the participants of the project, issue, or merge request, but all members

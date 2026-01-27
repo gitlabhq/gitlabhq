@@ -31,12 +31,9 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
-{{< alert type="note" >}}
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
-to prevent projects overriding settings downstream.
-
-{{< /alert >}}
+> [!note]
+> Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
+> to prevent projects overriding settings downstream.
 
 For more information, see:
 

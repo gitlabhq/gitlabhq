@@ -47,12 +47,9 @@ To view the Value Streams Dashboard as an analytics dashboard for a group:
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
-{{< alert type="note" >}}
-
-Data displayed on the Value Streams Dashboard is continuously collected in the backend.
-If you upgrade to the Ultimate tier, you get access to historical data, and can view metrics about past GitLab usage and performance.
-
-{{< /alert >}}
+> [!note]
+> Data displayed on the Value Streams Dashboard is continuously collected in the backend.
+> If you upgrade to the Ultimate tier, you get access to historical data, and can view metrics about past GitLab usage and performance.
 
 ## Panels
 

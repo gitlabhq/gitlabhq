@@ -278,12 +278,9 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   ...
 ```
 
-{{< alert type="note" >}}
-
-DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PROXY` environment variable is set,
-and the domain DNS can't be resolved.
-
-{{< /alert >}}
+> [!note]
+> DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PROXY` environment variable is set,
+> and the domain DNS can't be resolved.
 
 ## Install multiple agents in your cluster
 

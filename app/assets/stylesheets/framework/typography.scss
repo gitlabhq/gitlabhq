@@ -537,6 +537,7 @@
   ol[data-type=taskList] input[type=checkbox],
   ol.task-list .task-list-item-checkbox {
     all: unset;
+    @apply gl-block;
     @apply gl-w-5;
     @apply gl-h-5;
     @apply gl-cursor-pointer;
@@ -1042,6 +1043,4 @@ wbr {
 
 .math-content-inline {
   @apply gl-max-w-full;
-  @apply gl-overflow-x-auto;
-  @apply gl-inline-block;
 }

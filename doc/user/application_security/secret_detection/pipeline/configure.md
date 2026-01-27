@@ -245,12 +245,9 @@ variables:
 
 Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI/CD variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as previously outlined.
 
-{{< alert type="note" >}}
-
-A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default because `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
-If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
-
-{{< /alert >}}
+> [!note]
+> A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default because `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
+> If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
 
 The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses a format similar to [Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a URI, optional authentication, and optional Git SHA. The variable uses the following format:
 
@@ -513,12 +510,9 @@ in a test suite.
 In that case, you can use the [Gitleaks' native `[allowlist]`](https://github.com/gitleaks/gitleaks#configuration)
 directive to ignore specific patterns or paths.
 
-{{< alert type="note" >}}
-
-This feature works regardless of whether you're using a local or a remote ruleset configuration
-file. The examples below use a local ruleset using `file` passthrough though.
-
-{{< /alert >}}
+> [!note]
+> This feature works regardless of whether you're using a local or a remote ruleset configuration
+> file. The examples below use a local ruleset using `file` passthrough though.
 
 To ignore a pattern, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository, and adjust the `value` as appropriate to point to the path of the extended configuration file:
 

@@ -103,12 +103,9 @@ You can use various tools to generate HAR files:
 - [Fiddler](https://www.telerik.com/fiddler): Web debugging proxy
 - [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder): Command line
 
-{{< alert type="warning" >}}
-
-HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. Review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> HAR files may contain sensitive information such as authentication tokens, API keys, and session
+> cookies. Review the HAR file contents before adding them to a repository.
 
 ### API security testing scanning with a HAR file
 
@@ -286,12 +283,9 @@ When used with the GitLab API security testing scanner, Postman Collections must
 test with valid data. The API security testing scanner extracts all the API definitions and uses them to perform
 testing.
 
-{{< alert type="warning" >}}
-
-Postman Collection files may contain sensitive information such as authentication tokens, API keys,
-and session cookies. Review the Postman Collection file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> Postman Collection files may contain sensitive information such as authentication tokens, API keys,
+> and session cookies. Review the Postman Collection file contents before adding them to a repository.
 
 ### API security testing scanning with a Postman Collection file
 

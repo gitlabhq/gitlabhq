@@ -164,12 +164,10 @@ container_scanning:
 
 When using a fractional value for CPU, format the value as a string.
 
-{{< alert type="note" >}}
-
-- Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
-- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
-
-{{< /alert >}}
+> [!note]
+>
+> - Resource requirements must be set using the agent configuration file, even when operational container scanning is enabled through scan execution policies.
+> - When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [ephemeral storage limits are automatically set to equal requests](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits).
 
 ## Custom repository for Trivy K8s Wrapper
 

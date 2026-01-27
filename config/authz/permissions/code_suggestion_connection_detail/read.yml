@@ -1,0 +1,5 @@
+---
+name: read_code_suggestion_connection_detail
+description: Grants the ability to read code suggestion connection details
+boundaries:
+  - user

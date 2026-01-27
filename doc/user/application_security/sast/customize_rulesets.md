@@ -305,12 +305,9 @@ The `[$analyzer.ruleset.override]` section allows you to override attributes of 
 | `name`        | The name of the rule.                                                                               |
 | `severity`    | The severity of the rule. Valid options are: `Critical`, `High`, `Medium`, `Low`, `Unknown`, `Info` |
 
-{{< alert type="note" >}}
-
-While `message` is populated by the analyzers, it has been [deprecated](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)
-in favor of `name` and `description`.
-
-{{< /alert >}}
+> [!note]
+> While `message` is populated by the analyzers, it has been [deprecated](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)
+> in favor of `name` and `description`.
 
 Configuration example:
 

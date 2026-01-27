@@ -1175,12 +1175,9 @@ A maximum of two directory levels from the repository's root is searched. For ex
 
 ## How multiple files are processed
 
-{{< alert type="note" >}}
-
-If you've run into problems while scanning multiple files, contribute a comment to
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337056).
-
-{{< /alert >}}
+> [!note]
+> If you've run into problems while scanning multiple files, contribute a comment to
+> [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337056).
 
 ### Python
 

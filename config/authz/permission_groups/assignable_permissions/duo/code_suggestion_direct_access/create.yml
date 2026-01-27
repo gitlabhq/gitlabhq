@@ -1,0 +1,7 @@
+---
+name: create_code_suggestion_direct_access
+description: Grants the ability to create direct access tokens for code suggestions
+permissions:
+  - create_code_suggestion_direct_access
+boundaries:
+  - user

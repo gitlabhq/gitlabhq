@@ -130,19 +130,11 @@ If a site profile's target or authenticated URL is updated, the request headers 
 
 ### Delete a site profile
 
-{{< alert type="note" >}}
-
-If a site profile is linked to a security policy, a user cannot delete the profile from this page.
-See [Scan execution policies](../policies/scan_execution_policies.md) for more information.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-If a site profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
-the on-demand scan is also deleted.
-
-{{< /alert >}}
+> [!note]
+> If a site profile is linked to a security policy, a user cannot delete the profile from this page.
+> See [Scan execution policies](../policies/scan_execution_policies.md) for more information.
+> If a site profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
+> the on-demand scan is also deleted.
 
 To delete a site profile:
 
@@ -204,12 +196,9 @@ To retry a site profile's failed validation:
 
 ### Revoke a site profile's validation status
 
-{{< alert type="warning" >}}
-
-When a site profile's validation status is revoked, all site profiles that share the same URL also
-have their validation status revoked.
-
-{{< /alert >}}
+> [!warning]
+> When a site profile's validation status is revoked, all site profiles that share the same URL also
+> have their validation status revoked.
 
 To revoke a site profile's validation status:
 
@@ -318,12 +307,9 @@ Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
-{{< alert type="note" >}}
-
-If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
-For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
-
-{{< /alert >}}
+> [!note]
+> If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
+> For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
 
 To edit a scanner profile:
 
@@ -337,19 +323,11 @@ To edit a scanner profile:
 
 ### Delete a scanner profile
 
-{{< alert type="note" >}}
-
-If a scanner profile is linked to a security policy, a user cannot delete the profile from this
-page. For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-If a scanner profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
-the on-demand scan is also deleted.
-
-{{< /alert >}}
+> [!note]
+> If a scanner profile is linked to a security policy, a user cannot delete the profile from this
+> page. For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
+> If a scanner profile is linked to an [on-demand scan](on-demand_scan.md) and is deleted,
+> the on-demand scan is also deleted.
 
 To delete a scanner profile:
 

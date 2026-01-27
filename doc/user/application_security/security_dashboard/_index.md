@@ -56,12 +56,9 @@ To view the Security Dashboards, the following is required:
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least 1 detected vulnerability in the project.
 
-{{< alert type="note" >}}
-
-The Security Dashboards show results of scans from the most recent completed pipeline on the
-[default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
-
-{{< /alert >}}
+> [!note]
+> The Security Dashboards show results of scans from the most recent completed pipeline on the
+> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the result of completed pipelines run on the default branch; they do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
 ## Viewing the Security Dashboard
 
@@ -155,12 +152,9 @@ To view the security dashboard for a project or a group you must have:
 - At least one detected vulnerability in the project.
 - [Advanced vulnerability management](../vulnerability_report/_index.md#advanced-vulnerability-management) with [Advanced search](../../search/advanced_search.md) enabled.
 
-{{< alert type="note" >}}
-
-The security dashboards show results of scans from the most recently completed pipeline on the
-[default branch](../../project/repository/branches/default.md). Dashboards are updated with the results of completed pipelines run on the default branch. They do not include vulnerabilities discovered in pipelines from other un-merged branches.
-
-{{< /alert >}}
+> [!note]
+> The security dashboards show results of scans from the most recently completed pipeline on the
+> [default branch](../../project/repository/branches/default.md). Dashboards are updated with the results of completed pipelines run on the default branch. They do not include vulnerabilities discovered in pipelines from other un-merged branches.
 
 ### Viewing the security dashboard
 

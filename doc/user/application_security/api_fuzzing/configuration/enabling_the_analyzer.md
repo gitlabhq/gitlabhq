@@ -156,12 +156,9 @@ uses them to perform testing.
 
 For more details, including how to create a HAR file, see [HTTP archive format](../create_har_files.md).
 
-{{< alert type="warning" >}}
-
-HAR files may contain sensitive information such as authentication tokens, API keys, and session
-cookies. You should review the HAR file contents before adding them to a repository.
-
-{{< /alert >}}
+> [!warning]
+> HAR files may contain sensitive information such as authentication tokens, API keys, and session
+> cookies. You should review the HAR file contents before adding them to a repository.
 
 ### Configure web API fuzzing with a HAR file
 

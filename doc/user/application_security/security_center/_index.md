@@ -16,12 +16,9 @@ description: Configurable space to view vulnerabilities across multiple projects
 The security center is a configurable personal space with vulnerabilities data from multiple projects.
 You can add up to 1,000 projects to the security center from any of the projects that you belong to.
 
-{{< alert type="note" >}}
-
-The **Project** list in the security center settings page displays a maximum of 100 projects.
-To find projects that are not shown in the first 100 projects, use the search filter.
-
-{{< /alert >}}
+> [!note]
+> The **Project** list in the security center settings page displays a maximum of 100 projects.
+> To find projects that are not shown in the first 100 projects, use the search filter.
 
 The security center displays:
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class RepositoryLanguage < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
-
   belongs_to :project
   belongs_to :programming_language
 

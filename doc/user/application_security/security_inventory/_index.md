@@ -20,12 +20,9 @@ description: Group-level visibility of assets, scanner coverage, and vulnerabili
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use the security inventory to visualize which assets you need to secure and understand the actions you need to take to improve security. A common phrase in security is, "you can't secure what you can't see." The security inventory provides visibility into the security posture of your organization's top-level groups, helps you identify coverage gaps, and enables you to make efficient, risk-based prioritization decisions.
 
@@ -65,12 +62,9 @@ To view the security inventory:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 You can filter projects in the security inventory to focus on specific areas of interest.
 The following filters are available:

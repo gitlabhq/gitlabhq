@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class MilestoneRelease < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
-
   belongs_to :milestone
   belongs_to :release
 

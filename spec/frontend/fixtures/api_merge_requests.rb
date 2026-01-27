@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
+RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request, feature_category: :code_review_workflow do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 

@@ -15,12 +15,9 @@ description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
-and is planned for removal in 19.0. This is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/517841) in GitLab 18.0
+> and is planned for removal in 19.0. This is a breaking change.
 
 ## Getting started
 

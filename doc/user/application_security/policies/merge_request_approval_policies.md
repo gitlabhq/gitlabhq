@@ -150,12 +150,9 @@ For parent-child pipelines, policy evaluation considers a maximum of 1,000 child
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Only project Owners have the [permissions](../../permissions.md#project-permissions)
-to select Security Policy Project.
-
-{{< /alert >}}
+> [!note]
+> Only project Owners have the [permissions](../../permissions.md#project-permissions)
+> to select Security Policy Project.
 
 Once your policy is complete, save it by selecting **Configure with a merge request** at the bottom of the
 editor. This redirects you to the merge request on the project's configured security policy project.
@@ -177,12 +174,9 @@ The [policy editor](_index.md#policy-editor) supports YAML mode and rule mode.
 The YAML file with merge request approval policies consists of an array of objects matching the merge request approval
 policy schema nested under the `approval_policy` key. You can configure a maximum of five policies under the `approval_policy` key.
 
-{{< alert type="note" >}}
-
-Merge request approval policies were defined under the `scan_result_policy` key. Until GitLab 17.0, policies can be
-defined under both keys. Starting from GitLab 17.0, only `approval_policy` key is supported.
-
-{{< /alert >}}
+> [!note]
+> Merge request approval policies were defined under the `scan_result_policy` key. Until GitLab 17.0, policies can be
+> defined under both keys. Starting from GitLab 17.0, only `approval_policy` key is supported.
 
 When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),

@@ -655,12 +655,9 @@ To view the security training for a vulnerability:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When managing vulnerabilities found in dependencies in the vulnerability details, under **Location**, you can view:
 

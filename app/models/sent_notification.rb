@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SentNotification < ApplicationRecord
-  extend SuppressCompositePrimaryKeyWarning
   include PartitionedTable
   include EachBatch
 

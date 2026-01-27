@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type: :controller do
+RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type: :controller, feature_category: :code_review_workflow do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures') }

@@ -15,12 +15,9 @@ title: Compliance standards adherence dashboard (deprecated)
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470834) in GitLab 17.11
-and is planned for removal in 18.6. Use the [compliance status report](compliance_status_report.md) instead.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470834) in GitLab 17.11
+> and is planned for removal in 18.6. Use the [compliance status report](compliance_status_report.md) instead.
 
 {{< history >}}
 
