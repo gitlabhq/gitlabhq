@@ -7,6 +7,7 @@ import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-
 import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlCollapsibleListbox, GlEmptyState, GlKeysetPagination, GlLoadingIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';
+import Visibility from 'visibilityjs';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -25,7 +26,7 @@ import {
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
-import { etagQueryHeaders } from '~/graphql_shared/utils';
+import { etagQueryHeaders, toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
@@ -48,6 +49,7 @@ const DEFAULT_PAGINATION = {
 };
 
 const BATCH_DEBOUNCE = 3000;
+const POLL_INTERVAL = 60000;
 
 export default {
   name: 'PipelinesList',
@@ -126,7 +128,7 @@ export default {
       },
       query: getPipelinesQuery,
       // we poll with eTag caching as a safety net every 60 seconds
-      pollInterval: 60000,
+      pollInterval: POLL_INTERVAL,
       variables() {
         // Map frontend scope to GraphQL scope
         const scopeMap = {
@@ -191,6 +193,10 @@ export default {
           },
         ) {
           if (ciPipelineStatusesUpdated) {
+            if (Visibility.hidden()) {
+              return previousData;
+            }
+
             const { id: updatedId } = ciPipelineStatusesUpdated;
 
             const { list } = this.pipelines;
@@ -343,9 +349,19 @@ export default {
   },
   created() {
     this.fetchUpdatedPipelines = debounce(this.updatePipelines, BATCH_DEBOUNCE);
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipelines, POLL_INTERVAL);
+
+    this.visibilityChangeHandler = Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        this.$apollo.queries.pipelines.refetch();
+      }
+    });
   },
   beforeDestroy() {
     this.cancelBatch();
+    if (this.visibilityChangeHandler) {
+      Visibility.unbind(this.visibilityChangeHandler);
+    }
   },
   methods: {
     onChangeTab(scope) {

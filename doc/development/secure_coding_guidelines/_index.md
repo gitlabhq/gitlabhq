@@ -867,7 +867,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 
 - Use an encrypted channel like TLS to transmit credentials. See [our TLS minimum recommendation guidelines](#tls-minimum-recommended-version).
 - Avoid including credentials as part of an HTTP response unless it is absolutely necessary as part of the workflow. For example, generating a PAT for users.
-- Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
+- Avoid sending credentials in URL parameters, as these can be logged inadvertently during transit.
 
 In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://handbook.gitlab.com/handbook/security/security-operations/sirt/).
 

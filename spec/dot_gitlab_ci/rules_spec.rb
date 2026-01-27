@@ -35,10 +35,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         rules_pairs = base_rules.zip(derived_rules)
 
         cut_point = rules_pairs.each.with_index do |(base, derived), index|
-          # YAML.safe_load doesn't resolve !reference, the rule structures diverge and can't be compared
-          break index if base.is_a?(Array) || derived.is_a?(Array)
-          next unless base.is_a?(Hash) && derived.is_a?(Hash)
-
           # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
           #            because when we set this label on an MR, we don't want to run either jobs.
           if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
@@ -83,14 +79,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         end
 
         # Match the remaining rules that should be the same
-        # Only process if cut_point was found, temporary while tiers and MR-approved reference both exists
-        if cut_point.is_a?(Integer)
-          rules_pairs.drop(cut_point + 1).each do |(base, derived)|
-            # Skip !reference entries which are parsed as arrays, not hashes
-            next unless base.is_a?(Hash) && derived.is_a?(Hash)
-
-            expect(derived).to eq(base)
-          end
+        rules_pairs.drop(cut_point + 1).each do |(base, derived)|
+          expect(derived).to eq(base)
         end
       end
     end

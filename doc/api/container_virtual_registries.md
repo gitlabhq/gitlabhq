@@ -115,9 +115,9 @@ Example response:
 }
 ```
 
-### Get a virtual registry
+### Retrieve a virtual registry
 
-Gets a specific container virtual registry.
+Retrieves a specified container virtual registry.
 
 ```plaintext
 GET /virtual_registries/container/registries/:id
@@ -159,7 +159,7 @@ Example response:
 
 ### Update a virtual registry
 
-Updates a specific container virtual registry.
+Updates a specified container virtual registry.
 
 ```plaintext
 PATCH /virtual_registries/container/registries/:id
@@ -191,7 +191,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 > [!warning]
 > When you delete a virtual registry, you also delete all associated upstream registries that are not shared with other virtual registries, along with their cached container images and manifests.
 
-Deletes a specific container virtual registry.
+Deletes a specified container virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/container/registries/:id
@@ -333,7 +333,7 @@ Example response:
 
 ### Create an upstream registry
 
-Adds an upstream container registry to a container virtual registry.
+Creates an upstream container registry for a specified container virtual registry.
 
 ```plaintext
 POST /virtual_registries/container/registries/:id/upstreams
@@ -393,9 +393,9 @@ Example response:
 }
 ```
 
-### Get an upstream registry
+### Retrieve an upstream registry
 
-Gets a specific upstream container registry for a container virtual registry.
+Retrieves a specified upstream container registry.
 
 ```plaintext
 GET /virtual_registries/container/upstreams/:id
@@ -440,7 +440,7 @@ Example response:
 
 ### Update an upstream registry
 
-Updates a specific upstream container registry for a container virtual registry.
+Updates a specified upstream container registry.
 
 ```plaintext
 PATCH /virtual_registries/container/upstreams/:id
@@ -498,7 +498,7 @@ If successful, returns a [`200 OK`](rest/troubleshooting.md#status-codes) status
 
 ### Delete an upstream registry
 
-Deletes a specific upstream container registry for a container virtual registry.
+Deletes a specified upstream container registry.
 
 ```plaintext
 DELETE /virtual_registries/container/upstreams/:id
@@ -520,7 +520,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 ### Associate an upstream with a registry
 
-Associates an existing upstream container registry with a container virtual registry.
+Associates a specified upstream container registry with a specified container virtual registry.
 
 ```plaintext
 POST /virtual_registries/container/registry_upstreams
@@ -558,7 +558,7 @@ Example response:
 
 ### Disassociate an upstream from a registry
 
-Removes the association between an upstream container registry and a container virtual registry.
+Removes the association between a specified upstream container registry and a specified container virtual registry.
 
 ```plaintext
 DELETE /virtual_registries/container/registry_upstreams/:id
@@ -588,7 +588,7 @@ If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes
 
 {{< /history >}}
 
-Schedules all cache entries for deletion for a specific upstream registry in a container virtual registry.
+Schedules all cache entries for deletion for a specified upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/container/upstreams/:id/cache
@@ -662,7 +662,7 @@ Example response:
 
 ### Delete an upstream registry cache entry
 
-Deletes a specific cached container image or manifest for a container upstream registry.
+Deletes a specified cached container image or manifest for an upstream registry.
 
 ```plaintext
 DELETE /virtual_registries/container/cache_entries/*id

@@ -14,8 +14,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
-      'project_secrets_manager_maintenance_tasks' # small queue cron table when project could be nil, https://gitlab.com/gitlab-org/gitlab/-/work_items/584553
+      'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
     ]
   end
 
@@ -305,7 +304,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
       "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
-      "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
       "suggestions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550696",

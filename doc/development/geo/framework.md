@@ -15,7 +15,7 @@ or mention `@geo-team` in the issue or merge request.
 
 {{< /alert >}}
 
-Geo provides an API to make it possible to easily replicate data types
+Geo provides an API to make it possible to replicate data types
 across Geo sites. This API is presented as a Ruby Domain-Specific
 Language (DSL) and aims to make it possible to replicate data with
 minimal effort of the engineer who created a data type.
@@ -73,7 +73,7 @@ naming conventions:
   happen.
 
 - **Geo Domain-Specific Language**:
-  The syntactic sugar that allows engineers to easily specify which
+  The syntactic sugar that allows engineers to specify which
   resources should be replicated and how.
 
 ## Geo Domain-Specific Language

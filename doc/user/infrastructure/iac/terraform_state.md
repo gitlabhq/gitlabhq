@@ -40,7 +40,7 @@ With GitLab-managed OpenTofu state, you:
 OpenTofu state files are encrypted with the Lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the `db_key_base` application setting.
 [To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
 If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
-Kubernetes clusters, or network components), you cannot access the state file easily or decrypt it.
+Kubernetes clusters, or network components), you cannot access the state file or decrypt it.
 Additionally, if GitLab serves up OpenTofu modules or other dependencies that are required to bootstrap GitLab,
 these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
 or consider using a separate GitLab instance with no shared points of failure.

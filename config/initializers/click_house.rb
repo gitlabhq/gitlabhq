@@ -26,20 +26,7 @@ ClickHouse::Client.configure do |config|
   end
 
   config.json_parser = Gitlab::Json
-  config.http_post_proc = ->(url, headers, body) do
-    options = {
-      multipart: true,
-      headers: headers,
-      allow_local_requests: true,
-      silent_mode_enabled: false # override default value to be always false to allow clickhouse requests in silent mode
-    }
-
-    body_key = body.is_a?(IO) ? :body_stream : :body
-    options[body_key] = body
-
-    response = Gitlab::HTTP.post(url, options)
-    ClickHouse::Client::Response.new(response.body, response.code, response.headers)
-  end
+  config.http_post_proc = ClickHouse::HttpClient.build_post_proc
 end
 
 def structured_log(query_string)

@@ -43,20 +43,18 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
     expect(page).to have_current_path("/#{public_project.full_path}", ignore_query: true)
   end
 
-  it 'redirects to private project page after sign in' do
-    # Feature specs for when sign_in_form_vue is enabled will be added in
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/574984
-    stub_feature_flags(sign_in_form_vue: false)
+  with_and_without_sign_in_form_vue do
+    it 'redirects to private project page after sign in' do
+      visit project_path(private_project)
 
-    visit project_path(private_project)
+      owner = private_project.first_owner
+      fill_in 'user_login',    with: owner.email
+      fill_in 'user_password', with: owner.password
+      click_button 'Sign in'
 
-    owner = private_project.first_owner
-    fill_in 'user_login',    with: owner.email
-    fill_in 'user_password', with: owner.password
-    click_button 'Sign in'
-
-    expect(status_code).to eq(200)
-    expect(page).to have_current_path("/#{private_project.full_path}", ignore_query: true)
+      expect(page).to have_content('No repository')
+      expect(page).to have_current_path("/#{private_project.full_path}", ignore_query: true)
+    end
   end
 
   context 'when signed in' do

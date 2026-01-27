@@ -3,7 +3,6 @@
 Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
-    - 'app/finders/projects/branch_rules_finder.rb'
     - 'app/models/blob_viewer/dependency_manager.rb'
     - 'app/models/bulk_imports/export_status.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
@@ -327,7 +326,6 @@ Gitlab/JsonSafeParse:
     - 'spec/features/frequently_visited_projects_and_groups_spec.rb'
     - 'spec/features/projects/import_export/export_file_spec.rb'
     - 'spec/features/projects/settings/monitor_settings_spec.rb'
-    - 'spec/finders/projects/branch_rules_finder_spec.rb'
     - 'spec/frontend/fixtures/search_navigation.rb'
     - 'spec/helpers/admin/abuse_reports_helper_spec.rb'
     - 'spec/helpers/admin/broadcast_messages_helper_spec.rb'

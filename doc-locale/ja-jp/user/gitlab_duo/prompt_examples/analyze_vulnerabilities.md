@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: セキュリティの脆弱性を分析し、ビジネスリスクに基づいて修正の優先順位をつけます。
+description: セキュリティの脆弱性を分析し、ビジネスインパクトに基づいて修正の優先順位をつけます。
 title: セキュリティの脆弱性を分析し、修正の優先順位をつけます
 ---
 
@@ -10,7 +10,7 @@ title: セキュリティの脆弱性を分析し、修正の優先順位をつ�
 
 - 時間の目安: 15～25分
 - レベル: 中級
-- 前提要件: GitLab Duo Enterpriseアドオン、脆弱性レポートで利用可能な脆弱性
+- 前提条件: GitLab Duo Enterpriseアドオン、脆弱性レポートで利用可能な脆弱性
 
 ## 課題 {#the-challenge}
 
@@ -18,11 +18,11 @@ title: セキュリティの脆弱性を分析し、修正の優先順位をつ�
 
 ## アプローチ {#the-approach}
 
-脆弱性を分析し、ビジネスリスクを評価し、GitLab Duoチャット、脆弱性の説明、脆弱性の解決を使用して、優先順位付けされた修正計画を作成します。
+脆弱性を分析し、ビジネスリスクを評価し、GitLab Duo Chat、脆弱性の説明、脆弱性の修正を使用して、優先順位付けされた修正計画を作成します。
 
 ### ステップ1: 脆弱性について説明する {#step-1-explain-vulnerabilities}
 
-プロジェクトの脆弱性レポートに移動します。重大度が高いまたは重要な脆弱性ごとに、脆弱性の説明を使用してイシューを説明します。次に、Duoチャットを使用して、フォローアップの質問をします。
+プロジェクトの脆弱性レポートに移動します。重大度が高または致命的な脆弱性ごとに、脆弱性の説明を使用してイシューを説明します。次に、GitLab Duo Chatを使用して、フォローアップの質問をします。
 
 ```plaintext
 Based on the earlier vulnerability explanation:
@@ -40,7 +40,7 @@ Consider our application stack: [technology_stack] and deployment environment: [
 
 ### ステップ2: リスクの優先順位付け {#step-2-prioritize-risks}
 
-GitLab Duoチャットを使用して、複数の脆弱性をまとめて分析し、優先順位マトリックスを作成します。
+GitLab Duo Chatを使用して、複数の脆弱性をまとめて分析し、優先順位マトリクスを作成します。
 
 ```plaintext
 Based on these vulnerability explanations, help me prioritize fixes:
@@ -60,7 +60,7 @@ Rank as Critical/High/Medium/Low priority with justification.
 
 ### ステップ3: 修正計画の生成 {#step-3-generate-fix-plans}
 
-優先度の高い脆弱性については、脆弱性の解決またはチャットを使用して、具体的な修正のガイダンスを取得します。
+優先度の高い脆弱性については、脆弱性の修正またはChatを使用して、具体的な修正のガイダンスを取得します。
 
 ```plaintext
 Provide a detailed remediation plan for this [vulnerability_type]:
@@ -78,19 +78,19 @@ Focus on [security_framework] compliance and our [coding_standards].
 
 ## ヒント {#tips}
 
-- まず、重大度が高いまたは重要な重大度の脆弱性から開始します。
-- 修正に取りかかる前に、脆弱性の説明を使用してコンテキストを理解してください。
-- ビジネスインパクトを評価する際は、特定のアプリケーションアーキテクチャを考慮してください。
-- GitLab Duoチャットに、不明な技術用語または攻撃ベクターの説明を依頼してください。
+- まず、重大度が高い脆弱性から開始します。
+- 修正に取りかかる前に、脆弱性の説明を使用してコンテキストを理解します。
+- ビジネスインパクトを評価する際は、特定のアプリケーションアーキテクチャを考慮します。
+- GitLab Duo Chatに、不明な技術用語または脅威ベクターの説明を依頼します。
 - バッチ分析と一貫性のある修正のために、同様の脆弱性をまとめてグループ化します。
 - セキュリティダッシュボードを使用して、修正作業の進捗状況を追跡します。
 
 ## 確認 {#verify}
 
-以下を確認してください。:
+以下を確認してください:
 
 - 優先順位は、CVSSスコアだけでなく、実際のビジネスリスクを反映している必要があります。
 - 修正計画には、特定のコード例とテスト手順が含まれている必要があります。
 - 誤検出が明確に特定され、文書化されている必要があります。
 - 重大な脆弱性には、特定された即時軽減戦略が必要です。
-- 修正タイムラインは現実的であり、テストとデプロイプロセスを考慮している必要があります。
+- 修正タイムラインは現実的であり、テストとデプロイプロセスを考慮する必要があります。

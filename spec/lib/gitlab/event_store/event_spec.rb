@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'json_schemer'
 require 'oj'
 
-RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
+RSpec.describe Gitlab::EventStore::Event, feature_category: :service_ping do
   let(:event_class) { stub_const('TestEvent', Class.new(described_class)) }
   let(:event) { event_class.new(data: data) }
   let(:data) { { 'project_id' => 123, 'project_path' => 'org/the-project' } }

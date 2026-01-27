@@ -919,6 +919,16 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def committer_ids_to_filter_from_approvers
+    committers(with_merge_commits: true, include_author_when_signed: true).select(:id)
+  end
+  strong_memoize_attr :committer_ids_to_filter_from_approvers
+
+  def committers_to_filter_from_approvers
+    committers(with_merge_commits: true, lazy: true, include_author_when_signed: true)
+  end
+  strong_memoize_attr :committers_to_filter_from_approvers
+
   # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
   def draftless_title_changed(old_title)

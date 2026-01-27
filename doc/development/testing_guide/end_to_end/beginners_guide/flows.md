@@ -29,7 +29,7 @@ it 'performs a test after signing in as the default user' do
 end
 ```
 
-`QA::Flow::Login` provides an even more useful flow, allowing a test to easily switch users.
+`QA::Flow::Login` provides an even more useful flow, allowing a test to switch users.
 
 ```ruby
 # QA::Flow::Login

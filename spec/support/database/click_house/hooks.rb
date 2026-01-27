@@ -6,18 +6,22 @@ return if ENV['GENERATE_FRONTEND_FIXTURES_MAPPING'] == 'true'
 class ClickHouseTestRunner
   include ClickHouseSchemaHelpers
 
+  EXTENDED_READ_TIMEOUT = 60
+
   def truncate_tables
-    ClickHouse::Client.configuration.databases.each_key do |db|
-      # Select tables with at least one row
-      query = tables_for(db).map do |table|
-        "(SELECT '#{table}' AS table FROM #{table} LIMIT 1)"
-      end.join(' UNION ALL ')
+    with_extended_read_timeout do
+      ClickHouse::Client.configuration.databases.each_key do |db|
+        tables = tables_for(db)
+        next if tables.empty?
 
-      next if query.empty?
+        query = tables.map do |table|
+          "(SELECT '#{table}' AS table FROM #{table} LIMIT 1)"
+        end.join(' UNION ALL ')
 
-      tables_with_data = ClickHouse::Client.select(query, db).pluck('table')
-      tables_with_data.each do |table|
-        ClickHouse::Client.execute("TRUNCATE TABLE #{table}", db)
+        tables_with_data = ClickHouse::Client.select(query, db).pluck('table')
+        tables_with_data.each do |table|
+          ClickHouse::Client.execute("TRUNCATE TABLE #{table}", db)
+        end
       end
     end
   end
@@ -48,6 +52,15 @@ class ClickHouseTestRunner
   def tables_for(db)
     @tables ||= {}
     @tables[db] ||= lookup_tables(db) - %w[schema_migrations]
+  end
+
+  def with_extended_read_timeout
+    original_proc = ClickHouse::Client.configuration.http_post_proc
+    ClickHouse::Client.configuration.http_post_proc =
+      ClickHouse::HttpClient.build_post_proc(read_timeout: EXTENDED_READ_TIMEOUT)
+    yield
+  ensure
+    ClickHouse::Client.configuration.http_post_proc = original_proc
   end
 end
 # rubocop: enable Gitlab/NamespacedClass

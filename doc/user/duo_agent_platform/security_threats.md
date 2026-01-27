@@ -380,7 +380,7 @@ prompts:
         3. Best practice violations
         4. Positive aspects of the code
 
-        Structure your response so it can be easily converted into a review comment.
+        Structure your response so it can be converted into a review comment.
       placeholder: history
     params:
       timeout: 300

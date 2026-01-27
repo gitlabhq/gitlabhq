@@ -9,15 +9,44 @@ module Gitlab
         OCCUPIED_BUCKETS_KEY = "{bulk_delete_expired_job_artifacts}:occupied_buckets"
         STALE_BUCKET_THRESHOLD = 10.minutes
 
+        # Lua script for atomic bucket claiming
+        # Atomically: SPOP from available + ZADD to occupied
+        CLAIM_BUCKET_SCRIPT = <<~LUA
+          local available_before = redis.call('SMEMBERS', KEYS[1])
+          local bucket = redis.call('SPOP', KEYS[1])
+          if bucket then
+            redis.call('ZADD', KEYS[2], ARGV[1], bucket)
+          end
+          local available_after = redis.call('SMEMBERS', KEYS[1])
+          local occupied_after = redis.call('ZRANGE', KEYS[2], 0, -1)
+          return { bucket, available_before, available_after, occupied_after }
+        LUA
+
         class << self
           # Atomically pops a bucket from available set and adds to occupied sorted set with timestamp
+          # Logs bucket state immediately after claiming
           def claim_bucket
             with_redis do |redis|
-              bucket = redis.spop(AVAILABLE_BUCKETS_KEY)
+              result = redis.eval(
+                CLAIM_BUCKET_SCRIPT,
+                keys: [AVAILABLE_BUCKETS_KEY, OCCUPIED_BUCKETS_KEY],
+                argv: [Time.current.to_i]
+              )
+
+              bucket, available_before, available_after, occupied_after = result
+
               next unless bucket
 
-              redis.zadd(OCCUPIED_BUCKETS_KEY, Time.current.to_i, bucket)
-              bucket.to_i
+              bucket_int = bucket.to_i
+
+              log_bucket_claim(
+                claimed_bucket: bucket_int,
+                available_buckets_before: available_before,
+                available_buckets_after: available_after,
+                occupied_buckets_after: occupied_after
+              )
+
+              bucket_int
             end
           end
 
@@ -69,6 +98,21 @@ module Gitlab
           end
 
           private
+
+          def log_bucket_claim(
+            claimed_bucket:,
+            available_buckets_before:,
+            available_buckets_after:,
+            occupied_buckets_after:
+          )
+            Gitlab::AppLogger.info(
+              message: 'Bucket claimed for bulk artifact deletion',
+              claimed_bucket: claimed_bucket,
+              available_buckets_before: available_buckets_before,
+              available_buckets_after: available_buckets_after,
+              occupied_buckets_after: occupied_buckets_after
+            )
+          end
 
           def with_redis(&)
             Gitlab::Redis::SharedState.with(&) # rubocop:disable CodeReuse/ActiveRecord -- not AR

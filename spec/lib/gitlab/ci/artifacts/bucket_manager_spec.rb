@@ -6,25 +6,40 @@ RSpec.describe Gitlab::Ci::Artifacts::BucketManager, :clean_gitlab_redis_shared_
   feature_category: :job_artifacts do
   describe '.claim_bucket' do
     context 'when buckets are available' do
-      let(:bucket) { 0 }
+      let(:buckets) { [0, 1, 2] }
 
       before do
         Gitlab::Redis::SharedState.with do |redis|
-          redis.sadd(described_class::AVAILABLE_BUCKETS_KEY, bucket.to_s)
+          redis.sadd(described_class::AVAILABLE_BUCKETS_KEY, buckets.map(&:to_s))
         end
       end
 
-      it 'tracks the bucket in occupied set' do
+      it 'atomically claims a bucket and tracks it in occupied set' do
         claimed_bucket = described_class.claim_bucket
 
         Gitlab::Redis::SharedState.with do |redis|
-          available = redis.smembers(described_class::AVAILABLE_BUCKETS_KEY)
-          occupied = redis.zrange(described_class::OCCUPIED_BUCKETS_KEY, 0, -1)
+          available = redis.smembers(described_class::AVAILABLE_BUCKETS_KEY).map(&:to_i)
+          occupied = redis.zrange(described_class::OCCUPIED_BUCKETS_KEY, 0, -1).map(&:to_i)
 
-          expect(available).to be_empty
-          expect(occupied).to contain_exactly(bucket.to_s)
-          expect(claimed_bucket).to eq(bucket)
+          expect(available).not_to include(claimed_bucket)
+          expect(available.size).to eq(2)
+          expect(occupied).to contain_exactly(claimed_bucket)
+          expect(buckets).to include(claimed_bucket)
         end
+      end
+
+      it 'logs bucket claim info immediately' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          hash_including(
+            message: 'Bucket claimed for bulk artifact deletion',
+            claimed_bucket: an_instance_of(Integer),
+            available_buckets_before: an_instance_of(Array),
+            available_buckets_after: an_instance_of(Array),
+            occupied_buckets_after: an_instance_of(Array)
+          )
+        )
+
+        described_class.claim_bucket
       end
     end
 
@@ -37,6 +52,11 @@ RSpec.describe Gitlab::Ci::Artifacts::BucketManager, :clean_gitlab_redis_shared_
 
       it 'returns nil' do
         expect(described_class.claim_bucket).to be_nil
+      end
+
+      it 'does not log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+        described_class.claim_bucket
       end
     end
   end

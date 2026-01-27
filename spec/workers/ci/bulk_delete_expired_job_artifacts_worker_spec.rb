@@ -25,6 +25,17 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
     let(:bucket) { 0 }
     let(:max_running_jobs) { described_class.max_running_jobs_limit }
 
+    context 'when bulk_delete_job_artifacts feature flag is disabled' do
+      before do
+        stub_feature_flags(bulk_delete_job_artifacts: false)
+      end
+
+      it 'returns early without claiming a bucket' do
+        expect(Gitlab::Ci::Artifacts::BucketManager).not_to receive(:claim_bucket)
+        worker.perform_work
+      end
+    end
+
     context 'when a bucket is claimed' do
       before do
         allow(Gitlab::Ci::Artifacts::BucketManager).to receive(:claim_bucket).and_return(bucket)
@@ -44,10 +55,7 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
       it 'releases the bucket after processing' do
         expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:release_bucket)
           .with(bucket, max_buckets: max_running_jobs)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
+        allow(worker).to receive(:log_extra_metadata_on_done)
         worker.perform_work
       end
 
@@ -75,10 +83,8 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
         end
 
         it 'logs the destroyed count' do
+          allow(worker).to receive(:log_extra_metadata_on_done)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 1)
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket_released, bucket)
-          expect(worker).to receive(:log_extra_metadata_on_done).with(:artifacts_empty, true)
           worker.perform_work
         end
       end
@@ -127,22 +133,40 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
     end
 
     context 'when a bucket was claimed' do
+      let(:bucket) { 0 }
+      let(:max_running_jobs) { described_class.max_running_jobs_limit }
+
       before do
         worker.instance_variable_set(:@bucket_claimed, true)
+        worker.instance_variable_set(:@mod_bucket, bucket)
       end
 
-      context 'when there are expired artifacts' do
+      context 'when there are expired artifacts matching the bucket MOD condition' do
         let_it_be(:project) { create(:project) }
         let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
         let_it_be(:expired_artifact) do
           create(:ci_job_artifact, :archive,
-            job: create(:ci_build, pipeline: pipeline),
+            job: job,
             expire_at: 1.day.ago,
             locked: Ci::JobArtifact.lockeds[:unlocked])
         end
 
-        it 'returns 999' do
+        it 'returns 999 when artifact matches bucket' do
+          # Set bucket to match the artifact's (project_id + job_id) % max_running_jobs
+          matching_bucket = (project.id + job.id) % max_running_jobs
+          worker.instance_variable_set(:@mod_bucket, matching_bucket)
+
           expect(worker.remaining_work_count).to eq(999)
+        end
+
+        it 'returns 0 when artifact does not match bucket' do
+          # Set bucket to a value that won't match
+          matching_bucket = (project.id + job.id) % max_running_jobs
+          non_matching_bucket = (matching_bucket + 1) % max_running_jobs
+          worker.instance_variable_set(:@mod_bucket, non_matching_bucket)
+
+          expect(worker.remaining_work_count).to eq(0)
         end
       end
 

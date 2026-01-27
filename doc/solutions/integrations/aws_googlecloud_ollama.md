@@ -15,7 +15,7 @@ title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with 
 {{< /details >}}
 
 The document describes the installation and integration of GitLab and GitLab Duo with a self-hosted Large Language Model (LLM) running a Mistral model on Ollama. The guide describes the setup using 3 different
-virtual machines and can be easily followed along on AWS or GCP. Of course, the process is applicable to different deployment platforms, too.
+virtual machines and can be followed along on AWS or GCP. Of course, the process is applicable to different deployment platforms, too.
 
 This guide is a comprehensive, end-to-end set of instructions for getting the desired setup working. It calls out references to the many areas of GitLab documentation that were used to support the creation of the final configuration. The referenced docs are important when more background is needed to adjust the implementation to a specific scenario.
 <!-- TOC -->

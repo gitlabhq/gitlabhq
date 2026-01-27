@@ -8,12 +8,28 @@ title: GitLab Duo Chatに質問する
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-GitLab Duo Chatは以下をサポートします:
+{{< collapsible title="モデル情報" >}}
+
+特に記載がない限り、LLMのデフォルトは次のとおりです:
+
+- エージェント型チャットのLLMは、Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5)です。
+- チャット（クラシック）のLLMは、Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)です。
+
+{{< /collapsible >}}
+
+{{< history >}}
+
+- GitLab 18.6では、チャット（クラシック）およびチャット（エージェント型）のデフォルトLLMがClaude Sonnet 4.5にアップデートされました。
+- GitLab 18.7では、チャット（エージェント型）の[アップデートされたデフォルトLLM](https://gitlab.com/groups/gitlab-org/-/epics/19998)がClaude Haiku 4.5になりました。
+
+{{< /history >}}
+
+GitLab Duo Chatは、次のようなさまざまなタスクを実行するのに役立ちます:
 
 - コード、エラー、GitLab機能の説明を入手できます。
 - コードの生成やリファクタリング、テストの作成、問題の修正を行います。
@@ -21,22 +37,16 @@ GitLab Duo Chatは以下をサポートします:
 - イシュー、エピック、およびマージリクエストを要約します。
 - セキュリティ脆弱性を解決します。
 
-次の例では、Duo Chatの機能について詳しく説明します。
+このページの例（[スラッシュコマンド](#gitlab-duo-chat-slash-commands)など）は、意図的に一般的なものです。現在の目標に特化した質問をすることで、Chatからより有用な回答を得られる場合があります。たとえば`How does the clean_missing_data function in data_cleaning.py decide which rows to drop?`などです。
 
-その他の実践的な例については、[GitLab Duoのユースケース](../gitlab_duo/use_cases.md)を参照してください。
-
-{{< alert type="note" >}}
-
-[スラッシュコマンド](#gitlab-duo-chat-slash-commands)を含むこのページの質問例は、意図的に一般的なものになっています。現在の目標に特化した質問をすることで、Chatからより有用な回答を得られる場合があります。例「`clean_missing_data`の`data_cleaning.py`関数は、どの行を削除するかをどのように決定しますか？」。
-
-{{< /alert >}}
+その他の実践的な例については、[GitLab Duoのユースケース](../gitlab_duo/use_cases.md)と[プロンプトの例](example_prompts.md)を参照してください。
 
 ## GitLabについて質問する {#ask-about-gitlab}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -71,10 +81,10 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -84,7 +94,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 - GitLab 16.8でGitLab Self-ManagedおよびGitLab Dedicated向けに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235)されました。
 - GitLab 17.6で、GitLab Duoアドオンが必須となりました。
 - GitLab 17.9で、[セルフホストモデル設定](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms)と[デフォルトのGitLab外部AIベンダー設定](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms)に対して[有効](https://gitlab.com/groups/gitlab-org/-/epics/15227)になりました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -94,13 +104,9 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 - GitLabでイシューを表示しているときに、`Generate a concise summary of the current issue.`と尋ねることができます
 - `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
+> [!note]イシューに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない可能性があります。AIモデルには、一度に処理できる入力量に制限があります。
 
-イシューに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない場合があります。AIモデルには、一度に処理できる入力量に制限があります。
-
-{{< /alert >}}
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>GitLab Duo Chatでイシューとエピックの生産性を向上させる方法のヒントについては、[GitLab Duo Chatで生産性を向上させる](https://youtu.be/RJezT5_V6dI)を参照してください。
+<i class="fa-youtube-play" aria-hidden="true"></i>GitLab Duo Chatでイシューとエピックの生産性を向上させる方法のヒントについては、[GitLab Duo Chatで生産性を向上させる](https://youtu.be/RJezT5_V6dI)を参照してください。
 <!-- Video published on 2024-04-17 -->
 
 ## 特定エピックについて質問する {#ask-about-a-specific-epic}
@@ -111,10 +117,10 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -124,7 +130,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 - GitLab 16.8でGitLab Self-ManagedおよびGitLab Dedicated向けに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487)されました。
 - GitLab 17.6で、GitLab Duoアドオンが必須となりました。
 - GitLab 17.9で、[セルフホストモデル設定](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms)と[デフォルトのGitLab外部AIベンダー設定](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms)に対して[有効](https://gitlab.com/groups/gitlab-org/-/epics/15227)になりました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -134,11 +140,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 - GitLabでエピックを表示しているときに、`Generate a concise summary of the opened epic.`と尋ねることができます
 - `What are the unique use cases raised by commenters in <link to your epic>?`
 
-{{< alert type="note" >}}
-
-エピックに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない場合があります。AIモデルには、一度に処理できる入力量に制限があります。
-
-{{< /alert >}}
+> [!note]エピックに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない可能性があります。AIモデルには、一度に処理できる入力量に制限があります。
 
 ## 特定のマージリクエストについて質問する {#ask-about-a-specific-merge-request}
 
@@ -148,10 +150,9 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
 - エディタ: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
@@ -159,7 +160,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 - GitLab 17.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/464587)されました。
 - GitLab 17.6で、GitLab Duoアドオンが必須となりました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -185,17 +186,16 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
 - エディタ: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
 {{< history >}}
 
 - GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/468460)されました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -213,17 +213,16 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
 - エディタ: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /collapsible >}}
 
 {{< history >}}
 
 - GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/468461)されました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -242,10 +241,10 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -261,11 +260,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 - GitLabで作業アイテムを表示しているときに、`Generate a concise summary of the current work item.`と尋ねることができます
 - `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
 
-{{< alert type="note" >}}
-
-作業アイテムに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない場合があります。AIモデルには、一度に処理できる入力量に制限があります。
-
-{{< /alert >}}
+> [!note]作業アイテムに大量のテキスト（40,000語以上）が含まれている場合、GitLab Duo Chatはすべての単語を考慮できない可能性があります。AIモデルには、一度に処理できる入力量に制限があります。
 
 ## 選択したコードについて説明する {#explain-selected-code}
 
@@ -277,10 +272,10 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 
 {{< collapsible title="エディタとモデルの情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -297,7 +292,7 @@ Chatをドキュメントで最新の状態に保つために、ナレッジベ�
 GitLab Duo Chatに、選択したコードの説明を依頼できます:
 
 1. IDEでコードを選択します。
-1. Duo Chatで、`/explain`と入力します。
+1. GitLab Duo Chatで、`/explain`と入力します。
 
    ![コードを選択し、/explainスラッシュコマンドを使用して説明するようにGitLab Duo Chatに依頼する。](img/code_selection_duo_chat_v17_4.png)
 
@@ -314,7 +309,7 @@ GitLab Duo Chatに、選択したコードの説明を依頼できます:
 
 詳細については、以下を参照してください:
 
-- [VS CodeでGitLab Duo Chatを使用する](_index.md#use-gitlab-duo-chat-in-vs-code)。
+- [VS CodeでGitLab Duo Chatを使用する](agentic_chat.md#use-gitlab-duo-chat-in-vs-code)。
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)。
   <!-- Video published on 2025-03-18 -->
 
@@ -327,14 +322,14 @@ GitLab UIでは、以下でもコードを説明できます:
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -368,15 +363,14 @@ Chatにコードの生成を依頼することもできます。例:
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- GitLab Self-Managed、GitLab DedicatedのLLM: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- GitLab.comのLLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -401,15 +395,14 @@ Chatにコードの生成を依頼することもできます。例:
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- GitLab Self-Managed、GitLab DedicatedのLLM: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- GitLab.comのLLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -432,14 +425,14 @@ Chatにコードの生成を依頼することもできます。例:
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -453,9 +446,9 @@ Chatにコードの生成を依頼することもできます。例:
 
 {{< /history >}}
 
-`/include`と入力してファイルを選択することで、VS CodeまたはJetBrains IDEでDuo Chatの会話にリポジトリファイルを追加します。
+リポジトリファイルは、`/include`と入力してファイルを選択することにより、VS CodeまたはJetBrains IDEのGitLab Duo Chatの会話に追加します。
 
-前提要件: 
+前提条件: 
 
 - ファイルはリポジトリの一部である必要があります。
 - ファイルはテキストベースである必要があります。PDFや画像のようなバイナリファイルはサポートされていません。
@@ -472,11 +465,7 @@ Chatにコードの生成を依頼することもできます。例:
 - `How does checkout_flow.js interact with cart_service.py? Generate a sequence diagram using Mermaid.`
 - `Can you extend the checkout process by showing products related to the ones in the user's cart? I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
-{{< alert type="note" >}}
-
-[Quick Chat](_index.md#in-an-editor-window)を使用して、ファイルを追加したり、Chatのコンテキストに追加したファイルについて質問したりすることはできません。
-
-{{< /alert >}}
+> [!note]チャットのコンテキストに追加されたファイルについて、[Quick Chat](_index.md#in-an-editor-window)を使用してファイルを追加したり質問したりすることはできません。
 
 ## IDEでコードをリファクタリングする {#refactor-code-in-the-ide}
 
@@ -488,10 +477,10 @@ Chatにコードの生成を依頼することもできます。例:
 
 {{< collapsible title="エディタとモデルの情報" >}}
 
-- エディタ: Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -508,7 +497,7 @@ Chatにコードの生成を依頼することもできます。例:
 GitLab Duo Chatに、選択したコードのリファクタリングを依頼できます:
 
 1. IDEでコードを選択します。
-1. Duo Chatで、`/refactor`と入力します。
+1. GitLab Duo Chatで、`/refactor`と入力します。
 
 考慮すべき追加の指示を含めることができます。例: 
 
@@ -525,7 +514,7 @@ GitLab Duo Chatに、選択したコードのリファクタリングを依頼�
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)。
   <!-- Video published on 2025-03-18 -->
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [概要を見る](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
+- <i class="fa-youtube-play" aria-hidden="true"></i> [概要を見る](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
 
 ## IDEでコードを修正する {#fix-code-in-the-ide}
 
@@ -537,10 +526,10 @@ GitLab Duo Chatに、選択したコードのリファクタリングを依頼�
 
 {{< collapsible title="エディタとモデルの情報" >}}
 
-- エディタ: Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -556,7 +545,7 @@ GitLab Duo Chatに、選択したコードのリファクタリングを依頼�
 GitLab Duo Chatに、選択したコードの修正を依頼できます:
 
 1. IDEでコードを選択します。
-1. Duo Chatで、`/fix`と入力します。
+1. GitLab Duo Chatで、`/fix`と入力します。
 
 考慮すべき追加の指示を含めることができます。例: 
 
@@ -578,10 +567,10 @@ GitLab Duo Chatに、選択したコードの修正を依頼できます:
 
 {{< collapsible title="エディタとモデルの情報" >}}
 
-- エディタ: Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -598,7 +587,7 @@ GitLab Duo Chatに、選択したコードの修正を依頼できます:
 GitLab Duo Chatに、選択したコードのテストを作成するよう依頼できます:
 
 1. IDEでコードを選択します。
-1. Duo Chatで、`/tests`と入力します。
+1. GitLab Duo Chatで、`/tests`と入力します。
 
 考慮すべき追加の指示を含めることができます。例: 
 
@@ -609,9 +598,9 @@ GitLab Duo Chatに、選択したコードのテストを作成するよう依�
 
 `/tests`は、[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md)を使用して、より正確なコンテキスト認識型の提案を提供します。
 
-詳細については、[VS CodeでGitLab Duo Chatを使用する](_index.md#use-gitlab-duo-chat-in-vs-code)を参照してください。
+詳細については、[VS CodeでGitLab Duo Chatを使用する](agentic_chat.md#use-gitlab-duo-chat-in-vs-code)を参照してください。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [概要を見る](https://www.youtube.com/watch?v=zWhwuixUkYU)
+<i class="fa-youtube-play" aria-hidden="true"></i> [概要を見る](https://www.youtube.com/watch?v=zWhwuixUkYU)
 
 ## CI/CDについて質問する {#ask-about-cicd}
 
@@ -621,10 +610,10 @@ GitLab Duo Chatに、選択したコードのテストを作成するよう依�
 
 {{< /details >}}
 
-{{< collapsible title="エディタとモデルの情報" >}}
+{{< collapsible title="エディタ情報" >}}
 
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
 
 {{< /collapsible >}}
 
@@ -666,9 +655,9 @@ GitLab Duo ChatにCI/CD設定の作成を依頼できます:
 {{< collapsible title="エディタとモデルの情報" >}}
 
 - エディタ: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- デフォルトLLM: Anthropic [Claude Sonnet 4.0](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -678,7 +667,7 @@ GitLab Duo ChatにCI/CD設定の作成を依頼できます:
 - GitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/441681)となり、GitLab Duo Chatに移動しました。
 - GitLab 17.6で、GitLab Duoアドオンが必須となりました。
 - マージリクエストの失敗したジョブウィジェットは、GitLab 17.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174586)されました。
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
@@ -686,7 +675,7 @@ GitLab Duo ChatでGitLab Duo根本原因分析を使用して、CI/CDジョブ�
 
 この機能には、マージリクエストの**パイプライン**タブから、またはジョブログから直接アクセスできます。
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [概要を見る](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+<i class="fa-youtube-play" aria-hidden="true"></i> [概要を見る](https://www.youtube.com/watch?v=MLjhVbMjFAY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 根本原因分析は、以下をサポートしていません:
 
@@ -695,16 +684,15 @@ GitLab Duo ChatでGitLab Duo根本原因分析を使用して、CI/CDジョブ�
 
 [エピック13872](https://gitlab.com/groups/gitlab-org/-/epics/13872)で、この機能に関するフィードバックをお寄せください。
 
-前提要件: 
+前提条件: 
 
 - CI/CDジョブを表示する権限が必要です。
-- 有料のGitLab Duo Enterpriseシートが必要です。
 
 ### マージリクエストから {#from-a-merge-request}
 
 マージリクエストから失敗したCI/CDジョブのトラブルシューティングを行うには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. マージリクエストに移動します。
 1. **パイプライン**タブを選択します。
 1. 失敗したジョブウィジェットから、次のいずれかを行います:
@@ -715,7 +703,7 @@ GitLab Duo ChatでGitLab Duo根本原因分析を使用して、CI/CDジョブ�
 
 ジョブログから失敗したCI/CDジョブのトラブルシューティングを行うには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **ビルド** > **ジョブ**を選択します。
 1. 失敗したCI/CDジョブを選択します。
 1. ジョブログの下で、次のいずれかを行います:
@@ -734,9 +722,9 @@ GitLab Duo ChatでGitLab Duo根本原因分析を使用して、CI/CDジョブ�
 {{< collapsible title="エディタとモデルの情報" >}}
 
 - エディタ: GitLab UI
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- デフォルトLLM: Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5)
 - Amazon QのLLM: Amazon Q Developer
-- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能: はい
+- [セルフホストモデル対応のGitLab Duo](../../administration/gitlab_duo_self_hosted/_index.md)で利用可能
 
 {{< /collapsible >}}
 
@@ -769,7 +757,7 @@ SAST脆弱性レポートを表示しているときに、GitLab Duo Chatに脆�
 
 GitLab 17.10以降では、Chatと複数の同時会話を行うことができます。
 
-- Chatドロワーの左上隅で、**新しいチャット**を選択します。
+- チャットドロワーの左上隅で、**新しいチャット**を選択します。
 - テキストボックスに`/new`と入力し、<kbd>Enter</kbd>キーを押すか、**送信**を選択します。
 
 ## 会話を削除または新しい会話を開始する {#delete-or-start-a-new-conversation}
@@ -778,11 +766,11 @@ GitLab 17.10以降では、Chatと複数の同時会話を行うことができ�
 
 チャットウィンドウをクリアして同じ会話スレッドで新しい会話を開始するには、`/reset`と入力し、**送信**を選択します。
 
-どちらの場合も、新しい質問をするときに会話履歴は考慮されません。コンテキストを切り替えるときに新しい会話を開始すると、Duo Chatが無関係な会話によって混乱することがないため、回答の改善に役立つ場合があります。
+どちらの場合も、新しい質問をするときに会話履歴は考慮されません。コンテキストを切り替えるときに、新しい会話を開始すると、回答が改善される場合があります。これは、GitLab Duo Chatが無関係な会話によって混乱しないためです。
 
 ## GitLab Duo Chatスラッシュコマンド {#gitlab-duo-chat-slash-commands}
 
-Duo Chatには、ユニバーサル、GitLab UI、IDEコマンドのリストがあり、それぞれの前にスラッシュ（`/`）が付きます。
+GitLab Duo Chatには、ユニバーサルコマンド、GitLab UIコマンド、IDEコマンドのリストがあり、各コマンドの先頭にはスラッシュ（`/`）が付きます。
 
 コマンドを使用すると、特定のタスクをすばやく実行できます。
 
@@ -790,10 +778,16 @@ Duo Chatには、ユニバーサル、GitLab UI、IDEコマンドのリストが
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
-- エディタ: GitLab UI、Web IDE、VS Code、JetBrains IDE
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
+
+{{< collapsible title="エディタ情報" >}}
+
+- エディタ - GitLab Duo Chat（エージェント型）: GitLab UI、VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): GitLab UI、Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -806,13 +800,9 @@ Duo Chatには、ユニバーサル、GitLab UI、IDEコマンドのリストが
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
 | /new    | [新しい会話を開始するが、以前の会話はチャットの履歴に保持する](#delete-or-start-a-new-conversation)      |
 | /reset  | [チャットウィンドウをクリアして、会話をリセットする](#delete-or-start-a-new-conversation)                                       |
-| /help   | Duo Chatの動作について詳しく学ぶ                                                                                           |
+| /help   | GitLab Duo Chatのしくみについて詳細をご覧ください                                                                                           |
 
-{{< alert type="note" >}}
-
-GitLab.comでは、GitLab 17.10 以降、[複数の会話](_index.md#have-multiple-conversations)を行っている場合、`/clear`および`/reset`スラッシュコマンドは[`/new`スラッシュコマンド](#gitlab-ui)に置き換えられます。
-
-{{< /alert >}}
+> [!note]GitLab.comでは、GitLab 17.10以降で、[複数の会話](_index.md#have-multiple-conversations)をしている場合、`/clear`と`/reset`のスラッシュコマンドは、[`/new`スラッシュコマンド](#gitlab-ui)に置き換えられます。
 
 ### GitLab UI {#gitlab-ui}
 
@@ -825,11 +815,11 @@ GitLab.comでは、GitLab 17.10 以降、[複数の会話](_index.md#have-multip
 
 {{< history >}}
 
-- GitLab 18.0で、Premiumに含まれるようになりました。
+- GitLab 18.0でPremiumを含むように変更されました。
 
 {{< /history >}}
 
-これらのコマンドは動的であり、Duo Chat使用時にGitLab UIでのみ使用できます:
+これらのコマンドは動的であり、GitLab Duo Chatを使用している場合にGitLab UIでのみ使用できます:
 
 | コマンド                | 目的                                                                                                            | エリア |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
@@ -841,10 +831,16 @@ GitLab.comでは、GitLab 17.10 以降、[複数の会話](_index.md#have-multip
 
 {{< details >}}
 
-- アドオン: GitLab Duo Core、Pro、またはEnterprise。
-- エディタ: Web IDE、VS Code、JetBrains IDE
+- アドオン: GitLab Duo Core、Pro、またはEnterprise
 
 {{< /details >}}
+
+{{< collapsible title="エディタ情報" >}}
+
+- エディタ - GitLab Duo Chat（エージェント型）: VS Code、JetBrains IDE、およびVisual Studio
+- エディタ - GitLab Duo Chat (従来型): Web IDE、VS Code、JetBrains IDE、Visual Studio、およびEclipse
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -853,12 +849,12 @@ GitLab.comでは、GitLab 17.10 以降、[複数の会話](_index.md#have-multip
 
 {{< /history >}}
 
-これらのコマンドは、サポートされているIDEでDuo Chatを使用する場合にのみ機能します:
+これらのコマンドは、サポートされているIDEでGitLab Duo Chatを使用している場合にのみ機能します:
 
 | コマンド   | 目的                                           |
 |-----------|---------------------------------------------------|
 | /tests    | [テストケースを作成する](#write-tests-in-the-ide)            |
 | /explain  | [コードを説明する](#explain-selected-code)            |
-| /refactor | [コード](#refactor-code-in-the-ide)をリファクタリングする    |
+| /refactor | [コードをリファクタリングする](#refactor-code-in-the-ide)    |
 | /fix      | [コードを修正する](#fix-code-in-the-ide)              |
 | /include  | [ファイルのコンテキストを含める](#ask-about-specific-files-in-the-ide) |

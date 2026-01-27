@@ -129,4 +129,119 @@ RSpec.describe BulkImports::ObjectCounter, :clean_gitlab_redis_shared_state, fea
       expect(tracker.imported_objects_count).to eq(30)
     end
   end
+
+  describe '.increment_by_object' do
+    it 'increments counter only once for the same entry data' do
+      entry_data = { 'id' => 123, 'title' => 'Test Issue' }
+
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, entry_data)
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, entry_data)
+
+      summary = described_class.summary(tracker)
+      expect(summary[:fetched]).to eq(1)
+    end
+
+    it 'increments counter for different entry data' do
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'id' => 1 })
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'id' => 2 })
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'id' => 3 })
+
+      summary = described_class.summary(tracker)
+
+      expect(summary[:fetched]).to eq(3)
+    end
+
+    it 'tracks fetched and imported separately' do
+      entry_data = { 'id' => 1 }
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, entry_data)
+      described_class.increment_by_object(tracker, described_class::IMPORTED_COUNTER, entry_data)
+
+      summary = described_class.summary(tracker)
+
+      expect(summary[:fetched]).to eq(1)
+      expect(summary[:imported]).to eq(1)
+    end
+
+    it 'handles retry scenario without double-counting any object' do
+      # Object 1: succeeds
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'iid' => 1 })
+      described_class.increment_by_object(tracker, described_class::IMPORTED_COUNTER, { 'iid' => 1 })
+
+      # Object 2: fails and retries
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'iid' => 2 })
+      described_class.increment_by_object(tracker, described_class::IMPORTED_COUNTER, { 'iid' => 2 })
+
+      # Retry object 2
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'iid' => 2 })
+      described_class.increment_by_object(tracker, described_class::IMPORTED_COUNTER, { 'iid' => 2 })
+
+      # Object 3: succeeds
+      described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, { 'iid' => 3 })
+      described_class.increment_by_object(tracker, described_class::IMPORTED_COUNTER, { 'iid' => 3 })
+
+      summary = described_class.summary(tracker)
+
+      expect(summary[:fetched]).to eq(3)
+      expect(summary[:imported]).to eq(3)
+    end
+
+    context 'when entry is nil' do
+      it 'does not increment counter' do
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, nil)
+
+        summary = described_class.summary(tracker)
+
+        expect(summary).to be_nil
+      end
+    end
+
+    context 'when counter type is invalid' do
+      it 'does not increment counter' do
+        described_class.increment_by_object(tracker, :invalid, { 'id' => 123 })
+
+        summary = described_class.summary(tracker)
+
+        expect(summary).to be_nil
+      end
+    end
+
+    context 'with NdjsonPipeline entry format [relation_hash, line_num]' do
+      it 'increments only once for same entry array' do
+        entry_data = { 'id' => 123, 'title' => 'Test Issue' }
+
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [entry_data, 0])
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [entry_data, 0])
+
+        summary = described_class.summary(tracker)
+
+        expect(summary[:fetched]).to eq(1)
+      end
+
+      it 'increments for different objects' do
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [{ 'id' => 1 }, 0])
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [{ 'id' => 2 }, 0])
+
+        summary = described_class.summary(tracker)
+
+        expect(summary[:fetched]).to eq(2)
+      end
+
+      it 'increments multiple times when same object data appears at different line numbers' do
+        entry_data = { 'id' => 123, 'title' => 'Test Issue' }
+
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [entry_data, 0])
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [entry_data, 5])
+
+        expect(described_class.summary(tracker)[:fetched]).to eq(2)
+      end
+
+      it 'does not increment when first element is not present' do
+        described_class.increment_by_object(tracker, described_class::FETCHED_COUNTER, [nil, 0])
+
+        summary = described_class.summary(tracker)
+
+        expect(summary).to be_nil
+      end
+    end
+  end
 end

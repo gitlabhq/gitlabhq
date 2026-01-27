@@ -14,9 +14,9 @@ title: Model registry API
 
 Use this API to interact with the machine learning model registry. For more information, see [model registry](../user/project/ml/model_registry/_index.md).
 
-## Download a machine learning model package
+## Download a machine learning model package file
 
-Returns the file.
+Downloads a specified file from a machine learning model package.
 
 ```plaintext
 GET /projects/:id/packages/ml_models/:model_version_id/files/(*path/):file_name

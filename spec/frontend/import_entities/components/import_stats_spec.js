@@ -20,6 +20,10 @@ describe('Import entities stats component', () => {
       fetched: 1000,
       imported: 999,
     },
+    issues: {
+      fetched: 1,
+      imported: 0,
+    },
     namespace_settings: {
       fetched: 0,
       imported: 0,
@@ -44,7 +48,7 @@ describe('Import entities stats component', () => {
   const findGlIcon = (item) => item.findComponent(GlIcon);
 
   describe('template', () => {
-    it('renders items', () => {
+    it('renders items and hides stats with 0/0', () => {
       const expectedText = [
         {
           item: 'Label',
@@ -59,15 +63,15 @@ describe('Import entities stats component', () => {
           stat: '999/1000',
         },
         {
-          item: 'Namespace setting',
-          stat: '0/0',
+          item: 'Issue',
+          stat: '0/1',
         },
       ];
 
       createComponent();
 
       const items = findAllStatItems();
-      expect(items).toHaveLength(Object.keys(mockStats).length);
+      expect(items).toHaveLength(4);
 
       items.wrappers.forEach((item, index) => {
         expect(item.text()).toContain(expectedText[index].item);
@@ -77,8 +81,8 @@ describe('Import entities stats component', () => {
 
     describe.each`
       status               | expectedIcons
-      ${STATUSES.CREATED}  | ${['running', 'success', 'running', 'scheduled']}
-      ${STATUSES.FINISHED} | ${['alert', 'success', 'alert', 'scheduled']}
+      ${STATUSES.CREATED}  | ${['running', 'success', 'running', 'running']}
+      ${STATUSES.FINISHED} | ${['alert', 'success', 'alert', 'alert']}
     `('when status is $status', ({ status, expectedIcons }) => {
       it('renders correct item icons', () => {
         createComponent({
@@ -87,7 +91,10 @@ describe('Import entities stats component', () => {
           },
         });
 
-        findAllStatItems().wrappers.forEach((item, index) => {
+        const items = findAllStatItems();
+        expect(items).toHaveLength(4);
+
+        items.wrappers.forEach((item, index) => {
           expect(findGlIcon(item).props().name).toBe(`status-${expectedIcons[index]}`);
         });
       });

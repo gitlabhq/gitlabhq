@@ -2,6 +2,7 @@ import { GlCollapsibleListbox, GlEmptyState, GlLoadingIcon, GlKeysetPagination }
 import { createMockSubscription } from 'mock-apollo-client';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import { TEST_HOST } from 'spec/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -812,6 +813,33 @@ describe('Pipelines app', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while updating pipeline information',
       });
+    });
+
+    it('does not make API calls when tab is hidden', async () => {
+      jest.spyOn(Visibility, 'hidden').mockReturnValue(true);
+
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successDynamicHandler],
+          [getAllPipelinesCountQuery, countHandler],
+          [getSinglePipelineQuery, singlePipelineHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      successDynamicHandler.mockClear();
+
+      mockSubscription.next({
+        data: {
+          ciPipelineStatusesUpdated: { id: 'gid://gitlab/Ci::Pipeline/67' },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(successDynamicHandler).not.toHaveBeenCalled();
+      expect(singlePipelineHandler).not.toHaveBeenCalled();
     });
   });
 });

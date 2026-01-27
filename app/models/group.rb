@@ -897,11 +897,6 @@ class Group < Namespace
       .members(active_users: only_active_users)
   end
 
-  def members_from_self_and_ancestors_with_effective_access_level
-    members_with_parents.select([:user_id, 'MAX(access_level) AS access_level'])
-                        .group(:user_id)
-  end
-
   def members_with_descendants
     GroupMember
       .active_without_invites_and_requests

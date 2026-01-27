@@ -288,7 +288,7 @@ end
 
 Behind the scenes, this sets `SomeScheduledTaskWorker.queue` to
 `cronjob:some_scheduled_task`. Commonly used namespaces have their own
-concern module that can easily be included into the worker class, and that may
+concern module that can be included into the worker class, and that may
 set other Sidekiq options besides the queue namespace. `CronjobQueue`, for
 example, sets the namespace, but also disables retries.
 

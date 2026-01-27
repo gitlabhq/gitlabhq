@@ -23,6 +23,8 @@ module Ci
     end
 
     def perform_work
+      return unless Feature.enabled?(:bulk_delete_job_artifacts, :instance)
+
       @mod_bucket = Gitlab::Ci::Artifacts::BucketManager.claim_bucket
       log_extra_metadata_on_done(:mod_bucket, @mod_bucket)
       return unless @mod_bucket
@@ -51,9 +53,14 @@ module Ci
       # Don't re-enqueue if we couldn't claim a bucket - let the cron job handle it
       return 0 unless @bucket_claimed
 
-      # Fix when FF clean-up, as this query times-out without the exists?
-      # https://console.postgres.ai/gitlab/gitlab-production-ci/sessions/46187/commands/141080
-      Ci::JobArtifact.expired_before(Time.current).non_trace.artifact_unlocked.exists? ? 999 : 0
+      # rubocop:disable CodeReuse/ActiveRecord -- specific to cron worker
+      if Ci::JobArtifact.expired_before(Time.current).non_trace.artifact_unlocked
+          .where('MOD(project_id + job_id, ?) = ?', max_running_jobs, @mod_bucket).exists?
+        999
+      else
+        0
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
     end
 
     def max_running_jobs

@@ -427,15 +427,72 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
           expect(loader).to receive(:load).with(context, extracted_data.data.first)
         end
 
-        expect(BulkImports::ObjectCounter).to receive(:set).with(tracker, :source, 1)
-        expect(BulkImports::ObjectCounter).to receive(:increment).with(tracker, :fetched)
-        expect(BulkImports::ObjectCounter).to receive(:increment).with(tracker, :imported)
+        expect(BulkImports::ObjectCounter)
+          .to receive(:set)
+          .with(tracker, :source, 1)
+        expect(BulkImports::ObjectCounter)
+          .to receive(:increment_by_object)
+          .with(tracker, :fetched, extracted_data.data.first)
+        expect(BulkImports::ObjectCounter)
+          .to receive(:increment_by_object)
+          .with(tracker, :imported, extracted_data.data.first)
 
         subject.run
 
         expect(tracker.source_objects_count).to eq(1)
         expect(tracker.fetched_objects_count).to eq(1)
         expect(tracker.imported_objects_count).to eq(1)
+      end
+
+      it 'does not double-count fetched objects when an entry is retried after interruption' do
+        call_count = 0
+        extracted_data_multiple = BulkImports::Pipeline::ExtractedData.new(
+          data: [{ id: 1 }, { id: 2 }, { id: 3 }]
+        )
+
+        allow_next_instance_of(BulkImports::Extractor) do |extractor|
+          allow(extractor).to receive(:extract).with(context).and_return(extracted_data_multiple)
+        end
+
+        allow_next_instance_of(BulkImports::Transformer) do |transformer|
+          allow(transformer).to receive(:transform) { |_, data| data }
+        end
+
+        allow_next_instance_of(BulkImports::Loader) do |loader|
+          allow(loader).to receive(:load) do
+            call_count += 1
+            if call_count == 2
+              raise BulkImports::NetworkError.new(
+                'Network timeout',
+                response: instance_double(HTTParty::Response, code: 429, headers: {})
+              )
+            end
+          end
+        end
+
+        allow(BulkImports::ObjectCounter).to receive(:set)
+        allow(BulkImports::ObjectCounter).to receive(:increment_by_object).and_call_original
+
+        expect { subject.run }.to raise_error(BulkImports::RetryPipelineError)
+
+        subject.run
+
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :fetched, { id: 1 }).twice
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :imported, { id: 1 }).twice
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :fetched, { id: 2 }).twice
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :imported, { id: 2 }).once
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :fetched, { id: 3 }).once
+        expect(BulkImports::ObjectCounter)
+          .to have_received(:increment_by_object).with(tracker, :imported, { id: 3 }).once
+
+        summary = BulkImports::ObjectCounter.summary(tracker)
+        expect(summary[:fetched]).to eq(3)
+        expect(summary[:imported]).to eq(3)
       end
     end
 

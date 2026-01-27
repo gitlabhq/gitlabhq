@@ -57,14 +57,6 @@ dont-interrupt-me:
     # For EE-only ones, we have EE-only jobs.
     RSPEC_TESTS_FILTER_FILE: "${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}"
 
-.predictive-system-tests-default:
-  # See .rails:rules:system-default-rules for full system tests rules
-  rules:
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:spec-only/'
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-[23]/'
-      when: never
-    - when: always
-
 <% if rspec_files_per_test_level.dig(:migration, :files).size > 0 %>
 rspec migration predictive:
   extends:
@@ -109,7 +101,6 @@ rspec system predictive:
     - <%= medium_runner_tag %>
   extends:
     - .base-rspec-predictive
-    - .predictive-system-tests-default
 <% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
   parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
 <% end %>
@@ -169,7 +160,6 @@ rspec-ee system predictive:
     - <%= medium_runner_tag %>
   extends:
     - .base-rspec-ee-predictive
-    - .predictive-system-tests-default
 <% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
   parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
 <% end %>

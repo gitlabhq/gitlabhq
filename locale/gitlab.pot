@@ -23090,13 +23090,7 @@ msgstr ""
 msgid "DataExplorer|Copy query"
 msgstr ""
 
-msgid "DataExplorer|Data explorer"
-msgstr ""
-
 msgid "DataExplorer|Data query"
-msgstr ""
-
-msgid "DataExplorer|Explore GitLab data in a single place. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "DataExplorer|Preview not available"
@@ -62380,6 +62374,9 @@ msgid "SecurityOrchestration|Scheduled pipeline execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
+msgstr ""
+
+msgid "SecurityOrchestration|Secret Detection Scanning Rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Security Approvals"

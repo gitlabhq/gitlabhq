@@ -938,6 +938,21 @@ RETURN OLD;
 END
 $$;
 
+CREATE FUNCTION project_secrets_manager_maintenance_tasks_organization_id() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW.organization_id IS NULL THEN
+    SELECT organization_id
+    INTO NEW.organization_id
+    FROM users
+    WHERE users.id = NEW.user_id;
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION set_has_external_issue_tracker() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -26807,7 +26822,9 @@ CREATE TABLE project_secrets_manager_maintenance_tasks (
     project_secrets_manager_id bigint NOT NULL,
     last_processed_at timestamp with time zone,
     action smallint NOT NULL,
-    retry_count smallint DEFAULT 0 NOT NULL
+    retry_count smallint DEFAULT 0 NOT NULL,
+    organization_id bigint,
+    CONSTRAINT check_45ce4a99c6 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE project_secrets_manager_maintenance_tasks_id_seq
@@ -42604,6 +42621,8 @@ CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_names ON 
 
 CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_proje ON protected_branch_merge_access_levels USING btree (protected_branch_project_id);
 
+CREATE INDEX idx_psm_maintenance_tasks_on_organization_id ON project_secrets_manager_maintenance_tasks USING btree (organization_id);
+
 CREATE INDEX idx_psm_maintenance_tasks_on_processed_at_retry_count ON project_secrets_manager_maintenance_tasks USING btree (last_processed_at, retry_count);
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
@@ -52734,6 +52753,8 @@ CREATE TRIGGER trigger_namespaces_traversal_ids_on_update AFTER UPDATE ON namesp
 
 CREATE TRIGGER trigger_pool_repositories_sharding_key BEFORE INSERT OR UPDATE ON pool_repositories FOR EACH ROW EXECUTE FUNCTION pool_repositories_sharding_key();
 
+CREATE TRIGGER trigger_project_secrets_manager_maintenance_tasks_organization_ BEFORE INSERT OR UPDATE ON project_secrets_manager_maintenance_tasks FOR EACH ROW EXECUTE FUNCTION project_secrets_manager_maintenance_tasks_organization_id();
+
 CREATE TRIGGER trigger_projects_parent_id_on_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION insert_projects_sync_event();
 
 CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((old.namespace_id IS DISTINCT FROM new.namespace_id)) EXECUTE FUNCTION insert_projects_sync_event();
@@ -54113,7 +54134,7 @@ ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY system_note_metadata
-    ADD CONSTRAINT fk_7836f9b848 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_7836f9b848 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_78558e5d74 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -54234,6 +54255,9 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY tag_x509_signatures
     ADD CONSTRAINT fk_81b00bcc6e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_secrets_manager_maintenance_tasks
+    ADD CONSTRAINT fk_8211c0d849 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_8257080565 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

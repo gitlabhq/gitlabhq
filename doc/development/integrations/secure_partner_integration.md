@@ -21,7 +21,7 @@ integration as well as linking to more detailed resources for how to do so.
 The security offerings in GitLab are designed for GitLab Ultimate users, and the
 [DevSecOps](https://handbook.gitlab.com/handbook/use-cases/#3-continuous-software-security-assurancehandbookmarketingbrand-and-product-marketingproduct-and-solution-marketingusecase-gtmdevsecops)
 use case. All the features are in those tiers. This includes the APIs and standard reporting
-framework needed to provide a consistent experience for users to easily bring their preferred
+framework needed to provide a consistent experience for users to bring their preferred
 security tools into GitLab. We ask that our integration partners focus their work on those license
 tiers so that we can provide the most value to our mutual customers.
 

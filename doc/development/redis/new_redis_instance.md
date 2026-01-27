@@ -92,7 +92,7 @@ If there is not a more natural way to mark where the data is stored, using a
 - It applies to all application instances (Sidekiq, API, web, etc.) at
   the same time.
 - It supports incremental rollout - ideally by actor (project, group,
-  user, etc.) - so that we can monitor for errors and roll back easily.
+  user, etc.) - so that we can monitor for errors and roll back.
 
 ## Step 3: Migrate the data
 

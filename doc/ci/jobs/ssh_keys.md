@@ -23,10 +23,13 @@ Use SSH keys when you want to:
 - Execute SSH commands from the build environment to a remote server.
 - Rsync files from the build environment to a remote server.
 
-The most widely supported method is to inject an SSH key into your build
-environment by extending your `.gitlab-ci.yml`, and it's a solution that works
-with any type of [executor](https://docs.gitlab.com/runner/executors/)
-(like Docker or shell, for example).
+The most widely supported method is to inject an SSH key into the build environment by extending
+`.gitlab-ci.yml`. This approach works with any type of [executor](https://docs.gitlab.com/runner/executors/),
+such as Docker or shell.
+
+> [!note]
+> When using SSH keys in CI/CD, store private keys securely and avoid reusing personal SSH keys for automated jobs. 
+> Rotate keys regularly to reduce the risk of unauthorized access.
 
 ## Create and use an SSH key
 
@@ -58,19 +61,17 @@ To add an SSH key to your project, add the key as a [file type CI/CD variable](.
 ### Add an SSH key as a regular variable
 
 If you do not want to use a file type CI/CD variable, see the [example SSH Project](https://gitlab.com/gitlab-examples/ssh-private-key/).
-This method uses a regular CI/CD variable instead of the recommended file type variable.
+This method uses a regular CI/CD variable instead of a file type variable. Generally, file type variables are preferred because they preserve multiline formatting and reduce the risk of formatting-related errors.
 
 ## SSH keys when using the Docker executor
 
-When your CI/CD jobs run inside Docker containers (meaning the environment is
-contained) and you want to deploy your code in a private server, you need a way
-to access it. In this case, you can use an SSH key pair.
+When your CI/CD jobs run in Docker containers, the environment is isolated. To deploy your code to a private server, you can use an SSH key pair.
 
 1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
    Do not add a passphrase to the SSH key, or the `before_script` will prompt for it.
 1. Add the private key as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable) named `SSH_PRIVATE_KEY`.
-1. Modify your `.gitlab-ci.yml` with a `before_script` action. In the following
-   example, a Debian based image is assumed. Edit to your needs:
+1. Modify your `.gitlab-ci.yml` with a `before_script` action. The following example assumes a
+   Debian-based image and that the job runs in a container with permission to install packages.
 
    ```yaml
    before_script:
@@ -99,8 +100,7 @@ to access it. In this case, you can use an SSH key pair.
      - chmod 700 ~/.ssh
 
      ##
-     ## Optionally, if you will be using any Git commands, set the user name and
-     ## and email.
+     ## Optionally, if you use Git commands, set the user name and email.
      ##
      # - git config --global user.email "user@example.com"
      # - git config --global user.name "User name"

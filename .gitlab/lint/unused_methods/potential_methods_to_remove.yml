@@ -268,7 +268,6 @@ app/models/group.rb:
 - get_ids_by_ids_or_paths
 - blocked_owners
 - has_maintainer?
-- members_from_self_and_ancestors_with_effective_access_level
 - hierarchy_members_with_inactive
 app/models/import/source_user_placeholder_reference.rb:
 - aliased_composite_key

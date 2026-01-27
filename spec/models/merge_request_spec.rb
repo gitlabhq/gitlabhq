@@ -3140,6 +3140,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#committer_ids_to_filter_from_approvers' do
+    let(:commits) { double }
+    let(:committers) { double }
+
+    it 'calls committers with expected params and selects id', :aggregate_failures do
+      expect(subject).to receive(:commits).and_return(commits)
+      expect(commits).to receive(:committers).with(
+        with_merge_commits: true,
+        lazy: false,
+        include_author_when_signed: true
+      ).and_return(committers)
+      expect(committers).to receive(:select).with(:id).and_return(committers)
+
+      expect(subject.committer_ids_to_filter_from_approvers).to eq(committers)
+    end
+  end
+
+  describe '#committers_to_filter_from_approvers' do
+    let(:commits) { double }
+    let(:committers) { double }
+
+    it 'calls committers with expected params', :aggregate_failures do
+      expect(subject).to receive(:commits).and_return(commits)
+      expect(commits).to receive(:committers).with(
+        with_merge_commits: true,
+        lazy: true,
+        include_author_when_signed: true
+      ).and_return(committers)
+
+      expect(subject.committers_to_filter_from_approvers).to eq(committers)
+    end
+  end
+
   describe '#diverged_commits_count' do
     let(:project) { create(:project, :repository) }
     let(:forked_project) { fork_project(project, nil, repository: true) }

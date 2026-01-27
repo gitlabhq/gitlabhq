@@ -223,7 +223,7 @@ end_event_timestamp > '2022-01-01' AND end_event_timestamp < '2022-01-30'
 #### Query generation
 
 The query backend is hidden behind the same interface that the old backend implementation uses.
-Thanks to this, we can easily switch between the old and new query backends.
+Thanks to this, we can switch between the old and new query backends.
 
 - `DataCollector`: entrypoint for querying VSA data
   - `BaseQueryBuilder`: provides the base `ActiveRecord` scope (filters are applied here).

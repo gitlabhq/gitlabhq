@@ -495,7 +495,8 @@ sometimes also referred to as a jump box.
 
 1. Create an EC2 instance following the same steps used previously with the following changes:
    1. For the **Subnet**, select the second public subnet we created earlier (`gitlab-public-10.0.2.0`).
-   1. Under the **Add Tags** section, we set `Key: Name` and `Value: Bastion Host B` so that we can easily identify our two instances.
+   1. Under the **Add Tags** section, we set `Key: Name` and `Value: Bastion Host B`
+      so that we can identify our two instances.
    1. For the security group, select the existing `bastion-sec-group` we previously created.
 
 ### Use SSH Agent Forwarding

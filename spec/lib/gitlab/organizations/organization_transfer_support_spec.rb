@@ -84,6 +84,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       personal_access_token_granular_scopes
       personal_access_token_last_used_ips
       personal_access_tokens
+      project_secrets_manager_maintenance_tasks
       project_topic_uploads
       project_type_ci_runner_machines
       project_type_ci_runners

@@ -52,7 +52,7 @@ class PingController < ApplicationController
 end
 ```
 
-Here `params[:ip]` should not contain anything else but numbers and dots. However this restriction can be easily bypassed as the Regex anchors `^` and `$` are being used. Ultimately this leads to a shell command injection in `ping -c 4 #{params[:ip]}` by using newlines in `params[:ip]`.
+Here `params[:ip]` should not contain anything else but numbers and dots. However this restriction can be bypassed as the Regex anchors `^` and `$` are being used. Ultimately this leads to a shell command injection in `ping -c 4 #{params[:ip]}` by using newlines in `params[:ip]`.
 
 #### Mitigation
 

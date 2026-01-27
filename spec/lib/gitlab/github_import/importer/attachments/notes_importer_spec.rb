@@ -66,7 +66,12 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
       end
 
       it 'does not execute importer for the note with an attachment' do
-        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new)
+        expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).not_to receive(:new).with(
+          anything,
+          project.id,
+          hash_including("id" => note_with_attachment.id),
+          anything
+        )
 
         importer.sequential_import
       end

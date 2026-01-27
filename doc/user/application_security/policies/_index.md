@@ -335,7 +335,7 @@ Vulnerability with abuse reports: GitLab Security Policy Bot instances can be ba
 
 - Reporting a Security Policy Bot for abuse can lead to the bot being banned or deleted.
 - Banning or deleting the bot causes scheduled pipelines to fail.
-- Once banned, you cannot easily restore the bot through standard administrative actions.
+- Once banned, you cannot restore the bot through standard administrative actions.
 - Security policy enforcement is completely disrupted until the bot is restored.
 
 To prevent accidental disruption of security policies, administrators should exercise caution when processing abuse reports for internal user accounts.
