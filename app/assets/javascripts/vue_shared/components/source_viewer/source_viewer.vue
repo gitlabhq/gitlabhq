@@ -11,15 +11,22 @@ import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import LineHighlighter from '~/blob/line_highlighter';
 import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
 import Chunk from './components/chunk.vue';
-import Blame from './components/blame_info.vue';
-import { calculateBlameOffset, shouldRender, toggleBlameClasses } from './utils';
+import BlameInfo from './components/blame_info.vue';
+import {
+  calculateBlameOffset,
+  shouldRender,
+  toggleBlameClasses,
+  hasBlameDataForChunk,
+} from './utils';
 import blameDataQuery from './queries/blame_data.query.graphql';
+import BlameSkeletonLoader from './components/blame_skeleton_loader.vue';
 
 export default {
   name: 'SourceViewer',
   components: {
     Chunk,
-    Blame,
+    BlameInfo,
+    BlameSkeletonLoader,
     CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
   },
   directives: {
@@ -64,6 +71,8 @@ export default {
       blameData: [],
       renderedChunks: [],
       isBlameLoading: false,
+      loadingChunks: [], // Which chunks are currently fetching blame data (e.g., [0, 1, 2])
+      chunkOffsets: {}, // Vertical position of each chunk (e.g., { 0: 0, 1: 450, 2: 900 })
     };
   },
   computed: {
@@ -82,6 +91,18 @@ export default {
     isCodeownersFile() {
       return this.blob.name === CODEOWNERS_FILE_NAME;
     },
+    /**
+     * Filters out chunks that already have blame data loaded,
+     * so skeleton loaders only show for chunks still fetching.
+     */
+    activeLoadingChunks() {
+      if (!this.showBlame) return [];
+
+      return this.loadingChunks.filter((chunkIndex) => {
+        const chunk = this.chunks[chunkIndex];
+        return chunk && !hasBlameDataForChunk(this.blameData, chunk);
+      });
+    },
   },
   watch: {
     shouldPreloadBlame: {
@@ -91,27 +112,35 @@ export default {
       },
     },
     showBlame: {
-      handler(isVisible) {
+      async handler(isVisible) {
         toggleBlameClasses(this.blameData, isVisible);
 
         if (isVisible) {
           this.isBlameLoading = true;
+          this.renderedChunks.forEach((chunkIndex) => {
+            if (!this.loadingChunks.includes(chunkIndex)) this.loadingChunks.push(chunkIndex);
+          });
+          await this.updateChunkOffsets(this.renderedChunks);
         } else {
           this.isBlameLoading = false;
+          this.loadingChunks = [];
+          this.blameData = [];
         }
-        if (!isVisible) this.blameData = [];
 
         this.requestBlameInfo(this.renderedChunks[0]);
       },
       immediate: true,
     },
     blameData: {
-      handler(blameData) {
+      async handler(blameData) {
         if (!this.showBlame) return;
         toggleBlameClasses(blameData, true);
 
         if (blameData.length > 0) {
           this.isBlameLoading = false;
+
+          // Reposition skeleton loaders after new blame data affects layout
+          await this.updateChunkOffsets(this.activeLoadingChunks);
         }
       },
       immediate: true,
@@ -132,15 +161,18 @@ export default {
   },
   methods: {
     async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
-      if (!this.renderedChunks.includes(chunkIndex)) {
-        this.renderedChunks.push(chunkIndex);
-        await this.requestBlameInfo(chunkIndex);
+      if (this.renderedChunks.includes(chunkIndex)) return;
 
-        if (chunkIndex > 0 && handleOverlappingChunk) {
-          // request the blame information for overlapping chunk incase it is visible in the DOM
-          this.handleChunkAppear(chunkIndex - 1, false);
-        }
+      if (chunkIndex > 0 && handleOverlappingChunk) {
+        // request the blame information for overlapping chunk incase it is visible in the DOM
+        this.handleChunkAppear(chunkIndex - 1, false);
       }
+
+      this.renderedChunks.push(chunkIndex);
+      this.loadingChunks.push(chunkIndex);
+      await this.updateChunkOffsets([chunkIndex]);
+      await this.requestBlameInfo(chunkIndex);
+      this.loadingChunks = this.loadingChunks.filter((id) => id !== chunkIndex);
     },
     async requestBlameInfo(chunkIndex) {
       const chunk = this.chunks[chunkIndex];
@@ -179,6 +211,16 @@ export default {
       await this.$nextTick();
       this.lineHighlighter.highlightHash(this.$route.hash);
     },
+    async updateChunkOffsets(chunkIndices) {
+      await this.$nextTick();
+      const newOffsets = { ...this.chunkOffsets };
+      chunkIndices.forEach((chunkIndex) => {
+        const chunkEl = this.$refs[`chunk-${chunkIndex}`]?.[0]?.$el;
+        if (chunkEl) newOffsets[chunkIndex] = chunkEl.offsetTop;
+      });
+
+      this.chunkOffsets = newOffsets;
+    },
   },
 };
 </script>
@@ -186,8 +228,15 @@ export default {
 <template>
   <div>
     <div class="flash-container gl-mb-3"></div>
-    <div ref="fileContent" class="gl-flex">
-      <blame v-if="showBlame" :blame-info="blameInfo" :is-blame-loading="isBlameLoading" />
+    <div ref="fileContent" class="gl-relative gl-flex">
+      <blame-info v-if="showBlame" :blame-info="blameInfo" />
+
+      <blame-skeleton-loader
+        v-for="chunkIndex in activeLoadingChunks"
+        :key="`loading-${chunkIndex}`"
+        class="gl-absolute gl-left-0"
+        :style="{ transform: `translateY(${chunkOffsets[chunkIndex] || 0}px)` }"
+      />
 
       <div
         class="file-content code code-syntax-highlight-theme js-syntax-highlight blob-content blob-viewer gl-flex gl-w-full gl-flex-col gl-overflow-auto"
@@ -205,6 +254,7 @@ export default {
         <chunk
           v-for="(chunk, index) in chunks"
           :key="index"
+          :ref="`chunk-${index}`"
           :is-highlighted="Boolean(chunk.isHighlighted)"
           :raw-content="chunk.rawContent"
           :highlighted-content="chunk.highlightedContent"

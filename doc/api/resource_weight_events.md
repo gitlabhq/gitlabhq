@@ -16,9 +16,9 @@ Use this API to access weight change events for issues.
 
 ## Issues
 
-### List project issue weight events
+### List all project issue weight events
 
-Gets a list of all weight events for a single issue.
+Lists all weight events for a single issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_weight_events
@@ -72,9 +72,9 @@ Example response:
 ]
 ```
 
-### Get single issue weight event
+### Retrieve single issue weight event
 
-Returns a single weight event for a specific project issue
+Retrieves a single weight event for a specific project issue
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/resource_weight_events/:resource_weight_event_id

@@ -54,3 +54,13 @@ export const toggleBlameClasses = (blameData, isVisible) => {
     }
   });
 };
+
+/**
+ * Checks if any blame data exists for a given chunk's line range.
+ * Used to determine if a skeleton loader should still be shown for a chunk.
+ */
+export const hasBlameDataForChunk = (blameData, chunk) => {
+  const startLine = chunk.startingFrom + 1;
+  const endLine = chunk.startingFrom + chunk.totalLines;
+  return blameData.some((b) => b.lineno >= startLine && b.lineno <= endLine);
+};

@@ -26,9 +26,9 @@ Prerequisites:
 
 - You must have administrator access to the GitLab instance.
 
-## List runner controllers
+## List all runner controllers
 
-List all runner controllers.
+Lists all runner controllers.
 
 ```plaintext
 GET /runner_controllers
@@ -75,9 +75,9 @@ Example response:
 ]
 ```
 
-## Get a single runner controller
+## Retrieve a single runner controller
 
-Retrieve details of a specific runner controller by its ID.
+Retrieves details of a specific runner controller by its ID.
 
 ```plaintext
 GET /runner_controllers/:id
@@ -117,7 +117,7 @@ Example response:
 
 ## Register a runner controller
 
-Register a new runner controller.
+Registers a new runner controller.
 
 ```plaintext
 POST /runner_controllers
@@ -166,7 +166,7 @@ Example response:
 
 ## Update a runner controller
 
-Update the details of an existing runner controller by its ID.
+Updates the details of an existing runner controller by its ID.
 
 ```plaintext
 PUT /runner_controllers/:id

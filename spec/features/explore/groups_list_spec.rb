@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_projects do
+  include GlFilteredSearchHelpers
   let_it_be(:user) { create(:user) }
 
   before do
@@ -138,9 +139,6 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

@@ -40625,6 +40625,9 @@ msgstr ""
 msgid "Loading accounts"
 msgstr ""
 
+msgid "Loading blame information"
+msgstr ""
+
 msgid "Loading custom roles"
 msgstr ""
 
@@ -67957,6 +67960,9 @@ msgstr ""
 msgid "TargetedMessages|Are you sure you want to delete this targeted message?"
 msgstr ""
 
+msgid "TargetedMessages|Contact us"
+msgstr ""
+
 msgid "TargetedMessages|Create a new targeted message"
 msgstr ""
 
@@ -67964,6 +67970,12 @@ msgid "TargetedMessages|Edit targeted message"
 msgstr ""
 
 msgid "TargetedMessages|Failed to assign namespaces due to error processing CSV: %{error_message}"
+msgstr ""
+
+msgid "TargetedMessages|For a limited time only, new customers can access all the benefits of Premium, plus advanced AI features for just $19. Contact our sales team today to take advantage while this offer lasts!"
+msgstr ""
+
+msgid "TargetedMessages|Get access to Premium + GitLab Duo for $19 per user/month"
 msgstr ""
 
 msgid "TargetedMessages|Must have at least one targeted namespace"
@@ -68003,15 +68015,6 @@ msgid "TargetedMessages|the following namespace ids were invalid and have been i
 msgstr ""
 
 msgid "TargetedMessage|Namespace IDs are limited to a maximum of %{limit}."
-msgstr ""
-
-msgid "TargettedMessages|Contact us"
-msgstr ""
-
-msgid "TargettedMessages|For a limited time only, new customers can access all the benefits of Premium, plus advanced AI features for just $19. Contact our sales team today to take advantage while this offer lasts!"
-msgstr ""
-
-msgid "TargettedMessages|Get access to Premium + GitLab Duo for %{strike}$29%{end_strike} $19 per user/month"
 msgstr ""
 
 msgid "Task"

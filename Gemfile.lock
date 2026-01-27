@@ -1,4 +1,10 @@
 PATH
+  remote: gems/action_dispatch-draw_all
+  specs:
+    action_dispatch-draw_all (0.1.0)
+      actionpack (>= 7)
+
+PATH
   remote: gems/activerecord-gitlab
   specs:
     activerecord-gitlab (0.2.0)
@@ -2092,6 +2098,7 @@ DEPENDENCIES
   CFPropertyList (~> 3.0.0)
   RedCloth (~> 4.3.3)
   acme-client (~> 2.0.19)
+  action_dispatch-draw_all!
   activerecord-gitlab!
   addressable (~> 2.8)
   akismet (~> 3.0)

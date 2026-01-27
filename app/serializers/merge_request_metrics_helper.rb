@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequestMetricsHelper
-  # There are cases where where metrics object doesn't exist and it needs to be rebuilt.
+  # There are cases where the metrics object doesn't exist and it needs to be rebuilt.
   # TODO: Once https://gitlab.com/gitlab-org/gitlab/-/issues/342508 has been resolved and
   # all merge requests have metrics we can remove this helper method.
   def build_metrics(merge_request)

@@ -30,6 +30,12 @@ gem 'rails', '~> 7.2.3', feature_category: :shared # rubocop:todo Gemfile/Missin
 gem 'zeitwerk', '= 2.6.18', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+
+gem 'action_dispatch-draw_all',
+  path: 'gems/action_dispatch-draw_all',
+  require: 'action_dispatch/draw_all',
+  feature_category: :tooling
+
 # Need by Rails
 gem 'drb', '~> 2.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

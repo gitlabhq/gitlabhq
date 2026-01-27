@@ -955,18 +955,24 @@ while keeping the initializer code itself unchanged between editions.
 
 ### Code in `config/routes`
 
-When we add `draw :admin` in `config/routes.rb`, the application tries to
+When we add `draw_all :admin` in `config/routes.rb`, the application tries to
 load the file located in `config/routes/admin.rb`, and also try to load the
 file located in `ee/config/routes/admin.rb`.
 
-In EE, it should at least load one file, at most two files. If it cannot find
-any files, an error is raised. In CE, since we don't know if an
-EE route exists, it doesn't raise any errors even if it cannot find anything.
+If it cannot find any files, an error is raised.
 
-This means if we want to extend a particular CE route file, just add the same
-file located in `ee/config/routes`. If we want to add an EE only route, we
-could still put `draw :ee_only` in both CE and EE, and add
-`ee/config/routes/ee_only.rb` in EE, similar to `render_if_exists`.
+In EE, it should at least load one file, at most two files.
+In CE, it will only load one file.
+
+Use `draw_all` for routes that have both CE and EE route files.
+
+If we want to add an EE only route, use `draw` with `Gitlab.ee` instead:
+
+```ruby
+Gitlab.ee do
+  draw :ee_only
+end
+```
 
 ### Code in `app/controllers/`
 

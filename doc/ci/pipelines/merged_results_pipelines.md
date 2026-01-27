@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use merged results pipelines to test code from source and target branches combined before merging.
 title: Merged results pipelines
 ---
 
@@ -12,57 +13,73 @@ title: Merged results pipelines
 
 {{< /details >}}
 
-A merged results pipeline runs on the result of the source and target branches merged together.
-It is a type of [merge request pipeline](merge_request_pipelines.md).
+Merged results pipelines test code from the source and target branches combined.
+This provides more accurate results than testing only the source branch.
 
-GitLab creates an internal commit with the merged results, so the pipeline can run
-against it. This commit does not exist in either branch,
-but you can view it in the pipeline details. The author of the internal commit is
-always the user that created the merge request.
+GitLab creates a temporary merged commit that shows what your code looks like after merging.
+This commit doesn't exist in either branch, but you can view it in the pipeline details.
 
-The pipeline runs against the target branch as it exists at the moment you run the pipeline.
-Over time, while you're working in the source branch, the target branch might change.
-Any time you want to be sure the merged results are accurate, you should re-run the pipeline.
+Your jobs use the same `.gitlab-ci.yml` configuration as merge request pipelines,
+but run against the temporary merged commit instead of only your source branch.
+This approach helps you:
 
-Merged results pipelines can't run when the target branch has changes that conflict with the changes in the source branch.
-In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
-and is labeled as `merge request`.
+- Verify that your changes work with the latest target branch code.
+- Catch integration issues before you merge.
+- Test that changes in different files work together in multi-file projects.
 
-## Prerequisites
-
-To use merged results pipelines:
-
-- Your project's `.gitlab-ci.yml` file must be configured to
-  [run jobs in merge request pipelines](merge_request_pipelines.md#prerequisites).
-- Your repository must be a GitLab repository, not an
-  [external repository](../ci_cd_for_external_repos/_index.md).
+Merged results pipelines can't run when the target branch has changes
+that conflict with the changes in the source branch.
+In these cases, GitLab runs a standard merge request pipeline instead.
 
 ## Enable merged results pipelines
 
-To enable merged results pipelines in a project, you must have at least the
-Maintainer role:
+Prerequisites:
+
+- You must have the Maintainer or Owner role for the project.
+- Your `.gitlab-ci.yml` file must be configured for [merge request pipelines](merge_request_pipelines.md#prerequisites).
+- Your project must be hosted on GitLab (not an external repository like GitHub or Bitbucket).
+
+To enable merged results pipelines in a project:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
-1. In the **Merge options** section, select **Enable merged results pipelines**.
+1. Under **Merge options**, select **Enable merged results pipelines**.
 1. Select **Save changes**.
 
 > [!warning]
-> If you select the checkbox but don't configure your pipeline to use
-> merge request pipelines, your merge requests may become stuck in an
-> unresolved state or your pipelines may be dropped.
+> If you enable this setting without configuring merge request pipelines in your
+> `.gitlab-ci.yml` file, your merge requests might become stuck in an unresolved state
+> or your pipelines might be dropped.
 
 ## Troubleshooting
 
+When working with merged results pipelines, you might encounter the following issues.
+
 ### Jobs or pipelines run unexpectedly with `rules:changes:compare_to`
 
-You might have jobs or pipelines that run unexpectedly when using `rules:changes:compare_to` with merge request pipelines.
+You might have jobs or pipelines that run unexpectedly when using
+`rules:changes:compare_to` with merge request pipelines.
 
-With merged results pipelines, the internal commit that GitLab creates is used as a base to compare against. This commit likely contains more changes than the tip of the MR branch, which causes unexpected outcomes.
+This issue occurs because merged results pipelines use the temporary merged commit as the base
+for comparison. This commit contains changes from both your merge request branch and the target branch,
+which can cause rules to trigger unexpectedly.
+
+For example, if your merge request adds `src/feature.js` and the target branch
+contains `src/utils.js`, the temporary merged commit includes both files.
+A rule with `rules:changes:compare_to: main` detects both changes, not just
+your feature file, and may trigger jobs that should only run for your changes.
+
+To resolve this issue:
+
+- Remove the `compare_to` parameter to use the default comparison behavior.
+- Use more specific file path patterns in your changes rules.
+- Consider using `rules:changes` without `compare_to`.
 
 ### Successful merged results pipeline overrides a failed branch pipeline
 
-A failed branch pipeline is sometimes ignored when the
+You might encounter a situation where a failed branch pipeline is ignored when the
 [**Pipelines must succeed** setting](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is activated.
-[Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.
+
+This issue occurs due to the pipeline logic prioritization.
+Support for improvements is proposed in [issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841).

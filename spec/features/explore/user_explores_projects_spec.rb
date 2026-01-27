@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User explores projects', feature_category: :user_profile do
+  include GlFilteredSearchHelpers
   before do
     # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
     stub_feature_flags(explore_projects_vue: false)
@@ -207,9 +208,6 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

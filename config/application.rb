@@ -139,6 +139,9 @@ module Gitlab
       # Other than Ruby modules we load extensions first
       config.paths['lib/tasks'].unshift "#{config.root}/#{dir}/lib/tasks"
       config.paths['app/views'].unshift "#{config.root}/#{dir}/app/views"
+
+      # add EE/JH config/routes/ into rails config/routes path. This will also add into routes_reloader
+      config.paths['config/routes'].unshift "#{config.root}/#{dir}/config/routes"
     end
 
     Gitlab.ee do

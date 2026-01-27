@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
+  include GlFilteredSearchHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:current_organization) { user.organization }
@@ -359,9 +360,6 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   end
 
   def search(term)
-    filter_input = find_by_testid('filtered-search-term-input')
-    filter_input.click
-    filter_input.set(term)
-    click_button 'Search'
+    gl_filtered_search_set_input(term, submit: true)
   end
 end

@@ -1,5 +1,4 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitInfo from '~/repository/components/commit_info.vue';
 import BlameInfo from '~/vue_shared/components/source_viewer/components/blame_info.vue';
@@ -19,7 +18,6 @@ describe('BlameInfo component', () => {
   });
 
   const findCommitInfoComponents = () => wrapper.findAllComponents(CommitInfo);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const findBlameWrappers = () => wrapper.findAll('.blame-commit-wrapper');
 
@@ -88,44 +86,6 @@ describe('BlameInfo component', () => {
 
         expect(wrappers).toHaveLength(4);
       });
-    });
-  });
-
-  describe('skeleton loader', () => {
-    it('renders skeleton loaders when loading with no data', () => {
-      wrapper = shallowMountExtended(BlameInfo, {
-        propsData: {
-          blameInfo: [],
-          isBlameLoading: true,
-        },
-      });
-
-      expect(findSkeletonLoader().exists()).toBe(true);
-      expect(findCommitInfoComponents()).toHaveLength(0);
-    });
-
-    it('does not render skeleton loader when loading is false', () => {
-      wrapper = shallowMountExtended(BlameInfo, {
-        propsData: {
-          blameInfo: BLAME_DATA_MOCK,
-          isBlameLoading: false,
-        },
-      });
-
-      expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
-    });
-
-    it('does not render skeleton loader when data exists even if loading', () => {
-      wrapper = shallowMountExtended(BlameInfo, {
-        propsData: {
-          blameInfo: BLAME_DATA_MOCK,
-          isBlameLoading: true,
-        },
-      });
-
-      expect(findSkeletonLoader().exists()).toBe(false);
-      expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
     });
   });
 });

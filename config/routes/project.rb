@@ -417,9 +417,9 @@ constraints(Projects::ProjectUrlConstraint.new) do
           as: :snippet_blob_raw,
           constraints: { snippet_id: /\d+/, ref: %r{[^\/]+} }
 
-        draw :issues
-        draw :merge_requests
-        draw :pipelines
+        draw_all :issues
+        draw_all :merge_requests
+        draw_all :pipelines
 
         # The wiki and repository routing contains wildcard characters so
         # its preferable to keep it below all other project routes

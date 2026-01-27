@@ -26,9 +26,9 @@ Prerequisites:
 
 - You must have administrator access to the GitLab instance.
 
-## List runner controller tokens
+## List all runner controller tokens
 
-List all runner controller tokens.
+Lists all runner controller tokens.
 
 ```plaintext
 GET /runner_controllers/:id/tokens
@@ -81,9 +81,9 @@ Example response:
 ]
 ```
 
-## Get a single runner controller token
+## Retrieve a single runner controller token
 
-Retrieve details of a specific runner controller token by its ID.
+Retrieves details of a specific runner controller token by its ID.
 
 ```plaintext
 GET /runner_controllers/:id/tokens/:token_id
@@ -130,7 +130,7 @@ Example response:
 
 ## Create a runner controller token
 
-Create a new runner controller token.
+Creates a new runner controller token.
 
 ```plaintext
 POST /runner_controllers/:id/tokens
@@ -186,7 +186,7 @@ Example response:
 
 ## Revoke a runner controller token
 
-Revoke an existing runner controller token.
+Revokes an existing runner controller token.
 
 ```plaintext
 DELETE /runner_controllers/:id/tokens/:token_id
@@ -209,7 +209,7 @@ curl --request DELETE \
 
 ## Rotate a runner controller token
 
-Rotate an existing runner controller token.
+Rotates an existing runner controller token.
 
 ```plaintext
 POST /runner_controllers/:id/tokens/:token_id/rotate

@@ -20,16 +20,13 @@ require 'spec_helper'
 RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_management do
   include MobileHelpers
   include BoardHelpers
+  include GlFilteredSearchHelpers
 
   let_it_be(:group, reload: true)   { create(:group, :nested) }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group) }
   let_it_be(:board, reload: true)   { create(:board, project: project) }
   let_it_be(:user, reload: true)    { create(:user) }
   let_it_be(:user2, reload: true)   { create(:user) }
-
-  let(:filtered_search) { find_by_testid('issue-board-filtered-search') }
-  let(:filter_input) { find('.gl-filtered-search-term-input') }
-  let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
   context 'signed in user' do
     before do
@@ -310,9 +307,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
       context 'filtering' do
         it 'filters by author' do
-          set_filter("author", user2.username)
-          click_on user2.username
-          filter_submit.click
+          set_filter("author", user2.username, submit: true)
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -320,20 +315,15 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
-          set_filter("assignee", user.username)
-          click_on user.username
-          filter_submit.click
+          set_filter("assignee", user.username, submit: true)
 
           wait_for_requests
-
           wait_for_board_cards(2, 1)
           wait_for_empty_boards((3..4))
         end
 
         it 'filters by milestone' do
-          set_filter("milestone", milestone.title)
-          click_on milestone.title
-          submit_filter
+          set_filter("milestone", milestone.title, submit: true)
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -342,9 +332,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'filters by label', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
-          set_filter("label", testing.title)
-          click_on testing.title
-          filter_submit.click
+          set_filter("label", testing.title, submit: true)
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -352,20 +340,15 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'filters by label with encoded character' do
-          set_filter("label", a_plus.title)
-          #  This one is a char encoding issue like the & issue
-          click_on a_plus.title
-          filter_submit.click
-          wait_for_requests
+          set_filter("label", a_plus.title, submit: true)
 
+          wait_for_requests
           wait_for_board_cards(1, 1)
           wait_for_empty_boards((2..4))
         end
 
         it 'filters by label with space after reload', :quarantine do
-          set_filter("label", "\"#{accepting.title}")
-          click_on accepting.title
-          filter_submit.click
+          set_filter("label", "\"#{accepting.title}", submit: true)
 
           # Test after reload
           page.evaluate_script 'window.location.reload()'
@@ -387,14 +370,12 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         it 'removes filtered labels' do
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            set_filter("label", testing.title)
-            click_on testing.title
-            filter_submit.click
+            set_filter("label", testing.title, submit: true)
 
             wait_for_board_cards(2, 1)
 
             find_by_testid('filtered-search-clear-button').click
-            filter_submit.click
+            click_button 'Search'
           end
 
           wait_for_board_cards(2, 8)
@@ -403,10 +384,8 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         it 'infinite scrolls list with label filter', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
           create_list(:labeled_issue, 30, project: project, labels: [planning, testing])
 
-          set_filter("label", testing.title)
-          click_on testing.title
           inspect_requests(inject_headers: { 'X-GITLAB-DISABLE-SQL-QUERY-LIMIT' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/323426' }) do
-            filter_submit.click
+            set_filter("label", testing.title, submit: true)
           end
 
           wait_for_requests
@@ -449,12 +428,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
         it 'filters by multiple labels', :quarantine do
           set_filter("label", testing.title)
-          click_on testing.title
-
-          set_filter("label", bug.title)
-          click_on bug.title
-
-          filter_submit.click
+          set_filter("label", bug.title, submit: true)
 
           wait_for_requests
 
@@ -556,18 +530,11 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   end
 
   def set_filter_and_search_by_token_value(value)
-    filter_input.click
-    filter_input.set(value)
-    filter_submit.click
+    gl_filtered_search_set_input(value, submit: true)
   end
 
-  def set_filter(type, text)
-    filter_input.click
-    filter_input.native.send_keys("#{type}:=#{text}")
-  end
-
-  def submit_filter
-    find_by_testid('filtered-search-term-input').native.send_keys(:enter)
+  def set_filter(type, text, submit: false)
+    gl_filtered_search_set_input("#{type}:=#{text}", submit: submit)
   end
 
   def remove_list
