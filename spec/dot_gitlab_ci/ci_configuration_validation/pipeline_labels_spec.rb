@@ -49,16 +49,16 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge request pipeline'
   end
 
-  context 'when MR labeled with `pipeline::tier-2` and `pipeline:mr-approved`' do
-    let(:mr_labels) { ['pipeline::tier-2', 'pipeline:mr-approved'] }
+  context 'when MR labeled with `pipeline::tier-2`' do
+    let(:mr_labels) { ['pipeline::tier-2'] }
     let(:changed_files) { ['app/models/user.rb'] }
     let(:expected_job_name) { 'pipeline-tier-2' }
 
     it_behaves_like 'merge request pipeline'
   end
 
-  context 'when MR labeled with `pipeline::tier-3` and `pipeline:mr-approved`' do
-    let(:mr_labels) { ['pipeline::tier-3', 'pipeline:mr-approved'] }
+  context 'when MR labeled with `pipeline::tier-3`' do
+    let(:mr_labels) { ['pipeline::tier-3'] }
     let(:changed_files) { ['app/models/user.rb'] }
     let(:expected_job_name) { 'pipeline-tier-3' }
 
@@ -113,8 +113,8 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge train pipeline'
   end
 
-  context 'when MR labeled with `pipeline:run-as-if-jh` and `pipeline:mr-approved` is changing app/models/user.rb' do
-    let(:mr_labels) { ['pipeline:run-as-if-jh', 'pipeline:mr-approved'] }
+  context 'when MR labeled with `pipeline:run-as-if-jh` and `pipeline::tier-2` is changing app/models/user.rb' do
+    let(:mr_labels) { ['pipeline:run-as-if-jh', 'pipeline::tier-2'] }
     let(:changed_files) { ['app/models/user.rb'] }
     let(:expected_job_name) { 'start-as-if-jh' }
 

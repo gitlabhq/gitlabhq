@@ -343,7 +343,7 @@ When a GitLab Duo feature calls an external tool to answer a question,
 you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
-1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.

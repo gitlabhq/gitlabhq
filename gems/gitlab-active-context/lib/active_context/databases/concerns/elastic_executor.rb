@@ -131,6 +131,24 @@ module ActiveContext
         def settings(_)
           {}
         end
+
+        def do_add_field(collection, field)
+          strategy = PartitionStrategy.new(
+            name: collection.name,
+            number_of_partitions: collection.number_of_partitions
+          )
+
+          field_mapping = build_field_mappings([field])
+
+          strategy.each_partition do |partition_name|
+            next unless index_exists?(partition_name)
+
+            raw_client.indices.put_mapping(
+              index: partition_name,
+              body: { properties: field_mapping }
+            )
+          end
+        end
       end
     end
   end

@@ -66,4 +66,13 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Executor do
       )
     end
   end
+
+  def expected_vector_mapping
+    {
+      type: 'dense_vector',
+      dims: 768,
+      index: true,
+      similarity: 'cosine'
+    }
+  end
 end

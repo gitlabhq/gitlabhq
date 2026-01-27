@@ -35595,7 +35595,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupsavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="groupsavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. Required when requesting work_items, filters, or filter_warnings fields. |
 | <a id="groupsavedviewssearch"></a>`search` | [`String`](#string) | Search query for saved view name or description. |
 | <a id="groupsavedviewssort"></a>`sort` | [`WorkItemsSavedViewsSort`](#workitemssavedviewssort) | Sort work items by criteria. Default is ID. |
 | <a id="groupsavedviewssubscribedonly"></a>`subscribedOnly` | [`Boolean`](#boolean) | Whether to return only saved views subscribed to by the current user. |
@@ -40746,7 +40746,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespacesavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="namespacesavedviewsid"></a>`id` | [`WorkItemsSavedViewsSavedViewID`](#workitemssavedviewssavedviewid) | ID of the saved view. Required when requesting work_items, filters, or filter_warnings fields. |
 | <a id="namespacesavedviewssearch"></a>`search` | [`String`](#string) | Search query for saved view name or description. |
 | <a id="namespacesavedviewssort"></a>`sort` | [`WorkItemsSavedViewsSort`](#workitemssavedviewssort) | Sort work items by criteria. Default is ID. |
 | <a id="namespacesavedviewssubscribedonly"></a>`subscribedOnly` | [`Boolean`](#boolean) | Whether to return only saved views subscribed to by the current user. |
@@ -50605,8 +50605,8 @@ Check permissions for the current user on a work item.
 | ---- | ---- | ----------- |
 | <a id="workitemsavedviewtypedescription"></a>`description` | [`String`](#string) | Description of the saved view. |
 | <a id="workitemsavedviewtypedisplaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings associated with the saved view. |
-| <a id="workitemsavedviewtypefilterwarnings"></a>`filterWarnings` | [`[WorkItemSavedViewFilterWarningType!]`](#workitemsavedviewfilterwarningtype) | Warnings associated with the filter values. |
-| <a id="workitemsavedviewtypefilters"></a>`filters` | [`JSON`](#json) | Filters associated with the saved view. |
+| <a id="workitemsavedviewtypefilterwarnings"></a>`filterWarnings` | [`[WorkItemSavedViewFilterWarningType!]`](#workitemsavedviewfilterwarningtype) | Warnings associated with the filter values. This field can only be resolved for one saved view in any single request. |
+| <a id="workitemsavedviewtypefilters"></a>`filters` | [`JSON`](#json) | Filters associated with the saved view. This field can only be resolved for one saved view in any single request. |
 | <a id="workitemsavedviewtypeid"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | ID of the saved view. |
 | <a id="workitemsavedviewtypename"></a>`name` | [`String!`](#string) | Name of the saved view. |
 | <a id="workitemsavedviewtypenamespaceid"></a>`namespaceId` | [`TypesNamespaceID!`](#typesnamespaceid) | ID of the namespace of the saved view. |
@@ -50615,7 +50615,7 @@ Check permissions for the current user on a work item.
 | <a id="workitemsavedviewtypesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort option associated with the saved view. |
 | <a id="workitemsavedviewtypesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to the saved view. |
 | <a id="workitemsavedviewtypeuserpermissions"></a>`userPermissions` | [`SavedViewPermissions!`](#savedviewpermissions) | Permissions for the current user on the resource. |
-| <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.8. **Status**: Experiment. Work items associated with the saved view. |
+| <a id="workitemsavedviewtypeworkitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.8. **Status**: Experiment. Work items associated with the saved view. This field can only be resolved for one saved view in any single request. |
 
 ### `WorkItemSelectFieldValue`
 

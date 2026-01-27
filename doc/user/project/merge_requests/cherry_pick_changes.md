@@ -70,7 +70,7 @@ When a system note is created, the format is {{< icon name="cherry-pick-commit" 
 ![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)
 
 The system note crosslinks the new commit and the existing merge request.
-Each deployment's [list of associated merge requests](../../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
+Each deployment's [list of associated merge requests](../../../api/deployments.md#list-all-merge-requests-associated-with-a-deployment)
 includes cherry-picked merge commits.
 
 ## Cherry-pick all changes from a merge request

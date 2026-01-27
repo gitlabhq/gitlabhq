@@ -10,12 +10,13 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
   let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: "https://github.com") }
 
   describe '#sequential_import', :clean_gitlab_redis_shared_state do
-    let_it_be(:note) { create(:note, project: project) }
+    let_it_be(:note) { create(:note, project: project, importing: true) }
 
     let_it_be(:note_with_attachment) do
       create(:note,
         project: project,
-        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)",
+        importing: true
       )
     end
 
@@ -23,7 +24,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
       create(:note,
         :system,
         project: project,
-        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)"
+        note: "![image](https://user-images.githubusercontent.com/1/uuid-1.png)",
+        importing: true
       )
     end
 

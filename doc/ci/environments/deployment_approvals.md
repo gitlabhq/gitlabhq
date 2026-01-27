@@ -115,7 +115,7 @@ To approve or reject a deployment:
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
-You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+You can also [use the API](../../api/deployments.md#approve-or-reject-a-deployment).
 
 You can give only one approval per deployment, even if you are a member of multiple
 approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541)
@@ -159,7 +159,7 @@ To view your deployments:
 
 A deployment with the **blocked** label is blocked.
 
-To view your deployments, you can also [use the API](../../api/deployments.md#get-a-specific-deployment).
+To get the approval status of a deployment, you can also [use the API](../../api/deployments.md#retrieve-a-deployment).
 The `status` field indicates whether a deployment is blocked.
 
 ## Related topics

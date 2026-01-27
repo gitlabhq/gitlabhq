@@ -187,7 +187,11 @@ export default {
       <template v-else>
         <gl-button
           v-if="allowSignUp"
-          :href="sidebarData.new_user_registration_path"
+          :href="
+            isSaas && sidebarData.trial_registration_path
+              ? sidebarData.trial_registration_path
+              : sidebarData.new_user_registration_path
+          "
           variant="confirm"
           class="topbar-signup-button gl-hidden lg:gl-flex"
           data-testid="topbar-signup-button"

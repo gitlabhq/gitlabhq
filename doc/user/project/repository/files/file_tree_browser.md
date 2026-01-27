@@ -16,6 +16,7 @@ title: File tree browser
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19530) in GitLab 18.0 [with a flag](../../../../administration/feature_flags/_index.md) named `repository_file_tree_browser`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/19530) in GitLab 18.9.
 
 {{< /history >}}
 

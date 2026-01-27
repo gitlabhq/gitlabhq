@@ -23,15 +23,11 @@ This feature uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../../../policy/development_stages_support.md).
-- [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382), `duo_workflow` [flag enabled](../../../../administration/feature_flags/_index.md), and status changed to beta in GitLab 18.2.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) as a private beta in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated and changed to beta in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `duo_workflow` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 The Software Development Flow helps you create AI-generated solutions for
 work across the software development lifecycle.
@@ -55,7 +51,7 @@ Prerequisites:
 
 To use the flow:
 
-1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
+1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The flow is aware of all files available to Git in the project branch.
@@ -106,16 +102,10 @@ On your GitLab Self-Managed instance, you can view these events on the
 
 ## Risks
 
-The Software Development Flow is a beta feature and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/). This tool uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
+The Software Development Flow uses an AI agent that can perform actions using your GitLab account. AI tools based on large language models can be unpredictable; review potential risks before use.
 
 The Software Development Flow in VS Code, JetBrains IDEs, and Visual Studio runs workflows on your local workstation. Consider all documented risks before enabling this product. Key risks include:
 
 1. The Software Development Flow can access files in the project’s local file system, including files not tracked by Git or excluded in `.gitignore`. This may include sensitive information such as credentials in `.env` files.
 1. The Software Development Flow is granted a time-limited GitLab OAuth token with the `ai_workflows` scope, linked to your user identity. This token allows access to designated GitLab APIs for the duration of the workflow. By default, only read operations are performed without explicit approval, but write operations are possible based on your permissions.
 1. Do not provide the Software Development Flow with additional credentials or secrets (for example, in messages or goals), as these may be unintentionally used or exposed in code or API calls.
-
-## Give feedback
-
-The Software Development Flow is in beta and your feedback is crucial to improve it for you and others.
-To report issues or suggest improvements,
-[complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).

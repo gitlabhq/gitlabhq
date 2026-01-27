@@ -4,12 +4,10 @@ Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
     - 'app/finders/projects/branch_rules_finder.rb'
-    - 'app/helpers/icons_helper.rb'
     - 'app/models/blob_viewer/dependency_manager.rb'
     - 'app/models/bulk_imports/export_status.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
-    - 'app/models/concerns/integrations/base/mock_ci.rb'
     - 'app/models/concerns/redis_cacheable.rb'
     - 'app/models/import/source_user_placeholder_reference.rb'
     - 'app/presenters/ci/pipeline_artifacts/code_coverage_presenter.rb'
@@ -246,7 +244,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/workers/click_house/rebuild_materialized_view_cron_worker_spec.rb'
     - 'ee/spec/workers/product_analytics/move_funnels_worker_spec.rb'
     - 'ee/spec/workers/vulnerabilities/archival/schedule_worker_spec.rb'
-    - 'keeps/delete_old_feature_flags.rb'
     - 'keeps/helpers/ai_editor.rb'
     - 'lib/api/helpers/internal_helpers.rb'
     - 'lib/banzai/filter/json_table_filter.rb'
@@ -287,7 +284,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/import_export/json/ndjson_reader.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'
     - 'lib/gitlab/kas/user_access.rb'
-    - 'lib/gitlab/lfs/client.rb'
     - 'lib/gitlab/manifest_import/metadata.rb'
     - 'lib/gitlab/merge_requests/mergeability/redis_interface.rb'
     - 'lib/gitlab/metrics/samplers/puma_sampler.rb'
@@ -510,3 +506,5 @@ Gitlab/JsonSafeParse:
     - 'spec/workers/database/collation_checker_worker_spec.rb'
     - 'spec/workers/database/schema_checker_worker_spec.rb'
     - 'spec/workers/packages/npm/process_temporary_package_file_worker_spec.rb'
+
+    

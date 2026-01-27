@@ -40,6 +40,10 @@ module ActiveContext
       def drop_collection(name)
         ActiveContext.adapter.executor.drop_collection(name)
       end
+
+      def add_field(name, &block)
+        ActiveContext.adapter.executor.add_field(name, &block)
+      end
     end
 
     def self.[](version)

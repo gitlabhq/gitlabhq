@@ -46621,6 +46621,10 @@ CREATE UNIQUE INDEX index_saved_replies_on_name_text_pattern_ops ON saved_replie
 
 CREATE INDEX index_saved_views_on_created_by_id ON saved_views USING btree (created_by_id);
 
+CREATE INDEX index_saved_views_on_description_trigram ON saved_views USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_saved_views_on_name_trigram ON saved_views USING gin (name gin_trgm_ops);
+
 CREATE INDEX index_saved_views_on_namespace_id_and_name ON saved_views USING btree (namespace_id, name);
 
 CREATE INDEX index_saved_views_on_namespace_private_created_by ON saved_views USING btree (namespace_id, private, created_by_id);

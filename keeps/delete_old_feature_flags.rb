@@ -385,7 +385,7 @@ module Keeps
         return
       end
 
-      Gitlab::Json.parse(response.body, symbolize_names: true)
+      Gitlab::Json.safe_parse(response.body, symbolize_names: true)
     end
 
     def has_ready_for_removal_label?(rollout_issue)

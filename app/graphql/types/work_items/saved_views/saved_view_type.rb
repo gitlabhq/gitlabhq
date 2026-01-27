@@ -33,12 +33,18 @@ module Types
         field :filters,
           ::GraphQL::Types::JSON,
           null: true,
-          description: 'Filters associated with the saved view.'
+          description: 'Filters associated with the saved view. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         field :filter_warnings,
           [Types::WorkItems::SavedViews::FilterWarningType],
           null: true,
-          description: 'Warnings associated with the filter values.'
+          description: 'Warnings associated with the filter values. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         field :display_settings,
           ::GraphQL::Types::JSON,
@@ -70,7 +76,10 @@ module Types
           null: true,
           experiment: { milestone: '18.8' },
           resolver: ::Resolvers::WorkItems::SavedViews::WorkItemsResolver,
-          description: 'Work items associated with the saved view.'
+          description: 'Work items associated with the saved view. ' \
+            'This field can only be resolved for one saved view in any single request.' do
+              extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+            end
 
         def filters
           {}

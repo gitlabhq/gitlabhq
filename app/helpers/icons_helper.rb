@@ -235,7 +235,8 @@ module IconsHelper
   end
 
   def parse_sprite_definition(sprite_definition)
-    Gitlab::Json.safe_parse(Rails.application
+    Gitlab::Json.safe_parse(
+      Rails.application
            .assets_manifest
            .find_sources(sprite_definition)
            .first

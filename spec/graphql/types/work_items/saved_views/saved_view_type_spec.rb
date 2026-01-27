@@ -18,6 +18,35 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
 
   specify { expect(described_class).to require_graphql_authorizations(:read_saved_view) }
 
+  describe 'field call count limits' do
+    it 'limits filters field to 1 call' do
+      extension = described_class.fields['filters'].extensions.find do |ext|
+        ext.is_a?(Gitlab::Graphql::Limit::FieldCallCount)
+      end
+
+      expect(extension).to be_present
+      expect(extension.options[:limit]).to eq(1)
+    end
+
+    it 'limits filterWarnings field to 1 call' do
+      extension = described_class.fields['filterWarnings'].extensions.find do |ext|
+        ext.is_a?(Gitlab::Graphql::Limit::FieldCallCount)
+      end
+
+      expect(extension).to be_present
+      expect(extension.options[:limit]).to eq(1)
+    end
+
+    it 'limits workItems field to 1 call' do
+      extension = described_class.fields['workItems'].extensions.find do |ext|
+        ext.is_a?(Gitlab::Graphql::Limit::FieldCallCount)
+      end
+
+      expect(extension).to be_present
+      expect(extension.options[:limit]).to eq(1)
+    end
+  end
+
   describe '#filters' do
     it 'returns an empty hash' do
       expect(resolve_field(:filters, saved_view, current_user: current_user)).to eq({})

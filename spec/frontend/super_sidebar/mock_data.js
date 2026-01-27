@@ -217,6 +217,7 @@ export const sidebarData = {
   sign_in_path: '/sign_in',
   allow_signup: true,
   new_user_registration_path: '/sign_up',
+  trial_registration_path: '/trial_registrations/new',
   has_multiple_organizations: false,
 };
 
