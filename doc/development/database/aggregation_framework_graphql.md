@@ -83,6 +83,34 @@ query IssueAnalytics($projectId: ID!) {
 }
 ```
 
+## Custom Request Validations
+
+You can add custom validation logic to discard specific aggregation requests while maintaining the GraphQL schema. This is useful when you need to enforce custom runtime constraints on specific requests.
+
+Raise a `GraphQL::ExecutionError` to reject the request with a custom error message.
+
+To add custom validations, override the `validate_request!` method in the mounting block:
+
+```ruby
+module Types
+  class ProjectType < BaseObject
+    extend Gitlab::Database::Aggregation::Graphql::Mounter
+
+    mount_aggregation_engine(IssueAggregationEngine) do
+      # Other configuration options...
+      # Custom validation logic
+      def validate_request!(engine_request)
+        if engine_request.dimensions.empty?
+          raise GraphQL::ExecutionError, 'At least one dimension must be specified'
+        end
+      end
+    end
+  end
+end
+```
+
+The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters` and `order` specifications.
+
 ## Related Documentation
 
 - [Aggregation Framework](aggregation_framework.md)

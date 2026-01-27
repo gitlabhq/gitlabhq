@@ -81,6 +81,58 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           expect { service.execute }.to raise_error(StandardError)
         end
       end
+
+      shared_examples 'export batch deletion not logged' do
+        it 'does not log deleting export batches' do
+          expect(Gitlab::Export::Logger).not_to receive(:warn)
+
+          service.execute
+        end
+      end
+
+      it_behaves_like 'export batch deletion not logged'
+
+      context 'when export_batch records already exist' do
+        let_it_be_with_reload(:export) { create(:bulk_import_export, group: portable, user: user, batched: true) }
+        let_it_be_with_reload(:export_batch) { create(:bulk_import_export_batch, export: export) }
+
+        it 'logs restarting batched export for active processing export' do
+          expect(Gitlab::Export::Logger).to receive(:warn).with(
+            hash_including(
+              message: 'Restarting batched export relation and deleting existing export batches',
+              export_id: export.id,
+              relation: relation,
+              importer: Import::SOURCE_DIRECT_TRANSFER
+            )
+          )
+
+          service.execute
+        end
+
+        context 'and the export is finished' do
+          before do
+            export.finish!
+          end
+
+          it_behaves_like 'export batch deletion not logged'
+        end
+
+        context 'and the export is failed' do
+          before do
+            export.fail_op!
+          end
+
+          it_behaves_like 'export batch deletion not logged'
+        end
+
+        context 'and the export batches are not in progress' do
+          before do
+            export.batches.map(&:fail_op!)
+          end
+
+          it_behaves_like 'export batch deletion not logged'
+        end
+      end
     end
 
     context 'when there are no batches to export' do

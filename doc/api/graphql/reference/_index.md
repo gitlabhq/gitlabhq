@@ -31321,6 +31321,7 @@ Represents a customizable dashboard.
 | <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
 | <a id="customizabledashboarderrors"></a>`errors` | [`[String!]`](#string) | Errors on yaml definition. |
 | <a id="customizabledashboardfilters"></a>`filters` | [`JSON`](#json) | Dashboard global filters. |
+| <a id="customizabledashboardgridheight"></a>`gridHeight` {{< icon name="warning-solid" >}} | [`CustomizableDashboardGridHeight`](#customizabledashboardgridheight) | **Introduced** in GitLab 18.9. **Status**: Experiment. Grid cell height of the dashboard. |
 | <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="customizabledashboardstatus"></a>`status` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Status of the dashboard. |
@@ -53032,6 +53033,15 @@ Categories for customizable dashboards.
 | Value | Description |
 | ----- | ----------- |
 | <a id="customizabledashboardcategoryanalytics"></a>`ANALYTICS` | Analytics category for customizable dashboards. |
+
+### `CustomizableDashboardGridHeight`
+
+Grid heights for customizable dashboards.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="customizabledashboardgridheightcompact"></a>`COMPACT` | Grid cell height is 10 pixels per unit. Minimum cell height is 10 units. |
+| <a id="customizabledashboardgridheightdefault"></a>`DEFAULT` | Grid cell height is 137 pixels per unit. Minimum cell height is 1 unit. |
 
 ### `CvssSeverity`
 

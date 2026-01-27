@@ -66,6 +66,7 @@ import {
   WIDGET_TYPE_STATUS,
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -325,9 +326,16 @@ export default {
 
         const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
 
-        const selectedWorkItemType = persistedTypeId
-          ? this.findWorkItemTypeById(persistedTypeId)
-          : this.findWorkItemType(this.preselectedWorkItemType);
+        /**
+         * Override to use the preselected work item type when using creation context descriptiion checklist
+         * https://gitlab.com/gitlab-org/gitlab/-/work_items/585444
+         * We do not want the last work item type/ draft work item type overriding the valid
+         * child work item item in the task list
+         */
+        const selectedWorkItemType =
+          persistedTypeId && this.creationContext !== CREATION_CONTEXT_DESCRIPTION_CHECKLIST
+            ? this.findWorkItemTypeById(persistedTypeId)
+            : this.findWorkItemType(this.preselectedWorkItemType);
 
         if (selectedWorkItemType) {
           updateDraftWorkItemType({

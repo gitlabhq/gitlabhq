@@ -73,6 +73,56 @@ describe('~/environments/components/deployment.vue', () => {
       expect(findApprovalBadge().exists()).toBe(true);
     });
 
+    it('should link to the deployment web path when needs approval', () => {
+      const webPath = '/path/to/deployment';
+      wrapper = createWrapper({
+        propsData: {
+          deployment: {
+            ...deployment,
+            pendingApprovalCount: 5,
+            status: 'running',
+            webPath,
+          },
+        },
+      });
+
+      expect(findApprovalBadge().attributes('href')).toBe(webPath);
+    });
+
+    it('should link to the deployable web path when deployment web path is not available', () => {
+      const deployableWebPath = '/path/to/job';
+      wrapper = createWrapper({
+        propsData: {
+          deployment: {
+            ...deployment,
+            pendingApprovalCount: 5,
+            status: 'running',
+            webPath: null,
+            deployable: { webPath: deployableWebPath },
+          },
+        },
+      });
+
+      expect(findApprovalBadge().attributes('href')).toBe(deployableWebPath);
+    });
+
+    it('should link to the deployable build path when web paths are not available', () => {
+      const deployableBuildPath = '/path/to/build';
+      wrapper = createWrapper({
+        propsData: {
+          deployment: {
+            ...deployment,
+            pendingApprovalCount: 5,
+            status: 'running',
+            webPath: null,
+            deployable: { buildPath: deployableBuildPath },
+          },
+        },
+      });
+
+      expect(findApprovalBadge().attributes('href')).toBe(deployableBuildPath);
+    });
+
     it('should not show a badge if the deployment status is failed', () => {
       wrapper = createWrapper({
         propsData: { deployment: { ...deployment, pendingApprovalCount: 5, status: 'failed' } },

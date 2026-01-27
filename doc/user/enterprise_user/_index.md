@@ -260,7 +260,7 @@ the user, you can choose to either:
 
 - Permanently delete the user and their
   [contributions](../../user/profile/account/delete_account.md#associated-records).
-- Keep their contributions and transfer them to a system-wide ghost user account.
+- Keep their contributions and transfer them to a ghost user.
 
 ### Release an enterprise user
 

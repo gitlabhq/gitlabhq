@@ -130,6 +130,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
+- Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595) in GitLab 18.9.
 
 {{< /history >}}
 

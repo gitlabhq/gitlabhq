@@ -61975,9 +61975,6 @@ msgstr ""
 msgid "SecurityOrchestration|In warn mode, project approval settings are not overridden by policy and violations are reported, but fixes for the violations are not mandatory. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
-msgid "SecurityOrchestration|In warn mode, project approval settings are not overridden by policy and violations are reported, but fixes for the violations are not mandatory. License scanning is not supported in warn mode. %{linkStart}Learn more%{linkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|Individual users"
 msgstr ""
 

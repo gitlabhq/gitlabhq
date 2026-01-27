@@ -96,9 +96,10 @@ To delete a user:
 
 When deleting users, you can either:
 
-- Delete just the user, but move contributions to a system-wide "Ghost User":
-  - The `@ghost` acts as a container for all deleted users' contributions.
-  - The user's profile and personal projects are deleted, instead of moved to the Ghost User.
+- Delete just the user, but move contributions to a ghost user:
+  - This internal user acts as a container for all deleted users' contributions.
+  - On GitLab.com, this user is called Ghost User (`@ghost1`).
+  - The user's profile and personal projects are deleted, instead of moved to Ghost User.
 - Delete the user and their contributions, including:
   - Abuse reports.
   - Emoji reactions.
@@ -127,7 +128,11 @@ The deleting associated records option can be requested in the [API](../../../ap
 the **Admin** area.
 
 > [!warning]
-> User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
+> User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you
+> delete a user and their contributions are moved to a ghost user, the approval contributions refer to a missing or
+> invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user),
+> [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user)
+> them.
 
 ## Delete the root account on a GitLab Self-Managed instance
 

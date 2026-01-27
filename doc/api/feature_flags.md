@@ -129,9 +129,9 @@ Example response:
 ]
 ```
 
-## Get a single feature flag
+## Retrieve a feature flag
 
-Gets a single feature flag.
+Retrieves a specified feature flag.
 
 ```plaintext
 GET /projects/:id/feature_flags/:feature_flag_name
@@ -180,7 +180,7 @@ Example response:
 
 ## Create a feature flag
 
-Creates a new feature flag.
+Creates a feature flag for a specified project.
 
 ```plaintext
 POST /projects/:id/feature_flags
@@ -242,7 +242,7 @@ Example response:
 
 ## Update a feature flag
 
-Updates a feature flag.
+Updates a specified feature flag.
 
 ```plaintext
 PUT /projects/:id/feature_flags/:feature_flag_name
@@ -320,7 +320,7 @@ Example response:
 
 ## Delete a feature flag
 
-Deletes a feature flag.
+Deletes a specified feature flag.
 
 ```plaintext
 DELETE /projects/:id/feature_flags/:feature_flag_name

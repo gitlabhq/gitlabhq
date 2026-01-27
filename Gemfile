@@ -604,7 +604,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-  gem 'gitlab_quality-test_tooling', '~> 3.4.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 3.5.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers
@@ -753,7 +753,7 @@ gem 'paper_trail', '~> 16.0', feature_category: :workspaces
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.40", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
+gem "gitlab-cloud-connector", "~> 1.41", require: 'gitlab/cloud_connector', feature_category: :plan_provisioning
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

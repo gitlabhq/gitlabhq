@@ -316,7 +316,7 @@ Supported attributes:
 |:--------------|:---------------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`          | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                          |
 | `user_id`     | integer        | yes      | ID of user account.                                                                                                                                                                                                                                                                      |
-| `hard_delete` | boolean        | no       | If `false`, deletes the user and moves their contributions [to a system-wide "Ghost User"](../user/profile/account/delete_account.md#associated-records). If `true`, deletes the user, their associated contributions, and any groups owned solely by the user. Default value: `false`.  |
+| `hard_delete` | boolean        | no       | If `false`, deletes the user and moves their contributions [to a ghost user](../user/profile/account/delete_account.md#associated-records). If `true`, deletes the user, their associated contributions, and any groups owned solely by the user. Default value: `false`.  |
 
 Example request:
 

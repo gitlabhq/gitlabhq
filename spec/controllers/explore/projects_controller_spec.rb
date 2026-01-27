@@ -64,15 +64,25 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #starred.json' do
       render_views
 
-      before do
+      it 'redirects to active projects with stars_desc sort and json format', :aggregate_failures do
         get :starred, format: :json
+
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
+        expect(response).to have_gitlab_http_status(:found)
       end
 
-      it { is_expected.to respond_with(:success) }
+      context 'when `explore_projects_vue` flag is disabled' do
+        before do
+          stub_feature_flags(explore_projects_vue: false)
+          get :starred, format: :json
+        end
 
-      it 'sets a default sort parameter' do
-        expect(controller.params[:sort]).to eq(expected_default_sort)
-        expect(assigns[:sort]).to eq(expected_default_sort)
+        it { is_expected.to respond_with(:success) }
+
+        it 'sets a default sort parameter' do
+          expect(controller.params[:sort]).to eq(expected_default_sort)
+          expect(assigns[:sort]).to eq(expected_default_sort)
+        end
       end
     end
 
@@ -137,7 +147,11 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
 
     describe 'GET #starred' do
-      it_behaves_like 'pushes feature flag', :starred
+      it 'redirects to active projects with stars_desc sort' do
+        get :starred
+
+        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc'))
+      end
     end
 
     describe 'GET #topic' do
@@ -293,6 +307,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
 
           before do
             stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
+            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
             get endpoint, params: { page: page_limit }
           end
 
@@ -305,6 +320,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
 
           before do
             stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
+            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
             get endpoint, params: { page: page_limit }, format: :json
           end
 

@@ -70,6 +70,14 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def starred
+    if Feature.enabled?(:explore_projects_vue, current_user)
+      respond_to do |format|
+        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
+      end
+      return
+    end
+
     @projects = load_projects.reorder('star_count DESC')
 
     respond_to do |format|

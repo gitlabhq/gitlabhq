@@ -58,6 +58,15 @@ class IssuesFinder < IssuableFinder
     use_namespace_traversal_ids_filtering? ? false : super
   end
 
+  def use_full_text_search?
+    # Full-text search with namespace_traversal_ids filtering is not performant
+    # because the issue_search_data table is partitioned by project_id,
+    # and partition pruning cannot occur when filtering by namespace hierarchy
+    return false if use_namespace_traversal_ids_filtering?
+
+    super
+  end
+
   private
 
   override :by_parent

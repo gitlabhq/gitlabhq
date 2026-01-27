@@ -344,7 +344,7 @@ Parameters:
 | ------------- | -------------- | -------- | ----------- |
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`     | integer        | yes      | The ID of a service account. |
-| `hard_delete` | boolean        | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account. |
+| `hard_delete` | boolean        | no       | If true, contributions that would usually be [moved to a ghost user](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account. |
 
 Example request:
 

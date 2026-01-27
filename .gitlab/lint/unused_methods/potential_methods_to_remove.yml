@@ -19,8 +19,6 @@ ee/app/models/cloud_connector/keys.rb:
 - create_new_key!
 - trim!
 - truncated_pem
-ee/app/models/concerns/ai/customizable_permission.rb:
-- ai_minimum_access_level_to_execute
 ee/app/models/concerns/approval_rule_like.rb:
 - vulnerability_attribute_known_exploited
 - vulnerability_attribute_epss_score

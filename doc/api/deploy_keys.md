@@ -289,9 +289,9 @@ Example response:
 ]
 ```
 
-## Get a single deploy key
+## Retrieve a deploy key
 
-Get a single key.
+Retrieves a specified deploy key.
 
 ```plaintext
 GET /projects/:id/deploy_keys/:key_id
@@ -325,9 +325,9 @@ Example response:
 }
 ```
 
-## Add deploy key for a project
+## Add a deploy key for a project
 
-Creates a new deploy key for a project.
+Adds a deploy key for a specified project.
 
 If the deploy key already exists in another project, it's joined to the current
 project only if the original one is accessible by the same user.
@@ -364,7 +364,7 @@ Example response:
 }
 ```
 
-## Update deploy key
+## Update a deploy key
 
 Updates a deploy key for a project.
 
@@ -398,7 +398,7 @@ Example response:
 }
 ```
 
-## Delete deploy key
+## Delete a deploy key
 
 Removes a deploy key from the project. If the deploy key is used only for this project, it's deleted from the system.
 

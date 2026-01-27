@@ -202,4 +202,36 @@ RSpec.shared_examples 'issues or work items finder with namespace_traversal_ids 
       it_behaves_like 'generates query with namespace_traversal_id filtering'
     end
   end
+
+  context 'with search param' do
+    let(:scope) { 'all' }
+
+    before do
+      group.add_developer(user)
+    end
+
+    context 'when searching with namespace_traversal_ids filtering' do
+      let(:params) { { group_id: group, include_subgroups_param => true, search: "test" } }
+
+      it 'uses ILIKE search instead of full-text search' do
+        result_sql = items.to_sql
+
+        expect(result_sql).not_to include('issue_search_data')
+        expect(result_sql).not_to include('search_vector')
+        expect(result_sql).to include('ILIKE')
+      end
+    end
+
+    context 'when searching within a project' do
+      let(:params) { { project_id: project1.id, search: "test" } }
+
+      it 'uses full-text search' do
+        result_sql = items.to_sql
+
+        expect(result_sql).to include('issue_search_data')
+        expect(result_sql).to include('search_vector')
+        expect(result_sql).not_to include('ILIKE')
+      end
+    end
+  end
 end

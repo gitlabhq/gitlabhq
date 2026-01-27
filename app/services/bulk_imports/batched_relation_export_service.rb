@@ -27,6 +27,8 @@ module BulkImports
     def execute
       return finish_export! if batches_count == 0
 
+      log_export_restart if export.started? && export.batches.in_progress.present?
+
       start_export!
       export.batches.destroy_all # rubocop: disable Cop/DestroyAll
       enqueue_batch_exports
@@ -112,5 +114,14 @@ module BulkImports
       export.batches.find_or_create_by!(batch_number: batch_number)
     end
     # rubocop:enable CodeReuse/ActiveRecord
+
+    def log_export_restart
+      Gitlab::Export::Logger.warn(
+        message: 'Restarting batched export relation and deleting existing export batches',
+        relation: relation,
+        export_id: export.id,
+        importer: Import::SOURCE_DIRECT_TRANSFER
+      )
+    end
   end
 end

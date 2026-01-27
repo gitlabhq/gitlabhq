@@ -183,7 +183,7 @@ To fork a project using a service account:
 ### Delete a service account
 
 When you delete a service account, any contributions made by the account are retained and ownership
-is transferred to a system-wide ghost user account. These contributions can include activity such as
+is transferred to a ghost user. These contributions can include activity such as
 merge requests, issues, projects, and groups.
 
 To delete a service account:

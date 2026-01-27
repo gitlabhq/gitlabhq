@@ -1580,6 +1580,7 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/work_items/553931) in GitLab 18.3.
 
 {{< /history >}}
 
