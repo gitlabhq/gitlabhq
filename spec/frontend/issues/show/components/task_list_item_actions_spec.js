@@ -14,10 +14,8 @@ describe('TaskListItemActions component', () => {
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findConvertToChildItemItem = () => wrapper.findByTestId('convert');
   const findDeleteItem = () => wrapper.findByTestId('delete');
-  const findDisableItem = () => wrapper.findByTestId('disable');
-  const findEnableItem = () => wrapper.findByTestId('enable');
 
-  const mountComponent = ({ issuableType = TYPE_ISSUE, enabled = true } = {}) => {
+  const mountComponent = ({ issuableType = TYPE_ISSUE } = {}) => {
     setHTMLFixture(`
       <li data-sourcepos="3:1-3:10">
         <div></div>
@@ -28,7 +26,6 @@ describe('TaskListItemActions component', () => {
       provide: {
         id: 'gid://gitlab/WorkItem/818',
         issuableType,
-        enabled,
       },
       attachTo: 'div',
     });
@@ -68,7 +65,7 @@ describe('TaskListItemActions component', () => {
     });
   });
 
-  describe('events for enabled items', () => {
+  describe('events', () => {
     beforeEach(() => {
       mountComponent();
     });
@@ -86,37 +83,6 @@ describe('TaskListItemActions component', () => {
       findDeleteItem().vm.$emit('action');
 
       expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', {
-        id: 'gid://gitlab/WorkItem/818',
-        sourcepos: '3:1-3:10',
-      });
-    });
-    it('emits event when `Disable` dropdown item is clicked', () => {
-      findDisableItem().vm.$emit('action');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('disable-task-list-item', {
-        id: 'gid://gitlab/WorkItem/818',
-        sourcepos: '3:1-3:10',
-      });
-    });
-  });
-
-  describe('events for disabled items', () => {
-    beforeEach(() => {
-      mountComponent({ enabled: false });
-    });
-
-    it('emits event when `Delete` dropdown item is clicked', () => {
-      findDeleteItem().vm.$emit('action');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', {
-        id: 'gid://gitlab/WorkItem/818',
-        sourcepos: '3:1-3:10',
-      });
-    });
-    it('emits event when `Enable` dropdown item is clicked', () => {
-      findEnableItem().vm.$emit('action');
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('enable-task-list-item', {
         id: 'gid://gitlab/WorkItem/818',
         sourcepos: '3:1-3:10',
       });

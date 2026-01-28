@@ -43,10 +43,12 @@ module Import
       end
 
       def supported_providers
-        # S3-compatible storage will eventually be enabled by an application setting disabled by default:
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/579705
         providers = self.class.providers
-        providers = providers.except(:s3_compatible) unless Rails.env.development?
+
+        unless Gitlab::CurrentSettings.allow_s3_compatible_storage_for_offline_transfer?
+          providers = providers.except(:s3_compatible)
+        end
+
         providers.keys.map(&:to_s)
       end
     end

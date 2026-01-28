@@ -47,7 +47,7 @@ class IdeController < ApplicationController
   end
 
   def auth_proc
-    ->(project) { !project.pending_delete? }
+    ->(project) { !project.deletion_in_progress? }
   end
 
   def ensure_web_ide_oauth_application!

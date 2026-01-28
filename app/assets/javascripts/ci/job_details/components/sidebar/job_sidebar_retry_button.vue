@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButtonGroup,
+  GlButton,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlModalDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { createAlert } from '~/alert';
@@ -11,10 +18,13 @@ import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils
 export default {
   name: 'JobSidebarRetryButton',
   i18n: {
-    updateVariables: s__('Job|Update CI/CD variables'),
+    retryWithModifiedValue: s__('Job|Retry job with modified value'),
   },
   components: {
+    GlButtonGroup,
     GlButton,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -81,30 +91,21 @@ export default {
 };
 </script>
 <template>
-  <gl-button
-    v-if="hasForwardDeploymentFailure"
-    v-gl-modal="modalId"
-    v-gl-tooltip.bottom
-    :title="retryButtonTitle"
-    :aria-label="retryButtonTitle"
-    category="primary"
-    variant="confirm"
-    icon="retry"
-    data-testid="retry-job-button"
-  />
-  <div v-else-if="isManualJob" class="gl-flex gl-gap-3">
+  <gl-button-group>
     <gl-button
-      v-if="canSetPipelineVariables"
+      v-if="hasForwardDeploymentFailure"
+      v-gl-modal="modalId"
       v-gl-tooltip.bottom
-      :title="$options.i18n.updateVariables"
-      :aria-label="$options.i18n.updateVariables"
-      category="secondary"
+      :title="retryButtonTitle"
+      :aria-label="retryButtonTitle"
+      category="primary"
       variant="confirm"
-      icon="pencil-square"
-      data-testid="manual-run-edit-btn"
-      @click="$emit('updateVariablesClicked')"
+      icon="retry"
+      data-testid="retry-job-button"
     />
+
     <gl-button
+      v-else-if="isManualJob"
       v-gl-tooltip.bottom
       :title="retryButtonTitle"
       :aria-label="retryButtonTitle"
@@ -115,18 +116,33 @@ export default {
       :loading="isLoading"
       @click="retryManualJob"
     />
-  </div>
 
-  <gl-button
-    v-else
-    v-gl-tooltip.bottom
-    :href="href"
-    :title="retryButtonTitle"
-    :aria-label="retryButtonTitle"
-    category="primary"
-    variant="confirm"
-    icon="retry"
-    data-method="post"
-    data-testid="retry-job-link"
-  />
+    <gl-button
+      v-else
+      v-gl-tooltip.bottom
+      :href="href"
+      :title="retryButtonTitle"
+      :aria-label="retryButtonTitle"
+      category="primary"
+      variant="confirm"
+      icon="retry"
+      data-method="post"
+      data-testid="retry-job-link"
+    />
+
+    <gl-disclosure-dropdown
+      v-if="isManualJob && canSetPipelineVariables"
+      category="primary"
+      variant="confirm"
+      placement="bottom-end"
+      :aria-label="$options.i18n.retryWithModifiedValue"
+    >
+      <gl-disclosure-dropdown-item
+        data-testid="manual-run-edit-btn"
+        @action="$emit('updateVariablesClicked')"
+      >
+        <template #list-item> {{ $options.i18n.retryWithModifiedValue }}</template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
+  </gl-button-group>
 </template>

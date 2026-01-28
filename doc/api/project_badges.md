@@ -31,7 +31,7 @@ The following placeholders are available:
 
 ## List all badges of a project
 
-Gets a list of a project's badges and its group badges.
+Lists all badges for a project, including group badges.
 
 ```plaintext
 GET /projects/:id/badges
@@ -73,9 +73,9 @@ Example response:
 ]
 ```
 
-## Get a badge of a project
+## Retrieve a badge of a project
 
-Gets a badge of a project.
+Retrieves a badge of a project.
 
 ```plaintext
 GET /projects/:id/badges/:badge_id
@@ -106,9 +106,9 @@ Example response:
 }
 ```
 
-## Add a badge to a project
+## Create a badge for a project
 
-Adds a badge to a project.
+Creates a badge for a project.
 
 ```plaintext
 POST /projects/:id/badges
@@ -144,7 +144,7 @@ Example response:
 }
 ```
 
-## Edit a badge of a project
+## Update a badge of a project
 
 Updates a badge of a project.
 
@@ -180,9 +180,9 @@ Example response:
 }
 ```
 
-## Remove a badge from a project
+## Delete a badge from a project
 
-Removes a badge from a project. Only project badges are removed by using this endpoint.
+Deletes a badge from a project. To delete group badges, use the [Group badges API](group_badges.md) instead.
 
 ```plaintext
 DELETE /projects/:id/badges/:badge_id

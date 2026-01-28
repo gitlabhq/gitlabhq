@@ -14,115 +14,83 @@ title: GitLab Duoモデル選択
 
 {{< /details >}}
 
-{{< history >}}
+すべてのGitLab Duo機能には、GitLabが選択したデフォルトの大規模言語モデルがあります。
 
-- GitLab 18.4で[一般提供](https://gitlab.com/groups/gitlab-org/-/epics/18818)になりました。
+GitLabは、機能のパフォーマンスを最適化するために、このデフォルトモデルを更新できます。そのため、お客様が何も操作しなくても、機能のモデルが変更される場合があります。
 
-{{< /history >}}
+各機能にデフォルトモデルを使用したくない場合、または特定の要件がある場合は、利用可能な他のサポート対象モデルの配列から選択できます。
 
-すべてのGitLab Duo機能には、GitLabによって選択された、事前選択済みのデフォルトの大規模言語モデル（LLM）があります。
+機能に特定のモデルを選択した場合、別のモデルを選択するまで、その機能はそのモデルを使用します。
 
-GitLabは、機能のパフォーマンスを最適化するために、このデフォルトのLLMを更新できます。したがって、ユーザーが何もしなくても、機能のLLMが変更される可能性があります。
-
-各機能にデフォルトのLLMを使用しない場合、または特定の要件がある場合は、利用可能な他のサポート対象のLLMの配列から選択できます。
-
-機能に特定のLLMを選択すると、別のLLMを選択するまで、その機能はそのLLMを使用します。
-
-## 機能のLLMを選択する {#select-an-llm-for-a-feature}
-
-### GitLab.com {#on-gitlabcom}
+## 機能のモデルを選択する {#select-a-model-for-a-feature}
 
 {{< history >}}
 
 - `ai_model_switching`[フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.1でトップレベルグループ向けに[導入](https://gitlab.com/groups/gitlab-org/-/epics/17570)されました。デフォルトでは無効になっています。
 - GitLab 18.4でベータ版に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)されました。
-- GitLab 18.4で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)になりました。
+- [有効](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)（GitLab 18.4）。
 - GitLab Duo Agent Platformのモデル選択は、`duo_agent_platform_model_selection`[フラグ](../../administration/feature_flags/_index.md)とともに、GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/568112)されました。デフォルトでは無効になっています。
+- [一般提供](https://gitlab.com/groups/gitlab-org/-/epics/18818)（GitLab 18.5）。機能フラグ`ai_model_switching`が有効になりました。
+- 機能フラグ`duo_agent_platform_model_selection`が[有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212051)になりました（GitLab 18.6）。
+- 機能フラグ`ai_model_switching`が[削除](https://gitlab.com/gitlab-org/gitlab/-/issues/526307)されました（GitLab 18.7）。
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+GitLab Duoエージェントプラットフォームに対するこの機能の可用性は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 {{< /alert >}}
 
-GitLab.comでは、トップレベルグループの機能に対してモデルを選択できます。選択したモデルは、その機能に対して、すべての子グループとプロジェクトに適用されます。
+トップレベルグループの機能のモデルを選択できます。選択したモデルは、その機能に対して、すべての子グループとプロジェクトに適用されます。
 
-前提要件: 
+前提条件: 
 
-- LLMを選択するグループは、以下の条件を満たす必要があります:
-  - GitLab.comのトップレベルグループまたはネームスペースであること。
-  - GitLab Duo Core、Pro、またはEnterpriseが有効になっていること。
-- グループまたはネームスペースのオーナーロールが必要です。
-- GitLab 18.3以降では、複数のGitLab Duoネームスペースに属している場合、[デフォルトのネームスペースを割り当てる](#assign-a-default-gitlab-duo-namespace)必要があります。
+- グループのオーナーロールを持っている。
+- モデルを選択するグループがトップレベルグループであること。
+- GitLab 18.3以降で、複数のGitLab Duoネームスペースに属している場合は、[デフォルトのネームスペースを割り当てる](#assign-a-default-gitlab-duo-namespace)必要があります。
 
-機能に別のLLMを選択するには:
+機能のモデルを選択するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
 1. **設定** > **GitLab Duo**を選択します。
-
-   **GitLab Duo**が表示されない場合は、グループでGitLab Duo Core、Pro、またはEnterpriseがオンになっていることを確認してください。
 1. **機能を設定**を選択します。
-1. 設定したい機能に対して、ドロップダウンリストからLLMを選択します。
+1. 設定する機能で、ドロップダウンリストからモデルを選択します。
+1. オプション。セクション内のすべての機能にモデルを適用するには、**すべてに適用**を選択します。
 
 ![トップグループレベルでモデルを選択するためのGitLab UI](img/configure_model_selections_v18_1.png)
 
 {{< alert type="note" >}}
 
-- GitLab Duo Agentic Chatのモデル選択は、GitLab Duo Chat（クラシック）とは独立しています。各機能は個別に設定する必要があります。一方の変更は他方に影響しません。
+- GitLab Duo Chat（エージェント型）のモデル選択は、GitLab Duo Chat（クラシック）とは独立しています。各機能は個別に設定する必要があります。一方の変更は他方に影響しません。
 
-- IDEでは、Agentic Chatのモデル選択は、「接続タイプ」がwebsocketsに設定されている場合にのみ適用されます。デフォルトの接続タイプはgRPCです。
+- IDEでは、GitLab Duo Chat（エージェント型）のモデル選択は、接続タイプがWebSocketに設定されている場合にのみ適用されます。
 
-- Agentic Chatで使用されるOpenAIモデルは実験的なサポートで、GPT-5、GPT-5 mini、GPT-5-Codexが対象です。Agentic ChatでOpenAIモデルを使用することについてのフィードバックは、こちらの[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/572864)にお寄せください。
-
-{{< /alert >}}
-
-#### デフォルトのGitLab Duoネームスペースを割り当てる {#assign-a-default-gitlab-duo-namespace}
-
-{{< history >}}
-
-- GitLab 18.3で`ai_user_default_duo_namespace`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/552081)されました。デフォルトでは無効になっています。
-- GitLab 18.4で[デフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/560319)になりました。
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+- GitLab Duo Chat（エージェント型）で使用されているOpenAIモデルは、GPT-5、GPT-5 mini、GPT-5-Codexに対して特に実験的なサポートを提供します。この[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/572864)で、GitLab Duo Chat（エージェント型）でのOpenAIモデルの使用に関するフィードバックをお寄せください。
 
 {{< /alert >}}
+
+### デフォルトのGitLab Duoネームスペースを割り当てる {#assign-a-default-gitlab-duo-namespace}
 
 複数のGitLab Duoネームスペースに属している場合は、1つをデフォルトのネームスペースとして選択する必要があります。
 
-これは、GitLab Duoが作業中のネームスペース、つまり使用したいLLMを自動的に検出できない場合があるためです。例:
+GitLab Duoが作業中のネームスペースを自動的に検出できない場合、デフォルトのネームスペースを使用して、使用するモデルを判断します。
 
-- CLIでGitLab Duoを使用する場合。
-- 新しいプロジェクトがGitで初期化されておらず、IDEが関連するネームスペースを識別できない場合。
-
-このような場合、GitLab Duoはデフォルトのネームスペースで選択したLLMを使用します。
-
-デフォルトのネームスペースを選択するには:
-
-1. GitLab.comで、左側のサイドバーでアバターを選択します。
-1. **設定**を選択します。
-1. **動作**セクションに移動します。
-1. **デフォルトのGitLab Duoのネームスペース**ドロップダウンリストから、デフォルトとして設定するネームスペースを選択します。
-1. **変更を保存**を選択します。
+[デフォルトのGitLab Duoネームスペースを設定する](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)方法について説明します。
 
 ## トラブルシューティング {#troubleshooting}
 
 デフォルト以外のモデルを選択すると、次の問題が発生する可能性があります。
 
-### LLMが利用できない {#llm-is-not-available}
+### モデルは利用できません {#model-is-not-available}
 
-GitLab DuoのAIネイティブ機能にGitLabのデフォルトLLMを使用している場合、GitLabは最適なパフォーマンスと信頼性を維持するために、ユーザーに通知することなくデフォルトLLMを変更する可能性があります。
+GitLab Duo AIネイティブ機能にデフォルトのGitLabモデルを使用している場合、GitLabは、最適なパフォーマンスと信頼性を維持するために、ユーザーに通知せずにデフォルトモデルを変更する場合があります。
 
-GitLab DuoのAIネイティブ機能に特定のLLMを選択していて、そのLLMが利用できない場合、自動フォールバックはなく、このLLMを使用する機能は利用できなくなります。
+GitLab Duo AIネイティブ機能に特定のモデルを選択し、そのモデルが利用できない場合、自動フォールバックはありません。このモデルを使用する機能は使用できません。
 
 ### コード補完のレイテンシーの問題 {#latency-issues-with-code-completion}
 
-[コード補完](../project/repository/code_suggestions/_index.md#code-completion-and-generation)に特定のLLMが選択されたプロジェクトでシートが割り当てられている場合:
+[コード補完](../project/repository/code_suggestions/_index.md#code-completion-and-generation)に特定のモデルが選択されているプロジェクトの割り当てられたシートがある場合:
 
 - IDE拡張機能が[AIゲートウェイへの直接接続](../../administration/gitlab_duo/gateway.md#region-support)を無効にします。
 - コード補完リクエストはGitLabモノリスを経由し、次に指定されたモデルを選択して、これらのリクエストに応答します。
@@ -131,17 +99,11 @@ GitLab DuoのAIネイティブ機能に特定のLLMを選択していて、そ�
 
 ### デフォルトのGitLab Duoネームスペースが設定されていない {#no-default-gitlab-duo-namespace}
 
-選択したLLMでGitLab Duo機能を使用する際、デフォルトのGitLab Duoネームスペースを選択していないというエラーが表示されることがあります。例:
+選択したモデルでGitLab Duo機能を使用すると、デフォルトのGitLab Duoネームスペースが選択されていないことを示すエラーが表示される場合があります。例:
 
 - GitLab Duoコード提案では、`Error 422: No default Duo group found. Select a default Duo group in your user preferences and try again.`が表示される場合があります
-- GitLab Duo Chatでは、`Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab Duo namespace in your user preferences.`が表示される場合があります
+- GitLab Duo Chatでは、`Error G3002: I'm sorry, you have not selected a default GitLab Duo namespace. Please go to GitLab and in user Preferences - Behavior, select a default namespace for GitLab Duo.`が表示される場合があります
 
-この問題は、次の場合に発生します:
+このイシューは、複数のGitLab Duoネームスペースに属しているにもかかわらず、デフォルトのネームスペースとして1つを選択していない場合に発生します。
 
-- `ai_user_default_duo_namespace`機能フラグが有効になっている場合。
-- 複数のGitLab Duoネームスペースに属しているが、デフォルトのネームスペースを選択していない場合。
-
-これを解決するには、次のいずれかを実行します:
-
-- [デフォルトのGitLab Duoネームスペースを割り当てる](#assign-a-default-gitlab-duo-namespace)。
-- モデル選択機能がベータ版の間、この要件をオプトアウトするには、[GitLabサポート](https://about.gitlab.com/support/)に`ai_user_default_duo_namespace`機能フラグを無効にするように依頼してください。
+これを解決するには、[デフォルトのGitLab Duoネームスペースを設定](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)します。

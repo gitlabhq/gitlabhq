@@ -238,4 +238,16 @@ RSpec.describe IdeController, feature_category: :web_ide do
   def web_ide_oauth_application
     ::Gitlab::CurrentSettings.current_application_settings.web_ide_oauth_application
   end
+
+  describe 'auth_proc with deletion_in_progress state' do
+    let(:route) { "/-/ide/project/#{project.full_path}" }
+
+    it 'returns 404 when project is in deletion_in_progress state' do
+      project.project_namespace.start_deletion!(transition_user: user)
+
+      get route
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
 end

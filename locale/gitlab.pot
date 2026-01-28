@@ -5803,6 +5803,9 @@ msgstr ""
 msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
+msgid "AdminSettings|Allow S3 compatible object storage for offline transfer"
+msgstr ""
+
 msgid "AdminSettings|Allow all integrations"
 msgstr ""
 
@@ -17844,6 +17847,9 @@ msgid "ComplianceReport|%{percent}%% coverage"
 msgstr ""
 
 msgid "ComplianceReport|%{percent}%% coverage for %{framework}"
+msgstr ""
+
+msgid "ComplianceReport|%{title} (CSP)"
 msgstr ""
 
 msgid "ComplianceReport|Action"
@@ -39071,6 +39077,9 @@ msgstr ""
 msgid "Job|Retry"
 msgstr ""
 
+msgid "Job|Retry job with modified value"
+msgstr ""
+
 msgid "Job|Run again"
 msgstr ""
 
@@ -39156,9 +39165,6 @@ msgid "Job|This job is stuck because you don't have any active runners that can 
 msgstr ""
 
 msgid "Job|Trigger"
-msgstr ""
-
-msgid "Job|Update CI/CD variables"
 msgstr ""
 
 msgid "Job|View raw"
@@ -78134,9 +78140,6 @@ msgstr ""
 msgid "WorkItem|Development"
 msgstr ""
 
-msgid "WorkItem|Disable list item"
-msgstr ""
-
 msgid "WorkItem|Discard changes"
 msgstr ""
 
@@ -78186,9 +78189,6 @@ msgid "WorkItem|Email work item to this project"
 msgstr ""
 
 msgid "WorkItem|Emoji reactions"
-msgstr ""
-
-msgid "WorkItem|Enable list item"
 msgstr ""
 
 msgid "WorkItem|Enter the work item description"

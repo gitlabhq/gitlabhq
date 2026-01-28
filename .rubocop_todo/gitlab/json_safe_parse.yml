@@ -8,7 +8,6 @@ Gitlab/JsonSafeParse:
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
     - 'app/models/concerns/redis_cacheable.rb'
-    - 'app/models/import/source_user_placeholder_reference.rb'
     - 'app/presenters/ci/pipeline_artifacts/code_coverage_presenter.rb'
     - 'app/presenters/ci/pipeline_artifacts/code_quality_mr_diff_presenter.rb'
     - 'app/services/activity_pub/inbox_resolver_service.rb'

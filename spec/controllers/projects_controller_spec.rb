@@ -403,14 +403,29 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when the project is pending deletions' do
+    context 'when the project is in deletion_in_progress state' do
       it 'renders a 404 error' do
-        project = create(:project, pending_delete: true)
+        project = create(:project)
+        project.project_namespace.start_deletion!(transition_user: user)
         sign_in(user)
 
         get :show, params: { namespace_id: project.namespace, id: project }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when project deletion is in progress for authorized user' do
+      render_views
+
+      it 'shows flash alert about deletion' do
+        public_project.add_developer(user)
+        public_project.project_namespace.start_deletion!(transition_user: user)
+        sign_in(user)
+
+        get :show, params: { namespace_id: public_project.namespace, id: public_project }
+
+        expect(flash.now[:alert]).to match(/Project.*queued for deletion/)
       end
     end
 
@@ -1301,7 +1316,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
 
-          expect(project.reload.pending_delete).to eq(true)
+          expect(project.reload.deletion_in_progress?).to eq(true)
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(dashboard_projects_path)
         end
@@ -1313,7 +1328,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.reload.pending_delete).to eq(false)
+          expect(project.reload.deletion_in_progress?).to eq(false)
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:edit)
           expect(flash[:alert]).to include('Project has already been marked for deletion')

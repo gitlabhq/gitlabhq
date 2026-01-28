@@ -17,7 +17,7 @@ module ActivityPub
       end
 
       def auth_proc
-        ->(project) { project.public? && !project.pending_delete? }
+        ->(project) { project.public? && !project.deletion_in_progress? }
       end
 
       def ensure_project_feature_flag

@@ -91,6 +91,7 @@ module Organizations
       # See Organizations::Concerns::OrganizationUpdater#update_organization_id_for for more details.
       def update_associated_organization_ids(user_ids)
         update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
+        update_organization_id_for(AuthenticationEvent) { |relation| relation.for_user(user_ids) }
       end
 
       def update_users(user_ids)

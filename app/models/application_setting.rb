@@ -762,7 +762,8 @@ class ApplicationSetting < ApplicationRecord
     silent_admin_exports_enabled: [:boolean, { default: false }],
     allow_contribution_mapping_to_admins: [:boolean, { default: false }],
     allow_bypass_placeholder_confirmation: [:boolean, { default: false }],
-    relation_export_batch_size: [:integer, { default: 50 }]
+    relation_export_batch_size: [:integer, { default: 50 }],
+    allow_s3_compatible_storage_for_offline_transfer: [:boolean, { default: false }]
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],

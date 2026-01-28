@@ -449,6 +449,58 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
         expect(user3.reload.organization_id).to eq(new_organization.id)
       end
     end
+
+    context 'with authentication events' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization, developer_of: [group]) }
+      let_it_be_with_refind(:user2) { create(:user, organization: old_organization, developer_of: [group]) }
+      let_it_be_with_refind(:auth_event1) do
+        create(:authentication_event, user: user1, organization_id: old_organization.id)
+      end
+
+      let_it_be_with_refind(:auth_event2) do
+        create(:authentication_event, user: user1, organization_id: old_organization.id)
+      end
+
+      let_it_be_with_refind(:auth_event3) do
+        create(:authentication_event, user: user2, organization_id: old_organization.id)
+      end
+
+      before_all do
+        group.add_developer(user1)
+        group.add_developer(user2)
+      end
+
+      it 'updates organization_id for authentication events of transferred users' do
+        service.execute
+
+        expect(auth_event1.reload.organization_id).to eq(new_organization.id)
+        expect(auth_event2.reload.organization_id).to eq(new_organization.id)
+        expect(auth_event3.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update authentication events for users not in the transferred group' do
+        non_group_user = create(:user, organization: old_organization)
+        non_group_auth_event = create(:authentication_event, user: non_group_user, organization_id: old_organization.id)
+
+        service.execute
+
+        expect(non_group_auth_event.reload.organization_id).to eq(old_organization.id)
+      end
+
+      context 'when a failure occurs in another part of the service' do
+        it 'rolls back authentication event updates due to transaction' do
+          # Stub update_todos to raise an error after authentication events are updated
+          allow(service).to receive(:update_todos).and_raise(StandardError, 'Todos update failed')
+
+          expect { service.execute }.to raise_error(StandardError, 'Todos update failed')
+
+          # Verify authentication events were not updated due to transaction rollback
+          expect(auth_event1.reload.organization_id).to eq(old_organization.id)
+          expect(auth_event2.reload.organization_id).to eq(old_organization.id)
+          expect(auth_event3.reload.organization_id).to eq(old_organization.id)
+        end
+      end
+    end
   end
 
   describe '#can_transfer_users?' do

@@ -178,7 +178,7 @@ class ProjectsController < Projects::ApplicationController
       return
     end
 
-    if @project.pending_delete?
+    if @project.deletion_in_progress?
       flash.now[:alert] = safe_format(_("Project '%{project_name}' queued for deletion."), project_name: @project.name)
     end
 

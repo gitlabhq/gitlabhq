@@ -13,19 +13,12 @@ title: Merged results pipelines
 
 {{< /details >}}
 
-Merged results pipelines test code from the source and target branches combined.
-This provides more accurate results than testing only the source branch.
+Merged results pipelines test a temporary merged commit that combines code from 
+the source and target branches. This commit doesn't exist in either branch, 
+but you can view it in the pipeline details.
 
-GitLab creates a temporary merged commit that shows what your code looks like after merging.
-This commit doesn't exist in either branch, but you can view it in the pipeline details.
-
-Your jobs use the same `.gitlab-ci.yml` configuration as merge request pipelines,
-but run against the temporary merged commit instead of only your source branch.
-This approach helps you:
-
-- Verify that your changes work with the latest target branch code.
-- Catch integration issues before you merge.
-- Test that changes in different files work together in multi-file projects.
+This approach helps verify changes work with the code in the latest target branch, 
+catch integration issues before merging, and ensure changes in different files work together.
 
 Merged results pipelines can't run when the target branch has changes
 that conflict with the changes in the source branch.

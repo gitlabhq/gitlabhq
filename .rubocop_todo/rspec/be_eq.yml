@@ -315,7 +315,6 @@ RSpec/BeEq:
     - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/api/ldap_group_links_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
-    - 'ee/spec/requests/api/merge_request_approval_rules_spec.rb'
     - 'ee/spec/requests/api/merge_request_approval_settings_spec.rb'
     - 'ee/spec/requests/api/merge_request_approvals_spec.rb'
     - 'ee/spec/requests/api/merge_requests_spec.rb'

@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import JobsSidebarRetryButton from '~/ci/job_details/components/sidebar/job_sidebar_retry_button.vue';
 import createStore from '~/ci/job_details/store';
@@ -22,6 +23,7 @@ describe('Job Sidebar Retry Button', () => {
   const findRetryLink = () => wrapper.findByTestId('retry-job-link');
   const findManualRetryButton = () => wrapper.findByTestId('manual-run-again-btn');
   const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
+  const findActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   const createWrapper = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
     store = createStore();
@@ -117,7 +119,7 @@ describe('Job Sidebar Retry Button', () => {
     it('emit `updateVariablesClicked` when update button is clicked', async () => {
       createWrapperWithConfirmation();
 
-      await findManualRunEditButton().trigger('click');
+      await findManualRunEditButton().vm.$emit('action');
       expect(wrapper.emitted('updateVariablesClicked')).toEqual([[]]);
     });
 
@@ -137,7 +139,8 @@ describe('Job Sidebar Retry Button', () => {
     it('is rendered if user is allowed to view pipeline variables', async () => {
       createWrapper({ props: { isManualJob: true } });
       await waitForPromises();
-      expect(findManualRunEditButton().exists()).toBe(true);
+      expect(findActionsDropdown().attributes('aria-label')).toBe('Retry job with modified value');
+      expect(findManualRunEditButton().text()).toBe('Retry job with modified value');
     });
 
     it('is not rendered if user is not allowed to view pipeline variables', async () => {
@@ -146,6 +149,7 @@ describe('Job Sidebar Retry Button', () => {
         provide: { canSetPipelineVariables: false },
       });
       await waitForPromises();
+      expect(findActionsDropdown().exists()).toBe(false);
       expect(findManualRunEditButton().exists()).toBe(false);
     });
   });

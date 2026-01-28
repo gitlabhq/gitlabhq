@@ -11,6 +11,8 @@ title: コードレビューフロー
 - アドオン: GitLab Duo CoreまたはPro
 - 提供形態: GitLab.com、GitLab Self-Managed
 
+この機能は[GitLabクレジット](../../../../subscriptions/gitlab_credits.md)を使用します。
+
 {{< /details >}}
 
 {{< collapsible title="モデル情報" >}}
@@ -22,21 +24,21 @@ title: コードレビューフロー
 
 {{< history >}}
 
-- [ベータ](../../../../policy/development_stages_support.md)版として、GitLab [18.6](https://gitlab.com/groups/gitlab-org/-/epics/18645)で[フラグ](../../../../administration/feature_flags/_index.md)付きで`duo_code_review_on_agent_platform`が導入されました。デフォルトでは無効になっています。
-- GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。機能フラグ`duo_code_review_on_agent_platform`が[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209)。
+- [ベータ](../../../../policy/development_stages_support.md)としてGitLab [18.7](https://gitlab.com/groups/gitlab-org/-/epics/18645)で、`duo_code_review_on_agent_platform`という名前の[with a flag](../../../../administration/feature_flags/_index.md)で導入されました。デフォルトでは無効になっています。
+- GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。機能フラグ`duo_code_review_on_agent_platform`は[削除](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209)されました。
 
 {{< /history >}}
 
-> [!note]アドオンによっては、代わりにGitLab Duoコードレビュー（クラシック）にアクセスできる場合があります。[コードレビューフローの違い](#differences-from-gitlab-duo-code-review-classic)をご覧ください。
+> [!note] アドオンによっては、GitLab Duoコードレビュー（クラシック）を利用できる場合があります。[コードレビューフローとの違い](#differences-from-gitlab-duo-code-review-classic)をご確認ください。
 
-コードレビューフローは、エージェント型AIによるコードレビューを効率化するのに役立ちます。
+コードレビューフローは、エージェント型AIを活用してコードレビューを効率化します。
 
 このフローには次の特長があります:
 
 - コードの変更、マージリクエストコメント、リンクされたイシューを分析します。
-- リポジトリ構造とクロスファイルの依存関係のコンテキスト認識を強化します。
-- 実用的なフィードバックを含む詳細なレビューコメントを提供します。
-- プロジェクトに合わせて調整されたカスタムレビュー指示をサポートします。
+- リポジトリ構造やファイル間の依存関係を踏まえて、より高度にコンテキストを理解します。
+- 実行可能なフィードバックを含む、詳細なレビューコメントを提供します。
+- プロジェクトに合わせてカスタマイズされたレビュー指示をサポートします。
 
 このフローは、GitLab UIでのみ使用できます。
 
@@ -45,45 +47,45 @@ title: コードレビューフロー
 前提条件: 
 
 - [その他の前提条件](../_index.md#prerequisites)を満たしていることを確認してください。
-- コードレビューフローが[オンになっている](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)ことを確認します。
+- コードレビューフローが[オンになっている](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)ことを確認してください。
 
 マージリクエストでコードレビューフローをトリガーするには:
 
-1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択し、マージリクエストを見つけます。
-1. これらのいずれかの方法を使用して、レビューをトリガーします:
+1. 左側のサイドバーで、**コード** > **マージリクエスト**を選択して、マージリクエストを見つけます。
+1. 次のいずれかの方法でレビューをトリガーします:
    - GitLab Duoをレビュアーとして割り当てます。
    - コメントボックスに、クイックアクション`/assign_reviewer @GitLabDuo`を入力します。
 
-GitLab Duoとのやり取りは、次の方法で行うことができます:
+次の方法でGitLab Duoとやり取りします:
 
-- 説明や代替案を求めるために、レビューコメントに返信します。
-- フォローアップの質問をするために、ディスカッションスレッドで`@GitLabDuo`に言及します。
+- レビューコメントに返信して、補足説明や代替案を求めます。
+- ディスカッションスレッドで`@GitLabDuo`をメンションし、フォローアップの質問を行います。
 
 ### 自動コードレビュー {#automatic-code-reviews}
 
-プロジェクトまたはグループの自動コードレビューを設定して、すべてのマージリクエストがGitLab Duoによる最初のレビューを受けられるようにすることができます。
+プロジェクトまたはグループに対して自動コードレビューを設定することで、すべてのマージリクエストにGitLab Duoによる初回レビューが行われるようになります。
 
 [プロジェクトの自動レビューを有効にする](../../../project/merge_requests/duo_in_merge_requests.md#automatic-reviews-from-gitlab-duo-for-a-project)方法をご覧ください。
 
-[グループとアプリケーションの自動レビューを有効にする](../../../project/merge_requests/duo_in_merge_requests.md#automatic-reviews-from-gitlab-duo-for-groups-and-applications)方法をご覧ください。
+[グループおよびアプリケーションの自動レビューを有効にする](../../../project/merge_requests/duo_in_merge_requests.md#automatic-reviews-from-gitlab-duo-for-groups-and-applications)方法をご覧ください。
 
 ### カスタムコードレビュー指示 {#custom-code-review-instructions}
 
-リポジトリ固有のレビュー指示で、コードレビューフローの動作をカスタマイズします。GitLab Duoを次のトリガーすることができます:
+リポジトリ固有のレビュー指示で、コードレビューフローの動作をカスタマイズします。次のようにGitLab Duoに指示できます:
 
-- 特定のコード品質の側面（セキュリティ、パフォーマンス、保守性など）に焦点を当てます。
-- プロジェクトに固有のコーディング標準とベストプラクティスを適用します。
-- 調整されたレビュー基準で特定のファイルパターンをターゲットにします。
-- 特定の種類の変更について、より詳細な説明を提供します。
+- 特定のコード品質の側面（セキュリティ、パフォーマンス、保守性など）に重点を置く。
+- プロジェクトに固有のコーディング標準やベストプラクティスを適用する。
+- 特定のファイルパターンを対象に、カスタマイズされたレビュー基準を適用する。
+- 特定の種類の変更について、より詳細な説明を提供する。
 
-カスタム指示を設定するには、[GitLab Duoの指示をカスタマイズする](../../../gitlab_duo/customize_duo/review_instructions.md)を参照してください。
+カスタム指示を設定するには、[GitLab Duoへの指示をカスタマイズする](../../../gitlab_duo/customize_duo/review_instructions.md)を参照してください。
 
 ## GitLab Duoコードレビュー（クラシック）との違い {#differences-from-gitlab-duo-code-review-classic}
 
-コードレビューフローは[GitLab Duoコードレビュー（クラシック）](../../../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review-classic)と同じコア機能を提供しますが、GitLab Duo Agent Platformの実装では、以下が提供されます:
+コードレビューフローは、[GitLab Duoコードレビュー（クラシック）](../../../project/merge_requests/duo_in_merge_requests.md#gitlab-duo-code-review-classic)と同等の中核的な機能を提供しますが、GitLab Duo Agent Platform上の実装では次の点が強化されています:
 
-- コンテキスト認識の向上: リポジトリ構造とクロスファイルの依存関係をより深く理解できます。
-- エージェント型機能: より徹底的な分析のための多段階推論。
+- コンテキスト認識の向上: リポジトリ構造やファイル間の依存関係をより正確に把握します。
+- エージェント型機能: より徹底的な分析を行うための多段階推論をサポートします。
 - 最新のアーキテクチャ: スケーラブルなGitLab Duo Agent Platform上に構築されています。
 
-カスタム指示、自動レビュー、インタラクションパターンを含む既存のすべての機能は互換性を維持します。
+カスタム指示、自動レビュー、インタラクションパターンを含む既存のすべての機能は、引き続き互換性があります。

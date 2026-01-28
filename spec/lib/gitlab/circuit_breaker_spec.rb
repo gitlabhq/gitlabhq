@@ -116,5 +116,19 @@ RSpec.describe Gitlab::CircuitBreaker, :clean_gitlab_redis_rate_limiting, featur
       expect(circuit).to receive(:run).with(exception: false, &block)
       described_class.run_with_circuit('service', &block)
     end
+
+    context 'when exception parameter is true' do
+      it 'runs the code block with exception mode enabled' do
+        expect(circuit).to receive(:run).with(exception: true, &block)
+        described_class.run_with_circuit('service', exception: true, &block)
+      end
+    end
+
+    context 'when exception parameter is false' do
+      it 'runs the code block with exception mode disabled' do
+        expect(circuit).to receive(:run).with(exception: false, &block)
+        described_class.run_with_circuit('service', exception: false, &block)
+      end
+    end
   end
 end

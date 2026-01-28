@@ -20,7 +20,7 @@ title: 外部エージェント設定の例
 
 {{< /history >}}
 
-以下の例を参考に、外部エージェント設定を作成してください。これらの例には、次の変数が含まれています:
+外部エージェント設定を作成するには、次の例を参考にしてください。これらの例には、次の変数が含まれています:
 
 - `AI_FLOW_CONTEXT`: JSON形式でシリアル化された親オブジェクト。次の情報が含まれます:
   - マージリクエストの場合、差分とコメント（上限あり）
@@ -32,13 +32,13 @@ title: 外部エージェント設定の例
 
 次のエージェントはGitLabと連携しており、GitLab.comで利用可能です。
 
-### Anthropic Claude {#anthropic-claude}
+### Claudeコード {#claude-code}
 
 ```yaml
 injectGatewayToken: true
 image: node:22-slim
 commands:
-  - echo "Installing claude"
+  - echo "Installing Claude Code"
   - npm install --global @anthropic-ai/claude-code
   - echo "Installing glab"
   - export GITLAB_TOKEN=$GITLAB_TOKEN_CLAUDE
@@ -48,11 +48,11 @@ commands:
   - echo "Configuring git"
   - git config --global user.email "claudecode@gitlab.com"
   - git config --global user.name "Claude Code"
-  - echo "Configuring claude"
+  - echo "Configuring Claude Code"
   - export ANTHROPIC_AUTH_TOKEN=$AI_FLOW_AI_GATEWAY_TOKEN
   - export ANTHROPIC_CUSTOM_HEADERS=$AI_FLOW_AI_GATEWAY_HEADERS
   - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
-  - echo "Running claude"
+  - echo "Running Claude Code"
   - |
     claude --debug --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
     You are an AI assistant helping with GitLab operations.

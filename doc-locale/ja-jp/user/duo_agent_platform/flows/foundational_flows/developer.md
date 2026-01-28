@@ -11,14 +11,17 @@ title: デベロッパーフロー
 - アドオン: GitLab Duo Core、Pro、またはEnterprise
 - 提供形態: GitLab.com、GitLab Self-Managed
 
+この機能は[GitLabクレジット](../../../../subscriptions/gitlab_credits.md)を使用します。
+
 {{< /details >}}
 
 {{< history >}}
 
 - GitLab 18.3で`duo_workflow_in_ci`[フラグ](../../../../administration/feature_flags/_index.md)とともに[ベータ版](../../../../policy/development_stages_support.md)として導入されました。デフォルトでは無効になっていますが、インスタンスまたはユーザーに対して有効にすることができます。
-- 18.6では、`Issue to MR`から`Developer Flow`に名称が変更され、`duo_developer_button`という名前のフラグが付けられました。デフォルトでは無効になっていますが、インスタンスまたはユーザーに対して有効にすることができます。
+- 18.6で`duo_developer_button`フラグが導入され、`Issue to MR`から`Developer Flow`に名前が変更されました。デフォルトでは無効になっていますが、インスタンスまたはユーザーに対して有効にすることができます。
 - `duo_workflow`フラグも有効にする必要がありますが、これはデフォルトで有効になっています。
 - GitLab 18.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273)になりました。
+- フィーチャフラグ`duo_workflow_in_ci`はGitLab 18.9で削除されました。
 
 {{< /history >}}
 
@@ -38,7 +41,7 @@ title: デベロッパーフロー
 
 このフローは、GitLab UIでのみ使用できます。
 
-> \![note] デベロッパーフローは、サービスアカウントを使用してマージリクエストを作成します。SOC 2、SOX法、ISO 27001、またはFedRAMPの要件がある組織は、適切なピアレビューポリシーが整備されていることを確認する必要があります。詳細については、[マージリクエストのコンプライアンスに関する考慮事項](../../composite_identity.md#compliance-considerations-for-merge-requests)を参照してください。
+> [!note] デベロッパーフローは、サービスアカウントを使用してマージリクエストを作成します。SOC 2、SOX法、ISO 27001、またはFedRAMPの要件がある組織は、適切なピアレビューポリシーが整備されていることを確認してください。詳細については、[マージリクエストに関するコンプライアンス上の考慮事項](../../composite_identity.md#compliance-considerations-for-merge-requests)を参照してください。
 
 ## 前提条件 {#prerequisites}
 
@@ -48,7 +51,7 @@ title: デベロッパーフロー
 - プロジェクトのデベロッパーロール以上を持っている。
 - [他の前提条件](../../../duo_agent_platform/_index.md#prerequisites)を満たしている。
 - [GitLab Duoサービスアカウントがコミットとブランチを作成できることを確認している](../../troubleshooting.md#session-is-stuck-in-created-state)。
-- デベロッパーフローが[オンになっている](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)ことを確認してください。
+- デベロッパーフローが[オンになっている](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)。
 
 ## フローを使用する {#use-the-flow}
 
@@ -57,7 +60,7 @@ title: デベロッパーフロー
 1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **計画** > **イシュー**を選択します。
 1. マージリクエストを作成するイシューを選択します。
-1. イシューヘッダーの下にある**Generate MR with GitLab Duo**を選択します。
+1. イシューヘッダーの下にある**GitLab Duoでマージリクエストを生成**を選択します。
 1. **自動化** > **セッション**を選択して、進捗状況を監視します。
 1. パイプラインが正常に実行されると、イシューのアクティビティーセクションにマージリクエストへのリンクが表示されます。
 1. マージリクエストをレビューし、必要に応じて変更を加えます。

@@ -84,9 +84,9 @@ curl --request GET \
 ]
 ```
 
-## Get details on a project access token
+## Retrieve details on a project access token
 
-Gets details on a project access token.
+Retrieves details on a project access token.
 
 ```plaintext
 GET projects/:id/access_tokens/:token_id

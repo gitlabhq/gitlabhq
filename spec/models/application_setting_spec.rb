@@ -30,6 +30,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         allow_contribution_mapping_to_admins: false,
         allow_local_requests_from_system_hooks: true,
         allow_local_requests_from_web_hooks_and_services: false,
+        allow_s3_compatible_storage_for_offline_transfer: false,
         allow_possible_spam: false,
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
