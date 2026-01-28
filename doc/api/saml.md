@@ -22,13 +22,13 @@ Use this API to interact with SAML features.
 
 ## GitLab.com endpoints
 
-### Get SAML identities for a group
+### List all SAML identities for a group
 
 ```plaintext
 GET /groups/:id/saml/identities
 ```
 
-Fetch SAML identities for a group.
+Lists all the SAML identities for a group.
 
 Supported attributes:
 
@@ -63,13 +63,15 @@ Example response:
 ]
 ```
 
-### Get a single SAML identity
+### Retrieve a single SAML identity
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
 
 {{< /history >}}
+
+Retrieves a single SAML identity.
 
 ```plaintext
 GET /groups/:id/saml/:uid
@@ -101,7 +103,7 @@ Example response:
 
 ### Update `extern_uid` field for a SAML identity
 
-Update `extern_uid` field for a SAML identity:
+Updates `extern_uid` field for a SAML identity:
 
 | SAML IdP attribute | GitLab field |
 | ------------------ | ------------ |
@@ -165,17 +167,17 @@ Example response:
 
 ## GitLab Self-Managed endpoints
 
-### Get a single SAML identity
+### Retrieve a single SAML identity
 
-Use the Users API to [get a single SAML identity](users.md#as-an-administrator).
+Uses the Users API to [get a single SAML identity](users.md#as-an-administrator).
 
 ### Update `extern_uid` field for a SAML identity
 
-Use the Users API to [update the `extern_uid` field of a user](users.md#modify-a-user).
+Uses the Users API to [update the `extern_uid` field of a user](users.md#modify-a-user).
 
 ### Delete a single SAML identity
 
-Use the Users API to [delete a single identity of a user](users.md#delete-authentication-identity-from-a-user).
+Uses the Users API to [delete a single identity of a user](users.md#delete-authentication-identity-from-a-user).
 
 ## SAML group links
 
@@ -192,9 +194,9 @@ Use the Users API to [delete a single identity of a user](users.md#delete-authen
 List, get, add, and delete [SAML group links](../user/group/saml_sso/group_sync.md#configure-saml-group-links) by using
 the REST API.
 
-### List SAML group links
+### List all SAML group links
 
-List SAML group links for a group.
+Lists all SAML group links for a group.
 
 ```plaintext
 GET /groups/:id/saml_group_links
@@ -242,9 +244,9 @@ Example response:
 ]
 ```
 
-### Get a SAML group link
+### Retrieve a SAML group link
 
-Get a SAML group link for a group.
+Retrieves a SAML group link for a group.
 
 ```plaintext
 GET /groups/:id/saml_group_links/:saml_group_name
@@ -298,7 +300,7 @@ Example response:
 
 ### Add a SAML group link
 
-Add a SAML group link for a group.
+Adds a SAML group link for a group.
 
 ```plaintext
 POST /groups/:id/saml_group_links

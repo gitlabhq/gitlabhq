@@ -1762,11 +1762,11 @@ necessary to reach the desired replication factor. The repository's primary node
 always assigned first and is never unassigned.
 
 ```shell
-sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -repository <relative-path> -replication-factor <replication-factor>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage <virtual-storage> -relative-path <relative-path> -replication-factor <replication-factor>
 ```
 
 - `-virtual-storage` is the virtual storage the repository is located in.
-- `-repository` is the repository's relative path in the storage.
+- `-relative-path` is the repository's relative path in the storage.
 - `-replication-factor` is the desired replication factor of the repository. The minimum value is
   `1` because the primary needs a copy of the repository. The maximum replication factor is the number of
   storages in the virtual storage.
@@ -1774,7 +1774,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 On success, the assigned host storages are printed. For example:
 
 ```shell
-$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -repository @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
 
 current assignments: gitaly-1, gitaly-2
 ```

@@ -48,9 +48,9 @@ Here's an example of how you can use the tokens for runner registration:
 
 GitLab and the runner are then connected.
 
-## List available runners
+## List all available runners
 
-Get a list of runners available to the user.
+Lists all runners available to the user.
 
 Prerequisites:
 
@@ -141,7 +141,7 @@ Example response:
 
 {{< /details >}}
 
-Get a list of all runners in the GitLab instance (project and shared).
+Lists all runners in the GitLab instance (project and shared).
 
 Prerequisites:
 
@@ -248,9 +248,9 @@ Example response:
 
 To view more than the first 20 runners, use [pagination](rest/_index.md#pagination).
 
-## Get runner's details
+## Retrieve runner's details
 
-Get details of a runner.
+Retrieves details of a runner.
 
 Instance runner details are available to all authenticated users through this endpoint.
 
@@ -344,7 +344,7 @@ Example response:
 
 ## Update runner's details
 
-Update details of a runner.
+Updates details of a runner.
 
 ```plaintext
 PUT /runners/:id
@@ -479,9 +479,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 > and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 > Use the `paused` attribute instead.
 
-## List jobs processed by a runner
+## List all jobs processed by a runner
 
-List jobs that are being processed or were processed by the specified runner. The list of jobs is limited
+Lists all jobs that are being processed or were processed by the specified runner. The list of jobs is limited
 to projects where the user has at least the Reporter role.
 
 ```plaintext
@@ -569,9 +569,9 @@ Example response:
 ]
 ```
 
-## List runner's managers
+## List all runner's managers
 
-List all the managers of a runner.
+Lists all the managers of a runner.
 
 ```plaintext
 GET /runners/:id/managers
@@ -616,9 +616,9 @@ Example response:
 ]
 ```
 
-## List project's runners
+## List all of a project's runners
 
-List all runners available in the project, including from ancestor groups and [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
+Lists all runners available in the project, including from ancestor groups and [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
 Prerequisites:
 
@@ -781,9 +781,9 @@ DELETE /projects/:id/runners/:runner_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
 
-## List group's runners
+## List all of a group's runners
 
-List all runners available in the group and its ancestor groups, including [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
+Lists all runners available in the group and its ancestor groups, including [any allowed instance runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
 
 Prerequisites:
 

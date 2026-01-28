@@ -38,13 +38,15 @@ This API differs from the [internal group SCIM API](../development/internal_api/
   - Get a list of SCIM provisioned users for the group or instance.
   - Create, delete and update SCIM provisioned users for the group or instance.
 
-## Get SCIM identities for a group
+## Retrieve SCIM identities for a group
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 {{< /history >}}
+
+Retrieves SCIM identities for a group.
 
 ```plaintext
 GET /groups/:id/scim/identities
@@ -85,13 +87,15 @@ curl --location --request GET \
   --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
-## Get a single SCIM identity
+## Retrieve a single SCIM identity
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
 
 {{< /history >}}
+
+Retrieves a single SCIM identity.
 
 ```plaintext
 GET /groups/:id/scim/:uid
@@ -130,6 +134,8 @@ Example response:
 
 {{< /history >}}
 
+Updates `extern_uid` field for a SCIM identity.
+
 Fields that can be updated are:
 
 | SCIM/IdP field  | GitLab field |
@@ -163,6 +169,8 @@ curl --location --request PATCH \
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
 
 {{< /history >}}
+
+Deletes a single SCIM identity.
 
 ```plaintext
 DELETE /groups/:id/scim/:uid
