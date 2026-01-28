@@ -5,15 +5,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Database table partitioning
 ---
 
-{{< alert type="warning" >}}
-
-If you have questions not answered below, check for and add them
-to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398650).
-Tag `@gitlab-org/database-team/triage` and we'll get back to you with an
-answer as soon as possible. If you get an answer in Slack, document
-it on the issue as well so we can update this document in the future.
-
-{{< /alert >}}
+> [!warning]
+> If you have questions not answered below, check for and add them
+> to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398650).
+> Tag `@gitlab-org/database-team/triage` and we'll get back to you with an
+> answer as soon as possible. If you get an answer in Slack, document
+> it on the issue as well so we can update this document in the future.
 
 Table partitioning is a powerful database feature that allows a table's
 data to be split into smaller physical tables that act as a single large

@@ -79,15 +79,12 @@ no CAPTCHA popup displays. You are prevented from submitting the form at all.
 
 ### HTML page to render reCAPTCHA
 
-{{< alert type="note" >}}
-
-If you use **the Google official test reCAPTCHA credentials** listed in
-[Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the
-CAPTCHA response string does not matter. It can be any string. If you use a
-real, valid key pair, you must solve the CAPTCHA to obtain a
-valid CAPTCHA response to use. You can do this once only, and only before it expires.
-
-{{< /alert >}}
+> [!note]
+> If you use **the Google official test reCAPTCHA credentials** listed in
+> [Set up Akismet and reCAPTCHA](#set-up-akismet-and-recaptcha), the
+> CAPTCHA response string does not matter. It can be any string. If you use a
+> real, valid key pair, you must solve the CAPTCHA to obtain a
+> valid CAPTCHA response to use. You can do this once only, and only before it expires.
 
 To directly test the GraphQL API via GraphQL Explorer (`http://gdk.test:3000/-/graphql-explorer`),
 get a reCAPTCHA response string via this form: `public/recaptcha.html` (`http://gdk.test:3000/recaptcha.html`):

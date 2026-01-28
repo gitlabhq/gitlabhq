@@ -16,7 +16,7 @@ Use this API to interact with [releases](../../user/project/releases/_index.md) 
 
 > [!note]
 > To interact with releases for a group, see the [group release API](../group_releases.md).
-> 
+>
 > To interact with links as a release asset, see [release links API](links.md).
 
 ## Authentication

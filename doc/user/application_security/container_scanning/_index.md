@@ -35,15 +35,12 @@ possible, use all the security scanners. For a comparison of these features, see
 
 GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) security scanner to perform vulnerability static analysis in containers.
 
-{{< alert type="warning" >}}
-
-The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
-[statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
-The existing current major version for the Grype analyzer image will continue to be updated with the
-latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
-will stop working.
-
-{{< /alert >}}
+> [!warning]
+> The Grype analyzer is no longer maintained, except for limited fixes as explained in the GitLab
+> [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+> The existing current major version for the Grype analyzer image will continue to be updated with the
+> latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer
+> will stop working.
 
 ## Features
 
@@ -664,15 +661,12 @@ temporarily access external resources.
 
 #### Configure CI/CD for each project
 
-{{< alert type="note" >}}
-
-These configuration changes do not apply to container scanning for registry because it does not
-reference the `.gitlab-ci.yml` file. To configure automatic container scanning for registry in an
-offline environment,
-[define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments)
-instead.
-
-{{< /alert >}}
+> [!note]
+> These configuration changes do not apply to container scanning for registry because it does not
+> reference the `.gitlab-ci.yml` file. To configure automatic container scanning for registry in an
+> offline environment,
+> [define the `CS_ANALYZER_IMAGE` variable in the GitLab UI](#use-with-offline-or-air-gapped-environments)
+> instead.
 
 For all projects using container scanning, edit the CI/CD configuration in all locations where it's
 applied. This might include:

@@ -155,14 +155,11 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 ## Enable or disable Service Ping
 
-{{< alert type="note" >}}
-
-Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
-Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
-Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
-The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
-
-{{< /alert >}}
+> [!note]
+> Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
+> Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
+> Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
+> The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
 
 ### Through the UI
 

@@ -431,15 +431,12 @@ By default, users with at least the Maintainer role can unprotect protected bran
 For organizations with regulatory or compliance requirements, you can restrict these permissions to
 specific users, groups, or access levels.
 
-{{< alert type="note" >}}
-
-To avoid permanently locking protection settings for a branch, ensure at least one user or group
-retains unprotect permissions for the branch at all times.
-
-Users cannot create, modify, or delete protected branch settings unless they can unprotect the
-branch themselves. This safety mechanism is in place to prevent configuration errors.
-
-{{< /alert >}}
+> [!note]
+> To avoid permanently locking protection settings for a branch, ensure at least one user or group
+> retains unprotect permissions for the branch at all times.
+> 
+> Users cannot create, modify, or delete protected branch settings unless they can unprotect the
+> branch themselves. This safety mechanism is in place to prevent configuration errors.
 
 You can configure these permissions through the API only. Use this feature for:
 

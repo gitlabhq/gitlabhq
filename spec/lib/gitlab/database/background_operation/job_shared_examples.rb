@@ -221,4 +221,35 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
       end
     end
   end
+
+  describe 'state machine transitions' do
+    context 'with logging' do
+      let(:error_event) { StandardError.new('timeout') }
+      let_it_be(:pending_job) { create(job_factory, :pending) }
+
+      it 'logs state transitions' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :job_transition,
+          record: pending_job,
+          previous_state: :pending,
+          new_state: :succeeded,
+          error: nil
+        )
+
+        pending_job.succeed!
+      end
+
+      it 'logs state transitions with errors' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :job_transition,
+          record: pending_job,
+          previous_state: :succeeded,
+          new_state: :failed,
+          error: error_event
+        )
+
+        pending_job.failure!(error: error_event)
+      end
+    end
+  end
 end

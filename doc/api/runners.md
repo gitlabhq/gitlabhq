@@ -88,18 +88,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 > - The `active` attribute in the response is deprecated
 >   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 >   Use the `paused` attribute instead.
-
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -178,18 +173,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 > - The `active` attribute in the response is deprecated
 >   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 >   Use the `paused` attribute instead.
-
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -277,29 +267,24 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 > [!warning]
-> The `active` attribute in the response is deprecated
-> and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-> Use the `paused` attribute instead.
-
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
-
-> [!note]
-> The `version`, `revision`, `platform`, and `architecture` attributes in the response are deprecated
-> [in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and are scheduled for removal in
-> [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-> The same attributes can be found inside the respective runner manager.
-> It is only available through the GraphQL
-> [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+> Deprecations:
+>
+> - The `active` attribute in the response is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+> - The `version`, `revision`, `platform`, and `architecture` attributes in the response are deprecated
+>   [in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and are scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   The same attributes can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -377,21 +362,18 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ```
 
 > [!warning]
-> The `active` query parameter is deprecated
-> and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-> Use the `paused` attribute instead.
-
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> Deprecations:
+>
+> - The `active` query parameter is deprecated
+>   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   Use the `paused` attribute instead.
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -653,18 +635,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 > - The `active` attribute in the response is deprecated
 >   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 >   Use the `paused` attribute instead.
-
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string in GitLab 17.0.
-The `ipAddress` attribute can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> - The `ip_address` attribute in the response is deprecated
+>   [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+>   [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+>   In GitLab 17.0, this attribute returns an empty string in GitLab 17.0.
+>   The `ipAddress` attribute can be found inside the respective runner manager.
+>   It is only available through the GraphQL
+>   [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -1026,18 +1003,15 @@ Example response:
 
 ## Reset instance's runner registration token
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-
-For more information, see
-[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> 
+> For more information, see
+> [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 Reset the runner registration token for the GitLab instance.
 
@@ -1052,17 +1026,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset project's runner registration token
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 Reset the runner registration token for a project.
 
@@ -1077,17 +1048,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset group's runner registration token
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
 Reset the runner registration token for a group.
 

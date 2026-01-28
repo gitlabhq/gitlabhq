@@ -162,15 +162,12 @@ Jobs defined in a pipeline execution policy can use any [stage](../../../ci/yaml
 defined in the project's CI/CD configuration, also the reserved stages `.pipeline-policy-pre` and
 `.pipeline-policy-post`.
 
-{{< alert type="note" >}}
-
-If your policy contains jobs only in the `.pre` and `.post` stages, the policy's pipeline is
-evaluated as `empty`. It is not merged with the project's pipeline.
-
-To use the `.pre` and `.post` stages in a pipeline execution policy, you must include at least one
-other job that runs in a different stage. For example: `.pipeline-policy-pre`.
-
-{{< /alert >}}
+> [!note]
+> If your policy contains jobs only in the `.pre` and `.post` stages, the policy's pipeline is
+> evaluated as `empty`. It is not merged with the project's pipeline.
+> 
+> To use the `.pre` and `.post` stages in a pipeline execution policy, you must include at least one
+> other job that runs in a different stage. For example: `.pipeline-policy-pre`.
 
 When you use the `inject_policy` [pipeline strategy](#pipeline-configuration-strategies), if a target project does not
 contain its own `.gitlab-ci.yml` file, all policy stages are injected into the pipeline.
@@ -802,17 +799,14 @@ In this case, the job variable value `Project job variable value` takes preceden
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature does not work with pipeline execution policies created before GitLab 18.5.
-To use this feature with older pipeline execution policies, you can either:
-
-- Make any change to the existing YAML configuration files for the pipeline execution policies.
-- Copy, delete, and recreate the policies.
-
-For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
-
-{{< /alert >}}
+> [!warning]
+> This feature does not work with pipeline execution policies created before GitLab 18.5.
+> To use this feature with older pipeline execution policies, you can either:
+> 
+> - Make any change to the existing YAML configuration files for the pipeline execution policies.
+> - Copy, delete, and recreate the policies.
+> 
+> For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
 You can use the `description`, `value` and `options` keywords to define CI/CD variables
 that are [prefilled when a user runs a pipeline manually](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines).

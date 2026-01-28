@@ -394,14 +394,11 @@ To migrate back to local storage:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880)
-(resolved in [Git LFS 3.6.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#360-20-november-2024)).
-If you clone a repository with multiple Git LFS objects using the pure SSH protocol,
-the client might crash due to a `nil` pointer reference.
-
-{{< /alert >}}
+> [!warning]
+> This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880)
+> (resolved in [Git LFS 3.6.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#360-20-november-2024)).
+> If you clone a repository with multiple Git LFS objects using the pure SSH protocol,
+> the client might crash due to a `nil` pointer reference.
 
 [`git-lfs` 3.0.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#300-24-sep-2021)
 released support for using SSH as the transfer protocol instead of HTTP.

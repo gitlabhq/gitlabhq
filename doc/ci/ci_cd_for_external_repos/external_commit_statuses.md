@@ -29,7 +29,7 @@ External job statuses appear in an `external` stage in the pipeline, separate fr
 
 > [!warning]
 > When duplicate pipelines exist for the same commit, external status placement becomes ambiguous. GitLab selects the latest pipeline using `newest_first`, but with concurrent pipeline creation, this can lead to external statuses appearing in unexpected pipelines or becoming invisible in merge request views.
-> 
+>
 > Configure [workflow rules](../yaml/workflow.md) to avoid duplicate pipelines or target a pipeline directly with `pipeline_id`.
 
 ## Job updates and retries

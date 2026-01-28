@@ -21,17 +21,14 @@ you can expose details from `tofu plan` runs directly into a merge request widge
 enabling you to see statistics about the resources that OpenTofu creates,
 modifies, or destroys.
 
-{{< alert type="warning" >}}
-
-Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
-Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
-files include sensitive data like passwords, access tokens, or certificates, you should
-encrypt the plan output or modify the project visibility settings. You should also **disable**
-[public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
-This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Reporter role.
-
-{{< /alert >}}
+> [!warning]
+> Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
+> Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
+> files include sensitive data like passwords, access tokens, or certificates, you should
+> encrypt the plan output or modify the project visibility settings. You should also **disable**
+> [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
+> and set the [artifact's public flag to false](../../../ci/yaml/_index.md#artifactspublic) (`public: false`).
+> This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Reporter role.
 
 ## Configure OpenTofu report artifacts
 

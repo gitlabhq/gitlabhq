@@ -2258,14 +2258,11 @@ Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts
 documentation for setup instructions including guidance on what GitLab secrets to sync
 between Kubernetes and the backend components.
 
-{{< alert type="note" >}}
-
-This is an **advanced** setup. Running services in Kubernetes is well known
-to be complex. **This setup is only recommended** if you have strong working
-knowledge and experience in Kubernetes. The rest of this
-section assumes this.
-
-{{< /alert >}}
+> [!note]
+> This is an **advanced** setup. Running services in Kubernetes is well known
+> to be complex. **This setup is only recommended** if you have strong working
+> knowledge and experience in Kubernetes. The rest of this
+> section assumes this.
 
 For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 

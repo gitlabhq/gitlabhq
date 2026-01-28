@@ -71,7 +71,7 @@ The change percentage compares the first full month of available statistics to t
 Values in green indicate positive changes, and values in red indicate negative changes.
 The icons next to the values indicate upward trends {{< icon name="trend-up" >}} or downward trends {{< icon name="trend-down" >}}.
 
-Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)). 
+Upward trends are positive (green) for some metrics (like [deployment frequency](dora_metrics.md#deployment-frequency)), but negative (red) for others (like [mean time to merge](merge_request_analytics.md)).
 
 ### GitLab Duo usage metrics
 

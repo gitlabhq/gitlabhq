@@ -488,18 +488,15 @@ By default, GitLab fetches runner version data. To stop fetching this data:
 
 Control who can register runners and whether to allow registration tokens.
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-
-For more information, see
-[Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> 
+> For more information, see
+> [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
 By default, runner registration tokens and both project and group member registration are allowed.
 To restrict runner registration:

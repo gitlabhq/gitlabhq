@@ -1307,15 +1307,12 @@ Migrate by moving your existing configuration under the new structure. `git_data
 
 **Migrate to the new structure**
 
-{{< alert type="warning" >}}
-
-If you are running Gitaly Cluster (Praefect), [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
-Once this change is tested, proceed with your Gitaly nodes.
-If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
-will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
-To protect against configuration mistakes, temporarily disable repository verification in Praefect.
-
-{{< /alert >}}
+> [!warning]
+> If you are running Gitaly Cluster (Praefect), [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
+> Once this change is tested, proceed with your Gitaly nodes.
+> If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
+> will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
+> To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 
 1. If you're running Gitaly Cluster (Praefect), ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
@@ -1496,15 +1493,12 @@ Migrate by moving your existing configuration under the new structure. The new s
 
 **Migrate to the new structure**
 
-{{< alert type="warning" >}}
-
-Migrate Praefect to the new configuration structure **first**.
-Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
-If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
-will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
-To protect against configuration mistakes, temporarily disable repository verification in Praefect.
-
-{{< /alert >}}
+> [!warning]
+> Migrate Praefect to the new configuration structure **first**.
+> Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
+> If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
+> will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
+> To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 
 1. When applying the new structure to your configuration:
    - Replace the `...` with the value from the old key.

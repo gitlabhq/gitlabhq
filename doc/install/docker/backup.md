@@ -29,15 +29,12 @@ to back up the `gitlab.rb` file.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-To avoid [complicated steps](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
-GitLab from a backup, you should also follow the instructions in
-[Backing up the GitLab secrets file](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
-The secrets file is stored either in the `/etc/gitlab/gitlab-secrets.json` file inside the container or in the
-`$GITLAB_HOME/config/gitlab-secrets.json` file [on the container host](installation.md#create-a-directory-for-the-volumes).
-
-{{< /alert >}}
+> [!warning]
+> To avoid [complicated steps](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost) when recovering
+> GitLab from a backup, you should also follow the instructions in
+> [Backing up the GitLab secrets file](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
+> The secrets file is stored either in the `/etc/gitlab/gitlab-secrets.json` file inside the container or in the
+> `$GITLAB_HOME/config/gitlab-secrets.json` file [on the container host](installation.md#create-a-directory-for-the-volumes).
 
 ## Create a database backup
 

@@ -745,15 +745,12 @@ Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 10
 end
 ```
 
-{{< alert type="note" >}}
-
-The query loads complete database rows from the disk. This may cause increased I/O and slower
-database queries. Depending on the use case, the primary key is often only
-needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
-`id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
-loaded. In this case, you can omit the `finder_query` parameter.
-
-{{< /alert >}}
+> [!note]
+> The query loads complete database rows from the disk. This may cause increased I/O and slower
+> database queries. Depending on the use case, the primary key is often only
+> needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
+> `id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
+> loaded. In this case, you can omit the `finder_query` parameter.
 
 Example for loading the `ORDER BY` columns only:
 

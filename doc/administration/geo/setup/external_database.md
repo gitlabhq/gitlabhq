@@ -22,14 +22,11 @@ the [Linux package ships with](../../package_information/postgresql_versions.md)
 to [avoid version mismatches](../_index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
-{{< alert type="note" >}}
-
-If you're using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
-[validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
-as we actively develop and test based on those.
-We cannot guarantee compatibility with other external databases.
-
-{{< /alert >}}
+> [!note]
+> If you're using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
+> [validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
+> as we actively develop and test based on those.
+> We cannot guarantee compatibility with other external databases.
 
 ## **Primary** site
 

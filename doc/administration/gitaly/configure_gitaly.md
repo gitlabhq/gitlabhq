@@ -423,14 +423,11 @@ connections):
 
 {{< /tabs >}}
 
-{{< alert type="warning" >}}
-
-If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
-default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
-Copying this file causes GitLab to use the direct disk access to repositories hosted on the Gitaly server,
-leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
-
-{{< /alert >}}
+> [!warning]
+> If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
+> default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
+> Copying this file causes GitLab to use the direct disk access to repositories hosted on the Gitaly server,
+> leading to `Error creating pipeline` and `Commit not found` errors, or stale data.
 
 ### Configure Gitaly clients
 
@@ -1030,7 +1027,7 @@ Gitaly exports the following Prometheus metrics for monitoring the pack-objects 
 Cache hit rate:
 
 ```promql
-sum(rate(gitaly_pack_objects_cache_lookups_total{result="hit"}[5m])) / 
+sum(rate(gitaly_pack_objects_cache_lookups_total{result="hit"}[5m])) /
 sum(rate(gitaly_pack_objects_cache_lookups_total[5m]))
 ```
 
@@ -1049,7 +1046,7 @@ rate(gitaly_pack_objects_generated_bytes_total[5m])
 Cache efficiency (bytes served vs bytes generated):
 
 ```promql
-rate(gitaly_pack_objects_served_bytes_total[5m]) / 
+rate(gitaly_pack_objects_served_bytes_total[5m]) /
 rate(gitaly_pack_objects_generated_bytes_total[5m])
 ```
 

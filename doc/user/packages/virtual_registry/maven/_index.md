@@ -107,7 +107,7 @@ To create a Maven upstream registry:
    - **Link existing upstream** > **Select existing upstream**.
      1. From the dropdown list, select an upstream.
      1. Optional. Select **Test upstream** to test the upstream connection before you create it.
-     1. Select **Add upstream**. 
+     1. Select **Add upstream**.
 1. Complete the fields.
    - Include both a **username** and **password**, or neither. If not set, a public (anonymous) request is used to access the upstream.
    - If you want to connect the upstream to Maven Central, use the following as the **Upstream URL**:
@@ -115,7 +115,7 @@ To create a Maven upstream registry:
       ```plaintext
       https://repo1.maven.org/maven2
       ```
-   
+
    - **Artifact caching period** and **Metadata caching period** default to 24 hours. Set to `0` to disable cache entry checks, or if you're using Maven Central.
    - If you want to test the upstream connection before you create it, select **Test upstream**.
 

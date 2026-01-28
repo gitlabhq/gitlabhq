@@ -527,7 +527,7 @@ PATCH /virtual_registries/packages/maven/upstreams/:id
 
 > [!note]
 > You must provide at least one of the optional parameters in your request.
-> 
+>
 > The `username` and `password` must be provided together, or not at all. If not set, a public (anonymous) request is used to access the upstream.
 
 Example request:

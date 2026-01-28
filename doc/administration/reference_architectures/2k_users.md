@@ -556,14 +556,11 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates).
 
-{{< alert type="note" >}}
-
-The self-signed certificate must specify the address you use to access the
-Gitaly server. If you are addressing the Gitaly server by a hostname, add it as a Subject Alternative
-Name. If you are addressing the Gitaly server by its IP address, you must add it
-as a Subject Alternative Name to the certificate.
-
-{{< /alert >}}
+> [!note]
+> The self-signed certificate must specify the address you use to access the
+> Gitaly server. If you are addressing the Gitaly server by a hostname, add it as a Subject Alternative
+> Name. If you are addressing the Gitaly server by its IP address, you must add it
+> as a Subject Alternative Name to the certificate.
 
 It's possible to configure Gitaly servers with both an unencrypted listening
 address (`listen_addr`) and an encrypted listening address (`tls_listen_addr`)
@@ -1110,14 +1107,11 @@ Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts
 documentation for setup instructions including guidance on what GitLab secrets to sync
 between Kubernetes and the backend components.
 
-{{< alert type="note" >}}
-
-This is an **advanced** setup. Running services in Kubernetes is well known
-to be complex. **This setup is only recommended** if you have strong working
-knowledge and experience in Kubernetes. The rest of this
-section assumes this.
-
-{{< /alert >}}
+> [!note]
+> This is an **advanced** setup. Running services in Kubernetes is well known
+> to be complex. **This setup is only recommended** if you have strong working
+> knowledge and experience in Kubernetes. The rest of this
+> section assumes this.
 
 {{< alert type="note" >}}
 

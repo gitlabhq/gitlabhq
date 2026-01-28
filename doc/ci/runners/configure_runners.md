@@ -193,17 +193,14 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 ## Reset the runner registration token for a project (deprecated)
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -792,18 +789,15 @@ The previous configuration results in `git submodule update` being called this w
 git submodule update --init --depth 20 --recursive --remote --jobs 4
 ```
 
-{{< alert type="warning" >}}
-
-You should be aware of the implications for the security, stability, and
-reproducibility of your builds when using the `--remote` flag. In most cases,
-it is better to explicitly track submodule commits as designed, and update them
-using an auto-remediation/dependency bot.
-
-The `--remote` flag is not required to check out submodules at their committed
-revisions. Use this flag only when you want to automatically update submodules
-to their latest remote versions.
-
-{{< /alert >}}
+> [!warning]
+> You should be aware of the implications for the security, stability, and
+> reproducibility of your builds when using the `--remote` flag. In most cases,
+> it is better to explicitly track submodule commits as designed, and update them
+> using an auto-remediation/dependency bot.
+> 
+> The `--remote` flag is not required to check out submodules at their committed
+> revisions. Use this flag only when you want to automatically update submodules
+> to their latest remote versions.
 
 The behavior of `--remote` depends on your Git version.
 If the branch specified in your superproject's `.gitmodules` file is different from the

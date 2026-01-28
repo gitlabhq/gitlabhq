@@ -235,15 +235,12 @@ GitLab users with a linked Kerberos account can also `git pull` and `git push`
 using Kerberos tokens. That is, without having to send their password with each
 operation.
 
-{{< alert type="warning" >}}
-
-There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
-older than version 7.64.1 wherein it doesn't reuse connections when negotiating.
-This leads to authorization issues when push is larger than `http.postBuffer`
-configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
-know the `libcurl` version installed, run `curl-config --version`.
-
-{{< /alert >}}
+> [!warning]
+> There is a [known issue](https://github.com/curl/curl/issues/1261) with `libcurl`
+> older than version 7.64.1 wherein it doesn't reuse connections when negotiating.
+> This leads to authorization issues when push is larger than `http.postBuffer`
+> configuration. Ensure that Git is using at least `libcurl` 7.64.1 to avoid this. To
+> know the `libcurl` version installed, run `curl-config --version`.
 
 ### HTTP Git access with Kerberos token (passwordless authentication)
 

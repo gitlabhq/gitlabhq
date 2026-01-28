@@ -278,14 +278,11 @@ To configure GitLab Pages to use single-domain sites:
 
 The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 
-{{< alert type="warning" >}}
-
-GitLab Pages supports only one URL scheme at a time:
-wildcard domains or single-domain sites.
-If you enable `namespace_in_path`, existing GitLab Pages websites
-are accessible only on single-domain.
-
-{{< /alert >}}
+> [!warning]
+> GitLab Pages supports only one URL scheme at a time:
+> wildcard domains or single-domain sites.
+> If you enable `namespace_in_path`, existing GitLab Pages websites
+> are accessible only on single-domain.
 
 ### Wildcard domains with TLS support
 
@@ -393,14 +390,11 @@ Prerequisites:
 
 The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
 
-{{< alert type="warning" >}}
-
-GitLab Pages supports only one URL scheme at a time:
-wildcard domains or single-domain sites.
-If you enable `namespace_in_path`, existing GitLab Pages websites
-are accessible only as single-domain sites.
-
-{{< /alert >}}
+> [!warning]
+> GitLab Pages supports only one URL scheme at a time:
+> wildcard domains or single-domain sites.
+> If you enable `namespace_in_path`, existing GitLab Pages websites
+> are accessible only as single-domain sites.
 
 ### Wildcard domains with TLS-terminating Load Balancer
 
@@ -612,14 +606,11 @@ GitLab supports [custom domain verification](../../user/project/pages/custom_dom
 When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
-{{< alert type="warning" >}}
-
-Disabling domain verification is unsafe and can lead to various vulnerabilities.
-If you do disable it, either ensure that the Pages root domain itself does not point to the
-secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
-domain as a custom domain to their project.
-
-{{< /alert >}}
+> [!warning]
+> Disabling domain verification is unsafe and can lead to various vulnerabilities.
+> If you do disable it, either ensure that the Pages root domain itself does not point to the
+> secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
+> domain as a custom domain to their project.
 
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
@@ -1232,14 +1223,11 @@ However, the recommended values are set for you and should only be modified if n
 Incorrect configuration of these values may result in intermittent
 or persistent errors, or the Pages Daemon serving old content.
 
-{{< alert type="note" >}}
-
-Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
-A duration string is a possibly signed sequence of decimal numbers,
-each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
-Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
-
-{{< /alert >}}
+> [!note]
+> Expiry, interval and timeout flags use [Go duration formatting](https://pkg.go.dev/time#ParseDuration).
+> A duration string is a possibly signed sequence of decimal numbers,
+> each with optional fraction and a unit suffix, such as `300ms`, `1.5h` or `2h45m`.
+> Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`.
 
 Examples:
 

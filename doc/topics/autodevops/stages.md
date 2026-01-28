@@ -264,15 +264,12 @@ for the environment.
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
-{{< alert type="warning" >}}
-
-Your apps should not be manipulated outside of Helm (using Kubernetes directly).
-This can cause confusion with Helm not detecting the change and subsequent
-deploys with Auto DevOps can undo your changes. Also, if you change something
-and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old configuration.
-
-{{< /alert >}}
+> [!warning]
+> Your apps should not be manipulated outside of Helm (using Kubernetes directly).
+> This can cause confusion with Helm not detecting the change and subsequent
+> deploys with Auto DevOps can undo your changes. Also, if you change something
+> and want to undo it by deploying again, Helm may not detect that anything changed
+> in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ## Auto DAST
 
@@ -305,15 +302,12 @@ For more information, see
 To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
-{{< alert type="warning" >}}
-
-If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
-enabled, GitLab strongly advises **not**
-to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
-actively attacks the target, which can take down your application and lead to
-data loss or corruption.
-
-{{< /alert >}}
+> [!warning]
+> If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
+> enabled, GitLab strongly advises **not**
+> to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
+> actively attacks the target, which can take down your application and lead to
+> data loss or corruption.
 
 ### Skipping Auto DAST
 
@@ -402,15 +396,12 @@ for the environment.
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
-{{< alert type="warning" >}}
-
-Your apps should not be manipulated outside of Helm (using Kubernetes directly).
-This can cause confusion with Helm not detecting the change and subsequent
-deploys with Auto DevOps can undo your changes. Also, if you change something
-and want to undo it by deploying again, Helm may not detect that anything changed
-in the first place, and thus not realize that it needs to re-apply the old configuration.
-
-{{< /alert >}}
+> [!warning]
+> Your apps should not be manipulated outside of Helm (using Kubernetes directly).
+> This can cause confusion with Helm not detecting the change and subsequent
+> deploys with Auto DevOps can undo your changes. Also, if you change something
+> and want to undo it by deploying again, Helm may not detect that anything changed
+> in the first place, and thus not realize that it needs to re-apply the old configuration.
 
 ### GitLab deploy tokens
 

@@ -678,15 +678,11 @@ When rendered, the examples look similar to:
 > - This line shows a [relative link to a file one directory higher](../_index.md)
 > - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
-{{< alert type="note" >}}
-
 You cannot use relative links to reference project files in a wiki
 page, or a wiki page in a project file. This limitation exists because wikis are always
 in separate Git repositories in GitLab. For example, `[I'm a reference-style link](style)`
 points to `wikis/style` only when the link is inside a wiki Markdown file.
 For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
-
-{{< /alert >}}
 
 Use heading ID anchors to link to a specific section in a page:
 

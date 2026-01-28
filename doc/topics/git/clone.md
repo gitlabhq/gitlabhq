@@ -283,15 +283,12 @@ Deeper integration between partial clone and sparse checkout is possible through
 `--filter=sparse:oid=<blob-ish>` filter spec. This mode of filtering uses a format similar to a
 `.gitignore` file to specify which files to include when cloning and fetching.
 
-{{< alert type="warning" >}}
-
-Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
-[Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
-[Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
-[`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
-this type of partial clone use and overcomes its limitations.
-
-{{< /alert >}}
+> [!warning]
+> Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
+> [Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
+> [Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
+> [`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
+> this type of partial clone use and overcomes its limitations.
 
 For more details, see the Git documentation for
 [`rev-list-options`](https://git-scm.com/docs/git-rev-list#Documentation/git-rev-list.txt---filterltfilter-specgt).

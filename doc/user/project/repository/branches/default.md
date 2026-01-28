@@ -207,15 +207,12 @@ which locks this setting for group owners.
 
 ## Update the default branch name in your repository
 
-{{< alert type="warning" >}}
-
-Changing the name of your default branch can potentially break tests,
-CI/CD configuration, services, helper utilities, and any integrations your repository
-uses. Before you change this branch name, consult with your project owners and maintainers.
-Ensure they understand the scope of this change includes references to the old
-branch name in related code and scripts.
-
-{{< /alert >}}
+> [!warning]
+> Changing the name of your default branch can potentially break tests,
+> CI/CD configuration, services, helper utilities, and any integrations your repository
+> uses. Before you change this branch name, consult with your project owners and maintainers.
+> Ensure they understand the scope of this change includes references to the old
+> branch name in related code and scripts.
 
 When you change the default branch name for an existing repository, don't create a new branch.
 Preserve the history of your default branch by renaming it. This example renames a Git repository's

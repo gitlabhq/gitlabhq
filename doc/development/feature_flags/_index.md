@@ -839,10 +839,16 @@ Feature.enable(:feature_flag_name, Project.find_by_full_path("root/my-project"))
 When manually enabling or disabling a feature flag from the Rails console, its default value gets overwritten.
 This can cause confusion when changing the flag's `default_enabled` attribute.
 
-To reset the feature flag to the default status:
+To reset the feature flag to the default state:
 
 ```ruby
 Feature.remove(:feature_flag_name)
+```
+
+To reset all feature flags to their default state from YAML definitions:
+
+```ruby
+Feature.all.each(&:remove)
 ```
 
 #### On your browser

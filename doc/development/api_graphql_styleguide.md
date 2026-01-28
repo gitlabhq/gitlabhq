@@ -1165,15 +1165,12 @@ The API also accepts these types in the query signature for the argument:
 - `PrometheusServiceID`
 - `IntegrationsPrometheusID`
 
-{{< alert type="note" >}}
-
-Although queries that use the old type (`PrometheusServiceID` in this example) are
-considered valid and executable by the API, validator tools consider them to be invalid.
-They are considered invalid because we are deprecating using a bespoke method outside of the
-[`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
-aware of the support.
-
-{{< /alert >}}
+> [!note]
+> Although queries that use the old type (`PrometheusServiceID` in this example) are
+> considered valid and executable by the API, validator tools consider them to be invalid.
+> They are considered invalid because we are deprecating using a bespoke method outside of the
+> [`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
+> aware of the support.
 
 The documentation mentions that the old Global ID style is now deprecated.
 

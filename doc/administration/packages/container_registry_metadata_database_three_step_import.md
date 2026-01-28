@@ -81,14 +81,11 @@ Prerequisites:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-You should try to schedule the following step as soon as possible
-to reduce the amount of downtime required. Ideally, less than one week
-after step one completes. Any new data written to the registry between steps one and two,
-causes step two to take more time.
-
-{{< /alert >}}
+> [!note]
+> You should try to schedule the following step as soon as possible
+> to reduce the amount of downtime required. Ideally, less than one week
+> after step one completes. Any new data written to the registry between steps one and two,
+> causes step two to take more time.
 
 ## Import all repository data (step two)
 

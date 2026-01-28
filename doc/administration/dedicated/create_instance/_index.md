@@ -61,7 +61,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    | **Secondary region** | Infrastructure/DR requirements | AWS region for Geo-based disaster recovery. Some regions have limited support. Can't be changed after creation. If you are using a Geo migration method, this field is not required. |
    | **Backup region** | Compliance/redundancy requirements | AWS region for backup replication. Can be the same as primary/secondary or different for increased redundancy. Can't be changed after creation because backup vaults and replication are configured during provisioning. |
    | **Maintenance window** | Operational preferences | Weekly 4-hour window for updates and [maintenance](../maintenance.md). Options align with time zones (APAC, EU, US). See the [Dedicated Info Portal](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/dedicated-info-portal/) for more information.|
-   
+
    For more information, see [data residency and high availability](data_residency_high_availability.md).
 
 1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you don't add keys, GitLab generates encryption keys for your instance.

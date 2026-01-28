@@ -71,18 +71,15 @@ variables used for two-factor authentication. Without the keys, multiple issues
 occur, including loss of access by users with two-factor authentication
 enabled, and GitLab Runners cannot sign in.
 
-{{< alert type="warning" >}}
-
-**WebAuthn devices are disabled when restoring to a different FQDN:**
-WebAuthn registrations (such as YubiKeys) are cryptographically bound to the origin
-(domain/hostname) where they were created. If you restore a backup to a GitLab instance
-with a different FQDN than the original instance, all WebAuthn devices will be disabled.
-Users will need to re-register their WebAuthn devices after the restore is complete.
-
-For more information about WebAuthn and hostname requirements, see
-[Two-factor authentication](../../user/profile/account/two_factor_authentication.md#information-for-gitlab-administrators).
-
-{{< /alert >}}
+> [!warning]
+> **WebAuthn devices are disabled when restoring to a different FQDN:**
+> WebAuthn registrations (such as YubiKeys) are cryptographically bound to the origin
+> (domain/hostname) where they were created. If you restore a backup to a GitLab instance
+> with a different FQDN than the original instance, all WebAuthn devices will be disabled.
+> Users will need to re-register their WebAuthn devices after the restore is complete.
+> 
+> For more information about WebAuthn and hostname requirements, see
+> [Two-factor authentication](../../user/profile/account/two_factor_authentication.md#information-for-gitlab-administrators).
 
 Based on your installation method, restore the following:
 
@@ -475,14 +472,11 @@ To exclude specific tasks:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
-that can cause data loss. The problem affects repositories that have been forked and use GitLab
-[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss,
-only restore backups by using GitLab 17.2 or later.
-
-{{< /alert >}}
+> [!warning]
+> GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+> that can cause data loss. The problem affects repositories that have been forked and use GitLab
+> [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss,
+> only restore backups by using GitLab 17.2 or later.
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be restored separately
@@ -511,14 +505,11 @@ For example:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
-that can cause data loss. The problem affects repositories that have been forked and use GitLab
-[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, only restore backups by using GitLab
-17.2 or later.
-
-{{< /alert >}}
+> [!warning]
+> GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+> that can cause data loss. The problem affects repositories that have been forked and use GitLab
+> [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, only restore backups by using GitLab
+> 17.2 or later.
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you

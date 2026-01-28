@@ -24,14 +24,11 @@ our guide on [the Rails console](../operations/rails_console.md),
 and your [support options](https://about.gitlab.com/support/),
 before attempting the information pointed to from here.
 
-{{< alert type="warning" >}}
-
-Some of these scripts could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them under the
-guidance of a Support Engineer, or running them in a test environment with a
-backup of the instance ready to be restored, just in case.
-
-{{< /alert >}}
+> [!warning]
+> Some of these scripts could be damaging if not run correctly,
+> or under the right conditions. We highly recommend running them under the
+> guidance of a Support Engineer, or running them in a test environment with a
+> backup of the instance ready to be restored, just in case.
 
 {{< alert type="warning" >}}
 

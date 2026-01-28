@@ -84,14 +84,11 @@ With BYOK, you can encrypt your GitLab Dedicated data at rest using your own AWS
 you retain control over your own AWS KMS encryption keys. You manage access policies through your AWS
 account.
 
-{{< alert type="note" >}}
-
-BYOK must be enabled during instance onboarding. Once enabled, it cannot be disabled.
-
-If you did not enable BYOK during onboarding, your data is still encrypted at rest with AWS-managed
-keys, but you cannot use your own keys.
-
-{{< /alert >}}
+> [!note]
+> BYOK must be enabled during instance onboarding. Once enabled, it cannot be disabled.
+> 
+> If you did not enable BYOK during onboarding, your data is still encrypted at rest with AWS-managed
+> keys, but you cannot use your own keys.
 
 Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material
 (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin)

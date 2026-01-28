@@ -34,18 +34,15 @@ With GitLab-managed OpenTofu state, you:
 - Integrate seamlessly with your existing GitLab CI/CD pipelines
 - Access state remotely from both CI/CD jobs and local development environments
 
-{{< alert type="warning" >}}
-
-**Disaster recovery planning**
-OpenTofu state files are encrypted with the Lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the `db_key_base` application setting.
-[To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
-If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
-Kubernetes clusters, or network components), you cannot access the state file or decrypt it.
-Additionally, if GitLab serves up OpenTofu modules or other dependencies that are required to bootstrap GitLab,
-these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
-or consider using a separate GitLab instance with no shared points of failure.
-
-{{< /alert >}}
+> [!warning]
+> **Disaster recovery planning**:
+> OpenTofu state files are encrypted with the Lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the `db_key_base` application setting.
+> [To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
+> If it is offline, and you use GitLab to deploy infrastructure that GitLab requires (like virtual machines,
+> Kubernetes clusters, or network components), you cannot access the state file or decrypt it.
+> Additionally, if GitLab serves up OpenTofu modules or other dependencies that are required to bootstrap GitLab,
+> these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
+> or consider using a separate GitLab instance with no shared points of failure.
 
 ## Prerequisites
 
@@ -64,17 +61,14 @@ Prerequisites:
 - To lock, unlock, and write to the state by using `tofu apply`, you must have at least the Maintainer role.
 - To read the state by using `tofu plan -lock=false`, you must have at least the Developer role.
 
-{{< alert type="warning" >}}
-
-Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
-Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
-files include sensitive data like passwords, access tokens, or certificates, you should
-encrypt the plan output or modify the project visibility settings. You should also **disable**
-[public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's access flag to 'developer'](../../../ci/yaml/_index.md#artifactsaccess) (`access: 'developer'`).
-This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Developer role.
-
-{{< /alert >}}
+> [!warning]
+> Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
+> Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
+> files include sensitive data like passwords, access tokens, or certificates, you should
+> encrypt the plan output or modify the project visibility settings. You should also **disable**
+> [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
+> and set the [artifact's access flag to 'developer'](../../../ci/yaml/_index.md#artifactsaccess) (`access: 'developer'`).
+> This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Developer role.
 
 To configure GitLab CI/CD as a backend:
 

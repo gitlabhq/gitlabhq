@@ -103,17 +103,14 @@ To disable NFS server delegation, do the following:
 
 1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 
-{{< alert type="note" >}}
-
-The kernel bug may be fixed in
-[more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
-Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
-on August 6, 2019 that may also have resolved this problem.
-You may not need to disable NFS server delegation if you know you are using a version of
-the Linux kernel that has been fixed. That said, GitLab still encourages instance
-administrators to keep NFS server delegation disabled.
-
-{{< /alert >}}
+> [!note]
+> The kernel bug may be fixed in
+> [more recent kernels with this commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+> Red Hat Enterprise 7 [shipped a kernel update](https://access.redhat.com/errata/RHSA-2019:2029)
+> on August 6, 2019 that may also have resolved this problem.
+> You may not need to disable NFS server delegation if you know you are using a version of
+> the Linux kernel that has been fixed. That said, GitLab still encourages instance
+> administrators to keep NFS server delegation disabled.
 
 ## NFS client
 

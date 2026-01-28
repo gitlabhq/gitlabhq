@@ -13,11 +13,11 @@ title: Merged results pipelines
 
 {{< /details >}}
 
-Merged results pipelines test a temporary merged commit that combines code from 
-the source and target branches. This commit doesn't exist in either branch, 
+Merged results pipelines test a temporary merged commit that combines code from
+the source and target branches. This commit doesn't exist in either branch,
 but you can view it in the pipeline details.
 
-This approach helps verify changes work with the code in the latest target branch, 
+This approach helps verify changes work with the code in the latest target branch,
 catch integration issues before merging, and ensure changes in different files work together.
 
 Merged results pipelines can't run when the target branch has changes

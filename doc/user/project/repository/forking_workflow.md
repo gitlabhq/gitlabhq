@@ -28,15 +28,12 @@ Make your changes in your fork, then submit them through a merge request to the 
 To create a [confidential merge request](../merge_requests/confidential.md),
 use a personal fork of a public repository.
 
-{{< alert type="note" >}}
-
-If the upstream project is archived, the fork relationship is automatically removed.
-Merge requests that were closed due to a broken fork relationship are not reopened
-if the fork relationship is later restored.
-
-For more information, see [Archive a project](../working_with_projects.md#archive-a-project).
-
-{{< /alert >}}
+> [!note]
+> If the upstream project is archived, the fork relationship is automatically removed.
+> Merge requests that were closed due to a broken fork relationship are not reopened
+> if the fork relationship is later restored.
+> 
+> For more information, see [Archive a project](../working_with_projects.md#archive-a-project).
 
 ## Create a fork
 

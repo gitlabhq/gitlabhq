@@ -8,8 +8,6 @@
 ee/app/helpers/ee/sorting_titles_values_helper.rb:
 - sort_value_version_asc
 - sort_value_version_desc
-ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb:
-- duo_pro_trial_status_cta_label
 ee/app/helpers/gitlab_subscriptions/trials_helper.rb:
 - trial_submit_text
 - namespace_selector_data

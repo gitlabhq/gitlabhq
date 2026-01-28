@@ -204,6 +204,8 @@ these parameters:
 - `unconfirmed_users_delete_after_days`
 - `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
+- `project_secrets_limit`
+- `group_secrets_limit`
 
 ```json
 {
@@ -226,6 +228,8 @@ these parameters:
   "lock_duo_features_enabled": false,
   "signup_enabled": true,
   "virtual_registries_endpoints_api_limit": 1000,
+  "project_secrets_limit": 100,
+  "group_secrets_limit": 500
   ...
 }
 ```
@@ -722,6 +726,8 @@ to configure other related settings. These requirements are
 | `users_api_limit_gpg_keys`  | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10. |
 | `users_api_limit_gpg_key`   | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10. |
 | `virtual_registries_endpoints_api_limit`          | integer          | no                                   | Max number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 1000. To disable limits, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11. |
+| `project_secrets_limit`                           | integer          | no                                   | Maximum number of secrets allowed per project in Secrets Manager. Default: 100. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9. |
+| `group_secrets_limit`                             | integer          | no                                   | Maximum number of secrets allowed per group in Secrets Manager. Default: 500. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |

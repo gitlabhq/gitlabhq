@@ -38,17 +38,14 @@ When a file or directory is locked by a user:
 - Direct changes to locked files or directories on the default branch are blocked.
 - Merge requests that modify locked files or directories cannot be merged to the default branch.
 
-{{< alert type="note" >}}
-
-On non-default branches, all users can still modify locked files and directories.
-A **Lock** status is visible on these files and directories. This helps team members
-to be aware of in-flight work without restricting their workflow on other branches.
-
-File locking is also bypassed during fork synchronization.
-When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
-project, locked files in the fork can be overwritten with changes from the upstream project.
-
-{{< /alert >}}
+> [!note]
+> On non-default branches, all users can still modify locked files and directories.
+> A **Lock** status is visible on these files and directories. This helps team members
+> to be aware of in-flight work without restricting their workflow on other branches.
+> 
+> File locking is also bypassed during fork synchronization.
+> When you [update a fork](repository/forking_workflow.md#update-your-fork) from its upstream
+> project, locked files in the fork can be overwritten with changes from the upstream project.
 
 ### Permissions
 

@@ -478,15 +478,12 @@ Example migration:
 Changing column defaults is difficult because of how Rails handles values
 that are equal to the default.
 
-{{< alert type="note" >}}
-
-Rails ignores sending the default values to PostgreSQL when inserting records, if the [partial_inserts](https://gitlab.com/gitlab-org/gitlab/-/blob/55ac06c9083434e6c18e0a2aaf8be5f189ef34eb/config/application.rb#L40) config has been enabled. It leaves this task to
-the database. When migrations change the default values of the columns, the running application is unaware
-of this change due to the schema cache. The application is then under the risk of accidentally writing
-wrong data to the database, especially when deploying the new version of the code
-long after we run database migrations.
-
-{{< /alert >}}
+> [!note]
+> Rails ignores sending the default values to PostgreSQL when inserting records, if the [partial_inserts](https://gitlab.com/gitlab-org/gitlab/-/blob/55ac06c9083434e6c18e0a2aaf8be5f189ef34eb/config/application.rb#L40) config has been enabled. It leaves this task to
+> the database. When migrations change the default values of the columns, the running application is unaware
+> of this change due to the schema cache. The application is then under the risk of accidentally writing
+> wrong data to the database, especially when deploying the new version of the code
+> long after we run database migrations.
 
 If running code ever explicitly writes the old default value of a column, you must follow a multi-step
 process to prevent Rails replacing the old default with the new default in INSERT queries that explicitly

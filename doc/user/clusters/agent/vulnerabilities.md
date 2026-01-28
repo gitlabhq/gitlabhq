@@ -119,7 +119,7 @@ The keys for a schedule rule are:
 
 > [!note]
 > Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) used in your implementation. However, GitLab does not officially test or support them.
-> 
+>
 > The CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod.
 
 You can view the complete schema within the [scan execution policy documentation](../../application_security/policies/scan_execution_policies.md#scan-execution-policies-schema).

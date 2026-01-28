@@ -28,7 +28,7 @@ The most widely supported method is to inject an SSH key into the build environm
 such as Docker or shell.
 
 > [!note]
-> When using SSH keys in CI/CD, store private keys securely and avoid reusing personal SSH keys for automated jobs. 
+> When using SSH keys in CI/CD, store private keys securely and avoid reusing personal SSH keys for automated jobs.
 > Rotate keys regularly to reduce the risk of unauthorized access.
 
 ## Create and use an SSH key
@@ -179,18 +179,15 @@ Add the hosts to your project as a [file type CI/CD variable](#add-an-ssh-key-as
 If you must connect to multiple servers, all the server host keys
 must be collected in the **Value** of the variable, one key per line.
 
-{{< alert type="note" >}}
-
-By using a file type CI/CD variable instead of `ssh-keyscan` directly inside
-`.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
-if the host domain name changes for some reason. Also, the values are predefined
-by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
-so there's something wrong with the server or the network.
-
-Do not run `ssh-keyscan` directly in a CI/CD job, as it is a security risk vulnerable
-to machine-in-the-middle attacks.
-
-{{< /alert >}}
+> [!note]
+> By using a file type CI/CD variable instead of `ssh-keyscan` directly inside
+> `.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
+> if the host domain name changes for some reason. Also, the values are predefined
+> by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
+> so there's something wrong with the server or the network.
+> 
+> Do not run `ssh-keyscan` directly in a CI/CD job, as it is a security risk vulnerable
+> to machine-in-the-middle attacks.
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
 [content of `.gitlab-ci.yml`](#ssh-keys-when-using-the-docker-executor), you must add:

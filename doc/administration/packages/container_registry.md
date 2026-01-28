@@ -13,14 +13,11 @@ title: GitLab container registry administration
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-The [next-generation container registry](container_registry_metadata_database.md)
-is now available for upgrade on GitLab Self-Managed instances.
-This upgraded registry supports online garbage collection, and has significant performance
-and reliability improvements.
-
-{{< /alert >}}
+> [!note]
+> The [next-generation container registry](container_registry_metadata_database.md)
+> is now available for upgrade on GitLab Self-Managed instances.
+> This upgraded registry supports online garbage collection, and has significant performance
+> and reliability improvements.
 
 With the GitLab container registry, every project can have its
 own space to store Docker images.
@@ -494,7 +491,13 @@ Mount this configuration in your Docker Compose setup and make sure GitLab recon
 
 ## Configure storage for the container registry
 
-{{< alert type="note" >}}
+> [!warning]
+> Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
+
+You can configure the container registry to use various storage backends by
+configuring a storage driver. By default the GitLab container registry
+is configured to use the [file system driver](#use-file-system)
+configuration.
 
 For storage backends that support it, you can use object versioning to preserve, retrieve, and
 restore the non-current versions of every object stored in your buckets. However, this may result in
@@ -504,16 +507,6 @@ and GCS, this transfer is achieved with a copy followed by a delete. With object
 these deleted temporary upload artifacts are kept as non-current versions, therefore increasing the
 storage bucket size. To ensure that non-current versions are deleted after a given amount of time,
 you should configure an object lifecycle policy with your storage provider.
-
-{{< /alert >}}
-
-> [!warning]
-> Do not directly modify the files or objects stored by the container registry. Anything other than the registry writing or deleting these entries can lead to instance-wide data consistency and instability issues from which recovery may not be possible.
-
-You can configure the container registry to use various storage backends by
-configuring a storage driver. By default the GitLab container registry
-is configured to use the [file system driver](#use-file-system)
-configuration.
 
 The different supported drivers are:
 
@@ -706,17 +699,14 @@ registry['storage'] = {
 
 The Azure storage driver integrates with Microsoft Azure Blob Storage.
 
-{{< alert type="warning" >}}
-
-The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-
-Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
-
-Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
-
-Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
-
-{{< /alert >}}
+> [!warning]
+> The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+> 
+> Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
+> 
+> Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
+> 
+> Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 For a complete list of configuration parameters for each driver, see [`azure_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v1.md) and [`azure_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v2.md).
 
@@ -799,14 +789,11 @@ storage:
 
 #### Migrate to object storage without downtime
 
-{{< alert type="warning" >}}
-
-Using [AWS DataSync](https://aws.amazon.com/datasync/)
-to copy the registry data to or between S3 buckets creates invalid metadata objects in the bucket.
-For additional details, see [Tags with an empty name](container_registry_troubleshooting.md#tags-with-an-empty-name).
-To move data to and between S3 buckets, the AWS CLI `sync` operation is recommended.
-
-{{< /alert >}}
+> [!warning]
+> Using [AWS DataSync](https://aws.amazon.com/datasync/)
+> to copy the registry data to or between S3 buckets creates invalid metadata objects in the bucket.
+> For additional details, see [Tags with an empty name](container_registry_troubleshooting.md#tags-with-an-empty-name).
+> To move data to and between S3 buckets, the AWS CLI `sync` operation is recommended.
 
 To migrate storage without stopping the container registry, set the container registry
 to read-only mode. On large instances, this may require the container registry
@@ -1077,14 +1064,11 @@ project, you can [disable it from your project's settings](../../user/project/se
 
 ## Use an external container registry with GitLab as an auth endpoint
 
-{{< alert type="warning" >}}
-
-Using third-party container registries in GitLab was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
-in GitLab 15.8 and support ended in GitLab 16.0.
-If you need to use third-party container registries instead of the GitLab container registry,
-tell us about your use cases in [feedback issue 958](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
-
-{{< /alert >}}
+> [!warning]
+> Using third-party container registries in GitLab was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
+> in GitLab 15.8 and support ended in GitLab 16.0.
+> If you need to use third-party container registries instead of the GitLab container registry,
+> tell us about your use cases in [feedback issue 958](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 If you use an external container registry, some features associated with the
 container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).

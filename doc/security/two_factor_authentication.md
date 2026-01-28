@@ -105,15 +105,12 @@ Administrators can enforce 2FA for both:
 
 You can enforce 2FA for all users in a group or subgroup.
 
-{{< alert type="note" >}}
+2FA enforcement applies to both [direct and inherited members](../user/project/members/_index.md#membership-types)
+group members. If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
+Inherited members are members of the ancestor groups.
 
-- 2FA enforcement applies to both
-  [direct and inherited members](../user/project/members/_index.md#membership-types) group members.
-- If 2FA is enforced on a subgroup, inherited members must enroll an authentication factor.
-  Inherited members are members of the ancestor groups.
-- Email OTP does not satisfy the 2FA requirement. Members must configure either an app-based TOTP or WebAuthn.
-
-{{< /alert >}}
+> [!note]
+> Email OTP does not satisfy the 2FA requirement. Members must configure either an app-based TOTP or WebAuthn.
 
 Prerequisites:
 

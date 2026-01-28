@@ -86,14 +86,11 @@ From left to right, the performance bar displays:
 - **Stats** (optional): if the `GITLAB_PERFORMANCE_BAR_STATS_URL` environment variable is set,
   this URL is displayed in the bar. Used only on GitLab.com.
 
-{{< alert type="note" >}}
-
-Not all indicators are available in all environments. For instance, the memory view
-requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
-applied. When running GitLab locally using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit),
-this is typically not the case and the memory view cannot be used.
-
-{{< /alert >}}
+> [!note]
+> Not all indicators are available in all environments. For instance, the memory view
+> requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
+> applied. When running GitLab locally using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit),
+> this is typically not the case and the memory view cannot be used.
 
 ## Keyboard shortcut
 

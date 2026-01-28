@@ -177,7 +177,7 @@ If the feature flag is introduced and enabled in the same release, combine the e
 - [Introduced](https://issue-link) in GitLab 17.7 [with a feature flag](../../administration/feature_flags/_index.md) named `forti_token_cloud`. Enabled by default.
 ```
 
-If there are multiple feature flags for a feature in the history details, to improve readability you 
+If there are multiple feature flags for a feature in the history details, to improve readability you
 can use a nested list to group them with the feature:
 
 - Before:

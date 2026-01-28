@@ -41525,6 +41525,9 @@ msgstr ""
 msgid "Maximum number of schedule rules per scan execution policy"
 msgstr ""
 
+msgid "Maximum number of secrets (%{limit}) for this %{scope} has been reached. Please delete unused secrets or contact your administrator to increase the limit."
+msgstr ""
+
 msgid "Maximum number of stages per value stream exceeded"
 msgstr ""
 
@@ -53419,6 +53422,9 @@ msgstr ""
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
+msgid "ProjectSettings|All merge request titles must match this %{link_start}regular expression%{link_end}. If empty, any title is allowed."
+msgstr ""
+
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
@@ -53519,9 +53525,6 @@ msgid "ProjectSettings|Delete immediately"
 msgstr ""
 
 msgid "ProjectSettings|Delete project"
-msgstr ""
-
-msgid "ProjectSettings|Describe what this regex enforces. Include examples of valid titles."
 msgstr ""
 
 msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
@@ -53689,6 +53692,12 @@ msgstr ""
 msgid "ProjectSettings|Merge options"
 msgstr ""
 
+msgid "ProjectSettings|Merge request title example"
+msgstr ""
+
+msgid "ProjectSettings|Merge request title validation pattern"
+msgstr ""
+
 msgid "ProjectSettings|Merge requests"
 msgstr ""
 
@@ -53767,9 +53776,6 @@ msgstr ""
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr ""
 
-msgid "ProjectSettings|Regular expression that all merge request titles must match. %{link_start}What is a regex?%{link_end}"
-msgstr ""
-
 msgid "ProjectSettings|Relative path:"
 msgstr ""
 
@@ -53828,6 +53834,9 @@ msgid "ProjectSettings|Show default emoji reactions"
 msgstr ""
 
 msgid "ProjectSettings|Show link to create or view a merge request when pushing from the command line"
+msgstr ""
+
+msgid "ProjectSettings|Shown to users when creating merge requests."
 msgstr ""
 
 msgid "ProjectSettings|Snippets"
@@ -53902,15 +53911,6 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden for a project."
 msgstr ""
 
-msgid "ProjectSettings|Title regex"
-msgstr ""
-
-msgid "ProjectSettings|Title regex description"
-msgstr ""
-
-msgid "ProjectSettings|Titles must start with a tag, e.g. [Feature] Add login"
-msgstr ""
-
 msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -53921,6 +53921,9 @@ msgid "ProjectSettings|Transfer project"
 msgstr ""
 
 msgid "ProjectSettings|Upstream project"
+msgstr ""
+
+msgid "ProjectSettings|Usage example: \"Title must match validation pattern `%{pattern}`.\""
 msgstr ""
 
 msgid "ProjectSettings|Use AI-native features in this project."
@@ -53984,6 +53987,9 @@ msgid "ProjectSettings|Work items"
 msgstr ""
 
 msgid "ProjectSettings|Your project is set up. %{instructionsLinkStart}View instrumentation instructions%{instructionsLinkEnd} and %{dashboardsLinkStart}Analytics Dashboards%{dashboardsLinkEnd}."
+msgstr ""
+
+msgid "ProjectSettings|[Feature] Add login"
 msgstr ""
 
 msgid "ProjectSetting|already in use"
@@ -63473,13 +63479,13 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo can automatically review new critical and high severity SAST vulnerabilities on the default branch to %{linkStart}identify potential false positives%{linkEnd}. GitLab Duo can assign each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The feature is available as a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings."
+msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings. These features are available as a free beta for a limited time and are disabled by default."
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo resolution"
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo security features are here!"
+msgid "SecurityReports|GitLab Duo security features are here - available for a limited time in free Beta"
 msgstr ""
 
 msgid "SecurityReports|Go to policies"

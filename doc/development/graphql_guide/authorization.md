@@ -32,15 +32,12 @@ system as throughout the rest of the application.
 
 Also see [authorizing resources in a mutation](../api_graphql_styleguide.md#authorizing-resources).
 
-{{< alert type="note" >}}
-
-The best practice is to load only what the currently authenticated user is allowed to
-view with our existing finders first, without relying on authorization
-to filter the records. This minimizes database queries and unnecessary
-authorization checks of the loaded records. It also avoids situations,
-such as short pages, which can expose the presence of confidential resources.
-
-{{< /alert >}}
+> [!note]
+> The best practice is to load only what the currently authenticated user is allowed to
+> view with our existing finders first, without relying on authorization
+> to filter the records. This minimizes database queries and unnecessary
+> authorization checks of the loaded records. It also avoids situations,
+> such as short pages, which can expose the presence of confidential resources.
 
 See [`authorization_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/features/authorization_spec.rb)
 for examples of all the authorization schemes discussed here.

@@ -20,14 +20,11 @@ in a file hook's code, and create many file hooks as you need. Each file hook is
 triggered by GitLab asynchronously in case of an event. For a list of events,
 see the [system hooks](system_hooks.md) and [webhooks](../user/project/integrations/webhook_events.md) documentation.
 
-{{< alert type="note" >}}
-
-File hooks must be configured on the file system of the GitLab server. Only GitLab
-server administrators can complete these tasks. Explore
-[system hooks](system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
-as an option if you do not have file system access.
-
-{{< /alert >}}
+> [!note]
+> File hooks must be configured on the file system of the GitLab server. Only GitLab
+> server administrators can complete these tasks. Explore
+> [system hooks](system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
+> as an option if you do not have file system access.
 
 Instead of writing and supporting your own file hook, you can also make changes
 directly to the GitLab source code and contribute back upstream. In this way, we can

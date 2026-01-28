@@ -81,17 +81,14 @@ You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) 
 
 ### Create an instance runner with a registration token (deprecated)
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 Prerequisites:
 
@@ -295,17 +292,14 @@ You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) 
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 Prerequisites:
 
@@ -539,17 +533,14 @@ You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) 
 
 ### Create a project runner with a registration token (deprecated)
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 Prerequisites:
 
@@ -798,17 +789,14 @@ Use this feature to inform others about consequences or problems related to chan
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
-and is not recommended.
-Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
-to generate an authentication token to register runners. This process provides full
-traceability of runner ownership and enhances your runner fleet's security.
-For more information, see
-[Migrating to the new runner registration workflow](new_creation_workflow.md).
-
-{{< /alert >}}
+> [!warning]
+> The option to pass runner registration tokens and support for certain configuration arguments is considered legacy
+> and is not recommended.
+> Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+> to generate an authentication token to register runners. This process provides full
+> traceability of runner ownership and enhances your runner fleet's security.
+> For more information, see
+> [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 In GitLab 17.0, the use of runner registration tokens is disabled in all GitLab instances.
 

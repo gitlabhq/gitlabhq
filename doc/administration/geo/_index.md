@@ -16,13 +16,10 @@ description: Geographically distribute GitLab.
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
 
-{{< alert type="warning" >}}
-
-Geo undergoes significant changes from release to release. Upgrades are
-supported and [documented](#upgrading-geo), but you should ensure that you're
-using the right version of the documentation for your installation.
-
-{{< /alert >}}
+> [!warning]
+> Geo undergoes significant changes from release to release. Upgrades are
+> supported and [documented](#upgrading-geo), but you should ensure that you're
+> using the right version of the documentation for your installation.
 
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
 

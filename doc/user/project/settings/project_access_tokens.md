@@ -32,15 +32,12 @@ Use a project access token to authenticate:
   - Any non-blank value as a username.
   - The project access token as the password.
 
-{{< alert type="note" >}}
-
-On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
-[trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
-
-On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
-you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
-
-{{< /alert >}}
+> [!note]
+> On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
+> [trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
+> 
+> On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
+> you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
 
 Project access tokens are similar to group access tokens and personal access tokens, but are
 scoped only to the associated project. You cannot use project access tokens to access resources

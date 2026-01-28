@@ -139,21 +139,17 @@ Finally, your AWS ECS service is updated with the new revision of the
 task definition, making the cluster pull the newest version of your
 application.
 
-> [!note]
-> ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
-> set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
+set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
-{{< alert type="warning" >}}
-
-The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
-template includes two templates: [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
-and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml). Do not include these templates on their own. Only include the
-`AWS/Deploy-ECS.gitlab-ci.yml` template. These other templates are designed to be
-used only with the main template. They may move or change unexpectedly. Also, the job names in
-these templates may change. Do not override these job names in your own pipeline,
-because the override stops working when the name changes.
-
-{{< /alert >}}
+> [!warning]
+> The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
+> template includes two templates: [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
+> and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml). Do not include these templates on their own. Only include the
+> `AWS/Deploy-ECS.gitlab-ci.yml` template. These other templates are designed to be
+> used only with the main template. They may move or change unexpectedly. Also, the job names in
+> these templates may change. Do not override these job names in your own pipeline,
+> because the override stops working when the name changes.
 
 ## Deploy your application to EC2
 

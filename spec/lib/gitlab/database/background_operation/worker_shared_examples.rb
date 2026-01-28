@@ -92,6 +92,21 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
       expect { worker.finish! }.to change { worker.finished_at }.from(nil).to(Time.current)
     end
+
+    context 'with logging' do
+      let_it_be(:pending_worker) { create(worker_factory, :queued) }
+
+      it 'logs state transitions' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :worker_transition,
+          record: pending_worker,
+          previous_state: :queued,
+          new_state: :finished
+        )
+
+        pending_worker.finish!
+      end
+    end
   end
 
   describe '.schedulable_workers' do
@@ -346,6 +361,23 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
 
     before do
       allow(worker).to receive(:optimizer).and_return(optimizer)
+    end
+
+    context 'when worker is optimized' do
+      before do
+        allow(optimizer).to receive_messages(should_optimize?: true, optimized_batch_size: 5_500)
+      end
+
+      it 'logs optimization transitions' do
+        expect(::Gitlab::Database::BackgroundOperation::Observability::EventLogger).to receive(:log).with(
+          event: :worker_optimization,
+          record: worker,
+          old_batch_size: worker.batch_size,
+          new_batch_size: 5_500
+        )
+
+        optimize
+      end
     end
 
     context 'when efficiency is low' do

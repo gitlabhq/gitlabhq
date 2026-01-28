@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use Docker to build Docker images
+description: Build and push container images in GitLab CI/CD using the shell executor, Docker-in-Docker, socket binding, or pipe binding.
 ---
 
 {{< details >}}

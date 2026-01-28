@@ -57,18 +57,15 @@ Prerequisites:
    1. Leave **Spam Check API key** blank.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-
-In single-node instances, Spamcheck runs over `localhost`, and hence is running
-in an unauthenticated mode. If on multi-node instances where GitLab runs on one
-server and Spamcheck runs on another server listening over a public endpoint, it
-is recommended to enforce some sort of authentication using a reverse proxy in
-front of the Spamcheck service that can be used along with an API key. One
-example would be to use `JWT` authentication for this and specifying a bearer
-token as the API key.
-[Native authentication for Spamcheck is in the works](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/171).
-
-{{< /alert >}}
+> [!note]
+> In single-node instances, Spamcheck runs over `localhost`, and hence is running
+> in an unauthenticated mode. If on multi-node instances where GitLab runs on one
+> server and Spamcheck runs on another server listening over a public endpoint, it
+> is recommended to enforce some sort of authentication using a reverse proxy in
+> front of the Spamcheck service that can be used along with an API key. One
+> example would be to use `JWT` authentication for this and specifying a bearer
+> token as the API key.
+> [Native authentication for Spamcheck is in the works](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/171).
 
 ## Running Spamcheck over TLS
 

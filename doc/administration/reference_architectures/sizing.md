@@ -271,14 +271,11 @@ Different workloads stress different parts of GitLab architecture:
 
 Using the peak timestamp from the earlier section, identify which endpoints received the most traffic during maximum load.
 
-{{< alert type="note" >}}
-
-If your RPS metrics show consistently high traffic during off-hours (>50% of peak), this suggests heavy automation
-beyond typical patterns. For example, peak traffic that reaches 100 RPS during business hours but maintains 50+ RPS during
-nights and weekends indicates significant automated workload. Consider this when
-[evaluating component adjustments](#determine-component-adjustments).
-
-{{< /alert >}}
+> [!note]
+> If your RPS metrics show consistently high traffic during off-hours (>50% of peak), this suggests heavy automation
+> beyond typical patterns. For example, peak traffic that reaches 100 RPS during business hours but maintains 50+ RPS during
+> nights and weekends indicates significant automated workload. Consider this when
+> [evaluating component adjustments](#determine-component-adjustments).
 
 1. Run this query with visualization enabled (bar chart for distribution over time, or pie chart for general distribution):
 

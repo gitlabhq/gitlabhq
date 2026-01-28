@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 515
+- Number of attributes: 516
 - Number of encrypted attributes: 42 (8.0%)
 - Number of attributes documented: 298 (57.99999999999999%)
 - Number of attributes on GitLab.com different from the defaults: 224 (43.0%)
-- Number of attributes with `clusterwide` set: 515 (100.0%)
-- Number of attributes with `clusterwide: true` set: 140 (27.0%)
+- Number of attributes with `clusterwide` set: 516 (100.0%)
+- Number of attributes with `clusterwide: true` set: 141 (27.0%)
 
 ## Individual columns
 
@@ -413,6 +413,7 @@ title: Application Settings analysis
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_push_protection_available` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
+| `secrets_manager_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `security_and_compliance_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |

@@ -273,14 +273,11 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-{{< alert type="note" >}}
-
-If an error occurs, an
-`exception` field is included with `class`, `message`, and
-`backtrace`. Previous versions included an `error` field instead of
-`exception.class` and `exception.message`. For example:
-
-{{< /alert >}}
+> [!note]
+> If an error occurs, an
+> `exception` field is included with `class`, `message`, and
+> `backtrace`. Previous versions included an `error` field instead of
+> `exception.class` and `exception.message`. For example:
 
 ```json
 {
@@ -408,14 +405,11 @@ associated SSH key can download the project in question by using a `git fetch` o
 - `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
 - `ua`: The User-Agent of the requester
 
-{{< alert type="note" >}}
-
-As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
-the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
-Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
-process on Redis or external HTTP, not only the serialization process.
-
-{{< /alert >}}
+> [!note]
+> As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
+> the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
+> Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
+> process on Redis or external HTTP, not only the serialization process.
 
 ## `application.log` (deprecated)
 
@@ -1408,7 +1402,7 @@ For example:
 
 > [!note]
 > We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
-> 
+>
 > The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
 
 This log is located:

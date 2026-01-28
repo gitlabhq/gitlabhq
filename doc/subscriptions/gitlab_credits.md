@@ -170,11 +170,11 @@ On the dashboard, used credits represent deductions from available credits.
 For overages (On-Demand credits), used credits represent on-demand usage that will be paid later,
 if you have agreed to the usage billing terms.
 
-To help you manage credit consumption, GitLab emails the following information to 
+To help you manage credit consumption, GitLab emails the following information to
 administrators and subscription owners:
 
 - Monthly credit usage summaries
-- Notifications when credit usage thresholds are at 50%, 80%, and 100% 
+- Notifications when credit usage thresholds are at 50%, 80%, and 100%
 
 You can access the dashboard in the Customers Portal and in GitLab.
 

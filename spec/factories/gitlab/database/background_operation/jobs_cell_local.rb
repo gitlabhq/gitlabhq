@@ -8,7 +8,6 @@ FactoryBot.define do
     sub_batch_size { 10 }
     min_cursor { [1] }
     max_cursor { [1000] }
-    worker_id { 1 }
     worker_partition { 1 }
 
     trait :pending do

@@ -19,14 +19,11 @@ title: Geo proxying for secondary sites
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
-Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
+> Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
 
 Secondary sites behave as full read-write GitLab instances. They transparently proxy all operations to the primary site, with [some notable exceptions](#features-accelerated-by-secondary-geo-sites).
 

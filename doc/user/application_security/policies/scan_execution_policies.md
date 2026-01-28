@@ -205,7 +205,7 @@ from bypassing the pipeline execution policies.
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_type`.
   - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
 - The `branch_exceptions` field:
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`. 
+  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_branch_exceptions`.
   - Generally available in GitLab 16.5. Feature flag `security_policies_branch_exceptions` removed.
 - The `pipeline_sources` field and the `branch_type` options `target_default` and `target_protected`:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`.
@@ -396,7 +396,7 @@ The concurrency control distributes the scheduled pipelines according to the [`t
 {{< history >}}
 
 - Scan Execution Policies variable precedence:
-  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default. 
+  - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435727) in GitLab 16.8. Feature flag `security_policies_variables_precedence` removed.
 - Selection of security templates for given action:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) for projects in GitLab 17.1 [with feature flag](../../../administration/feature_flags/_index.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.

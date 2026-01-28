@@ -26,14 +26,11 @@ lowers the load on Redis, which is important on very large-scale deployments.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Mailer jobs cannot be routed by routing rules, and always go to the
-`mailers` queue. When using routing rules, ensure that at least one process is
-listening to the `mailers` queue. Typically this can be placed alongside the
-`default` queue.
-
-{{< /alert >}}
+> [!note]
+> Mailer jobs cannot be routed by routing rules, and always go to the
+> `mailers` queue. When using routing rules, ensure that at least one process is
+> listening to the `mailers` queue. Typically this can be placed alongside the
+> `default` queue.
 
 We recommend most GitLab instances using routing rules to manage their Sidekiq
 queues. This allows administrators to choose single queue names for groups of

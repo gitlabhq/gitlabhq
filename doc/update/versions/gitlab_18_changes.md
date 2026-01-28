@@ -432,7 +432,7 @@ This migration only copies existing data that has not been created or touched af
 
 No data is deleted from the `merge_requests` table during this migration.
 
-The migration is planned to be finalized in GitLab 18.9. For more information, see 
+The migration is planned to be finalized in GitLab 18.9. For more information, see
 [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/584459).
 
 ### Estimating migration duration

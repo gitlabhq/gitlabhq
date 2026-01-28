@@ -435,14 +435,11 @@ The page includes this information about each Gitaly server:
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
-can [enable the feature flag](feature_flags/_index.md) named `ui_for_organizations`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator
+> can [enable the feature flag](feature_flags/_index.md) named `ui_for_organizations`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 The Organizations page in the **Admin** area lists all projects by default, in reverse order of when
 they were last updated. Each project shows:

@@ -103,11 +103,8 @@ The internal URL defaults to external URL. To change it:
 When enabled, the **Admin** area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
-{{< alert type="warning" >}}
-
-We recommend using an HTTPS connection while configuring the Geo sites. To avoid
-breaking communication between **primary** and **secondary** sites when using
-HTTPS, customize your Internal URL to point to a load balancer with TLS
-terminated at the load balancer.
-
-{{< /alert >}}
+> [!warning]
+> We recommend using an HTTPS connection while configuring the Geo sites. To avoid
+> breaking communication between **primary** and **secondary** sites when using
+> HTTPS, customize your Internal URL to point to a load balancer with TLS
+> terminated at the load balancer.

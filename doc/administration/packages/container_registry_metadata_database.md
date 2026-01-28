@@ -320,7 +320,7 @@ The garbage collector might be working through items caused by a spike in activi
 
 Similarly, the `created_at` date of these tasks alone is not good health indicator.
 When an event adds the same blob or manifest to the queue, the `review_after`
-of the existing task is updated, which postpones the review. No duplicate task is created. 
+of the existing task is updated, which postpones the review. No duplicate task is created.
 
 This can occur any number of times, so
 tasks created months ago are not a cause for concern.

@@ -88,7 +88,7 @@ To set up ClickHouse Cloud:
    - Password
 
 {{< alert type="note" >}}
-ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse). 
+ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse).
 {{< /alert >}}
 
 After you create your ClickHouse Cloud service, you then [create the GitLab database and user](#create-database-and-user).

@@ -426,11 +426,11 @@ follow the steps correctly, the old primary Geo site is disabled, and user traff
 newly-promoted site instead.
 
 When the promotion completes, the maintenance window is over, and your new primary site now
-begins to diverge from the old one. 
+begins to diverge from the old one.
 
 Don't forget to remove the broadcast message after the failover is complete.
 
-If everything is working as expected, you can 
+If everything is working as expected, you can
 [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
 
 ### Fall back to the old primary

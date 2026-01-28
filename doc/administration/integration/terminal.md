@@ -71,14 +71,11 @@ detail below.
 
 ## Enabling and disabling terminal support
 
-{{< alert type="note" >}}
-
-AWS Classic Load Balancers do not support web sockets.
-If you want web terminals to work, use AWS Network Load Balancers.
-Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
-for more information.
-
-{{< /alert >}}
+> [!note]
+> AWS Classic Load Balancers do not support web sockets.
+> If you want web terminals to work, use AWS Network Load Balancers.
+> Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
+> for more information.
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse must be configured to pass the `Connection` and `Upgrade` headers

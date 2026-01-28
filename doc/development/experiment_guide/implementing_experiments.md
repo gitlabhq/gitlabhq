@@ -151,20 +151,16 @@ results of the experience we've rendered to that context key. These concepts are
 somewhat abstract and hard to understand initially, but this approach enables us to
 communicate about experiments as something that's wider than just user behavior.
 
-> [!note]
-> Using `actor:` uses cookies if the `current_user` is nil. If you don't need
-> cookies though - meaning that the exposed functionality would only be visible to
-> authenticated users - `{ user: current_user }` would be just as effective.
+Using `actor:` uses cookies if the `current_user` is nil. If you don't need
+cookies though - meaning that the exposed functionality would only be visible to
+authenticated users - `{ user: current_user }` would be just as effective.
 
-{{< alert type="warning" >}}
-
-The caching of variant assignment is done by using this context, and so consider
-your impact on the cache size when defining your experiment. If you use
-`{ time: Time.current }` you would be inflating the cache size every time the
-experiment is run. Not only that, your experiment would not be "sticky" and events
-wouldn't be resolvable.
-
-{{< /alert >}}
+> [!warning]
+> The caching of variant assignment is done by using this context, and so consider
+> your impact on the cache size when defining your experiment. If you use
+> `{ time: Time.current }` you would be inflating the cache size every time the
+> experiment is run. Not only that, your experiment would not be "sticky" and events
+> wouldn't be resolvable.
 
 ### Advanced experimentation
 

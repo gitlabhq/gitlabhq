@@ -507,15 +507,12 @@ Action Cable supports different implementations to track which client is subscri
 Shared storage is necessary because different clients might connect to the same Action Cable channel
 from different Puma instances.
 
-{{< alert type="note" >}}
-
-Do not confuse Action Cable channels with Redis PubSub channels. An Action Cable `Channel` object is a
-programming abstraction to classify and handle the various kinds of data going over the WebSocket connection.
-In Action Cable, the underlying PubSub channel is referred to as a broadcasting instead and the association
-between a client and a broadcasting is called a subscription. In particular, there can be many broadcastings
-(PubSub channels) and subscriptions for each Action Cable `Channel`.
-
-{{< /alert >}}
+> [!note]
+> Do not confuse Action Cable channels with Redis PubSub channels. An Action Cable `Channel` object is a
+> programming abstraction to classify and handle the various kinds of data going over the WebSocket connection.
+> In Action Cable, the underlying PubSub channel is referred to as a broadcasting instead and the association
+> between a client and a broadcasting is called a subscription. In particular, there can be many broadcastings
+> (PubSub channels) and subscriptions for each Action Cable `Channel`.
 
 Because Action Cable allows us to express different kinds of behavior through its `Channel` API, and because
 updates to any `Channel` can use the same WebSocket connection, we only require a single WebSocket connection

@@ -127,7 +127,7 @@ To restrict group access by IP address:
    ```
 
    You must manually add each IP address entry. Adding multiple entries separated by a comma or space is not supported. Support for bulk entries is proposed in [issue 468998](https://gitlab.com/gitlab-org/gitlab/-/work_items/468998).
- 
+
    This list:
    - Has no limit on the number of IP address ranges.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split

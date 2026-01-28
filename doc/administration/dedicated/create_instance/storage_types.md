@@ -31,7 +31,7 @@ Total purchased storage is the combined storage allocated to a GitLab Dedicated 
 your repository storage and object storage. This allocation represents the total storage capacity purchased with a
 GitLab Dedicated subscription and configured during instance provisioning.
 
-When determining storage needs, this is the primary metric used for planning and pricing. The total purchased 
+When determining storage needs, this is the primary metric used for planning and pricing. The total purchased
 storage is then distributed between repository storage and object storage based on expected usage patterns.
 
 ### Repository storage

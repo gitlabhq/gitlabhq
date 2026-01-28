@@ -43,7 +43,7 @@ module Gitlab
           record_observation(observation, destination_dir: per_migration_result_dir)
         end
 
-        def observe_no_batches_processed
+        def observe_no_batches_processed(connection:)
           marker_file = File.join(@result_dir, '.no_batches_processed')
           FileUtils.touch(marker_file)
         end

@@ -44,15 +44,6 @@ module Gitlab
               # So wrap the result for consistency between 1 and many columns
               table_max_cursor = Array.wrap(rows_ordered_backwards.pick(*cursor_columns))
 
-              job_class_name = migration.job_class_name
-
-              # If the table is empty, there are no jobs to sample
-              if table_max_cursor[0].nil?
-                export_migration_details(job_class_name,
-                  migration.slice(:interval, :total_tuple_count, :max_batch_size))
-                next [job_class_name, [].to_enum]
-              end
-
               # variance is the portion of the batch range that we shrink between variance * 0 and variance * 1
               # to pick actual batches to sample.
 
@@ -71,7 +62,6 @@ module Gitlab
                 # or just the beginning of the table on the first loop
                 # This way, cursors for our batches start at interesting places in all of their positions
                 prev_end_cursor = table_min_cursor
-                has_yielded_any = false
 
                 loop do
                   first_elem = batch_first_elems.next
@@ -126,16 +116,15 @@ module Gitlab
 
                     completed_batches << (batch_min..batch_max)
 
-                    has_yielded_any = true
                     y << job
                   end
                 end
-
-                # Export migration details after all jobs have been generated
-                # This ensures it's always called, even if the enumerator is not fully consumed
-                export_migration_details(job_class_name,
-                  migration.slice(:interval, :total_tuple_count, :max_batch_size))
               end
+
+              job_class_name = migration.job_class_name
+
+              export_migration_details(job_class_name,
+                migration.slice(:interval, :total_tuple_count, :max_batch_size))
 
               [job_class_name, jobs_to_sample]
             end
@@ -204,11 +193,11 @@ module Gitlab
         end
 
         def export_migration_details(migration_name, attributes)
-          bbm_directory = File.join(result_dir, migration_name)
+          directory = result_dir.join(migration_name)
 
-          FileUtils.mkdir_p(bbm_directory)
+          FileUtils.mkdir_p(directory)
 
-          File.write(File.join(bbm_directory, MIGRATION_DETAILS_FILE_NAME), attributes.to_json)
+          File.write(directory.join(MIGRATION_DETAILS_FILE_NAME), attributes.to_json)
         end
 
         def observers

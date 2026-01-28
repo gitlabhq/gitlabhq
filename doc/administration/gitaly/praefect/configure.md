@@ -175,14 +175,11 @@ following to `gitlab.rb` on each node:
 
 ### PostgreSQL
 
-{{< alert type="note" >}}
-
-Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
-
-- Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
-- Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
-
-{{< /alert >}}
+> [!note]
+> Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
+> 
+> - Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
+> - Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
 
 These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
 PostgreSQL.
@@ -466,14 +463,11 @@ praefect['configuration'] = {
 
 With this configuration, Praefect uses PgBouncer for both connection types.
 
-{{< alert type="note" >}}
-
-Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
-your databases manually and configuring an external PgBouncer, you must include `praefect` user and
-its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
-configuration option is set. For more details, consult the PgBouncer documentation.
-
-{{< /alert >}}
+> [!note]
+> Linux package installations handle the authentication requirements (using `auth_query`), but if you are preparing
+> your databases manually and configuring an external PgBouncer, you must include `praefect` user and
+> its password in the file used by PgBouncer. For example, `userlist.txt` if the [`auth_file`](https://www.pgbouncer.org/config.html#auth_file)
+> configuration option is set. For more details, consult the PgBouncer documentation.
 
 ##### Configure Praefect to connect directly to PostgreSQL
 
@@ -1708,14 +1702,11 @@ cluster.
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
 
-{{< alert type="warning" >}}
-
-Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
-
-Do not reduce the replication factor of object pools. This can cause linked repositories to break.
-Object pools have relative paths that begin with `@pools/`.
-
-{{< /alert >}}
+> [!warning]
+> Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
+> 
+> Do not reduce the replication factor of object pools. This can cause linked repositories to break.
+> Object pools have relative paths that begin with `@pools/`.
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
@@ -1870,14 +1861,11 @@ praefect['configuration'] = {
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
-that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the
-[`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
-
-{{< /alert >}}
+> [!warning]
+> Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
+> that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
+> than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the
+> [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.

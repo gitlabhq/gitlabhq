@@ -39,7 +39,7 @@ To give a user access to specific features:
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**. 
+1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
 1. Select the features that group members can access.
 1. Select **Save changes**.
@@ -61,7 +61,7 @@ To give a user access to specific features:
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**. 
+1. Under **Member Access**, select **Add group**.
 1. Use the search box to select an existing group.
 1. Select the features that group members can access.
 1. Select **Save changes**.

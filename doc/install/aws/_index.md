@@ -734,7 +734,7 @@ Because we're not using NFS for shared storage, we use [Amazon S3](https://aws.a
 
 > [!note]
 > Because we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked previously.
-> 
+>
 > When using IAM roles for S3 access, GitLab supports both IMDSv1 and IMDSv2 and automatically uses IMDSv2 when available.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.

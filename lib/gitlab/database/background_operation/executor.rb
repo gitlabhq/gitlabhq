@@ -6,8 +6,11 @@ module Gitlab
       class Executor
         SubBatchTimeoutError = Class.new(StandardError)
 
-        def initialize(connection:)
+        def initialize(
+          connection:,
+          metrics: ::Gitlab::Database::BackgroundOperation::Observability::PrometheusMetrics.new)
           @connection = connection
+          @metrics = metrics
         end
 
         def perform(job)
@@ -20,11 +23,13 @@ module Gitlab
         rescue Exception => error # rubocop:disable Lint/RescueException -- need to save any kind of error
           job.failure!(error: error)
           raise
+        ensure
+          metrics.track(job)
         end
 
         private
 
-        attr_reader :connection
+        attr_reader :connection, :metrics
 
         def execute_job(job)
           worker_class = job.worker_job_class

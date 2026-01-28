@@ -152,7 +152,7 @@ on the **Versions** tab.
 Gather this information from affected users, and provide it in your bug report:
 
 1. The error message shown to the user.
-1. Diagnostics and logs. Choose one of the following methods:  
+1. Diagnostics and logs. Choose one of the following methods:
    - Automatic (recommended):
      - Run the `GitLab: Export Diagnostics Bundle` quick action. Available with GitLab Duo plugin 3.27.0 or later.
      - This downloads a zip file containing IDE logs and diagnostics to a location you specify.

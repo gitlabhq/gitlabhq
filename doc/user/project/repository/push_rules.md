@@ -345,15 +345,12 @@ When you enable the **Reject unsigned commits** push rule:
 - Commits created through the GitLab UI or API are allowed even without signatures.
   These commits can come from the Web IDE, merge request actions, and API operations.
 
-{{< alert type="warning" >}}
-
-Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
-in your commit history even when the rule is enabled. The rule only validates commits pushed
-from external Git clients.
-
-For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
-
-{{< /alert >}}
+> [!warning]
+> Because commits created in GitLab are exempt from this rule, unsigned commits can still appear
+> in your commit history even when the rule is enabled. The rule only validates commits pushed
+> from external Git clients.
+> 
+> For more information, see [issue 5361](https://gitlab.com/gitlab-org/gitaly/-/issues/5361).
 
 The signature must be created with a supported signing method:
 

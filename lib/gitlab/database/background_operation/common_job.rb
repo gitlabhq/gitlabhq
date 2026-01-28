@@ -99,6 +99,28 @@ module Gitlab
               job.finished_at = nil
               job.metrics = {}
             end
+
+            after_transition any => any do |job, transition|
+              ::Gitlab::Database::BackgroundOperation::Observability::EventLogger.log(
+                event: :job_transition,
+                record: job,
+                previous_state: transition.from_name,
+                new_state: transition.to_name,
+                error: job.class.get_transition_args(transition, :error).first
+              )
+            end
+          end
+
+          class << self
+            def get_transition_args(transition, *keys)
+              args = transition.args.find { |arg| arg[:error].present? }
+
+              return [] unless args
+
+              keys.each_with_object([]) do |key, result|
+                result << args.fetch(key, nil)
+              end
+            end
           end
 
           def first
