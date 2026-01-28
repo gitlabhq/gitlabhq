@@ -866,7 +866,8 @@ module API
 
     def validate_search_rate_limit!
       if current_user
-        check_rate_limit!(:search_rate_limit, scope: [current_user])
+        check_rate_limit!(:search_rate_limit, scope: [current_user],
+          users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
       else
         check_rate_limit!(:search_rate_limit_unauthenticated, scope: [ip_address])
       end
