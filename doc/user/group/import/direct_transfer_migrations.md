@@ -74,7 +74,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
     - The Owner role on the source group to migrate from.
     - A role in the destination namespace that allows you to [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that namespace.
   - Administrators of both instances without the required roles, you can instead start the import by using
-    [the API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
+    [the API](../../../api/bulk_imports.md#start-a-group-or-project-migration).
 - To import project snippets, ensure snippets are
   [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:

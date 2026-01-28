@@ -98,7 +98,7 @@ To move all snippets by using the API:
         "https://gitlab.example.com/api/v4/snippet_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#retrieve-all-snippet-repository-storage-moves).
+1. [Query the most recent repository moves](../../api/snippet_repository_storage_moves.md#list-all-snippet-repository-storage-moves).
    The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.

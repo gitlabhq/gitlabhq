@@ -12,11 +12,11 @@ title: Group and project access requests API
 
 {{< /details >}}
 
-Use this API to interact with access requests for group and projects.
+Use this API to interact with access requests for groups and projects.
 
-## List access requests for a group or project
+## List all access requests for a group or project
 
-Gets a list of access requests viewable by the authenticated user.
+Lists all access requests for a specified group or project that are viewable by the authenticated user.
 
 ```plaintext
 GET /groups/:id/access_requests
@@ -66,7 +66,7 @@ Example response:
 
 ## Request access to a group or project
 
-Requests access for the authenticated user to a group or project.
+Requests access for the authenticated user to a specified group or project.
 
 ```plaintext
 POST /groups/:id/access_requests
@@ -103,7 +103,7 @@ Example response:
 
 ## Approve an access request
 
-Approves an access request for the given user.
+Approves an access request for a specified user in a specified group or project.
 
 ```plaintext
 PUT /groups/:id/access_requests/:user_id/approve
@@ -142,7 +142,7 @@ Example response:
 
 ## Deny an access request
 
-Denies an access request for the given user.
+Denies an access request for a specified user in a specified group or project.
 
 ```plaintext
 DELETE /groups/:id/access_requests/:user_id

@@ -478,6 +478,26 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
    - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).
    - If you're a customer, report the issue through [GitLab Support](https://about.gitlab.com/support/).
 
+## Error: An error occurred while fetching an authentication token for this workflow
+
+This error can occur when you try to use Agentic Chat in GitLab or your IDE.
+
+You might also see the following in the logs of your IDE's [GitLab Language Server](../../editor_extensions/language_server/_index.md):
+
+```shell
+2026-01-09T20:17:43:419 [error]: [WorkflowRailsService] Failed to fetch the workflow token
+    Error: Fetching direct_access from https://gitlab.example.com/api/v4/ai/duo_workflows/direct_access failed.
+{"message":"400 Bad request - 14:failed to connect to all addresses; last error: UNKNOWN: ipv4:172.x.x.x:50052: Ssl handshake failed (TSI_PROTOCOL_FAILURE): SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verification context. debug_error_string:{UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:\"failed to connect to all addresses; last error: UNKNOWN: ipv4:172.x.x.x:50052: Ssl handshake failed (TSI_PROTOCOL_FAILURE): SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verification context\"}}"}
+2026-01-09T20:17:43:433 [error]: Max retries exceeded or non-retryable error: An error occurred while fetching an authentication token for this workflow.
+2026-01-09T20:17:43:435 [error]: Workflow failed with status code "50": An error occurred while fetching an authentication token for this workflow.
+```
+
+This means that the language server could not communicate with the `direct_access` endpoint
+to generate a JWT token due to the certificate issue. 
+
+If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set 
+`DUO_AGENT_PLATFORM_SERVICE_SECURE` to `false`, see [Install the AI gateway](../../install/install_ai_gateway.md#start-a-container-from-the-image).
+
 ## Troubleshooting GitLab Duo Chat
 
 To troubleshoot GitLab Duo Chat when using GitLab Duo Self-Hosted,

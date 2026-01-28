@@ -34,7 +34,7 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 ```
 
 You can also see all migrated entities with any failures related to them using an
-[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
+[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migration-entities).
 
 ## Stale imports
 

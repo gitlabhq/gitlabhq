@@ -140,7 +140,7 @@ module API
         parsed_glql = parse_glql_yaml(params[:glql_yaml])
 
         compiled_glql = compile_glql(parsed_glql)
-        bad_request!(compiled_glql['output']) unless compiled_glql['success']
+        error!(compiled_glql['output'], 400) unless compiled_glql['success']
 
         glql_result = execute_glql_query(compiled_glql, parsed_glql[:config])
         log_glql_execution(params[:glql_yaml], compiled_glql, parsed_glql[:config], glql_result)
@@ -148,12 +148,12 @@ module API
         error!(glql_result[:errors].first[:message], 400) if glql_result[:errors]
 
         transformed_result = transform_glql_result(glql_result, parsed_glql[:config]['fields'])
-        bad_request!(transformed_result['error']) unless transformed_result['success']
+        error!(transformed_result['error'], 400) unless transformed_result['success']
 
         status 200
         transformed_result
       rescue ArgumentError => e
-        bad_request!(e.message)
+        error!(e.message, 400)
       end
     end
   end

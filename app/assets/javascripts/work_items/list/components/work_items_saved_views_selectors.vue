@@ -1,9 +1,7 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { ROUTES } from '~/work_items/constants';
-import getSubsribedSavedViewsQuery from '../graphql/work_item_saved_views_namespace.query.graphql';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from './work_items_saved_view_selector.vue';
 
@@ -22,31 +20,17 @@ export default {
       type: String,
       required: true,
     },
+    savedViews: {
+      type: Array,
+      required: true,
+    },
   },
   emits: ['reset-to-default-view'],
   data() {
     return {
-      subscribedSavedViews: [],
       visibleViews: [],
       overflowedViews: [],
     };
-  },
-  apollo: {
-    subscribedSavedViews: {
-      query: getSubsribedSavedViewsQuery,
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          subscribedOnly: false,
-        };
-      },
-      update(data) {
-        return data.namespace.savedViews?.nodes ?? [];
-      },
-      error(e) {
-        Sentry.captureException(e);
-      },
-    },
   },
   computed: {
     overflowItems() {
@@ -63,7 +47,7 @@ export default {
     },
   },
   watch: {
-    subscribedSavedViews() {
+    savedViews() {
       this.$nextTick(this.detectViewsOverflow);
     },
   },
@@ -81,7 +65,7 @@ export default {
       if (!viewsWrapper || !measureContainer) return;
 
       // reset to full list so the wrapper we are measuring against can expand
-      this.visibleViews = this.subscribedSavedViews;
+      this.visibleViews = this.savedViews;
       this.overflowedViews = [];
       await this.$nextTick();
 
@@ -106,8 +90,8 @@ export default {
       }
 
       // separating views into two arrays based on the first overflow index
-      this.visibleViews = this.subscribedSavedViews.slice(0, firstOverflowIndex);
-      this.overflowedViews = this.subscribedSavedViews.slice(firstOverflowIndex);
+      this.visibleViews = this.savedViews.slice(0, firstOverflowIndex);
+      this.overflowedViews = this.savedViews.slice(firstOverflowIndex);
     },
     onOverflowViewClick(view) {
       const overflowIndex = this.overflowedViews.findIndex((item) => item.name === view.name);
@@ -159,7 +143,7 @@ export default {
         class="gl-pointer-events-none gl-invisible gl-absolute gl-mb-0 gl-flex gl-flex-nowrap gl-p-0"
       >
         <li
-          v-for="view in subscribedSavedViews"
+          v-for="view in savedViews"
           :key="view.id"
           class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
         >

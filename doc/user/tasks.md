@@ -91,7 +91,7 @@ Prerequisites:
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
 1. In the issue description, hover over a task list item and select the options menu ({{< icon name="ellipsis_v" >}}).
-1. Select **Convert to child item**.
+1. Select **Convert to task**.
 
 The task list item is removed from the issue description and a task is created in the tasks widget from its contents.
 Any nested task list items are moved up a nested level.

@@ -38,6 +38,16 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
           it_behaves_like 'Debian distributions POST request', :not_found
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :create_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { { 'Private-Token' => pat.token } }
+        let(:request) { post api("/projects/#{boundary_object.id}/debian_distributions"), headers: headers, params: api_params }
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
     end
 
     describe 'GET projects/:id/debian_distributions' do
@@ -45,6 +55,16 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
 
       it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^\[{.*"codename":"existing-codename",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
+
+      it_behaves_like 'authorizing granular token permissions', :read_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { { 'Private-Token' => pat.token } }
+        let(:request) { get api("/projects/#{boundary_object.id}/debian_distributions"), headers: headers }
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
     end
 
     describe 'GET projects/:id/debian_distributions/:codename' do
@@ -52,6 +72,16 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
 
       it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^{.*"codename":"existing-codename",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
+
+      it_behaves_like 'authorizing granular token permissions', :read_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { { 'Private-Token' => pat.token } }
+        let(:request) { get api("/projects/#{private_container.id}/debian_distributions/#{distribution.codename}"), headers: headers }
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
     end
 
     describe 'GET projects/:id/debian_distributions/:codename/key.asc' do
@@ -59,6 +89,16 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
 
       it_behaves_like 'Debian distributions read endpoint', 'GET', :success, /^-----BEGIN PGP PUBLIC KEY BLOCK-----/
       it_behaves_like 'accept GET request on private project with access to package registry for everyone'
+
+      it_behaves_like 'authorizing granular token permissions', :read_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { { 'Private-Token' => pat.token } }
+        let(:request) { get api("/projects/#{boundary_object.id}/debian_distributions/#{distribution.codename}/key.asc"), headers: headers }
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
     end
 
     describe 'PUT projects/:id/debian_distributions/:codename' do
@@ -72,6 +112,25 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
         let(:api_params) { { suite: distribution.codename } }
 
         it_behaves_like 'Debian distributions write endpoint', 'GET', :bad_request, /^{"message":{"suite":\["has already been taken as Codename"\]}}$/
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :update_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { workhorse_headers.merge({ 'Private-Token' => pat.token }) }
+        let(:request) do
+          workhorse_finalize(
+            api("/projects/#{boundary_object.id}/debian_distributions/#{distribution.codename}"),
+            method: :put,
+            file_key: :file,
+            params: api_params,
+            headers: headers,
+            send_rewritten_field: true
+          )
+        end
+
+        before do
+          private_container.add_developer(user)
+        end
       end
     end
 
@@ -89,6 +148,16 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
         end
 
         it_behaves_like 'Debian distributions maintainer write endpoint', 'GET', :bad_request, /^{"message":"Failed to delete distribution"}$/
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_debian_distribution do
+        let(:boundary_object) { private_container }
+        let(:headers) { { 'Private-Token' => pat.token } }
+        let(:request) { delete api("/projects/#{boundary_object.id}/debian_distributions/#{distribution.codename}"), headers: headers }
+
+        before do
+          private_container.add_maintainer(user)
+        end
       end
     end
   end

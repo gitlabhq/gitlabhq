@@ -2,6 +2,10 @@
 
 module API
   class ProjectDebianDistributions < ::API::Base
+    def self.resource_type
+      :project
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end

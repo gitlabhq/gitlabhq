@@ -31,6 +31,7 @@ export default {
       required: true,
     },
   },
+  emits: ['request-sidebar-stage-dropdown'],
   computed: {
     dropdownItems() {
       return this.stages.map((stage) => ({
@@ -74,7 +75,7 @@ export default {
   },
   methods: {
     onStageClick(stage) {
-      this.$emit('requestSidebarStageDropdown', stage);
+      this.$emit('request-sidebar-stage-dropdown', stage);
     },
     handleKeyboardCopy() {
       let button;

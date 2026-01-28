@@ -45,9 +45,11 @@ func TestHandler_SuccessfulWorkflowExecution(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {"Authorization": "Bearer test"},
-			"Secure": false
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
 		}
 	}`)
 	defer apiServer.Close()
@@ -112,9 +114,11 @@ func TestHandler_GrpcServerError(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {},
-			"Secure": false
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {},
+				"Secure": false
+			}
 		}
 	}`)
 	defer apiServer.Close()
@@ -145,9 +149,11 @@ func TestHandler_InvalidServiceURL(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "invalid://url",
-			"Headers": {},
-			"Secure": false
+			"Service": {
+				"URI": "invalid://url",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
 		}
 	}`)
 	defer apiServer.Close()
@@ -208,9 +214,11 @@ func TestHandler_ShutdownWithActiveRunners(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {},
-			"Secure": false
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {},
+				"Secure": false
+			}
 		}
 	}`)
 	defer apiServer.Close()
@@ -249,9 +257,11 @@ func TestHandler_FailedToAcquireLock(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {"Authorization": "Bearer test"},
-			"Secure": false,
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			},
 			"LockConcurrentFlow": true
 		}
 	}`)
@@ -291,9 +301,11 @@ func TestHandler_IgnoresLockWhenLockConcurrentFlowDisabled(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {"Authorization": "Bearer test"},
-			"Secure": false,
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			},
 			"LockConcurrentFlow": false
 		}
 	}`)
@@ -335,9 +347,11 @@ func TestHandler_UsageQuotaExceeded(t *testing.T) {
 
 	apiServer, apiClient := setupAPIServer(t, `{
 		"DuoWorkflow": {
-			"ServiceURI": "`+server.Addr+`",
-			"Headers": {"Authorization": "Bearer test"},
-			"Secure": false
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			}
 		}
 	}`)
 	defer apiServer.Close()

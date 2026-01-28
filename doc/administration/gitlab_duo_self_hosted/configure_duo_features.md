@@ -112,8 +112,9 @@ To access the Agent Platform service from your GitLab instance:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
-   - The URL prefix cannot start with `http://` or `https://`.
+1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service. 
+   - The URL is typically the same as the **Local AI Gateway URL** but on gRPC port :50052.
+   - Do not include a URL prefix such as `http://` or `https://`.
 
    - If the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
 
@@ -149,7 +150,7 @@ To add a self-hosted model:
      | [Amazon Bedrock](#set-the-model-identifier-for-amazon-bedrock-models) | `bedrock/<model ID of the model>`                       | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
 
-1. Select **Create self-hosted model**.
+1. Select **Add self-hosted model**.
 
 ### Set the model identifier for Amazon Bedrock models
 

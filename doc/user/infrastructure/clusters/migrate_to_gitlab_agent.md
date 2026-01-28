@@ -40,7 +40,7 @@ This workflow uses an agent to connect to your cluster. The agent:
 
 ## Find certificate-based clusters
 
-You can find all the certificate-based clusters within a GitLab instance or group, including subgroups and projects, using [a dedicated API](../../../api/cluster_discovery.md#discover-certificate-based-clusters). Querying the API with a group ID returns all the certificate-based clusters defined at or below the provided group.
+You can find all the certificate-based clusters within a GitLab instance or group, including subgroups and projects, using [a dedicated API](../../../api/cluster_discovery.md#retrieve-certificate-based-clusters). Querying the API with a group ID returns all the certificate-based clusters defined at or below the provided group.
 
 Clusters defined in parent groups are not returned in this case. This behavior helps group Owners find all the clusters they need to migrate.
 

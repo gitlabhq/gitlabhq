@@ -5620,9 +5620,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Configure and assign self-hosted models or GitLab managed models to AI-native features."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Create self-hosted model"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Delete self-hosted model"
 msgstr ""
 
@@ -5645,6 +5642,9 @@ msgid "AdminSelfHostedModels|If required, provide the API token that grants acce
 msgstr ""
 
 msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-native features."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model added. Select it for a feature to start using it."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model configuration"
@@ -5672,6 +5672,9 @@ msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkSt
 msgstr ""
 
 msgid "AdminSelfHostedModels|Name"
+msgstr ""
+
+msgid "AdminSelfHostedModels|No self-hosted models yet. %{newModelLinkStart}Add a self-hosted model%{newModelLinkEnd} and select it for a feature to start using it."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Once the model is no longer in use, you can return here to delete it."
@@ -5713,6 +5716,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Self-hosted models are available only with the GitLab Duo Enterprise add-on. Contact your administrator."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Specify the URL endpoint where your self-hosted model is accessible"
 msgstr ""
 
@@ -5728,7 +5734,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Test connection"
 msgstr ""
 
-msgid "AdminSelfHostedModels|The self-hosted model was successfully %{action}."
+msgid "AdminSelfHostedModels|The self-hosted model was successfully saved."
 msgstr ""
 
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
@@ -5753,12 +5759,6 @@ msgid "AdminSelfHostedModels|View self-hosted models and configure AI-native fea
 msgstr ""
 
 msgid "AdminSelfHostedModels|You are about to delete the %{boldStart}%{modelName}%{boldEnd} self-hosted model. This action cannot be undone."
-msgstr ""
-
-msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. %{linkStart}Add a self-hosted model%{linkEnd} to get started."
-msgstr ""
-
-msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. A GitLab Duo Enterprise add-on is required to manage self-hosted models."
 msgstr ""
 
 msgid "AdminSelfHostedModels|You have not configured your local AI gateway URL. Configure the URL in the GitLab Duo configuration settings."
@@ -77993,6 +77993,9 @@ msgstr ""
 msgid "WorkItem|Change type"
 msgstr ""
 
+msgid "WorkItem|Changes will be applied for anyone else who has access to the view."
+msgstr ""
+
 msgid "WorkItem|Child items"
 msgstr ""
 
@@ -78669,6 +78672,9 @@ msgstr ""
 msgid "WorkItem|Reset template"
 msgstr ""
 
+msgid "WorkItem|Reset to defaults"
+msgstr ""
+
 msgid "WorkItem|Resources"
 msgstr ""
 
@@ -78679,6 +78685,12 @@ msgid "WorkItem|Save"
 msgstr ""
 
 msgid "WorkItem|Save and overwrite"
+msgstr ""
+
+msgid "WorkItem|Save changes"
+msgstr ""
+
+msgid "WorkItem|Save changes to %{viewName}?"
 msgstr ""
 
 msgid "WorkItem|Save view"

@@ -272,26 +272,6 @@ In an issue description with task list items:
 The task list item is removed from the issue description.
 Any nested task list items are moved up a nested level.
 
-### Turn on or turn off task list items
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206386) in GitLab 18.9.
-
-{{< /history >}}
-
-You can turn off individual task list items to prevent them from being checked or unchecked.
-When a task list item is turned off, it appears as plain text instead of an interactive checkbox,
-but other items in the same list remain functional.
-
-To change a task list item:
-
-1. In an issue description, hover over a task list item and select the options menu
-   ({{< icon name="ellipsis_v" >}}).
-1. Choose one of the following:
-   - If the task list item is enabled, select **Disable list item**.
-   - If the task list item is disabled, select **Enable list item**.
-
 ### Reorder list items in the issue description
 
 {{< history >}}

@@ -90,7 +90,11 @@ type runner struct {
 func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
 	userAgent := r.Header.Get("User-Agent")
 
-	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure, userAgent)
+	if cfg.Service == nil {
+		return nil, fmt.Errorf("failed to initialize client: Service configuration is nil")
+	}
+
+	client, err := NewClient(cfg.Service, userAgent)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
 	}
@@ -116,7 +120,7 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 	return &runner{
 		rails:       rails,
 		backend:     backend,
-		token:       cfg.Headers["x-gitlab-oauth-token"],
+		token:       cfg.Service.Headers["x-gitlab-oauth-token"],
 		originalReq: r,
 		marshalBuf:  make([]byte, ActionResponseBodyLimit),
 		conn:        conn,

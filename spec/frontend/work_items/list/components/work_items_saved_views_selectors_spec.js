@@ -1,15 +1,9 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 
 describe('WorkItemsSavedViewsSelectors', () => {
   let wrapper;
-
-  Vue.use(VueApollo);
 
   const mockSavedViewsData = [
     {
@@ -39,30 +33,10 @@ describe('WorkItemsSavedViewsSelectors', () => {
   ];
 
   const createComponent = async ({ props, mockSavedViews = mockSavedViewsData } = {}) => {
-    const apolloProvider = createMockApollo();
-
-    // TODO: to be removed when actual API is integrated
-    apolloProvider.defaultClient.writeQuery({
-      query: getSubsribedSavedViewsQuery,
-      variables: {
-        fullPath: 'test-project-path',
-        subscribedOnly: false,
-      },
-      data: {
-        namespace: {
-          id: 'namespace',
-          savedViews: {
-            __typename: 'SavedViewConnection',
-            nodes: mockSavedViews,
-          },
-        },
-      },
-    });
-
     wrapper = shallowMountExtended(WorkItemsSavedViewsSelectors, {
-      apolloProvider,
       propsData: {
         fullPath: 'test-project-path',
+        savedViews: mockSavedViews,
         ...props,
       },
       data() {

@@ -22,7 +22,7 @@ export default {
     },
   },
   emits: {
-    toggleCollapsibleLine: () => true,
+    'toggle-collapsible-line': () => true,
   },
   computed: {
     ...mapState(['jobLog', 'jobLogSections', 'isJobLogComplete']),
@@ -57,7 +57,7 @@ export default {
     ...mapActions(['toggleCollapsibleLine', 'setupFullScreenListeners']),
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
-      this.$emit('toggleCollapsibleLine');
+      this.$emit('toggle-collapsible-line');
     },
     isLineVisible(line) {
       const { lineNumber, section } = line;
@@ -92,7 +92,7 @@ export default {
           :duration="jobLogSections[line.section].duration"
           :hide-duration="jobLogSections[line.section].hideDuration"
           :is-highlighted="isHighlighted(line)"
-          @toggleLine="handleOnClickCollapsibleLine(line.section)"
+          @toggle-line="handleOnClickCollapsibleLine(line.section)"
         />
         <log-line
           v-else

@@ -106,11 +106,7 @@ export default {
       :lazy="tab.lazy"
     >
       <template #title>
-        <span
-          :data-testid="`${tab.namespace}-tab-title`"
-          class="gl-px-4 gl-py-5"
-          @click.stop="() => {}"
-        >
+        <span :data-testid="`${tab.namespace}-tab-title`" class="gl-px-4 gl-py-5" @click.stop>
           {{ tab.title }} <gl-badge class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
         </span>
       </template>

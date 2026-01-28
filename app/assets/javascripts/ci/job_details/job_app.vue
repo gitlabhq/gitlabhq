@@ -12,6 +12,7 @@ import { __, sprintf } from '~/locale';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import Log from '~/ci/job_details/components/log/log.vue';
 import { MANUAL_STATUS } from '~/ci/constants';
+import ManualJobForm from './components/manual_job_form.vue';
 import EmptyState from './components/empty_state.vue';
 import EnvironmentsBlock from './components/environments_block.vue';
 import ErasedBlock from './components/erased_block.vue';
@@ -27,6 +28,7 @@ export default {
   components: {
     JobHeader,
     EmptyState,
+    ManualJobForm,
     EnvironmentsBlock,
     ErasedBlock,
     GlIcon,
@@ -136,6 +138,12 @@ export default {
     displayStickyFooter() {
       return this.jobFailed && this.glAbilities.troubleshootJobWithAi;
     },
+    showJobForm() {
+      return (
+        this.showUpdateVariablesState ||
+        (this.job?.playable && !this.job?.scheduled && !this.hasJobLog)
+      );
+    },
   },
   watch: {
     // Once the job log is loaded,
@@ -224,14 +232,17 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer="updateScroll" :class="{ 'with-job-sidebar-expanded': isSidebarOpen }">
+  <div
+    v-gl-resize-observer="updateScroll"
+    :class="{ 'with-job-sidebar-expanded': isSidebarOpen && !showJobForm }"
+  >
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <job-header :job-id="job.id" :user="job.user" @clickedSidebarButton="toggleSidebar" />
+          <job-header :job-id="job.id" :user="job.user" @clicked-sidebar-button="toggleSidebar" />
           <gl-alert
             v-if="shouldRenderHeaderCallout"
             variant="danger"
@@ -295,11 +306,11 @@ export default {
             :job-log="jobLog"
             :full-screen-mode-available="fullScreenAPIAndContainerAvailable"
             :full-screen-enabled="fullScreenEnabled"
-            @scrollJobLogTop="scrollTop"
-            @scrollJobLogBottom="scrollBottom"
-            @searchResults="setSearchResults"
-            @enterFullscreen="enterFullscreen"
-            @exitFullscreen="exitFullscreen"
+            @scroll-job-log-top="scrollTop"
+            @scroll-job-log-bottom="scrollBottom"
+            @search-results="setSearchResults"
+            @enter-fullscreen="enterFullscreen"
+            @exit-fullscreen="exitFullscreen"
           />
 
           <log :search-results="searchResults" />
@@ -323,33 +334,47 @@ export default {
         </div>
         <!-- EO job log -->
 
+        <!-- job form (variables) -->
+
+        <template v-if="showJobForm">
+          <h2>{{ emptyStateTitle }}</h2>
+
+          <p v-if="emptyStateIllustration.content" data-testid="job-empty-state-content">
+            {{ emptyStateIllustration.content }}
+          </p>
+          <manual-job-form
+            :is-retryable="isJobRetryable"
+            :job-id="job.id"
+            :job-name="jobName"
+            :confirmation-message="jobConfirmationMessage"
+            @hide-manual-variables-form="onHideManualVariablesForm()"
+          />
+        </template>
+
+        <!-- EO job form -->
+
         <!-- empty state -->
         <empty-state
-          v-if="!hasJobLog || showUpdateVariablesState"
+          v-else-if="!hasJobLog"
           :illustration-path="emptyStateIllustration.image"
-          :is-retryable="isJobRetryable"
-          :job-id="job.id"
-          :job-name="jobName"
           :title="emptyStateTitle"
           :confirmation-message="jobConfirmationMessage"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
-          :playable="job.playable"
-          :scheduled="job.scheduled"
-          @hideManualVariablesForm="onHideManualVariablesForm()"
         />
         <!-- EO empty state -->
 
         <!-- EO Body Section -->
 
         <sidebar
+          v-if="!showJobForm"
           :class="{
             'right-sidebar-expanded': isSidebarOpen,
             'right-sidebar-collapsed': !isSidebarOpen,
           }"
           :artifact-help-url="artifactHelpUrl"
           data-testid="job-sidebar"
-          @updateVariables="onUpdateVariables()"
+          @update-variables="onUpdateVariables()"
         />
       </div>
     </template>

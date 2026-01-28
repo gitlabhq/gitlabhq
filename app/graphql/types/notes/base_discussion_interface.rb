@@ -12,6 +12,7 @@ module Types
       field :created_at, Types::TimeType, null: false,
         description: "Timestamp of the discussion's creation."
       field :id, DiscussionID, null: false,
+        scopes: [:api, :read_api, :ai_workflows],
         description: "ID of the discussion."
       field :reply_id, DiscussionID, null: false,
         scopes: [:api, :read_api, :ai_workflows],

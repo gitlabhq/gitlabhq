@@ -11,10 +11,12 @@ module Types
       description: 'User who resolved the object.'
 
     field :resolved, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Indicates if the object is resolved.',
       method: :resolved?
 
     field :resolvable, GraphQL::Types::Boolean, null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Indicates if the object can be resolved.',
       method: :resolvable?
 

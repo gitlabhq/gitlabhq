@@ -1547,7 +1547,7 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
       end
 
       context 'when fetching related branches' do
-        let_it_be(:branch_name) { "#{work_item.iid}-another-branch" }
+        let_it_be(:branch_name) { "#{work_item.iid}-another-branch-with-功能分支-UTF-8-chars" }
         let_it_be(:pipeline1) { create(:ci_pipeline, :success, project: project, ref: work_item.to_branch_name) }
         let_it_be(:pipeline2) { create(:ci_pipeline, :success, project: project, ref: branch_name) }
         let(:work_item_fields) do

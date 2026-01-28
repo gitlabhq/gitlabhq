@@ -18,6 +18,7 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 	"google.golang.org/grpc"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
 
 	grpccorrelation "gitlab.com/gitlab-org/labkit/correlation/grpc"
@@ -37,9 +38,11 @@ type Client struct {
 	headers    map[string]string
 }
 
-// NewClient creates a new Duo Workflow client with the specified server address,
-// headers, and security settings.
-func NewClient(serverURI string, headers map[string]string, secure bool, userAgent string) (*Client, error) {
+// NewClient creates a new Duo Workflow client with the specified service config and user agent.
+func NewClient(config *api.DuoWorkflowServiceConfig, userAgent string) (*Client, error) {
+	serverURI := config.URI
+	headers := config.Headers
+	secure := config.Secure
 	opts := []grpc.DialOption{
 		grpc.WithKeepaliveParams(keepalive.ClientParameters{
 			Time:                20 * time.Second, // send pings every 20 seconds if there is no activity

@@ -297,7 +297,6 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => :can_be_merged do |merge_request, transition|
-      next unless Feature.enabled?(:auto_merge_on_merge_status_change, merge_request.project)
       next unless merge_request.auto_merge_enabled?
 
       merge_request.run_after_commit do

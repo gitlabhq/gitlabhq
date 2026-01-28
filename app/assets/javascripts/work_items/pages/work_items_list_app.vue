@@ -57,13 +57,14 @@ import {
 } from '~/work_items/list/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import { setPageFullWidth, setPageDefaultWidth, isLoggedIn } from '~/lib/utils/common_utils';
-import { __, s__, n__, formatNumber } from '~/locale';
+import { __, s__, n__, formatNumber, sprintf } from '~/locale';
 import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
@@ -117,6 +118,7 @@ import getWorkItemsQuery from 'ee_else_ce/work_items/list/graphql/get_work_items
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_slim.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -268,8 +270,9 @@ export default {
     return {
       error: undefined,
       bulkEditInProgress: false,
+      subscribedSavedViews: [],
       filterTokens: [],
-      initialFilterTokens: [],
+      initialViewTokens: [],
       filtersChanged: false,
       isInitialLoadComplete: false,
       pageInfo: {},
@@ -466,6 +469,24 @@ export default {
       },
       error(error) {
         Sentry.captureException(error);
+      },
+    },
+    subscribedSavedViews: {
+      query: getSubsribedSavedViewsQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+          subscribedOnly: false,
+        };
+      },
+      update(data) {
+        return data?.namespace?.savedViews?.nodes ?? [];
+      },
+      skip() {
+        return !this.workItemsSavedViewsEnabled;
+      },
+      error(e) {
+        Sentry.captureException(e);
       },
     },
   },
@@ -955,8 +976,27 @@ export default {
 
       return !isEqual(currentPreferences, this.initialPreferences);
     },
+    allItemsDefaultFilterTokens() {
+      return [
+        {
+          type: TOKEN_TYPE_STATE,
+          value: {
+            data: STATUS_OPEN,
+            operator: OPERATOR_IS,
+          },
+        },
+      ];
+    },
     viewConfigChanged() {
       return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+    },
+    isOnSavedView() {
+      return this.$route.params.view_id;
+    },
+    activeSavedView() {
+      return this.subscribedSavedViews.find((view) => {
+        return view.id === this.$route.params.view_id;
+      });
     },
   },
   watch: {
@@ -1015,6 +1055,10 @@ export default {
   created() {
     this.updateData(getParameterByName(PARAM_SORT));
     this.addStateToken();
+
+    if (!this.isOnSavedView)
+      this.filtersChanged = !isEqual(this.filterTokens, this.allItemsDefaultFilterTokens);
+
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
     this.releasesCache = [];
@@ -1127,7 +1171,12 @@ export default {
         })
         .map(({ id, ...rest }) => rest);
 
-      this.filtersChanged = !isEqual(filteredTokens, this.initialFilterTokens);
+      // If user is on "All tabs" we compare against default filters, but
+      // if user is on a saved view we compare against initial filters from DB
+      const compareFilters = !this.isOnSavedView
+        ? this.allItemsDefaultFilterTokens
+        : this.initialViewTokens;
+      this.filtersChanged = !isEqual(filteredTokens, compareFilters);
 
       this.filterTokens = tokens;
       this.hasStateToken = this.checkIfStateTokenExists();
@@ -1340,7 +1389,7 @@ export default {
           },
         });
       }
-      this.initialFilterTokens = this.filterTokens;
+      this.initialViewTokens = this.filterTokens;
     },
     checkIfStateTokenExists() {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
@@ -1489,6 +1538,38 @@ export default {
           throw error;
         }
       });
+    },
+    async confirmViewChanges() {
+      const title = sprintf(s__('WorkItem|Save changes to %{viewName}?'), {
+        viewName: this.activeSavedView.name,
+      });
+
+      const message = `
+        <span class="saved-view-confirm-modal">
+          ${s__('WorkItem|Changes will be applied for anyone else who has access to the view.')}
+        </span>
+      `;
+
+      await confirmAction(null, {
+        title,
+        modalHtmlMessage: message,
+        primaryBtnText: s__('WorkItem|Save changes'),
+      });
+
+      // TODO: add update view mutation at integration
+    },
+    async resetToDefaults() {
+      // Resetting view's filters to initial state
+      this.filterTokens = [...this.initialViewTokens];
+      this.filtersChanged = false;
+
+      // Resetting view's sort to initial state
+      if (this.initialSortKey) {
+        this.sortKey = this.initialSortKey;
+        this.sortChanged = false;
+      }
+
+      // TODO: Add resetting preferences to defaults
     },
   },
   constants: {
@@ -1679,6 +1760,7 @@ export default {
           <template v-if="workItemsSavedViewsEnabled">
             <work-items-saved-views-selectors
               :full-path="rootPageFullPath"
+              :saved-views="subscribedSavedViews"
               @reset-to-default-view="resetToDefaultView"
             >
               <template #header-area>
@@ -1710,7 +1792,7 @@ export default {
 
         <template v-if="isPlanningViewsEnabled && !isServiceDeskList" #before-list-items>
           <!-- state-count -->
-          <div class="gl-border-b gl-flex gl-justify-between gl-py-3">
+          <div class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3">
             <div class="gl-flex gl-items-center">
               <span data-testid="work-item-count" class="gl-mr-3">{{
                 workItemTotalStateCount
@@ -1729,20 +1811,46 @@ export default {
             </div>
 
             <template v-if="workItemsSavedViewsEnabled">
-              <gl-button
-                v-if="viewConfigChanged"
-                size="small"
-                category="primary"
-                variant="default"
-                data-testid="save-view-button"
-                @click="isNewViewModalVisible = true"
-              >
-                {{ s__('WorkItem|Save view') }}
-              </gl-button>
-              <work-items-new-saved-view-modal
-                v-model="isNewViewModalVisible"
-                :title="s__('WorkItem|Save view')"
-              />
+              <template v-if="!isOnSavedView">
+                <gl-button
+                  v-if="viewConfigChanged"
+                  size="small"
+                  category="primary"
+                  variant="default"
+                  data-testid="save-view-button"
+                  @click="isNewViewModalVisible = true"
+                >
+                  {{ s__('WorkItem|Save view') }}
+                </gl-button>
+                <work-items-new-saved-view-modal
+                  v-model="isNewViewModalVisible"
+                  :title="s__('WorkItem|Save view')"
+                />
+              </template>
+              <template v-else>
+                <div v-if="viewConfigChanged" class="gl-flex">
+                  <gl-button
+                    size="small"
+                    category="tertiary"
+                    class="!gl-text-sm"
+                    variant="link"
+                    data-testid="reset-view-button"
+                    @click="resetToDefaults"
+                  >
+                    {{ s__('WorkItem|Reset to defaults') }}
+                  </gl-button>
+                  <div class="gl-border-r gl-mx-4 gl-h-5 gl-h-full gl-w-1 gl-border-r-subtle"></div>
+                  <gl-button
+                    size="small"
+                    category="primary"
+                    variant="default"
+                    data-testid="update-view-button"
+                    @click="confirmViewChanges"
+                  >
+                    {{ s__('WorkItem|Save changes') }}
+                  </gl-button>
+                </div>
+              </template>
             </template>
           </div>
         </template>

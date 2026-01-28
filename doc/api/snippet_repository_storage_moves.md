@@ -38,7 +38,9 @@ For other repository types see:
 - [Project repository storage moves API](project_repository_storage_moves.md).
 - [Group repository storage moves API](group_repository_storage_moves.md).
 
-## Retrieve all snippet repository storage moves
+## List all snippet repository storage moves
+
+Lists all snippet repository storage moves.
 
 ```plaintext
 GET /snippet_repository_storage_moves
@@ -81,7 +83,9 @@ Example response:
 ]
 ```
 
-## Retrieve all repository storage moves for a snippet
+## List all repository storage moves for a snippet
+
+Lists all repository storage moves for a specified snippet.
 
 ```plaintext
 GET /snippets/:snippet_id/repository_storage_moves
@@ -130,7 +134,9 @@ Example response:
 ]
 ```
 
-## Get a single snippet repository storage move
+## Retrieve a snippet repository storage move
+
+Retrieves a specified snippet repository storage move.
 
 ```plaintext
 GET /snippet_repository_storage_moves/:repository_storage_id
@@ -174,7 +180,9 @@ Example response:
 }
 ```
 
-## Get a single repository storage move for a snippet
+## Retrieve a repository storage move for a snippet
+
+Retrieves a repository storage move for a specified snippet.
 
 ```plaintext
 GET /snippets/:snippet_id/repository_storage_moves/:repository_storage_id
@@ -220,6 +228,8 @@ Example response:
 ```
 
 ## Schedule a repository storage move for a snippet
+
+Schedules a repository storage move for a specified snippet.
 
 ```plaintext
 POST /snippets/:snippet_id/repository_storage_moves

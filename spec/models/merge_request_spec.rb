@@ -5975,27 +5975,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
             merge_request.mark_as_mergeable
           end
-
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(auto_merge_on_merge_status_change: false)
-            end
-
-            it 'does not enqueue AutoMergeProcessWorker' do
-              merge_request = create(
-                :merge_request,
-                source_project: project,
-                target_project: project,
-                auto_merge_enabled: true,
-                merge_user: user,
-                merge_status: 'checking'
-              )
-
-              expect(AutoMergeProcessWorker).not_to receive(:perform_async)
-
-              merge_request.mark_as_mergeable
-            end
-          end
         end
 
         context 'when auto merge is not enabled' do

@@ -1,25 +1,15 @@
 <script>
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
 
 export default {
   name: 'JobEmptyState',
   components: {
     GlButton,
     GlEmptyState,
-    ManualJobForm,
   },
   props: {
     illustrationPath: {
       type: String,
-      required: true,
-    },
-    isRetryable: {
-      type: Boolean,
-      required: true,
-    },
-    jobId: {
-      type: Number,
       required: true,
     },
     title: {
@@ -30,16 +20,6 @@ export default {
       type: String,
       required: false,
       default: null,
-    },
-    playable: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    scheduled: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     action: {
       type: Object,
@@ -54,20 +34,6 @@ export default {
         );
       },
     },
-    jobName: {
-      type: String,
-      required: true,
-    },
-    confirmationMessage: {
-      type: String,
-      required: false,
-      default: null,
-    },
-  },
-  computed: {
-    shouldRenderManualVariables() {
-      return this.playable && !this.scheduled;
-    },
   },
 };
 </script>
@@ -77,16 +43,8 @@ export default {
       <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
       </p>
-      <manual-job-form
-        v-if="shouldRenderManualVariables"
-        :is-retryable="isRetryable"
-        :job-id="jobId"
-        :job-name="jobName"
-        :confirmation-message="confirmationMessage"
-        @hideManualVariablesForm="$emit('hideManualVariablesForm')"
-      />
     </template>
-    <template v-if="action && !shouldRenderManualVariables" #actions>
+    <template v-if="action" #actions>
       <gl-button
         :href="action.path"
         :data-method="action.method"

@@ -40,6 +40,13 @@ export default {
     value: 'value',
   },
   inject: ['projectPath'],
+  props: {
+    jobId: {
+      type: Number,
+      required: true,
+    },
+  },
+  emits: ['update-variables'],
   apollo: {
     variables: {
       query: GetJob,
@@ -63,12 +70,6 @@ export default {
         createAlert({ message: JOB_GRAPHQL_ERRORS.jobQueryErrorText });
         reportToSentry(this.$options.name, error);
       },
-    },
-  },
-  props: {
-    jobId: {
-      type: Number,
-      required: true,
     },
   },
   data() {

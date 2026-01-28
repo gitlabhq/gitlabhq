@@ -116,11 +116,11 @@ describe('Job Sidebar Retry Button', () => {
       );
     });
 
-    it('emit `updateVariablesClicked` when update button is clicked', async () => {
+    it('emit `update-variables-clicked` when update button is clicked', async () => {
       createWrapperWithConfirmation();
 
       await findManualRunEditButton().vm.$emit('action');
-      expect(wrapper.emitted('updateVariablesClicked')).toEqual([[]]);
+      expect(wrapper.emitted('update-variables-clicked')).toEqual([[]]);
     });
 
     it('should retry job if click on confirm', async () => {

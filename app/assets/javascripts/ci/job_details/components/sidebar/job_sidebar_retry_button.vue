@@ -59,6 +59,7 @@ export default {
       default: __('Retry'),
     },
   },
+  emits: ['update-variables-clicked'],
   data() {
     return {
       isLoading: false,
@@ -139,7 +140,7 @@ export default {
     >
       <gl-disclosure-dropdown-item
         data-testid="manual-run-edit-btn"
-        @action="$emit('updateVariablesClicked')"
+        @action="$emit('update-variables-clicked')"
       >
         <template #list-item> {{ $options.i18n.retryWithModifiedValue }}</template>
       </gl-disclosure-dropdown-item>

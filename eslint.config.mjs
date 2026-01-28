@@ -22,7 +22,6 @@ const NO_HARDCODED_URLS_OPTIONS = {
     'PROMO_URL',
     'CONTRIBUTE_URL',
     'DOCS_URL_IN_EE_DIR',
-    'CUSTOMERS_PORTAL_URL',
   ],
   allowedPatterns: ['\\/api\\/:version'],
   disallowedObjectProperties: ['relative_url_root'],

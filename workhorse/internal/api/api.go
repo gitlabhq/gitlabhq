@@ -150,11 +150,16 @@ type McpServerConfig struct {
 	PreApprovedTools *[]string
 }
 
+// DuoWorkflowServiceConfig holds configuration for a Duo Workflow service endpoint.
+type DuoWorkflowServiceConfig struct {
+	URI     string
+	Headers map[string]string
+	Secure  bool
+}
+
 // DuoWorkflow holds configuration for the Duo Workflow service.
 type DuoWorkflow struct {
-	Headers            map[string]string
-	ServiceURI         string
-	Secure             bool
+	Service            *DuoWorkflowServiceConfig
 	McpServers         map[string]McpServerConfig
 	LockConcurrentFlow bool
 }

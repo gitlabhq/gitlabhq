@@ -131,10 +131,10 @@ describe('JobLogTopBar', () => {
           });
         });
 
-        it('emits scrollJobLogTop event on click', async () => {
+        it('emits scroll-job-log-top event on click', async () => {
           await findScrollTop().trigger('click');
 
-          expect(wrapper.emitted().scrollJobLogTop).toHaveLength(1);
+          expect(wrapper.emitted('scroll-job-log-top')).toHaveLength(1);
         });
       });
 
@@ -150,10 +150,10 @@ describe('JobLogTopBar', () => {
           expect(findScrollTop().attributes('disabled')).toBeDefined();
         });
 
-        it('does not emit scrollJobLogTop event on click', async () => {
+        it('does not emit scroll-job-log-top event on click', async () => {
           await findScrollTop().trigger('click');
 
-          expect(wrapper.emitted().scrollJobLogTop).toBeUndefined();
+          expect(wrapper.emitted('scroll-job-log-top')).toBeUndefined();
         });
       });
     });
@@ -164,10 +164,10 @@ describe('JobLogTopBar', () => {
           createWrapper();
         });
 
-        it('emits scrollJobLogBottom event on click', async () => {
+        it('emits scroll-job-log-bottom event on click', async () => {
           await findScrollBottom().trigger('click');
 
-          expect(wrapper.emitted().scrollJobLogBottom).toHaveLength(1);
+          expect(wrapper.emitted('scroll-job-log-bottom')).toHaveLength(1);
         });
       });
 
@@ -183,10 +183,10 @@ describe('JobLogTopBar', () => {
           expect(findScrollBottom().attributes('disabled')).toEqual('disabled');
         });
 
-        it('does not emit scrollJobLogBottom event on click', async () => {
+        it('does not emit scroll-job-log-bottom event on click', async () => {
           await findScrollBottom().trigger('click');
 
-          expect(wrapper.emitted().scrollJobLogBottom).toBeUndefined();
+          expect(wrapper.emitted('scroll-job-log-bottom')).toBeUndefined();
         });
       });
     });
@@ -385,13 +385,13 @@ describe('JobLogTopBar', () => {
     it('emits search results', () => {
       findJobLogSearch().vm.$emit('submit');
 
-      expect(wrapper.emitted('searchResults')).toHaveLength(1);
+      expect(wrapper.emitted('search-results')).toHaveLength(1);
     });
 
     it('clears search results', () => {
       findJobLogSearch().vm.$emit('clear');
 
-      expect(wrapper.emitted('searchResults')).toEqual([[[]]]);
+      expect(wrapper.emitted('search-results')).toEqual([[[]]]);
     });
   });
 
@@ -412,14 +412,14 @@ describe('JobLogTopBar', () => {
       expect(findShowFullScreenButton().attributes('disabled')).toBeUndefined();
     });
 
-    it('emits a enterFullscreen event when the show fullscreen is clicked', async () => {
+    it('emits a enter-fullscreen event when the show fullscreen is clicked', async () => {
       createWrapper({
         fullScreenModeAvailable: true,
       });
 
       await findShowFullScreenButton().trigger('click');
 
-      expect(wrapper.emitted('enterFullscreen')).toHaveLength(1);
+      expect(wrapper.emitted('enter-fullscreen')).toHaveLength(1);
     });
 
     it('displays a enabled "Exit fullscreen" button', () => {
@@ -432,7 +432,7 @@ describe('JobLogTopBar', () => {
       expect(findExitFullScreenButton().attributes('disabled')).toBeUndefined();
     });
 
-    it('emits a exitFullscreen event when the exit fullscreen is clicked', async () => {
+    it('emits a exit-fullscreen event when the exit fullscreen is clicked', async () => {
       createWrapper({
         fullScreenModeAvailable: true,
         fullScreenEnabled: true,
@@ -440,7 +440,7 @@ describe('JobLogTopBar', () => {
 
       await findExitFullScreenButton().trigger('click');
 
-      expect(wrapper.emitted('exitFullscreen')).toHaveLength(1);
+      expect(wrapper.emitted('exit-fullscreen')).toHaveLength(1);
     });
   });
 });

@@ -11,6 +11,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
 type testServer struct {
@@ -116,7 +118,12 @@ func TestExecuteWorkflow(t *testing.T) {
 }
 
 func createTestClient(t *testing.T, server *testServer) *Client {
-	client, err := NewClient(server.Addr, map[string]string{"test": "header"}, false, "visual-studio-code/0.0.1")
+	config := &api.DuoWorkflowServiceConfig{
+		URI:     server.Addr,
+		Headers: map[string]string{"test": "header"},
+		Secure:  false,
+	}
+	client, err := NewClient(config, "visual-studio-code/0.0.1")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = client.Close() })
 	return client

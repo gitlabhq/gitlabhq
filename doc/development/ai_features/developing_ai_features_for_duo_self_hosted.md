@@ -123,7 +123,7 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 1. Click the **Configure models for GitLab Duo** button
 1. In the Model Configuration page, click the **Add self-hosted model** button
 1. Fill in the model details
-1. Click **Create self-hosted model** to save your changes
+1. Click **Add self-hosted model** to save your changes
 
 ### Using the self-hosted model to power AI features
 

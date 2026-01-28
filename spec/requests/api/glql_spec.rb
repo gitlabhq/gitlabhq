@@ -56,7 +56,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
           glql_request
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include('Input exceeds maximum size')
+          expect(json_response['error']).to include('Input exceeds maximum size')
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
           post api(endpoint, user), params: { glql_yaml: glql_yaml }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to include(error_message)
+          expect(json_response['error']).to include(error_message)
         end
       end
     end
@@ -202,7 +202,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
         post api(endpoint), params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to include('Error: Project does not exist or you do not have access to it')
+        expect(json_response['error']).to include('Error: Project does not exist or you do not have access to it')
       end
     end
 

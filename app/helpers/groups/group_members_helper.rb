@@ -14,13 +14,13 @@ module Groups::GroupMembersHelper
     access_requests:,
     banned:,
     include_relations:,
-    search:,
     pending_members_count:,
-    placeholder_users:
+    placeholder_users:,
+    params: {}
   )
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
-      group: group_group_links_list_data(group, include_relations, search),
+      group: group_group_links_list_data(group, include_relations, params),
       invite: group_members_list_data(group, invited.nil? ? [] : invited, { param_name: :invited_members_page, params: { page: nil } }),
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
@@ -83,13 +83,16 @@ module Groups::GroupMembersHelper
     group_links.distinct_on_shared_with_group_id_with_group_access
   end
 
-  def group_group_links_list_data(group, include_relations, search)
+  def group_group_links_list_data(group, include_relations, params)
+    search = params[:search_groups]
+
     group_links = group_group_links(group, include_relations)
     group_links = group_links.search(search, include_parents: true) if search
+    group_links = group_links.page(params[:page]) if Feature.enabled?(:paginate_group_members, group)
 
     {
       members: group_group_links_serialized(group, group_links),
-      pagination: members_pagination_data(group_links),
+      pagination: members_pagination_data(group_links, { param_name: :page }),
       member_path: group_group_link_path(group, ':id')
     }
   end

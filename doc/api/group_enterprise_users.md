@@ -28,7 +28,7 @@ Prerequisites:
 
 {{< /history >}}
 
-Lists all enterprise users for a given top-level group.
+Lists all enterprise users for a specified top-level group.
 
 Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
@@ -116,7 +116,7 @@ Example response:
 ]
 ```
 
-## Get details on an enterprise user
+## Retrieve an enterprise user
 
 {{< history >}}
 
@@ -124,7 +124,7 @@ Example response:
 
 {{< /history >}}
 
-Gets details on a specified enterprise user.
+Retrieves a specified enterprise user.
 
 ```plaintext
 GET /groups/:id/enterprise_users/:user_id
@@ -201,7 +201,7 @@ Example response:
 }
 ```
 
-## Modify an enterprise user
+## Update an enterprise user
 
 {{< history >}}
 
@@ -209,7 +209,7 @@ Example response:
 
 {{< /history >}}
 
-Updates attributes for a specified enterprise user.
+Updates a specified enterprise user.
 
 ```plaintext
 PATCH /groups/:id/enterprise_users/:user_id
@@ -304,7 +304,7 @@ Other possible responses:
 
 {{< /history >}}
 
-Deletes the specified enterprise user.
+Deletes a specified enterprise user.
 
 ```plaintext
 DELETE /groups/:id/enterprise_users/:user_id

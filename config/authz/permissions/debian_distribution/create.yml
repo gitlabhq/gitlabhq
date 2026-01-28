@@ -1,0 +1,6 @@
+---
+name: create_debian_distribution
+description: Grants the ability to create Debian distributions
+boundaries:
+  - project
+  - group

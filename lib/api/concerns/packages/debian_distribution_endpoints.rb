@@ -79,6 +79,7 @@ module API
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
+            route_setting :authorization, permissions: :create_debian_distribution, boundary_type: resource_type
             post '/' do
               authorize_create_package!(project_or_group(:read_project))
 
@@ -110,6 +111,7 @@ module API
               optional :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
+            route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
             get '/' do
               authorize_read_package!(project_or_group)
 
@@ -134,6 +136,7 @@ module API
             params do
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
             end
+            route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
             get '/:codename' do
               authorize_read_package!(project_or_group)
 
@@ -155,6 +158,7 @@ module API
             params do
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
             end
+            route_setting :authorization, permissions: :read_debian_distribution, boundary_type: resource_type
             get '/:codename/key.asc' do
               authorize_read_package!(project_or_group)
 
@@ -182,6 +186,7 @@ module API
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
+            route_setting :authorization, permissions: :update_debian_distribution, boundary_type: resource_type
             put '/:codename' do
               authorize_create_package!(project_or_group(:read_project))
 
@@ -213,6 +218,7 @@ module API
               requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename', documentation: { example: 'sid' }
               use :optional_distribution_params
             end
+            route_setting :authorization, permissions: :delete_debian_distribution, boundary_type: resource_type
             delete '/:codename' do
               authorize_destroy_package!(project_or_group(:read_project))
 

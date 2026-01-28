@@ -68,6 +68,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: ['update-variables'],
   data() {
     return {
       job: {},
@@ -158,7 +159,7 @@ export default {
             :modal-id="$options.forwardDeploymentFailureModalId"
             variant="confirm"
             data-testid="retry-button"
-            @updateVariablesClicked="$emit('updateVariables')"
+            @update-variables-clicked="$emit('update-variables')"
           />
           <gl-button
             v-if="restJob.cancel_path"

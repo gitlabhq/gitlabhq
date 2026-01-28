@@ -32,9 +32,11 @@ import {
 } from '~/work_items/list/constants';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   FILTERED_SEARCH_TERM,
@@ -104,6 +106,9 @@ jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
+  confirmAction: jest.fn().mockResolvedValue(true),
+}));
 
 const showToast = jest.fn();
 
@@ -131,8 +136,20 @@ const emptyHasWorkItemsResponse = {
   },
 };
 
+const mockSavedViewsData = [
+  {
+    __typename: 'SavedView',
+    id: '1',
+    name: 'My Private View',
+    description: 'Only I can see this',
+    isPrivate: true,
+    isSubscribed: true,
+  },
+];
+
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
+let router;
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -182,6 +199,8 @@ const findServiceDeskEmptyStateWithoutAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithoutAnyTickets);
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
+const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
+const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 
 const mountComponent = ({
@@ -211,7 +230,7 @@ const mountComponent = ({
     },
   };
 
-  const router = new VueRouter({
+  router = new VueRouter({
     mode: 'history',
     routes: [
       { name: 'base', path: '/', component: WorkItemListActions },
@@ -221,19 +240,39 @@ const mountComponent = ({
 
   isLoggedIn.mockReturnValue(isLoggedInValue);
 
+  const apolloProvider = createMockApollo([
+    [getWorkItemsFullQuery, queryHandler],
+    [getWorkItemsSlimQuery, slimQueryHandler],
+    [getWorkItemStateCountsQuery, countsQueryHandler],
+    [getUserWorkItemsPreferences, mockPreferencesHandler],
+    [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+    [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+    [hasWorkItemsQuery, hasWorkItemsHandler],
+    [getWorkItemsCountOnlyQuery, countsOnlyHandler],
+    ...additionalHandlers,
+  ]);
+
+  // TODO: to be removed when actual API is integrated
+  apolloProvider.defaultClient.writeQuery({
+    query: getSubsribedSavedViewsQuery,
+    variables: {
+      fullPath: 'full/path',
+      subscribedOnly: false,
+    },
+    data: {
+      namespace: {
+        id: 'namespace',
+        savedViews: {
+          __typename: 'SavedViewConnection',
+          nodes: mockSavedViewsData,
+        },
+      },
+    },
+  });
+
   wrapper = shallowMountExtended(WorkItemsListApp, {
     router,
-    apolloProvider: createMockApollo([
-      [getWorkItemsFullQuery, queryHandler],
-      [getWorkItemsSlimQuery, slimQueryHandler],
-      [getWorkItemStateCountsQuery, countsQueryHandler],
-      [getUserWorkItemsPreferences, mockPreferencesHandler],
-      [namespaceWorkItemTypesQuery, namespaceQueryHandler],
-      [updateWorkItemListUserPreference, userPreferenceMutationResponse],
-      [hasWorkItemsQuery, hasWorkItemsHandler],
-      [getWorkItemsCountOnlyQuery, countsOnlyHandler],
-      ...additionalHandlers,
-    ]),
+    apolloProvider,
     provide: {
       glFeatures: {
         okrsMvc: true,
@@ -2004,16 +2043,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     expect(findWorkItemsSavedViewsSelectors().exists()).toBe(true);
   });
 
-  it('does not render save buttons if no changes to view were made', () => {
-    expect(findSaveViewButton().exists()).toBe(false);
-  });
-
   describe('when not on a saved view', () => {
-    beforeEach(async () => {
-      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
-      await waitForPromises();
-    });
-
     it('renders "Save view" button when filters change', async () => {
       findIssuableList().vm.$emit('filter', [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -2043,6 +2073,68 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       await nextTick();
 
       expect(findNewSavedViewModal().exists()).toBe(true);
+    });
+  });
+
+  describe('when on a saved view', () => {
+    beforeEach(async () => {
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '1' } });
+      await waitForPromises();
+    });
+
+    it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
+      findIssuableList().vm.$emit('sort', UPDATED_DESC);
+      await nextTick();
+      await waitForPromises();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('resets filters and hides action buttons', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      findResetViewButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(false);
+      expect(findUpdateViewButton().exists()).toBe(false);
+    });
+
+    it('prompts for confirmation when clicking "Save changes"', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      findUpdateViewButton().vm.$emit('click');
+      await nextTick();
+      await waitForPromises();
+
+      expect(confirmAction).toHaveBeenCalledWith(
+        null,
+        expect.objectContaining({
+          title: 'Save changes to My Private View?',
+          modalHtmlMessage: expect.stringContaining(
+            'Changes will be applied for anyone else who has access to the view.',
+          ),
+          primaryBtnText: 'Save changes',
+        }),
+      );
     });
   });
 });

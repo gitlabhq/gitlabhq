@@ -54,6 +54,27 @@ RSpec.describe Issues::RelatedBranchesService, feature_category: :team_planning 
         end
       end
 
+      context 'when branch name contains non ascii characters' do
+        let(:non_ascii_branch_name) { "#{issue.iid}-branch-with-功能分支-UTF-8-chars" }
+
+        around do |example|
+          project.repository.create_branch(non_ascii_branch_name, project.repository.root_ref)
+          example.run
+          # We cannot keep the branch as it will affect the expectation of other examples because repository is not
+          # reset across specs
+          project.repository.delete_branch(non_ascii_branch_name)
+        end
+
+        it 'returns a UTF-8 encoded string in branch name', :aggregate_failures do
+          expect(branch_info).to contain_exactly(
+            hash_including(name: issue.to_branch_name),
+            hash_including(name: non_ascii_branch_name)
+          )
+
+          expect(branch_info.pluck(:name).map(&:encoding).map(&:to_s)).to all(eq('UTF-8'))
+        end
+      end
+
       context 'when user does not have access to project repository' do
         let(:user) { create(:user) }
 

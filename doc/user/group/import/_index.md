@@ -67,7 +67,7 @@ You are encouraged to leave your feedback about migrating by direct transfer in
 ## Migrating specific projects
 
 Migrating groups by using direct transfer in the GitLab UI migrates all projects in the group. If you want to migrate only specific projects in the group by using direct
-transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
+transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-project-migration).
 
 ## Known issues
 

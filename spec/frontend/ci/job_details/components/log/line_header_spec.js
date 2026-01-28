@@ -105,11 +105,11 @@ describe('Job Log Header Line', () => {
       createComponent();
     });
 
-    it('emits toggleLine event', async () => {
+    it('emits toggle-line event', async () => {
       wrapper.trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().toggleLine).toHaveLength(1);
+      expect(wrapper.emitted('toggle-line')).toHaveLength(1);
     });
   });
 

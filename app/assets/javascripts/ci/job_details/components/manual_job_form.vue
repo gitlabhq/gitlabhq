@@ -41,6 +41,7 @@ export default {
       default: null,
     },
   },
+  emits: ['hide-manual-variables-form'],
   data() {
     return {
       runBtnDisabled: false,
@@ -141,7 +142,7 @@ export default {
       <gl-button
         v-if="isRetryable"
         data-testid="cancel-btn"
-        @click="$emit('hideManualVariablesForm')"
+        @click="$emit('hide-manual-variables-form')"
         >{{ $options.i18n.cancel }}
       </gl-button>
       <gl-button

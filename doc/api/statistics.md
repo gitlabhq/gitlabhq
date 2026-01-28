@@ -18,9 +18,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get details on current application statistics
+## Retrieve application statistics
 
-Gets details on the current application statistics.
+Retrieves statistics from your GitLab instance.
 
 {{< alert type="note" >}}
 

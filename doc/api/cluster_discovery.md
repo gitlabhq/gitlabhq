@@ -15,9 +15,9 @@ title: Cluster discovery API (certificate-based) (deprecated)
 > [!warning]
 > This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-## Discover certificate-based clusters
+## Retrieve certificate-based clusters
 
-Gets certificate-based clusters that are registered to a group, subgroup, or project. Disabled and enabled clusters are also returned.
+Retrieve certificate-based clusters that are registered to a group, subgroup, or project. Disabled and enabled clusters are also returned.
 
 ```plaintext
 GET /discover-cert-based-clusters

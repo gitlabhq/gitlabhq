@@ -35,7 +35,6 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
         access_requests: present_members(access_requests),
         banned: [],
         include_relations: [:inherited, :direct],
-        search: nil,
         pending_members_count: nil,
         placeholder_users: {
           pagination: {
@@ -43,7 +42,8 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
             awaiting_reassignment_items: 2,
             reassigned_items: 1
           }
-        }
+        },
+        params: { page: 1 }
       )
     end
 
@@ -122,7 +122,6 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
             access_requests: present_members(access_requests),
             banned: [],
             include_relations: include_relations,
-            search: nil,
             pending_members_count: nil,
             placeholder_users: {}
           )
@@ -140,6 +139,32 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
           it 'returns correct group links' do
             expect(subject[:group][:members].map { |link| link[:id] }).to match_array(result)
           end
+        end
+      end
+
+      it 'sets `pagination` attribute to expected json' do
+        expected = {
+          current_page: 1,
+          per_page: 20,
+          total_items: 1,
+          param_name: :page
+        }.as_json
+
+        expect(subject[:group][:pagination].as_json).to include(expected)
+      end
+
+      context 'when `paginate_group_members` flag is disabled' do
+        it 'does not set all pagination attributes' do
+          stub_feature_flags(paginate_group_members: false)
+
+          expected = {
+            current_page: nil,
+            per_page: nil,
+            total_items: 1,
+            param_name: :page
+          }.as_json
+
+          expect(subject[:group][:pagination].as_json).to include(expected)
         end
       end
     end

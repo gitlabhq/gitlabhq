@@ -198,12 +198,14 @@ func Test_newRunner(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/duo", nil)
 	cfg := &api.DuoWorkflow{
-		ServiceURI: server.Addr,
-		Headers: map[string]string{
-			"Authorization":        "Bearer test-token",
-			"x-gitlab-oauth-token": "oauth-token-123",
+		Service: &api.DuoWorkflowServiceConfig{
+			URI: server.Addr,
+			Headers: map[string]string{
+				"Authorization":        "Bearer test-token",
+				"x-gitlab-oauth-token": "oauth-token-123",
+			},
+			Secure: false,
 		},
-		Secure:             false,
 		LockConcurrentFlow: true,
 	}
 
@@ -238,8 +240,11 @@ func Test_newRunner_WithoutRedis(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/duo", nil)
 	cfg := &api.DuoWorkflow{
-		ServiceURI:         server.Addr,
-		Headers:            map[string]string{},
+		Service: &api.DuoWorkflowServiceConfig{
+			URI:     server.Addr,
+			Headers: map[string]string{},
+			Secure:  false,
+		},
 		LockConcurrentFlow: true,
 	}
 

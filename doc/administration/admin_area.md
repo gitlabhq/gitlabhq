@@ -723,7 +723,7 @@ control, analyze, and track every change.
 
 The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance.
 Retrieve this information with the
-[Application statistics API](../api/statistics.md#get-details-on-current-application-statistics).
+[Application statistics API](../api/statistics.md#retrieve-application-statistics).
 
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher,
 these statistics show approximate data

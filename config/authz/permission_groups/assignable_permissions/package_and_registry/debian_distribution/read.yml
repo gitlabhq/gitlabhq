@@ -1,0 +1,8 @@
+---
+name: read_debian_distribution
+description: Grants the ability to read Debian distribution packages
+permissions:
+  - read_debian_distribution
+boundaries:
+  - project
+  - group
