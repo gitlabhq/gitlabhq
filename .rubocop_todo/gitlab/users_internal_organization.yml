@@ -31,7 +31,6 @@ Gitlab/UsersInternalOrganization:
     - 'ee/lib/gitlab/llm/ai_gateway/completions/review_merge_request.rb'
     - 'ee/spec/finders/ee/autocomplete/group_users_finder_spec.rb'
     - 'ee/spec/finders/ee/autocomplete/users_finder_spec.rb'
-    - 'ee/spec/finders/ee/members/invite_users_finder_spec.rb'
     - 'ee/spec/lib/gitlab/llm/ai_gateway/completions/review_merge_request_spec.rb'
     - 'ee/spec/models/note_spec.rb'
     - 'ee/spec/requests/projects/merge_requests/creations_spec.rb'

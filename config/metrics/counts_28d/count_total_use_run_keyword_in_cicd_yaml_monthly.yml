@@ -2,6 +2,8 @@
 key_path: counts.count_total_use_run_keyword_in_cicd_yaml_monthly
 description: Monthly count of run keyword usages in GitLab cicd yaml
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 performance_indicator_type: []
 value_type: number
 status: active

@@ -29,19 +29,13 @@ module MergeRequests
     def create_merge_request_pipeline(merge_request)
       project, ref = pipeline_project_and_ref(merge_request)
 
-      pipeline = Ci::CreatePipelineService.new(project,
+      Ci::CreatePipelineService.new(project,
         current_user,
         ref: ref,
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request],
         gitaly_context: params[:gitaly_context]
       ).execute(:merge_request_event, merge_request: merge_request)
-
-      if params[:pipeline_creation_request].present?
-        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request)
-      end
-
-      pipeline
     end
 
     def allowed?(merge_request)

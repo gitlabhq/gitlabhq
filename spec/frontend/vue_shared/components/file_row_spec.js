@@ -1,37 +1,28 @@
-import Vue, { nextTick } from 'vue';
-import VueRouter from 'vue-router';
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
-import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
-import FileHeader from '~/vue_shared/components/file_row_header.vue';
-import createRepositoryRouter from '~/repository/router';
-import { refMock } from 'jest/repository/mock_data';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 
 const scrollIntoViewMock = jest.fn();
 HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
 
-Vue.use(VueRouter);
-
 describe('File row component', () => {
   let wrapper;
-
-  const createRouter = () => {
-    return createRepositoryRouter('some/project', refMock);
-  };
 
   function createComponent(propsData, router) {
     wrapper = shallowMountExtended(FileRow, {
       propsData,
       router,
+      stubs: {
+        GlTruncate: {
+          template: '<div>{{ text }}</div>',
+          props: ['text'],
+        },
+      },
     });
   }
-
-  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const findFileRowContainer = () => wrapper.findByTestId('file-row-container');
   const findFileButton = () => wrapper.findByTestId('file-row');
@@ -85,7 +76,7 @@ describe('File row component', () => {
     expect(wrapper.element.title.trim()).toEqual('');
   });
 
-  it('emits toggleTreeOpen on tree click', () => {
+  it('emits clickTree on tree click', () => {
     const fileName = 't3';
     createComponent({
       file: {
@@ -97,24 +88,18 @@ describe('File row component', () => {
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('toggleTreeOpen')[0][0]).toEqual(fileName);
+    expect(wrapper.emitted('clickTree')).toHaveLength(1);
   });
 
-  it('emits clickTree on tree click with correct options', () => {
+  it('emits clickRow on tree click', () => {
     const fileName = 'folder';
     const filePath = 'path/to/folder';
     createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
 
-    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickTree')[0][0]).toEqual({ toggleClose: false });
-    expect(trackEventSpy).toHaveBeenCalledWith(
-      'click_file_tree_browser_on_repository_page',
-      {},
-      undefined,
-    );
+    expect(wrapper.emitted('clickRow')).toHaveLength(1);
+    expect(wrapper.emitted('clickTree')).toHaveLength(1);
   });
 
   it('emits clickFile on blob click', () => {
@@ -128,44 +113,24 @@ describe('File row component', () => {
       level: 1,
     });
 
-    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickFile')[0][0]).toEqual(fileProp);
-    expect(trackEventSpy).toHaveBeenCalledWith(
-      'click_file_tree_browser_on_repository_page',
-      {},
-      undefined,
-    );
+    expect(wrapper.emitted('clickFile')).toHaveLength(1);
   });
 
-  it('calls scrollIntoView if made active', () => {
+  it('emits clickRow event on blob click', () => {
+    const fileName = 'test.txt';
     createComponent({
       file: {
-        ...file(),
+        ...file(fileName),
         type: 'blob',
-        active: false,
       },
       level: 0,
     });
 
-    wrapper.setProps({
-      file: { ...wrapper.props('file'), active: true },
-    });
+    findFileButton().trigger('click');
 
-    return nextTick().then(() => {
-      expect(scrollIntoViewMock).toHaveBeenCalled();
-    });
-  });
-
-  it('does not call scrollIntoView for Show more button', async () => {
-    const router = createRouter();
-    const path = `/-/blob/${refMock}/.rubocop/internal_affairs.yml`;
-    await router.push(path);
-    createComponent({ file: { path, isShowMore: true }, level: 0 }, router);
-
-    expect(scrollIntoViewMock).not.toHaveBeenCalled();
+    expect(wrapper.emitted('clickRow')).toHaveLength(1);
   });
 
   it('renders header for file', () => {
@@ -178,36 +143,8 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.findComponent(FileHeader).exists()).toBe(true);
-  });
-
-  it('matches the current route against encoded file URL', async () => {
-    const fileName = 'with space';
-    const url = `/-/blob/${refMock}/${escapeFileUrl(fileName)}`;
-    const router = createRouter();
-    await router.push(url);
-    createComponent(
-      {
-        file: file(fileName),
-        fileUrl: url,
-        level: 0,
-      },
-      router,
-    );
-
-    expect(wrapper.vm.hasUrlAtCurrentRoute()).toBe(true);
-  });
-
-  it('render with the correct file classes prop', () => {
-    createComponent({
-      file: {
-        ...file(),
-      },
-      level: 0,
-      fileClasses: '!gl-font-bold',
-    });
-
-    expect(wrapper.find('.file-row-name').classes()).toContain('!gl-font-bold');
+    expect(wrapper.attributes('title')).toBe('app/assets');
+    expect(wrapper.text()).toBe('app/assets');
   });
 
   it('renders submodule icon', () => {
@@ -285,19 +222,15 @@ describe('File row component', () => {
     });
   });
 
-  it('emits clickSubmodule with webUrl and does not call router.push for submodules', async () => {
-    const router = createRouter();
-    await router.push(`/-/blob/${refMock}/different`);
-    createComponent(
-      { file: { ...file('sub'), submodule: true, webUrl: 'https://ext.com' }, level: 0 },
-      router,
-    );
+  it('emits clickSubmodule for submodules', () => {
+    createComponent({
+      file: { ...file('sub'), submodule: true, webUrl: 'https://ext.com' },
+      level: 0,
+    });
 
-    const pushSpy = jest.spyOn(router, 'push');
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickSubmodule')[0][0]).toBe('https://ext.com');
-    expect(pushSpy).not.toHaveBeenCalled();
+    expect(wrapper.emitted('clickSubmodule')).toHaveLength(1);
   });
 
   describe('Tree toggle chevron button', () => {
@@ -342,10 +275,10 @@ describe('File row component', () => {
       );
     });
 
-    it('renders chevron button for trees and emits clickTree when clicked', () => {
+    it('renders chevron button for trees and emits toggleTree when clicked', () => {
       findChevronButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
-      expect(wrapper.emitted('clickTree')).toHaveLength(1);
+      expect(wrapper.emitted('toggleTree')).toHaveLength(1);
     });
 
     it('does not render when showTreeToggle is false', () => {
@@ -359,33 +292,28 @@ describe('File row component', () => {
     });
   });
 
-  describe('linked files', () => {
-    it('renders as button element when no fileUrl or filePaths', () => {
-      createComponent({
-        file: file('test.rb'),
-        level: 0,
-      });
-
-      expect(findFileButton().element.tagName).toBe('BUTTON');
-      expect(findFileButton().attributes('href')).toBeUndefined();
+  it('renders as button element', () => {
+    createComponent({
+      file: file('test.rb'),
+      level: 0,
     });
 
-    it('emits clickFile when clicking file link', () => {
-      createComponent({
-        file: {
-          ...file('test.rb'),
-          type: 'blob',
-          filePaths: {
-            old: 'app/models/user.rb',
-            new: 'app/models/user.rb',
-          },
-        },
-        level: 0,
-      });
+    expect(findFileButton().element.tagName).toBe('BUTTON');
+    expect(findFileButton().attributes('href')).toBeUndefined();
+  });
 
-      findFileButton().trigger('click');
-
-      expect(wrapper.emitted('clickFile')).toHaveLength(1);
+  it('emits clickRow and clickFile when clicking blob', () => {
+    createComponent({
+      file: {
+        ...file('test.rb'),
+        type: 'blob',
+      },
+      level: 0,
     });
+
+    findFileButton().trigger('click');
+
+    expect(wrapper.emitted('clickRow')).toHaveLength(1);
+    expect(wrapper.emitted('clickFile')).toHaveLength(1);
   });
 });

@@ -56,7 +56,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/groups/billings_controller.rb'
     - 'ee/app/graphql/resolvers/ai/code_suggestions_access_resolver.rb'
-    - 'ee/app/graphql/types/epic_type.rb'
     - 'ee/app/helpers/billing_plans_helper.rb'
     - 'ee/app/models/concerns/geo/replicable_model.rb'
     - 'ee/app/models/ee/application_setting.rb'

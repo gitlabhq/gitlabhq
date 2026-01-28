@@ -47,7 +47,6 @@ Style/SymbolProc:
     - 'app/workers/update_head_pipeline_for_merge_request_worker.rb'
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'config/initializers/mail_encoding_patch.rb'
-    - 'config/settings.rb'
     - 'ee/app/models/concerns/epic_tree_sorting.rb'
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/serializers/ee/issue_sidebar_basic_entity.rb'

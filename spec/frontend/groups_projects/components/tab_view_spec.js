@@ -16,7 +16,6 @@ import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/for
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -244,11 +243,6 @@ describe('TabView', () => {
     });
 
     describe('when GraphQL query is cached and search is cleared', () => {
-      // We need to globally render components to avoid circular references
-      // https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
-      Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
-      Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
-
       beforeEach(async () => {
         mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsWithChildrenResponse);
         createComponent({

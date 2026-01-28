@@ -37,14 +37,16 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
   before do
     stub_request(:get, Keeps::Helpers::Groups::GROUPS_JSON_URL).to_return(status: 200, body: groups.to_json)
 
+    # Reset singletons to create fresh instances
+    Singleton.__init__(Keeps::Helpers::Groups)
+    Singleton.__init__(Keeps::Helpers::ReviewerRoulette)
+
     allow(keep).to receive(:all_feature_flag_files).and_return([feature_flag_file])
     allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
     allow(keep).to receive(:can_remove_ff?).and_return(true)
 
     reviewer_roulette = instance_double(Keeps::Helpers::ReviewerRoulette, reviewer_available?: true)
-    allow_next_instance_of(Keeps::Helpers::Groups) do |keeps_groups_helper|
-      allow(keeps_groups_helper).to receive(:roulette).and_return(reviewer_roulette)
-    end
+    allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(reviewer_roulette)
 
     allow(milestones_helper)
       .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,

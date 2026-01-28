@@ -2,6 +2,8 @@
 key_path: count_total_model_registry_ml_model_created_28d
 description: Tracks the creation of Machine learning models (Ml::Model) through Ml::CreateModelService in the last 28 days.
 product_group: mlops
+product_categories:
+- mlops
 performance_indicator_type: []
 value_type: number
 status: active

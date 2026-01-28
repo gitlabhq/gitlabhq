@@ -1,0 +1,10 @@
+---
+name: skip_unused_job_artifact_hash_calculation
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/584058
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219475
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587085
+milestone: '18.9'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

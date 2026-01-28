@@ -39,21 +39,22 @@ module Gitlab
 
         private
 
+        # rubocop:disable Rails/Output -- This runs only in pipelines and should output to the pipeline log
         def run_jobs_for_migration(migration_name:, jobs:, run_until:)
-          puts("Sampling jobs for #{migration_name}") # rubocop:disable Rails/Output -- This runs only in pipelines and should output to the pipeline log
-          per_background_migration_result_dir = File.join(@result_dir, migration_name)
+          puts("Sampling jobs for #{migration_name}")
 
+          per_background_migration_result_dir = File.join(@result_dir, migration_name)
           instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir,
             observer_classes: observers)
 
           batch_names = (1..).each.lazy.map { |i| "batch_#{i}" }
 
-          batch_count = 0
+          has_yielded_any = false
           jobs.each do |j|
+            has_yielded_any = true
             break if run_until <= Time.current
 
             batch_name = batch_names.next
-            batch_count += 1
 
             print_job_progress(batch_name, j)
 
@@ -67,8 +68,12 @@ module Gitlab
             end
           end
 
-          instrumentation.observe_no_batches_processed(connection: connection) if batch_count == 0
+          return if has_yielded_any
+
+          instrumentation.observe_no_batches_processed
+          puts 'No jobs to run'
         end
+        # rubocop:enable Rails/Output
 
         def job_meta(_job)
           {}

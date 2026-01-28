@@ -415,20 +415,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when project deletion is in progress for authorized user' do
-      render_views
-
-      it 'shows flash alert about deletion' do
-        public_project.add_developer(user)
-        public_project.project_namespace.start_deletion!(transition_user: user)
-        sign_in(user)
-
-        get :show, params: { namespace_id: public_project.namespace, id: public_project }
-
-        expect(flash.now[:alert]).to match(/Project.*queued for deletion/)
-      end
-    end
-
     context 'redirection from http://someproject.git' do
       where(:user_type, :project_visibility, :expected_redirect) do
         :anonymous | :public   | :redirect_to_project

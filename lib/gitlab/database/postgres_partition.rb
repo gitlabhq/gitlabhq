@@ -42,7 +42,7 @@ module Gitlab
       end
 
       scope :above_threshold, ->(threshold) do
-        where('pg_table_size(identifier) > ?', threshold)
+        where('pg_total_relation_size(identifier) > ?', threshold)
       end
 
       def self.partition_exists?(table_name)

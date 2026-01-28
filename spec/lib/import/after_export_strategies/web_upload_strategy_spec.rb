@@ -135,11 +135,73 @@ RSpec.describe Import::AfterExportStrategies::WebUploadStrategy, feature_categor
         strategy.execute(user, project)
       end
 
-      context 'when upload as remote stream raises an exception' do
+      context 'when upload as remote stream raises a 403 error' do
         before do
           allow_next_instance_of(Gitlab::ImportExport::RemoteStreamUpload) do |remote_stream_upload|
             allow(remote_stream_upload).to receive(:execute).and_raise(
-              Gitlab::ImportExport::RemoteStreamUpload::StreamError.new('Exception error message', 'Response body')
+              Gitlab::ImportExport::RemoteStreamUpload::StreamError.new(
+                'Invalid response code while uploading file. Code: 403',
+                'Forbidden',
+                '403'
+              )
+            )
+          end
+        end
+
+        it 'does not track exception in Sentry but logs the exception and stores the error message' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect_next_instance_of(Gitlab::Export::Logger) do |logger|
+            expect(logger).to receive(:info).ordered.with(
+              {
+                project_id: project.id,
+                project_name: project.name,
+                message: 'Started uploading project',
+                export_size: anything
+              }
+            )
+
+            expect(logger).to receive(:error).ordered.with(
+              {
+                project_id: project.id,
+                project_name: project.name,
+                message: 'Invalid response code while uploading file. Code: 403',
+                response_body: 'Forbidden'
+              }
+            )
+
+            expect(logger).to receive(:error).ordered.with(
+              {
+                project_id: project.id,
+                project_name: project.name,
+                message: 'After export strategy failed',
+                'exception.class' => 'Gitlab::ImportExport::RemoteStreamUpload::StreamError',
+                'exception.message' => 'Invalid response code while uploading file. Code: 403',
+                'exception.backtrace' => anything
+              }
+            )
+
+            expect(logger).not_to receive(:info).with(
+              hash_including(message: 'Finished uploading project')
+            )
+          end
+
+          result = strategy.execute(user, project)
+
+          expect(result).to be false
+          expect(project.import_export_shared.errors.first).to eq(
+            'Invalid response code while uploading file. Code: 403'
+          )
+        end
+      end
+
+      context 'when upload as remote stream raises a 500 error' do
+        before do
+          allow_next_instance_of(Gitlab::ImportExport::RemoteStreamUpload) do |remote_stream_upload|
+            allow(remote_stream_upload).to receive(:execute).and_raise(
+              Gitlab::ImportExport::RemoteStreamUpload::StreamError.new(
+                'Exception error message', 'Response body', '500'
+              )
             )
           end
         end

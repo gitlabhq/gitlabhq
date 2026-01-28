@@ -3894,7 +3894,7 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
 
 export const projectMembersAutocompleteResponseWithNoMatchingUsers = {
   data: {
-    workspace: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       users: [],

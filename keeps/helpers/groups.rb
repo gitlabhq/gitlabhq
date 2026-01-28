@@ -5,6 +5,8 @@ require_relative 'reviewer_roulette'
 module Keeps
   module Helpers
     class Groups
+      include Singleton
+
       GROUPS_JSON_URL = "https://about.gitlab.com/groups.json"
       Error = Class.new(StandardError)
 
@@ -62,7 +64,7 @@ module Keeps
       end
 
       def roulette
-        @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+        Keeps::Helpers::ReviewerRoulette.instance
       end
 
       def groups

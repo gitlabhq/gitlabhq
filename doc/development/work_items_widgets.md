@@ -48,7 +48,7 @@ display and update the description of any work item:
 
 ```plaintext
 query workItem($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
@@ -244,13 +244,13 @@ this.$apollo.mutate({
   const { parent } = input;
 
   if (parent) {
-      const parentWidget = findWidget(WIDGET_TYPE_PARENT, draftData?.workspace?.workItem);
+      const parentWidget = findWidget(WIDGET_TYPE_PARENT, draftData?.namespace?.workItem);
       parentWidget.parent = parent;
 
-      const parentWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
+      const parentWidgetIndex = draftData.namespace.workItem.widgets.findIndex(
         (widget) => widget.type === WIDGET_TYPE_PARENT,
       );
-      draftData.workspace.workItem.widgets[parentWidgetIndex] = parentWidget;
+      draftData.namespace.workItem.widgets[parentWidgetIndex] = parentWidget;
   }
 
 ```

@@ -10,9 +10,11 @@ import GroupsListItem from '../groups_list/groups_list_item.vue';
 import { LIST_ITEM_TYPE_PROJECT, MAX_CHILDREN_COUNT } from './constants';
 
 export default {
+  name: 'NestedGroupsProjectsListItem',
   components: {
     GlButton,
     GlLink,
+    NestedGroupsProjectsList: () => import('./nested_groups_projects_list.vue'),
   },
   props: {
     item: {

@@ -100,11 +100,7 @@ module Keeps
 
       change.assignees = assignees_from_introduced_by_mr(migration['introduced_by_url'])
 
-      change.reviewers = groups_helper.pick_reviewer_for_feature_category(
-        feature_category,
-        change.identifiers,
-        fallback_feature_category: 'database'
-      )
+      change.reviewers = reviewer(change.identifiers)
     end
 
     def change_description(migration_record, job_name, last_migration_file)
@@ -270,7 +266,11 @@ module Keeps
     end
 
     def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+      ::Keeps::Helpers::Groups.instance
+    end
+
+    def reviewer(identifiers)
+      ::Keeps::Helpers::ReviewerRoulette.instance.random_reviewer_for('maintainer::database', identifiers: identifiers)
     end
 
     def migration_code_not_present_message

@@ -312,7 +312,7 @@ query workItemDevelopment($id: WorkItemID!) {
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 query workItemParticipants($fullPath: ID!, $iid: String!) {
-  workspace: namespace(fullPath: $fullPath) {
+  namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
@@ -345,7 +345,7 @@ query projectWorkItems(
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
 ) {
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     workItems(search: $searchTerm, types: $types, in: $in) @include(if: $searchByText) {
       nodes {
@@ -376,7 +376,7 @@ query workspaceAutocompleteUsersSearch(
       ...
     }
   }
-  workspace: project(fullPath: $fullPath) {
+  namespace: project(fullPath: $fullPath) {
     id
     users: autocompleteUsers(search: $search) {
       ...

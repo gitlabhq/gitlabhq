@@ -128,13 +128,15 @@ export default {
     fileTreeBrowserIsPeekOn() {
       this.$nextTick(() => this.observeItemVisibility());
     },
-    currentRouterPath(newPath, oldPath) {
+    async currentRouterPath(newPath, oldPath) {
       if (newPath && newPath !== oldPath) this.expandPathAncestors(newPath);
+      await this.$nextTick();
+      this.scrollFileRowIntoView(this.currentRouterPath);
     },
   },
   mounted() {
     this.observeItemVisibility();
-    this.expandPathAncestors(this.currentRouterPath || '/');
+    this.loadInitialPath();
     this.mousetrap = new Mousetrap();
 
     if (!this.shortcutsDisabled) {
@@ -146,6 +148,11 @@ export default {
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
+    async loadInitialPath() {
+      await this.expandPathAncestors(this.currentRouterPath || '/');
+      await this.$nextTick();
+      this.scrollFileRowIntoView(this.currentRouterPath, 'center');
+    },
     observeItemVisibility() {
       this.itemObserver?.disconnect();
       const rootElement = this.fileTreeBrowserIsPeekOn
@@ -209,6 +216,7 @@ export default {
         const blobPath = normalizePath(blob.path);
         filesList.push({
           id: `${blobPath}-${blob.id}-${index}`,
+          type: 'blob',
           fileHash: blob.sha,
           path: blobPath,
           parentPath: path,
@@ -522,6 +530,27 @@ export default {
       this.activeItemId = nextItem.dataset?.itemId;
       nextItem.focus(); // Ensures the next available item is focussed after loading more items
     },
+    handleNavigate(itemPath, routerPath) {
+      if (!routerPath || this.isCurrentPath(itemPath)) return;
+      this.$router.push(routerPath);
+    },
+    scrollFileRowIntoView(path, block = 'nearest') {
+      const item = this.flatFilesList.find((i) => i.path === path);
+      if (!item) return;
+      const element = this.$el.querySelector(`[data-item-id="${item.id}"]`);
+      if (!element) return;
+      element.scrollIntoView({
+        behavior: 'instant',
+        block,
+      });
+    },
+    onFileClick() {
+      this.trackEvent('click_file_tree_browser_on_repository_page');
+    },
+    onTreeClick(item) {
+      this.toggleDirectory(item.path, { toggleClose: false });
+      this.handleNavigate(item.path, item.routerPath);
+    },
   },
   searchLabel: s__('Repository|Search files (*.vue, *.rb...)'),
 };
@@ -607,21 +636,21 @@ export default {
           <file-row
             v-if="appearedItems[item.id]"
             :file="item"
-            :file-url="item.routerPath"
             :level="item.level"
             :opened="item.opened"
             :loading="item.loading"
             show-tree-toggle
             roving-tabindex
-            :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
             }"
-            :file-classes="isCurrentPath(item.path) ? 'gl-font-bold' : 'gl-text-subtle'"
+            :bold-text="isCurrentPath(item.path)"
             class="gl-relative !gl-mx-0"
-            truncate-middle
-            @clickTree="(options) => toggleDirectory(item.path, options)"
-            @clickSubmodule="handleClickSubmodule"
+            @clickTree="onTreeClick(item)"
+            @toggleTree.stop="toggleDirectory(item.path)"
+            @clickSubmodule="handleClickSubmodule(item.webUrl)"
+            @clickFile="handleNavigate(item.path, item.routerPath)"
+            @clickRow="onFileClick"
             @showMore="handleShowMore(item.parentPath, $event)"
           />
           <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>

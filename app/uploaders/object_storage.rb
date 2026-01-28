@@ -197,6 +197,7 @@ module ObjectStorage
       def workhorse_authorize(
         has_length:,
         maximum_size: nil,
+        upload_hash_functions: nil,
         use_final_store_path: false,
         final_store_path_config: {})
         {}.tap do |hash|
@@ -211,7 +212,14 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
-          hash[:UploadHashFunctions] = %w[sha1 sha256 sha512] if ::Gitlab::FIPS.enabled?
+          # If UploadHashFunctions is not specified, all available functions
+          # will be used: md5, sha1, sha256, sha512.
+          if upload_hash_functions.present?
+            hash[:UploadHashFunctions] = upload_hash_functions
+          elsif ::Gitlab::FIPS.enabled?
+            hash[:UploadHashFunctions] = %w[sha1 sha256 sha512]
+          end
+
           hash[:MaximumSize] = maximum_size if maximum_size.present?
         end
       end

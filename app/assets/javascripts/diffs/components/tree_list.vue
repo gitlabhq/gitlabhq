@@ -14,17 +14,22 @@ import { isElementClipped } from '~/lib/utils/common_utils';
 import { MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
 import { useCodeReview } from '~/diffs/stores/code_review';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
-import DiffFileRow from './diff_file_row.vue';
+import FileRow from '~/vue_shared/components/file_row.vue';
+import FileRowStats from '~/diffs/components/file_row_stats.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
+  name: 'TreeList',
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    ChangedFileIcon,
+    FileRowStats,
     GlBadge,
     GlButtonGroup,
     GlButton,
-    DiffFileRow,
+    FileRow,
     RecycleScroller,
     GlSearchBoxByType,
   },
@@ -134,6 +139,8 @@ export default {
           level: item.isHeader ? 0 : level,
           key: item.key || item.path,
           loading,
+          active: item.fileHash === this.currentDiffFileId,
+          viewed: this.reviewedIds[item.codeReviewId] ?? this.reviewedIds[item.id],
         });
         const isHidden = hidden || (isTree && !item.opened);
         item.tree.forEach(createFlatten(level + 1, isHidden));
@@ -185,30 +192,34 @@ export default {
     },
   },
   watch: {
-    currentDiffFileId(hash) {
-      if (hash) {
+    currentDiffFileId: {
+      async handler(hash) {
+        if (!hash) return;
         this.openFileTree(hash);
-        this.preventClippingSelectedFile(hash);
-      }
+        await this.$nextTick();
+        this.showSelectedItem(hash);
+      },
+      immediate: true,
     },
   },
   methods: {
     ...mapActions(useFileBrowser, ['setRenderTreeList', 'setTreeOpen']),
-    preventClippingSelectedFile(hash) {
+    showSelectedItem(hash) {
       // let the layout stabilize, we need to wait for:
       // scroll to file, sticky elements update, file browser height update
       // file browser height might be shrunk, so we need to scroll to the selected file
       setTimeout(() => {
-        this.scrollVirtualScrollerToFileHash(hash);
+        const itemElement = this.$el.querySelector(`[data-file-row="${hash}"]`);
+        if (!itemElement) {
+          if (!this.$refs.scroller) return;
+          this.$refs.scroller.scrollToItem(
+            this.treeList.findIndex((item) => item.fileHash === hash),
+          );
+          return;
+        }
+        if (!isElementClipped(itemElement)) return;
+        itemElement.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       }, 20);
-    },
-    scrollVirtualScrollerToFileHash(hash) {
-      const item = document.querySelector(`[data-file-row="${hash}"]`);
-      if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;
-      const index = this.treeList.findIndex((f) => f.fileHash === hash);
-      if (index !== -1) {
-        this.$refs.scroller?.scrollToItem?.(index);
-      }
     },
     openFileTree(hash) {
       const file = this.flatFilteredTreeList.find((f) => f.fileHash === hash);
@@ -297,20 +308,29 @@ export default {
         data-testid="tree-list-scroll"
       >
         <template #default="{ item }">
-          <diff-file-row
+          <file-row
             :file="item"
             :level="item.level"
-            :viewed-files="reviewedIds"
-            :hide-file-stats="hideFileStats"
-            :current-diff-file-id="currentDiffFileId"
-            :style="{ '--level': item.level }"
-            :class="{ 'tree-list-parent': item.level > 0 }"
+            :class="{
+              'tree-list-parent': item.level > 0,
+              'is-active': item.active,
+              'is-loading': item.loading,
+            }"
             :tabindex="item.loading ? -1 : 0"
-            class="gl-relative"
+            :bold-text="item.type === 'blob' && !item.viewed"
+            class="diff-file-row gl-relative"
             :data-file-row="item.fileHash"
-            @toggleTreeOpen="$emit('toggleFolder', $event)"
-            @clickFile="!item.loading && $emit('clickFile', $event)"
-          />
+            @clickTree="$emit('toggleFolder', item.path)"
+            @clickFile="!item.loading && $emit('clickFile', item)"
+            @clickSubmodule="!item.loading && $emit('clickFile', item)"
+          >
+            <file-row-stats
+              v-if="!hideFileStats && item.type === 'blob'"
+              :file="item"
+              class="gl-mr-2"
+            />
+            <changed-file-icon :file="item" :size="16" :show-tooltip="true" :as-button="false" />
+          </file-row>
         </template>
         <template #after>
           <div class="tree-list-gutter"></div>

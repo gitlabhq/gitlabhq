@@ -59,7 +59,7 @@ module Keeps
           release_month = Date.new(base_year, base_month, 1) + months_since_base.months
 
           # Find the third Thursday of the release month
-          third_thursday_of_month(release_month.year, release_month.month).to_time.utc
+          third_thursday_of_month(release_month.year, release_month.month).to_time(:utc)
         end
       end
 

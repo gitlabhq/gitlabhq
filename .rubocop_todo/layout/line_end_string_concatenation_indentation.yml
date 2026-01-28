@@ -80,7 +80,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/graphql/mutations/vulnerabilities/remove_all_from_project.rb'
     - 'ee/app/graphql/resolvers/analytics/contribution_analytics/contributions_resolver.rb'
     - 'ee/app/graphql/resolvers/google_cloud/artifact_registry/artifact_resolver.rb'
-    - 'ee/app/graphql/resolvers/pipeline_security_report_findings_resolver.rb'
     - 'ee/app/graphql/resolvers/security_orchestration/scan_execution_policy_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerability_severities_count_resolver.rb'

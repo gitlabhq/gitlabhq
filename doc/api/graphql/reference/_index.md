@@ -5147,6 +5147,32 @@ Input type: `ContainerVirtualRegistryDeleteInput`
 | <a id="mutationcontainervirtualregistrydeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationcontainervirtualregistrydeleteregistry"></a>`registry` | [`ContainerRegistry`](#containerregistry) | Deleted container virtual registry. |
 
+### `Mutation.containerVirtualRegistryUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerVirtualRegistryUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistryupdatedescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="mutationcontainervirtualregistryupdateid"></a>`id` | [`VirtualRegistriesContainerRegistryID!`](#virtualregistriescontainerregistryid) | ID of the container virtual registry to be updated. |
+| <a id="mutationcontainervirtualregistryupdatename"></a>`name` | [`String!`](#string) | Name of virtual registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcontainervirtualregistryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcontainervirtualregistryupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationcontainervirtualregistryupdateregistry"></a>`registry` | [`ContainerRegistry`](#containerregistry) | Container virtual registry after the mutation. |
+
 ### `Mutation.corpusCreate`
 
 Input type: `CorpusCreateInput`
@@ -9806,6 +9832,27 @@ Input type: `MergeRequestSetAssigneesInput`
 | <a id="mutationmergerequestsetassigneesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetassigneeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationmergerequestsetassigneesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
+### `Mutation.mergeRequestSetBlockingMergeRequests`
+
+Input type: `MergeRequestSetBlockingMergeRequestsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestsetblockingmergerequestsblockingmergerequestreferences"></a>`blockingMergeRequestReferences` | [`[String!]!`](#string) | Array of blocking merge request references (e.g., "!123", "project!456"). |
+| <a id="mutationmergerequestsetblockingmergerequestsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestsetblockingmergerequestsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestsetblockingmergerequestsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestsetblockingmergerequestsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestsetblockingmergerequestserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationmergerequestsetblockingmergerequestsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestSetDraft`
 

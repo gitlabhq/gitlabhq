@@ -57,7 +57,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/services/security/ingestion/finding_map.rb'
     - 'ee/app/services/security/process_scan_events_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
-    - 'ee/app/workers/analytics/value_stream_dashboard/count_worker.rb'
     - 'ee/app/workers/click_house/rebuild_materialized_view_cron_worker.rb'
     - 'ee/app/workers/observability/alert_query_worker.rb'
     - 'ee/app/workers/product_analytics/initialize_snowplow_product_analytics_worker.rb'

@@ -19,6 +19,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
     let(:job_name) { "test_background_migration" }
     let(:last_migration_file) { "db/post_migrate/20200331140101_queue_test_background_migration.rb" }
     let(:groups_helper) { instance_double(::Keeps::Helpers::Groups) }
+    let(:reviewer_roulette) { instance_double(::Keeps::Helpers::ReviewerRoulette) }
     let(:identifiers) { [described_class.new.class.name.demodulize, job_name] }
 
     subject(:change) do
@@ -33,11 +34,12 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
         .with(feature_category)
         .and_return([])
 
-      allow(groups_helper).to receive(:pick_reviewer_for_feature_category)
-        .with(feature_category, identifiers, fallback_feature_category: 'database')
+      allow(reviewer_roulette).to receive(:random_reviewer_for)
+        .with('maintainer::database', identifiers: identifiers)
         .and_return("random-engineer")
 
-      allow(keep).to receive(:groups_helper).and_return(groups_helper)
+      allow(Keeps::Helpers::Groups).to receive(:instance).and_return(groups_helper)
+      allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(reviewer_roulette)
       allow(keep).to receive(:assignees_from_introduced_by_mr)
                        .with(introduced_by_url)
                        .and_return(['original-author'])

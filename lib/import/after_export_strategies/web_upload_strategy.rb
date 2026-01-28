@@ -6,6 +6,7 @@ module Import
       PUT_METHOD = 'PUT'
       POST_METHOD = 'POST'
       INVALID_HTTP_METHOD = 'invalid. Only PUT and POST methods allowed.'
+      FORBIDDEN_HTTP_STATUS = 403
 
       validates :url, addressable_url: true
 
@@ -19,18 +20,30 @@ module Import
         super
       end
 
+      def execute(current_user, project)
+        result = super
+
+        return false if project.import_export_shared.errors.any?
+
+        result
+      end
+
       protected
 
       def strategy_execute
         log_info(message: "Started uploading project", export_size: export_size)
 
+        upload_success = true
+
         upload_duration = Benchmark.realtime do
           if project.export_file(current_user).file_storage?
             handle_response_error(send_file)
           else
-            upload_project_as_remote_stream
+            upload_success = upload_project_as_remote_stream
           end
         end
+
+        return unless upload_success
 
         log_info(message: "Finished uploading project", export_size: export_size, upload_duration: upload_duration)
       end
@@ -61,10 +74,20 @@ module Import
             upload_method: http_method.downcase.to_sym,
             upload_content_type: 'application/gzip'
           }).execute
+
+        true
       rescue Gitlab::ImportExport::RemoteStreamUpload::StreamError => e
         log_error(message: e.message, response_body: e.response_body.truncate(3000))
 
-        raise
+        raise unless e.response_code.to_i == FORBIDDEN_HTTP_STATUS
+
+        payload = { message: "After export strategy failed" }
+        Gitlab::ExceptionLogFormatter.format!(e, payload)
+        log_error(payload)
+
+        project.import_export_shared.add_error_message(e.message)
+
+        false
       end
 
       def export_file

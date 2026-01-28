@@ -292,7 +292,6 @@ Style/InlineDisableAnnotation:
     - 'app/helpers/commits_helper.rb'
     - 'app/helpers/dropdowns_helper.rb'
     - 'app/helpers/integrations_helper.rb'
-    - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/namespaces_helper.rb'
     - 'app/helpers/routing/projects_helper.rb'
     - 'app/helpers/routing/pseudonymization_helper.rb'

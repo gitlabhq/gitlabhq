@@ -30,6 +30,9 @@ GitLab provides three ways to obtain credits:
 - Monthly Commitment Pool
 - On-Demand credits
 
+For a click-through demo, see [GitLab Credits](https://gitlab.navattic.com/credits-dashboard).
+<!-- Demo published on 2026-01-28 -->
+
 For information about credit pricing, see [GitLab pricing](https://about.gitlab.com/pricing/).
 
 ## Included credits

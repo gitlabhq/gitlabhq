@@ -5,19 +5,11 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import { COMPONENT_NAME } from './constants';
 
-/**
- * This component uses circular references.
- * https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
- * To use this component you must globally register `NestedGroupsProjectsList` and `NestedGroupsProjectsListItem`.
- *
- * Example:
- *
- * Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
- * Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
- */
-
 export default {
   name: COMPONENT_NAME,
+  components: {
+    NestedGroupsProjectsListItem: () => import('./nested_groups_projects_list_item.vue'),
+  },
   props: {
     items: {
       type: Array,

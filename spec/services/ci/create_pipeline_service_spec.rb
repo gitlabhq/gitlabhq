@@ -1795,6 +1795,16 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(successful_request['pipeline_id']).to eq(response.payload.id)
           expect(successful_request['status']).to eq(::Ci::PipelineCreation::Requests::SUCCEEDED)
         end
+
+        it 'triggers GraphQL subscription for the merge request' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
+
+          execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+        end
       end
 
       context 'when the pipeline creation fails' do
@@ -1810,6 +1820,28 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           failed_request = ::Ci::PipelineCreation::Requests.hget(creation_request)
           expect(failed_request['error']).to eq('Insufficient permissions to create a new pipeline')
           expect(failed_request['status']).to eq(::Ci::PipelineCreation::Requests::FAILED)
+        end
+
+        it 'triggers GraphQL subscription for the merge request' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+
+          expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
+
+          execute_service(
+            merge_request: merge_request, pipeline_creation_request: creation_request, source: :merge_request_event
+          )
+        end
+      end
+
+      context 'when merge_request is not present' do
+        it 'does not trigger GraphQL subscription' do
+          creation_request = ::Ci::PipelineCreation::Requests.start_for_project(project)
+
+          expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated)
+
+          execute_service(
+            pipeline_creation_request: creation_request, source: :push
+          )
         end
       end
     end

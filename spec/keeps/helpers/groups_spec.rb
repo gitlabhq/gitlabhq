@@ -34,14 +34,22 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
   end
 
   before do
-    allow(Keeps::Helpers::ReviewerRoulette).to receive(:new).and_return(roulette)
+    # Reset singletons to create fresh instances
+    Singleton.__init__(described_class)
+    Singleton.__init__(Keeps::Helpers::ReviewerRoulette)
+
+    allow(Keeps::Helpers::ReviewerRoulette).to receive(:instance).and_return(roulette)
     stub_request(:get, "https://about.gitlab.com/groups.json").to_return(status: 200, body: groups.to_json)
+  end
+
+  it 'is a singleton' do
+    expect(described_class.instance).to be_a(Singleton)
   end
 
   describe '#group_for_feature_category' do
     let(:category) { 'organization' }
 
-    subject(:group) { described_class.new.group_for_feature_category(category) }
+    subject(:group) { described_class.instance.group_for_feature_category(category) }
 
     it { is_expected.to eq(groups['tenant_scale']) }
 
@@ -82,7 +90,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
       end
     end
 
-    subject(:pick_reviewer) { described_class.new.pick_reviewer(group, identifiers) }
+    subject(:pick_reviewer) { described_class.instance.pick_reviewer(group, identifiers) }
 
     it 'picks from available reviewers only' do
       expect(pick_reviewer).to eq(available_reviewers[expected_index])
@@ -120,7 +128,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
     end
 
     subject(:reviewer) do
-      described_class.new.pick_reviewer_for_feature_category(category, identifiers,
+      described_class.instance.pick_reviewer_for_feature_category(category, identifiers,
         fallback_feature_category: fallback_feature_category)
     end
 
@@ -159,7 +167,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
   describe '#labels_for_feature_category' do
     let(:category) { 'organization' }
 
-    subject(:labels) { described_class.new.labels_for_feature_category(category) }
+    subject(:labels) { described_class.instance.labels_for_feature_category(category) }
 
     it 'returns the group label for the matching group' do
       expect(labels).to eq(['group::tenant scale'])

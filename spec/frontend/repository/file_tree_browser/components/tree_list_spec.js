@@ -143,7 +143,6 @@ describe('Tree List', () => {
         routerPath: '/-/tree/main/dir_1/dir_2?ref_type=heads',
         type: 'tree',
       },
-      fileUrl: '/-/tree/main/dir_1/dir_2?ref_type=heads',
       level: 0,
     });
 
@@ -158,7 +157,6 @@ describe('Tree List', () => {
         path: '/dir_1/file.txt',
         routerPath: '/-/blob/main/dir_1/file.txt?ref_type=heads',
       },
-      fileUrl: '/-/blob/main/dir_1/file.txt?ref_type=heads',
       level: 0,
     });
   });
@@ -178,10 +176,9 @@ describe('Tree List', () => {
   });
 
   it.each`
-    toggleClose  | expectedOpened | description
-    ${true}      | ${false}       | ${'collapses'}
-    ${false}     | ${true}        | ${'stays expanded'}
-    ${undefined} | ${false}       | ${'collapses (default behavior)'}
+    toggleClose | expectedOpened | description
+    ${true}     | ${false}       | ${'collapses'}
+    ${false}    | ${true}        | ${'stays expanded'}
   `(
     '$description when clicked with toggleClose: $toggleClose',
     async ({ toggleClose, expectedOpened }) => {
@@ -196,8 +193,11 @@ describe('Tree List', () => {
 
       expect(findFileRows().at(0).props('file').opened).toBe(true);
 
-      const options = toggleClose === undefined ? undefined : { toggleClose };
-      findFileRows().at(0).vm.$emit('clickTree', options);
+      if (toggleClose) {
+        findFileRows().at(0).vm.$emit('toggleTree', { stopPropagation: jest.fn() });
+      } else {
+        findFileRows().at(0).vm.$emit('clickTree');
+      }
       await nextTick();
 
       expect(findFileRows().at(0).props('file').opened).toBe(expectedOpened);
@@ -1035,5 +1035,69 @@ describe('Tree List', () => {
     await createComponent(mockResponse, { shouldShowCallout: false });
     await waitForPromises();
     expect(findFileTreeBrowserPopover().exists()).toBe(false);
+  });
+
+  it('navigates when clicking on file', () => {
+    findFileRows().at(1).vm.$emit('clickFile');
+
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith(
+      '/-/blob/main/dir_1/file.txt?ref_type=heads',
+    );
+  });
+
+  it('tracks event when row is clicked', async () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+    findFileRows().at(1).vm.$emit('clickRow');
+    await nextTick();
+
+    expect(trackEventSpy).toHaveBeenCalledWith(
+      'click_file_tree_browser_on_repository_page',
+      {},
+      undefined,
+    );
+  });
+
+  it('scrolls element into view on initial load', async () => {
+    const scrollIntoViewSpy = jest.fn();
+    jest.spyOn(HTMLElement.prototype, 'scrollIntoView').mockImplementation(scrollIntoViewSpy);
+
+    const response = cloneDeep(mockResponse);
+    response.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [
+      {
+        __typename: 'Blob',
+        id: 'gid://gitlab/Blob/root1',
+        sha: 'abc123',
+        name: 'file.txt',
+        path: 'file.txt',
+        mode: '100644',
+        webPath: '/file.txt',
+        flatPath: 'file.txt',
+        type: 'text',
+        lfsOid: null,
+      },
+    ];
+
+    wrapper = shallowMountExtended(TreeList, {
+      apolloProvider: createMockApollo([
+        [paginatedTreeQuery, jest.fn().mockResolvedValueOnce(response)],
+      ]),
+      pinia,
+      propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'heads' },
+      mocks: {
+        $router: { push: jest.fn() },
+        $route: { params: { path: 'file.txt' } },
+      },
+      stubs: {
+        UserCalloutDismisser: makeMockUserCalloutDismisser({ shouldShowCallout: false }),
+      },
+    });
+
+    await waitForPromises();
+
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({
+      behavior: 'instant',
+      block: 'center',
+    });
   });
 });

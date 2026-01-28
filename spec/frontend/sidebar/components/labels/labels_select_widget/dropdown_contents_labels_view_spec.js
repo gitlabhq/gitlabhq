@@ -123,7 +123,7 @@ describe('DropdownContentsLabelsView', () => {
     createComponent({
       queryHandler: jest.fn().mockResolvedValue({
         data: {
-          workspace: {
+          namespace: {
             labels: {
               nodes: [],
             },

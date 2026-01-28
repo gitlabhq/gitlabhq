@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.pipeline_authoring.ci_interpolation_users
 description: Count of unique users who are using interpolation in their CI
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: "16.0"

@@ -423,47 +423,6 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
     end
   end
 
-  describe '#create_merge_request_pipeline' do
-    let(:pipeline) { create(:ci_pipeline, project: project) }
-    let(:params) { { pipeline_creation_request: { 'key' => '123', 'id' => '456' } } }
-
-    before do
-      allow_next_instance_of(Ci::CreatePipelineService) do |service|
-        allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: pipeline))
-      end
-    end
-
-    it 'triggers GraphQL subscription after pipeline creation' do
-      expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-      service.create_merge_request_pipeline(merge_request)
-    end
-
-    context 'for sync requests without a pipeline creation request' do
-      let(:params) { {} }
-
-      it 'does not trigger GraphQL subscription after pipeline creation for sync requests' do
-        expect(GraphqlTriggers).not_to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-        service.create_merge_request_pipeline(merge_request)
-      end
-    end
-
-    context 'when pipeline creation fails' do
-      before do
-        allow_next_instance_of(Ci::CreatePipelineService) do |service|
-          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Failed'))
-        end
-      end
-
-      it 'still triggers GraphQL subscription' do
-        expect(GraphqlTriggers).to receive(:ci_pipeline_creation_requests_updated).with(merge_request)
-
-        service.create_merge_request_pipeline(merge_request)
-      end
-    end
-  end
-
   describe '#allowed?' do
     subject(:allowed) { service.allowed?(merge_request) }
 

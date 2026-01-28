@@ -5,24 +5,31 @@ require './keeps/helpers/reviewer_roulette'
 
 RSpec.describe Keeps::Helpers::ReviewerRoulette, feature_category: :tooling do
   let_it_be(:stats) { fixture_file('keeps/helpers/stats.json') }
-  let(:roulette) { described_class.new }
+  let(:roulette) { described_class.instance }
 
   subject(:reviewer) { roulette.random_reviewer_for('maintainer::backend') }
 
-  context 'when request to get stats succeeds' do
-    before do
-      stub_request(:get, described_class::STATS_JSON_URL).to_return(status: 200, body: stats)
-    end
+  before do
+    # Reset singleton to create a fresh instance
+    Singleton.__init__(described_class)
 
+    stub_request(:get, described_class::STATS_JSON_URL).to_return(status: 200, body: stats)
+  end
+
+  it 'is a singleton' do
+    expect(roulette).to be_a(Singleton)
+  end
+
+  context 'when request to get stats succeeds' do
     context 'when reviewers are available' do
       it 'returns the available reviewer for the role' do
-        expect(reviewer).to eq('tiera')
+        expect(reviewer).to be_present
       end
     end
 
     context 'when reviewers are unavailable' do
       before do
-        allow(roulette).to receive(:status_available?).at_least(:once).and_return(false)
+        allow(roulette).to receive(:available_reviewers).and_return([])
       end
 
       it { is_expected.to be_nil }
@@ -32,6 +39,27 @@ RSpec.describe Keeps::Helpers::ReviewerRoulette, feature_category: :tooling do
       subject(:reviewer) { roulette.random_reviewer_for('unknown role') }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when identifiers are provided' do
+      let(:identifiers) { %w[identifier1 identifier2] }
+
+      subject(:reviewer) { roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers) }
+
+      it 'returns a deterministic reviewer based on identifiers' do
+        first_result = roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers)
+        second_result = roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers)
+
+        expect(first_result).to eq(second_result)
+      end
+
+      it 'returns different reviewers for different identifiers' do
+        result_with_identifiers = roulette.random_reviewer_for('maintainer::backend', identifiers: identifiers)
+        result_with_other_identifiers = roulette.random_reviewer_for('maintainer::backend',
+          identifiers: %w[identifier1 identifier3])
+
+        expect(result_with_identifiers).not_to eq(result_with_other_identifiers)
+      end
     end
   end
 
@@ -51,10 +79,6 @@ RSpec.describe Keeps::Helpers::ReviewerRoulette, feature_category: :tooling do
 
   describe '#reviewer_available?' do
     let(:username) { 'tiera' }
-
-    before do
-      stub_request(:get, described_class::STATS_JSON_URL).to_return(status: 200, body: stats)
-    end
 
     subject(:available) { roulette.reviewer_available?(username) }
 

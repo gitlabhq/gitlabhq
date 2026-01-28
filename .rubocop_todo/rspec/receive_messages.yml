@@ -298,7 +298,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/repo_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/snippet_repo_restorer_spec.rb'
-    - 'spec/lib/gitlab/internal_events/event_definitions_spec.rb'
     - 'spec/lib/gitlab/kas/client_spec.rb'
     - 'spec/lib/gitlab/metrics/exporter/base_exporter_spec.rb'
     - 'spec/lib/gitlab/metrics/global_search_slis_spec.rb'

@@ -120,11 +120,11 @@ module Ci
 
       if error_message = pipeline.full_error_messages.presence || pipeline.failure_reason.presence
         ::Ci::PipelineCreation::Requests.failed(params[:pipeline_creation_request], error_message)
-
+        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
         ServiceResponse.error(message: error_message, payload: pipeline)
       else
         ::Ci::PipelineCreation::Requests.succeeded(params[:pipeline_creation_request], pipeline.id)
-
+        GraphqlTriggers.ci_pipeline_creation_requests_updated(merge_request) if merge_request
         ServiceResponse.success(payload: pipeline)
       end
 

@@ -442,7 +442,7 @@ module Keeps
     end
 
     def groups_helper
-      @groups_helper ||= ::Keeps::Helpers::Groups.new
+      ::Keeps::Helpers::Groups.instance
     end
 
     def milestones_helper

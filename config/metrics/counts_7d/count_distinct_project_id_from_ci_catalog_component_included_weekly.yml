@@ -2,6 +2,9 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_ci_catalog_component_included_weekly
 description: Weekly count of unique projects that included a CI/CD Catalog component in a pipeline.
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+- component_catalog
 performance_indicator_type: []
 value_type: number
 status: active
