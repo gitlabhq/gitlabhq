@@ -10,7 +10,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
 
-  let(:work_item_create_type) { WorkItems::Type.default_by_type(:task) }
+  let(:work_item_create_type) { build(:work_item_system_defined_type, :task) }
   let(:work_item_type_gid) { work_item_create_type.to_gid }
   let(:input) do
     {
@@ -45,7 +45,9 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
     end
 
     context 'when input is invalid' do
-      let(:input) { { 'title' => '', 'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s } }
+      let(:input) do
+        { 'title' => '', 'workItemTypeId' => work_item_type_gid.to_s }
+      end
 
       it 'does not create and returns validation errors' do
         expect do
@@ -64,7 +66,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let(:input) do
         {
           title: 'title',
-          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          workItemTypeId: work_item_type_gid.to_s,
           descriptionWidget: { description: 'some description' }
         }
       end
@@ -134,7 +136,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'item1',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             hierarchyWidget: { 'parentId' => parent.to_gid.to_s }
           }
         end
@@ -182,7 +184,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           let(:input) do
             {
               title: 'item1',
-              workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+              workItemTypeId: work_item_type_gid.to_s,
               hierarchyWidget: { 'parentId' => parent.to_gid.to_s }
             }
           end
@@ -213,7 +215,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           {
             'title' => 'new title',
             'description' => 'new description',
-            'workItemTypeId' => WorkItems::Type.default_by_type(:test_case).to_gid.to_s,
+            'workItemTypeId' => create(:work_item_type, :test_case).to_global_id.to_s,
             'hierarchyWidget' => {}
           }
         end
@@ -248,7 +250,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'some WI',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             milestoneWidget: { 'milestoneId' => milestone.to_gid.to_s }
           }
         end
@@ -314,7 +316,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'some WI',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             assigneesWidget: { 'assigneeIds' => assignee.to_gid.to_s }
           }
         end
@@ -360,7 +362,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'some WI',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             labelsWidget: { labelIds: label_ids }
           }
         end
@@ -411,7 +413,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let(:input) do
         {
           title: 'item1',
-          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          workItemTypeId: work_item_type_gid.to_s,
           linkedItemsWidget: { 'workItemsIds' => [item1_global_id, item2_global_id], 'linkType' => 'RELATED' }
         }
       end
@@ -489,7 +491,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
           'title' => 'new title',
           'description' => 'new description',
           'confidential' => true,
-          'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          'workItemTypeId' => work_item_type_gid.to_s,
           'startAndDueDateWidget' => {
             'startDate' => start_date.to_s,
             'dueDate' => due_date.to_s
@@ -647,7 +649,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'item1',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" }
           }
         end
@@ -659,7 +661,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             title: 'item1',
-            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            workItemTypeId: work_item_type_gid.to_s,
             descriptionWidget: { description: "some description\n\n/estimate 12h\n/spend 2h" },
             namespacePath: group.full_path
           }
@@ -673,7 +675,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let(:input) do
         {
           title: 'item1',
-          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          workItemTypeId: work_item_type_gid.to_s,
           'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" }
         }
       end
@@ -743,7 +745,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:input) do
           {
             'title' => 'item1',
-            'workItemTypeId' => WorkItems::Type.default_by_type(:issue).to_gid.to_s,
+            'workItemTypeId' => build(:work_item_system_defined_type, :issue).to_gid.to_s,
             'crmContactsWidget' => {
               'contactIds' => [global_id_of(contact)]
             }

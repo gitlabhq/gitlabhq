@@ -67,6 +67,48 @@ module API
           present response[:container_protection_tag_rule],
             with: Entities::Projects::ContainerRegistry::Protection::TagRule
         end
+
+        params do
+          requires :protection_rule_id, type: Integer,
+            desc: 'The ID of the container protection tag rule.'
+        end
+        resource ':protection_rule_id' do
+          desc 'Update a container protection tag rule for a project.' do
+            detail 'This feature was introduced in GitLab 18.9.'
+            success Entities::Projects::ContainerRegistry::Protection::TagRule
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' },
+              { code: 422, message: 'Unprocessable Entity' }
+            ]
+            tags %w[projects]
+          end
+          params do
+            optional :tag_name_pattern, type: String,
+              desc: 'Container tag name pattern protected by the protection rule. ' \
+                'For example, `v*-release`. Wildcard character `*` allowed.'
+            optional :minimum_access_level_for_push, type: String,
+              values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_pushes.keys << "",
+              desc: 'Minimum GitLab access level required to push container tags. ' \
+                'For example, Maintainer, Owner, or Admin. To unset the value, use an empty string (`""`).'
+            optional :minimum_access_level_for_delete, type: String,
+              values: ContainerRegistry::Protection::TagRule.minimum_access_level_for_deletes.keys << "",
+              desc: 'Minimum GitLab access level required to delete container tags. ' \
+                'For example, Maintainer, Owner, or Admin. To unset the value, use an empty string (`""`).'
+          end
+          patch do
+            protection_rule = user_project.container_registry_protection_tag_rules.find(params[:protection_rule_id])
+            response = ::ContainerRegistry::Protection::UpdateTagRuleService.new(protection_rule,
+              current_user: current_user, params: declared_params(include_missing: false)).execute
+
+            render_api_error!({ error: response.message }, :unprocessable_entity) if response.error?
+
+            present response[:container_protection_tag_rule],
+              with: Entities::Projects::ContainerRegistry::Protection::TagRule
+          end
+        end
       end
     end
   end

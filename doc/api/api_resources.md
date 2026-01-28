@@ -45,6 +45,7 @@ The following API resources are available in the project context:
 | [Commits](commits.md)                                                          | `/projects/:id/repository/commits`, `/projects/:id/statuses` |
 | [Container registry](container_registry.md)                                    | `/projects/:id/registry/repositories` |
 | [Container repository protection rules](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
+| [Container registry protection tag rules](container_registry_protection_tag_rules.md) | `/projects/:id/registry/protection/tag/rules` |
 | [Custom attributes](custom_attributes.md)                                      | `/projects/:id/custom_attributes` (also available for groups and users) |
 | [Composer distributions](packages/composer.md)                                 | `/projects/:id/packages/composer` (also available for groups) |
 | [Conan v1 distributions](packages/conan_v1.md)                                       | `/projects/:id/packages/conan` (also available standalone) |

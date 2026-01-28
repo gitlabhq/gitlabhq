@@ -90,7 +90,11 @@ prerequisites:
 
 - You have the GitLab Duo add-on and a seat assigned.
 - You open a project that is linked to a remote repository on GitLab, or you set a
-  [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+  default GitLab Duo namespace in the extension:
+  1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
+  1. Under **GitLab**, select **General**.
+  1. Enter a value for **Default namespace (DAP)**.
+  1. Select **OK**.
 - For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
   prerequisites:
   - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-visual-studio)

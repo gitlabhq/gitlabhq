@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CryptoHelper, feature_category: :shared do
+RSpec.describe Gitlab::CryptoHelper, feature_category: :system_access do
   let(:encryption_key) { ::Gitlab::Encryption::KeyProvider[:db_key_base_32].encryption_key.secret }
   let(:default_iv) { Gitlab::Utils.ensure_utf8_size(encryption_key, bytes: 12.bytes) }
 

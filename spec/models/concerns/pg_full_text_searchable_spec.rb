@@ -4,8 +4,11 @@ require 'spec_helper'
 
 RSpec.describe PgFullTextSearchable, feature_category: :global_search do
   let(:project) { build(:project, project_namespace: build(:project_namespace)) }
+  let(:issue_type_id) { build(:work_item_system_defined_type, :issue).id }
 
   let(:model_class) do
+    type_id = issue_type_id
+
     Class.new(ActiveRecord::Base) do
       include PgFullTextSearchable
 
@@ -15,7 +18,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       belongs_to :namespace
       has_one :search_data, class_name: 'Issues::SearchData'
 
-      before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+      before_validation -> { self.work_item_type_id = type_id }
 
       def persist_pg_full_text_search_vector(search_vector)
         Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i[project_id issue_id])
@@ -276,6 +279,8 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
 
     context 'when model class does not implement persist_pg_full_text_search_vector' do
       let(:model_class) do
+        type_id = issue_type_id
+
         Class.new(ActiveRecord::Base) do
           include PgFullTextSearchable
 
@@ -285,7 +290,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
           belongs_to :namespace
           has_one :search_data, class_name: 'Issues::SearchData'
 
-          before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+          before_validation -> { self.work_item_type_id = type_id }
 
           def self.name
             'Issue'

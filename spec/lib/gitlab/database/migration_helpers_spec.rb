@@ -1531,6 +1531,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     let_it_be(:issue_type) { table(:work_item_types).find_by(base_type: issue_base_type_enum) }
 
     let(:issue_class) do
+      type_id = build(:work_item_system_defined_type, :issue).id
+
       Class.new(ActiveRecord::Base) do
         include AtomicInternalId
 
@@ -1544,7 +1546,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           init: ->(s, _scope) { s&.project&.issues&.maximum(:iid) },
           presence: false
 
-        before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+        before_validation -> { self.work_item_type_id = type_id }
 
         def self.name
           'Issue'

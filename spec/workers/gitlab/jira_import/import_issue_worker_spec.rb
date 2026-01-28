@@ -18,7 +18,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
   subject { described_class.new }
 
   describe '#perform', :clean_gitlab_redis_shared_state do
-    let(:issue_type) { ::WorkItems::Type.default_issue_type }
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
 
     let(:parent_field) do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }

@@ -30510,6 +30510,49 @@ paths:
       tags:
       - projects
       operationId: postApiV4ProjectsIdRegistryProtectionTagRules
+  "/api/v4/projects/{id}/registry/protection/tag/rules/{protection_rule_id}":
+    patch:
+      summary: Update a container protection tag rule for a project.
+      description: This feature was introduced in GitLab 18.9.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project.
+        type: string
+        required: true
+      - in: path
+        name: protection_rule_id
+        description: The ID of the container protection tag rule.
+        type: integer
+        format: int32
+        required: true
+      - name: patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId"
+      responses:
+        '200':
+          description: Update a container protection tag rule for a project.
+          schema:
+            "$ref": "#/definitions/API_Entities_Projects_ContainerRegistry_Protection_TagRule"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Entity
+      tags:
+      - projects
+      operationId: patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
   "/api/v4/projects/{id}/debian_distributions":
     post:
       summary: Create a Debian Distribution
@@ -63591,6 +63634,34 @@ definitions:
     - minimum_access_level_for_delete
     description: Create a container protection tag rule for a project. 5 rule limit
       per project.
+  patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId:
+    type: object
+    properties:
+      tag_name_pattern:
+        type: string
+        description: Container tag name pattern protected by the protection rule.
+          For example, `v*-release`. Wildcard character `*` allowed.
+      minimum_access_level_for_push:
+        type: string
+        description: Minimum GitLab access level required to push container tags.
+          For example, Maintainer, Owner, or Admin. To unset the value, use an empty
+          string (`""`).
+        enum:
+        - maintainer
+        - owner
+        - admin
+        - ''
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete container tags.
+          For example, Maintainer, Owner, or Admin. To unset the value, use an empty
+          string (`""`).
+        enum:
+        - maintainer
+        - owner
+        - admin
+        - ''
+    description: Update a container protection tag rule for a project.
   postApiV4ProjectsIdDebianDistributions:
     type: object
     properties:

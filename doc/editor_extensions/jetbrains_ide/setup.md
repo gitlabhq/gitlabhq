@@ -66,8 +66,8 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 Prerequisites:
 
 - You have the GitLab Duo add-on and a seat assigned.
-- You open a project that is linked to a remote repository on GitLab, or you set a
-  [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- You open a project that is linked to a remote repository on GitLab, or you set a default GitLab
+  Duo namespace in the extension.
 
 To enable GitLab Duo Chat and GitLab Duo Code Suggestions, review the prerequisites and
 setup steps for each feature:

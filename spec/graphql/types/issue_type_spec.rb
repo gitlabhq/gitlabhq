@@ -174,7 +174,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
     context 'for an incident' do
       before do
         issue.update!(
-          work_item_type: WorkItems::Type.default_by_type(:incident)
+          work_item_type_id: build(:work_item_system_defined_type, :incident).id
         )
       end
 

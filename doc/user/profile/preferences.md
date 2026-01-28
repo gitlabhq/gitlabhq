@@ -209,6 +209,10 @@ To set a default GitLab Duo namespace:
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace you want to set as your default.
 1. Select **Save changes**.
 
+For the [GitLab Workflow extension](../../editor_extensions/visual_studio_code/setup.md#configure-gitlab-duo)
+and the [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md#set-the-default-namespace),
+you must also set a default namespace in the extension's settings.
+
 ### Hide shortcut buttons
 
 Shortcut buttons precede the list of files on a project's overview page. These buttons provide links to parts of a project, such as the README file or license agreements.

@@ -765,7 +765,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         work_item = build(:work_item, type, project: reusable_project)
 
         (all_types - [type]).each do |new_type|
-          work_item.work_item_type_id = WorkItems::Type.default_by_type(new_type).id
+          work_item.work_item_type_id = create(:work_item_type, new_type).id
 
           expect(work_item).to be_valid, "#{type} to #{new_type}"
         end

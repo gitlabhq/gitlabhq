@@ -286,7 +286,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
       context 'on an incident' do
         before do
-          issue.update!(work_item_type: WorkItems::Type.default_by_type(:incident))
+          issue.update!(work_item_type_id: build(:work_item_system_defined_type, :incident).id)
         end
 
         it 'leaves the note empty' do
@@ -328,7 +328,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
 
       context 'on an incident' do
         before do
-          issue.update!(work_item_type: WorkItems::Type.default_by_type(:incident))
+          issue.update!(work_item_type_id: build(:work_item_system_defined_type, :incident).id)
         end
 
         it 'leaves the note empty' do

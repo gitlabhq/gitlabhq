@@ -54,14 +54,14 @@ RSpec.describe QuickActions::TargetService, feature_category: :text_editors do
       it_behaves_like 'find target'
 
       context 'when work item type id is passed', :aggregate_failures do
-        let(:task_type) { WorkItems::Type.default_by_type(:task) }
+        let(:task_type) { build(:work_item_system_defined_type, :task) }
         let(:params) { { work_item_type_id: task_type.id } }
 
         it 'returns the target' do
           found_target = service.execute(type, nil)
 
           expect(found_target).to be_instance_of(WorkItem)
-          expect(found_target.work_item_type).to eq(task_type)
+          expect(found_target.work_item_type_id).to eq(task_type.id)
           expect(found_target.project).to eq(project)
         end
 
@@ -72,7 +72,7 @@ RSpec.describe QuickActions::TargetService, feature_category: :text_editors do
             found_target = service.execute(type, nil)
 
             expect(found_target).to be_instance_of(WorkItem)
-            expect(found_target.work_item_type).to eq(task_type)
+            expect(found_target.work_item_type_id).to eq(task_type.id)
             expect(found_target.namespace).to eq(group)
           end
         end

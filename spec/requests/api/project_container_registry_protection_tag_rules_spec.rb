@@ -19,6 +19,9 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
   let_it_be(:invalid_token) { 'invalid-token123' }
   let_it_be(:headers_with_invalid_token) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => invalid_token } }
 
+  let(:path) { 'registry/protection/tag/rules' }
+  let(:url) { "/projects/#{project.id}/#{path}" }
+
   describe 'GET /projects/:id/registry/protection/tag/rules' do
     let(:path) { 'registry/protection/tag/rules' }
     let(:url) { "/projects/#{project.id}/#{path}" }
@@ -201,6 +204,130 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
 
     context 'with invalid token' do
       subject(:post_tag_rule) { post(api(url), headers: headers_with_invalid_token, params: params) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+
+  describe 'PATCH /projects/:id/registry/protection/tag/rules/:protection_rule_id' do
+    let_it_be_with_reload(:tag_rule_to_update) do
+      create(:container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: 'original-*',
+        minimum_access_level_for_push: :maintainer,
+        minimum_access_level_for_delete: :maintainer)
+    end
+
+    let(:protection_rule) { tag_rule_to_update }
+    let(:protection_rule_id) { tag_rule_to_update.id }
+    let(:path) { "registry/protection/tag/rules/#{protection_rule_id}" }
+
+    let(:params) do
+      {
+        tag_name_pattern: 'updated-*',
+        minimum_access_level_for_push: 'owner',
+        minimum_access_level_for_delete: 'admin'
+      }
+    end
+
+    subject(:patch_tag_rule) { patch(api(url, api_user), params: params) }
+
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+    end
+
+    shared_examples 'updates tag rule' do
+      it 'updates the tag protection rule', :aggregate_failures do
+        patch_tag_rule
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'id' => tag_rule_to_update.id,
+          'tag_name_pattern' => 'updated-*',
+          'minimum_access_level_for_push' => 'owner',
+          'minimum_access_level_for_delete' => 'admin'
+        )
+
+        expect(tag_rule_to_update.reload.tag_name_pattern).to eq('updated-*')
+      end
+    end
+
+    shared_examples 'denies update' do |status|
+      it "returns #{status} and does not update rule" do
+        original_pattern = tag_rule_to_update.tag_name_pattern
+
+        patch_tag_rule
+
+        expect(response).to have_gitlab_http_status(status)
+        expect(tag_rule_to_update.reload.tag_name_pattern).to eq(original_pattern)
+      end
+    end
+
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
+
+    context 'for maintainer' do
+      let(:api_user) { maintainer }
+
+      it_behaves_like 'updates tag rule'
+
+      context 'with partial update (single field)' do
+        let(:params) { { tag_name_pattern: 'partial-update-*' } }
+
+        it 'updates only the specified field', :aggregate_failures do
+          patch_tag_rule
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(
+            'tag_name_pattern' => 'partial-update-*',
+            'minimum_access_level_for_push' => 'maintainer', # unchanged
+            'minimum_access_level_for_delete' => 'maintainer' # unchanged
+          )
+        end
+      end
+
+      context 'when tag_name_pattern is invalid' do
+        let(:params) { { tag_name_pattern: 'invalid[' } }
+
+        it_behaves_like 'denies update', :unprocessable_entity
+      end
+
+      context 'when minimum_access_level_for_push has invalid value' do
+        let(:params) { { minimum_access_level_for_push: 'invalid' } }
+
+        it_behaves_like 'denies update', :bad_request
+      end
+
+      context 'when tag_name_pattern conflicts with existing rule' do
+        let_it_be(:other_rule) do
+          create(:container_registry_protection_tag_rule,
+            project: project,
+            tag_name_pattern: 'conflict-*')
+        end
+
+        let(:params) { { tag_name_pattern: 'conflict-*' } }
+
+        it_behaves_like 'denies update', :unprocessable_entity
+
+        it 'returns uniqueness error' do
+          patch_tag_rule
+
+          expect(json_response['message']['error']).to be_an(Array)
+          expect(json_response['message']['error'].first).to include('has already been taken')
+        end
+      end
+
+      context 'when tag_name_pattern is too long' do
+        let(:params) { { tag_name_pattern: 'a' * 101 } }
+
+        it_behaves_like 'denies update', :unprocessable_entity
+      end
+
+      it_behaves_like 'rejecting protection rules request when handling rule ids'
+      it_behaves_like 'rejecting protection rules request when invalid project'
+    end
+
+    context 'with invalid token' do
+      subject(:patch_tag_rule) { patch(api(url), headers: headers_with_invalid_token, params: params) }
 
       it_behaves_like 'returning response status', :unauthorized
     end

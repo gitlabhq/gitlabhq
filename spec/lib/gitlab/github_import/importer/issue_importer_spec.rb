@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
+  let_it_be(:work_item_type_id) { build(:work_item_system_defined_type, :issue).id }
   let_it_be(:group) { create(:group) }
 
   let_it_be_with_reload(:project) do

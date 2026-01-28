@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SensitiveAttributes, feature_category: :shared do
+RSpec.describe Gitlab::SensitiveAttributes, feature_category: :system_access do
   describe '.sensitive_attributes' do
     context 'for models using attr_encrypted' do
       let(:test_class) do

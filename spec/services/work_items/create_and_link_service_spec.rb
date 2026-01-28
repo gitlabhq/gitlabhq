@@ -15,7 +15,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
     {
       title: 'Awesome work item',
       description: 'please fix',
-      work_item_type_id: WorkItems::Type.default_by_type(:task).id
+      work_item_type_id: build(:work_item_system_defined_type, :task).id
     }
   end
 

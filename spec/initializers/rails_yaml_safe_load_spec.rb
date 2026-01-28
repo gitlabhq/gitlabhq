@@ -15,7 +15,7 @@ RSpec.describe 'Rails YAML safe load' do
     end
   end
 
-  let(:issue_type) { WorkItems::Type.default_by_type(:issue) }
+  let(:issue_type) { build(:work_item_system_defined_type, :issue) }
   let(:instance) { klass.new(description: data, work_item_type_id: issue_type.id, namespace_id: project_namespace.id) }
 
   context 'with default permitted classes' do

@@ -24,6 +24,7 @@ If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in your IDE:
   1. Find and select the checkbox to enable the missing feature.
   1. Select **OK** or **Save**.
   1. Restart your IDE if prompted.
+- If the diagnostics indicate that Agentic Chat is not supported for the current project, [set a default GitLab Duo namespace](setup.md#set-the-default-namespace) in the extension.
 
 For additional support:
 

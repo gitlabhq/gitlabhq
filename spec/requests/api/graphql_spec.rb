@@ -709,7 +709,7 @@ RSpec.describe 'GraphQL', feature_category: :shared do
       {
         'projectPath' => project.full_path,
         'title' => 'new title',
-        'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s
+        'workItemTypeId' => build(:work_item_system_defined_type, :task).to_gid.to_s
       }
     end
 

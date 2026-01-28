@@ -140,21 +140,17 @@ RSpec.describe Issue, feature_category: :team_planning do
       where(:old_type, :new_type, :is_valid) do
         :issue     | :incident  | true
         :incident  | :issue     | true
-        :test_case | :issue     | true
-        :issue     | :test_case | true
         :issue     | :task      | false
-        :test_case | :task      | false
         :incident  | :task      | false
         :task      | :issue     | false
         :task      | :incident  | false
-        :task      | :test_case | false
       end
 
       with_them do
         it 'is possible to change type only between selected types' do
           issue = create(:issue, old_type, project: reusable_project)
 
-          issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(new_type))
+          issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, new_type).id)
 
           expect(issue.valid?).to eq(is_valid)
         end
@@ -1743,7 +1739,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.update!(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
       end
 
       specify do
@@ -1782,7 +1778,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.update!(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
       end
 
       specify do

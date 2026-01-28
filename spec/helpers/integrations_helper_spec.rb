@@ -392,15 +392,13 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     where(:issue_type, :expected_i18n_issue_type) do
       "issue"           | _('Issue')
       "incident"        | _('Incident')
-      "test_case"       | _('Test case')
-      "requirement"     | _('Requirement')
       "task"            | _('Task')
       "ticket"          | _('Service Desk Ticket')
     end
 
     with_them do
       before do
-        issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(issue_type))
+        issue.assign_attributes(work_item_type_id: build(:work_item_system_defined_type, issue_type).id)
         issue.save!(validate: false)
       end
 

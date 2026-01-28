@@ -85,7 +85,7 @@ end
 
 RSpec.shared_examples 'lists all work item type values' do
   specify do
-    expect(types_list).to eq(WorkItems::Type.order_by_name_asc.pluck(:base_type))
+    expect(types_list).to eq(WorkItems::TypesFramework::Provider.new.all_ordered_by_name.map(&:base_type))
   end
 end
 
