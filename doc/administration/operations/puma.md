@@ -191,16 +191,13 @@ steps below:
    sudo gitlab-ctl reconfigure
    ```
 
-{{< alert type="note" >}}
-
-In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
-providing metrics to be scraped by Prometheus. It is not possible to
-make Prometheus scrape them over HTTPS, and support for it is being discussed
-[in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
-Hence, it is not technically possible to turn off this HTTP listener without
-losing Prometheus metrics.
-
-{{< /alert >}}
+> [!note]
+> In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
+> providing metrics to be scraped by Prometheus. It is not possible to
+> make Prometheus scrape them over HTTPS, and support for it is being discussed
+> [in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
+> Hence, it is not technically possible to turn off this HTTP listener without
+> losing Prometheus metrics.
 
 ### Using an encrypted SSL key
 

@@ -11,7 +11,6 @@ export default normalizeRender({
     // We provide the metadata values as computed properties
     // so that they can be reactive and update when the Apollo query updates.
     return {
-      hasDesignManagementFeature: computed(() => this.metadata.hasDesignManagementFeature),
       hasIssueWeightsFeature: computed(() => this.metadata.hasIssueWeightsFeature),
       hasIterationsFeature: computed(() => this.metadata.hasIterationsFeature),
       hasOkrsFeature: computed(() => this.metadata.hasOkrsFeature),
@@ -46,7 +45,7 @@ export default normalizeRender({
       quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       canAdminLabel: computed(() => Boolean(this.metadata?.adminLabel)),
       canCreateProjects: computed(() => Boolean(this.metadata?.createProjects)),
-      canBulkEditEpics: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
+      canBulkAdminEpic: computed(() => Boolean(this.metadata?.bulkAdminEpic)),
       isGroup: computed(() => this.metadata.id?.includes(TYPENAME_GROUP) || false),
       calendarPath: computed(() => this.metadata.calendarPath),
       rssPath: computed(() => this.metadata.rssPath),
@@ -57,9 +56,7 @@ export default normalizeRender({
       releasesPath: computed(() => this.metadata.releasesPath),
       projectImportJiraPath: computed(() => this.metadata.projectImportJiraPath),
       exportCsvPath: computed(() => this.metadata.exportCsvPath),
-      canBulkUpdate: computed(() => Boolean(this.metadata?.adminIssue)),
       canAdminIssue: computed(() => Boolean(this.metadata?.adminIssue)),
-      canEdit: computed(() => Boolean(this.metadata?.adminProject)),
       canAdminProject: computed(() => Boolean(this.metadata?.adminProject)),
       canImportWorkItems: computed(() => Boolean(this.metadata?.importWorkItems)),
       groupId: computed(() => this.metadata?.groupId),

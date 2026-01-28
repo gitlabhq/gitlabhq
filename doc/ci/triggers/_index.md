@@ -46,16 +46,13 @@ To create a trigger token:
    - You can view and copy the full token for all triggers you have created.
    - You can only see the first 4 characters for tokens created by other project members.
 
-{{< alert type="warning" >}}
-
-It is a security risk to save tokens in plain text in public projects, or store them
-in a way that malicious users could access them. A leaked trigger token could be
-used to force an unscheduled deployment, attempt to access CI/CD variables,
-or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
-help improve the security of trigger tokens. For more information about keeping tokens secure,
-see the [security considerations](../../security/tokens/_index.md#security-considerations).
-
-{{< /alert >}}
+> [!warning]
+> It is a security risk to save tokens in plain text in public projects, or store them
+> in a way that malicious users could access them. A leaked trigger token could be
+> used to force an unscheduled deployment, attempt to access CI/CD variables,
+> or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
+> help improve the security of trigger tokens. For more information about keeping tokens secure,
+> see the [security considerations](../../security/tokens/_index.md#security-considerations).
 
 ## Trigger a pipeline
 

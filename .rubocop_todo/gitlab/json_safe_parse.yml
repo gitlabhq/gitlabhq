@@ -4,7 +4,6 @@ Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
     - 'app/models/blob_viewer/dependency_manager.rb'
-    - 'app/models/bulk_imports/export_status.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
     - 'app/models/concerns/redis_cacheable.rb'
@@ -26,7 +25,6 @@ Gitlab/JsonSafeParse:
     - 'app/services/web_hook_service.rb'
     - 'app/validators/json_schema_validator.rb'
     - 'app/workers/gitlab/version/version_check_cron_worker.rb'
-    - 'db/post_migrate/20251202015055_sanitize_ai_catalog_item_definitions.rb'
     - 'ee/app/graphql/resolvers/sbom/dependency_paths_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_resolver.rb'
     - 'ee/app/graphql/types/compliance_management/compliance_requirement_control_type.rb'

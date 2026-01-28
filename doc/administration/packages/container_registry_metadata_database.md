@@ -122,16 +122,13 @@ You do not need to do the following in preparation before importing:
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
   import enough to recoup the time spent running this command.
 
-{{< alert type="note" >}}
-
-The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
-exclusively referenced by them, are left behind and become inaccessible. Untagged images
-were never visible through the GitLab UI or API, but they can become "dangling" and
-left behind in the backend. After import to the new registry, all images are subject
-to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
-and layers that remain for longer than 24 hours.
-
-{{< /alert >}}
+> [!note]
+> The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
+> exclusively referenced by them, are left behind and become inaccessible. Untagged images
+> were never visible through the GitLab UI or API, but they can become "dangling" and
+> left behind in the backend. After import to the new registry, all images are subject
+> to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
+> and layers that remain for longer than 24 hours.
 
 #### How to choose the right import method
 

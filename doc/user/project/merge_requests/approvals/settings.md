@@ -105,16 +105,13 @@ if the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
 
-{{< alert type="warning" >}}
-
-If a merge request is rebased by someone other than the user who originally committed the changes,
-the commit history is rewritten with a new committer. This might enable users who
-previously committed changes in a merge request to now approve changes in it, as they are
-no longer a committer.
-
-See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
-
-{{< /alert >}}
+> [!warning]
+> If a merge request is rebased by someone other than the user who originally committed the changes,
+> the commit history is rewritten with a new committer. This might enable users who
+> previously committed changes in a merge request to now approve changes in it, as they are
+> no longer a committer.
+> 
+> See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
 
 ## Prevent editing approval rules in merge requests
 

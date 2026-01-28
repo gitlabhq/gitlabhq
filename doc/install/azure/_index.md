@@ -43,16 +43,13 @@ create a new VM:
 For the sake of this guide, let's create the VM from scratch, so
 select **Create**.
 
-{{< alert type="note" >}}
-
-Be aware that Azure incurs compute charges whenever your VM is
-active (known as "allocated"), even if you're using free trial
-credits.
-[how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
-See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
-to learn how much resources can cost.
-
-{{< /alert >}}
+> [!note]
+> Be aware that Azure incurs compute charges whenever your VM is
+> active (known as "allocated"), even if you're using free trial
+> credits.
+> [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
+> See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
+> to learn how much resources can cost.
 
 After you create the virtual machine, use the information in the following
 sections to configure it.

@@ -379,16 +379,13 @@ You can run this at most once an hour for a given container repository.
 This operation does not delete blobs. To reclaim disk space,
 [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
-{{< alert type="warning" >}}
-
-The number of tags deleted by this API is limited on GitLab.com
-because of the scale of the container registry there.
-If your container registry has a large number of tags to delete,
-only some of them are deleted, and you might need to call this API multiple times.
-To schedule tags for automatic deletion, use a
-[cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
-
-{{< /alert >}}
+> [!warning]
+> The number of tags deleted by this API is limited on GitLab.com
+> because of the scale of the container registry there.
+> If your container registry has a large number of tags to delete,
+> only some of them are deleted, and you might need to call this API multiple times.
+> To schedule tags for automatic deletion, use a
+> [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
 Examples:
 

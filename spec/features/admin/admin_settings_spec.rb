@@ -1465,6 +1465,23 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.lets_encrypt_notification_email).to eq 'my@test.example.com'
         expect(current_settings.lets_encrypt_terms_of_service_accepted).to eq true
       end
+
+      context 'Terraform state settings' do
+        it 'allows changing encryption settings' do
+          visit preferences_admin_application_settings_path
+
+          expect(current_settings.terraform_state_encryption_enabled).to be true
+
+          within '#js-terraform-limits-settings' do
+            expect(page).to have_field('Turn on Terraform state encryption', type: 'checkbox')
+            uncheck 'Turn on Terraform state encryption'
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings.terraform_state_encryption_enabled).to be false
+        end
+      end
     end
 
     context 'Nav bar', :js do

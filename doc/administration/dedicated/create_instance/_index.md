@@ -123,13 +123,10 @@ Also plan ahead if you need the following GitLab Dedicated features:
 
 To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../configure_instance/_index.md).
 
-{{< alert type="note" >}}
-
-New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
-
-For instances created in GitLab 18.0 and later, [GitLab Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) features are turned on by default for all users.
-
-If your organization requires data to remain within your specified regions or has restrictions on AI feature usage,
-you can [turn off GitLab Duo Core](../../../user/gitlab_duo/turn_on_off.md#for-an-instance).
-
-{{< /alert >}}
+> [!note]
+> New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
+> 
+> For instances created in GitLab 18.0 and later, [GitLab Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) features are turned on by default for all users.
+> 
+> If your organization requires data to remain within your specified regions or has restrictions on AI feature usage,
+> you can [turn off GitLab Duo Core](../../../user/gitlab_duo/turn_on_off.md#for-an-instance).

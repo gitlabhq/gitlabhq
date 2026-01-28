@@ -58,7 +58,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'count' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
 
     let(:query) do
       %(
@@ -977,7 +977,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'timeline_event_tags' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:project) do
       create(
         :project,
@@ -1037,7 +1037,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'languages' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:project) do
       create(
         :project,

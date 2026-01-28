@@ -212,8 +212,8 @@ export default {
   mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
-    'canBulkUpdate',
-    'canBulkEditEpics',
+    'canAdminIssue',
+    'canBulkAdminEpic',
     'canCreateProjects',
     'canCreateWorkItem',
     'hasBlockedIssuesFeature',
@@ -514,12 +514,12 @@ export default {
     },
     allowBulkEditing() {
       if (this.isEpicsList) {
-        return this.canBulkEditEpics;
+        return this.canBulkAdminEpic;
       }
       if (this.isGroup) {
-        return this.canBulkUpdate && this.hasGroupBulkEditFeature;
+        return this.canAdminIssue && this.hasGroupBulkEditFeature;
       }
-      return this.canBulkUpdate;
+      return this.canAdminIssue;
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {

@@ -100,16 +100,13 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfi
    sudo gitlab-ctl set-geo-primary-node
    ```
 
-{{< alert type="note" >}}
-
-PostgreSQL and Redis should have already been disabled on the
-application nodes during typical GitLab multi-node setup. Connections
-from the application nodes to services on the backend nodes should
-have also been configured. See multi-node configuration documentation for
-[PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
-and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
-
-{{< /alert >}}
+> [!note]
+> PostgreSQL and Redis should have already been disabled on the
+> application nodes during typical GitLab multi-node setup. Connections
+> from the application nodes to services on the backend nodes should
+> have also been configured. See multi-node configuration documentation for
+> [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
+> and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
 
 ## Configure the other GitLab site to be a Geo **secondary** site
 

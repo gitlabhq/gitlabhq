@@ -76,7 +76,6 @@ describe('WorkItemDrawer', () => {
         fullPath: 'gitlab-org/gitlab',
         reportAbusePath: '',
         groupPath: '',
-        hasDesignManagementFeature: false,
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
         isGroup,

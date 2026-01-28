@@ -63,6 +63,33 @@ To select a model for a feature:
 
 {{< /alert >}}
 
+## Default models
+
+This table lists the default model for each feature in the Agent Platform.
+
+| Feature | Model |
+|-------|--------------|
+| GitLab Duo Chat (Agentic) | Claude Haiku 4.5 |
+| All other agents | Claude Sonnet 4.5 Vertex |
+
+## Supported models
+
+This table lists the models you can select for features
+in the Agent Platform.
+
+| Model | Agentic Chat | All other agents |
+|-------|--------------|------------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
+| Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
+| GPT-5 | {{< yes >}} | {{< yes >}} |
+| GPT-5 Codex | {{< yes >}} | {{< yes >}} |
+| GPT-5 Mini | {{< yes >}} | {{< yes >}} |
+| GPT-5.2 | {{< yes >}} | {{< yes >}} |
+
 ## Troubleshooting
 
 When selecting models other than the default, you might encounter the following issues.

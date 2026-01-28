@@ -14,9 +14,9 @@ title: Pipeline schedules API
 
 Use this API to interact with [pipeline schedules](../ci/pipelines/schedules.md).
 
-## Get all pipeline schedules
+## List all pipeline schedules
 
-Get a list of the pipeline schedules of a project.
+Lists all pipeline schedules for a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules
@@ -57,9 +57,9 @@ curl --request GET \
 ]
 ```
 
-## Get a single pipeline schedule
+## Retrieve a pipeline schedule
 
-Get the pipeline schedule of a project.
+Retrieves a pipeline schedule for a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -122,9 +122,9 @@ curl --request GET \
 }
 ```
 
-## Get all pipelines triggered by a pipeline schedule
+## List all pipelines triggered by a pipeline schedule
 
-Get all pipelines triggered by a pipeline schedule in a project.
+Lists all pipelines triggered by a pipeline schedule in a project.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/pipelines
@@ -261,9 +261,9 @@ curl --request POST \
   --form "inputs[][value]=blue-green"
 ```
 
-## Edit a pipeline schedule
+## Update a pipeline schedule
 
-Updates the pipeline schedule of a project. After the update is done, it is rescheduled automatically.
+Updates a pipeline schedule for a project. After the update is done, it is rescheduled automatically.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -332,9 +332,9 @@ curl --request PUT \
   --form "inputs[][_destroy]=true"
 ```
 
-## Take ownership of a pipeline schedule
+## Update pipeline schedule ownership
 
-Update the owner of the pipeline schedule of a project.
+Updates the owner of a pipeline schedule for a project.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
@@ -381,7 +381,7 @@ curl --request POST \
 
 ## Delete a pipeline schedule
 
-Delete the pipeline schedule of a project.
+Deletes a pipeline schedule for a project.
 
 ```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
@@ -426,9 +426,9 @@ curl --request DELETE \
 }
 ```
 
-## Run a scheduled pipeline immediately
+## Run a pipeline schedule immediately
 
-Trigger a new scheduled pipeline, which runs immediately. The next scheduled run
+Runs a pipeline schedule immediately. The next scheduled run
 of this pipeline is not affected.
 
 ```plaintext
@@ -456,9 +456,9 @@ Example response:
 }
 ```
 
-## Create a new pipeline schedule variable
+## Create a pipeline schedule variable
 
-Create a new variable of a pipeline schedule.
+Creates a new pipeline schedule variable.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
@@ -488,7 +488,7 @@ curl --request POST \
 }
 ```
 
-## Get a pipeline schedule variable
+## Retrieve a pipeline schedule variable
 
 {{< history >}}
 
@@ -496,7 +496,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Get a single variable of a pipeline schedule.
+Retrieves a pipeline schedule variable.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -535,9 +535,9 @@ Example response:
 }
 ```
 
-## Edit a pipeline schedule variable
+## Update a pipeline schedule variable
 
-Updates the variable of a pipeline schedule.
+Updates a pipeline schedule variable.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -568,7 +568,7 @@ curl --request PUT \
 
 ## Delete a pipeline schedule variable
 
-Delete the variable of a pipeline schedule.
+Deletes a pipeline schedule variable.
 
 ```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key

@@ -27,7 +27,7 @@ Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
 {{< /history >}}
 
-List pipelines in a project.
+Lists pipelines in a project.
 
 By default, [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
 are not included in the results. To return child pipelines, set `source` to `parent_pipeline`.
@@ -96,7 +96,7 @@ Example of response
 ]
 ```
 
-## Get a single pipeline
+## Retrieve a single pipeline
 
 {{< history >}}
 
@@ -105,7 +105,7 @@ Example of response
 
 {{< /history >}}
 
-Get one pipeline from a project.
+Retrieves a single pipeline from a project.
 
 You can also get a single [child pipeline](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
@@ -174,7 +174,7 @@ Example of response
 }
 ```
 
-## Get the latest pipeline
+## Retrieve the latest pipeline
 
 {{< history >}}
 
@@ -183,7 +183,7 @@ Example of response
 
 {{< /history >}}
 
-Get the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
+Retrieves the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
 
 ```plaintext
 GET /projects/:id/pipelines/latest
@@ -249,9 +249,9 @@ Example of response
 }
 ```
 
-## Get variables for a pipeline
+## Retrieve pipeline variables
 
-Get the [pipeline variables](../ci/variables/_index.md#use-pipeline-variables) of a pipeline.
+Retrieves the [pipeline variables](../ci/variables/_index.md#use-pipeline-variables) of a pipeline.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/variables
@@ -287,7 +287,7 @@ Example of response
 ]
 ```
 
-## Get a test report for a pipeline
+## Retrieve a test report for a pipeline
 
 > [!note]
 > This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
@@ -346,7 +346,7 @@ Sample response:
 }
 ```
 
-## Get a test report summary for a pipeline
+## Retrieve a test report summary for a pipeline
 
 > [!note]
 > This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.
@@ -483,7 +483,7 @@ Example of response
 
 {{< /history >}}
 
-Retry failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
+Retries failed or canceled jobs in a pipeline. If there are no failed or canceled jobs in the pipeline, calling this endpoint has no effect.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry
@@ -617,7 +617,7 @@ curl --request DELETE \
 
 ## Update pipeline metadata
 
-You can update the metadata of a pipeline. The metadata contains the name of the pipeline.
+Updates pipeline metadata. The metadata contains the name of the pipeline.
 
 ```plaintext
 PUT /projects/:id/pipelines/:pipeline_id/metadata

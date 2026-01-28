@@ -233,7 +233,7 @@ gem 'google-apis-cloudresourcemanager_v1', '~> 0.44.0', feature_category: :share
 gem 'google-apis-iam_v1', '~> 0.79.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'google-apis-androidpublisher_v3', '~> 0.86.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'google-apis-androidpublisher_v3', '~> 0.92.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'googleauth', '~> 1.14', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

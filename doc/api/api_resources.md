@@ -186,6 +186,7 @@ The following API resources are available outside of project and group contexts 
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                                 | `/features` |
 | [Geo Nodes](geo_nodes.md)                                                                    | `/geo_nodes` |
+| [GLQL](glql.md)                                                                              | `/glql` |
 | [Group Activity Analytics](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
 | [Group repository storage moves](group_repository_storage_moves.md)                          | `/group_repository_storage_moves` |
 | [Import repository from GitHub](import.md#import-repository-from-github)                     | `/import/github` |

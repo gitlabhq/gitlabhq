@@ -71,7 +71,6 @@ const formatSubgroupsAndProjects = (item) => {
     // All properties below are not yet supported by `/children.json` endpoint
     // We set them to defaults so that we don't get Apollo errors when
     // formatting as GraphQL.
-    group: null,
     topics: [],
     isCatalogResource: false,
     exploreCatalogPath: '',

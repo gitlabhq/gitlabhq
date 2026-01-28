@@ -192,7 +192,6 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         groupPath: 'group',
-        hasDesignManagementFeature: true,
         hasLinkedItemsEpicsFeature: true,
         hasSubepicsFeature: true,
         isGroup: false,

@@ -319,16 +319,13 @@ is run), and we track an event for them, they are assigned a variant and see
 that variant if they ever encountered the experiment later, when an `:assignment`
 event would be tracked at that time for them.
 
-{{< alert type="note" >}}
-
-GitLab tries to be sensitive and respectful of our customers regarding tracking,
-so our experimentation library allows us to implement an experiment without ever tracking identifying
-IDs. It's not always possible, though, based on experiment reporting requirements.
-You may be asked from time to time to track a specific record ID in experiments.
-The approach is largely up to the PM and engineer creating the implementation.
-No recommendations are provided here at this time.
-
-{{< /alert >}}
+> [!note]
+> GitLab tries to be sensitive and respectful of our customers regarding tracking,
+> so our experimentation library allows us to implement an experiment without ever tracking identifying
+> IDs. It's not always possible, though, based on experiment reporting requirements.
+> You may be asked from time to time to track a specific record ID in experiments.
+> The approach is largely up to the PM and engineer creating the implementation.
+> No recommendations are provided here at this time.
 
 ## Experiments in the client layer
 

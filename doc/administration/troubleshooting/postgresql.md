@@ -152,16 +152,13 @@ Quoting from issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
-{{< alert type="note" >}}
-
-In Support, our general approach to reconfiguring timeouts (applies also to the
-HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
-makes GitLab usable for the customer, then it buys time to understand the
-problem more completely, implement a hot fix, or make some other change that
-addresses the root cause. Generally, the timeouts should be put back to
-reasonable defaults after the root cause is resolved.
-
-{{< /alert >}}
+> [!note]
+> In Support, our general approach to reconfiguring timeouts (applies also to the
+> HTTP stack) is that it's acceptable to do it temporarily as a workaround. If it
+> makes GitLab usable for the customer, then it buys time to understand the
+> problem more completely, implement a hot fix, or make some other change that
+> addresses the root cause. Generally, the timeouts should be put back to
+> reasonable defaults after the root cause is resolved.
 
 In this case, the guidance we had from development was to drop `deadlock_timeout`
 or `statement_timeout`, but to leave the third setting at 60 seconds. Setting

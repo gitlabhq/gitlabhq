@@ -35,7 +35,7 @@ describe('WorkItemsListActions component', () => {
         rssPath: null,
         calendarPath: null,
         canImportWorkItems: false,
-        canEdit: false,
+        canAdminProject: false,
         isGroupIssuesList: false,
         isEpicsList: false,
         ...injectedProperties,
@@ -61,9 +61,9 @@ describe('WorkItemsListActions component', () => {
 
   describe('import/export options', () => {
     describe('when projectImportJiraPath is provided', () => {
-      describe('and canEdit is true', () => {
+      describe('and canAdminProject is true', () => {
         beforeEach(() => {
-          wrapper = createComponent({ projectImportJiraPath, canEdit: true });
+          wrapper = createComponent({ projectImportJiraPath, canAdminProject: true });
         });
 
         it('renders the dropdown', () => {
@@ -76,9 +76,9 @@ describe('WorkItemsListActions component', () => {
         });
       });
 
-      describe('and canEdit is false', () => {
+      describe('and canAdminProject is false', () => {
         beforeEach(() => {
-          wrapper = createComponent({ projectImportJiraPath, canEdit: false });
+          wrapper = createComponent({ projectImportJiraPath, canAdminProject: false });
         });
 
         it('does not render the import from Jira dropdown item', () => {

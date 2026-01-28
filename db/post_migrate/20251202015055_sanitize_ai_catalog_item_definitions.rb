@@ -41,8 +41,16 @@ class SanitizeAiCatalogItemDefinitions < Gitlab::Database::Migration[2.3]
 
         sanitized_json = json_string.gsub(DANGEROUS_CHARS, '')
         begin
-          new_definition = Gitlab::Json.parse(sanitized_json)
+          new_definition = Gitlab::Json.safe_parse(sanitized_json)
+
           version.update_column(:definition, new_definition)
+        rescue Gitlab::Json::LimitExceededError => e
+          Gitlab::AppLogger.error(
+            "AI catalog definition exceeds safe_parse limits",
+            ai_catalog_item_version_id: version.id,
+            error: e.message
+          )
+          raise e # Re-raise to fail the migration
         rescue JSON::ParserError => e
           # Log the error but continue with the migration
           Gitlab::AppLogger.warn(

@@ -408,16 +408,13 @@ must meet the following system requirements:
 
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
 
-{{< alert type="note" >}}
-
-GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
-This image cannot be overridden.
-
-If you use a private container registry for your other images, GitLab fetches these
-specific images from the GitLab registry. This requirement may impact environments with strict network
-controls, such as offline environments.
-
-{{< /alert >}}
+> [!note]
+> GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
+> This image cannot be overridden.
+> 
+> If you use a private container registry for your other images, GitLab fetches these
+> specific images from the GitLab registry. This requirement may impact environments with strict network
+> controls, such as offline environments.
 
 ## Workspace base image
 

@@ -123,16 +123,13 @@ assume role:
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
-
-This workaround is an advanced configuration option with security considerations to understand.
-You must be careful to correctly sync the OpenID configuration and the public keys from your private
-GitLab Self-Managed instance to a publicly available location such as an S3 bucket.
-You must also ensure that the S3 bucket and files inside are properly secured.
-Failing to properly secure the S3 bucket could lead to the takeover of any cloud accounts
-associated with this OpenID Connect identity.
-
-{{< /alert >}}
+> [!warning]
+> This workaround is an advanced configuration option with security considerations to understand.
+> You must be careful to correctly sync the OpenID configuration and the public keys from your private
+> GitLab Self-Managed instance to a publicly available location such as an S3 bucket.
+> You must also ensure that the S3 bucket and files inside are properly secured.
+> Failing to properly secure the S3 bucket could lead to the takeover of any cloud accounts
+> associated with this OpenID Connect identity.
 
 If your GitLab instance is not publicly accessible, configuring OpenID Connect in AWS
 is not possible by default. You can use a workaround to make some specific configuration publicly

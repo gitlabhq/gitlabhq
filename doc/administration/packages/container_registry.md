@@ -1419,16 +1419,13 @@ sudo gitlab-ctl registry-garbage-collect
 
 The time required to perform garbage collection is proportional to the container registry data size.
 
-{{< alert type="warning" >}}
-
-The `registry-garbage-collect` command shuts down the container registry prior to the garbage collection and
-only starts it again after garbage collection completes. If you prefer to avoid downtime,
-you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
-
-This command proceeds only if legacy metadata is in use. This command does not proceed
-if the [container registry metadata database](#container-registry-metadata-database) is enabled.
-
-{{< /alert >}}
+> [!warning]
+> The `registry-garbage-collect` command shuts down the container registry prior to the garbage collection and
+> only starts it again after garbage collection completes. If you prefer to avoid downtime,
+> you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
+> 
+> This command proceeds only if legacy metadata is in use. This command does not proceed
+> if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 
 ### Understanding the content-addressable layers
 

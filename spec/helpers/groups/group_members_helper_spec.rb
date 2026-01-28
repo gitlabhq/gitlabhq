@@ -263,7 +263,7 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
     end
 
     it 'contains expected text with group name' do
-      expect(helper.group_member_header_subtext(group)).to match("You're viewing members of .*#{group.name}")
+      expect(helper.group_member_header_subtext(group)).to match("You&#39;re viewing members of <strong>*#{group.name}</strong>.")
     end
   end
 

@@ -201,7 +201,7 @@ To view pipeline test results:
 
 ![Test results showing 1671 tests with 1 minute 11 seconds total execution time and individual job execution times.](img/pipelines_junit_test_report_v18_3.png)
 
-You can also retrieve test reports with the [Pipelines API](../../api/pipelines.md#get-a-test-report-for-a-pipeline).
+You can also retrieve test reports with the [Pipelines API](../../api/pipelines.md#retrieve-a-test-report-for-a-pipeline).
 
 ### Test timing metrics
 

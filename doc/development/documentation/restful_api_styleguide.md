@@ -31,6 +31,34 @@ The Markdown topic for an API resource must include:
 
 After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry).
 
+## Page metadata
+
+When you create a new page, include a `description` metadata field
+in the front matter that follows these guidelines for consistency:
+
+- Start with "REST API to"
+- Use action verbs that describe what users can do with the API
+- Avoid words ending in -ing
+- Keep to one sentence, ideally under 100 characters
+- End with a period
+
+For example:
+
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: REST API to create, update, and delete issues.
+title: Example page title
+---
+```
+
+Additional examples:
+
+- `description: REST API to retrieve CI/CD job details, retry and cancel jobs, run manual jobs, and access job logs.`
+- `description: REST API to create, manage, and monitor CI/CD pipelines.`
+
 ## API topic template
 
 Use the following template to help you get started. Be sure to list any

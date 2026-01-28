@@ -9486,7 +9486,6 @@ export const workItemMetadataProviderResponse = {
     namespace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
       availableFeatures: {
-        hasDesignManagementFeature: true,
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,
@@ -9651,7 +9650,6 @@ export const mockMetadataQueryResponse = {
       id: 'gid://gitlab/Group/15',
       availableFeatures: {
         __typename: 'AvailableFeatures',
-        hasDesignManagementFeature: true,
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,

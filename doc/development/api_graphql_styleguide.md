@@ -922,16 +922,13 @@ This can be done in a resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
 
-{{< alert type="note" >}}
-
-It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
-This signals to consumers of the public GraphQL API that the field is not
-meant to be used yet.
-You can also
-[change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
-the schema item by removing its `experiment` property to make it public.
-
-{{< /alert >}}
+> [!note]
+> It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
+> This signals to consumers of the public GraphQL API that the field is not
+> meant to be used yet.
+> You can also
+> [change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
+> the schema item by removing its `experiment` property to make it public.
 
 ### Descriptions for feature-flagged items
 

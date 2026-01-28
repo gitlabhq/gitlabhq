@@ -129,16 +129,13 @@ before the policy changes take effect.
 
 ![Scan Execution Policy Editor Rule Mode](img/scan_execution_policy_rule_mode_v17_5.png)
 
-{{< alert type="note" >}}
-
-For DAST execution policies, the way you apply site and scanner profiles in the rule mode editor depends on
-where the policy is defined:
-
-- For policies in projects, in the rule mode editor, choose from a list of profiles that are already defined in the project.
-- For policies in groups, you must type in the names of the profiles to use. To prevent pipeline errors, profiles with
-  matching names must exist in all of the group's projects.
-
-{{< /alert >}}
+> [!note]
+> For DAST execution policies, the way you apply site and scanner profiles in the rule mode editor depends on
+> where the policy is defined:
+> 
+> - For policies in projects, in the rule mode editor, choose from a list of profiles that are already defined in the project.
+> - For policies in groups, you must type in the names of the profiles to use. To prevent pipeline errors, profiles with
+>   matching names must exist in all of the group's projects.
 
 ## Scan execution policies schema
 

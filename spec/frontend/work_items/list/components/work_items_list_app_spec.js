@@ -281,8 +281,8 @@ const mountComponent = ({
       canReadCrmOrganization,
       canReadCrmContact,
       autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
-      canBulkUpdate: true,
-      canBulkEditEpics: true,
+      canAdminIssue: true,
+      canBulkAdminEpic: true,
       canCreateProjects: true,
       hasBlockedIssuesFeature: false,
       hasEpicsFeature: false,
@@ -1919,25 +1919,25 @@ describe('CreateWorkItem modal', () => {
 describe('when bulk editing', () => {
   describe('user permissions', () => {
     describe('when workItemType=Epic', () => {
-      it.each([true, false])('renders=$s when canBulkEditEpics=%s', async (canBulkEditEpics) => {
-        mountComponent({ provide: { canBulkEditEpics, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
+      it.each([true, false])('renders=$s when canBulkAdminEpic=%s', async (canBulkAdminEpic) => {
+        mountComponent({ provide: { canBulkAdminEpic, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
         await waitForPromises();
 
-        expect(findBulkEditStartButton().exists()).toBe(canBulkEditEpics);
+        expect(findBulkEditStartButton().exists()).toBe(canBulkAdminEpic);
       });
     });
 
     describe('when group', () => {
       it.each`
-        canBulkUpdate | hasGroupBulkEditFeature | renders
+        canAdminIssue | hasGroupBulkEditFeature | renders
         ${true}       | ${true}                 | ${true}
         ${true}       | ${false}                | ${false}
         ${false}      | ${true}                 | ${false}
         ${false}      | ${false}                | ${false}
       `(
-        'renders=$renders when canBulkUpdate=$canBulkUpdate and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
-        async ({ canBulkUpdate, hasGroupBulkEditFeature, renders }) => {
-          mountComponent({ provide: { isGroup: true, canBulkUpdate, hasGroupBulkEditFeature } });
+        'renders=$renders when canAdminIssue=$canAdminIssue and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
+        async ({ canAdminIssue, hasGroupBulkEditFeature, renders }) => {
+          mountComponent({ provide: { isGroup: true, canAdminIssue, hasGroupBulkEditFeature } });
           await waitForPromises();
 
           expect(findBulkEditStartButton().exists()).toBe(renders);
@@ -1946,11 +1946,11 @@ describe('when bulk editing', () => {
     });
 
     describe('when project', () => {
-      it.each([true, false])('renders depending on canBulkUpdate=%s', async (canBulkUpdate) => {
-        mountComponent({ provide: { isGroup: false, canBulkUpdate } });
+      it.each([true, false])('renders depending on canAdminIssue=%s', async (canAdminIssue) => {
+        mountComponent({ provide: { isGroup: false, canAdminIssue } });
         await waitForPromises();
 
-        expect(findBulkEditStartButton().exists()).toBe(canBulkUpdate);
+        expect(findBulkEditStartButton().exists()).toBe(canAdminIssue);
       });
     });
   });

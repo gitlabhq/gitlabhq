@@ -689,22 +689,22 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       it 'uses the correct singular label' do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo'))
-         .to eq("Showing 1 #{label} for <span>&nbsp;<code>foo</code>&nbsp;</span>")
+        expect(helper.search_entries_info(collection, scope, 'foo'))
+         .to eq("Showing 1 #{label} for <span> <code>foo</code> </span>")
       end
 
       it 'uses the correct plural label' do
         collection = Kaminari.paginate_array([:foo] * 23).page(1).per(10)
 
-        expect(search_entries_info(collection, scope, 'foo'))
-          .to eq("Showing 1 - 10 of 23 #{label.pluralize} for <span>&nbsp;<code>foo</code>&nbsp;</span>")
+        expect(helper.search_entries_info(collection, scope, 'foo'))
+          .to eq("Showing 1 - 10 of 23 #{label.pluralize} for <span> <code>foo</code> </span>")
       end
     end
 
     it 'raises an error for unrecognized scopes' do
       expect do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
-        search_entries_info(collection, 'unknown', 'foo')
+        helper.search_entries_info(collection, 'unknown', 'foo')
       end.to raise_error(RuntimeError)
     end
   end
@@ -714,7 +714,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     let!(:project) { build(:project, group: group) }
 
     context 'for global search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', nil, nil) }
 
       it 'returns the formatted entry message' do
         expect(message).to eq("We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
@@ -723,7 +723,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'for group search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', group, nil) }
 
       it 'returns the formatted entry message' do
         expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in group <a')
@@ -732,7 +732,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     context 'for project search' do
-      let(:message) { search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
+      let(:message) { helper.search_entries_empty_message('projects', '<h1>foo</h1>', group, project) }
 
       it 'returns the formatted entry message' do
         expect(message).to start_with('We couldn&#39;t find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code> in project <a')

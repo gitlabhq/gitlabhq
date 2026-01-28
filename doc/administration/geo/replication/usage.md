@@ -34,16 +34,13 @@ remote:
 Everything up-to-date
 ```
 
-{{< alert type="note" >}}
-
-If you're using HTTPS instead of [SSH](../../../user/ssh.md) to push to the secondary,
-you can't store credentials in the URL like `user:password@URL`. Instead, you can use a
-[`.netrc` file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html)
-for Unix-like operating systems or `_netrc` for Windows. In that case, the credentials
-are stored as a plain text. If you're looking for a more secure way to store credentials,
-you can use [Git Credential Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-
-{{< /alert >}}
+> [!note]
+> If you're using HTTPS instead of [SSH](../../../user/ssh.md) to push to the secondary,
+> you can't store credentials in the URL like `user:password@URL`. Instead, you can use a
+> [`.netrc` file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html)
+> for Unix-like operating systems or `_netrc` for Windows. In that case, the credentials
+> are stored as a plain text. If you're looking for a more secure way to store credentials,
+> you can use [Git Credential Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 
 ## Web user interface
 

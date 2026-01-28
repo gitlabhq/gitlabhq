@@ -22,9 +22,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get current plan limits
+## Retrieve current plan limits
 
-List the current limits of a plan on the GitLab instance.
+Retrieves the current limits of a plan on the GitLab instance.
 
 ```plaintext
 GET /application/plan_limits
@@ -69,9 +69,9 @@ Example response:
 }
 ```
 
-## Change plan limits
+## Update plan limits
 
-Modify the limits of a plan on the GitLab instance.
+Updates the limits of a plan on the GitLab instance.
 
 ```plaintext
 PUT /application/plan_limits

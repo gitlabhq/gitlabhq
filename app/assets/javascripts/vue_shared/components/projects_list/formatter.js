@@ -10,7 +10,6 @@ export const formatGraphQLProject = (
     issuesAccessLevel,
     forkingAccessLevel,
     maxAccessLevel: accessLevel,
-    group,
     fullPath,
     ...project
   },
@@ -27,7 +26,6 @@ export const formatGraphQLProject = (
     isForked: false,
     accessLevel,
     availableActions: availableGraphQLProjectActions(project),
-    isPersonal: group === null,
     fullPath,
     relativeWebUrl: joinPaths('/', gon.relative_url_root, fullPath),
   };

@@ -630,16 +630,13 @@ SSO is enforced as follows:
 | Public                   | Off                 | Enforced             | Not enforced            | Not enforced                |
 | Public                   | On                  | Enforced             | Enforced                | Not enforced                |
 
-{{< alert type="note" >}}
-
-SSO enforcement does not apply to API requests. However, you can
-[disable password authentication for enterprise users](#disable-password-authentication-for-enterprise-users)
-to prevent password-based API access.
-
-An [issue proposes](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add
-SSO enforcement for API activity.
-
-{{< /alert >}}
+> [!note]
+> SSO enforcement does not apply to API requests. However, you can
+> [disable password authentication for enterprise users](#disable-password-authentication-for-enterprise-users)
+> to prevent password-based API access.
+> 
+> An [issue proposes](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add
+> SSO enforcement for API activity.
 
 ### SSO-only for web activity enforcement
 

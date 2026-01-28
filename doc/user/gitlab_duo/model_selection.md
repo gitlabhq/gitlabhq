@@ -51,6 +51,80 @@ To select a model for a feature:
 1. For the feature you want to configure, select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
+## Default models
+
+The following table lists the default model for each GitLab Duo feature.
+
+| Feature | Model |
+|---------|---------------|
+| **Code Suggestions** | |
+| Code Generation | Claude Sonnet 4 Vertex |
+| Code Completion | Codestral 25.01 Fireworks|
+| **GitLab Duo Chat** | |
+| General Chat | Claude Sonnet 4.5 Vertex |
+| Code Explanation | Claude Sonnet 4 |
+| Test Generation | Claude Sonnet 4.5 Vertex |
+| Refactor Code | Claude Sonnet 4.5 Vertex |
+| Fix Code | Claude Sonnet 4.5 Vertex |
+| Root Cause Analysis | Claude Sonnet 4 Vertex |
+| **GitLab Duo for merge requests** | |
+| Merge Commit Message Generation | Claude Sonnet 4 Vertex|
+| Merge Request Summary | Claude Sonnet 4 Vertex |
+| Code Review Summary | Claude Sonnet 4 Vertex |
+| Code Review | Claude Sonnet 4 Vertex |
+| **Other GitLab Duo features** | |
+| Vulnerability Explanation | Claude Sonnet 4.5 Vertex |
+| Vulnerability Resolution | Claude Sonnet 4.5 |
+| Discussion Summary | Claude Sonnet 4.5 Vertex |
+| GitLab Duo for CLI | Claude Haiku 4.5 |
+
+## Supported models
+
+The following tables list the models you can select for each feature.
+
+### Code Suggestions
+
+| Model | Code Generation | Code Completion |
+|------------|-----------------|-----------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
+| Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
+| Codestral 25.01 Vertex | {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Fireworks| {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Vertex| {{< no >}} | {{< yes >}} |
+| Gemini 2.5 Flash | {{< yes >}} | {{< no >}} |
+
+### GitLab Duo Chat (Classic)
+
+| Model | General Chat | Code Explanation | Test Generation | Refactor Code | Fix Code | Root Cause Analysis |
+|------------|--------------|------------------|-----------------|---------------|----------|---------------------|
+| Claude Haiku 4.5 | {{< yes >}} | {{< no >}} | | | {{< no >}} | |
+| Claude Sonnet 3 | {{< no >}} | | | {{< no >}} | | {{< yes >}} |
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |  |
+
+### GitLab Duo for merge requests
+
+| Model | Merge Commit Message Generation | Merge Request Summary | Code Review Summary | Code Review |
+|------------|--------------------------------|------------------------|---------------------|-------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+
+### Other GitLab Duo features
+
+| Model | Vulnerability Explanation | Vulnerability Resolution | GitLab Duo for CLI | Discussion Summary |
+|------------|----------------------------|--------------------------|-------------------|---------------------|
+| Claude Haiku 3 | {{< yes >}} | {{< no >}} | {{< yes >}} | {{< no >}} |
+| Claude Haiku 4.5 | {{< no >}} | | {{< yes >}} | {{< no >}} |
+| Claude Sonnet 4 |  | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} |  | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} |  |  | {{< yes >}} |
+
 ## Troubleshooting
 
 When selecting models other than the default, you might encounter the following issues.

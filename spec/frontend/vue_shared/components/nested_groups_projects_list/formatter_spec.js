@@ -81,7 +81,6 @@ describe('formatGraphQLGroupsAndProjects', () => {
       },
       availableActions: ['copy-id', 'edit'],
       customProperty: mockProject.nameWithNamespace,
-      isPersonal: false,
       relativeWebUrl: `/gitlab/${mockProject.fullPath}`,
     });
 

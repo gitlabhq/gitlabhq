@@ -13,7 +13,6 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
@@ -108,9 +107,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  designManagementDocsHref: helpPagePath('user/project/issues/design_management', {
-    anchor: 'prerequisites',
-  }),
   isLoggedIn: isLoggedIn(),
   VALID_DESIGN_FILE_MIMETYPE,
   SHOW_SIDEBAR_STORAGE_KEY: 'work_item_show_sidebar',
@@ -155,9 +151,6 @@ export default {
   inject: {
     groupPath: {
       from: 'groupPath',
-    },
-    hasDesignManagementFeature: {
-      from: 'hasDesignManagementFeature',
     },
     hasSubepicsFeature: {
       from: 'hasSubepicsFeature',

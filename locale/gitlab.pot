@@ -26317,6 +26317,9 @@ msgstr ""
 msgid "DuoCoreTrialDiscover|Now featuring GitLab Duo"
 msgstr ""
 
+msgid "DuoCoreTrialDiscover|Now featuring GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoCoreTrialDiscover|Prevent pipeline conflicts with merge trains and push rules, store build outputs with Artifact Registry, and reuse working templates across teams."
 msgstr ""
 
@@ -63455,10 +63458,13 @@ msgstr ""
 msgid "SecurityReports|Failed updating vulnerabilities with the following IDs: %{ids}"
 msgstr ""
 
+msgid "SecurityReports|False positive"
+msgstr ""
+
 msgid "SecurityReports|Filter results..."
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo (AI)"
+msgid "SecurityReports|GitLab Duo FP detection"
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
@@ -63468,6 +63474,9 @@ msgid "SecurityReports|GitLab Duo can automatically review new critical and high
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings."
+msgstr ""
+
+msgid "SecurityReports|GitLab Duo resolution"
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo security features are here!"
@@ -63608,6 +63617,9 @@ msgid "SecurityReports|Not dismissed by vulnerability policy"
 msgstr ""
 
 msgid "SecurityReports|Not found"
+msgstr ""
+
+msgid "SecurityReports|Not identified as false positive"
 msgstr ""
 
 msgid "SecurityReports|OWASP Top 10 2017"
@@ -68182,19 +68194,22 @@ msgstr ""
 msgid "TerraformBanner|Using Terraform? Try the GitLab Managed Terraform State"
 msgstr ""
 
-msgid "TerraformLimits|Learn more about Terraform limits."
-msgstr ""
-
-msgid "TerraformLimits|Limits for Terraform features"
-msgstr ""
-
 msgid "TerraformLimits|Maximum file size (in bytes) of Terraform state files. Set to 0 for no limit."
 msgstr ""
 
-msgid "TerraformLimits|Terraform limits"
+msgid "TerraformLimits|Terraform state size limit (bytes)"
 msgstr ""
 
-msgid "TerraformLimits|Terraform state size limit (bytes)"
+msgid "TerraformSettings|Configure Terraform state settings and limits."
+msgstr ""
+
+msgid "TerraformSettings|Encrypt Terraform state files before storing them. When turned off, state files are stored unencrypted."
+msgstr ""
+
+msgid "TerraformSettings|Terraform state"
+msgstr ""
+
+msgid "TerraformSettings|Turn on Terraform state encryption"
 msgstr ""
 
 msgid "Terraform|%{name} successfully removed"
@@ -80233,6 +80248,9 @@ msgstr ""
 msgid "You may close the milestone now."
 msgstr ""
 
+msgid "You must %{docs_link} before using Security features."
+msgstr ""
+
 msgid "You must be authenticated to access this path."
 msgstr ""
 
@@ -80410,7 +80428,7 @@ msgstr ""
 msgid "You're receiving this email because you have been mentioned on %{host}. %{unsubscribe_link_start}Unsubscribe%{unsubscribe_link_end} from this thread &middot; %{manage_notifications_link_start}Manage all notifications%{manage_notifications_link_end} &middot; %{help_link_start}Help%{help_link_end}"
 msgstr ""
 
-msgid "You're viewing members of %{strong_start}%{group_name}%{strong_end}."
+msgid "You're viewing members of %{open}%{group_name}%{close}."
 msgstr ""
 
 msgid "You've already registered an OTP authenticator. To register a new OTP authenticator, delete the current one."

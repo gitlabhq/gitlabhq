@@ -55,7 +55,7 @@ export default {
     :fields="tableFields"
     :tbody-tr-attr="{ 'data-testid': 'jobs-table-row' }"
     data-testid="jobs-table"
-    stacked="lg"
+    stacked="md"
     fixed
   >
     <template #table-colgroup="{ fields }">

@@ -35,7 +35,7 @@ Personal access tokens are:
 > There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
 > use the username.
 
-For examples of how you can use a personal access token to authenticate with the API, see the API documentation.
+For examples of how you can use a personal access token to authenticate with the API, see [REST API authentication](../../api/rest/authentication.md#personal-project-and-group-access-tokens).
 
 Alternately, GitLab administrators can use the API to create impersonation tokens.
 Use impersonation tokens to automate authentication as a specific user.
@@ -412,7 +412,7 @@ signed DPoP header requires your corresponding private SSH key.
 
 > [!note]
 > If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
-> 
+>
 > DPoP header is not required for Git operations over HTTPS that include an access token.
 
 Prerequisites:

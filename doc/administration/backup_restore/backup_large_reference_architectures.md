@@ -26,16 +26,13 @@ Follow these procedures for GitLab environments running reference architectures
 that support 3,000+ users, with special considerations for cloud-based
 databases and object storage.
 
-{{< alert type="note" >}}
-
-This document is intended for environments using:
-
-- [Linux package (Omnibus) and cloud-native hybrid reference architectures 60 RPS / 3,000 users and up](../reference_architectures/_index.md)
-- [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
-- [Amazon S3](https://aws.amazon.com/s3/) for object storage
-- [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
-
-{{< /alert >}}
+> [!note]
+> This document is intended for environments using:
+> 
+> - [Linux package (Omnibus) and cloud-native hybrid reference architectures 60 RPS / 3,000 users and up](../reference_architectures/_index.md)
+> - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
+> - [Amazon S3](https://aws.amazon.com/s3/) for object storage
+> - [Object storage](../object_storage.md) to store everything possible, including [blobs](backup_gitlab.md#blobs) and [container registry](backup_gitlab.md#container-registry)
 
 ## Configure daily backups
 

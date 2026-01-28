@@ -287,6 +287,12 @@ module Ci
 
     # Force variables evaluation to occur now
     def present_build!(build, queue_size:, queue_depth:)
+      # The JWT token may have been memoized during pre_assign_runner_checks (e.g., when
+      # validating build dependencies or checking secrets providers), before update_timeout_state
+      # set the job's timeout. Reset it so the token is regenerated with the correct expiration.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581924
+      build.clear_memoization(:encoded_jwt)
+
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
       presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code

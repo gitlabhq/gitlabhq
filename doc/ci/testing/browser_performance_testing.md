@@ -48,16 +48,13 @@ between the source and target branches, and shows the information in the merge r
 For an example Browser Performance job, see
 [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
-{{< alert type="note" >}}
-
-If the Browser Performance report has no data to compare, such as when you add the
-Browser Performance job in your `.gitlab-ci.yml` for the very first time,
-the Browser Performance report widget doesn't display. It must have run at least
-once on the target branch (`main`, for example), before it displays in a
-merge request targeting that branch. Additionally, the widget only displays if the
-job ran in the latest pipeline for the Merge request.
-
-{{< /alert >}}
+> [!note]
+> If the Browser Performance report has no data to compare, such as when you add the
+> Browser Performance job in your `.gitlab-ci.yml` for the very first time,
+> the Browser Performance report widget doesn't display. It must have run at least
+> once on the target branch (`main`, for example), before it displays in a
+> merge request targeting that branch. Additionally, the widget only displays if the
+> job ran in the latest pipeline for the Merge request.
 
 ![Browser Performance Widget](img/browser_performance_testing_v13_4.png)
 

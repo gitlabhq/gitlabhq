@@ -14,6 +14,24 @@ EOF
   exit 0
 fi
 
+# Check whether config/gitleaks-local.toml is up-to-date or if it needs to be regenerated
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$SCRIPT_DIR/.."
+GENERATOR_SCRIPT="$REPO_ROOT/scripts/generate-gitleaks-local-config.sh"
+LOCAL_CONFIG="$REPO_ROOT/config/gitleaks-local.toml"
+
+if [ -f "$GENERATOR_SCRIPT" ]; then
+  EXPECTED=$("$GENERATOR_SCRIPT" --dry-run 2>/dev/null || true)
+  ACTUAL=$(cat "$LOCAL_CONFIG" 2>/dev/null || true)
+  if [ "$EXPECTED" != "$ACTUAL" ]; then
+    cat >&2 <<EOF
+ERROR: config/gitleaks-local.toml is out of date.
+Please run: scripts/generate-gitleaks-local-config.sh
+EOF
+    exit 1
+  fi
+fi
+
 if [ -z "$HOOK_TYPE" ]; then
   cat >&2 <<EOF
 ERROR: Hook type argument is required.
@@ -23,11 +41,12 @@ EOF
   exit 1
 fi
 
+# Run gitleaks
 if [ "$HOOK_TYPE" == "pre-commit" ]; then
-  gitleaks git --pre-commit --staged --no-banner --redact --verbose
+  gitleaks git -c config/gitleaks-local.toml --pre-commit --staged --no-banner --redact --verbose
 elif [ "$HOOK_TYPE" == "pre-push" ]; then
   BASE_COMMIT=$(git merge-base origin/master HEAD)
-  gitleaks git --log-opts="$BASE_COMMIT..HEAD" --no-banner --redact --verbose
+  gitleaks git -c config/gitleaks-local.toml --log-opts="$BASE_COMMIT..HEAD" --no-banner --redact --verbose
 else
   cat >&2 <<EOF
 ERROR: Unsupported hook type '$HOOK_TYPE'.

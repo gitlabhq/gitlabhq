@@ -293,16 +293,13 @@ It is only available through the GraphQL
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-The `version`, `revision`, `platform`, and `architecture` attributes in the response are deprecated
-[in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and are scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-The same attributes can be found inside the respective runner manager.
-It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> [!note]
+> The `version`, `revision`, `platform`, and `architecture` attributes in the response are deprecated
+> [in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and are scheduled for removal in
+> [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> The same attributes can be found inside the respective runner manager.
+> It is only available through the GraphQL
+> [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -725,16 +722,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
      --form "runner_id=9"
 ```
 
-{{< alert type="warning" >}}
-
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab 17.0, this attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager. It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> [!warning]
+> The `ip_address` attribute in the response is deprecated
+> [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+> [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> In GitLab 17.0, this attribute returns an empty string.
+> The `ipAddress` attribute can be found inside the respective runner manager. It is only available through the GraphQL
+> [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -812,10 +806,6 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 | `tag_list`       | string array | no       | A list of runner tags |
 | `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
-```
-
 > [!warning]
 > Deprecations:
 >
@@ -826,16 +816,17 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 >   and is scheduled for removal in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 >   Use the `paused` attribute instead.
 
-{{< alert type="warning" >}}
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
+```
 
-The `ip_address` attribute in the response is deprecated
-[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
-[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-In GitLab, t attribute returns an empty string.
-The `ipAddress` attribute can be found inside the respective runner manager. It is only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
-
-{{< /alert >}}
+> [!warning]
+> The `ip_address` attribute in the response is deprecated
+> [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and is scheduled for removal in
+> [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+> In GitLab, the attribute returns an empty string.
+> The `ipAddress` attribute can be found inside the respective runner manager. It is only available through the GraphQL
+> [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 

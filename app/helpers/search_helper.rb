@@ -78,15 +78,17 @@ module SearchHelper
     from = collection.offset_value + 1
     to = collection.offset_value + collection.to_a.size
     count = collection.total_count
-    term_element = "<span>&nbsp;<code>#{h(term)}</code>&nbsp;</span>".html_safe
+    term_element = tag.span(
+      safe_join([' ', tag.code(term), ' '])
+    )
 
-    search_entries_info_template(collection) % {
+    safe_format(
+      search_entries_info_template(collection),
       from: from,
       to: to,
       count: count,
       scope: search_entries_scope_label(scope, count),
-      term_element: term_element
-    }
+      term_element: term_element)
   end
 
   def search_entries_scope_label(scope, count)
@@ -118,16 +120,16 @@ module SearchHelper
 
   def search_entries_info_template(collection)
     if collection.total_pages > 1
-      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for %{term_element}").html_safe
+      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for %{term_element}")
     else
-      s_("SearchResults|Showing %{count} %{scope} for %{term_element}").html_safe
+      s_("SearchResults|Showing %{count} %{scope} for %{term_element}")
     end
   end
 
   def search_entries_empty_message(scope, term, group, project)
     options = {
       scope: search_entries_scope_label(scope, 0),
-      term: "<code>#{h(term)}</code>".html_safe
+      term: tag.code(term)
     }
 
     # We check project first because we have 3 possible combinations here:
@@ -135,21 +137,34 @@ module SearchHelper
     # - group
     # - group: nil, project: nil
     if project
-      ERB::Util.html_escape(
-        _("We couldn't find any %{scope} matching %{term} in project %{project}")) % options.merge(
+      safe_format(
+        _("We couldn't find any %{scope} matching %{term} in project %{project}"),
+        options.merge(
           project: link_to(
             project.full_name,
             project_path(project),
             target: '_blank',
             rel: 'noopener noreferrer'
-          ).html_safe
+          )
         )
+      )
     elsif group
-      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term} in group %{group}")) % options.merge(
-        group: link_to(group.full_name, group_path(group), target: '_blank', rel: 'noopener noreferrer').html_safe
+      safe_format(
+        _("We couldn't find any %{scope} matching %{term} in group %{group}"),
+        options.merge(
+          group: link_to(
+            group.full_name,
+            group_path(group),
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          )
+        )
       )
     else
-      ERB::Util.html_escape(_("We couldn't find any %{scope} matching %{term}")) % options
+      safe_format(
+        _("We couldn't find any %{scope} matching %{term}"),
+        options
+      )
     end
   end
 

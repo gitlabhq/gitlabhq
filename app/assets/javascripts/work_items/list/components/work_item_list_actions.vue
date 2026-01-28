@@ -51,7 +51,7 @@ export default {
     canImportWorkItems: {
       default: false,
     },
-    canEdit: {
+    canAdminProject: {
       default: false,
     },
   },
@@ -160,7 +160,7 @@ export default {
       return this.filteredRssPath || this.calendarPath;
     },
     isJiraImportVisible() {
-      return Boolean(this.projectImportJiraPath) && this.canEdit;
+      return Boolean(this.projectImportJiraPath) && this.canAdminProject;
     },
     canImport() {
       return this.isJiraImportVisible || this.canImportWorkItems;

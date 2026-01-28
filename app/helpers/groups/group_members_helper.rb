@@ -39,11 +39,10 @@ module Groups::GroupMembersHelper
   # rubocop:enable Metrics/ParameterLists
 
   def group_member_header_subtext(group)
-    ERB::Util.html_escape(_("You're viewing members of %{strong_start}%{group_name}%{strong_end}.").html_safe) % {
-      group_name: group.name,
-      strong_start: '<strong>'.html_safe,
-      strong_end: '</strong>'.html_safe
-    }
+    safe_format(
+      _("You're viewing members of %{open}%{group_name}%{close}."),
+      tag_pair(tag.strong, :open, :close),
+      group_name: group.name)
   end
 
   # Overriden in ee/app/helpers/ee/groups/group_members_helper.rb
