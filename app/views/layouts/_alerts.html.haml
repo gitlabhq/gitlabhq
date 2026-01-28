@@ -5,7 +5,7 @@
   -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
   = dispensable_render_if_exists "layouts/header/account_notification"
   = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
-  = dispensable_render "shared/projects/inactive_project_deletion_alert"
+  = dispensable_render "shared/projects/dormant_project_deletion_alert"
   = dispensable_render "shared/groups_projects/self_or_ancestor_archived_notice", context: context
   = dispensable_render "layouts/header/read_only_banner"
   = dispensable_render "layouts/header/registration_enabled_callout"

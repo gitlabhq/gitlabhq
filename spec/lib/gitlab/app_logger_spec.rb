@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::AppLogger, feature_category: :shared do
+RSpec.describe Gitlab::AppLogger, feature_category: :observability do
   subject { described_class }
 
   specify { expect(described_class.primary_logger).to be Gitlab::AppJsonLogger }

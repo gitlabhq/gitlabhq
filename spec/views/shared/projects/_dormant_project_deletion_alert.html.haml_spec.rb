@@ -2,10 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe 'shared/projects/_inactive_project_deletion_alert' do
-  let_it_be(:project) { create(:project) }
+RSpec.describe 'shared/projects/_dormant_project_deletion_alert', feature_category: :groups_and_projects do
+  let_it_be(:project) { build_stubbed(:project) }
 
-  let(:text) { 'Due to inactivity, this project is scheduled to be deleted on 2022-04-01. Why is this scheduled?' }
+  let(:text) do
+    format(
+      _('Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. Why is this scheduled?'),
+      deletion_date: '2022-04-01'
+    )
+  end
 
   shared_examples 'does not render' do
     before do
@@ -16,7 +21,7 @@ RSpec.describe 'shared/projects/_inactive_project_deletion_alert' do
   end
 
   before do
-    allow(view).to receive(:inactive_project_deletion_date).with(project).and_return('2022-04-01')
+    allow(view).to receive(:dormant_project_deletion_date).with(project).and_return('2022-04-01')
   end
 
   context 'without a project' do
@@ -30,17 +35,17 @@ RSpec.describe 'shared/projects/_inactive_project_deletion_alert' do
   context 'with a project' do
     before do
       assign(:project, project)
-      allow(view).to receive(:show_inactive_project_deletion_banner?).and_return(inactive)
+      allow(view).to receive(:show_dormant_project_deletion_banner?).and_return(dormant)
     end
 
     context 'when the project is active' do
-      let(:inactive) { false }
+      let(:dormant) { false }
 
       it_behaves_like 'does not render'
     end
 
-    context 'when the project is inactive' do
-      let(:inactive) { true }
+    context 'when the project is dormant' do
+      let(:dormant) { true }
 
       before do
         render

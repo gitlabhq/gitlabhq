@@ -581,14 +581,14 @@ module ProjectsHelper
     project.persisted? && can?(current_user, :archive_project, project)
   end
 
-  def show_inactive_project_deletion_banner?(project)
+  def show_dormant_project_deletion_banner?(project)
     return false unless project
-    return false unless delete_inactive_projects?
+    return false unless delete_dormant_projects?
 
     project.persisted? && project.dormant?
   end
 
-  def inactive_project_deletion_date(project)
+  def dormant_project_deletion_date(project)
     Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
   end
 
@@ -1064,8 +1064,8 @@ module ProjectsHelper
     }
   end
 
-  def delete_inactive_projects?
-    strong_memoize(:delete_inactive_projects_setting) do
+  def delete_dormant_projects?
+    strong_memoize(:delete_dormant_projects_setting) do
       ::Gitlab::CurrentSettings.delete_inactive_projects?
     end
   end

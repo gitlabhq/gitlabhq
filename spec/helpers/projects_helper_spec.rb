@@ -1381,9 +1381,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#show_inactive_project_deletion_banner?' do
+  describe '#show_dormant_project_deletion_banner?' do
     shared_examples 'does not show the banner' do |pass_project: true|
-      it { expect(helper.show_inactive_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
+      it { expect(helper.show_dormant_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
     end
 
     context 'with no project' do
@@ -1415,7 +1415,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         it_behaves_like 'does not show the banner'
       end
 
-      context 'with an inactive project' do
+      context 'with a dormant project' do
         before do
           project.statistics.storage_size = 1.megabyte
           project.last_activity_at = 1.year.ago
@@ -1423,13 +1423,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it 'shows the banner' do
-          expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
+          expect(helper.show_dormant_project_deletion_banner?(project)).to be(true)
         end
       end
     end
   end
 
-  describe '#inactive_project_deletion_date' do
+  describe '#dormant_project_deletion_date' do
     let(:tracker) { instance_double(::Gitlab::DormantProjectsDeletionWarningTracker) }
 
     before do
@@ -1441,7 +1441,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     it 'returns the deletion date' do
-      expect(helper.inactive_project_deletion_date(project)).to eq('2022-03-01')
+      expect(helper.dormant_project_deletion_date(project)).to eq('2022-03-01')
     end
   end
 

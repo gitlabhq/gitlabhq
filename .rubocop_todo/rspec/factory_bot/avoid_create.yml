@@ -563,7 +563,7 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/shared/issuable/_sidebar.html.haml_spec.rb'
     - 'spec/views/shared/milestones/_issuable.html.haml_spec.rb'
     - 'spec/views/shared/milestones/_top.html.haml_spec.rb'
-    - 'spec/views/shared/projects/_inactive_project_deletion_alert.html.haml_spec.rb'
+    - 'spec/views/shared/projects/_dormant_project_deletion_alert.html.haml_spec.rb'
     - 'spec/views/shared/projects/_list.html.haml_spec.rb'
     - 'spec/views/shared/projects/_project.html.haml_spec.rb'
     - 'spec/views/shared/snippets/_snippet.html.haml_spec.rb'
