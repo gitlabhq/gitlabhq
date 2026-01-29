@@ -96,12 +96,9 @@ follow these steps to avoid unnecessary data loss:
    and make sure to stop any [background jobs](../../../maintenance_mode/_index.md#background-jobs).
 1. Finish replicating and verifying all data:
 
-   {{< alert type="warning" >}}
-
-   Not all data is automatically replicated. Read more about
-   [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
-
-   {{< /alert >}}
+   > [!warning]
+   > Not all data is automatically replicated. Read more about
+   > [what is excluded](../planned_failover.md#not-all-data-is-automatically-replicated).
 
    1. If you are manually replicating any
       [data not managed by Geo](../../replication/datatypes.md#replicated-data-types),
@@ -134,20 +131,13 @@ follow these steps to avoid unnecessary data loss:
 
 1. In this final step, you must permanently disable the **primary** site.
 
-   {{< alert type="warning" >}}
-
-   When the **primary** site goes offline, there may be data saved on the **primary** site
-   that has not been replicated to the **secondary** site. This data should be treated
-   as lost if you proceed.
-
-   {{< /alert >}}
-
-   {{< alert type="note" >}}
+   > [!warning]
+   > When the **primary** site goes offline, there may be data saved on the **primary** site
+   > that has not been replicated to the **secondary** site. This data should be treated
+   > as lost if you proceed.
 
    If you plan to [update the **primary** domain DNS record](../_index.md#step-4-optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
-
-   {{< /alert >}}
 
    When performing a failover, we want to avoid a split-brain situation where
    writes can occur in two different GitLab instances. So to prepare for the

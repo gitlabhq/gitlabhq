@@ -229,13 +229,10 @@ Prerequisites:
    git commit -m "Resolve merge conflicts"
    ```
 
-   {{< alert type="warning" >}}
-
-   You can run `git rebase --abort` to stop the process before this point.
-   Git aborts the rebase and rolls back the branch to the state
-   before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
-
-   {{< /alert >}}
+   > [!warning]
+   > You can run `git rebase --abort` to stop the process before this point.
+   > Git aborts the rebase and rolls back the branch to the state
+   > before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
 
 1. Continue the rebase:
 

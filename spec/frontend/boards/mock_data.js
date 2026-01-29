@@ -923,6 +923,7 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
     options: [
       { icon: 'work-item-issue', value: 'ISSUE', title: 'Issue' },
       { icon: 'work-item-incident', value: 'INCIDENT', title: 'Incident' },
+      { icon: 'work-item-ticket', value: 'TICKET', title: 'Ticket' },
     ],
   },
   {

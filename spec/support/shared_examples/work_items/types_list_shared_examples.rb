@@ -13,45 +13,20 @@ end
 RSpec.shared_examples_for 'allowed work item types for a project' do
   using RSpec::Parameterized::TableSyntax
 
-  where(:service_desk, :okrs, :project_work_item_epics, :epics_license, :expected_types) do
-    false | false | false | false | %w[incident issue task]
-    false | false | false | true | %w[incident issue task]
-    false | false | true | false | %w[incident issue task]
-    false | false | true | true | %w[epic incident issue task]
-    false | true | false | false | %w[incident issue key_result objective task]
-    false | true | false | true | %w[incident issue key_result objective task]
-    false | true | true | false | %w[incident issue key_result objective task]
-    false | true | true | true | %w[epic incident issue key_result objective task]
-    true | false | false | false | %w[incident issue task ticket]
-    true | false | false | true | %w[incident issue task ticket]
-    true | false | true | false | %w[incident issue task ticket]
-    true | false | true | true | %w[epic incident issue task ticket]
-    true | true | false | false | %w[incident issue key_result objective task ticket]
-    true | true | false | true | %w[incident issue key_result objective task ticket]
-    true | true | true | false | %w[incident issue key_result objective task ticket]
-    true | true | true | true | %w[epic incident issue key_result objective task ticket]
-    false | false | false | false | %w[incident issue task]
-    false | false | false | true | %w[incident issue task]
-    false | false | true | false | %w[incident issue task]
-    false | false | true | true | %w[epic incident issue task]
-    false | true | false | false | %w[incident issue key_result objective task]
-    false | true | false | true | %w[incident issue key_result objective task]
-    false | true | true | false | %w[incident issue key_result objective task]
-    false | true | true | true | %w[epic incident issue key_result objective task]
-    true | false | false | false | %w[incident issue task ticket]
-    true | false | false | true | %w[incident issue task ticket]
-    true | false | true | false | %w[incident issue task ticket]
-    true | false | true | true | %w[epic incident issue task ticket]
-    true | true | false | false | %w[incident issue key_result objective task ticket]
-    true | true | false | true | %w[incident issue key_result objective task ticket]
-    true | true | true | false | %w[incident issue key_result objective task ticket]
-    true | true | true | true | %w[epic incident issue key_result objective task ticket]
+  where(:okrs, :project_work_item_epics, :epics_license, :expected_types) do
+    false | false | false | %w[incident issue task ticket]
+    false | false | true | %w[incident issue task ticket]
+    false | true | false | %w[incident issue task ticket]
+    false | true | true | %w[epic incident issue task ticket]
+    true | false | false | %w[incident issue key_result objective task ticket]
+    true | false | true | %w[incident issue key_result objective task ticket]
+    true | true | false | %w[incident issue key_result objective task ticket]
+    true | true | true | %w[epic incident issue key_result objective task ticket]
   end
 
   with_them do
     before do
       stub_feature_flags(
-        service_desk_ticket: service_desk,
         okrs_mvc: okrs,
         project_work_item_epics: project_work_item_epics
       )

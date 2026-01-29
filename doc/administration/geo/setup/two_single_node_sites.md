@@ -80,13 +80,10 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
-   {{< alert type="note" >}}
-
-   The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
-   However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
-   Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
-
-   {{< /alert >}}
+   > [!note]
+   > The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
+   > However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
+   > Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
 
    1. Generate a MD5 hash of the desired password:
 
@@ -429,12 +426,9 @@ To replicate the database:
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 
-   {{< alert type="warning" >}}
-
-   Each Geo secondary site must have its own unique replication slot name.
-   Using the same slot name between two secondaries breaks PostgreSQL replication.
-
-   {{< /alert >}}
+   > [!warning]
+   > Each Geo secondary site must have its own unique replication slot name.
+   > Using the same slot name between two secondaries breaks PostgreSQL replication.
 
    ```shell
    gitlab-ctl replicate-geo-database \

@@ -91,6 +91,20 @@ RSpec.describe BatchedGitRefUpdates::ProjectCleanupService, feature_category: :g
       expect(result[:total_deletes]).to eq(0)
     end
 
+    context 'when the repository does not exist' do
+      let_it_be(:project_without_repo) { create(:project) }
+      let!(:deletion) do
+        BatchedGitRefUpdates::Deletion.create!(project_id: project_without_repo.id, ref: 'refs/test/ref1')
+      end
+
+      it 'marks records as processed' do
+        result = described_class.new(project_without_repo.id).execute
+
+        expect(result[:total_deletes]).to eq(1)
+        expect(deletion.reload.status).to eq('processed')
+      end
+    end
+
     it 'stops after it reaches limit of deleted refs' do
       stub_const("#{described_class}::QUERY_BATCH_SIZE", 1)
       stub_const("#{described_class}::MAX_DELETES", 1)

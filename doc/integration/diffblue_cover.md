@@ -65,12 +65,9 @@ Create a merge request pipeline for the project that downloads the latest versio
 1. Copy the contents of the [`Diffblue-Cover.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml)
    into your project's `.gitlab-ci.yml` file.
 
-   {{< alert type="note" >}}
-
-   When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
-   For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
-
-   {{< /alert >}}
+   > [!note]
+   > When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
+   > For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
 
 1. Enter a commit message.
 1. Enter a new **Branch** name. For example, `add-diffblue-cover-pipeline`.

@@ -730,11 +730,8 @@ Before doing any migration work, you should first:
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)
   to run a complete Jenkins instance inside of a GitLab CI/CD job, including plugins. Use this tool to help ease the transition to GitLab CI/CD, by delaying the migration of less urgent pipelines.
 
-  {{< alert type="note" >}}
-
-  The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
-  For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
-
-  {{< /alert >}}
+  > [!note]
+  > The JenkinsFile Wrapper is not packaged with GitLab and falls outside of the scope of support.
+  > For more information, see the [Statement of Support](https://about.gitlab.com/support/statement-of-support/).
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

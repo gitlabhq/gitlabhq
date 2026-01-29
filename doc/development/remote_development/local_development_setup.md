@@ -354,13 +354,10 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
 
 1. To enable Extensions Marketplace for Web IDE in a workspace, see [manage extensions](../../user/project/web_ide/_index.md#manage-extensions).
 
-   {{< alert type="note" >}}
-
-   By default, the GitLab VS Code fork for Workspaces server uses [Open VSX](https://open-vsx.org/)
-   Extensions Marketplace. These settings are configured during a workspace startup in the `product.json`
-   file. This file is located in the `${GL_EDITOR_VOLUME_DIR}/code-server` directory.
-
-   {{< /alert >}}
+   > [!note]
+   > By default, the GitLab VS Code fork for Workspaces server uses [Open VSX](https://open-vsx.org/)
+   > Extensions Marketplace. These settings are configured during a workspace startup in the `product.json`
+   > file. This file is located in the `${GL_EDITOR_VOLUME_DIR}/code-server` directory.
 
    To customize the Extensions Marketplace configuration, these are the relevant properties in the
    `product.json` file:

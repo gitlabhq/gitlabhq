@@ -267,12 +267,9 @@ To manually renew your subscription:
 1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you need for the upcoming year.
 
-   {{< alert type="note" >}}
-
-   Make sure this number is equal to, or greater than
-   the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
-
-   {{< /alert >}}
+   > [!note]
+   > Make sure this number is equal to, or greater than
+   > the number of [billable users](manage_users_and_seats.md#billable-users) in the system at the time of renewal.
 
 1. Optional. For GitLab Self-Managed, if the maximum number of users in your instance exceeded the number
    you were licensed for in the previous subscription term, the

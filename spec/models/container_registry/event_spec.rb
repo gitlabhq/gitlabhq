@@ -299,7 +299,7 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
             context "when JWT decoding encounters #{error}" do
               before do
                 allow(JWT).to receive(:decode)
-                .with(token.encoded, rsa_key, true, { algorithm: "RS256" })
+                .with(token.encoded, rsa_key, true, { algorithm: "RS256", verify_expiration: true })
                 .and_raise(error)
               end
 

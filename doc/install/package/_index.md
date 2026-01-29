@@ -157,13 +157,10 @@ database, configuration) or remove all of them:
    sudo gitlab-ctl stop && sudo gitlab-ctl remove-accounts
    ```
 
-   {{< alert type="note" >}}
-
-   If you have a problem removing accounts or groups, run `userdel` or `groupdel` manually
-   to delete them. You might also want to manually remove the leftover user home directories
-   from `/home/`.
-
-   {{< /alert >}}
+   > [!note]
+   > If you have a problem removing accounts or groups, run `userdel` or `groupdel` manually
+   > to delete them. You might also want to manually remove the leftover user home directories
+   > from `/home/`.
 
 1. Choose whether to keep your data or remove all of them:
 

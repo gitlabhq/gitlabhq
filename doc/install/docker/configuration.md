@@ -139,13 +139,10 @@ port `2424`:
      gitlab/gitlab-ee:<version>-ee.0
    ```
 
-   {{< alert type="note" >}}
-
-   The format to publish ports is `hostPort:containerPort`. Read more in the
-   Docker documentation about
-   [exposing incoming ports](https://docs.docker.com/network/#published-ports).
-
-   {{< /alert >}}
+   > [!note]
+   > The format to publish ports is `hostPort:containerPort`. Read more in the
+   > Docker documentation about
+   > [exposing incoming ports](https://docs.docker.com/network/#published-ports).
 
 1. Enter the running container:
 

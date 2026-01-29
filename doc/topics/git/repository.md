@@ -126,12 +126,9 @@ To purge files from a GitLab repository:
    For more information about references, see
    Git references used by Gitaly.
 
-   {{< alert type="note" >}}
-
-   This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
-   [protected tags](../../user/project/protected_tags.md). To proceed, temporarily remove protections.
-
-   {{< /alert >}}
+   > [!note]
+   > This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
+   > [protected tags](../../user/project/protected_tags.md). To proceed, temporarily remove protections.
 
 1. Wait at least 30 minutes before the next step.
 1. Run the [clean up repository](../../user/project/repository/repository_size.md#clean-up-repository) process.

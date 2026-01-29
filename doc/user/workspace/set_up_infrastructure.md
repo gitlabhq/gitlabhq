@@ -241,12 +241,9 @@ To update the agent configuration:
 
 1. In your forked repository, open the `.gitlab/agents/gitlab-workspaces-agentk-eks/config.yaml` file.
 
-   {{< alert type="note" >}}
-
-   The directory that contains the `config.yaml` file must match the agent name you created in the
-   [Create a GitLab agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
-
-   {{< /alert >}}
+   > [!note]
+   > The directory that contains the `config.yaml` file must match the agent name you created in the
+   > [Create a GitLab agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
 
 1. Update the file with the following required fields:
 

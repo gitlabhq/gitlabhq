@@ -141,11 +141,48 @@ get ':id/jobs' do
 end
 ```
 
+#### Decorator Options
+
+| Option | Description |
+|--------|-------------|
+| `permissions` | The permission(s) required for this endpoint (symbol or array of symbols) |
+| `boundary_type` | The boundary type for single-boundary endpoints: `:project`, `:group`, `:user`, or `:instance` |
+| `boundary_param` | Optional. The request parameter containing the boundary identifier. Defaults to `:id` for projects and `:id` or `:group_id` for groups |
+| `boundaries` | Alternative to `boundary_type` for endpoints supporting multiple boundaries (see below) |
+
+Example with custom `boundary_param`:
+
+```ruby
+route_setting :authorization, permissions: :read_job, boundary_type: :project, boundary_param: :project_id
+get 'jobs' do
+  # endpoint uses params[:project_id] instead of params[:id]
+end
+```
+
+#### Multiple Boundaries per Endpoint
+
+Some endpoints may need to support multiple boundary types. For example, an import endpoint might work at the group level when importing into a group namespace, or at the user level when importing into a personal namespace. In these cases, use the `boundaries` option instead of `boundary_type`:
+
+```ruby
+route_setting :authorization, permissions: :create_bitbucket_import,
+  boundaries: [{ boundary_type: :group, boundary_param: :target_namespace }, { boundary_type: :user }]
+post 'import/bitbucket' do
+  # endpoint implementation
+end
+```
+
+When multiple boundaries are defined:
+
+- The system evaluates boundaries in priority order: `project` > `group` > `user` > `instance`
+- The first boundary that can be resolved (based on available parameters) is used for authorization
+- Each boundary in the array requires a `boundary_type` key and optionally a `boundary_param` key to specify which request parameter contains the boundary identifier
+
 **Important Notes:**
 
 - Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
 - The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
+- Use `boundary_type` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
 
 ### Step 6: Add Test Coverage
 

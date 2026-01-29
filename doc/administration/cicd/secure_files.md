@@ -152,11 +152,8 @@ See [the available connection settings for different providers](../object_storag
    }
    ```
 
-  {{< alert type="note" >}}
-
-  If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
-
-  {{< /alert >}}
+   > [!note]
+   > If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs:
 
    ```ruby
    gitlab_rails['ci_secure_files_object_store_connection'] = {

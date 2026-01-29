@@ -29,13 +29,10 @@ Prerequisites:
 - You must complete the setup steps in [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
 - The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set.
 
-  {{< alert type="note" >}}
-
-  If you disable the `remote_development` module on an agent that has active workspaces,
-  those workspaces become unusable. For more information, see
-  [workspace settings](settings.md#enabled).
-
-  {{< /alert >}}
+  > [!note]
+  > If you disable the `remote_development` module on an agent that has active workspaces,
+  > those workspaces become unusable. For more information, see
+  > [workspace settings](settings.md#enabled).
 - The agent must be allowed in a group for the purpose of creating workspaces. During workspace creation, users can select allowed agents that are associated with any parent group of the workspace project.
 - The workspace creator must have the Developer role to the project of the agent.
 

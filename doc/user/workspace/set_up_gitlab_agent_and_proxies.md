@@ -313,13 +313,10 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    {{< /alert >}}
 
-   {{< alert type="note" >}}
-
-   Before chart version 0.1.16, the Helm chart installation created secrets automatically.
-   If you're upgrading from a version earlier than 0.1.16,
-   [create the required Kubernetes secrets](#create-kubernetes-secrets) before running the upgrade command.
-
-   {{< /alert >}}
+   > [!note]
+   > Before chart version 0.1.16, the Helm chart installation created secrets automatically.
+   > If you're upgrading from a version earlier than 0.1.16,
+   > [create the required Kubernetes secrets](#create-kubernetes-secrets) before running the upgrade command.
 
    ```shell
    helm repo update

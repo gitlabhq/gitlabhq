@@ -118,12 +118,9 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Clear all tokens for projects, groups, and the entire instance:
 
-   {{< alert type="warning" >}}
-
-   The final `UPDATE` operation stops the runners from being able to pick
-   up new jobs. You must register new runners.
-
-   {{< /alert >}}
+   > [!warning]
+   > The final `UPDATE` operation stops the runners from being able to pick
+   > up new jobs. You must register new runners.
 
    ```sql
    -- Clear project tokens

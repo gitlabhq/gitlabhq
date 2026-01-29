@@ -195,12 +195,9 @@ Add replica variables when you want to scale your deployments:
 1. Add a replica variable as a [project CI/CD variable](../../ci/variables/_index.md#for-a-project).
 1. To scale your application, redeploy it.
 
-   {{< alert type="warning" >}}
-
-   Do not scale your application using Kubernetes directly. Helm might not detect the change,
-   and subsequent deployments with Auto DevOps can undo your changes.
-
-   {{< /alert >}}
+   > [!warning]
+   > Do not scale your application using Kubernetes directly. Helm might not detect the change,
+   > and subsequent deployments with Auto DevOps can undo your changes.
 
 ### Custom replica variables
 

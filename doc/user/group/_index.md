@@ -483,12 +483,9 @@ Prerequisites:
    If you enter an access expiration date, the group member gets an email notification
    seven days before their access expires.
 
-   {{< alert type="warning" >}}
-
-   Maintainers have full permissions until their role expires, including the ability to
-   extend their own access expiration date.
-
-   {{< /alert >}}
+   > [!warning]
+   > Maintainers have full permissions until their role expires, including the ability to
+   > extend their own access expiration date.
 
 1. Select **Invite**.
    If you invite the user by their:

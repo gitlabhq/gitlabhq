@@ -1656,21 +1656,15 @@ to start again from scratch, there are a few steps that can help you:
 
    {{< /tabs >}}
 
-   {{< alert type="note" >}}
-
-   You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
-   as soon as you confirmed that you don't need it anymore, to save disk space.
-
-   {{< /alert >}}
+   > [!note]
+   > You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+   > as soon as you confirmed that you don't need it anymore, to save disk space.
 
 1. Optional. Rename other data folders and create new ones.
 
-   {{< alert type="warning" >}}
-
-   You may still have files on the **secondary** site that have been removed from the **primary** site, but this
-   removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
-
-   {{< /alert >}}
+   > [!warning]
+   > You may still have files on the **secondary** site that have been removed from the **primary** site, but this
+   > removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
 
    Any uploaded content (like file attachments, avatars, or LFS objects) is stored in a
    subfolder in one of these paths:

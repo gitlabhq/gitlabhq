@@ -332,7 +332,7 @@ curl --request PUT \
   --form "inputs[][_destroy]=true"
 ```
 
-## Update pipeline schedule ownership
+## Update ownership of a pipeline schedule
 
 Updates the owner of a pipeline schedule for a project.
 
@@ -456,9 +456,9 @@ Example response:
 }
 ```
 
-## Create a pipeline schedule variable
+## Create a variable for a pipeline schedule
 
-Creates a new pipeline schedule variable.
+Creates a new variable for a pipeline schedule.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
@@ -488,7 +488,7 @@ curl --request POST \
 }
 ```
 
-## Retrieve a pipeline schedule variable
+## Retrieve a variable for a pipeline schedule
 
 {{< history >}}
 
@@ -496,7 +496,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Retrieves a pipeline schedule variable.
+Retrieves a variable for a pipeline schedule.
 
 ```plaintext
 GET /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -535,9 +535,9 @@ Example response:
 }
 ```
 
-## Update a pipeline schedule variable
+## Update a variable for a pipeline schedule
 
-Updates a pipeline schedule variable.
+Updates a variable for a pipeline schedule.
 
 ```plaintext
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
@@ -566,9 +566,9 @@ curl --request PUT \
 }
 ```
 
-## Delete a pipeline schedule variable
+## Delete a variable for a pipeline schedule
 
-Deletes a pipeline schedule variable.
+Deletes a variable for a pipeline schedule.
 
 ```plaintext
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key

@@ -109,6 +109,22 @@ func (c *Client) ExecuteWorkflow(ctx context.Context) (pb.DuoWorkflow_ExecuteWor
 	return stream, nil
 }
 
+// TrackSelfHostedExecuteWorkflow initiates a new self-hosted workflow execution tracking stream with the server.
+func (c *Client) TrackSelfHostedExecuteWorkflow(ctx context.Context) (grpc.BidiStreamingClient[pb.TrackSelfHostedClientEvent, pb.TrackSelfHostedAction], error) {
+	ctx = metadata.NewOutgoingContext(ctx, metadata.New(c.headers))
+
+	stream, err := c.grpcClient.TrackSelfHostedExecuteWorkflow(ctx)
+	if err != nil {
+		st, ok := status.FromError(err)
+		if ok && st.Code() == codes.Unavailable {
+			return nil, ErrServerUnavailable
+		}
+		return nil, err
+	}
+
+	return stream, nil
+}
+
 // Close terminates the connection to the workflow server.
 func (c *Client) Close() error {
 	return c.grpcConn.Close()

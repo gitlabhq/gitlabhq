@@ -38,12 +38,9 @@ Include the following information:
   - In AWS OIDC integrations, this typically matches the audience value configured in your IAM OIDC identity provider (often `sts.amazonaws.com` or your GitLab instance URL).
   - This value is validated by AWS to ensure the token was intended for your specific identity provider.
 
-  {{< alert type="note" >}}
-
-  Using `https://gitlab.com` or your GitLab instance URL might work if the AWS identity provider reference matches it, but this is semantically misleading.
-  The audience should represent the service that validates and accepts the token.
-
-  {{< /alert >}}
+  > [!note]
+  > Using `https://gitlab.com` or your GitLab instance URL might work if the AWS identity provider reference matches it, but this is semantically misleading.
+  > The audience should represent the service that validates and accepts the token.
 
 ## Configure a role and trust
 

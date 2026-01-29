@@ -282,12 +282,9 @@ When a real user accepts their reassignment, the process of replacing all foreig
 
 1. The service sets the source user's state to `complete`.
 
-   {{< alert type="note" >}}
-
-   - There are valid scenarios where a placeholder reference may not be able to be reassigned. For example, if a user is added as a reviewer to a merge request with a placeholder user reviewer, then the user accepts reassignments to the placeholder who was already a reviewer. This will raise an `ActiveRecord::RecordNotUnique` error during contribution reassignment, but it's a valid scenario.
-   - There is a possibility that the reassignment may fail due to unhandled errors. We need to investigate the issue since the reassignment is supposed to always succeed.
-
-   {{< /alert >}}
+   > [!note]
+   > - There are valid scenarios where a placeholder reference may not be able to be reassigned. For example, if a user is added as a reviewer to a merge request with a placeholder user reviewer, then the user accepts reassignments to the placeholder who was already a reviewer. This will raise an `ActiveRecord::RecordNotUnique` error during contribution reassignment, but it's a valid scenario.
+   > - There is a possibility that the reassignment may fail due to unhandled errors. We need to investigate the issue since the reassignment is supposed to always succeed.
 
 1. Once the service finishes, the worker calls `Import::DeletePlaceholderUserWorker` asynchronously to delete the placeholder user. If the placeholder user ID is still referenced in any imported table, it will not be deleted. Check `columns_ignored_on_deletion` in the [AliasResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/import/placeholder_references/alias_resolver.rb#L5) for exceptions.
 

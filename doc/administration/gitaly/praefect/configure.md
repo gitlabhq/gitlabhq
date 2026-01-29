@@ -653,13 +653,10 @@ Updates to example must be made at:
    More Gitaly nodes can be added to the cluster to increase the number of
    replicas. More clusters can also be added for very large GitLab instances.
 
-   {{< alert type="note" >}}
-
-   When adding additional Gitaly nodes to a virtual storage, all storage names
-   in that virtual storage must be unique. Additionally, all Gitaly node
-   addresses referenced in the Praefect configuration must be unique.
-
-   {{< /alert >}}
+   > [!note]
+   > When adding additional Gitaly nodes to a virtual storage, all storage names
+   > in that virtual storage must be unique. Additionally, all Gitaly node
+   > addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
    # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on GitLab
@@ -1338,13 +1335,10 @@ Particular attention should be shown to:
 1. Disable the default Gitaly service running on the GitLab host. It isn't needed
    because GitLab connects to the configured cluster.
 
-   {{< alert type="warning" >}}
-
-   If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
-   first.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you have existing data stored on the default Gitaly storage,
+   > you should [migrate the data to your Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
+   > first.
 
    ```ruby
    gitaly['enable'] = false

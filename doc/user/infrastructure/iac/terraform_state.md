@@ -558,11 +558,8 @@ To reduce exposure of sensitive data:
 
 - GitLab Ultimate customers: Create a custom role that replicates the Developer role but excludes the `admin_terraform_state` permission. This action allows team members to contribute to the Infrastructure as Code (IaC) projects without accessing the Terraform state files that contain sensitive data.
 
-  {{< alert type="note" >}}
-
-  Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
-
-  {{< /alert >}}
+  > [!note]
+  > Custom roles are only available on GitLab Ultimate. Customers on Premium or lower tiers do not have access to this mitigation option and should focus on other strategies described previously.
 
 - OpenTofu users: Turn on state and plan encryption to protect sensitive data at rest. GitLab supports this natively through the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu), which provides encryption configuration. Even if unauthorized users access the state file, encrypted content remains protected.
 

@@ -75,13 +75,10 @@ GitLab Runner with the Shell executor.
 
 1. Choose a MySQL root password and type it twice when asked.
 
-   {{< alert type="note" >}}
-
-   As a security measure, you can run `mysql_secure_installation` to
-   remove anonymous users, drop the test database, and disable remote logins by
-   the root user.
-
-   {{< /alert >}}
+   > [!note]
+   > As a security measure, you can run `mysql_secure_installation` to
+   > remove anonymous users, drop the test database, and disable remote logins by
+   > the root user.
 
 1. Create a user by logging in to MySQL as root:
 

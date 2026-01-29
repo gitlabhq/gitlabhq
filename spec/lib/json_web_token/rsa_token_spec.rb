@@ -91,7 +91,7 @@ RSpec.describe JSONWebToken::RSAToken, feature_category: :shared do
           # rsa_key is used for encoding, and rsa_key_2 for decoding
           allow(JWT)
             .to receive(:decode)
-            .with(rsa_encoded, rsa_key, true, { algorithm: described_class::ALGORITHM })
+            .with(rsa_encoded, rsa_key, true, { algorithm: described_class::ALGORITHM, verify_expiration: true })
             .and_wrap_original do |original_method, *args|
             args[1] = rsa_key_2
             original_method.call(*args)

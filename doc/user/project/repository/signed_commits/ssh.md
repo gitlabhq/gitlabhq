@@ -47,11 +47,8 @@ Prerequisites:
 - Git 2.34.0 or later.
 - OpenSSH 8.1 or later.
 
-  {{< alert type="note" >}}
-
-  OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
-
-  {{< /alert >}}
+  > [!note]
+  > OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.
 
 - An SSH key with the **Usage type** `Authentication & Signing` or `Signing`.
   The following SSH key types are supported:

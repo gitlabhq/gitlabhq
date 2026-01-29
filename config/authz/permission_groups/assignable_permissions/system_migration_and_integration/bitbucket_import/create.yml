@@ -5,3 +5,4 @@ permissions:
   - create_bitbucket_import
 boundaries:
   - group
+  - user

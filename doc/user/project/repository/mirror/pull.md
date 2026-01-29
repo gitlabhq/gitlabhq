@@ -80,12 +80,9 @@ Prerequisites:
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**.
 
-   {{< alert type="note" >}}
-
-   To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
-   or `https://gitlab.com/gitlab-org/gitlab.git`.
-
-   {{< /alert >}}
+   > [!note]
+   > To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
+   > or `https://gitlab.com/gitlab-org/gitlab.git`.
 
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. For more information, see

@@ -27,8 +27,12 @@ module BatchedGitRefUpdates
           .each_batch(of: QUERY_BATCH_SIZE) do |batch|
           refs = batch.map(&:ref)
 
-          refs.each_slice(GITALY_BATCH_SIZE) do |refs_to_delete|
-            project.repository.delete_refs(*refs_to_delete.uniq)
+          begin
+            refs.each_slice(GITALY_BATCH_SIZE) do |refs_to_delete|
+              project.repository.delete_refs(*refs_to_delete.uniq)
+            end
+          rescue Gitlab::Git::Repository::NoRepository
+            # Repository is gone, refs are effectively deleted
           end
 
           total_deletes += refs.count

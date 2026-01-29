@@ -1259,13 +1259,10 @@ due to large volumes of data being indexed:
    Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
    The previous example indexes all projects from ID `1001` up to (and including) ID `2000`.
 
-   {{< alert type="note" >}}
-
-   Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
-   can get interrupted. This may happen for many reasons, but it's always safe
-   to run the indexing task again.
-
-   {{< /alert >}}
+   > [!note]
+   > Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+   > can get interrupted. This may happen for many reasons, but it's always safe
+   > to run the indexing task again.
 
    You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
    indexer to "forget" all progress, so it retries the indexing process from the

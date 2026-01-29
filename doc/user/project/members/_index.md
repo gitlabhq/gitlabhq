@@ -146,12 +146,9 @@ To add a user to a project:
    If you selected an access expiration date, the project member gets an email notification
    seven days before their access expires.
 
-   {{< alert type="warning" >}}
-
-   Maintainers have full permissions until their role expires, including the ability to
-   extend their own access expiration date.
-
-   {{< /alert >}}
+   > [!warning]
+   > Maintainers have full permissions until their role expires, including the ability to
+   > extend their own access expiration date.
 
 1. Select **Invite**.
    If you invited the user using their:

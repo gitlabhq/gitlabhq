@@ -231,13 +231,10 @@ The following guide assumes that:
    corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/16/runtime-config-connection.html)
    for more details.
 
-   {{< alert type="note" >}}
-
-   If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
-   `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
-   `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
-
-   {{< /alert >}}
+   > [!note]
+   > If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
+   > `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
+   > `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
    Depending on your network configuration, the suggested addresses may
    be incorrect. If your **primary** and **secondary** sites connect over a local
@@ -527,12 +524,9 @@ changed any defaults, configure the script accordingly (replacing any directorie
 
 1. Execute the command below to start a backup/restore and begin the replication
 
-   {{< alert type="warning" >}}
-
-   Each Geo **secondary** site must have its own unique replication slot name.
-   Using the same slot name between two secondaries breaks PostgreSQL replication.
-
-   {{< /alert >}}
+   > [!warning]
+   > Each Geo **secondary** site must have its own unique replication slot name.
+   > Using the same slot name between two secondaries breaks PostgreSQL replication.
 
    {{< alert type="note" >}}
 

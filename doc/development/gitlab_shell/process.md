@@ -26,12 +26,9 @@ Rails application:
 1. Add a new Git tag with the tag version.
 1. Update `GITLAB_SHELL_VERSION` in the Rails application to the raw version.
 
-   {{< alert type="note" >}}
-
-   This can be done as a separate merge request, or in a merge request
-   that uses the latest GitLab Shell changes.
-
-   {{< /alert >}}
+   > [!note]
+   > This can be done as a separate merge request, or in a merge request
+   > that uses the latest GitLab Shell changes.
 
 > [!warning]
 > When developing new features in GitLab Shell that involves Gitaly, you must follow the guidelines regarding

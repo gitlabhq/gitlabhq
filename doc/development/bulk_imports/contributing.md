@@ -63,12 +63,9 @@ For example, to add import support for a new `Project` association called `docum
         - :user
    ```
 
-   {{< alert type="note" >}}
-
-   If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
-   and imported in Enterprise Edition instances of GitLab.
-
-   {{< /alert >}}
+   > [!note]
+   > If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
+   > and imported in Enterprise Edition instances of GitLab.
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
    you must list them out. For example, documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this

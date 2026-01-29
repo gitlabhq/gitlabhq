@@ -167,12 +167,9 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. Select the **Security credentials** tab.
 1. Under **HTTPS Git credentials for AWS CodeCommit**, select **Generate credentials**.
 
-   {{< alert type="note" >}}
-
-   This Git user ID and password is specific to communicating with CodeCommit. Do
-   not confuse it with the IAM user ID or AWS keys of this user.
-
-   {{< /alert >}}
+   > [!note]
+   > This Git user ID and password is specific to communicating with CodeCommit. Do
+   > not confuse it with the IAM user ID or AWS keys of this user.
 
 1. Copy or download the special Git HTTPS user ID and password.
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.

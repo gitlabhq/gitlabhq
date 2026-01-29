@@ -91,12 +91,9 @@ Prerequisites:
   merge request contains a single commit.
   You can always [cherry-pick individual commits](#cherry-pick-a-single-commit).
 
-  {{< alert type="note" >}}
-
-  [System notes](#view-system-notes-for-cherry-picked-commits) are not created when using the fast-forward
-  merge method.
-
-  {{< /alert >}}
+  > [!note]
+  > [System notes](#view-system-notes-for-cherry-picked-commits) are not created when using the fast-forward
+  > merge method.
 
 To do this:
 

@@ -45,12 +45,9 @@ Prerequisites:
    1. Select **Create wildcard**.
 1. In **Allowed to create**, select roles that may create protected tags.
 
-   {{< alert type="note" >}}
-
-   In GitLab Premium and Ultimate, you can also add groups or individual users
-   to **Allowed to create**.
-
-   {{< /alert >}}
+   > [!note]
+   > In GitLab Premium and Ultimate, you can also add groups or individual users
+   > to **Allowed to create**.
 
 1. Select **Protect**.
 

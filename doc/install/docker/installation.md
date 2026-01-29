@@ -172,12 +172,9 @@ install, and upgrade your Docker-based GitLab installation:
        shm_size: '256m'
    ```
 
-   {{< alert type="note" >}}
-
-   Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
-   to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
-
-   {{< /alert >}}
+   > [!note]
+   > Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
+   > to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
 
    Here is another `docker-compose.yml` example with GitLab running on a custom
    HTTP and SSH port. Notice that the `GITLAB_OMNIBUS_CONFIG` variables match the

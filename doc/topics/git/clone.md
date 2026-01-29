@@ -326,13 +326,10 @@ For more details, see the Git documentation for
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 
-   {{< alert type="warning" >}}
-
-   Git integrations with `bash`, Zsh, etc and editors that automatically
-   show Git status information often run `git fetch` which fetches the
-   entire repository. Disabling or reconfiguring these integrations might be required.
-
-   {{< /alert >}}
+   > [!warning]
+   > Git integrations with `bash`, Zsh, etc and editors that automatically
+   > show Git status information often run `git fetch` which fetches the
+   > entire repository. Disabling or reconfiguring these integrations might be required.
 
 ### Remove partial clone filtering
 

@@ -312,11 +312,8 @@ In this configuration, both GitLab and the AI Gateway are hosted by the customer
   - The customer has full control over data handling.
   - Logging of sensitive information can be enabled or disabled at the customer's discretion.
 
-  {{< alert type="note" >}}
-
-  When an AI feature uses a GitLab AI third-party vendor model, no detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](#enable-logging). This prevents unintended leaks of sensitive information.
-
-  {{< /alert >}}
+  > [!note]
+  > When an AI feature uses a GitLab AI third-party vendor model, no detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](#enable-logging). This prevents unintended leaks of sensitive information.
 
 ### GitLab Self-Managed and GitLab-managed AI Gateway (cloud-connected)
 

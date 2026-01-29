@@ -381,11 +381,8 @@ The following items of a project are imported:
 
 - All fork branches of the project related to open pull requests
 
-  {{< alert type="note" >}}
-
-  Fork branches are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
-
-  {{< /alert >}}
+  > [!note]
+  > Fork branches are imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`.
 
 - All project branches
 - Attachments for:

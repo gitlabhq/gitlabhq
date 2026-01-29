@@ -185,12 +185,9 @@ To set up the GitLab external URL:
    ssh -i <private key path> gitlab-azure@gitlab-prod.eastus.cloudapp.azure.com
    ```
 
-   {{< alert type="note" >}}
-
-   If you need to reset your credentials, read
-   [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
-
-   {{< /alert >}}
+   > [!note]
+   > If you need to reset your credentials, read
+   > [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
 1. Find `external_url` and replace it with your own domain name. For the sake
@@ -277,13 +274,10 @@ To update GitLab to the latest version:
    and can take time to complete. During this time, the terminal shows various update tasks being
    completed in your terminal.
 
-   {{< alert type="note" >}}
-
-   If you get an error like
-   `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
-   see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
-
-   {{< /alert >}}
+   > [!note]
+   > If you get an error like
+   > `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
+   > see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
 
 1. After the update process is complete, a message like the
    following appears:

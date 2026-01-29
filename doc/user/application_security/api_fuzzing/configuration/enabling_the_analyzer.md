@@ -17,13 +17,10 @@ Prerequisites:
   - HTTP archive (HAR) of API requests to test
   - Postman Collection v2.0 or v2.1
 
-  {{< alert type="warning" >}}
-
-  **Never** run fuzz testing against a production server. Not only can it perform any function that
-  the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
-  data. Only run fuzzing against a test server.
-
-  {{< /alert >}}
+  > [!warning]
+  > **Never** run fuzz testing against a production server. Not only can it perform any function that
+  > the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
+  > data. Only run fuzzing against a test server.
 
 To enable web API fuzzing use the web API fuzzing configuration form.
 

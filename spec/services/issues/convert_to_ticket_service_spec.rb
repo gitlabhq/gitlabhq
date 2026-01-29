@@ -30,40 +30,6 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
       expect(note.note).to include(email)
       expect(note.note).to include(original_author.to_reference)
     end
-
-    # Example duplication for easy feature flag cleanup
-    context 'when service_desk_ticket feature flag is disabled' do
-      before do
-        stub_feature_flags(service_desk_ticket: false)
-      end
-
-      it 'converts issue to Service Desk issue', :aggregate_failures do
-        original_author = work_item.author
-
-        response = service.execute
-        expect(response).to be_success
-        expect(response.message).to eq(success_message)
-
-        work_item.reset
-
-        expect(work_item).to have_attributes(
-          confidential: expected_confidentiality,
-          author: support_bot,
-          service_desk_reply_to: 'user@example.com'
-        )
-
-        expect(work_item.work_item_type.base_type).to eq('issue')
-
-        external_participant = work_item.issue_email_participants.last
-        expect(external_participant.email).to eq(email)
-
-        note = work_item.notes.last
-        expect(note.author).to eq(support_bot)
-        expect(note).to be_confidential
-        expect(note.note).to include(email)
-        expect(note.note).to include(original_author.to_reference)
-      end
-    end
   end
 
   shared_examples 'a failed service execution' do
@@ -220,16 +186,6 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
             expect(note).to be_confidential
             expect(note.note).to include(email)
             expect(note.note).to include(original_author.to_reference)
-          end
-
-          context 'when service_desk_ticket feature flag is disabled' do
-            let(:error_message) { error_already_ticket }
-
-            before do
-              stub_feature_flags(service_desk_ticket: false)
-            end
-
-            it_behaves_like 'a failed service execution'
           end
         end
 

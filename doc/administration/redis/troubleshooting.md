@@ -139,12 +139,9 @@ To make sure your configuration is correct:
     redis-cli -h localhost -p 6379 DEBUG sleep 20
    ```
 
-   {{< alert type="warning" >}}
-
-   This action affects services, and takes the instance down for up to 20 seconds. If successful,
-   it should recover after that.
-
-   {{< /alert >}}
+   > [!warning]
+   > This action affects services, and takes the instance down for up to 20 seconds. If successful,
+   > it should recover after that.
 
 1. Then back in the Rails console from the first step, run:
 

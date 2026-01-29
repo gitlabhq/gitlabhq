@@ -40,7 +40,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     duo_workflow_not_allowed: "Duo Agent Platform cannot run on this runner. Duo jobs can only run on instance wide or top level group runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs.",
     failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.',
     reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
-    job_router_failure: 'The Job Router failed to run this job.'
+    job_router_failure: 'The Job Router failed to run this job.',
+    job_token_expired: 'The CI job token has expired. The job may have exceeded the maximum time limit.'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

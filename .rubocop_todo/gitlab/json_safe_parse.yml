@@ -87,7 +87,6 @@ Gitlab/JsonSafeParse:
     - 'ee/lib/gitlab/llm/ai_gateway/response_modifiers/resolve_vulnerability.rb'
     - 'ee/lib/gitlab/llm/anthropic/client.rb'
     - 'ee/lib/gitlab/llm/chain/tools/identifier.rb'
-    - 'ee/lib/gitlab/llm/concerns/ai_gateway_client_concern.rb'
     - 'ee/lib/gitlab/package_metadata/connector/ndjson_data_file.rb'
     - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/secrets_management/secrets_manager_client.rb'

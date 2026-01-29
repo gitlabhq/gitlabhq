@@ -194,13 +194,10 @@ For Linux package installations:
    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
    ```
 
-   {{< alert type="note" >}}
-
-   Assign a value to at least one of the following variables:
-   `gitlab_rails['smartcard_client_certificate_required_host']` or
-   `gitlab_rails['smartcard_client_certificate_required_port']`.
-
-   {{< /alert >}}
+   > [!note]
+   > Assign a value to at least one of the following variables:
+   > `gitlab_rails['smartcard_client_certificate_required_host']` or
+   > `gitlab_rails['smartcard_client_certificate_required_port']`.
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
@@ -291,12 +288,9 @@ For self-compiled installations:
      client_certificate_required_port: 3443
    ```
 
-   {{< alert type="note" >}}
-
-   Assign a value to at least one of the following variables:
-   `client_certificate_required_host` or `client_certificate_required_port`.
-
-   {{< /alert >}}
+   > [!note]
+   > Assign a value to at least one of the following variables:
+   > `client_certificate_required_host` or `client_certificate_required_port`.
 
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.

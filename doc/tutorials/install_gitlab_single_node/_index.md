@@ -160,12 +160,9 @@ they add an extra layer of security.
 1. Open a new file with your editor under `/etc/sysctl.d`, for example
    `/etc/sysctl.d/99-gitlab-hardening.conf`, and add the following.
 
-   {{< alert type="note" >}}
-
-   The naming and source directory decide the order of processing, which is
-   important because the last parameter processed might override earlier ones.
-
-   {{< /alert >}}
+   > [!note]
+   > The naming and source directory decide the order of processing, which is
+   > important because the last parameter processed might override earlier ones.
 
    ```plaintext
    ##

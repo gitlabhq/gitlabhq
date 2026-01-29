@@ -317,13 +317,10 @@ To use an external Prometheus server:
            - 1.1.1.1:5001
    ```
 
-   {{< alert type="warning" >}}
-
-   The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
-   deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
-   80.
-
-   {{< /alert >}}
+   > [!warning]
+   > The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
+   > deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
+   > 80.
 
 1. Reload the Prometheus server.
 

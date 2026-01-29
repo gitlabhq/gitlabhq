@@ -831,12 +831,9 @@ When reviewing merge requests from forked repositories, you have several methods
   gdk switch <MR_ID>
   ```
 
-  {{< alert type="note" >}}
-
-  This command also runs `gdk update`, which updates your development environment.
-  The process can take several minutes to complete.
-
-  {{< /alert >}}
+  > [!note]
+  > This command also runs `gdk update`, which updates your development environment.
+  > The process can take several minutes to complete.
 
   For more information, see the
   [GDK `switch.rb` file](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/lib/gdk/command/switch.rb).

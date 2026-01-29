@@ -14,7 +14,6 @@ import { isElementStuck } from '~/lib/utils/common_utils';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import notesEventHub from '~/notes/event_hub';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -55,11 +54,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [
-    glFeatureFlagsMixin(),
-    IdState({ idProp: (vm) => vm.file.file_hash }),
-    diffLineNoteFormMixin,
-  ],
+  mixins: [IdState({ idProp: (vm) => vm.file.file_hash }), diffLineNoteFormMixin],
   props: {
     file: {
       type: Object,
@@ -273,7 +268,6 @@ export default {
         if (
           this.viewDiffsFileByFile &&
           !this.isCollapsed &&
-          !this.glFeatures.singleFileFileByFile &&
           newHash &&
           oldHash &&
           !this.hasDiff &&

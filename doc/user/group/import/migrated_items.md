@@ -44,12 +44,9 @@ Group items that are migrated to the destination GitLab instance include:
 - Epic board lists
 - Group labels
 
-  {{< alert type="note" >}}
-
-  Group labels cannot retain any associated label priorities during import.
-  You must prioritize these labels again manually after you migrate the relevant project to the destination instance.
-
-  {{< /alert >}}
+  > [!note]
+  > Group labels cannot retain any associated label priorities during import.
+  > You must prioritize these labels again manually after you migrate the relevant project to the destination instance.
 
 - Group milestones
 - Iterations
@@ -117,12 +114,9 @@ Project items that are migrated to the destination GitLab instance include:
 - Badges
 - Branches (including protected branches)
 
-  {{< alert type="note" >}}
-
-  Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
-  These settings might cause an unprotected branch to be imported as protected.
-
-  {{< /alert >}}
+  > [!note]
+  > Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
+  > These settings might cause an unprotected branch to be imported as protected.
 
 - CI pipelines
 - Commit comments

@@ -70,21 +70,29 @@ type workflowStream interface {
 	CloseSend() error
 }
 
+type selfHostedWorkflowStream interface {
+	Send(*pb.TrackSelfHostedClientEvent) error
+	Recv() (*pb.TrackSelfHostedAction, error)
+	CloseSend() error
+}
+
 type runner struct {
-	rails       *api.API
-	backend     http.Handler
-	token       string
-	originalReq *http.Request
-	marshalBuf  []byte
-	conn        websocketConn
-	wf          workflowStream
-	client      *Client
-	sendMu      sync.Mutex
-	mcpManager  mcpManager
-	lockManager *workflowLockManager
-	workflowID  string
-	mutex       *redsync.Mutex
-	lockFlow    bool
+	rails              *api.API
+	backend            http.Handler
+	token              string
+	originalReq        *http.Request
+	marshalBuf         []byte
+	conn               websocketConn
+	wf                 workflowStream
+	client             *Client
+	sendMu             sync.Mutex
+	mcpManager         mcpManager
+	lockManager        *workflowLockManager
+	workflowID         string
+	mutex              *redsync.Mutex
+	lockFlow           bool
+	cloudServiceClient *Client
+	cloudServiceStream selfHostedWorkflowStream
 }
 
 func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http.Request, cfg *api.DuoWorkflow, rdb *redis.Client) (*runner, error) {
@@ -117,18 +125,36 @@ func newRunner(conn websocketConn, rails *api.API, backend http.Handler, r *http
 		lockFlow = false
 	}
 
+	var cloudServiceClient *Client
+	var cloudServiceStream selfHostedWorkflowStream
+
+	if cfg.CloudServiceForSelfHosted != nil && cfg.CloudServiceForSelfHosted.URI != "" {
+		cloudServiceClient, err = NewClient(cfg.CloudServiceForSelfHosted, userAgent)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize cloud service client: %v", err)
+		}
+
+		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(r.Context())
+		if err != nil {
+			_ = cloudServiceClient.Close()
+			return nil, fmt.Errorf("failed to initialize cloud service stream: %v", err)
+		}
+	}
+
 	return &runner{
-		rails:       rails,
-		backend:     backend,
-		token:       cfg.Service.Headers["x-gitlab-oauth-token"],
-		originalReq: r,
-		marshalBuf:  make([]byte, ActionResponseBodyLimit),
-		conn:        conn,
-		wf:          wf,
-		client:      client,
-		mcpManager:  mcpManager,
-		lockManager: newWorkflowLockManager(rdb),
-		lockFlow:    lockFlow,
+		rails:              rails,
+		backend:            backend,
+		token:              cfg.Service.Headers["x-gitlab-oauth-token"],
+		originalReq:        r,
+		marshalBuf:         make([]byte, ActionResponseBodyLimit),
+		conn:               conn,
+		wf:                 wf,
+		client:             client,
+		mcpManager:         mcpManager,
+		lockManager:        newWorkflowLockManager(rdb),
+		lockFlow:           lockFlow,
+		cloudServiceClient: cloudServiceClient,
+		cloudServiceStream: cloudServiceStream,
 	}, nil
 }
 
@@ -201,7 +227,15 @@ func (r *runner) Close() error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 
-	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection(), r.mcpManager.Close())
+	var cloudServiceErrs error
+	if r.cloudServiceStream != nil {
+		cloudServiceErrs = errors.Join(r.cloudServiceStream.CloseSend())
+	}
+	if r.cloudServiceClient != nil {
+		cloudServiceErrs = errors.Join(cloudServiceErrs, r.cloudServiceClient.Close())
+	}
+
+	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection(), r.mcpManager.Close(), cloudServiceErrs)
 }
 
 func (r *runner) closeWebSocketConnection() error {
@@ -356,6 +390,54 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 			"event_type":           fmt.Sprintf("%T", event.Response),
 			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
 		}).Info("Sending MCP tool response")
+
+		if err := r.threadSafeSend(event); err != nil {
+			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
+		}
+	case *pb.Action_TrackLlmCallForSelfHosted:
+		if r.cloudServiceStream == nil {
+			return fmt.Errorf("handleAgentAction: cloud service stream not initialized")
+		}
+
+		trackAction := action.GetTrackLlmCallForSelfHosted()
+
+		log.WithContextFields(ctx, log.Fields{
+			"request_id":  action.GetRequestID(),
+			"workflow_id": trackAction.WorkflowID,
+		}).Info("Sending TrackLlmCallForSelfHosted to cloud service")
+
+		clientEvent := &pb.TrackSelfHostedClientEvent{
+			RequestID:            action.GetRequestID(),
+			WorkflowID:           trackAction.WorkflowID,
+			FeatureQualifiedName: trackAction.FeatureQualifiedName,
+			FeatureAiCatalogItem: trackAction.FeatureAiCatalogItem,
+		}
+
+		if err := r.cloudServiceStream.Send(clientEvent); err != nil {
+			return fmt.Errorf("handleAgentAction: failed to send to cloud service: %v", err)
+		}
+
+		selfHostedAction, err := r.cloudServiceStream.Recv()
+		if err != nil {
+			return fmt.Errorf("handleAgentAction: failed to receive from cloud service: %v", err)
+		}
+
+		log.WithContextFields(ctx, log.Fields{
+			"request_id": selfHostedAction.GetRequestID(),
+		}).Info("Received acknowledgment from cloud service")
+
+		event := &pb.ClientEvent{
+			Response: &pb.ClientEvent_ActionResponse{
+				ActionResponse: &pb.ActionResponse{
+					RequestID: action.GetRequestID(),
+					ResponseType: &pb.ActionResponse_PlainTextResponse{
+						PlainTextResponse: &pb.PlainTextResponse{
+							Response: "authenticated",
+						},
+					},
+				},
+			},
+		}
 
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)

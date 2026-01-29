@@ -1097,13 +1097,10 @@ To configure GitLab Pages on a separate server:
 
 1. Optional. To enable access control, add the following to `/etc/gitlab/gitlab.rb` and [reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
-   {{< alert type="warning" >}}
-
-   If you plan to use GitLab Pages with access control, you must enable it on the first GitLab server before copying `gitlab-secrets.json`.
-   Enabling access control generates a new OAuth application, and information about it propagates to `gitlab-secrets.json`. If it's not done
-   in the correct order, you may face issues with access control.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you plan to use GitLab Pages with access control, you must enable it on the first GitLab server before copying `gitlab-secrets.json`.
+   > Enabling access control generates a new OAuth application, and information about it propagates to `gitlab-secrets.json`. If it's not done
+   > in the correct order, you may face issues with access control.
 
    ```ruby
    gitlab_pages['access_control'] = true

@@ -162,13 +162,10 @@ steps below:
 1. Generate an SSL certificate key-pair for the address where Puma will
    listen. For the example below, this is `127.0.0.1`.
 
-   {{< alert type="note" >}}
-
-   If using a self-signed certificate from a custom Certificate Authority (CA),
-   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
-   to make them trusted by other GitLab components.
-
-   {{< /alert >}}
+   > [!note]
+   > If using a self-signed certificate from a custom Certificate Authority (CA),
+   > follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
+   > to make them trusted by other GitLab components.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

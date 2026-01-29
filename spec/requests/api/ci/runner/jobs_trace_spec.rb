@@ -343,6 +343,55 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
           end
         end
 
+        context 'when job token JWT has expired' do
+          let!(:jwt_token) { ::Ci::JobToken::Jwt.encode(job) }
+          let(:expired_headers) do
+            { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => jwt_token, 'Content-Type' => 'text/plain' }
+          end
+
+          it 'returns 403 Forbidden' do
+            travel_to(3.hours.from_now) do
+              patch api("/jobs/#{job.id}/trace"),
+                params: ' appended',
+                headers: expired_headers.merge({ 'Content-Range' => '19-27' })
+            end
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          it 'fails the job with job_token_expired reason' do
+            travel_to(3.hours.from_now) do
+              expect do
+                patch api("/jobs/#{job.id}/trace"),
+                  params: ' appended',
+                  headers: expired_headers.merge({ 'Content-Range' => '19-27' })
+              end.to change { job.reload.status }.from('running').to('failed')
+
+              expect(response.header['Job-Status']).to eq('failed')
+              expect(job.failure_reason).to eq('job_token_expired')
+            end
+          end
+
+          context 'when fail_job_on_expired_token feature flag is disabled' do
+            before do
+              stub_feature_flags(fail_job_on_expired_token: false)
+            end
+
+            it 'does not fail the job' do
+              travel_to(3.hours.from_now) do
+                expect do
+                  patch api("/jobs/#{job.id}/trace"),
+                    params: ' appended',
+                    headers: expired_headers.merge({ 'Content-Range' => '19-27' })
+                end.not_to change { job.reload.status }
+
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(response.header['Job-Status']).to eq('running')
+              end
+            end
+          end
+        end
+
         def patch_the_trace(content = ' appended', request_headers = nil, job_id: job.id)
           unless request_headers
             job.trace.read do |stream|

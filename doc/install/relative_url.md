@@ -122,12 +122,9 @@ To enable relative URLs in GitLab:
    -authBackend http://127.0.0.1:8080/gitlab
    ```
 
-   {{< alert type="note" >}}
-
-   If you are using a custom init script, make sure to edit the previous
-   GitLab Workhorse setting as needed.
-
-   {{< /alert >}}
+   > [!note]
+   > If you are using a custom init script, make sure to edit the previous
+   > GitLab Workhorse setting as needed.
 
 1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 

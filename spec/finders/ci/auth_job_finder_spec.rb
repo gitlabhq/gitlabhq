@@ -121,10 +121,97 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       expect { execute }.to raise_error described_class::DeletedProjectError, 'Project has been deleted!'
     end
 
+    context 'when the job token is a valid JWT' do
+      let!(:token) { ::Ci::JobToken::Jwt.encode(job) }
+
+      it 'returns the job' do
+        expect(execute).to eq(job)
+      end
+
+      context 'when the JWT has expired' do
+        it 'raises ExpiredJobTokenError with the job' do
+          travel_to(3.hours.from_now) do
+            expect { execute }.to raise_error(described_class::ExpiredJobTokenError) do |error|
+              expect(error.message).to eq('Job token has expired')
+              expect(error.job).to eq(job)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when JWT decoding returns nil' do
+      before do
+        allow(::Ci::JobToken::Jwt).to receive(:decode).with(token, verify_expiration: false).and_return(nil)
+      end
+
+      it 'falls back to database token lookup' do
+        expect(execute).to eq(job)
+      end
+    end
+
+    context 'when JWT job is nil' do
+      let(:jwt_double) { instance_double(Ci::JobToken::Jwt, job: nil) }
+
+      before do
+        allow(::Ci::JobToken::Jwt).to receive(:decode).with(token, verify_expiration: false).and_return(jwt_double)
+      end
+
+      it 'falls back to database token lookup' do
+        expect(execute).to eq(job)
+      end
+    end
+
     context 'with wrong job token' do
       let(:token) { 'missing' }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when ci_job_token_decode_ignore_expiration is disabled' do
+      before do
+        stub_feature_flags(ci_job_token_decode_ignore_expiration: false)
+      end
+
+      context 'when JWT decodes successfully with a valid job' do
+        let!(:token) { ::Ci::JobToken::Jwt.encode(job) }
+
+        it 'returns the job' do
+          expect(execute).to eq(job)
+        end
+      end
+
+      context 'when the job token JWT has expired' do
+        let!(:token) { ::Ci::JobToken::Jwt.encode(job) }
+
+        it 'falls back to database token lookup and returns nil' do
+          travel_to(3.hours.from_now) do
+            expect(execute).to be_nil
+          end
+        end
+      end
+
+      context 'when JWT decoding returns nil' do
+        before do
+          allow(::Ci::JobToken::Jwt).to receive(:decode).with(token).and_return(nil)
+        end
+
+        it 'falls back to database token lookup' do
+          expect(execute).to eq(job)
+        end
+      end
+
+      context 'when JWT job is nil' do
+        let(:jwt_double) { instance_double(Ci::JobToken::Jwt, job: nil) }
+
+        before do
+          allow(::Ci::JobToken::Jwt).to receive(:decode).with(token).and_return(jwt_double)
+        end
+
+        it 'falls back to database token lookup' do
+          expect(execute).to eq(job)
+        end
+      end
     end
   end
 

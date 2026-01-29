@@ -44,7 +44,8 @@ module Enums
           reached_max_pipeline_hierarchy_size: 1_011,
           reached_downstream_pipeline_trigger_rate_limit: 1_012,
           duo_workflow_not_allowed: 1_013,
-          job_router_failure: 1_014
+          job_router_failure: 1_014,
+          job_token_expired: 1_015
         }
       end
     end

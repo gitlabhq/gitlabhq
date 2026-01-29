@@ -37,7 +37,7 @@ module Ci
             custom_payload: payload)
         end
 
-        def decode(token)
+        def decode(token, verify_expiration: true)
           return unless key
 
           actual_token_prefix = token.starts_with?(::Ci::Build::TOKEN_PREFIX) ? ::Ci::Build::TOKEN_PREFIX : token_prefix
@@ -46,7 +46,10 @@ module Ci
             token: token,
             signing_public_key: key.public_key,
             subject_type: subject_type,
-            token_prefix: actual_token_prefix)
+            token_prefix: actual_token_prefix,
+            verify_expiration: verify_expiration
+          )
+
           new(jwt) if jwt
         end
 
@@ -124,6 +127,10 @@ module Ci
 
       def group_id
         decode(@jwt.payload['g'])
+      end
+
+      def expired?
+        @jwt.expired?
       end
 
       private

@@ -39,12 +39,9 @@ To install a Camo server as an asset proxy:
 1. Deploy a `go-camo` server. Helpful instructions can be found in
    [building cactus/go-camo](https://github.com/cactus/go-camo#building).
 
-   {{< alert type="warning" >}}
-
-   Asset Proxy servers should be configured to use correct Content Security Policy headers,
-   such as `form-action 'none'` (alongside default `go-camo` headers).
-
-   {{< /alert >}}
+   > [!warning]
+   > Asset Proxy servers should be configured to use correct Content Security Policy headers,
+   > such as `form-action 'none'` (alongside default `go-camo` headers).
 
 1. Make sure your GitLab instance is running, and that you have created a private API token.
    Using the API, configure the asset proxy settings on your GitLab instance. For example:

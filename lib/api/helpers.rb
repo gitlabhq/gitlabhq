@@ -1121,12 +1121,23 @@ module API
     def boundary_for_endpoint
       return unless access_token.try(:granular?)
 
-      access = authorization_settings[:boundary_type]
-      boundary_param = authorization_settings[:boundary_param]
+      if authorization_settings[:boundaries]
+        boundary_type_order = { project: 0, group: 1, user: 2, instance: 3 }
 
-      case access
+        authorization_settings[:boundaries]
+          .sort_by { |b| boundary_type_order[b[:boundary_type]] }
+          .lazy
+          .filter_map { |b| build_boundary(b[:boundary_type], b[:boundary_param]) }
+          .first
+      else
+        build_boundary(authorization_settings[:boundary_type], authorization_settings[:boundary_param])
+      end
+    end
+
+    def build_boundary(boundary_type, boundary_param = nil)
+      case boundary_type
       when :user, :instance
-        ::Authz::Boundary.for(access)
+        ::Authz::Boundary.for(boundary_type)
       when :group
         group = find_group(boundary_param ? params[boundary_param] : (params[:group_id] || params[:id]))
         ::Authz::Boundary.for(group) if group

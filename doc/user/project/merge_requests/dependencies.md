@@ -166,12 +166,9 @@ Prerequisites:
 1. Scroll to **Merge request dependencies** and select **Remove** next to the reference
    for each dependency you want to remove.
 
-   {{< alert type="note" >}}
-
-   Merge request dependencies you do not have permission to view are shown as
-   **1 inaccessible merge request**. You can still remove the dependency.
-
-   {{< /alert >}}
+   > [!note]
+   > Merge request dependencies you do not have permission to view are shown as
+   > **1 inaccessible merge request**. You can still remove the dependency.
 
 1. Select **Save changes**.
 

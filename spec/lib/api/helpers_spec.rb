@@ -1856,6 +1856,91 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
+  describe '#boundary_for_endpoint' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
+
+    before do
+      allow(helper).to receive(:params).and_return({ id: project.id, group_id: group.id })
+      allow(helper).to receive(:find_project).and_return(project)
+      allow(helper).to receive(:find_group).and_return(group)
+      allow(helper).to receive(:access_token).and_return(access_token)
+    end
+
+    context 'when boundaries are defined in different order' do
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :instance },
+            { boundary_type: :user },
+            { boundary_type: :group },
+            { boundary_type: :project }
+          ]
+        })
+      end
+
+      it 'returns the first boundary after sorting by project, group, user, instance' do
+        boundary = helper.send(:boundary_for_endpoint)
+
+        expect(boundary).to be_a(Authz::Boundary::ProjectBoundary)
+      end
+    end
+
+    context 'when project boundary returns nil' do
+      before do
+        allow(helper).to receive(:find_project).and_return(nil)
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :instance },
+            { boundary_type: :project },
+            { boundary_type: :group }
+          ]
+        })
+      end
+
+      it 'returns the first non-nil boundary after sorting' do
+        boundary = helper.send(:boundary_for_endpoint)
+
+        expect(boundary).to be_a(Authz::Boundary::GroupBoundary)
+      end
+    end
+
+    context 'when only user and instance boundaries are defined' do
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :instance },
+            { boundary_type: :user }
+          ]
+        })
+      end
+
+      it 'returns user boundary before instance' do
+        boundary = helper.send(:boundary_for_endpoint)
+
+        expect(boundary).to be_a(Authz::Boundary::NilBoundary)
+        expect(boundary.access).to eq(Authz::GranularScope::Access::USER)
+      end
+    end
+
+    context 'when access token is not granular' do
+      let(:access_token) { instance_double(PersonalAccessToken, granular?: false) }
+
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({
+          boundaries: [
+            { boundary_type: :project }
+          ]
+        })
+      end
+
+      it 'returns nil' do
+        expect(helper.send(:boundary_for_endpoint)).to be_nil
+      end
+    end
+  end
+
   describe '#authenticate_by_gitlab_shell_or_workhorse_token!' do
     include GitlabShellHelpers
     include WorkhorseHelpers

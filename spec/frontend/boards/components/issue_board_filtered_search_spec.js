@@ -12,11 +12,7 @@ describe('IssueBoardFilter', () => {
 
   const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
 
-  const createComponent = ({
-    isSignedIn = false,
-    workItemTasksOnBoardsEnabled = false,
-    serviceDeskTicketEnabled = false,
-  } = {}) => {
+  const createComponent = ({ isSignedIn = false, workItemTasksOnBoardsEnabled = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
       propsData: {
         boardId: 'gid://gitlab/Board/1',
@@ -29,7 +25,6 @@ describe('IssueBoardFilter', () => {
         isGroupBoard: true,
         glFeatures: {
           workItemTasksOnBoards: workItemTasksOnBoardsEnabled,
-          serviceDeskTicket: serviceDeskTicketEnabled,
         },
       },
       mocks: {
@@ -90,6 +85,7 @@ describe('IssueBoardFilter', () => {
         expect(issuesToken.options).toEqual([
           expect.objectContaining({ title: 'Issue' }),
           expect.objectContaining({ title: 'Incident' }),
+          expect.objectContaining({ title: 'Ticket' }),
         ]);
       });
 
@@ -107,26 +103,14 @@ describe('IssueBoardFilter', () => {
           expect.objectContaining({ title: 'Issue' }),
           expect.objectContaining({ title: 'Incident' }),
           expect.objectContaining({ title: 'Task' }),
+          expect.objectContaining({ title: 'Ticket' }),
         ]);
       });
     });
 
     describe('ticket type filter', () => {
-      it('does not have `Ticket` in work item type filter token when `serviceDeskTicket` is disabled', () => {
-        createComponent({ isSignedIn: true, serviceDeskTicketEnabled: false });
-
-        const issuesToken = findBoardsFilteredSearch()
-          .props('tokens')
-          .find(({ type }) => type === 'type');
-
-        expect(issuesToken.options).toEqual([
-          expect.objectContaining({ title: 'Issue' }),
-          expect.objectContaining({ title: 'Incident' }),
-        ]);
-      });
-
-      it('has `Ticket` in work item type filter token when `serviceDeskTicket` is enabled', () => {
-        createComponent({ isSignedIn: true, serviceDeskTicketEnabled: true });
+      it('has `Ticket` in work item type filter token', () => {
+        createComponent({ isSignedIn: true });
 
         const issuesToken = findBoardsFilteredSearch()
           .props('tokens')

@@ -7,6 +7,15 @@ module Ci
     ErasedJobError = Class.new(AuthError)
     DeletedProjectError = Class.new(AuthError)
 
+    class ExpiredJobTokenError < AuthError
+      attr_reader :job
+
+      def initialize(message, job:)
+        super(message)
+        @job = job
+      end
+    end
+
     def initialize(token:)
       @token = token
     end
@@ -31,14 +40,25 @@ module Ci
     attr_reader :token
 
     def find_job_by_token
-      jwt = ::Ci::JobToken::Jwt.decode(token)
-      if jwt&.job
-        link_composite_identity!(jwt)
-        jwt.job
+      # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
+      find_job_by_jwt || find_from_database_token
+    end
+
+    def find_job_by_jwt
+      if Feature.enabled?(:ci_job_token_decode_ignore_expiration, Feature.current_request)
+        # Intentionally bypass JWT expiration verification to recover the job identity.
+        # Expiration is checked separately via `jwt.expired?`.
+        jwt = ::Ci::JobToken::Jwt.decode(token, verify_expiration: false)
+        return unless jwt&.job
+
+        raise ExpiredJobTokenError.new('Job token has expired', job: jwt.job) if jwt.expired?
       else
-        # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
-        find_from_database_token
+        jwt = ::Ci::JobToken::Jwt.decode(token)
+        return unless jwt&.job
       end
+
+      link_composite_identity!(jwt)
+      jwt.job
     end
 
     def link_composite_identity!(jwt)
