@@ -300,15 +300,36 @@ const tokenTypes = Object.keys(filtersMap);
 const getUrlParams = (tokenType) =>
   Object.values(filtersMap[tokenType][URL_PARAM]).flatMap((filterObj) => Object.values(filterObj));
 
+const getApiParams = (tokenType) =>
+  Object.values(filtersMap[tokenType][API_PARAM]).flatMap((filterObj) => filterObj);
+
 const urlParamKeys = tokenTypes.flatMap(getUrlParams);
+const apiParamKeys = tokenTypes.flatMap(getApiParams);
 
 const getTokenTypeFromUrlParamKey = (urlParamKey) =>
   tokenTypes.find((tokenType) => getUrlParams(tokenType).includes(urlParamKey));
+
+const getTokenTypeFromApiParamKey = (apiParamKey) => {
+  return tokenTypes.find((tokenType) => {
+    return getApiParams(tokenType).includes(apiParamKey);
+  });
+};
 
 const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
   Object.entries(filtersMap[tokenType][URL_PARAM]).find(([, filterObj]) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
+
+const getOperatorFromApiParamKey = (tokenType, apiParamKey) => {
+  const apiParam = Object.entries(filtersMap[tokenType][API_PARAM]);
+  const result = apiParam.find(([, filterObj]) => {
+    return filterObj.includes(apiParamKey);
+  });
+  if (result[0] === NORMAL_FILTER) {
+    return OPERATOR_IS;
+  }
+  return result[0];
+};
 
 export const convertMultipleIsTypeTokensToOr = (tokens) => {
   const typeIsTokenIndices = [];
@@ -345,6 +366,28 @@ export const getFilterTokens = (locationSearch, options = {}) => {
     .map(([key, data]) => {
       const type = getTokenTypeFromUrlParamKey(key);
       const operator = getOperatorFromUrlParamKey(type, key);
+      return {
+        type,
+        value: { data, operator },
+      };
+    });
+  if (options.convertTypeTokens) {
+    const hasTypeToken = tokens.some((token) => token.type === TOKEN_TYPE_TYPE);
+    if (hasTypeToken) return convertMultipleIsTypeTokensToOr(tokens);
+  }
+
+  return tokens;
+};
+
+export const getFilterTokensFromObject = (filterObject, options = {}) => {
+  const tokens = Object.entries(filterObject)
+    .filter(
+      ([key]) =>
+        apiParamKeys.includes(key) && (options.includeStateToken || key !== TOKEN_TYPE_STATE),
+    )
+    .map(([key, data]) => {
+      const type = getTokenTypeFromApiParamKey(key);
+      const operator = getOperatorFromApiParamKey(type, key);
       return {
         type,
         value: { data, operator },

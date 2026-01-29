@@ -75,6 +75,16 @@ describe('WikiForm', () => {
     path: '/project/path/-/wikis/home',
   };
 
+  const pageInfoEditSidebar = {
+    ...pageInfoNew,
+    persisted: true,
+    slug: '_sidebar',
+    title: '_sidebar',
+    content: '  My page content  ',
+    format: 'markdown',
+    path: '/project/path/-/wikis/_sidebar/edit',
+  };
+
   const pageInfoWithFrontmatter = () => ({
     frontMatter: { foo: 'bar', title: 'real page title' },
     persisted: true,
@@ -737,6 +747,32 @@ describe('WikiForm', () => {
           expect(submitSpy).not.toHaveBeenCalled();
         },
       );
+    });
+
+    describe('edit sidebar', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: shallowMountExtended,
+          pageInfo: pageInfoEditSidebar,
+          provide: {
+            wikiUrl: '_sidebar',
+            isEditingPath: true,
+            glFeatures: { wikiImmersiveEditor: true },
+          },
+        });
+      });
+
+      it('shows an edit sidebar header', () => {
+        expect(wrapper.text()).toContain('Edit Sidebar');
+      });
+
+      it('hides the title input', () => {
+        expect(wrapper.findByTestId('wiki-title-textbox').exists()).toBe(false);
+      });
+
+      it('hides the path input', () => {
+        expect(wrapper.findByTestId('wiki-path-textbox').exists()).toBe(false);
+      });
     });
   });
 });

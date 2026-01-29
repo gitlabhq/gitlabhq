@@ -19,6 +19,14 @@ module Authz
           File.dirname(relative_path).delete_prefix('/').to_sym
         end
       end
+
+      def name
+        File.basename(File.dirname(source_file))
+      end
+
+      def resource_name
+        definition[:name] || name.titlecase
+      end
     end
   end
 end

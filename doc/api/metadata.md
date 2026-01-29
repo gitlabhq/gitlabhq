@@ -20,7 +20,7 @@ title: Metadata API
 
 {{< /history >}}
 
-Retrieve metadata information for this GitLab instance.
+Retrieves metadata information for a specified GitLab instance.
 
 ```plaintext
 GET /metadata

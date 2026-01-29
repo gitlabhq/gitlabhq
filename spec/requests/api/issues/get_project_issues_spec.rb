@@ -334,6 +334,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:target_issue) { issue }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_issue do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/issues", personal_access_token: pat) }
+    end
+
     context 'with labeled issues' do
       let(:issue2) { create :issue, project: project }
       let(:label_b) { create(:label, title: 'foo', project: project) }
@@ -594,6 +599,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         it_behaves_like 'project issues statistics'
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_statistic do
+        let(:boundary_object) { project }
+        let(:request) { get api("/projects/#{project.id}/issues_statistics", personal_access_token: pat) }
+      end
     end
 
     context 'filtering by assignee_username' do
@@ -783,6 +793,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:api_url) { "/projects/#{project.id}/issues/#{issue.iid}" }
       let(:target_issue) { issue }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.iid}", personal_access_token: pat) }
+    end
   end
 
   describe 'GET :id/issues/:issue_iid/closed_by' do
@@ -798,6 +813,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
 
       expect_paginated_array_response(merge_request1.id)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_closing_merge_request do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", personal_access_token: pat) }
     end
 
     context 'when no merge requests will close issue' do
@@ -835,6 +855,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     let!(:related_mr) { create_referencing_mr(user, project, issue) }
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_merge_request do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.iid}/related_merge_requests", personal_access_token: pat) }
+    end
 
     context 'when unauthenticated' do
       it 'return list of referenced merge requests from issue', :aggregate_failures do
@@ -902,6 +927,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       let(:path) { "/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail" }
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_issue_user_agent_detail do
+      let(:boundary_object) { project }
+      let(:user) { admin }
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", personal_access_token: pat) }
+    end
+
     context 'when unauthenticated' do
       it 'returns unauthorized' do
         get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
@@ -929,6 +960,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   describe 'GET projects/:id/issues/:issue_iid/participants' do
     it_behaves_like 'issuable participants endpoint' do
       let(:entity) { issue }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_participant do
+      let(:boundary_object) { project }
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.iid}/participants", personal_access_token: pat) }
     end
 
     it 'returns 404 if the issue is confidential' do

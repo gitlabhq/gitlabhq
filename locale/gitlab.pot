@@ -6364,9 +6364,6 @@ msgstr ""
 msgid "AdminStatistics|Snippets"
 msgstr ""
 
-msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free compute minutes on instance runners."
-msgstr ""
-
 msgid "AdminUsers|Access"
 msgstr ""
 
@@ -6809,9 +6806,6 @@ msgid "AdminUsers|Users"
 msgstr ""
 
 msgid "AdminUsers|Users can still be invited to your instance and/or add themselves if permitted based on your settings. They will not have access to your instance, nor count towards your subscribed seat count until you %{approve_link}."
-msgstr ""
-
-msgid "AdminUsers|Validate user account"
 msgstr ""
 
 msgid "AdminUsers|View"
@@ -77484,6 +77478,9 @@ msgid "Wiki|Create a new wiki page using this template"
 msgstr ""
 
 msgid "Wiki|Create from template"
+msgstr ""
+
+msgid "Wiki|Edit Sidebar"
 msgstr ""
 
 msgid "Wiki|Edit custom sidebar"

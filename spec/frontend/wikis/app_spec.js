@@ -108,6 +108,18 @@ describe('WikiApp', () => {
     });
   });
 
+  describe('when editing the custom sidebar', () => {
+    beforeEach(() => {
+      createComponent({ isEditingPath: true, pagePersisted: true, wikiUrl: '_sidebar' });
+    });
+
+    expectEditingInterface();
+
+    it('does not show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(false);
+    });
+  });
+
   describe('when editing a saved wiki page', () => {
     beforeEach(() => {
       createComponent({ isEditingPath: true, pagePersisted: true });

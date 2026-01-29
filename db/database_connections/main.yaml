@@ -11,7 +11,6 @@ gitlab_schemas:
   - gitlab_main_cell_local
   - gitlab_main_jh
   - gitlab_pm
-  - gitlab_main_clusterwide
   - gitlab_main_cell_setting
   - gitlab_main_user
 lock_gitlab_schemas:

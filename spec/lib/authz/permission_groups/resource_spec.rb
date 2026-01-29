@@ -46,5 +46,46 @@ RSpec.describe Authz::PermissionGroups::Resource, feature_category: :permissions
         expect(resource.description).to eq(definition[:description])
       end
     end
+
+    describe '#name' do
+      it 'returns the basename of the parent directory' do
+        expect(resource.name).to eq('pipeline')
+      end
+
+      context 'with a different file path' do
+        let(:file_path) { "config/authz/permission_groups/assignable_permissions/ci_cd/job/_metadata.yml" }
+
+        it 'returns the correct directory name' do
+          expect(resource.name).to eq('job')
+        end
+      end
+    end
+
+    describe '#resource_name' do
+      context 'when definition includes a name' do
+        let(:definition) { { description: 'Test resource', name: 'Custom Name' } }
+
+        it 'returns the name from the definition' do
+          expect(resource.resource_name).to eq('Custom Name')
+        end
+      end
+
+      context 'when definition does not include a name' do
+        let(:definition) { { description: 'Test resource' } }
+
+        it 'returns the titlecased directory name' do
+          expect(resource.resource_name).to eq('Pipeline')
+        end
+      end
+
+      context 'with multi-word directory name' do
+        let(:file_path) { "config/authz/permission_groups/assignable_permissions/ci_cd/merge_request/_metadata.yml" }
+        let(:definition) { { description: 'Test resource' } }
+
+        it 'returns the titlecased directory name' do
+          expect(resource.resource_name).to eq('Merge Request')
+        end
+      end
+    end
   end
 end

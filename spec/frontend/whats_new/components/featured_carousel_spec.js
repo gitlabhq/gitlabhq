@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FeaturedCarousel from '~/whats_new/components/featured_carousel.vue';
 import FeaturedCard from '~/whats_new/components/featured_card.vue';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 describe('FeaturedCarousel', () => {
   let wrapper;

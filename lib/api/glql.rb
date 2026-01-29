@@ -119,7 +119,7 @@ module API
     resource :glql do
       desc 'Execute GLQL query' do
         detail 'Execute a GLQL (GitLab Query Language) query'
-        success code: 200
+        success code: 200, model: ::API::Entities::Glql::Result
         failure [
           { code: 400, message: 'Bad request' },
           { code: 401, message: 'Unauthorized' },
@@ -151,7 +151,7 @@ module API
         error!(transformed_result['error'], 400) unless transformed_result['success']
 
         status 200
-        transformed_result
+        present transformed_result.deep_symbolize_keys, with: ::API::Entities::Glql::Result
       rescue ArgumentError => e
         error!(e.message, 400)
       end

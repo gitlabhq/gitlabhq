@@ -1,3 +1,5 @@
 ---
 name: update_issue
 description: Grants the ability to update issues
+boundaries:
+  - project

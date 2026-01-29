@@ -34,6 +34,15 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:channel) { 'stable' }
     let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
+    it_behaves_like 'authorizing granular token permissions', :download_helm_chart do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     it 'enqueue a worker to sync a helm metadata cache' do
       allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
 
@@ -173,6 +182,15 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
     subject { get api(url), headers: headers }
 
+    it_behaves_like 'authorizing granular token permissions', :download_helm_chart do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+    end
+
     context 'with valid project' do
       where(:visibility, :user_role, :shared_examples_name, :expected_status) do
         :public  | :guest        | 'process helm download content request'   | :success
@@ -234,6 +252,15 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:headers) { {} }
 
     subject { post api(url), headers: headers }
+
+    it_behaves_like 'authorizing granular token permissions', :authorize_helm_chart do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) { post api(url), headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers) }
+    end
 
     context 'with valid project' do
       where(:visibility_level, :user_role, :shared_examples_name, :expected_status) do
@@ -300,6 +327,24 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         headers: headers,
         send_rewritten_field: send_rewritten_field
       )
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :upload_helm_chart do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:boundary_object) { project }
+      let(:request) do
+        workhorse_finalize(
+          api(url),
+          method: :post,
+          file_key: :chart,
+          params: { chart: temp_file('package.tgz') },
+          headers: basic_auth_header(user.username, pat.token).merge(workhorse_headers),
+          send_rewritten_field: true
+        )
+      end
     end
 
     context 'with valid project' do

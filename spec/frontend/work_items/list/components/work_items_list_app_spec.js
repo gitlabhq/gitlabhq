@@ -33,6 +33,7 @@ import {
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -87,6 +88,7 @@ import {
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { singleSavedView } from '~/work_items/graphql/resolvers';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -139,7 +141,7 @@ const emptyHasWorkItemsResponse = {
 const mockSavedViewsData = [
   {
     __typename: 'SavedView',
-    id: '1',
+    id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
     name: 'My Private View',
     description: 'Only I can see this',
     isPrivate: true,
@@ -173,6 +175,18 @@ const mockPreferencesQueryHandler = jest.fn().mockResolvedValue({
 const namespaceQueryHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 const defaultHasWorkItemsHandler = jest.fn().mockResolvedValue(hasWorkItemsData);
 const defaultCountsOnlyHandler = jest.fn().mockResolvedValue(workItemCountsOnlyResponse);
+const namespaceSavedViewHandler = jest.fn().mockResolvedValue({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: singleSavedView,
+      },
+    },
+  },
+});
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -249,6 +263,7 @@ const mountComponent = ({
     [updateWorkItemListUserPreference, userPreferenceMutationResponse],
     [hasWorkItemsQuery, hasWorkItemsHandler],
     [getWorkItemsCountOnlyQuery, countsOnlyHandler],
+    [namespaceSavedViewQuery, namespaceSavedViewHandler],
     ...additionalHandlers,
   ]);
 
@@ -261,6 +276,7 @@ const mountComponent = ({
     },
     data: {
       namespace: {
+        __typename: 'Namespace',
         id: 'namespace',
         savedViews: {
           __typename: 'SavedViewConnection',
@@ -2078,7 +2094,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
 
   describe('when on a saved view', () => {
     beforeEach(async () => {
-      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '1' } });
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
       await waitForPromises();
     });
 
@@ -2128,7 +2144,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       expect(confirmAction).toHaveBeenCalledWith(
         null,
         expect.objectContaining({
-          title: 'Save changes to My Private View?',
+          title: 'Save changes to Current sprint 3?',
           modalHtmlMessage: expect.stringContaining(
             'Changes will be applied for anyone else who has access to the view.',
           ),

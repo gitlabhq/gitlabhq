@@ -23,6 +23,7 @@ import {
   deriveSortKey,
   getDefaultWorkItemTypes,
   getFilterTokens,
+  getFilterTokensFromObject,
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
@@ -59,6 +60,7 @@ import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.gra
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -299,6 +301,7 @@ export default {
       hasWorkItems: false,
       workItemsCount: null,
       isNewViewModalVisible: false,
+      savedView: null,
     };
   },
   apollo: {
@@ -336,7 +339,7 @@ export default {
         this.isSortKeyInitialized = true;
       },
       skip() {
-        return !this.workItemTypeId || !this.isLoggedIn;
+        return !this.workItemTypeId || !this.isLoggedIn || this.isSavedView;
       },
       error(error) {
         this.isSortKeyInitialized = true;
@@ -471,6 +474,36 @@ export default {
         Sentry.captureException(error);
       },
     },
+    savedView: {
+      query: namespaceSavedViewQuery,
+      variables() {
+        return {
+          fullPath: this.rootPageFullPath,
+          id: convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id),
+        };
+      },
+      skip() {
+        return !this.isSavedView;
+      },
+      update(data) {
+        return data?.namespace?.savedViews?.nodes[0];
+      },
+      result({ data }) {
+        const savedView = data?.namespace?.savedViews?.nodes[0];
+        const tokens = getFilterTokensFromObject(savedView?.filters, {
+          includeStateToken: true,
+          hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+          convertTypeTokens: true,
+        });
+        this.filterTokens = tokens;
+        this.initialViewTokens = tokens;
+        const sortKey = savedView?.sort;
+        this.sortKey = sortKey;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
     subscribedSavedViews: {
       query: getSubsribedSavedViewsQuery,
       variables() {
@@ -491,6 +524,9 @@ export default {
     },
   },
   computed: {
+    isSavedView() {
+      return this.$route.name === ROUTES.savedView;
+    },
     isInfoBannerVisible() {
       return this.isServiceDeskList && this.isServiceDeskSupported && this.hasWorkItems;
     },
@@ -990,14 +1026,6 @@ export default {
     viewConfigChanged() {
       return this.filtersChanged || this.sortChanged || this.preferencesChanged;
     },
-    isOnSavedView() {
-      return this.$route.params.view_id;
-    },
-    activeSavedView() {
-      return this.subscribedSavedViews.find((view) => {
-        return view.id === this.$route.params.view_id;
-      });
-    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -1012,7 +1040,7 @@ export default {
       this.$apollo.queries.workItemsCount.refetch();
     },
     $route(newValue, oldValue) {
-      if (newValue.fullPath !== oldValue.fullPath) {
+      if (newValue.fullPath !== oldValue.fullPath && !this.isSavedView) {
         this.updateData(getParameterByName(PARAM_SORT));
       }
       if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME] && !this.detailLoading) {
@@ -1053,12 +1081,13 @@ export default {
     },
   },
   created() {
-    this.updateData(getParameterByName(PARAM_SORT));
-    this.addStateToken();
-
-    if (!this.isOnSavedView)
+    if (this.isSavedView) {
+      this.pageParams = getInitialPageParams(this.pageSize);
+    } else {
+      this.updateData(getParameterByName(PARAM_SORT));
+      this.addStateToken();
       this.filtersChanged = !isEqual(this.filterTokens, this.allItemsDefaultFilterTokens);
-
+    }
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
     this.releasesCache = [];
@@ -1158,7 +1187,7 @@ export default {
       this.state = state;
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handleFilter(tokens) {
       const filteredTokens = tokens
@@ -1173,7 +1202,7 @@ export default {
 
       // If user is on "All tabs" we compare against default filters, but
       // if user is on a saved view we compare against initial filters from DB
-      const compareFilters = !this.isOnSavedView
+      const compareFilters = !this.isSavedView
         ? this.allItemsDefaultFilterTokens
         : this.initialViewTokens;
       this.filtersChanged = !isEqual(filteredTokens, compareFilters);
@@ -1182,6 +1211,13 @@ export default {
       this.hasStateToken = this.checkIfStateTokenExists();
       this.updateState(tokens);
       this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.updateRouterQueryParams();
+    },
+    updateRouterQueryParams() {
+      if (this.isSavedView) {
+        return;
+      }
 
       this.$router.push({ query: this.urlParams }).catch((error) => {
         if (error.name !== 'NavigationDuplicated') {
@@ -1196,14 +1232,14 @@ export default {
       };
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handlePageSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     handlePreviousPage() {
       this.pageParams = {
@@ -1212,7 +1248,7 @@ export default {
       };
       scrollUp();
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     showIssueRepositioningMessage() {
       createAlert({
@@ -1240,7 +1276,7 @@ export default {
         this.saveSortPreference(sortKey);
       }
 
-      this.$router.push({ query: this.urlParams });
+      this.updateRouterQueryParams();
     },
     async saveSortPreference(sortKey) {
       try {
@@ -1541,7 +1577,7 @@ export default {
     },
     async confirmViewChanges() {
       const title = sprintf(s__('WorkItem|Save changes to %{viewName}?'), {
-        viewName: this.activeSavedView.name,
+        viewName: this.savedView?.name,
       });
 
       const message = `
@@ -1811,7 +1847,7 @@ export default {
             </div>
 
             <template v-if="workItemsSavedViewsEnabled">
-              <template v-if="!isOnSavedView">
+              <template v-if="!isSavedView">
                 <gl-button
                   v-if="viewConfigChanged"
                   size="small"

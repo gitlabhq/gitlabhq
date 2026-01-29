@@ -32,8 +32,8 @@ are available on GitLab Self-Managed only.
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-gitlab-duo-chat) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Code Review<br>(Classic)](code_review_classic.md) <sup>1</sup> | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#vulnerability-explanation) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
-| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Vulnerability Explanation](../application_security/analyze/duo.md) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Vulnerability Resolution](../application_security/remediate/duo.md) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [GitLab Duo and SDLC trends](../analytics/duo_and_sdlc_trends.md) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | {{< no >}} | {{< no >}} | {{< yes >}} | {{< yes >}} |
 

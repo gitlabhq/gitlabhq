@@ -26,6 +26,7 @@ import {
   workItemBulkEdit,
   allSavedViews,
   allSubscribedSavedViews,
+  singleSavedView,
 } from '~/work_items/graphql/resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 
@@ -79,7 +80,11 @@ export const config = {
           },
           savedViews: {
             read(_, { args }) {
-              const { subscribedOnly } = args;
+              const { subscribedOnly, id } = args;
+
+              if (id) {
+                return { nodes: singleSavedView };
+              }
 
               const nodes = subscribedOnly ? allSubscribedSavedViews : allSavedViews;
 

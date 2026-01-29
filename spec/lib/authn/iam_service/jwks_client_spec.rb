@@ -26,7 +26,7 @@ RSpec.describe Authn::IamService::JwksClient, :use_clean_rails_redis_caching, fe
       client.fetch_keys
       client.fetch_keys
 
-      expect(Gitlab::HTTP).to have_received(:get).with("#{service_url}/.well-known/jwks.json", timeout: 10).once
+      expect(Gitlab::HTTP).to have_received(:get).with("#{service_url}/.well-known/jwks.json", timeout: 5).once
     end
 
     it 'returns a JWT::JWK::Set instance with the correct keys' do

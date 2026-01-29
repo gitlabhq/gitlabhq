@@ -41,13 +41,16 @@ export default {
       return this.isEditingPath || this.hasEnteredEditMode;
     },
     showWikiNotes() {
-      return !this.isEditing || this.pagePersisted;
+      return !this.isCustomSidebar && (!this.isEditing || this.pagePersisted);
     },
     showWikiHeader() {
       if (this.glFeatures.wikiImmersiveEditor) {
         return !this.isEditing;
       }
       return !this.hasEnteredEditMode;
+    },
+    isCustomSidebar() {
+      return this.wikiUrl.endsWith('_sidebar');
     },
   },
   watch: {

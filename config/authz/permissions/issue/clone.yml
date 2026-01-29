@@ -1,0 +1,5 @@
+---
+name: clone_issue
+description: Grants the ability to clone issues to another project
+boundaries:
+  - project

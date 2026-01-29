@@ -549,7 +549,7 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
     printf("Contents of region: %s\n", region);
 ```
 
-[SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#vulnerability-explanation) to understand the problem.
+[SAST security scanners](../application_security/sast/_index.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/analyze/duo.md) to understand the problem.
 Vulnerability Resolution helps to generate an MR.
 If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Chat to refine. For example:
 

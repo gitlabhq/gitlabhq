@@ -1,6 +1,6 @@
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL_IN_EE_DIR } from '~/constants';
 import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
 export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;

@@ -4,6 +4,7 @@ module Authz
   module PermissionGroups
     class Assignable
       include Authz::Concerns::YamlPermission
+      include Gitlab::Utils::StrongMemoize
 
       BASE_PATH = 'config/authz/permission_groups/assignable_permissions'
 
@@ -45,6 +46,12 @@ module Authz
       def category_definition
         ::Authz::PermissionGroups::Category.get(category)
       end
+      strong_memoize_attr :category_definition
+
+      def resource_definition
+        ::Authz::PermissionGroups::Resource.get("#{category}/#{resource}")
+      end
+      strong_memoize_attr :resource_definition
     end
   end
 end

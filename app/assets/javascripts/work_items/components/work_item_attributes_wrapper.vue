@@ -6,7 +6,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { ListType } from '~/boards/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 

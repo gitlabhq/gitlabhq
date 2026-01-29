@@ -1,6 +1,7 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from './work_items_saved_view_selector.vue';
@@ -103,7 +104,8 @@ export default {
       this.visibleViews.push(selectedOverflowView);
       this.overflowedViews.unshift(removedVisibleView);
 
-      this.$router.push({ name: ROUTES.savedView, params: { view_id: view.id } });
+      const id = getIdFromGraphQLId(view.id).toString();
+      this.$router.push({ name: ROUTES.savedView, params: { view_id: id }, query: undefined });
     },
   },
 };

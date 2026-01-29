@@ -6,7 +6,7 @@ import {
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { PROMO_URL } from '~/constants';
 
 export default {
   components: {

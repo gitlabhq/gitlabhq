@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlButton } from '@gitlab/ui';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 import { s__ } from '~/locale';
 import FeaturedCard from './featured_card.vue';
 

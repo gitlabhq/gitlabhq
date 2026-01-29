@@ -365,4 +365,39 @@ export const allSubscribedSavedViews = [
     isPrivate: false,
   },
 ];
+
+const displaySettings = {
+  assignee: true,
+  blocked: true,
+  blocking: true,
+  dates: true,
+  health: true,
+  labels: true,
+  milestone: true,
+  popularity: true,
+  weight: true,
+  comments: true,
+  iteration: true,
+  status: true,
+};
+
+const filters = {
+  state: 'opened',
+  assigneeUsernames: 'root',
+  labelName: 'Broffe',
+};
+
+export const singleSavedView = [
+  {
+    __typename: 'SavedView',
+    name: 'Current sprint 3',
+    description: 'The things I am focused on for the sprint',
+    isSubscribed: false,
+    isPrivate: true,
+    id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+    displaySettings,
+    filters,
+    sort: 'UPDATED_DESC',
+  },
+];
 /* eslint-enable @gitlab/require-i18n-strings */

@@ -1,0 +1,16 @@
+# @feature_category: portfolio_management
+
+query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    savedViews(id: $id) {
+      nodes {
+        id
+        name
+        displaySettings
+        filters
+        sort
+      }
+    }
+  }
+}

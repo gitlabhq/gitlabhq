@@ -1,0 +1,5 @@
+---
+name: read_issue_user_agent_detail
+description: Grants the ability to read user agent details for issues
+boundaries:
+  - project

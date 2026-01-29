@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarDetailRow from '~/ci/job_details/components/sidebar/sidebar_detail_row.vue';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 describe('Sidebar detail row', () => {
   let wrapper;

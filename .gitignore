@@ -74,6 +74,7 @@ node_modules
 /tags
 /vendor/bundle/*
 /vendor/package_metadata_db/
+/vendor/package_metadata/
 /builds*
 /.gitlab_workhorse_secret
 /.gitlab_pages_secret

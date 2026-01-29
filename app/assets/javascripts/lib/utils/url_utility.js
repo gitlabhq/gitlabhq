@@ -7,22 +7,6 @@ const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 const SHA_REGEX = /[\da-f]{40}/gi;
 
-// GitLab default domain (override in jh)
-export const DOMAIN = 'gitlab.com';
-
-// Following URLs will be overwritten in jh
-export const FORUM_URL = `https://forum.${DOMAIN}/`; // forum.gitlab.com
-export const DOCS_URL = `https://docs.${DOMAIN}`; // docs.gitlab.com
-
-// About GitLab default host
-export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
-
-// About Gitlab default url
-export const PROMO_URL = `https://${PROMO_HOST}`;
-
-// eslint-disable-next-line no-restricted-syntax
-export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
-
 /**
  * Reset the cursor in a Regex so that multiple uses before a recompile don't fail
  * @param {RegExp} regex

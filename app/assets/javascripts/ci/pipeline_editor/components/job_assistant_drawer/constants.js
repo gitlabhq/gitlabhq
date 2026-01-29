@@ -1,5 +1,5 @@
 import { __, s__ } from '~/locale';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL_IN_EE_DIR } from '~/constants';
 
 export const JOB_RULES_WHEN = {
   onSuccess: {

@@ -1,5 +1,5 @@
 import { __, s__ } from '~/locale';
-import { DOCS_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL } from '~/constants';
 
 export const RUNNER_TYPENAME = 'CiRunner'; // __typename
 

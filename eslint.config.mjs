@@ -134,33 +134,33 @@ const baseNoRestrictedSyntax = [
   },
   {
     selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
   },
   {
     selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-    message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-    message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+    message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
   },
   {
     selector:
       'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
     message:
-      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
   },
   {
     selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
@@ -370,7 +370,7 @@ export default [
           object: 'window',
           property: 'open',
           message:
-            'Use `visitUrl` in `jh_else_ce/lib/utils/url_utility` to avoid cross-site leaks.',
+            'Use `visitUrl` in `~/constants` to avoid cross-site leaks.',
         },
         {
           object: 'window',
@@ -572,34 +572,34 @@ export default [
         {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
           message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
           message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
         },
         {
           selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
-          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'Literal[value=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\\u002Fblog\\b.*)/]',
-          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`',
+          message: 'No hard coded url, use `PROMO_URL` in `~/constants`',
         },
         {
           selector:
             'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
           message:
-            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`',
+            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
         },
         {
           selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',

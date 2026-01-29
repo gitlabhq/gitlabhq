@@ -125,5 +125,34 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         end
       end
     end
+
+    describe '#resource_definition' do
+      let(:file_path) { Rails.root.join(described_class::BASE_PATH, 'ci_cd/pipeline/action.yml').to_s }
+      let(:resource_def) { instance_double(Authz::PermissionGroups::Resource) }
+
+      before do
+        allow(Authz::PermissionGroups::Resource).to receive(:get)
+          .with('ci_cd/pipeline')
+          .and_return(resource_def)
+      end
+
+      it 'returns the resource definition for the category and resource' do
+        expect(assignable.send(:resource_definition)).to eq(resource_def)
+      end
+
+      context 'when not nested under a category directory' do
+        let(:file_path) { Rails.root.join(described_class::BASE_PATH, 'pipeline/action.yml').to_s }
+
+        before do
+          allow(Authz::PermissionGroups::Resource).to receive(:get)
+            .with('/pipeline')
+            .and_return(resource_def)
+        end
+
+        it 'returns the resource definition with empty category' do
+          expect(assignable.send(:resource_definition)).to eq(resource_def)
+        end
+      end
+    end
   end
 end

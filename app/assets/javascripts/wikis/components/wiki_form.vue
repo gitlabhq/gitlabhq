@@ -682,7 +682,11 @@ export default {
                 <div
                   class="flexible-input-container gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-p-2"
                 >
+                  <h1 v-if="isCustomSidebar" class="gl-heading-3 !gl-mb-0 md:gl-heading-2">
+                    {{ s__('Wiki|Edit Sidebar') }}
+                  </h1>
                   <input
+                    v-else
                     id="wiki_title"
                     ref="titleInput"
                     v-model="pageTitle"
@@ -706,7 +710,11 @@ export default {
                     no-caret
                   >
                     <div class="p-3 gl-min-w-md">
-                      <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
+                      <gl-form-group
+                        v-if="!isCustomSidebar"
+                        :label="$options.i18n.path.label"
+                        label-for="wiki_path"
+                      >
                         <gl-form-input
                           id="wiki_path"
                           v-model="path"

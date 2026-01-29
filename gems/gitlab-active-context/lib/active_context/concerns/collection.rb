@@ -66,11 +66,11 @@ module ActiveContext
         end
 
         def current_search_embedding_version
-          self::MODELS[collection_record.search_embedding_version] || {}
+          self::MODELS[collection_record&.search_embedding_version] || {}
         end
 
         def current_indexing_embedding_versions
-          collection_record.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
+          collection_record&.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
         end
 
         def current_embedding_fields

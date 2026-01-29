@@ -2,10 +2,6 @@
 
 module Gitlab
   module SubscriptionPortal
-    def self.payment_validation_form_id
-      "payment_method_validation"
-    end
-
     def self.registration_validation_form_id
       "cc_registration_validation"
     end
@@ -33,7 +29,6 @@ module Gitlab
 end
 
 Gitlab::SubscriptionPortal.prepend_mod
-Gitlab::SubscriptionPortal::PAYMENT_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.payment_validation_form_id.freeze
 Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze
 Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.registration_validation_form_id.freeze
 Gitlab::SubscriptionPortal::SUBSCRIPTION_PORTAL_ADMIN_EMAIL = Gitlab::SubscriptionPortal.subscription_portal_admin_email.freeze

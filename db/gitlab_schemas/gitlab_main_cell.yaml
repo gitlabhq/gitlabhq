@@ -4,7 +4,6 @@ allow_cross_joins:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_org
-  - gitlab_main_clusterwide
   - gitlab_main_cell_local
   - gitlab_main_jh
 allow_cross_transactions:
@@ -12,7 +11,6 @@ allow_cross_transactions:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_org
-  - gitlab_main_clusterwide
   - gitlab_main_cell_local
   - gitlab_main_jh
 allow_cross_foreign_keys:

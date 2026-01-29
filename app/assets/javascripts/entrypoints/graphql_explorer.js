@@ -6,7 +6,7 @@ import { GraphiQL } from 'graphiql';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Mousetrap } from '~/lib/mousetrap';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL_IN_EE_DIR } from '~/constants';
 /* eslint-enable no-restricted-imports */
 import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
 import { keysFor, TOGGLE_PERFORMANCE_BAR } from '~/behaviors/shortcuts/keybindings';

@@ -131,6 +131,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
             expect(response).to have_gitlab_http_status(:not_found)
           end
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_issue do
+          let(:boundary_object) { :instance }
+          let(:user) { admin }
+          let(:request) { get api(path, personal_access_token: pat) }
+        end
       end
     end
   end
@@ -139,6 +145,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     it_behaves_like 'issuable API rate-limited search' do
       let(:url) { '/issues' }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/issues', personal_access_token: pat), params: { scope: 'all' } }
     end
 
     context 'when unauthenticated' do
@@ -203,6 +214,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           get api('/issues_statistics'), params: { scope: 'created_by_me' }
 
           expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_issue_statistic do
+          let(:boundary_object) { :user }
+          let(:request) { get api('/issues_statistics', personal_access_token: pat), params: { scope: 'assigned_to_me' } }
         end
 
         context 'no state is treated as all state' do
@@ -1338,6 +1354,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe "POST /projects/:id/issues" do
+    it_behaves_like 'authorizing granular token permissions', :create_issue do
+      let(:boundary_object) { project }
+      let(:request) { post api("/projects/#{project.id}/issues", personal_access_token: pat), params: { title: 'new issue' } }
+    end
+
     it 'creates a new project issue', :aggregate_failures do
       post api("/projects/#{project.id}/issues", user), params: { title: 'new issue' }
 
@@ -1411,6 +1432,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:path) { "/projects/#{project.id}/issues/#{issue.iid}" }
       let(:params) { { labels: 'label1', updated_at: Time.new(2000, 1, 1) } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_issue do
+      let(:boundary_object) { project }
+      let(:request) { put api("/projects/#{project.id}/issues/#{issue.iid}", personal_access_token: pat), params: { labels: 'label1', updated_at: Time.new(2000, 1, 1) } }
     end
 
     describe 'updated_at param' do
@@ -1519,6 +1545,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_issue do
+      let(:boundary_object) { project }
+      let(:user) { owner }
+      let(:request) { delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", personal_access_token: pat) }
+    end
   end
 
   describe 'time tracking endpoints' do
@@ -1546,6 +1578,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           expect(response).to have_gitlab_http_status(:ok)
           expect(issue1.reload.relative_position)
                 .to be_between(issue2.reload.relative_position, issue3.reload.relative_position)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :reorder_issue do
+          let(:boundary_object) { project }
+          let(:request) { put api("/projects/#{project.id}/issues/#{issue1.iid}/reorder", personal_access_token: pat), params: { move_after_id: issue2.id, move_before_id: issue3.id } }
         end
       end
 

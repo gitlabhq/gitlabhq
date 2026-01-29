@@ -5,9 +5,11 @@ permissions:
   - delete_epic
   - delete_epic_link
   - delete_epic_issue
-  - delete_label
+  - delete_issue
   - delete_issue_link
+  - delete_label
   - delete_milestone
+  - delete_related_epic_link
 boundaries:
   - group
   - project

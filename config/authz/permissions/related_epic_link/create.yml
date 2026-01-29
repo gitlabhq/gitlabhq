@@ -1,0 +1,5 @@
+---
+name: create_related_epic_link
+description: Grants the ability to create related epic links
+boundaries:
+  - group

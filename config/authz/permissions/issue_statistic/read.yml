@@ -1,0 +1,7 @@
+---
+name: read_issue_statistic
+description: Grants the ability to read issue statistics
+boundaries:
+  - instance
+  - group
+  - project

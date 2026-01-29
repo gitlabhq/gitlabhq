@@ -44197,6 +44197,8 @@ paths:
       responses:
         '200':
           description: Execute GLQL query
+          schema:
+            "$ref": "#/definitions/API_Entities_Glql_Result"
         '400':
           description: Bad request
         '401':
@@ -70559,6 +70561,77 @@ definitions:
     required:
     - glql_yaml
     description: Execute GLQL query
+  API_Entities_Glql_Result:
+    type: object
+    properties:
+      data:
+        "$ref": "#/definitions/API_Entities_Glql_Data"
+        description: Query result data containing count, nodes, and pagination info
+      error:
+        type: string
+        description: Error message if query failed
+      fields:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Glql_Field"
+        description: Field definitions for the query results
+      success:
+        type: boolean
+        example: true
+    description: API_Entities_Glql_Result model
+  API_Entities_Glql_Data:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+        example: 42
+        description: Number of found items
+      nodes:
+        type: array
+        items:
+          type: array
+        example: []
+        description: The list of found items
+      pageInfo:
+        "$ref": "#/definitions/API_Entities_Glql_PageInfo"
+        description: Pagination information
+  API_Entities_Glql_PageInfo:
+    type: object
+    properties:
+      endCursor:
+        type: string
+        example: eyJpZCI6IjE3In0
+        description: Cursor for the last item
+      hasNextPage:
+        type: boolean
+        example: true
+        description: Whether there are more items
+      hasPreviousPage:
+        type: boolean
+        example: false
+        description: Whether there are previous items
+      startCursor:
+        type: string
+        example: eyJpZCI6IjE3In0
+        description: Cursor for the first item
+  API_Entities_Glql_Field:
+    type: object
+    properties:
+      key:
+        type: string
+        example: title
+        description: Unique field key
+      label:
+        type: string
+        example: Title
+        description: Human-readable field label
+      name:
+        type: string
+        example: title
+        description: Underlying name of field, often the same as `key`, but it may
+          be different if one type of field has multiple possible keys. Example `created`
+          and `createdAt`
   postApiV4IntegrationsSlackEvents:
     type: object
     properties:

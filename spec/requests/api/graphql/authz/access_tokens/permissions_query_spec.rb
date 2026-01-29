@@ -12,10 +12,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
   let(:resource) do
     resource_definition = {
       name: 'Wiki Resource',
-      feature_category: 'wiki',
       description: 'Pages that can be created, edited, and managed by team members'
     }
-    ::Authz::Resource.new(resource_definition, 'source_file')
+    ::Authz::PermissionGroups::Resource.new(resource_definition, 'source_file')
   end
 
   let(:query) do
@@ -42,8 +41,8 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
       target_permission.name => target_permission
     )
 
-    allow(::Authz::Resource).to receive(:get)
-      .with(target_permission.resource).and_return(resource)
+    allow(::Authz::PermissionGroups::Resource).to receive(:get)
+      .with("#{target_permission.category}/#{target_permission.resource}").and_return(resource)
   end
 
   context 'when user is authenticated' do
@@ -56,7 +55,7 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
         'action' => 'update',
         'resource' => 'wiki',
         'resourceName' => 'Wiki Resource',
-        'resourceDescription' => resource.description,
+        'resourceDescription' => resource.definition[:description],
         'category' => 'wiki',
         'boundaries' => %w[GROUP PROJECT]
       }])

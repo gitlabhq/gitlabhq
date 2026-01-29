@@ -12,7 +12,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
 
   const defaultProvide = {
-    isSignedIn: true,
     signInPath: 'sign/in/path',
     canAdminIssue: true,
     isServiceDeskEnabled: true,
@@ -35,6 +34,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
   describe('when signed in', () => {
     beforeEach(() => {
+      window.gon = { current_user_id: 1 };
       mountComponent();
     });
 
@@ -68,7 +68,8 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
   describe('when signed out', () => {
     beforeEach(() => {
-      mountComponent({ provide: { isSignedIn: false } });
+      window.gon = { current_user_id: undefined };
+      mountComponent();
     });
 
     it('renders empty state', () => {

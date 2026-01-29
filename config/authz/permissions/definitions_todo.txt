@@ -175,7 +175,6 @@ change_restrict_user_defined_variables
 change_seat_control
 change_share_with_group_lock
 change_visibility_level
-clone_issue
 clone_work_item
 configure_secret_detection_validity_checks
 create_admin_role
@@ -384,7 +383,6 @@ modify_product_analytics_settings
 modify_security_policy
 modify_value_stream_dashboard_settings
 move_design
-move_issue
 move_work_item
 override_group_member
 owner_access
@@ -530,7 +528,6 @@ read_issuable
 read_issuable_metric_image
 read_issuable_participables
 read_issuable_resource_link
-read_issue
 read_issue_analytics
 read_issue_board
 read_issue_board_list

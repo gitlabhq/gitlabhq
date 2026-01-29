@@ -185,6 +185,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
         end
 
         context 'issues_statistics' do
+          it_behaves_like 'authorizing granular token permissions', :read_issue_statistic do
+            let(:boundary_object) { group }
+            let(:request) { get api("/groups/#{group.id}/issues_statistics", personal_access_token: pat) }
+          end
+
           context 'no state is treated as all state' do
             let(:params) { {} }
             let(:counts) { { all: 5, closed: 1, opened: 4 } }
@@ -347,7 +352,12 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context 'when user is a group member' do
       before do
-        group_project.add_reporter(user)
+        group.add_reporter(user)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue do
+        let(:boundary_object) { group }
+        let(:request) { get api(base_url, personal_access_token: pat) }
       end
 
       it 'exposes known attributes', :aggregate_failures do

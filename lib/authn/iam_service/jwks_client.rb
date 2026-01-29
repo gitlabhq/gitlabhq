@@ -29,7 +29,7 @@ module Authn
       private
 
       def fetch_and_cache_keys
-        response = Gitlab::HTTP.get(endpoint, timeout: 10)
+        response = Gitlab::HTTP.get(endpoint, timeout: 5)
 
         unless response.success?
           raise JwksFetchFailedError,

@@ -3,7 +3,7 @@ import timezoneMock from 'timezone-mock';
 import { GlTruncate, GlDrawer, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import Feature from '~/whats_new/components/feature.vue';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL_IN_EE_DIR } from '~/constants';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 
 describe("What's new single feature", () => {

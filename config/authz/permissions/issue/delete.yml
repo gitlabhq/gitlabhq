@@ -1,0 +1,5 @@
+---
+name: delete_issue
+description: Grants the ability to delete issues
+boundaries:
+  - project

@@ -91,6 +91,14 @@ RSpec.describe ActiveContext::Concerns::Collection do
       expect(collection_class.current_search_embedding_version).to eq({})
     end
 
+    context 'when collection_record does not exist' do
+      let(:collection_record) { nil }
+
+      it 'is empty hash' do
+        expect(collection_class.current_search_embedding_version).to eq({})
+      end
+    end
+
     context 'when a MODELS constant is defined on the class' do
       let(:models_hash) { { 1 => model_1 } }
       let(:model_1) { { foo: 'bar' } }
@@ -122,6 +130,14 @@ RSpec.describe ActiveContext::Concerns::Collection do
 
     it 'returns an empty array when no MODELS constant is defined' do
       expect(collection_class.current_indexing_embedding_versions).to eq([])
+    end
+
+    context 'when collection_record does not exist' do
+      let(:collection_record) { nil }
+
+      it 'returns an empty array' do
+        expect(collection_class.current_indexing_embedding_versions).to eq([])
+      end
     end
 
     context 'when a MODELS constant is defined on the class' do

@@ -139,11 +139,14 @@ RSpec.shared_examples 'yaml backed permission' do
     end
 
     context 'when resource is defined' do
-      before do
-        resource = ::Authz::Resource.new({
+      let(:resource) do
+        ::Authz::Resource.new({
           name: 'The Resource', description: 'A resource', feature_category: 'a_resource_feature_category'
         }, 'source_file')
-        allow(::Authz::Resource).to receive(:all).and_return({ resource_name.to_sym => resource })
+      end
+
+      before do
+        allow(instance).to receive(:resource_definition).and_return(resource)
       end
 
       it 'returns the resource\'s name' do

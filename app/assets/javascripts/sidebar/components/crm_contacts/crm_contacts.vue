@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
-import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
+import { DOCS_URL_IN_EE_DIR } from '~/constants';
 import getIssueCrmContactsQuery from '../../queries/get_issue_crm_contacts.query.graphql';
 import issueCrmContactsSubscription from '../../queries/issue_crm_contacts.subscription.graphql';
 

@@ -45,14 +45,6 @@
       %row.hidden#warning_external_automatically_set
         = gl_badge_tag s_('AdminUsers|Automatically marked as default internal user'), variant: :warning
 
-  .form-group.gl-form-group{ role: 'group' }
-    - @user.credit_card_validation || @user.build_credit_card_validation
-    = f.fields_for :credit_card_validation do |ff|
-      = ff.gitlab_ui_checkbox_component :credit_card_validated_at,
-        s_('AdminUsers|Validate user account'),
-        help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free compute minutes on instance runners.'),
-        checkbox_options: { checked: @user.credit_card_validated_at.present? }
-
   - if Feature.enabled?(:email_based_mfa, @user)
     .form-group.gl-form-group{ role: 'group' }
       = f.label :email_otp_required_after, s_('AdminUsers|Email OTP required after'), class: 'gl-block col-form-label'

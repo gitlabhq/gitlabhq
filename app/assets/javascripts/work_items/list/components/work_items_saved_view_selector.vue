@@ -31,7 +31,7 @@ export default {
     },
     viewLink() {
       const id = getIdFromGraphQLId(this.savedView.id).toString();
-      return { name: ROUTES.savedView, params: { view_id: id } };
+      return { name: ROUTES.savedView, params: { view_id: id }, query: undefined };
     },
   },
   methods: {

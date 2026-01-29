@@ -1,0 +1,8 @@
+---
+name: create_package
+description: Grants the ability to create packages
+permissions:
+  - authorize_helm_chart
+  - upload_helm_chart
+boundaries:
+  - project
