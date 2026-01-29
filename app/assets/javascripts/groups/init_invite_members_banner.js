@@ -13,6 +13,7 @@ export default function initInviteMembersBanner() {
 
   return new Vue({
     el,
+    name: 'InviteMembersBannerRoot',
     provide: {
       svgPath,
       inviteMembersPath,

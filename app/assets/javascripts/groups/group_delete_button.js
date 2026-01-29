@@ -20,6 +20,7 @@ export const initGroupDeleteButton = () => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'GroupDeleteButtonRoot',
     render(createElement) {
       return createElement(DeleteButton, {
         props: {

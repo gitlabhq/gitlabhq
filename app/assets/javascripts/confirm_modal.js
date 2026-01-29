@@ -3,6 +3,7 @@ import ConfirmModal from '~/vue_shared/components/confirm_modal.vue';
 
 const mountConfirmModal = (optionalProps) =>
   new Vue({
+    name: 'ConfirmModalRoot',
     render(h) {
       return h(ConfirmModal, {
         props: {

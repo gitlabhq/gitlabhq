@@ -225,6 +225,10 @@ module WorkItems
           configuration_class.try(:only_for_group?) || false
         end
 
+        def enabled?
+          true
+        end
+
         private
 
         def licenses_for_parent

@@ -233,6 +233,10 @@ module WorkItems
       nil
     end
 
+    def enabled?
+      true
+    end
+
     private
 
     def strip_whitespace

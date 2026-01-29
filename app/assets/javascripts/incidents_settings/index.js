@@ -25,6 +25,7 @@ export default () => {
   const service = new IncidentsSettingsService(operationsSettingsEndpoint, pagerdutyResetKeyPath);
   return new Vue({
     el,
+    name: 'IncidentsSettingsTabsRoot',
     provide: {
       service,
       pagerDutySettings: {

@@ -6,6 +6,7 @@ export default (containerId = '#js-google-cloud-gcp-regions') => {
   const { ...attrs } = JSON.parse(element.getAttribute('data'));
   return new Vue({
     el: element,
+    name: 'GoogleCloudGcpRegionsFormRoot',
     render: (createElement) => createElement(Form, { attrs }),
   });
 };

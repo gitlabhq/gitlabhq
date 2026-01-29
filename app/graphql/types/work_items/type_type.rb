@@ -119,6 +119,12 @@ module Types
         method: :only_for_group?,
         experiment: { milestone: '18.8' }
 
+      field :enabled, GraphQL::Types::Boolean,
+        null: false,
+        description: 'Indicates whether the work item type is enabled.',
+        method: :enabled?,
+        experiment: { milestone: '18.9' }
+
       def widgets
         object.widget_definitions(context[:resource_parent])
       end

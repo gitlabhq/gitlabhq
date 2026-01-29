@@ -28,6 +28,7 @@ class RecentSearchesRoot {
     const { state } = this.store;
     this.vm = new Vue({
       el: this.wrapperElement,
+      name: 'RecentSearchesDropdownContentRoot',
       data() {
         return state;
       },

@@ -255,7 +255,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/cache/json_caches/redis_keyed.rb'
     - 'lib/gitlab/chat_name_token.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/ci/ansi2json/state.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata.rb'
     - 'lib/gitlab/ci/components/usages/aggregators/cursor.rb'
     - 'lib/gitlab/ci/parsers/accessibility/pa11y.rb'

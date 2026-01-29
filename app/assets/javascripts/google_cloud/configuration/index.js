@@ -6,6 +6,7 @@ export default (containerId = '#js-google-cloud-configuration') => {
   const { ...attrs } = JSON.parse(element.getAttribute('data'));
   return new Vue({
     el: element,
+    name: 'GoogleCloudConfigurationPanelRoot',
     render: (createElement) => createElement(Panel, { attrs }),
   });
 };

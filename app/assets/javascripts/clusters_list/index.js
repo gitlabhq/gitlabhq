@@ -37,6 +37,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ClustersMainViewRoot',
     apolloProvider: new VueApollo({ defaultClient }),
     provide: {
       emptyStateImage,

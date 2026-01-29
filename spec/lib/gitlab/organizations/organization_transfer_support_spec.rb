@@ -117,6 +117,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       vulnerability_export_uploads
       vulnerability_exports
       web_hooks
+      web_hook_logs_daily
       zentao_tracker_data
     ]
   end

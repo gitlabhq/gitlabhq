@@ -6,6 +6,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'CsvViewerRoot',
     render(createElement) {
       return createElement(CsvViewer, {
         props: {

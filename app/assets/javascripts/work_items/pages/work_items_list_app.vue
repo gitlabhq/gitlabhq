@@ -1797,6 +1797,7 @@ export default {
             <work-items-saved-views-selectors
               :full-path="rootPageFullPath"
               :saved-views="subscribedSavedViews"
+              :sort-key="sortKey"
               @reset-to-default-view="resetToDefaultView"
             >
               <template #header-area>
@@ -1860,7 +1861,9 @@ export default {
                 </gl-button>
                 <work-items-new-saved-view-modal
                   v-model="isNewViewModalVisible"
+                  :full-path="rootPageFullPath"
                   :title="s__('WorkItem|Save view')"
+                  :sort-key="sortKey"
                 />
               </template>
               <template v-else>

@@ -63,7 +63,7 @@ exceed a rate of 400 per minute are blocked. Access to the endpoint is restored 
 
 {{< /history >}}
 
-A rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-members-of-a-group-including-inherited-and-invited-members).
+A rate limit is set on the [list all group members API endpoint](../../api/group_members.md#list-all-group-members-including-inherited-and-invited-members).
 
 Both the `GET /projects/:id/members/all` and `GET /groups/:id/members/all` API endpoints
 share the same rate limit configuration. If you set a rate limit on the projects endpoint,
@@ -157,7 +157,7 @@ see [Archive a group](../../api/groups.md#archive-a-group).
 {{< /history >}}
 
 Configure the rate limit for each group and user for requests to the
-[delete members endpoint](../../api/group_members.md#remove-a-member-from-a-group).
+[delete members endpoint](../../api/group_members.md#remove-a-group-member).
 
 Prerequisites:
 

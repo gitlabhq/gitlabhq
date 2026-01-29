@@ -13,6 +13,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'IntegrationListRoot',
     provide() {
       return {
         isAdmin: parseBoolean(isAdmin),

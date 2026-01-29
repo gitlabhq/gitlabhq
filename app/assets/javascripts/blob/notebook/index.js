@@ -4,6 +4,7 @@ import NotebookViewer from './notebook_viewer.vue';
 export default ({ el = document.getElementById('js-notebook-viewer'), relativeRawPath }) => {
   return new Vue({
     el,
+    name: 'NotebookViewerRoot',
     provide: {
       relativeRawPath: relativeRawPath || el.dataset.relativeRawPath,
     },

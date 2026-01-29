@@ -20,7 +20,10 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       name: 'My Private View',
       description: 'Only I can see this',
       isPrivate: true,
-      isSubscribed: true,
+      subscribed: true,
+      userPermissions: {
+        updateSavedView: true,
+      },
     },
     {
       __typename: 'SavedView',
@@ -28,7 +31,10 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       name: 'Team View',
       description: 'Shared with the team',
       isPrivate: false,
-      isSubscribed: false,
+      subscribed: false,
+      userPermissions: {
+        updateSavedView: true,
+      },
     },
   ];
 

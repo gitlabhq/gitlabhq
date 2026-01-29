@@ -16,6 +16,7 @@ export function init() {
 
   return new Vue({
     el,
+    name: 'ProjectFormGroupRoot',
     render(h) {
       return h(ProjectFormGroup, {
         props: {

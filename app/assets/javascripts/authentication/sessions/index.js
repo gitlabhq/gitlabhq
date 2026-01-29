@@ -14,6 +14,7 @@ export const initExpireSessionModal = () => {
   const title = s__('SessionExpire|Your session has expired');
   return new Vue({
     el,
+    name: 'SessionExpireModalRoot',
     render: (createElement) =>
       createElement(SessionExpireModal, {
         props: {

@@ -21,9 +21,9 @@ Prerequisites:
 
 All merge train endpoints support [offset-based pagination](rest/_index.md#offset-based-pagination) using the `page` and `per_page` parameters.
 
-## List merge trains for a project
+## List all merge trains for a project
 
-Lists all merge trains for a project.
+Lists all merge trains for a specified project.
 
 ```plaintext
 GET /projects/:id/merge_trains
@@ -128,7 +128,7 @@ Example response:
 ]
 ```
 
-## List merge requests in a merge train
+## List all merge requests in a merge train
 
 Lists all merge requests in a merge train for a target branch.
 
@@ -239,9 +239,9 @@ Example response:
 ]
 ```
 
-## Get the status of a merge request on a merge train
+## Retrieve merge train status
 
-Retrieves the merge train status of a merge request.
+Retrieves the merge train status of a specified merge request.
 
 ```plaintext
 GET /projects/:id/merge_trains/merge_requests/:merge_request_iid
@@ -348,7 +348,7 @@ Example response:
 
 ## Add a merge request to a merge train
 
-Adds a merge request to a merge train.
+Adds a specified merge request to a merge train.
 
 ```plaintext
 POST /projects/:id/merge_trains/merge_requests/:merge_request_iid

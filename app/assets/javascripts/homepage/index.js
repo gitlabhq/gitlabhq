@@ -32,6 +32,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'HomepageAppRoot',
     provide: {
       preferencesPath,
       duoCodeReviewBotUsername,

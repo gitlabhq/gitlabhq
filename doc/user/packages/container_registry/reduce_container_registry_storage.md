@@ -55,8 +55,8 @@ To view storage usage for a project:
 
 You can also use:
 
-- The [Projects API](../../../api/projects.md#get-a-single-project) to get total container registry storage for a project.
-- The [Registry API](../../../api/container_registry.md#get-details-of-a-single-repository) to get size data for a specific repository.
+- Use the Projects API to get total container registry storage for a project. For more information, see [Get a single project](../../../api/projects.md#get-a-single-project).
+- Use the Container registry API to get size data for a specific repository. For more information, see [Retrieve details of a single repository](../../../api/container_registry.md#retrieve-details-of-a-single-repository).
 
 ### For a group
 
@@ -85,7 +85,7 @@ Storage data updates occur:
 - Immediately when you push or delete container images.
 - In real-time when you:
   - View the repository image tags in the UI.
-  - Use the Container registry API to [get details of a single repository](../../../api/container_registry.md#get-details-of-a-single-repository).
+  - Use the Container registry API to [Retrieve details of a single repository](../../../api/container_registry.md#retrieve-details-of-a-single-repository).
 - When you push or delete tags in a project's container repository.
 - Every 5 minutes for groups.
 

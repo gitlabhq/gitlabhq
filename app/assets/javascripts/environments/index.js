@@ -22,6 +22,7 @@ export default (el) => {
 
     return new Vue({
       el,
+      name: 'EnvironmentsAppRoot',
       apolloProvider: apolloProvider(endpoint),
       provide: {
         projectPath,

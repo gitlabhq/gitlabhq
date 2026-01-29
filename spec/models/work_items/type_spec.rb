@@ -397,5 +397,11 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         expect(work_item_type.only_for_group?).to be_nil
       end
     end
+
+    describe '#enabled?' do
+      it 'returns true' do
+        expect(work_item_type.enabled?).to be true
+      end
+    end
   end
 end

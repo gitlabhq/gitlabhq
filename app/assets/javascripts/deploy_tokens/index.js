@@ -17,6 +17,7 @@ export default function initDeployTokens() {
   } = el.dataset;
   return new Vue({
     el,
+    name: 'NewDeployTokenRoot',
     components: {
       NewDeployToken,
     },

@@ -30,6 +30,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'FeatureFlagsComponentRoot',
     store: createStore({ endpoint, projectId, unleashApiInstanceId, rotateInstanceIdPath }),
     provide: {
       projectName,

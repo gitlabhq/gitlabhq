@@ -62,9 +62,6 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
     before do
       visit explore_root_path
 
-      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/525136
-      stub_feature_flags(explore_groups_vue: false)
-
       # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/520596
       stub_feature_flags(explore_projects_vue: false)
     end
@@ -72,16 +69,28 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
     it 'navigates to pages' do
       find('body').send_keys([:shift, 'G'])
 
-      expect(page).to have_content('No public or internal groups')
+      expect(page).to have_content(s_('Groups|Browse groups to learn from and contribute to.'))
 
       find('body').send_keys([:shift, 'S'])
 
-      expect(page).to have_content('There are no snippets found')
+      expect(page).to have_content(s_('SnippetsEmptyState|There are no snippets found'))
 
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content('Explore public groups to find projects to contribute to')
+      expect(page).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to'))
+    end
+
+    context 'when `explore_groups_vue` flag is disabled' do
+      before do
+        stub_feature_flags(explore_groups_vue: false)
+      end
+
+      it 'navigates to explore groups page' do
+        find('body').send_keys([:shift, 'G'])
+
+        expect(page).to have_content(_('No public or internal groups'))
+      end
     end
   end
 

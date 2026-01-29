@@ -10,6 +10,7 @@ export default function initInviteGroupTrigger() {
 
   return new Vue({
     el,
+    name: 'InviteGroupTriggerRoot',
     render: (createElement) =>
       createElement(InviteGroupTrigger, {
         props: {

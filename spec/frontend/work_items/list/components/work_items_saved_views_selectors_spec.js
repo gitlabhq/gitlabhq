@@ -1,34 +1,44 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { CREATED_DESC } from '~/work_items/list/constants';
 
 describe('WorkItemsSavedViewsSelectors', () => {
   let wrapper;
 
   const mockSavedViewsData = [
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: '1',
       name: 'My Private View',
       description: 'Only I can see this',
       isPrivate: true,
-      isSubscribed: true,
+      subscribed: true,
+      userPermissions: {
+        updateSavedView: true,
+      },
     },
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: '2',
       name: 'Team View 1',
       description: 'Only I can see this',
       isPrivate: false,
-      isSubscribed: true,
+      subscribed: true,
+      userPermissions: {
+        updateSavedView: true,
+      },
     },
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: '3',
       name: 'Second Team View 2',
       description: 'Only I can see this',
       isPrivate: false,
-      isSubscribed: true,
+      subscribed: true,
+      userPermissions: {
+        updateSavedView: true,
+      },
     },
   ];
 
@@ -37,6 +47,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       propsData: {
         fullPath: 'test-project-path',
         savedViews: mockSavedViews,
+        sortKey: CREATED_DESC,
         ...props,
       },
       data() {

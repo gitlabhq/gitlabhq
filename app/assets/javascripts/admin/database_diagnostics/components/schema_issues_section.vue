@@ -132,7 +132,6 @@ export default {
     <!-- Overall Status -->
     <div v-if="totalIssuesCount === 0" class="gl-mb-4">
       <gl-alert variant="success" :dismissible="false" data-testid="no-issues-alert">
-        <gl-icon name="check-circle-filled" class="gl-mr-2 gl-text-green-500" />
         {{ s__('DatabaseDiagnostics|No schema issues detected.') }}
       </gl-alert>
     </div>

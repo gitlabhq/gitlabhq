@@ -43,7 +43,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role.
 
-You can assign the Guest role to a current member of a group or project, or assign this role when creating a new member. You can do this through the API (for [groups](../api/group_members.md#add-a-member-to-a-group) or [projects](../api/project_members.md#add-a-member-to-a-project)) or the GitLab UI.
+You can assign the Guest role to a current member of a group or project, or assign this role when creating a new member. You can do this through the API (for [groups](../api/group_members.md#add-a-group-member) or [projects](../api/project_members.md#add-a-member-to-a-project)) or the GitLab UI.
 
 To assign the Guest role to a current group or project member:
 

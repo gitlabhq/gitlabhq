@@ -144,7 +144,7 @@ You can ask about a specific GitLab epic. For example:
 
 {{< details >}}
 
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 
 {{< /details >}}
 

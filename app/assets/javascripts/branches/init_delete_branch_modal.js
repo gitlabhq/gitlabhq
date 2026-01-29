@@ -9,6 +9,7 @@ export default function initDeleteBranchModal() {
 
   return new Vue({
     el,
+    name: 'DeleteBranchModalRoot',
     render(createComponent) {
       return createComponent(DeleteBranchModal);
     },

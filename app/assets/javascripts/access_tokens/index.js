@@ -97,6 +97,7 @@ export const initExpiresAtField = () => {
 
   return new Vue({
     el,
+    name: 'ExpiresAtFieldRoot',
     render(h) {
       return h(ExpiresAtField, {
         props: {
@@ -206,6 +207,7 @@ export const initTokensApp = () => {
 
   return new Vue({
     el,
+    name: 'TokensAppRoot',
     provide: {
       tokenTypes,
     },
@@ -222,6 +224,7 @@ export const initGenerateFineGrainedTokenApp = () => {
 
   return new Vue({
     el,
+    name: 'GenerateFineGrainedTokenAppRoot',
     render(createElement) {
       return createElement(GenerateFineGrainedTokenApp);
     },

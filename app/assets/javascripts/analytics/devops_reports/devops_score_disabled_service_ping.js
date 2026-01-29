@@ -15,6 +15,7 @@ export default () => {
 
   return new Vue({
     el: emptyStateContainer,
+    name: 'ServicePingDisabledRoot',
     provide: {
       isAdmin: parseBoolean(isAdmin),
       svgPath: emptyStateSvgPath,

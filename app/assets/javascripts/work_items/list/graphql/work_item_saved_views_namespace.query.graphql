@@ -7,8 +7,11 @@ query savedViews($fullPath: ID!, $subscribedOnly: Boolean) {
         id
         name
         description
-        isSubscribed
-        isPrivate
+        subscribed
+        isPrivate: private
+        userPermissions {
+          updateSavedView
+        }
       }
     }
   }

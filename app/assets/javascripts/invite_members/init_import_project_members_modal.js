@@ -14,6 +14,7 @@ export default function initImportProjectMembersModal() {
 
   return new Vue({
     el,
+    name: 'ImportProjectMembersModalRoot',
     provide: {
       name: projectName,
       addSeatsHref,

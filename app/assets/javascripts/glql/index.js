@@ -15,6 +15,7 @@ const renderGlqlNode = (el) => {
 
   return new Vue({
     el: container,
+    name: 'GlqlFacadeRoot',
     render: (h) =>
       h(Facade, {
         props: {

@@ -182,7 +182,7 @@ export default {
                 {{ view.description }}
               </span>
             </span>
-            <template v-if="view.isSubscribed">
+            <template v-if="view.subscribed">
               <div
                 class="added-saved-view gl-ml-auto gl-flex gl-items-center gl-gap-1 gl-text-success"
               >

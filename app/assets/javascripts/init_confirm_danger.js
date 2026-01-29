@@ -25,6 +25,7 @@ export default () => {
 
     return new Vue({
       el: element,
+      name: 'ConfirmDangerRoot',
       provide: pickBy(
         {
           htmlConfirmationMessage,

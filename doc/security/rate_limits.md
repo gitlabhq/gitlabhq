@@ -166,7 +166,7 @@ The rate limit is 160 calls per 8 hours per authenticated user.
 
 {{< /history >}}
 
-There is a rate limit for [removing project or group members using the API endpoints](../api/group_members.md#remove-a-member-from-a-group) `/groups/:id/members` or `/project/:id/members`.
+There is a rate limit for [removing project or group members using the API endpoints](../api/group_members.md#remove-a-group-member) `/groups/:id/members` or `/project/:id/members`.
 
 The rate limit is 60 deletions per minute.
 

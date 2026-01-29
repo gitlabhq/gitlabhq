@@ -49,6 +49,7 @@ const mountJSONTableVueComponent = (userData, element, isHtmlSafe = false) => {
 
   return new Vue({
     el: container,
+    name: 'JSONTableRoot',
     render(h) {
       return h(JSONTable, { props });
     },

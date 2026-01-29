@@ -22,6 +22,7 @@ export default (el) => {
 
   return new Vue({
     el,
+    name: 'EditEnvironmentRoot',
     apolloProvider: apolloProvider(),
     provide: {
       projectEnvironmentsPath,

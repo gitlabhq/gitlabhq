@@ -41,6 +41,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'CrmContactsAppRoot',
     router,
     apolloProvider,
     provide: {

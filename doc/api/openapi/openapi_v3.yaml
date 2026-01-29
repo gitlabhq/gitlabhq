@@ -886,7 +886,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesMavenCacheEntry"
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesMavenCacheRemoteEntry"
         '400':
           description: Bad Request
         '401':
@@ -948,12 +948,12 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The base64 encoded upstream id and relative path of the cache
-          entry
+        description: 'The base64 encoded cache entry identifier (format: "group_id
+          iid")'
         schema:
           type: string
         in: query
-        example: Zm9vL2Jhci9teXBrZy5wb20=
+        example: MTIzNCA1Njc4
   "/api/v4/virtual_registries/packages/maven/registry_upstreams":
     post:
       operationId: postApiV4VirtualRegistriesPackagesMavenRegistryUpstreams
@@ -8487,7 +8487,7 @@ paths:
           type: integer
         in: path
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
@@ -8495,9 +8495,14 @@ paths:
               properties:
                 blocking_merge_request_id:
                   type: integer
-                  description: The internal ID of the blocking merge request
-              required:
-              - blocking_merge_request_id
+                  description: The global ID of the blocking merge request
+                blocking_merge_request_iid:
+                  type: integer
+                  description: The IID of the blocking merge request
+                blocking_project_id:
+                  oneOf:
+                  - type: string
+                  - type: integer
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/blocks/{block_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidBlocksBlockId
@@ -15272,10 +15277,14 @@ paths:
                   type: string
                   description: Description of the runner controller
                   example: Controller for managing runner
-                enabled:
-                  type: boolean
-                  description: Enable or disable the runner controller
-                  example: true
+                state:
+                  type: string
+                  enum:
+                  - disabled
+                  - enabled
+                  - dry_run
+                  description: State of the runner controller (disabled, enabled,
+                    dry_run)
   "/api/v4/runner_controllers/{id}":
     get:
       operationId: getApiV4RunnerControllersId
@@ -15338,10 +15347,14 @@ paths:
                   type: string
                   description: Description of the runner controller
                   example: Controller for managing runner
-                enabled:
-                  type: boolean
-                  description: Enable or disable the runner controller
-                  example: true
+                state:
+                  type: string
+                  enum:
+                  - disabled
+                  - enabled
+                  - dry_run
+                  description: State of the runner controller (disabled, enabled,
+                    dry_run)
     delete:
       operationId: deleteApiV4RunnerControllersId
       summary: Delete a runner controller
@@ -21938,6 +21951,8 @@ paths:
                   type: string
                 allow_contribution_mapping_to_admins:
                   type: string
+                allow_s3_compatible_storage_for_offline_transfer:
+                  type: string
                 user_defaults_to_private_profile:
                   type: string
                 deactivation_email_additional_text:
@@ -22229,6 +22244,10 @@ paths:
                 enforce_pipl_compliance:
                   type: string
                 display_gitlab_credits_user_data:
+                  type: string
+                project_secrets_limit:
+                  type: string
+                group_secrets_limit:
                   type: string
                 enable_member_promotion_management:
                   type: string
@@ -43694,6 +43713,76 @@ paths:
               - tag_name_pattern
               - minimum_access_level_for_push
               - minimum_access_level_for_delete
+  "/api/v4/projects/{id}/registry/protection/tag/rules/{protection_rule_id}":
+    patch:
+      operationId: patchApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
+      summary: Update a container protection tag rule for a project.
+      description: This feature was introduced in GitLab 18.9.
+      tags:
+      - Projects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesProjectsContainerRegistryProtectionTagRule"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Entity
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: protection_rule_id
+        required: true
+        description: The ID of the container protection tag rule.
+        schema:
+          type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tag_name_pattern:
+                  type: string
+                  description: Container tag name pattern protected by the protection
+                    rule. For example, `v*-release`. Wildcard character `*` allowed.
+                minimum_access_level_for_push:
+                  type: string
+                  enum:
+                  - maintainer
+                  - owner
+                  - admin
+                  - ''
+                  description: Minimum GitLab access level required to push container
+                    tags. For example, Maintainer, Owner, or Admin. To unset the value,
+                    use an empty string (`""`).
+                minimum_access_level_for_delete:
+                  type: string
+                  enum:
+                  - maintainer
+                  - owner
+                  - admin
+                  - ''
+                  description: Minimum GitLab access level required to delete container
+                    tags. For example, Maintainer, Owner, or Admin. To unset the value,
+                    use an empty string (`""`).
   "/api/v4/projects/{id}/registry/protection/repository/rules":
     get:
       operationId: getApiV4ProjectsIdRegistryProtectionRepositoryRules
@@ -56009,6 +56098,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -56073,6 +56165,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -56284,6 +56380,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -56381,6 +56480,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -56474,6 +56577,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -56490,6 +56596,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -56941,6 +57051,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -56979,6 +57092,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -57199,6 +57316,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 notify_only_default_branch:
                   type: boolean
                   description: Send notifications for the default branch.
@@ -57296,6 +57416,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -57312,6 +57435,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -57621,6 +57748,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -57718,6 +57848,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -57764,6 +57898,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -57780,6 +57917,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -57846,6 +57987,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -57943,6 +58087,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -58058,6 +58206,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -58096,6 +58247,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -58140,6 +58295,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -58156,6 +58314,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -58216,6 +58378,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -58232,6 +58397,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -59464,6 +59633,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -59528,6 +59700,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -59739,6 +59915,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -59836,6 +60015,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -59929,6 +60112,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -59945,6 +60131,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -60396,6 +60586,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -60434,6 +60627,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -60654,6 +60851,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 notify_only_default_branch:
                   type: boolean
                   description: Send notifications for the default branch.
@@ -60751,6 +60951,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -60767,6 +60970,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -61076,6 +61283,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61173,6 +61383,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -61219,6 +61433,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61235,6 +61452,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -61301,6 +61522,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61398,6 +61622,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -61513,6 +61741,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61551,6 +61782,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -61595,6 +61830,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61611,6 +61849,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -61671,6 +61913,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -61687,6 +61932,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -62919,6 +63168,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -62983,6 +63235,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -63194,6 +63450,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -63291,6 +63550,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -63384,6 +63647,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -63400,6 +63666,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -63851,6 +64121,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -63889,6 +64162,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -64109,6 +64386,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 notify_only_default_branch:
                   type: boolean
                   description: Send notifications for the default branch.
@@ -64206,6 +64486,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -64222,6 +64505,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -64531,6 +64818,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -64628,6 +64918,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 alert_events:
@@ -64674,6 +64968,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -64690,6 +64987,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -64756,6 +65057,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -64853,6 +65157,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -64968,6 +65276,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -65006,6 +65317,10 @@ paths:
                 incident_events:
                   type: boolean
                   description: Trigger event when an incident is created.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 vulnerability_events:
                   type: boolean
                 use_inherited_settings:
@@ -65050,6 +65365,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -65066,6 +65384,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -65126,6 +65448,9 @@ paths:
                 notify_only_broken_pipelines:
                   type: boolean
                   description: Send notifications for broken pipelines.
+                notify_only_when_pipeline_status_changes:
+                  type: boolean
+                  description: Send notifications only when the pipeline status changes.
                 branches_to_be_notified:
                   type: string
                   description: Branches to send notifications for. Valid options are
@@ -65142,6 +65467,10 @@ paths:
                   type: boolean
                   description: Trigger event when a confidential issue is created,
                     updated, or closed.
+                work_item_events:
+                  type: boolean
+                confidential_work_item_events:
+                  type: boolean
                 merge_requests_events:
                   type: boolean
                   description: Trigger event when a merge request is created, updated,
@@ -66110,6 +66439,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesGlqlResult"
         '400':
           description: Bad request
         '401':
@@ -66131,6 +66464,10 @@ paths:
                   type: string
                   description: The full GLQL code block containing YAML configuration
                     and query
+                after:
+                  type: string
+                  description: Cursor for forward pagination. Use the `endCursor`
+                    from previous response to fetch the next page
               required:
               - glql_yaml
   "/api/v4/groups/{id}/variables":
@@ -82306,6 +82643,13 @@ paths:
         example:
         - pending
         - running
+      - name: ref
+        required: false
+        description: The branch name (ref) to filter jobs by
+        schema:
+          type: string
+        in: query
+        example: feature-branch
       - name: page
         required: false
         description: Current page number
@@ -89206,9 +89550,9 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: http://gdk.test:3000/oauth/authorize
-          tokenUrl: http://gdk.test:3000/oauth/token
-          refreshUrl: http://gdk.test:3000/oauth/refresh
+          authorizationUrl: https://gitlab.com/api/oauth/authorize
+          tokenUrl: https://gitlab.com/api/oauth/token
+          refreshUrl: https://gitlab.com/api/oauth/refresh
           scopes:
             api: Grants complete read/write access to the API, including all groups
               and projects, the container registry, the dependency proxy, and the
@@ -89356,37 +89700,50 @@ components:
         trial:
           type: Boolean
           example: 'false'
-    APIEntitiesVirtualRegistriesPackagesMavenCacheEntry:
+    APIEntitiesVirtualRegistriesPackagesMavenCacheRemoteEntry:
       type: object
       properties:
         id:
           type: string
+          example: MjMgNTAw
         group_id:
-          type: string
+          type: integer
+          example: 1
         upstream_id:
-          type: string
+          type: integer
+          example: 1
         upstream_checked_at:
-          type: string
+          type: DateTime
         file_md5:
           type: string
+          example: d8e8fca2dc0f896fd7cb4cb0031ba249
         file_sha1:
           type: string
+          example: 4e1243bd22c66e76c2ba9eddc1f91394e57f9f83
         size:
-          type: string
+          type: integer
+          example: 1
         relative_path:
           type: string
+          example: "/com/example/test/1.0/test-1.0.jar"
         upstream_etag:
           type: string
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c
         content_type:
           type: string
+          example: application/octet-stream
         created_at:
-          type: string
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
         updated_at:
-          type: string
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
         downloads_count:
-          type: string
+          type: integer
+          example: 1
         downloaded_at:
-          type: string
+          type: DateTime
+          example: '2025-11-11T13:25:29.935Z'
     APIEntitiesVirtualRegistriesPackagesMavenUpstream:
       type: object
       properties:
@@ -91328,9 +91685,9 @@ components:
         description:
           type: string
           example: Controller for managing runner
-        enabled:
-          type: Boolean
-          example: true
+        state:
+          type: string
+          example: enabled
         created_at:
           type: DateTime
         updated_at:
@@ -92475,6 +92832,8 @@ components:
           type: string
         allow_contribution_mapping_to_admins:
           type: string
+        allow_s3_compatible_storage_for_offline_transfer:
+          type: string
         allow_runner_registration_token:
           type: string
         user_defaults_to_private_profile:
@@ -92844,6 +93203,10 @@ components:
         enforce_pipl_compliance:
           type: string
         display_gitlab_credits_user_data:
+          type: string
+        project_secrets_limit:
+          type: string
+        group_secrets_limit:
           type: string
         enable_member_promotion_management:
           type: string
@@ -94959,6 +95322,75 @@ components:
           type: string
         forked:
           type: boolean
+          example: true
+    APIEntitiesGlqlField:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique field key
+          example: title
+        label:
+          type: string
+          description: Human-readable field label
+          example: Title
+        name:
+          type: string
+          description: Underlying name of field, often the same as `key`, but it may
+            be different if one type of field has multiple possible keys. Example
+            `created` and `createdAt`
+          example: title
+    APIEntitiesGlqlPageInfo:
+      type: object
+      properties:
+        endCursor:
+          type: string
+          description: Cursor for the last item
+          example: eyJpZCI6IjE3In0
+        hasNextPage:
+          type: Boolean
+          description: Whether there are more items
+          example: true
+        hasPreviousPage:
+          type: Boolean
+          description: Whether there are previous items
+          example: false
+        startCursor:
+          type: string
+          description: Cursor for the first item
+          example: eyJpZCI6IjE3In0
+    APIEntitiesGlqlData:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of found items
+          example: 42
+        nodes:
+          type: array
+          description: The list of found items
+          example: []
+          items:
+            type: Array
+        pageInfo:
+          description: Pagination information
+          "$ref": "#/components/schemas/APIEntitiesGlqlPageInfo"
+    APIEntitiesGlqlResult:
+      type: object
+      properties:
+        data:
+          description: Query result data containing count, nodes, and pagination info
+          "$ref": "#/components/schemas/APIEntitiesGlqlData"
+        error:
+          type: string
+          description: Error message if query failed
+        fields:
+          type: array
+          description: Field definitions for the query results
+          items:
+            "$ref": "#/components/schemas/APIEntitiesGlqlField"
+        success:
+          type: Boolean
           example: true
     APIEntitiesPackageVersion:
       type: object
@@ -99901,6 +100333,9 @@ components:
           type: string
         downvotes:
           type: string
+        start_date:
+          type: string
+          example: '2022-11-18'
         due_date:
           type: string
           example: '2022-11-20'
@@ -100147,6 +100582,9 @@ components:
           type: string
         downvotes:
           type: string
+        start_date:
+          type: string
+          example: '2022-11-18'
         due_date:
           type: string
           example: '2022-11-20'
@@ -100230,6 +100668,9 @@ components:
           type: string
         downvotes:
           type: string
+        start_date:
+          type: string
+          example: '2022-11-18'
         due_date:
           type: string
           example: '2022-11-20'
@@ -100339,6 +100780,9 @@ components:
           type: string
         downvotes:
           type: string
+        start_date:
+          type: string
+          example: '2022-11-18'
         due_date:
           type: string
           example: '2022-11-20'
@@ -100456,6 +100900,9 @@ components:
           type: string
         downvotes:
           type: string
+        start_date:
+          type: string
+          example: '2022-11-18'
         due_date:
           type: string
           example: '2022-11-20'

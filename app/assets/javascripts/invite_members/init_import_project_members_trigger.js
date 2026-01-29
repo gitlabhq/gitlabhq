@@ -10,6 +10,7 @@ export default function initImportProjectMembersTrigger() {
 
   return new Vue({
     el,
+    name: 'ImportProjectMembersTriggerRoot',
     render: (createElement) =>
       createElement(ImportProjectMembersTrigger, {
         props: {

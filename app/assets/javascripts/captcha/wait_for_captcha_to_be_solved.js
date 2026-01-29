@@ -19,6 +19,7 @@ export function waitForCaptchaToBeSolved(captchaSiteKey) {
 
     let captchaModalVueInstance = new Vue({
       el: captchaModalElement,
+      name: 'CaptchaModalRoot',
       render: (createElement) => {
         return createElement(CaptchaModal, {
           props: {

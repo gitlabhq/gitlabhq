@@ -50,9 +50,6 @@ RSpec.describe 'Explore Groups', :js, feature_category: :groups_and_projects do
 
   shared_examples 'renders group in public groups area' do
     it do
-      # Feature test will be added separately in https://gitlab.com/gitlab-org/gitlab/-/issues/525136
-      stub_feature_flags(explore_groups_vue: false)
-
       visit explore_groups_path
       expect(page).to have_content(group.path)
     end

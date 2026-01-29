@@ -1062,5 +1062,11 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
         end
       end
     end
+
+    describe '#enabled?' do
+      it 'returns true' do
+        expect(type.enabled?).to be true
+      end
+    end
   end
 end

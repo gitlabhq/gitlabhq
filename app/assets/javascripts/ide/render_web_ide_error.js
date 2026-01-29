@@ -16,6 +16,7 @@ export function renderWebIdeError({ error, signOutPath }) {
 
   return new Vue({
     el,
+    name: 'WebIdeErrorRoot',
     render(createElement) {
       return createElement(WebIdeError, { props: { signOutPath } });
     },

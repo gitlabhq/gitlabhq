@@ -17,6 +17,7 @@ export const initRecoveryCodes = () => {
 
   return new Vue({
     el,
+    name: 'RecoveryCodesRoot',
     render(createElement) {
       return createElement(RecoveryCodes, {
         props: {
@@ -56,6 +57,7 @@ export const initTwoFactorConfirm = () => {
     // eslint-disable-next-line no-new
     new Vue({
       el,
+      name: 'TwoFactorActionConfirmRoot',
       render(createElement) {
         return createElement(TwoFactorActionConfirm, {
           props: {
@@ -86,6 +88,7 @@ export const initEmailOtpConfirm = () => {
 
   return new Vue({
     el,
+    name: 'EmailOtpActionConfirmRoot',
     render(createElement) {
       return createElement(EmailOtpActionConfirm, {
         props: {

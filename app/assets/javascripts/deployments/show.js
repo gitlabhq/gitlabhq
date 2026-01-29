@@ -23,6 +23,7 @@ export const initializeShowDeployment = (selector = 'js-deployment-details') => 
 
     return new Vue({
       el,
+      name: 'ShowDeploymentRoot',
       apolloProvider,
       provide: {
         projectPath,

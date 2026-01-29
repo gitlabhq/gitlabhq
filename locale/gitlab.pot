@@ -61720,6 +61720,9 @@ msgstr ""
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Container Scanning Rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Create custom variable"
 msgstr ""
 
@@ -61933,9 +61936,6 @@ msgstr ""
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
-msgid "SecurityOrchestration|Gather violation data and developer feedback"
-msgstr ""
-
 msgid "SecurityOrchestration|Global Settings"
 msgstr ""
 
@@ -62030,9 +62030,6 @@ msgid "SecurityOrchestration|List branches in the format %{boldStart}branch-name
 msgstr ""
 
 msgid "SecurityOrchestration|Logic error"
-msgstr ""
-
-msgid "SecurityOrchestration|Make informed decisions before full enforcement"
 msgstr ""
 
 msgid "SecurityOrchestration|Manual pipeline run"
@@ -62141,9 +62138,6 @@ msgid "SecurityOrchestration|Not Applicable"
 msgstr ""
 
 msgid "SecurityOrchestration|Not enabled"
-msgstr ""
-
-msgid "SecurityOrchestration|Now when you create/edit policies, %{strongStart}Warn Mode%{strongEnd} lets you evaluate policy impact without blocking development teams, reducing friction during policy rollouts:"
 msgstr ""
 
 msgid "SecurityOrchestration|On conflict"
@@ -64504,7 +64498,13 @@ msgstr ""
 msgid "ServiceAccount|No more seats are available to create Service Account User"
 msgstr ""
 
-msgid "ServiceAccount|User does not have permission to create a service account in this namespace."
+msgid "ServiceAccount|Project ID provided does not match the service account's project ID."
+msgstr ""
+
+msgid "ServiceAccount|Project with the provided ID not found."
+msgstr ""
+
+msgid "ServiceAccount|User does not have permission to create a service account in this %{resource_type}."
 msgstr ""
 
 msgid "ServiceAccount|User does not have permission to create a service account."
@@ -76639,9 +76639,6 @@ msgstr ""
 msgid "We're sorry, your trial could not be created. Please resubmit below to complete your registration."
 msgstr ""
 
-msgid "We've added something new!"
-msgstr ""
-
 msgid "We've detected some unusual activity"
 msgstr ""
 
@@ -78513,6 +78510,9 @@ msgstr ""
 msgid "WorkItem|New view"
 msgstr ""
 
+msgid "WorkItem|New view created."
+msgstr ""
+
 msgid "WorkItem|No assignees"
 msgstr ""
 
@@ -78910,6 +78910,9 @@ msgid "WorkItem|Something went wrong while promoting the %{workItemType}. Please
 msgstr ""
 
 msgid "WorkItem|Something went wrong while removing child."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while saving the view"
 msgstr ""
 
 msgid "WorkItem|Something went wrong while undoing child removal."

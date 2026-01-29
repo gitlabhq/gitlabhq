@@ -14,6 +14,7 @@ export const initGroupReadme = () => {
 
   return new Vue({
     el,
+    name: 'GroupFilePreviewRoot',
     apolloProvider,
     render(createElement) {
       return createElement(FilePreview, {

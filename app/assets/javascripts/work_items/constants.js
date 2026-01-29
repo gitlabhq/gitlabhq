@@ -236,6 +236,7 @@ export const WORK_ITEM_REFERENCE_CHAR = '#';
 export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
 export const NO_WORK_ITEM_IID = 'no-work-item-iid';
+export const NEW_SAVED_VIEWS_GID = 'gid://gitlab/WorkItems::SavedViews::SavedView/new';
 
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';

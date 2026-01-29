@@ -20,4 +20,4 @@ desired_sharding_key:
         belongs_to: build
         foreign_key_name: fk_rails_aebc78111f_p
 desired_sharding_key_migration_job_name: BackfillUpsertedCiBuildTraceMetadataProjectId
-
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/526991

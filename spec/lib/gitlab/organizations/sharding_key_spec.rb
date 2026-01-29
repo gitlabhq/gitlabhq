@@ -10,26 +10,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'web_hook_logs_daily', # temporary copy of web_hook_logs
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-      'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
+      'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
       'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
-    ]
-  end
-
-  # The following tables have a `desired_sharding_key` but are missing a `sharding_key_issue_url`.
-  # This list serves as a temporary exemption for existing tables to prevent spec failures.
-  # DO NOT ADD new tables to this list. New tables must have a `sharding_key_issue_url`.
-  let(:allowed_to_be_missing_sharding_key_issue_url) do
-    %w[
-      merge_request_context_commit_diff_files
-      merge_request_diff_commits
-      merge_request_diff_files
-      merge_request_diff_files_99208b8fac
-      p_ci_build_trace_metadata
-      security_findings
-      spam_logs
     ]
   end
 
@@ -47,7 +31,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'oauth_applications.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/579291
       'group_secrets_managers.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
       'project_secrets_managers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
-      'spam_logs.organization_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
+      'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
+      *%w[
+        web_hook_logs_daily.organization_id
+        web_hook_logs_daily.group_id
+        web_hook_logs_daily.project_id
+      ] # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
     ]
   end
 
@@ -56,6 +45,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
+      'web_hook_logs_daily.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+      'web_hook_logs_daily.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
+      'web_hook_logs_daily.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_pipeline_chat_data.project_id',
@@ -391,7 +383,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   end
 
   it 'does not allow invalid follow-up issue URLs', :aggregate_failures do
-    issue_url_regex = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/issues/\d+\z}
+    issue_url_regex = %r{\Ahttps://gitlab\.com/(gitlab-org/gitlab|groups/gitlab-org)/-/(issues|work_items)/\d+\z}
 
     ::Gitlab::Database::Dictionary.entries.each do |entry|
       if entry.sharding_key.present?
@@ -399,15 +391,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
           "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it " \
             "has a valid sharding key."
       elsif entry.desired_sharding_key.present?
-        if allowed_to_be_missing_sharding_key_issue_url.include?(entry.table_name)
-          expect(entry.sharding_key_issue_url).to be_blank,
-            "The table #{entry.table_name} has a `sharding_key_issue_url` but is listed in " \
-              "`allowed_to_be_missing_sharding_key_issue_url`. Please remove it from the exemption list."
-        else
-          expect(entry.sharding_key_issue_url).to match(issue_url_regex),
-            "The table #{entry.table_name} has a `desired_sharding_key` which indicates work is in progress. " \
-              "Please add a valid `sharding_key_issue_url` (https://gitlab.com/gitlab-org/gitlab/-/issues/XXX)."
-        end
+        expect(entry.sharding_key_issue_url).to match(issue_url_regex),
+          "The table #{entry.table_name} has a `desired_sharding_key` which indicates work is in progress. " \
+            "Please add a valid `sharding_key_issue_url` (https://gitlab.com/gitlab-org/gitlab/-/issues/XXX)."
       elsif entry.sharding_key_issue_url.present?
         expect(entry.sharding_key_issue_url).to match(issue_url_regex),
           "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \

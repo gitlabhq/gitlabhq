@@ -50,14 +50,6 @@ describe('SchemaIssuesSection component', () => {
       expect(findNoIssuesAlert().props('dismissible')).toBe(false);
     });
 
-    it('shows success icon in alert', () => {
-      const alert = findNoIssuesAlert();
-      const icon = alert.findComponent(GlIcon);
-
-      expect(icon.exists()).toBe(true);
-      expect(icon.props('name')).toBe('check-circle-filled');
-    });
-
     it('displays all section type labels', () => {
       expect(wrapper.text()).toContain('Indexes');
       expect(wrapper.text()).toContain('Tables');

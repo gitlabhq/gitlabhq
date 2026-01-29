@@ -31,6 +31,7 @@ export default function initBlobEditHeader(editor) {
 
   return new Vue({
     el,
+    name: 'BlobEditHeaderRoot',
     provide: {
       action,
       editor,

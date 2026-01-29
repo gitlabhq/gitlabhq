@@ -29,6 +29,7 @@ export default function initInviteGroupsModal() {
 
   return new Vue({
     el,
+    name: 'InviteGroupsModalRoot',
     provide: groupsProvideData(el),
     render: (createElement) =>
       createElement(InviteGroupsModal, {

@@ -79,12 +79,15 @@ export const config = {
             },
           },
           savedViews: {
-            read(_, { args }) {
+            read(existing, { args }) {
               const { subscribedOnly, id } = args;
 
               if (id) {
                 return { nodes: singleSavedView };
               }
+
+              // Do not reset the cache data, just load what is written in the cache
+              if (existing) return existing;
 
               const nodes = subscribedOnly ? allSubscribedSavedViews : allSavedViews;
 

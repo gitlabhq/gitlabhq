@@ -22,10 +22,9 @@ For information about project members, see the [Project members API](project_mem
 - The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/_index.md)
   of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 
-## List all members of a group
+## List all group members
 
-Gets a list of group members viewable by the authenticated user.
-Returns only direct members and not inherited members through ancestors groups or members from an invited group.
+Lists all direct members of a specified group. Returns only direct members and not inherited members through ancestor groups or members from an invited group.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -99,7 +98,7 @@ Example response:
 ]
 ```
 
-## List all members of a group, including inherited and invited members
+## List all group members, including inherited and invited members
 
 {{< history >}}
 
@@ -109,7 +108,7 @@ Example response:
 
 {{< /history >}}
 
-Gets a list of group members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
+Lists all members of a specified group, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
@@ -217,9 +216,9 @@ Example response:
 ]
 ```
 
-## Get a member of a group
+## Retrieve a group member
 
-Gets a member of a group. Returns only direct members and not inherited members through ancestor groups.
+Retrieves a specified member of a group. Returns only direct members and not inherited members through ancestor groups.
 
 ```plaintext
 GET /groups/:id/members/:user_id
@@ -270,7 +269,7 @@ Example response:
 }
 ```
 
-## Get a member of a group, including inherited and invited members
+## Retrieve a group member, including inherited and invited members
 
 {{< history >}}
 
@@ -281,7 +280,7 @@ Example response:
 
 {{< /history >}}
 
-Gets a member of a group, including members inherited or invited through ancestor groups. For more information, see [List all inherited members](#list-all-members-of-a-group-including-inherited-and-invited-members).
+Retrieves a specified member of a group, including members inherited or invited through ancestor groups. For more information, see [List all inherited members](#list-all-group-members-including-inherited-and-invited-members).
 
 > [!note]
 > The invited group members have shared membership in the shared group.
@@ -328,9 +327,9 @@ Example response:
 }
 ```
 
-## List all billable members of a group
+## List all billable group members
 
-Gets a list of group members that count as billable. The list includes members in subgroups and projects.
+Lists all billable members of a specified group. The list includes members in subgroups and projects.
 
 Prerequisites:
 
@@ -418,9 +417,9 @@ Example response:
 ]
 ```
 
-## List memberships for a billable member of a group
+## List all memberships for a billable group member
 
-Gets a list of memberships for a billable member of a group.
+Lists all memberships for a specified billable member of a group.
 
 Prerequisites:
 
@@ -481,7 +480,7 @@ Example response:
 ]
 ```
 
-## List indirect memberships for a billable member of a group
+## List all indirect memberships for a billable group member
 
 {{< details >}}
 
@@ -542,9 +541,9 @@ Example response:
 ]
 ```
 
-## Remove a billable member from a group
+## Remove a billable group member
 
-Removes a billable member from a group and its subgroups and projects.
+Removes a specified billable member from a group and its subgroups and projects.
 
 The user does not need to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group, you can
@@ -567,9 +566,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id"
 ```
 
-## Change membership state of a user in a group
+## Change group membership state for a user
 
-Changes the membership state of a user in a group.
+Changes the membership state for a specified user in a group.
 
 When a user is over [the free user limit](../user/free_user_limit.md), changing their membership state
 for a group or project to `awaiting` or `active` can allow them to access that group or project. The change
@@ -598,9 +597,9 @@ Example response:
 }
 ```
 
-## Add a member to a group
+## Add a group member
 
-Adds a member to a group.
+Adds a member to a specified group.
 
 ```plaintext
 POST /groups/:id/members
@@ -687,9 +686,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Edit a member of a group
+## Update a group member
 
-Updates a member of a group.
+Updates a specified member of a group.
 
 ```plaintext
 PUT /groups/:id/members/:user_id
@@ -840,14 +839,14 @@ Example response:
 }
 ```
 
-## Remove a member from a group
+## Remove a group member
 
-Removes a user from a group where the user has been explicitly assigned a role.
+Removes a specified user from a group where the user has been explicitly assigned a role.
 
 The user needs to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group but not this
 group explicitly, you cannot use this API endpoint to remove them. See
-[Remove a billable member from a group](#remove-a-billable-member-from-a-group) for an alternative approach.
+[Remove a billable member from a group](#remove-a-billable-group-member) for an alternative approach.
 
 ```plaintext
 DELETE /groups/:id/members/:user_id
@@ -869,9 +868,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
-## Approve a member for a group
+## Approve a group member
 
-Approves a pending user for a group and its subgroups and projects.
+Approves a specified pending user for a group and its subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:member_id/approve
@@ -889,9 +888,9 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:member_id/approve"
 ```
 
-## Approve all pending members for a group
+## Approve all pending group members
 
-Approves all pending users for a group and its subgroups and projects.
+Approves all pending users for a specified group and its subgroups and projects.
 
 ```plaintext
 POST /groups/:id/members/approve_all
@@ -908,10 +907,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/approve_all"
 ```
 
-## List pending members of a group and its subgroups and projects
+## List all pending group members in a group and its subgroups and projects
 
-For a group and its subgroups and projects, get a list of all members in an `awaiting` state and those
-who are invited but do not have a GitLab account.
+Lists all members in an `awaiting` state and those who are invited but do not have a GitLab account for a specified group and its subgroups and projects.
 
 Prerequisites:
 

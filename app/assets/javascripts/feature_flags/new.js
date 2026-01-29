@@ -23,6 +23,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'NewFeatureFlagRoot',
     store: createStore({ endpoint, projectId, path: featureFlagsPath }),
     provide: {
       environmentsScopeDocsPath,

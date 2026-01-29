@@ -13,6 +13,7 @@ export default () => {
 
     return new Vue({
       el,
+      name: 'RevokeButtonRoot',
       provide: {
         token: JSON.parse(token),
         revokePath,

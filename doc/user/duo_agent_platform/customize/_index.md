@@ -11,7 +11,7 @@ You can customize the Agent Platform to match your workflow, coding standards, o
 
 | Method    | AI feature | Use cases    |
 |-----------|------------|--------------|
-| [Use custom rules](custom_rules.md) to provide instructions. | - GitLab Duo Chat | - Apply personal preferences.<br>- Enforce team standards. |
+| [Use custom rules](custom_rules.md) to provide instructions. | - GitLab Duo Chat<br>- Agents<br>- Flows | - Apply personal preferences.<br>- Enforce team standards. |
 | [Create an AGENTS.md file](agents_md.md) to provide instructions. | - GitLab Duo Chat<br>- Flows<br>- Other non-GitLab AI coding tools | - Account for project-specific context.<br>- Organize a monorepo.<br>- Enforce directory-specific conventions. |
 | [Create MR review instructions](review_instructions.md) to ensure consistent and specific code review standards in your project. | - Code Review Flow | Apply:<br>- Language-specific review rules.<br>- Security standards.<br>- Code quality requirements.<br>- File-specific guidelines. |
 

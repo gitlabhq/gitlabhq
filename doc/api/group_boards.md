@@ -20,7 +20,7 @@ request results in `404` status code.
 
 ## List all group issue boards in a group
 
-Lists issue boards in the given group.
+Lists all group issue boards for a specified group.
 
 ```plaintext
 GET /groups/:id/boards
@@ -139,9 +139,9 @@ Example response:
 ]
 ```
 
-## Single group issue board
+## Retrieve a group issue board
 
-Gets a single group issue board.
+Retrieves a specified group issue board.
 
 ```plaintext
 GET /groups/:id/boards/:board_id
@@ -266,7 +266,7 @@ Example response:
 
 {{< /details >}}
 
-Creates a group issue board.
+Creates a group issue board for a specified group.
 
 ```plaintext
 POST /groups/:id/boards
@@ -305,7 +305,7 @@ Example response:
 
 ## Update a group issue board
 
-Updates a group issue board.
+Updates a specified group issue board.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id
@@ -382,7 +382,7 @@ Example response:
 
 {{< /details >}}
 
-Deletes a group issue board.
+Deletes a specified group issue board.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id
@@ -399,8 +399,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List group issue board lists
 
-Get a list of the board's lists.
-Does not include `open` and `closed` lists
+Lists all group issue board lists for a specified board. Does not include `open` and `closed` lists.
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists
@@ -449,9 +448,9 @@ Example response:
 ]
 ```
 
-## Single group issue board list
+## Retrieve a group issue board list
 
-Get a single board list.
+Retrieves a specified group issue board list.
 
 ```plaintext
 GET /groups/:id/boards/:board_id/lists/:list_id
@@ -481,9 +480,9 @@ Example response:
 }
 ```
 
-## New group issue board list
+## Create a group issue board list
 
-Creates an issue board list.
+Creates a group issue board list for a specified board.
 
 ```plaintext
 POST /groups/:id/boards/:board_id/lists
@@ -525,9 +524,9 @@ Example response:
 }
 ```
 
-## Edit group issue board list
+## Update a group issue board list
 
-Updates an existing issue board list. This call is used to change list position.
+Updates a specified group issue board list. This call is used to change list position.
 
 ```plaintext
 PUT /groups/:id/boards/:board_id/lists/:list_id
@@ -560,7 +559,7 @@ Example response:
 
 ## Delete a group issue board list
 
-Only for administrators and group owners. Deletes the board list in question.
+Deletes a specified group issue board list. Only for administrators and group owners.
 
 ```plaintext
 DELETE /groups/:id/boards/:board_id/lists/:list_id

@@ -12,3 +12,4 @@ openapi-doc-check:
       optional: true
   script:
     - bundle exec rake gitlab:openapi:v2:check_docs OPENAPI_CHECK_DEBUG=true
+    - bundle exec rake gitlab:openapi:v3:check_docs OPENAPI_CHECK_DEBUG=true

@@ -21,6 +21,10 @@ export default {
       type: String,
       required: true,
     },
+    sortKey: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -60,7 +64,11 @@ export default {
       :items="dropdownItems"
       data-testid="add-saved-view-toggle"
     />
-    <work-items-new-saved-view-modal v-model="isNewViewModalVisible" />
+    <work-items-new-saved-view-modal
+      v-model="isNewViewModalVisible"
+      :full-path="fullPath"
+      :sort-key="sortKey"
+    />
     <work-items-existing-saved-views-modal
       v-model="isExistingViewModalVisible"
       :full-path="fullPath"

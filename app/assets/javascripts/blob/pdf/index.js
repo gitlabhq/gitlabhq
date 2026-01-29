@@ -6,6 +6,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'PdfViewerRoot',
     render(createElement) {
       return createElement(PdfViewer, {
         props: {

@@ -145,7 +145,10 @@ const mockSavedViewsData = [
     name: 'My Private View',
     description: 'Only I can see this',
     isPrivate: true,
-    isSubscribed: true,
+    subscribed: true,
+    userPermissions: {
+      updateSavedView: true,
+    },
   },
 ];
 

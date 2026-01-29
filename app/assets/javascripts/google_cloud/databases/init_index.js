@@ -6,6 +6,7 @@ export default () => {
   const attrs = JSON.parse(element.getAttribute('data'));
   return new Vue({
     el: element,
+    name: 'GoogleCloudDatabasesPanelRoot',
     render: (createElement) => createElement(Panel, { attrs }),
   });
 };

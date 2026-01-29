@@ -70,8 +70,9 @@ module API
         PersonalAccessToken.find(id) || not_found!
       end
 
-      def revoke_token(token, group: nil)
-        service = ::PersonalAccessTokens::RevokeService.new(current_user, token: token, group: group).execute
+      def revoke_token(token, group: nil, project: nil)
+        service = ::PersonalAccessTokens::RevokeService.new(current_user, token: token, group: group,
+          project: project).execute
 
         service.success? ? no_content! : bad_request!(service.message)
       end

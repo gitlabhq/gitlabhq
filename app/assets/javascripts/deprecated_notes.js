@@ -220,6 +220,7 @@ export default class Notes {
 
     form.commentTypeComponent = new Vue({
       el,
+      name: 'DeprecatedNotesCommentTypeDropdownRoot',
       data() {
         return {
           noteType: constants.COMMENT,
@@ -1294,6 +1295,7 @@ export default class Notes {
     // eslint-disable-next-line no-new
     new Vue({
       el,
+      name: 'DeprecatedNotesSkeletonLoaderRoot',
       components: {
         GlSkeletonLoader,
       },

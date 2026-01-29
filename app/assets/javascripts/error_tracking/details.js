@@ -25,6 +25,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new Vue({
     el: selector,
+    name: 'ErrorTrackingDetailsRoot',
     apolloProvider,
     components: {
       ErrorDetails,

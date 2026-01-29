@@ -10,6 +10,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'NewClusterRoot',
     render(createElement) {
       return createElement(NewCluster);
     },

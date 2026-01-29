@@ -490,7 +490,7 @@ Removes a user from a project where the user has been explicitly assigned a role
 The user needs to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group but not this
 group explicitly, you cannot use this endpoint to remove them. For more information, see
-[Remove a billable member from a group](group_members.md#remove-a-billable-member-from-a-group).
+[Remove a billable member from a group](group_members.md#remove-a-billable-group-member).
 
 ```plaintext
 DELETE /projects/:id/members/:user_id

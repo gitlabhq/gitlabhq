@@ -51,6 +51,7 @@ export default () => {
 
   return new Vue({
     el: selector,
+    name: 'AlertManagementListRoot',
     components: {
       AlertManagementList,
     },

@@ -101,6 +101,7 @@ export default function initDiffsApp() {
     // eslint-disable-next-line no-new
     new Vue({
       el: fileFinderEl,
+      name: 'FindFileRoot',
       pinia,
       components: {
         FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),

@@ -46,6 +46,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'RouterViewRoot',
     provide: {
       projectPath,
       helpPagePath,

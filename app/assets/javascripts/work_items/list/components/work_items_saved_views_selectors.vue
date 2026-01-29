@@ -21,6 +21,10 @@ export default {
       type: String,
       required: true,
     },
+    sortKey: {
+      type: String,
+      required: true,
+    },
     savedViews: {
       type: Array,
       required: true,
@@ -136,7 +140,7 @@ export default {
           class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
           data-testid="visible-view-selector"
         >
-          <work-items-saved-view-selector :saved-view="view" />
+          <work-items-saved-view-selector :saved-view="view" :full-path="fullPath" />
         </li>
       </ul>
 
@@ -149,7 +153,7 @@ export default {
           :key="view.id"
           class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
         >
-          <work-items-saved-view-selector :saved-view="view" />
+          <work-items-saved-view-selector :saved-view="view" :full-path="fullPath" />
         </li>
       </ul>
 
@@ -164,7 +168,11 @@ export default {
         data-testid="saved-views-more-toggle"
       />
 
-      <work-items-create-saved-view-dropdown :full-path="fullPath" class="gl-ml-2" />
+      <work-items-create-saved-view-dropdown
+        :full-path="fullPath"
+        :sort-key="sortKey"
+        class="gl-ml-2"
+      />
     </div>
 
     <div
