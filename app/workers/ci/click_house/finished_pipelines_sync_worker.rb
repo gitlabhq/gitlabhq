@@ -7,8 +7,9 @@ module Ci
       include ClickHouseWorker
 
       idempotent!
-      data_consistency :delayed
+      data_consistency :sticky
       urgency :throttled
+      sidekiq_options retry: false
       feature_category :fleet_visibility
       tags :clickhouse
       loggable_arguments 1, 2
