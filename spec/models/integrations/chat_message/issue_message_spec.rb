@@ -261,4 +261,44 @@ RSpec.describe Integrations::ChatMessage::IssueMessage, feature_category: :integ
       expect(subject.attachment_color).to eq('#C95823')
     end
   end
+
+  describe '#issue_type' do
+    context 'with issue' do
+      it 'returns Issue' do
+        expect(subject.issue_type).to eq('Issue')
+      end
+    end
+
+    context 'with incident' do
+      before do
+        args[:object_kind] = 'incident'
+      end
+
+      it 'returns Incident' do
+        expect(subject.issue_type).to eq('Incident')
+      end
+    end
+
+    context 'with work item' do
+      before do
+        args[:object_kind] = 'work_item'
+        args[:object_attributes][:type] = 'Task'
+      end
+
+      it 'returns the work item type' do
+        expect(subject.issue_type).to eq('Task')
+      end
+    end
+
+    context 'with confidential work item' do
+      before do
+        args[:object_kind] = 'confidential_work_item'
+        args[:object_attributes][:type] = 'Task'
+      end
+
+      it 'returns the work item type' do
+        expect(subject.issue_type).to eq('Task')
+      end
+    end
+  end
 end

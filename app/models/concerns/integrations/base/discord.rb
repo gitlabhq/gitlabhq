@@ -14,6 +14,8 @@ module Integrations
         push
         issue
         confidential_issue
+        work_item
+        confidential_work_item
         merge_request
         note
         confidential_note
