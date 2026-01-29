@@ -1,0 +1,9 @@
+---
+name: update_custom_attribute
+description: Grants the ability to update custom attributes
+boundaries:
+  - group
+  - project
+  - instance
+permissions:
+  - update_custom_attribute

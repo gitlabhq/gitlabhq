@@ -286,14 +286,11 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 
 ### Mask a CI/CD variable
 
-{{< alert type="warning" >}}
-
-Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
-accessing variable values. To ensure security of sensitive information,
-consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
-to prevent commands such as `env` or `printenv` from printing secret variables.
-
-{{< /alert >}}
+> [!warning]
+> Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
+> accessing variable values. To ensure security of sensitive information,
+> consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
+> to prevent commands such as `env` or `printenv` from printing secret variables.
 
 You can mask a CI/CD variable for a project, group, or instance to prevent
 its value from appearing in job logs. When a job outputs the value of a

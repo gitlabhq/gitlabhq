@@ -64,14 +64,11 @@ job:
 - If the pipeline is a scheduled pipeline, the job is not added to the pipeline.
 - In all other cases, the job is added to the pipeline, with `when: on_success`.
 
-{{< alert type="warning" >}}
-
-If you use a `when` clause as the final rule (not including `when: never`), two
-simultaneous pipelines may start. Both push pipelines and merge request pipelines can
-be triggered by the same event (a push to the source branch for an open merge request).
-See how to [avoid duplicate pipelines](#avoid-duplicate-pipelines) for more details.
-
-{{< /alert >}}
+> [!warning]
+> If you use a `when` clause as the final rule (not including `when: never`), two
+> simultaneous pipelines may start. Both push pipelines and merge request pipelines can
+> be triggered by the same event (a push to the source branch for an open merge request).
+> See how to [avoid duplicate pipelines](#avoid-duplicate-pipelines) for more details.
 
 ### Run jobs for scheduled pipelines
 

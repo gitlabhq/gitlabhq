@@ -5895,6 +5895,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   it_behaves_like 'custom attributes endpoints', 'users' do
     let(:attributable) { user }
     let(:other_attributable) { admin }
+    let(:boundary_type) { :instance }
   end
 
   describe 'POST /user/support_pin' do

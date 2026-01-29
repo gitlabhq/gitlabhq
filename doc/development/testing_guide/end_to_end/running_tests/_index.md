@@ -17,14 +17,12 @@ bundle install
 bundle exec rspec <path/to/spec.rb>
 ```
 
-{{< alert type="note" >}}
+Additionally:
 
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - You may be able to use the password pre-set for `root` in your GDK installation [See GDK help](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/14bd8b6eb875d72eb1b482e0ec00cbf8fc3ebf99/HELP#L62). If you have changed your `root` password from the default, export the password as `GITLAB_ADMIN_PASSWORD`.
 - By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (for example, a custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](running_tests_that_require_special_setup.md) for running some of those tests against GDK or another local GitLab instance.
-
-{{< /alert >}}
 
 By default, URL of GitLab instance is set based on `config/gitlab.yml` configuration file. To override it and use different URL, see [overriding GitLab address](#overriding-gitlab-address) section.
 

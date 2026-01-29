@@ -22,5 +22,5 @@
     Because Gitaly is not directly exposed to external networks and external protection layers, such as load balancers,
     provide better safeguards, rate limiting is less effective.
 
-    Therefore, we're depecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
+    Therefore, we're deprecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
     rate limiting will be removed in GitLab 18.0.

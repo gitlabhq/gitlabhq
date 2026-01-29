@@ -78,14 +78,14 @@ RSpec.describe 'Create personal access token with granular scopes', feature_cate
         { access: 'selected_memberships', namespace_id: ref(:project_namespace_id), permissions: ['read_job'] }]
     # multiple granularScopes input
     [
-      { access: 'INSTANCE', permissions: ['retry_job'] },
-      { access: 'USER', permissions: ['play_job'] },
+      { access: 'INSTANCE', permissions: ['run_job'] },
+      { access: 'USER', permissions: ['run_job'] },
       { access: 'SELECTED_MEMBERSHIPS', permissions: ['read_job'],
         resource_ids: [ref(:group_global_id), ref(:project_global_id)] }
     ] |
       [
-        { access: 'instance', namespace_id: nil, permissions: ['retry_job'] },
-        { access: 'user', namespace_id: nil, permissions: ['play_job'] },
+        { access: 'instance', namespace_id: nil, permissions: ['run_job'] },
+        { access: 'user', namespace_id: nil, permissions: ['run_job'] },
         { access: 'selected_memberships', namespace_id: ref(:group_id), permissions: ['read_job'] },
         { access: 'selected_memberships', namespace_id: ref(:project_namespace_id), permissions: ['read_job'] }
       ]

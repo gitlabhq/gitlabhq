@@ -10,6 +10,11 @@ module API
       attributable_key = attributable_class.underscore
       attributable_name = attributable_class.humanize(capitalize: false)
       attributable_finder = "find_#{attributable_key}"
+      boundary_type = if attributable_key == 'user'
+                        :instance
+                      else
+                        attributable_key.to_sym
+                      end
 
       helpers do
         params :custom_attributes_key do
@@ -32,6 +37,7 @@ module API
         success Entities::CustomAttribute
         tags ['custom_attributes']
       end
+      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type
       get ':id/custom_attributes' do
         resource = find_resource(attributable_finder, params[:id])
         authorize! :read_custom_attribute
@@ -46,6 +52,7 @@ module API
       params do
         use :custom_attributes_key
       end
+      route_setting :authorization, permissions: :read_custom_attribute, boundary_type: boundary_type
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])
@@ -65,6 +72,7 @@ module API
         use :custom_attributes_key
         requires :value, type: String, desc: 'The value of the custom attribute'
       end
+      route_setting :authorization, permissions: :update_custom_attribute, boundary_type: boundary_type
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])
@@ -90,6 +98,7 @@ module API
       params do
         use :custom_attributes_key
       end
+      route_setting :authorization, permissions: :delete_custom_attribute, boundary_type: boundary_type
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/custom_attributes/:key' do
         resource = find_resource(attributable_finder, params[:id])

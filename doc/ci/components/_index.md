@@ -187,14 +187,11 @@ the component's configuration.
 To use GitLab.com components on a GitLab Self-Managed instance, you must
 [mirror the component project](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
-{{< alert type="warning" >}}
-
-If a component requires the use of tokens, passwords, or other sensitive data to function,
-be sure to audit the component's source code to verify that the data is only used to
-perform actions that you expect and authorize. You should also use tokens and secrets
-with the minimum permissions, access, or scope required to complete the action.
-
-{{< /alert >}}
+> [!warning]
+> If a component requires the use of tokens, passwords, or other sensitive data to function,
+> be sure to audit the component's source code to verify that the data is only used to
+> perform actions that you expect and authorize. You should also use tokens and secrets
+> with the minimum permissions, access, or scope required to complete the action.
 
 ### Component versions
 

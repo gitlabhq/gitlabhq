@@ -3999,6 +3999,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     let(:attributable) { group1 }
     let(:other_attributable) { group2 }
     let(:user) { user1 }
+    let(:boundary_type) { group1 }
 
     before do
       group2.add_owner(user1)

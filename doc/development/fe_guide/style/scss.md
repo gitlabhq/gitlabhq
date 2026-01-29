@@ -356,7 +356,7 @@ be moved to an explicit `class` attribute manually after running the script:
 # This breaks the HAML syntax:
 %p.@md/panel:gl-mt-2
 
-# To fix it, move the util to an explicit `class` attibute:
+# To fix it, move the util to an explicit `class` attribute:
 %p{ class: "@md/panel:gl-mt-2" }
 ```
 
@@ -407,8 +407,8 @@ the following script in the browser's console to copy the list of files to the c
 > [!note]
 > Keep in mind that, while the script can help speed up migrations, it also cannot migrate
 > everything for you. In particular, you should pay attention to the following:
-> 
-> - If you are using UI elements from NPM dependencies, those would need to be migrated or overidden manually.
+>
+> - If you are using UI elements from NPM dependencies, those would need to be migrated or overridden manually.
 > - The code you are migrating might contain some JavaScript that reacts to the window being
 >   resized. This kind of script would need to be migrated manually in a way that's "container-aware".
 > - If your SCSS implements media queries with custom breakpoints, the script might not be able to

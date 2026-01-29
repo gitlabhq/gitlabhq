@@ -171,14 +171,11 @@ the efficient `IN` query technique described in the previous section.
 To build optimized, ordered `IN` queries that meet [the requirements](#requirements),
 use the utility class `QueryBuilder` from the module.
 
-{{< alert type="note" >}}
-
-The generic keyset pagination module introduced in the merge request
-[51481](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51481)
-plays a fundamental role in the generalized implementation of the technique
-in `Gitlab::Pagination::Keyset::InOperatorOptimization`.
-
-{{< /alert >}}
+> [!note]
+> The generic keyset pagination module introduced in the merge request
+> [51481](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51481)
+> plays a fundamental role in the generalized implementation of the technique
+> in `Gitlab::Pagination::Keyset::InOperatorOptimization`.
 
 ### Basic usage of `QueryBuilder`
 

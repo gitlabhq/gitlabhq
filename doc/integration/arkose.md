@@ -5,14 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Arkose Protect
 ---
 
-{{< alert type="warning" >}}
-
-Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
-instances. The following documents the internal requirements for maintaining
-Arkose Protect on GitLab.com. While this feature is theoretically usable in GitLab Self-Managed instances, it
-is not recommended at the moment.
-
-{{< /alert >}}
+> [!warning]
+> Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
+> instances. The following documents the internal requirements for maintaining
+> Arkose Protect on GitLab.com. While this feature is theoretically usable in GitLab Self-Managed instances, it
+> is not recommended at the moment.
 
 GitLab integrates [Arkose Protect](https://www.arkoselabs.com/platform/) to guard against
 malicious users from creating accounts.

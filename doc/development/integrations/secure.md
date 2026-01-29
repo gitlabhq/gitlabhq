@@ -471,14 +471,11 @@ The user interface uses the object's `name` and `url` fields to display the iden
 
 <a id="primary-identifier"></a>
 
-{{< alert type="note" >}}
-
-The first item of the `identifiers` array is called the
-[primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
-it is used to
-[track vulnerabilities](#vulnerability-tracking) as new commits are pushed to the repository.
-
-{{< /alert >}}
+> [!note]
+> The first item of the `identifiers` array is called the
+> [primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
+> it is used to
+> [track vulnerabilities](#vulnerability-tracking) as new commits are pushed to the repository.
 
 We recommend that you use the identifiers the GitLab scanners already [define](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/main/identifier.go):
 

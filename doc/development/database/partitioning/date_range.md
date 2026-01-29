@@ -195,14 +195,11 @@ The example includes the following:
 - `partitioned_column`: The column used for partitioning.
 - `strategy`: Either `:daily` or `:monthly`.
 
-{{< alert type="warning" >}}
-
-Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
-During the backfill, the partition manager might detach old partitions if `retain_for` is set,
-causing the backfill to fail when it tries to copy data into detached partitions.
-Add `retain_for` to your model only after the table swap is complete (Step 4).
-
-{{< /alert >}}
+> [!warning]
+> Do not add `retain_for` to this registration, even if your data should be deleted after a certain period.
+> During the backfill, the partition manager might detach old partitions if `retain_for` is set,
+> causing the backfill to fail when it tries to copy data into detached partitions.
+> Add `retain_for` to your model only after the table swap is complete (Step 4).
 
 After the table swap is complete (Step 4), you can remove this registration.
 

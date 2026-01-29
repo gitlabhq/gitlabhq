@@ -855,16 +855,12 @@ Example response:
 > which are disabled by default in GitLab 17.0 and later.
 > Use [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) instead to create runners with the recommended workflow.
 
-{{< alert type="warning" >}}
+Create a runner with a runner registration token.
 
 This endpoint returns an `HTTP 410 Gone` status code if registration with runner registration tokens
 is disabled in the project or group settings. If registration with runner registration tokens
 is disabled, use the [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) endpoint
 to create and register runners instead.
-
-{{< /alert >}}
-
-Create a runner with a runner registration token.
 
 ```plaintext
 POST /runners

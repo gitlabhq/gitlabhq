@@ -436,14 +436,11 @@ scripts/remote_development/run-smoke-test-suite.sh
 - There is an end to end test that verifies the creation of a new running workspace.
 - The test works by running UI actions on a running installation of a test GitLab instance, using GDK, KAS, and `agentk`.
 
-{{< alert type="note" >}}
-
-The test does not set up or teardown any of these components as a part of its execution.
-
-At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
-of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
-
-{{< /alert >}}
+> [!note]
+> The test does not set up or teardown any of these components as a part of its execution.
+> 
+> At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
+> of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
 
 To run the test:
 

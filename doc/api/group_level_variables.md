@@ -167,6 +167,11 @@ curl --request POST \
 Update a group's variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
 
+> [!warning]
+> When filtering for an `environment_scope` that does not exist, the endpoint falls back to
+> updating a variable with the same name but different environment scope. Verify the existence
+> of a scope for a given variable using the [show variable details](#show-variable-details) endpoint.
+
 ```plaintext
 PUT /groups/:id/variables/:key
 ```

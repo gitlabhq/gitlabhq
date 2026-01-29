@@ -195,14 +195,11 @@ You can disable 2FA for a single user or all users.
 
 This action is permanent and irreversible. Users must reactivate 2FA to use it again.
 
-{{< alert type="warning" >}}
-
-Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
-or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
-settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
-when they next sign in to GitLab.
-
-{{< /alert >}}
+> [!warning]
+> Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
+> or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
+> settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
+> when they next sign in to GitLab.
 
 ### For all users
 

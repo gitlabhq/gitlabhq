@@ -119,14 +119,11 @@ tests, it's up to you to add them.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-{{< alert type="note" >}}
-
-Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
-Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
-Cloud Native Buildpacks, and only buildpacks that implement the
-[Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
-
-{{< /alert >}}
+> [!note]
+> Not all buildpacks supported by [Auto Build](#auto-build) are supported by Auto Test.
+> Auto Test uses [Herokuish](https://gitlab.com/gitlab-org/gitlab/-/issues/212689), *not*
+> Cloud Native Buildpacks, and only buildpacks that implement the
+> [Testpack API](https://devcenter.heroku.com/articles/testpack-api) are supported.
 
 <!-- vale gitlab_base.Spelling = YES -->
 
@@ -414,14 +411,11 @@ automatically created.
 If the GitLab Deploy Token can't be found, `CI_REGISTRY_PASSWORD` is
 used.
 
-{{< alert type="note" >}}
-
-`CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes can
-successfully pull the container image during deployment, but if the image must
-be pulled again, such as after pod eviction, Kubernetes cannot do so
-as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
-
-{{< /alert >}}
+> [!note]
+> `CI_REGISTRY_PASSWORD` is only valid during deployment. Kubernetes can
+> successfully pull the container image during deployment, but if the image must
+> be pulled again, such as after pod eviction, Kubernetes cannot do so
+> as it attempts to fetch the image using `CI_REGISTRY_PASSWORD`.
 
 ### Kubernetes 1.16+
 

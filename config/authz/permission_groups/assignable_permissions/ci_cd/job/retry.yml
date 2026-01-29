@@ -1,7 +1,0 @@
----
-name: retry_job
-description: Grants the ability to retry jobs
-permissions:
-  - retry_job
-boundaries:
-  - project

@@ -23,29 +23,23 @@ description: Manage GitLab vulnerabilities with REST API (deprecated). Supports 
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-The former Vulnerabilities API was renamed to Vulnerability Findings API
-and its documentation was moved to [a different location](vulnerability_findings.md).
-This document now describes the new Vulnerabilities API that provides access to
-[Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-This API is in the process of being deprecated and considered unstable.
-The response payload may be subject to change or breakage
-across GitLab releases. Use the
-[GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
-
-{{< /alert >}}
+> [!note]
+> The former Vulnerabilities API was renamed to Vulnerability Findings API
+> and its documentation was moved to [a different location](vulnerability_findings.md).
+> This document now describes the new Vulnerabilities API that provides access to
+> [Vulnerabilities](https://gitlab.com/groups/gitlab-org/-/epics/634).
 
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
 If an authenticated user does not have permission to
 [view vulnerability report](../user/permissions.md#project-application-security),
 this request returns a `403 Forbidden` status code.
+
+> [!warning]
+> This API is in the process of being deprecated and considered unstable.
+> The response payload may be subject to change or breakage
+> across GitLab releases. Use the
+> [GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
 
 ## Retrieve a vulnerability
 

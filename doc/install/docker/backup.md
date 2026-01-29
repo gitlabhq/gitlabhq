@@ -20,14 +20,10 @@ docker exec -t <container name> gitlab-backup create
 
 For more information, see [Back up and restore GitLab](../../administration/backup_restore/_index.md).
 
-{{< alert type="note" >}}
-
 If your GitLab configuration is provided entirely using the `GITLAB_OMNIBUS_CONFIG` environment variable
 (by using the ["Pre-configure Docker Container"](configuration.md#pre-configure-docker-container) steps),
 the configuration settings are not stored in the `gitlab.rb` file so you do not need
 to back up the `gitlab.rb` file.
-
-{{< /alert >}}
 
 > [!warning]
 > To avoid [complicated steps](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost) when recovering

@@ -19,14 +19,11 @@ to AWS. You can reference these images in your CI/CD pipeline.
 If you're using GitLab.com and deploying to the [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS),
 read about [deploying to ECS](ecs/deploy_to_aws_ecs.md).
 
-{{< alert type="note" >}}
-
-If you are comfortable configuring a deployment yourself and just need to retrieve
-AWS credentials, consider using [ID tokens and OpenID Connect](../cloud_services/aws/_index.md).
-ID tokens are more secure than storing credentials in CI/CD variables, but do not
-work with the guidance on this page.
-
-{{< /alert >}}
+> [!note]
+> If you are comfortable configuring a deployment yourself and just need to retrieve
+> AWS credentials, consider using [ID tokens and OpenID Connect](../cloud_services/aws/_index.md).
+> ID tokens are more secure than storing credentials in CI/CD variables, but do not
+> work with the guidance on this page.
 
 ## Authenticate GitLab with AWS
 

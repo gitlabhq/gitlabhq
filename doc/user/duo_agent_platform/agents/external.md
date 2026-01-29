@@ -107,7 +107,7 @@ Required steps to enable and use Claude or Codex:
 Before you can create an agent and integrate it with an external AI model
 provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
-To integrate your agent with an external AI model provider, you must also have access credentials which are provided and manged by GitLab.
+To integrate your agent with an external AI model provider, you must also have access credentials which are provided and managed by GitLab.
 
 ### Access credentials
 

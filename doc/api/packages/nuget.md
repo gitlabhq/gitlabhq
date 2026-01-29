@@ -596,14 +596,11 @@ Example response:
  </entry>
 ```
 
-{{< alert type="note" >}}
-
-GitLab doesn't receive an authentication token for the `Packages()` and
-`FindPackagesByID()` endpoints, so the latest version of the package
-cannot be returned. You must provide the version when you install
-or upgrade a package with the NuGet v2 feed.
-
-{{< /alert >}}
+> [!note]
+> GitLab doesn't receive an authentication token for the `Packages()` and
+> `FindPackagesByID()` endpoints, so the latest version of the package
+> cannot be returned. You must provide the version when you install
+> or upgrade a package with the NuGet v2 feed.
 
 ```shell
 curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"

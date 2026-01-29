@@ -435,14 +435,11 @@ To enable advanced search:
 1. Optional. [Check indexing status](#check-indexing-status).
 1. After the indexing is complete, select the **Search with advanced search** checkbox, then select **Save changes**.
 
-{{< alert type="note" >}}
-
-When your Elasticsearch cluster is down while Elasticsearch is enabled,
-you might have problems updating documents such as issues because your
-instance queues a job to index the change, but cannot find a valid
-Elasticsearch cluster.
-
-{{< /alert >}}
+> [!note]
+> When your Elasticsearch cluster is down while Elasticsearch is enabled,
+> you might have problems updating documents such as issues because your
+> instance queues a job to index the change, but cannot find a valid
+> Elasticsearch cluster.
 
 For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
@@ -589,14 +586,11 @@ The following Elasticsearch settings are available:
 | **Retry on failure**                                        | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
 | **Index prefix**                                            | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. When changed, all indices will use this prefix instead of `gitlab` (for example, `custom-production-issues` instead of `gitlab-production-issues`). Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3421) in GitLab 18.2. |
 
-{{< alert type="warning" >}}
-
-Increasing the values of **Maximum bulk request size (MiB)** and **Bulk request concurrency** can negatively impact
-Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
-in your Sidekiq logs. For more information, see
-[issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
-
-{{< /alert >}}
+> [!warning]
+> Increasing the values of **Maximum bulk request size (MiB)** and **Bulk request concurrency** can negatively impact
+> Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
+> in your Sidekiq logs. For more information, see
+> [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
 
 ### Limit the amount of namespace and project data to index
 
@@ -1324,14 +1318,11 @@ due to large volumes of data being indexed:
 
 ### Index large instances with dedicated Sidekiq nodes or processes
 
-{{< alert type="warning" >}}
-
-For most instances, you do not have to configure dedicated Sidekiq nodes or processes.
-The following steps use an advanced setting of Sidekiq
-called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
-Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
-
-{{< /alert >}}
+> [!warning]
+> For most instances, you do not have to configure dedicated Sidekiq nodes or processes.
+> The following steps use an advanced setting of Sidekiq
+> called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
+> Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
 
 Indexing a large instance can be a lengthy and resource-intensive process that has the potential
 of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
@@ -1345,6 +1336,9 @@ another dedicated worker to avoid contention.
 For this purpose, use the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules)
 option that allows Sidekiq to route jobs to a specific queue based on [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
+> [!note]
+> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
+
 You can choose one of the two following options to handle this:
 
 - [Use two queue groups on one single node](#single-node-two-processes).
@@ -1357,17 +1351,11 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
-> [!note]
-> Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
-
-{{< alert type="warning" >}}
-
-When starting multiple processes, the number of processes cannot exceed the number of CPU
-cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
-to the available workload and concurrency settings. For more details, see how to
-[run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
-
-{{< /alert >}}
+> [!warning]
+> When starting multiple processes, the number of processes cannot exceed the number of CPU
+> cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
+> to the available workload and concurrency settings. For more details, see how to
+> [run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 #### Single node, two processes
 

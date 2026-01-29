@@ -54,6 +54,10 @@ class IssuesFinder < IssuableFinder
   end
 
   def use_cte_for_search?
+    # When namespace_traversal_ids filtering is enabled with search,
+    # we should fallback to CTE for search for now to ensure proper filtering
+    return super if search.present? && !use_full_text_search? && !attempt_group_search_optimizations?
+
     # It's more performant to directly filter on the `issues` table without a CTE
     use_namespace_traversal_ids_filtering? ? false : super
   end

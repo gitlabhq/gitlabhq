@@ -42,14 +42,11 @@ To access the DLE's services, you can:
 
 For more assistance, use the `#database` Slack channel.
 
-{{< alert type="note" >}}
-
-If you need only temporary access to a production replica, instead of a Database Lab
-clone, follow the runbook procedure for connecting to the
-[database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
-This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
-
-{{< /alert >}}
+> [!note]
+> If you need only temporary access to a production replica, instead of a Database Lab
+> clone, follow the runbook procedure for connecting to the
+> [database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
+> This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
 
 ### Query testing
 

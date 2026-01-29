@@ -523,6 +523,12 @@ in the container.
 `CI_DEBUG_SERVICES` should only be enabled when service containers are being actively debugged as there are both storage
 and performance consequences to capturing service container logs.
 
+> [!warning]
+> Enabling `CI_DEBUG_SERVICES` might reveal masked variables. When `CI_DEBUG_SERVICES` is enabled,
+> service container logs and the CI job's logs are streamed to the job's trace log concurrently. This means that the
+> service container logs might get inserted into a job's masked log. This would thwart the variable masking mechanism
+> and result in the masked variable being revealed.
+
 To enable service logging, add the `CI_DEBUG_SERVICES` variable to the project's
 `.gitlab-ci.yml` file:
 
@@ -544,15 +550,6 @@ other logs. Logs from each container are prefixed with the container's aliases, 
 > [!note]
 > To diagnose job failures, you can adjust the logging level in your service container for which you want to capture logs.
 > The default logging level might not provide sufficient troubleshooting information.
-
-{{< alert type="warning" >}}
-
-Enabling `CI_DEBUG_SERVICES` might reveal masked variables. When `CI_DEBUG_SERVICES` is enabled,
-service container logs and the CI job's logs are streamed to the job's trace log concurrently. This means that the
-service container logs might get inserted into a job's masked log. This would thwart the variable masking mechanism
-and result in the masked variable being revealed.
-
-{{< /alert >}}
 
 See [Mask a CI/CD Variable](../variables/_index.md#mask-a-cicd-variable)
 

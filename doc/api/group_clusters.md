@@ -24,7 +24,7 @@ Users need at least the Maintainer role for the group to use these endpoints.
 
 ## List group clusters
 
-Returns a list of group clusters.
+Lists all group clusters for a specified group.
 
 ```plaintext
 GET /groups/:id/clusters
@@ -92,9 +92,9 @@ Example response:
 ]
 ```
 
-## Get a single group cluster
+## Retrieve a group cluster
 
-Gets a single group cluster.
+Retrieves a specified group cluster.
 
 ```plaintext
 GET /groups/:id/clusters/:cluster_id
@@ -162,9 +162,9 @@ Example response:
 }
 ```
 
-## Add existing cluster to group
+## Create a group cluster
 
-Adds an existing Kubernetes cluster to the group.
+Creates a group cluster for a specified group by adding an existing Kubernetes cluster.
 
 ```plaintext
 POST /groups/:id/clusters/user
@@ -242,9 +242,9 @@ Example response:
 }
 ```
 
-## Edit group cluster
+## Update a group cluster
 
-Updates an existing group cluster.
+Updates a specified group cluster.
 
 ```plaintext
 PUT /groups/:id/clusters/:cluster_id
@@ -269,7 +269,7 @@ Parameters:
 > [!note]
 > `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
 > through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
-> through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
+> through the ["Create a group cluster"](#create-a-group-cluster) endpoint.
 
 Example request:
 
@@ -335,9 +335,9 @@ Example response:
 }
 ```
 
-## Delete group cluster
+## Delete a group cluster
 
-Deletes an existing group cluster. Does not remove existing resources within the connected Kubernetes cluster.
+Deletes a specified group cluster. Does not remove existing resources within the connected Kubernetes cluster.
 
 ```plaintext
 DELETE /groups/:id/clusters/:cluster_id

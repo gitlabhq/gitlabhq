@@ -32,7 +32,7 @@ to access them as we do in Rails views), local variables are fine.
 
 Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/api/entities) to present the endpoint's payload.
 
-### Definining entity fields
+### Defining entity fields
 
 Every exposed field in an entity must include or reference a valid type.
 

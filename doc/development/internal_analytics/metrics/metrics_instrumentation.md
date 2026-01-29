@@ -174,14 +174,11 @@ Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` e
 when used through the provided `estimate_batch_distinct_count` method.
 Errors return a value of `-1`.
 
-{{< alert type="warning" >}}
-
-This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
-which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
-As the HyperLogLog algorithm is probabilistic, the **results always include error**.
-The highest encountered error rate is 4.9%.
-
-{{< /alert >}}
+> [!warning]
+> This functionality estimates a distinct count of a specific ActiveRecord_Relation in a given column,
+> which uses the [HyperLogLog](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf) algorithm.
+> As the HyperLogLog algorithm is probabilistic, the **results always include error**.
+> The highest encountered error rate is 4.9%.
 
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
 columns that contain non-unique values, which cannot be assured by other counters.

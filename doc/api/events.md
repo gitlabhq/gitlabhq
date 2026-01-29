@@ -26,14 +26,11 @@ For information about activity retention limits, see:
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
 - [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
 
-{{< alert type="note" >}}
-
-This API has limitations related to epics and merge requests:
-
-- Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
-- Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).
-
-{{< /alert >}}
+> [!note]
+> This API has limitations related to epics and merge requests:
+> 
+> - Some epic features like child items, linked items, start dates, due dates, and health statuses are not returned by the API.
+> - Some merge request notes may instead use the `DiscussionNote` type. This target type is [not supported by the API](discussions.md#understand-note-types-in-the-api).
 
 ## List all events
 

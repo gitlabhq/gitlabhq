@@ -83,10 +83,10 @@
 # if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
 .if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-[23]/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-[23]/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
@@ -1071,7 +1071,8 @@
       changes: *backend-patterns
     - <<: *if-security-merge-request
       changes: *backend-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:system-default-rules:
   rules:
@@ -1086,7 +1087,8 @@
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - !reference [".prevent-tier-1", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .rails:rules:previous-failed-tests-default-rules:
   rules:
@@ -2247,7 +2249,8 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB == "true"'
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2276,7 +2279,8 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION == "true"'
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2385,7 +2389,8 @@
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
     - <<: *if-merge-request
       changes: *db-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-default-refs
       changes: *db-patterns
 
@@ -2415,7 +2420,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
       when: never
-    - <<: *if-merge-request-tier-3
+    - <<: *if-merge-request-approved
       changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
@@ -2442,7 +2447,7 @@
     - <<: *if-security-merge-request
       changes: *backend-patterns
       when: never
-    - <<: *if-merge-request-tier-3
+    - <<: *if-merge-request-approved
       changes: *code-backstage-patterns
       when: never
     - <<: *if-merge-request
@@ -2460,7 +2465,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB == "true"'
-    - <<: *if-merge-request-tier-3
+    - <<: *if-merge-request-approved
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
@@ -2479,7 +2484,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION == "true"'
-    - <<: *if-merge-request-tier-3
+    - <<: *if-merge-request-approved
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
@@ -2608,7 +2613,8 @@
       changes: *db-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-default-refs
       changes: *db-patterns
 
@@ -2778,7 +2784,8 @@
     - <<: *if-merge-request-labels-run-all-rspec
     # We cannot get the coverage data from child pipeline so we only run undercoverage on full pipelines for now
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request
       changes: *backend-patterns
 

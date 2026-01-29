@@ -93,14 +93,11 @@ testing job in GitLab CI/CD. The easiest way to do this is to use the
 [`Verify/Load-Performance-Testing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml)
 template that is included with GitLab.
 
-{{< alert type="note" >}}
-
-For large scale k6 tests you need to ensure the GitLab Runner instance performing the actual
-test is able to handle running the test. Refer to [k6's guidance](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations)
-for spec details. The [default shared GitLab.com runners](../runners/hosted_runners/linux.md)
-likely have insufficient specs to handle most large k6 tests.
-
-{{< /alert >}}
+> [!note]
+> For large scale k6 tests you need to ensure the GitLab Runner instance performing the actual
+> test is able to handle running the test. Refer to [k6's guidance](https://k6.io/docs/testing-guides/running-large-tests#hardware-considerations)
+> for spec details. The [default shared GitLab.com runners](../runners/hosted_runners/linux.md)
+> likely have insufficient specs to handle most large k6 tests.
 
 This template runs the
 [k6 Docker container](https://hub.docker.com/r/loadimpact/k6/) in the job and provides several ways to customize the

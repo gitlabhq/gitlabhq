@@ -1,0 +1,8 @@
+---
+name: run_job
+description: Grants the ability to play and retry jobs
+permissions:
+  - play_job
+  - retry_job
+boundaries:
+  - project

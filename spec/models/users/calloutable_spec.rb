@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::Calloutable, feature_category: :shared do
+RSpec.describe Users::Calloutable, feature_category: :user_management do
   subject { build(:callout) }
 
   describe "Associations" do

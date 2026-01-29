@@ -163,14 +163,11 @@ installations, use the password from `/etc/gitlab/initial_root_password` or
 If GitLab can't detect a valid hostname during installation, reconfigure won't run automatically. In this case, pass any needed environment variables to your first `gitlab-ctl reconfigure` command.
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-While you can also set the initial password in `/etc/gitlab/gitlab.rb` by setting
-`gitlab_rails['initial_root_password']`, it is not recommended.
-It's a security risk as the password is in clear text. If you have this configured,
-make sure to remove it after installation.
-
-{{< /alert >}}
+> [!warning]
+> While you can also set the initial password in `/etc/gitlab/gitlab.rb` by setting
+> `gitlab_rails['initial_root_password']`, it is not recommended.
+> It's a security risk as the password is in clear text. If you have this configured,
+> make sure to remove it after installation.
 
 Choose your GitLab edition and customize with the environment variables above:
 

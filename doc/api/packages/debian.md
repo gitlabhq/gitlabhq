@@ -18,16 +18,13 @@ title: Debian API
 
 {{< /history >}}
 
+> [!warning]
+> This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
+> and [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html),
+> and is generally not meant for manual consumption. This API is under development and is not ready
+> for production use due to limited functionality.
+
 Use this API to interact with the [Debian package manager client](../../user/packages/debian_repository/_index.md).
-
-{{< alert type="warning" >}}
-
-This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
-and [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html),
-and is generally not meant for manual consumption. This API is under development and is not ready
-for production use due to limited functionality.
-
-{{< /alert >}}
 
 > [!note]
 > These endpoints do not adhere to the standard API authentication methods.

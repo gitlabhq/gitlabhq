@@ -6721,5 +6721,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   it_behaves_like 'custom attributes endpoints', 'projects' do
     let(:attributable) { project }
     let(:other_attributable) { project2 }
+    let(:boundary_type) { project }
   end
 end

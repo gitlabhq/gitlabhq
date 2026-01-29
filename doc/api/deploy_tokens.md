@@ -23,7 +23,7 @@ Use this API to interact with [deploy tokens](../user/project/deploy_tokens/_ind
 
 {{< /details >}}
 
-Get a list of all deploy tokens across the GitLab instance. This endpoint requires administrator access.
+List all deploy tokens across the GitLab instance. This endpoint requires administrator access.
 
 ```plaintext
 GET /deploy_tokens
@@ -68,7 +68,7 @@ for the project.
 
 ### List project deploy tokens
 
-Get a list of a project's deploy tokens.
+List a project's deploy tokens.
 
 ```plaintext
 GET /projects/:id/deploy_tokens
@@ -107,9 +107,9 @@ Example response:
 ]
 ```
 
-### Get a project deploy token
+### Retrieve a project deploy token
 
-Get a single project's deploy token by ID.
+Retrieve a single project's deploy token by ID.
 
 ```plaintext
 GET /projects/:id/deploy_tokens/:token_id
@@ -148,7 +148,7 @@ Example response:
 
 ### Create a project deploy token
 
-Creates a new deploy token for a project.
+Create a project deploy token.
 
 ```plaintext
 POST /projects/:id/deploy_tokens
@@ -193,7 +193,7 @@ Example response:
 
 ### Delete a project deploy token
 
-Removes a deploy token from the project.
+Delete a deploy token from the project.
 
 ```plaintext
 DELETE /projects/:id/deploy_tokens/:token_id
@@ -221,7 +221,7 @@ tokens. Only group Owners can create and delete group deploy tokens.
 
 ### List group deploy tokens
 
-Get a list of a group's deploy tokens
+List a group's deploy tokens
 
 ```plaintext
 GET /groups/:id/deploy_tokens
@@ -260,9 +260,9 @@ Example response:
 ]
 ```
 
-### Get a group deploy token
+### Retrieve a group deploy token
 
-Get a single group's deploy token by ID.
+Retrieve a single group's deploy token by ID.
 
 ```plaintext
 GET /groups/:id/deploy_tokens/:token_id
@@ -301,7 +301,7 @@ Example response:
 
 ### Create a group deploy token
 
-Creates a new deploy token for a group.
+Create a group deploy token.
 
 ```plaintext
 POST /groups/:id/deploy_tokens
@@ -346,7 +346,7 @@ Example response:
 
 ### Delete a group deploy token
 
-Removes a deploy token from the group.
+Delete a deploy token from the group.
 
 ```plaintext
 DELETE /groups/:id/deploy_tokens/:token_id

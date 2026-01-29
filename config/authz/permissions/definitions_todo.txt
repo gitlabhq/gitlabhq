@@ -464,7 +464,6 @@ read_crm_contact
 read_crm_contacts
 read_crm_organization
 read_cross_project
-read_custom_attribute
 read_custom_emoji
 read_custom_field
 read_customizable_dashboards
@@ -723,7 +722,6 @@ update_branch_rule
 update_build
 update_commit_status
 update_container_image
-update_custom_attribute
 update_default_branch_protection
 update_deploy_key_title
 update_deploy_keys_project

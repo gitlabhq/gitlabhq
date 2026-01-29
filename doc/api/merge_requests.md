@@ -2162,14 +2162,11 @@ Example response:
 
 ## Get single merge request changes
 
-{{< alert type="warning" >}}
-
-This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
-and [is scheduled for removal](rest/deprecations.md) in API v5. Use the
-[List merge request diffs](#list-merge-request-diffs) endpoint instead.
-<!-- Do not remove line until endpoint is actually removed -->
-
-{{< /alert >}}
+> [!warning]
+> This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
+> and [is scheduled for removal](rest/deprecations.md) in API v5. Use the
+> [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+> <!-- Do not remove line until endpoint is actually removed -->
 
 Shows information about the merge request including its files and changes.
 

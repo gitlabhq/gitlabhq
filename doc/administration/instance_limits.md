@@ -123,20 +123,44 @@ This setting limits the request rate on deprecated API endpoints per user or IP 
 
 - **Default rate limit**: Disabled by default.
 
-### Import/Export
+### Import and export
 
-This setting limits the import/export actions for groups and projects.
+These settings limit file imports and exports for groups and projects.
 
 | Limit                   | Default (per minute per user) |
-|-------------------------|-------------------------------|
-| Project Import          | 6                             |
-| Project Export          | 6                             |
-| Project Export Download | 1                             |
-| Group Import            | 6                             |
-| Group Export            | 6                             |
-| Group Export Download   | 1                             |
+|:------------------------|:------------------------------|
+| Project import          | 6 import requests             |
+| Project export          | 6 export requests             |
+| Project export download | 1 download requests           |
+| Group import            | 6 import requests             |
+| Group export            | 6 export requests             |
+| Group export download   | 1 download requests           |
 
-Read more about [import/export rate limits](settings/import_export_rate_limits.md).
+These settings [can be configured](settings/import_export_rate_limits.md).
+
+#### Direct transfer migration
+
+{{< history >}}
+
+- Maximum number of migrations permitted limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9.
+- Configurable settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+- Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+
+{{< /history >}}
+
+The following limits apply on migration by direct transfer.
+
+| Limit       | Configurable | Description |
+|:------------|:-------------|:------------|
+| 6           | {{< no >}}   | Maximum number of migrations permitted by a destination GitLab instance per minute per user. |
+| 210 seconds | {{< no >}}   | Maximum time to wait for decompressing an archive file. |
+| 50 MB       | {{< no >}}   | Maximum length an NDJSON row can have. |
+| 5 minutes   | {{< no >}}   | Maximum time until an empty export status on source instance is raised. |
+| 5 GiB       | {{< yes >}}  | Maximum relation size that can be downloaded from the source instance. |
+| 10 GiB      | {{< yes >}}  | Maximum size of a decompressed archive. |
+
+For more information on changing configurable limits, see
+[import and export settings](settings/import_and_export_settings.md).
 
 ### Member Invitations
 

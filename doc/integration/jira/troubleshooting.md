@@ -322,14 +322,11 @@ The credentials for accessing Jira are not allowed to access the data.
 Check your Jira issues integration credentials and try again.
 ```
 
-{{< alert type="warning" >}}
-
-Atlassian deprecated the older JQL search endpoints (`GET/POST /rest/api/2/search`) for Jira Cloud
-on October 31, 2024, with removal scheduled for May 1, 2025.
-Jira Server and Data Center continue to use the `/rest/api/2/search` endpoint.
-For more information, see the [Atlassian deprecation notice](https://developer.atlassian.com/changelog/#CHANGE-2046).
-
-{{< /alert >}}
+> [!warning]
+> Atlassian deprecated the older JQL search endpoints (`GET/POST /rest/api/2/search`) for Jira Cloud
+> on October 31, 2024, with removal scheduled for May 1, 2025.
+> Jira Server and Data Center continue to use the `/rest/api/2/search` endpoint.
+> For more information, see the [Atlassian deprecation notice](https://developer.atlassian.com/changelog/#CHANGE-2046).
 
 To resolve this issue, ensure the Jira user you configured in the Jira issues integration has permission to view issues
 associated with the specified Jira project key.

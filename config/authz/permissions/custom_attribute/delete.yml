@@ -1,3 +1,7 @@
 ---
 name: delete_custom_attribute
-description: Allows users to delete cutsom attributes on the given resource
+description: Grants the ability to delete custom attributes
+boundaries:
+  - group
+  - project
+  - instance

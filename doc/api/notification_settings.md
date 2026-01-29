@@ -55,9 +55,9 @@ These events are recognized:
 | `reopen_merge_request`         | When a merge request is reopened |
 | `success_pipeline`             | When a pipeline completes successfully |
 
-## Get global notification settings
+## Retrieve global notification settings
 
-Get current notification settings and email address.
+Retrieves the global notification level and email address.
 
 ```plaintext
 GET /notification_settings
@@ -88,7 +88,7 @@ Example response:
 
 ## Update global notification settings
 
-Update notification settings and email address.
+Updates notification settings and email address.
 
 ```plaintext
 PUT /notification_settings
@@ -145,9 +145,9 @@ Example response:
 }
 ```
 
-## Get group or project notification settings
+## Retrieve notification settings
 
-Get notification settings for a group or project.
+Retrieves the notification level for a specified group or project.
 
 ```plaintext
 GET /groups/:id/notification_settings

@@ -124,6 +124,16 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}/#{non_existing_record_id}/custom_attributes", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_custom_attribute do
+        let(:boundary_object) { boundary_type }
+        let(:user) { admin }
+        let(:request) do
+          get api(
+            "/#{attributable_name}/#{attributable.id}/custom_attributes",
+            personal_access_token: pat)
+        end
+      end
     end
   end
 
@@ -145,6 +155,16 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
       it "returns :not_found when #{attributable_name} does not exist" do
         get api("/#{attributable_name}/#{non_existing_record_id}/custom_attributes/foo", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_custom_attribute do
+        let(:boundary_object) { boundary_type }
+        let(:user) { admin }
+        let(:request) do
+          get api(
+            "/#{attributable_name}/#{attributable.id}/custom_attributes/#{custom_attribute1.key}",
+            personal_access_token: pat)
+        end
       end
     end
   end
@@ -181,6 +201,16 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         put api("/#{attributable_name}/#{non_existing_record_id}/custom_attributes/foo", admin, admin_mode: true), params: { value: 'new' }
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_custom_attribute do
+        let(:boundary_object) { boundary_type }
+        let(:user) { admin }
+        let(:request) do
+          put api(
+            "/#{attributable_name}/#{attributable.id}/custom_attributes/some_key",
+            personal_access_token: pat), params: { value: 'some_value' }
+        end
+      end
     end
   end
 
@@ -204,6 +234,16 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
       it "returns :not_found when #{attributable_name} does not exist" do
         delete api("/#{attributable_name}/#{non_existing_record_id}/custom_attributes/foo", admin, admin_mode: true)
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_custom_attribute do
+        let(:boundary_object) { boundary_type }
+        let(:user) { admin }
+        let(:request) do
+          delete api(
+            "/#{attributable_name}/#{attributable.id}/custom_attributes/#{custom_attribute1.key}",
+            personal_access_token: pat)
+        end
       end
     end
   end

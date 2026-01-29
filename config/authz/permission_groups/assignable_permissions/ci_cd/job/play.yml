@@ -1,7 +1,0 @@
----
-name: play_job
-description: Grants the ability to play jobs
-permissions:
-  - play_job
-boundaries:
-  - project

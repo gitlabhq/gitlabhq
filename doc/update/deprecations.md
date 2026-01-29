@@ -716,7 +716,7 @@ which have proven to work well in production.
 Because Gitaly is not directly exposed to external networks and external protection layers, such as load balancers,
 provide better safeguards, rate limiting is less effective.
 
-Therefore, we're depecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
+Therefore, we're deprecating rate limiting in favor of the more reliable concurrency limiting. Gitaly RPC-based
 rate limiting will be removed in GitLab 18.0.
 
 ### Legacy Web IDE is deprecated
@@ -4222,7 +4222,7 @@ to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
 - Removal in GitLab 15.0
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/347137).
 
-The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver similiar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the [Web IDE](https://docs.gitlab.com/user/project/web_ide/).
+The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver similar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the [Web IDE](https://docs.gitlab.com/user/project/web_ide/).
 
 Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/user/project/web_ide/) for more information, including how to remove the configuration files from existing projects.
 
@@ -4951,7 +4951,7 @@ The following changes have been canceled.
 The container scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
 By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
 Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
-severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
+severity levels will no longer be reported by default. Consequently, any vulnerability with these severities that were previously reported on the default branch will be marked as no longer detected
 upon the next execution of container scanning.
 To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
 

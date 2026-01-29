@@ -442,14 +442,11 @@ The credentials should only be used when:
   privileged application.
 - Other authorization grant types are not available (such as an authorization code).
 
-{{< alert type="warning" >}}
-
-Never store the user's credentials and only use this grant type when your client
-is deployed to a trusted environment, in 99% of cases
-[personal access tokens](../user/profile/personal_access_tokens.md) are a better
-choice.
-
-{{< /alert >}}
+> [!warning]
+> Never store the user's credentials and only use this grant type when your client
+> is deployed to a trusted environment, in 99% of cases
+> [personal access tokens](../user/profile/personal_access_tokens.md) are a better
+> choice.
 
 Even though this grant type requires direct client access to the resource owner
 credentials, the resource owner credentials are used for a single request and

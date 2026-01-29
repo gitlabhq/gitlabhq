@@ -226,14 +226,11 @@ time without notice.
 Fields behind a feature flag and disabled by default do not follow the
 deprecation and removal process. These fields can be removed at any time without notice.
 
-{{< alert type="warning" >}}
-
-GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
-GitLab might make immediate breaking changes to the GraphQL
-API to patch critical security or performance concerns if the deprecation
-process would pose significant risk.
-
-{{< /alert >}}
+> [!warning]
+> GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
+> GitLab might make immediate breaking changes to the GraphQL
+> API to patch critical security or performance concerns if the deprecation
+> process would pose significant risk.
 
 ### Verify against the future breaking-change schema
 

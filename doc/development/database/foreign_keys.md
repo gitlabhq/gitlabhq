@@ -304,14 +304,11 @@ add the migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-{{< alert type="warning" >}}
-
-Verify that the foreign key is valid in production before merging a second
-migration with `validate_foreign_key`. If the second migration is deployed
-before the validation has been executed, the foreign key is validated
-synchronously when the second migration executes.
-
-{{< /alert >}}
+> [!warning]
+> Verify that the foreign key is valid in production before merging a second
+> migration with `validate_foreign_key`. If the second migration is deployed
+> before the validation has been executed, the foreign key is validated
+> synchronously when the second migration executes.
 
 ```ruby
 # in db/post_migrate/

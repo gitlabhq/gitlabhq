@@ -106,14 +106,11 @@ end
 
 The query above iterates over the project creators and prints them out without duplications.
 
-{{< alert type="note" >}}
-
-In case the column is not unique (no unique index definition), calling the `distinct` method on
-the relation is necessary. Using not unique column without `distinct` may result in `each_batch`
-falling into an endless loop as described in following
-[issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
-
-{{< /alert >}}
+> [!note]
+> In case the column is not unique (no unique index definition), calling the `distinct` method on
+> the relation is necessary. Using not unique column without `distinct` may result in `each_batch`
+> falling into an endless loop as described in following
+> [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285097).
 
 ## `EachBatch` in data migrations
 

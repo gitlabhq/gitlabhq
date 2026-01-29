@@ -363,5 +363,5 @@ to add the raw SQL query and query plan to the merge request description, and re
 - Check for any overly complex queries and queries the author specifically points out for review (if any)
 - Verify all new and modified queries include both SQL statements and query plans from [Database Lab](database/database_lab.md) in the merge request description
 - For given queries, review parameters regarding data distribution
-- [Check query plans](database/understanding_explain_plans.md) and suggest necessary improvements to queries (eg: restructing the query, adding/removing indexes, etc). If there are open questions reach out to the #database_maintainers channel.
+- [Check query plans](database/understanding_explain_plans.md) and suggest necessary improvements to queries (eg: restructuring the query, adding/removing indexes, etc). If there are open questions reach out to the #database_maintainers channel.
 - Avoid N+1 problems and minimize the [query count](merge_request_concepts/performance.md#query-counts)

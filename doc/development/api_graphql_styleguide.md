@@ -1086,14 +1086,11 @@ change would typically constitute a breaking change.
 To continue to support clients using the old Global ID argument, we add a deprecation
 to `Gitlab::GlobalId::Deprecations`.
 
-{{< alert type="note" >}}
-
-If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
-deprecate it. We consider the change to the way a Global ID is expressed in a field to be
-backwards-compatible. We expect that clients don't parse these values: they are meant to
-be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
-
-{{< /alert >}}
+> [!note]
+> If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
+> deprecate it. We consider the change to the way a Global ID is expressed in a field to be
+> backwards-compatible. We expect that clients don't parse these values: they are meant to
+> be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
 
 **Example scenario**:
 

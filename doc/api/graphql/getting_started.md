@@ -106,14 +106,11 @@ The GitLab GraphQL API can be used to perform:
 - Queries for data retrieval.
 - [Mutations](#mutations) for creating, updating, and deleting data.
 
-{{< alert type="note" >}}
-
-In the GitLab GraphQL API, `id` refers to a
-[Global ID](https://graphql.org/learn/global-object-identification/),
-which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
-For more information, see [Global IDs](_index.md#global-ids).
-
-{{< /alert >}}
+> [!note]
+> In the GitLab GraphQL API, `id` refers to a
+> [Global ID](https://graphql.org/learn/global-object-identification/),
+> which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
+> For more information, see [Global IDs](_index.md#global-ids).
 
 [GitLab GraphQL Schema](reference/_index.md) outlines which objects and fields are
 available for clients to query and their corresponding data types.

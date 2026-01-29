@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['UserGroupCalloutFeatureName'], feature_category: :shared do
+RSpec.describe GitlabSchema.types['UserGroupCalloutFeatureName'], feature_category: :user_management do
   specify { expect(described_class.graphql_name).to eq('UserGroupCalloutFeatureName') }
 
   it 'exposes all the existing user callout feature names' do

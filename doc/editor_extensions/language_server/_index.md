@@ -74,14 +74,11 @@ To enable proxy authentication in the Language Server, follow the steps for your
    including username and password, to authenticate with your HTTP proxy.
 1. Restart Visual Studio Code to ensure connections to GitLab use the latest proxy settings.
 
-{{< alert type="note" >}}
-
-The VS Code extension does not support the legacy
-[`http.proxyAuthorization`](https://code.visualstudio.com/docs/setup/network#_legacy-proxy-server-support)
-setting in VS Code for authenticating the language server with an HTTP proxy. Support is proposed in
-[issue 1672](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1672).
-
-{{< /alert >}}
+> [!note]
+> The VS Code extension does not support the legacy
+> [`http.proxyAuthorization`](https://code.visualstudio.com/docs/setup/network#_legacy-proxy-server-support)
+> setting in VS Code for authenticating the language server with an HTTP proxy. Support is proposed in
+> [issue 1672](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1672).
 
 {{< /tab >}}
 

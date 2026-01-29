@@ -383,4 +383,4 @@ See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the fu
 
 ## Compute Minutes and Quota
 
-See [compute minutes development doucmentation](compute_minutes.md)
+See [compute minutes development documentation](compute_minutes.md)

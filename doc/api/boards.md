@@ -456,14 +456,11 @@ POST /projects/:id/boards/:board_id/lists
 | `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
 | `iteration_id` | integer | no | The ID of a iteration. Premium and Ultimate only. |
 
-{{< alert type="note" >}}
-
-Label, assignee and milestone arguments are mutually exclusive,
-that is, only one of them are accepted in a request.
-Check the [issue board documentation](../user/project/issue_board.md)
-for more information regarding the required license for each list type.
-
-{{< /alert >}}
+> [!note]
+> Label, assignee and milestone arguments are mutually exclusive,
+> that is, only one of them are accepted in a request.
+> Check the [issue board documentation](../user/project/issue_board.md)
+> for more information regarding the required license for each list type.
 
 ```shell
 curl --request POST \

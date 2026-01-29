@@ -36,9 +36,9 @@ The following placeholders are available:
 Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
 from the first group's project by creation date. If the group has no project, the original URL with the placeholders is returned.
 
-## List all badges of a group
+## List all group badges
 
-Gets a list of a group's badges.
+Lists badges for a specified group.
 
 ```plaintext
 GET /groups/:id/badges
@@ -71,9 +71,9 @@ Example response:
 ]
 ```
 
-## Get a badge of a group
+## Retrieve a group badge
 
-Gets a badge of a group.
+Retrieves a specified badge for a group.
 
 ```plaintext
 GET /groups/:id/badges/:badge_id
@@ -104,9 +104,9 @@ Example response:
 }
 ```
 
-## Add a badge to a group
+## Create a group badge
 
-Adds a badge to a group.
+Creates a badge for a specified group.
 
 ```plaintext
 POST /groups/:id/badges
@@ -140,9 +140,9 @@ Example response:
 }
 ```
 
-## Edit a badge of a group
+## Update a group badge
 
-Updates a badge of a group.
+Updates a specified badge for a group.
 
 ```plaintext
 PUT /groups/:id/badges/:badge_id
@@ -176,9 +176,9 @@ Example response:
 }
 ```
 
-## Remove a badge from a group
+## Delete a group badge
 
-Removes a badge from a group.
+Deletes a specified badge from a group.
 
 ```plaintext
 DELETE /groups/:id/badges/:badge_id
@@ -195,9 +195,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/groups/:id/badges/:badge_id"
 ```
 
-## Preview a badge from a group
+## Retrieve a group badge preview
 
-Returns how the `link_url` and `image_url` final URLs would be after resolving the placeholder interpolation.
+Retrieves a preview of the final `link_url` and `image_url` URLs for a specified group after resolving the placeholder interpolation.
 
 ```plaintext
 GET /groups/:id/badges/render

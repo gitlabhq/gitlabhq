@@ -52,7 +52,7 @@ you might encounter a similar error in your CI/CD pipeline jobs:
 Error response from daemon: Get registry.example.com/v1/users/: x509: certificate signed by unknown authority
 ```
 
-This error occurrs because the Docker daemon running the command expects
+This error occurs because the Docker daemon running the command expects
 a certificate signed by a recognized Certificate Authority, not a self-signed certificate.
 
 To resolve this error, configure Docker to trust self-signed certificates. For help with the Docker configuration,
