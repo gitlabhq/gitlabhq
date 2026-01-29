@@ -39,7 +39,6 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { DynamicScroller } from 'vendor/vue-virtual-scroller';
-import * as mergeRequestUtils from '~/diffs/utils/merge_request';
 import {
   ISSUABLE_COMMENT_OR_REPLY,
   keysFor,
@@ -158,18 +157,24 @@ describe('diffs/components/app', () => {
     });
 
     it('updates diff counter', async () => {
-      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      const counter = document.createElement('div');
+      counter.classList.add('js-changes-tab-count');
+      document.body.appendChild(counter);
       createComponent();
       await waitForPromises();
-      expect(spy).toHaveBeenCalledWith({ count: 20 });
+      expect(counter.textContent).toBe('20');
+      counter.remove();
     });
 
     it('sets diff counter to 0 without changes', async () => {
-      const spy = jest.spyOn(mergeRequestUtils, 'updateChangesTabCount');
+      const counter = document.createElement('div');
+      counter.classList.add('js-changes-tab-count');
+      document.body.appendChild(counter);
       store.fetchDiffFilesMeta.mockResolvedValue();
       createComponent();
       await waitForPromises();
-      expect(spy).toHaveBeenCalledWith({ count: 0 });
+      expect(counter.textContent).toBe('0');
+      counter.remove();
     });
   });
 

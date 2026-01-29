@@ -117,8 +117,5 @@ export const TRACKING_CLICK_SINGLE_FILE_SETTING = 'i_code_review_click_single_fi
 export const TRACKING_SINGLE_FILE_MODE = 'i_code_review_diff_single_file';
 export const TRACKING_MULTIPLE_FILES_MODE = 'i_code_review_diff_multiple_files';
 
-// UI
-export const ZERO_CHANGES_ALT_DISPLAY = '-';
-
 // SAST Findings
 export const SAST_FINDING_DISMISSED = 'dismissed';

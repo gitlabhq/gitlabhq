@@ -17,7 +17,7 @@ Gitlab::GrapeOpenapi.configure do |config|
 
   config.servers = [
     Gitlab::GrapeOpenapi::Models::Server.new(
-      url: Gitlab.config.gitlab.url,
+      url: 'https://gitlab.com/api',
       description: "GitLab REST API"
     )
   ]

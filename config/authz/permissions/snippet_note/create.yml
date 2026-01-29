@@ -1,0 +1,5 @@
+---
+name: create_snippet_note
+description: Grants the ability to create snippet notes
+boundaries:
+  - project

@@ -127,6 +127,15 @@ the remote repository updates branches or tags. Before you enable this feature:
 > [!warning]
 > Only enable this feature for your own projects or those with trusted maintainers.
 
+## Pull mirroring with SSO enforcement
+
+When [SSO enforcement](../../../group/saml_sso/_index.md#sso-enforcement) is enabled for your group,
+the user who created the mirror must maintain an active SSO session or the mirror fails.
+
+To configure mirroring without SSO session dependency, you can [use the API](../../../../api/project_pull_mirroring.md)
+with a [project access token](../../settings/project_access_tokens.md), [group access token](../../../group/settings/group_access_tokens.md),
+or [personal access token](../../../profile/personal_access_tokens.md) for service accounts.
+
 ## Trigger an update by using the API
 
 {{< history >}}

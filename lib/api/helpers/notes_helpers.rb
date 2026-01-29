@@ -206,6 +206,21 @@ module API
         :"read_#{noteable_type.policy_base}"
       end
 
+      def self.permission_name_for(noteable_type, http_method)
+        noteable_name = noteable_type.noteable_class.to_s.underscore.tr('/', '_')
+
+        # Map HTTP methods to CRUD operations
+        operation = case http_method
+                    when 'GET' then 'read'
+                    when 'POST' then 'create'
+                    when 'PUT', 'PATCH' then 'update'
+                    when 'DELETE' then 'delete'
+                    else raise ArgumentError, "Unsupported HTTP method: #{http_method}"
+                    end
+
+        :"#{operation}_#{noteable_name}_note"
+      end
+
       private
 
       def can_read_notes?(noteable)

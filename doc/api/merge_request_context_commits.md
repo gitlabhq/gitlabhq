@@ -17,9 +17,9 @@ If your merge request builds upon a previous merge request, you might
 need to [include previously-merged commits for context](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests)
 in your merge request. Use this API to add commits to a merge request for more context.
 
-## List MR context commits
+## List context commits for a merge request
 
-Get a list of merge request context commits.
+Lists context commits for a single merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/context_commits
@@ -51,9 +51,9 @@ Parameters:
 ]
 ```
 
-## Create MR context commits
+## Create context commits for a merge request
 
-Create a list of merge request context commits.
+Creates context commits for a single merge request.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/context_commits
@@ -101,9 +101,9 @@ Example response:
 ]
 ```
 
-## Delete MR context commits
+## Delete context commits from a merge request
 
-Delete a list of merge request context commits.
+Deletes context commits from a single merge request.
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/context_commits

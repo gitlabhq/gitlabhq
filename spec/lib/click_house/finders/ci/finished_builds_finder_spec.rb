@@ -10,6 +10,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
   it_behaves_like 'finished builds finder select behavior'
   it_behaves_like 'finished builds finder aggregations'
   it_behaves_like 'finished builds finder ordering'
+  it_behaves_like 'finished builds finder offset'
   it_behaves_like 'finished builds finder grouping'
   it_behaves_like 'finished builds finder filters'
   it_behaves_like 'finished builds finder method chaining'

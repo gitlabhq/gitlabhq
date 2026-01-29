@@ -566,7 +566,8 @@ class Environment < ApplicationRecord
   def run_stop_action!(job, link_identity:)
     ::Gitlab::Auth::Identity.link_from_job(job) if link_identity
 
-    job.play(job.user)
+    result = job.play(job.user)
+    result.payload[:job]
   rescue StateMachines::InvalidTransition
     # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry.
     # However, Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.

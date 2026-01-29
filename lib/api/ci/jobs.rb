@@ -248,7 +248,8 @@ module API
 
           bad_request!("Unplayable Job") unless job.playable?
 
-          job.play(current_user, params[:job_variables_attributes])
+          result = job.play(current_user, params[:job_variables_attributes])
+          job = result.payload[:job]
 
           status 200
 

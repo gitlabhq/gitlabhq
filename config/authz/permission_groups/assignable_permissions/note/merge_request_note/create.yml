@@ -1,0 +1,7 @@
+---
+name: create_merge_request_note
+description: Grants the ability to create merge request notes
+permissions:
+  - create_merge_request_note
+boundaries:
+  - project

@@ -5,7 +5,9 @@ module Ci
     def execute(bridge)
       check_access!(bridge)
 
-      Ci::EnqueueJobService.new(bridge, current_user: current_user).execute
+      job = Ci::EnqueueJobService.new(bridge, current_user: current_user).execute
+
+      ServiceResponse.success(payload: { job: job })
     end
 
     private

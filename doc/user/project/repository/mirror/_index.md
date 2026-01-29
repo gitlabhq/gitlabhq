@@ -97,7 +97,7 @@ To mirror a repository with SSH authentication:
 1. Select either **Detect host keys** or **Input host keys manually**.
 1. In the **Authentication method** field, select **SSH public key**
 1. In the **Username** field, add `git`.
-1. Optional. Configure the **Mirror user** and **Mirror branches** settings.
+1. Optional. Configure the **Mirror branches** settings.
 1. Select **Mirror repository**.
 1. Copy the SSH public key and provide it to your non-GitLab server.
 

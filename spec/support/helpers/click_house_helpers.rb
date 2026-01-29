@@ -29,7 +29,7 @@ module ClickHouseHelpers
 
   # rubocop:disable Metrics/CyclomaticComplexity -- the method is straightforward, just a lot of &.
   # rubocop:disable Metrics/PerceivedComplexity -- same
-  def insert_ci_builds_to_click_house(builds)
+  def insert_ci_builds_to_click_house(builds, version: Time.current, deleted: false)
     result = clickhouse_fixture(:ci_finished_builds, builds.map do |build|
       build.slice(
         %i[id project_id pipeline_id status finished_at created_at started_at queued_at runner_id name
@@ -43,7 +43,9 @@ module ClickHouseHelpers
             runner_manager_version: build.runner_manager&.version || '',
             runner_manager_revision: build.runner_manager&.revision || '',
             runner_manager_platform: build.runner_manager&.platform || '',
-            runner_manager_architecture: build.runner_manager&.architecture || ''
+            runner_manager_architecture: build.runner_manager&.architecture || '',
+            version: version,
+            deleted: deleted
           )
     end)
 

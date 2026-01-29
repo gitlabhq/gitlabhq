@@ -691,6 +691,12 @@ immediately. If the user:
 - Is signed out, they cannot access the group after being removed from the
   identity provider.
 
+### Repository mirroring with SSO enforcement
+
+When you enable **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**,
+repository mirroring is subject to SSO session requirements. For more information, see
+[Pull mirroring with SSO enforcement](../../project/repository/mirror/pull.md#pull-mirroring-with-sso-enforcement).
+
 ## Migrate to a new identity provider
 
 To migrate to a new identity provider, use the [SAML API](../../../api/saml.md) to update all of your group member's identities.

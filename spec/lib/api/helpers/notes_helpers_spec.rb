@@ -63,6 +63,48 @@ RSpec.describe API::Helpers::NotesHelpers, feature_category: :api do
     end
   end
 
+  describe '.permission_name_for' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:create_noteable_type) do
+      ->(class_name) do
+        mock_class = instance_double(Class)
+        allow(mock_class).to receive(:to_s).and_return(class_name)
+
+        instance_double(
+          API::Helpers::NotesHelpers::NoteableType,
+          noteable_class: mock_class
+        )
+      end
+    end
+
+    where(:class_name, :http_method, :expected_permission) do
+      'Issue'          | 'GET'    | :read_issue_note
+      'Issue'          | 'POST'   | :create_issue_note
+      'Issue'          | 'PUT'    | :update_issue_note
+      'Issue'          | 'PATCH'  | :update_issue_note
+      'Issue'          | 'DELETE' | :delete_issue_note
+    end
+
+    with_them do
+      it 'generates correct permission name' do
+        noteable_type = create_noteable_type.call(class_name)
+
+        result = described_class.permission_name_for(noteable_type, http_method)
+
+        expect(result).to eq(expected_permission)
+      end
+    end
+
+    it 'raises ArgumentError for unsupported HTTP method' do
+      noteable_type = create_noteable_type.call('Issue')
+
+      expect do
+        described_class.permission_name_for(noteable_type, 'INVALID')
+      end.to raise_error(ArgumentError, /Unsupported HTTP method/)
+    end
+  end
+
   describe API::Helpers::NotesHelpers::NoteableType do
     describe '#human_name' do
       using RSpec::Parameterized::TableSyntax

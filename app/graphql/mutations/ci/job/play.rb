@@ -27,11 +27,11 @@ module Mutations
           job = authorized_find!(id: id)
           variables = variables.map(&:to_h)
 
-          job.play(current_user, variables)
+          result = job.play(current_user, variables)
 
           {
-            job: job,
-            errors: errors_on_object(job)
+            job: result.payload[:job],
+            errors: errors_on_object(result.payload[:job])
           }
         end
       end

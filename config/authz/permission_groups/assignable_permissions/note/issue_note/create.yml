@@ -1,0 +1,7 @@
+---
+name: create_issue_note
+description: Grants the ability to create issue notes
+permissions:
+  - create_issue_note
+boundaries:
+  - project

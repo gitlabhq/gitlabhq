@@ -71,7 +71,6 @@ In addition:
   - Gains access to the protected branch, as well as to the deploy key itself.
   - Can push to the protected branch, if the deploy key has read-write permission.
     This is true even if the branch is protected against changes from all users.
-- If the creator of the deploy key is blocked or removed from the instance, the user can still pull changes from the group or project, but not push.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
 For human interactions, use credentials tied to users such as personal access tokens.
@@ -204,6 +203,21 @@ What happens to the deploy key when it is disabled depends on the following:
 
 ## Troubleshooting
 
+### Deploy key is rejected
+
+A deploy key is rejected when:
+
+- The key owner is blocked.
+- The key has expired.
+
+When a deploy key is rejected, it cannot be used for any repository operations,
+including pulls and pushes.
+
+To resolve this issue:
+
+- If the key owner is blocked, either unblock the user or [change the key owner](#set-the-owner-of-a-deploy-key) to an active user.
+- If the key has expired, create a new deploy key.
+
 ### Deploy key cannot push to a protected branch
 
 There are a few scenarios where a deploy key fails to push to a
@@ -266,7 +280,7 @@ end
 
 #### Set the owner of a deploy key
 
-Deploy keys belong to a specific user and are deactivated when the user is blocked or removed from the instance.
+Deploy keys belong to a specific user and are rejected when the user is blocked or removed from the instance.
 To keep a deploy key working when a user is removed, change its owner to an active user.
 
 If you have the fingerprint of the deploy key, you can change the user associated with a deploy key with the following commands:

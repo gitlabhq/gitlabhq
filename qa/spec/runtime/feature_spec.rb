@@ -25,8 +25,12 @@ RSpec.describe QA::Runtime::Feature do
           .with(request.url, { value: true, scope => actor_name }).and_return(response_post)
         expect(QA::Runtime::API::Request).to receive(:new)
           .with(api_client, "/features").and_return(request)
-        expect(QA::Runtime::Logger).to receive(:info).with("Enabling feature: a_flag for scope \"#{scope}: #{actor_name}\"")
-        expect(QA::Runtime::Logger).to receive(:info).with("Successfully enabled and verified feature flag: a_flag")
+        expect(QA::Runtime::Logger)
+          .to receive(:info)
+                .with("Enabling feature: a_flag for scope \"#{scope}: #{actor_name}\"")
+        expect(QA::Runtime::Logger)
+          .to receive(:info)
+                .with(match(/Successfully enabled and verified feature flag: a_flag for scope/))
 
         described_class.enable(feature_flag, scope => actor)
       end
@@ -43,8 +47,12 @@ RSpec.describe QA::Runtime::Feature do
           .with(request.url, { value: false, scope => actor_name }).and_return(response_post)
         expect(QA::Runtime::API::Request).to receive(:new)
           .with(api_client, "/features").and_return(request)
-        expect(QA::Runtime::Logger).to receive(:info).with("Disabling feature: a_flag for scope \"#{scope}: #{actor_name}\"")
-        expect(QA::Runtime::Logger).to receive(:info).with("Successfully disabled and verified feature flag: a_flag")
+        expect(QA::Runtime::Logger)
+          .to receive(:info)
+                .with("Disabling feature: a_flag for scope \"#{scope}: #{actor_name}\"")
+        expect(QA::Runtime::Logger)
+          .to receive(:info)
+                .with(match(/Successfully disabled and verified feature flag: a_flag for scope/))
 
         described_class.disable(feature_flag, scope => actor)
       end
@@ -59,7 +67,8 @@ RSpec.describe QA::Runtime::Feature do
             .and_return(request)
           expect(described_class)
             .to receive(:get)
-            .and_return(Struct.new(:code, :body).new(200, %([{ "name": "a_flag", "state": "conditional", "gates": #{gates} }])))
+            .and_return(Struct.new(:code, :body).new(200,
+              %([{ "name": "a_flag", "state": "conditional", "gates": #{gates} }])))
 
           expect(described_class.enabled?(feature_flag, scope => actor)).to be true
         end
@@ -184,9 +193,15 @@ RSpec.describe QA::Runtime::Feature do
           .to receive(:get)
           .and_return(
             Struct.new(:code, :body)
-                  .new(200, %([{ "name": "a_flag", "state": "conditional", "gates": { "key": "groups", "value": ["foo"] } }])))
+                  .new(
+                    200,
+                    %([{ "name": "a_flag", "state": "conditional", "gates": { "key": "groups", "value": ["foo"] } }])
+                  )
+          )
 
-        expect { described_class.enabled?(feature_flag, scope: 'foo') }.to raise_error(QA::Runtime::Feature::UnknownScopeError)
+        expect do
+          described_class.enabled?(feature_flag, scope: 'foo')
+        end.to raise_error(QA::Runtime::Feature::UnknownScopeError)
       end
 
       context 'when a project scope is provided' do
@@ -303,7 +318,10 @@ RSpec.describe QA::Runtime::Feature do
       expect(described_class).not_to receive(:enable)
       expect(described_class).not_to receive(:disable)
 
-      expect { described_class.set({ foo: 'bar' }, **scope) }.to raise_error(QA::Runtime::Feature::UnknownStateError, 'Unknown feature flag state: bar')
+      expect do
+        described_class.set({ foo: 'bar' },
+       **scope)
+      end.to raise_error(QA::Runtime::Feature::UnknownStateError, 'Unknown feature flag state: bar')
     end
 
     it 'enables feature flags' do

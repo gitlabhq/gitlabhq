@@ -1,0 +1,5 @@
+---
+name: delete_issue_note
+description: Grants the ability to delete issue notes
+boundaries:
+  - project

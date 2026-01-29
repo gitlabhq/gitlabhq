@@ -107,7 +107,8 @@ class Projects::JobsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :play_job, @build)
     return respond_422 unless @build.playable?
 
-    job = @build.play(current_user, play_params[:job_variables_attributes])
+    result = @build.play(current_user, play_params[:job_variables_attributes])
+    job = result.payload[:job]
 
     if job.is_a?(Ci::Bridge)
       redirect_to pipeline_path(job.pipeline)

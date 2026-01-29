@@ -1,0 +1,7 @@
+---
+name: read_issue_note
+description: Grants the ability to read issue notes
+permissions:
+  - read_issue_note
+boundaries:
+  - project

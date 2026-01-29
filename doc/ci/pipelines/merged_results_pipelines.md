@@ -34,7 +34,7 @@ Prerequisites:
 
 To enable merged results pipelines in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Under **Merge options**, select **Enable merged results pipelines**.
 1. Select **Save changes**.

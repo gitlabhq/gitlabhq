@@ -361,6 +361,65 @@ RSpec.shared_examples 'finished builds finder ordering' do
   end
 end
 
+RSpec.shared_examples 'finished builds finder offset' do
+  describe '#offset' do
+    subject(:result) do
+      instance.for_project(project.id)
+        .select(:name)
+        .order_by(:name)
+        .offset(offset_value)
+        .execute
+    end
+
+    let(:all_names) do
+      instance.for_project(project.id)
+        .select(:name)
+        .order_by(:name)
+        .execute
+        .pluck('name')
+    end
+
+    context 'with offset of 0' do
+      let(:offset_value) { 0 }
+
+      it 'returns all results' do
+        expect(result.pluck('name')).to eq(all_names)
+      end
+    end
+
+    context 'with offset of 2' do
+      let(:offset_value) { 2 }
+
+      it 'skips first 2 results' do
+        expect(result.pluck('name')).to eq(all_names[2..])
+      end
+    end
+
+    context 'with offset greater than result count' do
+      let(:offset_value) { 100 }
+
+      it 'returns empty result' do
+        expect(result).to be_empty
+      end
+    end
+
+    context 'with offset and limit combined' do
+      subject(:result) do
+        instance.for_project(project.id)
+          .select(:name)
+          .order_by(:name)
+          .offset(2)
+          .limit(2)
+          .execute
+      end
+
+      it 'returns paginated results' do
+        expect(result.pluck('name')).to eq(all_names[2, 2])
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'finished builds finder grouping' do
   describe '#group_by' do
     subject(:result) do

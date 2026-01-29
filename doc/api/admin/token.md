@@ -24,7 +24,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get information on a token
+## Retrieve token information
 
 {{< history >}}
 
@@ -42,7 +42,7 @@ Prerequisites:
 
 {{< /history >}}
 
-Gets information for a given token. This endpoint supports the following tokens:
+Retrieves information for a specified token. This endpoint supports the following tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../rest/authentication.md#impersonation-tokens)
@@ -131,7 +131,7 @@ Example response:
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-Revokes, resets or deletes a given token based on the token type. This endpoint supports the following token types:
+Revokes, resets, or deletes a specified token based on the token type. This endpoint supports the following token types:
 
 | Token type                                                                                   | Supported action   |
 |----------------------------------------------------------------------------------------------|--------------------|

@@ -38,7 +38,7 @@ module Gitlab
       private
 
       def read(mention)
-        Gitlab::Json.parse(
+        Gitlab::Json.safe_parse(
           ::Gitlab::Cache::Import::Caching.read(source_user_cache_key(importer, project_id, mention))
         )
       end

@@ -1,5 +1,3 @@
-import { ZERO_CHANGES_ALT_DISPLAY } from '../constants';
-
 const endpointRE = /^(\/?(.+\/)+(.+)\/-\/merge_requests\/(\d+)).*$/i;
 const SHA1RE = /([a-f0-9]{40})/g;
 
@@ -14,54 +12,6 @@ function getVersionInfo({ endpoint } = {}) {
     diffId,
     startSha,
   };
-}
-
-function findFirstText(el) {
-  let txt;
-
-  el.childNodes.forEach((node) => {
-    if (node.nodeType === 3) {
-      if (!txt) {
-        txt = node;
-      }
-    } else {
-      txt = findFirstText(node);
-    }
-  });
-
-  return txt;
-}
-
-export function updateChangesTabCount({
-  count,
-  badge = document.querySelector('.js-diffs-tab .gl-badge'),
-} = {}) {
-  const setters = {
-    // The purpose of this function is to assign to this parameter
-    /* eslint-disable no-param-reassign */
-    TEXT: (node, val) => {
-      node.nodeValue = val;
-    },
-    ELEMENT: (node, val) => {
-      node.textContent = val;
-    },
-    /* eslint-enable no-param-reassign */
-  };
-
-  if (badge) {
-    const txt = findFirstText(badge);
-    let el = badge;
-    let setter;
-
-    if (txt) {
-      setter = setters.TEXT;
-      el = txt;
-    } else {
-      setter = setters.ELEMENT;
-    }
-
-    setter(el, count || ZERO_CHANGES_ALT_DISPLAY);
-  }
 }
 
 export function getDerivedMergeRequestInformation({ endpoint } = {}) {

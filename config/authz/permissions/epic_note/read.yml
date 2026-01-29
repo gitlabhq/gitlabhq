@@ -1,0 +1,5 @@
+---
+name: read_epic_note
+description: Grants the ability to read epic notes
+boundaries:
+  - group

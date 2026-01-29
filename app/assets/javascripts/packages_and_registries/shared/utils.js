@@ -24,7 +24,8 @@ export const extractFilterAndSorting = (queryObject) => {
     filters.push(keyValueToFilterToken('status', status));
   }
   if (search) {
-    filters.push(...searchArrayToFilterTokens(search));
+    const searchArray = Array.isArray(search) ? search : [search];
+    filters.push(...searchArrayToFilterTokens(searchArray));
   }
   if (sort) {
     sorting.sort = sort;

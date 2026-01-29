@@ -109,6 +109,11 @@ To avoid unexpected overage charges, you can:
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance for GitLab Self-Managed or in the namespace for GitLab.com.
 
+On GitLab Self-Managed in the **Premium** tier, if a Guest user has a higher role in any project or group (including their personal namespace),
+when you upgrade to the **Ultimate** tier that higher role takes precedence and they will consume a seat.
+To ensure that Guest users on GitLab Self-Managed Ultimate will not consume a seat,
+confirm that they have no other role assignments in the instance or namespace before upgrading. 
+
 - If your project is:
   - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-permissions).
   - Public, all users, including those with the Guest role, can access your project.

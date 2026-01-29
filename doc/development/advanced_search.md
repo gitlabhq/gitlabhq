@@ -383,7 +383,7 @@ All new indexes must have:
   - For project data - `visibility_level`
   - For group data - `namespace_visibility_level`
   - Any required access level fields. These correspond to project feature access levels such as `issues_access_level` or `repository_access_level`
-- A `schema_version` integer field in a `YYWW` (year/week) format. This field is used for data migrations and its value corresponds to the week when the MR is merged.
+- A `schema_version` integer field in a `YYVV` (year/version) format. YY is the two-digit year, VV is a rolling counter (01-99) within that year. The schema version must be defined in a constant (`SCHEMA_VERSION`) in the reference index class (`Search::Elastic::References::<IndexedData>` or `Elastic::Latest::<IndexedData>InstanceProxy`). This field is used to track which version of the document structure is indexed and enables data migrations. It must be incremented when the index mapping changes and may be incremented when field content changes.
 
 1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
 1. Define the following class methods:
@@ -441,7 +441,7 @@ The file must inherit from `Search::Elastic::Reference` and define the following
 ```ruby
 include Search::Elastic::Concerns::DatabaseReference # if there is a corresponding database record for every document
 
-SCHEMA_VERSION = 24_46 # integer in YYWW format
+SCHEMA_VERSION = 24_46 # integer in YYVV format
 
 override :serialize
 def self.serialize(record)
@@ -657,7 +657,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 1. Add the field to the index mapping to add it newly created indices and create a migration to add the field to existing indices in the same MR to avoid mapping schema drift. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
 1. Populate the new field in the document JSON. The code must check the migration is complete using
    `::Elastic::DataMigrationService.migration_has_finished?`
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to backfill the field in the index. If it's a not-nullable field, use [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper), or [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) if it's a nullable field.
 
 ##### If the new field is an associated record
@@ -681,7 +681,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing mapping of an existing field
 
 1. Update the field type in the index mapping to change it for newly created indices
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to reindex all documents
    using [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
    Use the [`Search::Elastic::MigrationReindexTaskHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindextaskhelper)
@@ -689,7 +689,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 #### Changing field content
 
 1. Update the field content in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to update documents. Use the [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion)
 
 #### Cleaning up documents from an index
@@ -697,7 +697,7 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 This may be used if documents are split from one index into separate indices or to remove data left in the index due to
 bugs.
 
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Create a migration to index all records. Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper)
 1. Create a migration to remove all documents with the previous `SCHEMA_VERSION`. Use the [`MigrationDeleteBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdeletebasedonschemaversion)
 
@@ -712,7 +712,7 @@ Milestone `M`:
 
 1. Remove the field from the index mapping to remove it from newly created indices
 1. Stop populating the field in the document JSON
-1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYWW`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and version number: `YYVV`
 1. Remove any [filters which use the field](#available-filters) from the [query builder](#creating-a-query)
 1. Update the `scope_options` method to remove the field for the scope you are updating. The method is defined in
    `Gitlab::Elastic::SearchResults` with overrides in `Gitlab::Elastic::GroupSearchResults` and
@@ -1001,80 +1001,6 @@ Uses `simple_query_string` Elasticsearch API. Can be customized with the followi
       "filter": [],
       "minimum_should_match": null
     }
-  }
-}
-```
-
-#### `by_knn`
-
-Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
-
-Performs a hybrid search using embeddings. Uses `full_text_search` unless embeddings are supported.
-
-> [!warning]
-> Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this query must be used with the `by_knn` filter.
-
-The example below is for Elasticsearch.
-
-```json
-{
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "bool": {
-            "must": [],
-            "must_not": [],
-            "should": [
-              {
-                "multi_match": {
-                  "_name": "work_item:multi_match:and:search_terms",
-                  "fields": [
-                    "iid^50",
-                    "title^2",
-                    "description"
-                  ],
-                  "query": "test",
-                  "operator": "and",
-                  "lenient": true
-                }
-              },
-              {
-                "multi_match": {
-                  "_name": "work_item:multi_match_phrase:search_terms",
-                  "type": "phrase",
-                  "fields": [
-                    "iid^50",
-                    "title^2",
-                    "description"
-                  ],
-                  "query": "test",
-                  "lenient": true
-                }
-              }
-            ],
-            "filter": [],
-            "minimum_should_match": 1
-          }
-        }
-      ],
-      "must_not": [],
-      "should": [],
-      "filter": [],
-      "minimum_should_match": null
-    }
-  },
-  "knn": {
-    "field": "embedding_0",
-    "query_vector": [
-      0.030752448365092278,
-      -0.05360432341694832
-    ],
-    "boost": 5,
-    "k": 25,
-    "num_candidates": 100,
-    "similarity": 0.6,
-    "filter": []
   }
 }
 ```
@@ -2195,14 +2121,6 @@ Requires `search_level` field and at least one of `use_group_authorization` or `
   }
 ]
 ```
-
-#### `by_knn`
-
-Requires options: `vectors_supported` (set to `:elasticsearch` or `:opensearch`) and `embedding_field`. Callers may optionally provide options: `embeddings`
-
-> [!warning]
-> Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both, this filter must be used with the
-> `by_knn` query.
 
 #### `by_noteable_type`
 

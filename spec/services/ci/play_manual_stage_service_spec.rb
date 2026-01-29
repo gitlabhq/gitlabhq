@@ -50,19 +50,28 @@ RSpec.describe Ci::PlayManualStageService, '#execute', feature_category: :contin
   end
 
   context 'when user does not have permission on a specific processable' do
-    before do
-      allow_next_instance_of(Ci::Processable) do |instance|
-        allow(instance).to receive(:play).and_raise(Gitlab::Access::AccessDeniedError)
-      end
+    let(:unauthorized_user) { create(:user) }
+    let(:service) { described_class.new(project, unauthorized_user, pipeline: pipeline) }
+
+    it 'logs the error and continues processing other jobs' do
+      expect(Gitlab::AppLogger).to receive(:error)
+        .with(hash_including(message: 'Unable to play manual action'))
+        .exactly(stage.processables.manual.count).times
 
       service.execute(stage)
     end
+  end
 
-    it 'logs the error' do
-      expect(Gitlab::AppLogger).to receive(:error)
-        .exactly(stage.processables.manual.count)
+  context 'when processable is not playable' do
+    let(:stage_status) { 'skipped' }
 
+    before do
       service.execute(stage)
+    end
+
+    it 'does not play the processable' do
+      expect(pipeline.processables.manual.count).to eq(0)
+      expect(pipeline.processables.skipped.count).to eq(4)
     end
   end
 

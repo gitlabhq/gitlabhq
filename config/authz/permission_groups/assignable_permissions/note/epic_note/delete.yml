@@ -1,0 +1,7 @@
+---
+name: delete_epic_note
+description: Grants the ability to delete epic notes
+permissions:
+  - delete_epic_note
+boundaries:
+  - group

@@ -54,7 +54,7 @@ import {
 import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
 import { diffsApp } from '../utils/performance';
-import { updateChangesTabCount, extractFileHash } from '../utils/merge_request';
+import { extractFileHash } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
@@ -599,9 +599,7 @@ export default {
               this.setTreeDisplay();
             }
 
-            updateChangesTabCount({
-              count: this.diffFilesLength,
-            });
+            document.querySelector('.js-changes-tab-count').textContent = this.diffFilesLength;
           })
           .catch(() => {
             createAlert({

@@ -341,6 +341,7 @@ export default {
         </template>
       </registry-header>
       <persisted-search
+        use-router
         :sortable-fields="$options.searchConfig"
         :default-order="$options.searchConfig[0].orderBy"
         default-sort="desc"
@@ -390,6 +391,7 @@ export default {
 
       <div v-if="!mutationLoading" class="gl-flex gl-justify-center">
         <persisted-pagination
+          use-router
           class="gl-mt-3"
           :pagination="pageInfo"
           @prev="fetchPreviousPage"

@@ -13,8 +13,8 @@ module Ci
         next unless processable.playable?
 
         processable.play(current_user)
-      rescue Gitlab::Access::AccessDeniedError
-        logger.error(message: 'Unable to play manual action', processable_id: processable.id)
+      rescue Gitlab::Access::AccessDeniedError => e
+        logger.error(message: 'Unable to play manual action', processable_id: processable.id, error: e.message)
       end
     end
 

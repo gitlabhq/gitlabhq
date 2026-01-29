@@ -39,10 +39,10 @@ module Gitlab
           Gitlab::SlashCommands::Presenters::Deploy
             .new(action).action_not_found
         else
-          deployment = action.play(current_user)
+          result = action.play(current_user)
 
           Gitlab::SlashCommands::Presenters::Deploy
-            .new(deployment).present(from, to)
+            .new(result.payload[:job]).present(from, to)
         end
       end
 

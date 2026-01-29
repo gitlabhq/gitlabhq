@@ -466,14 +466,14 @@ end
 Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
 
 Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
-The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+The index mapping must have a `schema_version` integer field in a `YYVV` (year/version) format.
 
 This migration helper uses the scroll API to handle larger batches (potentially >10,000 records)
 more efficiently, while the queue threshold prevents overwhelming downstream processing by pausing
 the migration when the bookkeeping queue exceeds capacity.
 
 > [!note]
-> Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
+> Previously index mapping `schema_version` used `YYMM` or `YYWW` format. New versions should use the `YYVV` format.
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -504,10 +504,10 @@ end
 Deletes all documents in the index that stores the specified document type and has `schema_version` less than the given value.
 
 Requires the `DOCUMENT_TYPE` constant and `schema_version` method.
-The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
+The index mapping must have a `schema_version` integer field in a `YYVV` (year/version) format.
 
 > [!note]
-> Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
+> Previously index mapping `schema_version` used `YYMM` or `YYWW` format. New versions should use the `YYVV` format.
 
 ```ruby
 class MigrationName < Elastic::Migration

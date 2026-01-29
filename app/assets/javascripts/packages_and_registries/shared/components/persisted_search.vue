@@ -27,6 +27,11 @@ export default {
       required: false,
       default: () => [],
     },
+    useRouter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -90,7 +95,7 @@ export default {
 </script>
 
 <template>
-  <url-sync @popstate="updateDataFromUrlAndEmitUpdate">
+  <url-sync :use-router="useRouter" @popstate="updateDataFromUrlAndEmitUpdate">
     <template #default="{ updateQuery }">
       <registry-search
         v-if="mountRegistrySearch"

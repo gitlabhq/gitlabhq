@@ -12,9 +12,13 @@ module Ci
     def execute
       check_access!
 
-      Ci::EnqueueJobService.new(build, current_user: current_user, variables: variables || []).execute
+      job = Ci::EnqueueJobService.new(build, current_user: current_user, variables: variables || []).execute
+
+      ServiceResponse.success(payload: { job: job })
     rescue StateMachines::InvalidTransition
-      retry_build(build.reset)
+      job = retry_build(build.reset)
+
+      ServiceResponse.success(payload: { job: job })
     end
 
     private

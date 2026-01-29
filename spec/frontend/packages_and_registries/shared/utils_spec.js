@@ -47,6 +47,7 @@ describe('Packages And Registries shared utils', () => {
       search       | type         | version      | status       | sort         | orderBy      | result
       ${['one']}   | ${'myType'}  | ${'1.0.1'}   | ${'DEFAULT'} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: 'type', value: { data: 'myType' } }, { type: 'version', value: { data: '1.0.1' } }, { type: 'status', value: { data: 'DEFAULT' } }, { type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
       ${['one']}   | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
+      ${'one'}     | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'one' } }] }}
       ${[]}        | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
       ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${'asc'}     | ${'foo'}     | ${{ sorting: { sort: 'asc', orderBy: 'foo' }, filters: [] }}
       ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${undefined} | ${'foo'}     | ${{ sorting: { orderBy: 'foo' }, filters: [] }}

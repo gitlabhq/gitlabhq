@@ -1,0 +1,7 @@
+---
+name: update_epic_note
+description: Grants the ability to update epic notes
+permissions:
+  - update_epic_note
+boundaries:
+  - group

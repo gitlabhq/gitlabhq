@@ -271,7 +271,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/github_import/events_cache.rb'
     - 'lib/gitlab/graphql/pagination/click_house_connection.rb'
     - 'lib/gitlab/health_checks/puma_check.rb'
-    - 'lib/gitlab/import/user_from_mention.rb'
     - 'lib/gitlab/import_export/json/ndjson_reader.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'
     - 'lib/gitlab/kas/user_access.rb'

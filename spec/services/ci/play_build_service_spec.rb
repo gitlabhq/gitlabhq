@@ -9,9 +9,11 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
   let(:build) { create(:ci_build, :manual, user: user, pipeline: pipeline) }
   let(:job_variables) { nil }
 
-  subject(:execute_service) do
+  let(:service_result) do
     described_class.new(current_user: user, build: build, variables: job_variables).execute
   end
+
+  subject(:execute_service) { service_result.payload[:job] }
 
   before do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
@@ -29,8 +31,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     end
 
     it 'does not allow user with developer role to play build' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
@@ -116,7 +117,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
 
         context 'when user is developer' do
           it 'raises an error' do
-            expect { execute_service }.to raise_error Gitlab::Access::AccessDeniedError
+            expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
           end
         end
       end
@@ -159,8 +160,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let(:build) { create(:ci_build, :success, pipeline: pipeline) }
 
     it 'raises an error' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
@@ -169,8 +169,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let!(:branch) { create(:protected_branch, :developers_can_merge, name: build.ref, project: project) }
 
     it 'raises an error' do
-      expect { execute_service }
-        .to raise_error Gitlab::Access::AccessDeniedError
+      expect { execute_service }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 end
