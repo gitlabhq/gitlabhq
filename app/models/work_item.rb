@@ -290,9 +290,9 @@ class WorkItem < Issue
   end
 
   def custom_notification_target_name
-    # This is needed so we match the issue events NotificationSetting::EMAIL_EVENTS
-    return 'issue' if work_item_type.issue?
-
+    # Also use `work_item` for issues.
+    # Custom work_item notifications are mapped back to the issue category
+    # until we properly transitioned the categories to work items.
     'work_item'
   end
 

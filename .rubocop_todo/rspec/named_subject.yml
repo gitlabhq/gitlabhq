@@ -2842,7 +2842,6 @@ RSpec/NamedSubject:
     - 'spec/services/note_summary_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
     - 'spec/services/notes/post_process_service_spec.rb'
-    - 'spec/services/notification_recipients/builder/default_spec.rb'
     - 'spec/services/notification_recipients/builder/new_note_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/packages/composer/composer_json_service_spec.rb'

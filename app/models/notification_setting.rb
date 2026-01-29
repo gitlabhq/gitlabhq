@@ -57,6 +57,14 @@ class NotificationSetting < ApplicationRecord
     :merge_when_pipeline_succeeds
   ].freeze
 
+  EXCLUDED_WATCHER_EVENTS = [
+    :push_to_merge_request,
+    :issue_due,
+    :work_item_due,
+    :success_pipeline,
+    :approver
+  ].freeze
+
   def self.email_events(source = nil)
     EMAIL_EVENTS
   end
@@ -68,13 +76,6 @@ class NotificationSetting < ApplicationRecord
   def email_events
     self.class.email_events(source)
   end
-
-  EXCLUDED_WATCHER_EVENTS = [
-    :push_to_merge_request,
-    :issue_due,
-    :success_pipeline,
-    :approver
-  ].freeze
 
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)

@@ -68,10 +68,23 @@ class NotificationRecipient
     return false unless @custom_action
     return false unless notification_setting
 
-    notification_setting.event_enabled?(@custom_action) ||
-      # fixed_pipeline is a subset of success_pipeline event
-      (@custom_action == :fixed_pipeline &&
-       notification_setting.event_enabled?(:success_pipeline))
+    # 1. Check if the exact action is enabled
+    return true if notification_setting.event_enabled?(@custom_action)
+
+    # 2. Fallback logic: work_item and epic events --> issue events
+    #    This allows all work items (tasks, tickets, epics) to use issue notification settings
+    #    until we have dedicated work_item/epic events in EMAIL_EVENTS.
+    #    - work_item events (new_work_item, close_work_item, etc.) fallback to issue equivalents
+    #    - epic events (new_epic, close_epic, etc.) also fallback to issue equivalents
+    fallback_action = @custom_action.to_s
+      .sub('work_item', 'issue')
+      .sub('epic', 'issue')
+      .to_sym
+
+    return true if fallback_action != @custom_action && notification_setting.event_enabled?(fallback_action)
+
+    # 3. Special case: fixed_pipeline is a subset of success_pipeline event
+    @custom_action == :fixed_pipeline && notification_setting.event_enabled?(:success_pipeline)
   end
 
   def unsubscribed?

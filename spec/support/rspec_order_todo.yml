@@ -7181,7 +7181,6 @@
 - './spec/services/notes/resolve_service_spec.rb'
 - './spec/services/note_summary_spec.rb'
 - './spec/services/notes/update_service_spec.rb'
-- './spec/services/notification_recipients/builder/default_spec.rb'
 - './spec/services/notification_recipients/builder/new_note_spec.rb'
 - './spec/services/notification_recipients/build_service_spec.rb'
 - './spec/services/notification_service_spec.rb'
