@@ -19,15 +19,12 @@ shell access to the environment where [GitLab Runner](https://docs.gitlab.com/ru
 is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
 taken to protect the users.
 
-{{< alert type="note" >}}
-
-[Instance runners on GitLab.com](../runners/_index.md) do not
-provide an interactive web terminal. Follow
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
-adding support. For groups and projects hosted on GitLab.com, interactive web
-terminals are available when using your own group or project runner.
-
-{{< /alert >}}
+> [!note]
+> [Instance runners on GitLab.com](../runners/_index.md) do not
+> provide an interactive web terminal. Follow
+> [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
+> adding support. For groups and projects hosted on GitLab.com, interactive web
+> terminals are available when using your own group or project runner.
 
 ## Configuration
 

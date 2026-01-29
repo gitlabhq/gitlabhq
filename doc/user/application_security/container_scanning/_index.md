@@ -930,17 +930,14 @@ Unlike regular container scanning, the scan results do not include a security re
 
 When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
-> [!note]
-> Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
+Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md).
+Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
-{{< alert type="warning" >}}
-
-Vulnerabilities detected by container scanning for registry cannot be automatically marked as
-resolved when you update or remove vulnerable components. These vulnerabilities remain visible
-indefinitely because this feature only generates SBOMs, not the security reports required for
-vulnerability resolution.
-
-{{< /alert >}}
+> [!warning]
+> Vulnerabilities detected by container scanning for registry cannot be automatically marked as
+> resolved when you update or remove vulnerable components. These vulnerabilities remain visible
+> indefinitely because this feature only generates SBOMs, not the security reports required for
+> vulnerability resolution.
 
 ### Prerequisites
 

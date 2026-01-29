@@ -61,15 +61,12 @@ To require administrator approval for new sign ups:
 If an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
 
-{{< alert type="note" >}}
-
-This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
-signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
-[OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
-[LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
-A [user cap](#user-cap) can also be used to enforce approvals for new users.
-
-{{< /alert >}}
+> [!note]
+> This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
+> signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
+> [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
+> [LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
+> A [user cap](#user-cap) can also be used to enforce approvals for new users.
 
 ## Confirm user email
 

@@ -25,15 +25,12 @@ command. For more information, refer to the section
 [Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
 in the Git internals documentation.
 
-{{< alert type="warning" >}}
-
-GitLab version 17.7 changes the error handling behavior when a requested path is not found.
-The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
-
-If your implementation relies on receiving a `200` status code with an empty array for
-missing paths, you must update your error handling to handle the new `404` responses.
-
-{{< /alert >}}
+> [!warning]
+> GitLab version 17.7 changes the error handling behavior when a requested path is not found.
+> The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
+>
+> If your implementation relies on receiving a `200` status code with an empty array for
+> missing paths, you must update your error handling to handle the new `404` responses.
 
 ```plaintext
 GET /projects/:id/repository/tree

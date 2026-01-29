@@ -30,7 +30,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       event_selection_rules: event_selection_rules,
       raw_attributes: {},
       additional_properties: additional_properties,
-      extra_trackers: {}
+      extra_trackers: {},
+      duo_event?: false
     )
     allow(fake_snowplow).to receive(:event)
   end
@@ -902,6 +903,84 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         expect(redis).to have_received(:hincrby)
         expect(redis).not_to have_received(:expire)
       end
+    end
+  end
+
+  describe 'AI context for Duo events' do
+    let(:ai_properties) do
+      {
+        session_id: {},
+        model_name: {},
+        input_tokens: {}
+      }
+    end
+
+    let(:tracking_params) do
+      {
+        session_id: 'session-123',
+        model_name: 'gpt-4',
+        input_tokens: 100,
+        user: user,
+        project: project
+      }
+    end
+
+    before do
+      allow(event_definition).to receive(:additional_properties).and_return(ai_properties)
+    end
+
+    shared_examples 'tracks event with expected contexts' do |expected_context_count, include_ai_context:|
+      it "includes #{expected_context_count} contexts" do
+        described_class.track_event(event_name, **tracking_params)
+
+        expect(fake_snowplow).to have_received(:event) do |_, _, args|
+          contexts = args[:context]&.map(&:to_json)
+          expect(contexts.size).to eq(expected_context_count)
+
+          schemas = contexts.pluck(:schema)
+          expect(schemas).to include(
+            Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL,
+            Gitlab::Tracking::ServicePingContext::SCHEMA_URL
+          )
+
+          if include_ai_context
+            expect(schemas).to include(Gitlab::Tracking::AiContext::SCHEMA_URL)
+          else
+            expect(schemas).not_to include(Gitlab::Tracking::AiContext::SCHEMA_URL)
+          end
+        end
+      end
+    end
+
+    context 'when event is a Duo event' do
+      before do
+        allow(event_definition).to receive(:duo_event?).and_return(true)
+      end
+
+      it_behaves_like 'tracks event with expected contexts', 3, include_ai_context: true
+
+      it 'includes AI context with correct schema and data' do
+        described_class.track_event(event_name, **tracking_params)
+
+        expect(fake_snowplow).to have_received(:event) do |_, _, args|
+          contexts = args[:context]&.map(&:to_json)
+          ai_context = contexts.find { |c| c[:schema] == Gitlab::Tracking::AiContext::SCHEMA_URL }
+
+          expect(ai_context).not_to be_nil
+          expect(ai_context[:schema]).to eq('iglu:com.gitlab/ai_context/jsonschema/1-0-0')
+          expect(ai_context[:data]).to be_a(Hash)
+          expect(ai_context[:data]).to have_key(:session_id)
+          expect(ai_context[:data]).to have_key(:model_name)
+        end
+      end
+    end
+
+    context 'when event is not a Duo event' do
+      before do
+        allow(event_definition).to receive(:duo_event?).and_return(false)
+      end
+
+      it_behaves_like 'tracks event with expected contexts', 2, include_ai_context: false
     end
   end
 

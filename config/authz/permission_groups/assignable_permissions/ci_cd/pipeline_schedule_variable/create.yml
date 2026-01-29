@@ -1,7 +1,0 @@
----
-name: create_pipeline_schedule_variable
-description: Grants the ability to create pipeline schedule variables
-permissions:
-  - create_pipeline_schedule_variable
-boundaries:
-  - project

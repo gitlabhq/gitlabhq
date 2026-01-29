@@ -206,14 +206,11 @@ required fields:
 
 ### Define a chart visualization template
 
-{{< alert type="note" >}}
-
-We recommend using visualization templates sparingly. Visualization templates can lead to long visualization
-selection lists in the dashboard editor UI if not managed, which may lead to visualizations being missed or duplicated.
-Generally, visualization templates should be reserved for visualizations that will be used identically
-across several dashboards.
-
-{{< /alert >}}
+> [!note]
+> We recommend using visualization templates sparingly. Visualization templates can lead to long visualization
+> selection lists in the dashboard editor UI if not managed, which may lead to visualizations being missed or duplicated.
+> Generally, visualization templates should be reserved for visualizations that will be used identically
+> across several dashboards.
 
 If you need a visualization to be used by multiple dashboards, you might store them as separate template files.
 When added to a dashboard, the visualization template will be copied over to the dashboard. Visualization templates

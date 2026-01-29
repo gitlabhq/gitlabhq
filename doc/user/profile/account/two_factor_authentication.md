@@ -299,14 +299,11 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 {{< /details >}}
 
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_token_cloud`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
+> [!flag]
+> On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
+> [enable the feature flag](../../../administration/feature_flags/_index.md) named `forti_token_cloud`.
+> On GitLab.com and GitLab Dedicated, this feature is not available.
+> This feature is not ready for production use.
 
 You can use FortiToken Cloud as an OTP provider in GitLab. Users must:
 

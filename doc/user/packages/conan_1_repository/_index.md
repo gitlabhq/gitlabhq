@@ -120,14 +120,11 @@ To authenticate to the package registry, you need one of the following:
   scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#publish-a-conan-package-by-using-cicd).
 
-{{< alert type="note" >}}
-
-Packages from private and internal projects are hidden if you are not
-authenticated. If you try to search or download a package from a private or internal
-project without authenticating, you receive the error `unable to find the package in remote`
-in the Conan client.
-
-{{< /alert >}}
+> [!note]
+> Packages from private and internal projects are hidden if you are not
+> authenticated. If you try to search or download a package from a private or internal
+> project without authenticating, you receive the error `unable to find the package in remote`
+> in the Conan client.
 
 ### Add your credentials to the GitLab remote
 
@@ -326,14 +323,11 @@ The scope of your search depends on your Conan remote configuration:
 
 The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
 
-{{< alert type="note" >}}
-
-When searching for packages, the Conan v1 CLI displays only package details
-for packages uploaded with Conan v1. Packages uploaded with Conan v2 appear in search results,
-but their details are not shown. This is because Conan v1 expects the `recipe_hash` field in the
-package reference metadata, which is only present in packages uploaded with Conan v1.
-
-{{< /alert >}}
+> [!note]
+> When searching for packages, the Conan v1 CLI displays only package details
+> for packages uploaded with Conan v1. Packages uploaded with Conan v2 appear in search results,
+> but their details are not shown. This is because Conan v1 expects the `recipe_hash` field in the
+> package reference metadata, which is only present in packages uploaded with Conan v1.
 
 ## Fetch Conan package information from the package registry
 

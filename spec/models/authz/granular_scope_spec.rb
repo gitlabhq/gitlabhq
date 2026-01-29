@@ -179,7 +179,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
 
     context 'with grouped permissions' do
       let_it_be(:token_permissions) do
-        %i[edit_wiki] # expands to :update_wiki and :upload_wiki_attachment raw permissions
+        %i[update_wiki] # expands to :update_wiki and :upload_wiki_attachment raw permissions
       end
 
       let_it_be(:required_permissions) { :upload_wiki_attachment }

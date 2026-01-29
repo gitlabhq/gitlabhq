@@ -1289,14 +1289,11 @@ Follow these steps to modify the `settings.xml` file:
 Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/indexes.html)
 environment variable due to a possible exploit documented by [CVE-2018-20225](https://nvd.nist.gov/vuln/detail/CVE-2018-20225):
 
-{{< alert type="warning" >}}
-
-An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had
-intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
-requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
-version number).
-
-{{< /alert >}}
+> [!warning]
+> An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had
+> intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
+> requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
+> version number).
 
 ### Version number parsing
 

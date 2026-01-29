@@ -7,14 +7,11 @@ title: GitLab Release CLI tool (deprecated)
 
 <!--- start_remove The following content will be removed on remove_date: '2026-06-19' -->
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/cli/-/issues/7859) in GitLab 18.0
-and is planned for removal in 20.0. Use the [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) instead.
-
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/cli/-/issues/7859) in GitLab 18.0
+> and is planned for removal in 20.0. Use the [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) instead.
+>
+> This change is a breaking change.
 
 ## Migrate from `release-cli` to `glab` CLI
 

@@ -149,14 +149,11 @@ You can use this if you run an agent outside a cluster
 and you haven't [configured an `Ingress`](https://fluxcd.io/flux/guides/webhook-receivers/#expose-the-webhook-receiver)
 for the Flux notification controller.
 
-{{< alert type="warning" >}}
-
-You should configure only trusted service proxy URLs.
-When you provide a service proxy URL,
-the agent for Kubernetes sends typical Kubernetes API requests which include
-the credentials necessary to authenticate with the API service.
-
-{{< /alert >}}
+> [!warning]
+> You should configure only trusted service proxy URLs.
+> When you provide a service proxy URL,
+> the agent for Kubernetes sends typical Kubernetes API requests which include
+> the credentials necessary to authenticate with the API service.
 
 ## Token management
 

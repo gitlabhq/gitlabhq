@@ -425,15 +425,12 @@ to grant additional roles to your tracking database user (by default, this is
 Additional roles are needed for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-{{< alert type="note" >}}
-
-If you want to use Amazon RDS as a tracking database, make sure it has access to
-the secondary database. Unfortunately, just assigning the same security group is not enough as
-outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
-rule to the read-replica's security group allowing any TCP traffic from
-the tracking database on port 5432.
-
-{{< /alert >}}
+> [!note]
+> If you want to use Amazon RDS as a tracking database, make sure it has access to
+> the secondary database. Unfortunately, just assigning the same security group is not enough as
+> outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
+> rule to the read-replica's security group allowing any TCP traffic from
+> the tracking database on port 5432.
 
 ### Create the tracking database
 

@@ -256,14 +256,11 @@ To create an issue from your **Issue triage (by severity)** board:
    - `Feedback and ratings`
    - `Settings and preferences`
 
-{{< alert type="note" >}}
-
-Issues in one project's issue board can't be seen from other project's issue board.
-Similarly, issues in projects in one subgroup can only be seen on that subgroup's
-issue board. To view all issues across every project in a parent group, you must be in
-the parent group's issue board.
-
-{{< /alert >}}
+> [!note]
+> Issues in one project's issue board can't be seen from other project's issue board.
+> Similarly, issues in projects in one subgroup can only be seen on that subgroup's
+> issue board. To view all issues across every project in a parent group, you must be in
+> the parent group's issue board.
 
 Your first triage issue board is ready!
 Try it out by dragging some issues from the **Open** list to one of the label lists to add one of

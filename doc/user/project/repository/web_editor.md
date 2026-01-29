@@ -108,14 +108,11 @@ To edit a text file in the Web Editor:
      1. Select **Commit changes**.
      1. Fill out the fields and select **Create merge request**.
 
-{{< alert type="note" >}}
-
-If someone edits and commits changes to the same file while you are editing,
-you can't commit your changes. The following error message is displayed:
-`Someone edited the file the same time you did. Please check out the file and
-make sure your change will not unintentionally remove theirs.`
-
-{{< /alert >}}
+> [!note]
+> If someone edits and commits changes to the same file while you are editing,
+> you can't commit your changes. The following error message is displayed:
+> `Someone edited the file the same time you did. Please check out the file and
+> make sure your change will not unintentionally remove theirs.`
 
 #### Markdown preview
 
@@ -210,14 +207,11 @@ To delete a file in the Web Editor:
      1. Ensure the **Create a merge request for this change** checkbox is selected.
      1. Select **Commit changes**.
 
-{{< alert type="note" >}}
-
-If someone edits and commits changes to the same file while you are editing,
-you can't commit your changes. The following error message is displayed:
-`Someone edited the file the same time you did. Please check out the file and
-make sure your change will not unintentionally remove theirs.`
-
-{{< /alert >}}
+> [!note]
+> If someone edits and commits changes to the same file while you are editing,
+> you can't commit your changes. The following error message is displayed:
+> `Someone edited the file the same time you did. Please check out the file and
+> make sure your change will not unintentionally remove theirs.`
 
 ### Replace a file
 

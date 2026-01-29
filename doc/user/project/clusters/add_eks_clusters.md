@@ -334,11 +334,8 @@ If the `Cluster` resource failed with the error
 `The provided role doesn't have the Amazon EKS Managed Policies associated with it.`,
 the role specified in **Role name** is not configured correctly.
 
-{{< alert type="note" >}}
-
-This role should be the role you created by following the
-[EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
-In addition to the policies that guide suggests, you must also include the
-`AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.
-
-{{< /alert >}}
+> [!note]
+> This role should be the role you created by following the
+> [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
+> In addition to the policies that guide suggests, you must also include the
+> `AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.

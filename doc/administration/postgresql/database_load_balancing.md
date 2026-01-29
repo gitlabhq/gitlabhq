@@ -98,15 +98,12 @@ nodes for each environment you want to balance:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-{{< alert type="note" >}}
-
-Adding the primary to the hosts list is optional, but recommended.
-This makes the primary eligible for load-balanced read queries, improving system performance
-when the primary has capacity for these queries.
-Very high-traffic instances may not have capacity on the primary for it to serve as a read replica.
-The primary will be used for write queries whether or not it is present in this list.
-
-{{< /alert >}}
+> [!note]
+> Adding the primary to the hosts list is optional, but recommended.
+> This makes the primary eligible for load-balanced read queries, improving system performance
+> when the primary has capacity for these queries.
+> Very high-traffic instances may not have capacity on the primary for it to serve as a read replica.
+> The primary will be used for write queries whether or not it is present in this list.
 
 ### Service Discovery
 

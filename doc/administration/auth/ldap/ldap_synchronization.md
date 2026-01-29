@@ -348,15 +348,12 @@ administrators. Specify a group CN for `admin_group` and all members of the
 LDAP group are given administrator privileges. The configuration looks
 like the following.
 
-{{< alert type="note" >}}
-
-Administrators are not synced unless `group_base` is also
-specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
-as opposed to the full DN.
-Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
-group, GitLab revokes their `admin` role when syncing.
-
-{{< /alert >}}
+> [!note]
+> Administrators are not synced unless `group_base` is also
+> specified alongside `admin_group`. Also, only specify the CN of the `admin_group`,
+> as opposed to the full DN.
+> Additionally, if an LDAP user has an `admin` role, but is not a member of the `admin_group`
+> group, GitLab revokes their `admin` role when syncing.
 
 {{< tabs >}}
 

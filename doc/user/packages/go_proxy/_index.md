@@ -19,14 +19,11 @@ title: Go proxy for GitLab
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+> See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).

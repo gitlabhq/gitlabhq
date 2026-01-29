@@ -25,18 +25,16 @@ title: Conan v2 API
 Use this API to interact with the [Conan v2 package manager](../../user/packages/conan_2_repository/_index.md).
 For Conan v1 operations, see [Conan v1 API](conan_v1.md).
 
+> [!note]
+> These endpoints do not adhere to the standard API authentication methods.
+> See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
+
 Generally, these endpoints are used by the [Conan 2 package manager client](https://docs.conan.io/2/index.html)
 and are not meant for manual consumption.
 
-{{< alert type="note" >}}
-
-- These endpoints do not adhere to the standard API authentication methods.
-  See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
-
-- The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
-  These endpoints all return `404 Not Found`.
-
-{{< /alert >}}
+> [!warning]
+> The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
+> These endpoints all return `404 Not Found`.
 
 ## Create an authentication token
 

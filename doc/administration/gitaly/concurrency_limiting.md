@@ -12,15 +12,12 @@ To avoid overwhelming the servers running Gitaly, you can limit concurrency of:
 
 These limits can be fixed, or set as adaptive.
 
-{{< alert type="warning" >}}
-
-Enabling limits on your environment should be done with caution and only
-in select circumstances, such as to protect against unexpected traffic.
-When reached, limits do result in disconnects that negatively impact users.
-For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
-
-{{< /alert >}}
+> [!warning]
+> Enabling limits on your environment should be done with caution and only
+> in select circumstances, such as to protect against unexpected traffic.
+> When reached, limits do result in disconnects that negatively impact users.
+> For consistent and stable performance, you should first explore other options such as
+> adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 ## Limit RPC concurrency
 

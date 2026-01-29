@@ -398,15 +398,12 @@ can be set up using the Linux package as the specifications reflect. For more de
 
 ## Recommended cloud providers and services
 
-{{< alert type="note" >}}
-
-The following lists are non-exhaustive. Other cloud providers not listed
-here may work with the same specifications, but they have not been validated.
-For the cloud provider services not listed here,
-use caution because each implementation can be notably different.
-Test thoroughly before using them in production.
-
-{{< /alert >}}
+> [!note]
+> The following lists are non-exhaustive. Other cloud providers not listed
+> here may work with the same specifications, but they have not been validated.
+> For the cloud provider services not listed here,
+> use caution because each implementation can be notably different.
+> Test thoroughly before using them in production.
 
 The following architectures are recommended for the following cloud providers based on testing and real life usage:
 

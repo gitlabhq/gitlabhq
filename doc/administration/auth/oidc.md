@@ -1744,15 +1744,12 @@ When users fail step-up authentication, they see a helpful error message with li
 documentation for the providers that failed. The links are displayed only for providers where the
 step-up authentication actually failed, making the guidance more relevant and actionable.
 
-{{< alert type="note" >}}
-
-Best practices for documentation links:
-
-- Use HTTPS URLs for security.
-- Link to internal documentation that explains the specific authentication requirements for your organization.
-- Include information about how to enable `MFA` or other required authentication methods.
-
-{{< /alert >}}
+> [!note]
+> Best practices for documentation links:
+> 
+> - Use HTTPS URLs for security.
+> - Link to internal documentation that explains the specific authentication requirements for your organization.
+> - Include information about how to enable `MFA` or other required authentication methods.
 
 ## Troubleshooting
 

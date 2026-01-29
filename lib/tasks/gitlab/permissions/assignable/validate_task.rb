@@ -13,14 +13,16 @@ module Tasks
               duplicate_name: [],
               file: {},
               missing_resource_metadata: [],
-              resource_metadata_schema: {}
+              resource_metadata_schema: {},
+              category_metadata_schema: {}
             }
             @resources = []
+            @categories = []
           end
 
           private
 
-          attr_reader :violations, :resources
+          attr_reader :violations, :resources, :categories
 
           def validate!
             defined_permissions = ::Authz::PermissionGroups::Assignable.all.values
@@ -28,6 +30,7 @@ module Tasks
 
             validate_names
             validate_resources
+            validate_categories
 
             super
           end
@@ -36,10 +39,11 @@ module Tasks
             validate_schema(permission)
             validate_file(permission)
 
-            # Collect unique resources for metadata validation
+            # Collect unique resources and categories for metadata validation
             return unless permission.category.present? && permission.resource.present?
 
             @resources << { category: permission.category, resource: permission.resource }
+            @categories << permission.category
           end
 
           def validate_file(permission)
@@ -86,6 +90,20 @@ module Tasks
             end
           end
 
+          def validate_categories
+            categories.uniq.each do |category_name|
+              category = ::Authz::PermissionGroups::Category.get(category_name)
+              next unless category
+
+              @category_metadata_schema_validator ||= JSONSchemer.schema(
+                Rails.root.join("#{PERMISSION_DIR}/category_metadata_schema.json")
+              )
+
+              errors = @category_metadata_schema_validator.validate(category.definition)
+              violations[:category_metadata_schema][category_name] = errors if errors.any?
+            end
+          end
+
           def expected_file_path_data(permission)
             source_file = permission.source_file
             actual_path = source_file.slice(source_file.index(PERMISSION_DIR)..)
@@ -107,7 +125,8 @@ module Tasks
             out += format_error_list(:duplicate_name)
             out += format_file_errors
             out += format_error_list(:missing_resource_metadata)
-            out + format_schema_errors(:resource_metadata_schema)
+            out += format_schema_errors(:resource_metadata_schema)
+            out + format_schema_errors(:category_metadata_schema)
           end
 
           def error_messages
@@ -119,7 +138,9 @@ module Tasks
               missing_resource_metadata:
                 "The following assignable permission resource directories are missing a _metadata.yml file.",
               resource_metadata_schema:
-                "The following assignable permission resource metadata file failed schema validation."
+                "The following assignable permission resource metadata file failed schema validation.",
+              category_metadata_schema:
+                "The following assignable permission category metadata file failed schema validation."
             }
           end
 

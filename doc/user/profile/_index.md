@@ -532,14 +532,11 @@ When it expires or isn't available, GitLab:
 
 When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 
-{{< alert type="note" >}}
-
-When any session is signed out, or when a session is revoked
-from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
-While other sessions remain active, the **Remember me** feature doesn't restore
-a session if the browser is closed or the existing session expires.
-
-{{< /alert >}}
+> [!note]
+> When any session is signed out, or when a session is revoked
+> from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
+> While other sessions remain active, the **Remember me** feature doesn't restore
+> a session if the browser is closed or the existing session expires.
 
 ## Related topics
 

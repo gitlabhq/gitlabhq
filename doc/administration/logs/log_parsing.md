@@ -17,15 +17,12 @@ but if they are not available you can still quickly parse
 [GitLab logs](_index.md) in JSON format
 using [`jq`](https://stedolan.github.io/jq/).
 
-{{< alert type="note" >}}
-
-Specifically for summarizing error events and basic usage statistics,
-the GitLab Support Team offers the specialized
-[`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
-It can usually process larger logs much faster than `jq` and
-outputs a larger selection of statistical information.
-
-{{< /alert >}}
+> [!note]
+> Specifically for summarizing error events and basic usage statistics,
+> the GitLab Support Team offers the specialized
+> [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+> It can usually process larger logs much faster than `jq` and
+> outputs a larger selection of statistical information.
 
 ## What is JQ?
 

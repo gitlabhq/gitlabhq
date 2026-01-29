@@ -15,14 +15,11 @@ This tutorial shows you how to:
 - Set up the GitLab workspaces proxy to authenticate and authorize [workspaces](_index.md)
   in your cluster.
 
-{{< alert type="note" >}}
-
-You must complete the setup steps in this tutorial before you can configure a GitLab agent for Kubernetes
-to support workspaces.
-After completing the tutorial, use the [GitLab agent for Kubernetes configuration](gitlab_agent_configuration.md)
-to configure your agent.
-
-{{< /alert >}}
+> [!note]
+> You must complete the setup steps in this tutorial before you can configure a GitLab agent for Kubernetes
+> to support workspaces.
+> After completing the tutorial, use the [GitLab agent for Kubernetes configuration](gitlab_agent_configuration.md)
+> to configure your agent.
 
 ## Before you begin
 

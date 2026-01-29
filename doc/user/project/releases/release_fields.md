@@ -234,14 +234,11 @@ release:
     - glab release create $env:CI_COMMIT_TAG --name "Release $env:CI_COMMIT_TAG" --notes "Release $env:CI_COMMIT_TAG" --ref $env:CI_COMMIT_TAG --assets-links=$env:assetsjson
 ```
 
-{{< alert type="note" >}}
-
-Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
-links to a release is not recommended, because artifacts are ephemeral and
-are used to pass data in the same pipeline. This means there's a risk that
-they could either expire or someone might manually delete them.
-
-{{< /alert >}}
+> [!note]
+> Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
+> links to a release is not recommended, because artifacts are ephemeral and
+> are used to pass data in the same pipeline. This means there's a risk that
+> they could either expire or someone might manually delete them.
 
 ### Number of new and total features
 

@@ -2,14 +2,14 @@
 
 module Authz
   module PermissionGroups
-    class Resource
+    class Category
       include Authz::Concerns::YamlPermission
 
       BASE_PATH = 'config/authz/permission_groups/assignable_permissions'
 
       class << self
         def config_path
-          Rails.root.join(BASE_PATH, '**', '_metadata.yml').to_s
+          Rails.root.join(BASE_PATH, '*', '_metadata.yml').to_s
         end
 
         private

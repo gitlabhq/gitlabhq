@@ -416,11 +416,8 @@ The following placeholders are available:
   project's repository
 - `%{latest_tag}`: Latest tag added to the project's repository
 
-{{< alert type="warning" >}}
-
-Placeholders allow badges to expose otherwise-private information, such as the
-default branch or commit SHA when the project is configured to have a private
-repository. This behavior is intentional, as badges are intended to be used publicly. Avoid
-using these placeholders if the information is sensitive.
-
-{{< /alert >}}
+> [!warning]
+> Placeholders allow badges to expose otherwise-private information, such as the
+> default branch or commit SHA when the project is configured to have a private
+> repository. This behavior is intentional, as badges are intended to be used publicly. Avoid
+> using these placeholders if the information is sensitive.

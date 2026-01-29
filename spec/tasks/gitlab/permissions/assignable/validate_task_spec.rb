@@ -42,6 +42,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
       allow(Authz::PermissionGroups::Resource).to receive(:get).and_return(
         instance_double(Authz::PermissionGroups::Resource, definition: {})
       )
+      allow(Authz::PermissionGroups::Category).to receive(:get).and_return(nil)
       allow(JSONSchemer).to receive(:schema).and_call_original
       allow(JSONSchemer).to receive(:schema)
         .with(Rails.root.join("#{described_class::PERMISSION_DIR}/resource_metadata_schema.json"))
@@ -204,6 +205,63 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #
             #######################################################################
           OUTPUT
+        end
+      end
+    end
+
+    describe 'permission category validation' do
+      let(:category) { 'wiki_category' }
+      let(:resource) { 'wiki' }
+      let(:permission_source_file) do
+        "config/authz/permission_groups/assignable_permissions/#{category}/#{resource}/modify.yml"
+      end
+
+      context 'when category metadata exists and is not in the correct schema' do
+        let(:category_definition) do
+          definition = { invalid_key: 'not allowed' }
+          Authz::PermissionGroups::Category.new(definition, 'source_file')
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Category).to receive(:get)
+            .with(category)
+            .and_return(category_definition)
+          allow(JSONSchemer).to receive(:schema)
+            .with(Rails.root.join("#{described_class::PERMISSION_DIR}/category_metadata_schema.json"))
+            .and_call_original
+        end
+
+        it 'returns an error' do
+          expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+            #######################################################################
+            #
+            #  The following assignable permission category metadata file failed schema validation.
+            #
+            #    - wiki_category
+            #        - property '/invalid_key' is invalid: error_type=schema
+            #
+            #######################################################################
+          OUTPUT
+        end
+      end
+
+      context 'when category metadata exists and is valid' do
+        let(:category_definition) do
+          definition = { name: 'Wiki' }
+          Authz::PermissionGroups::Category.new(definition, 'source_file')
+        end
+
+        before do
+          allow(Authz::PermissionGroups::Category).to receive(:get)
+            .with(category)
+            .and_return(category_definition)
+          allow(JSONSchemer).to receive(:schema)
+            .with(Rails.root.join("#{described_class::PERMISSION_DIR}/category_metadata_schema.json"))
+            .and_call_original
+        end
+
+        it 'completes successfully' do
+          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
         end
       end
     end

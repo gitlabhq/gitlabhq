@@ -33,6 +33,7 @@ export default {
   },
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   props: {
+    // eslint-disable-next-line vue/no-unused-properties -- queryKey is passed from index.js, keeping for potential future use
     queryKey: {
       required: true,
       type: String,
@@ -44,8 +45,6 @@ export default {
   },
   data() {
     return {
-      crudComponentId: `glql-${this.queryKey}`,
-
       queryModalSettings: {
         id: uniqueId('glql-modal-'),
         show: false,
@@ -229,14 +228,12 @@ export default {
     </div>
     <gl-intersection-observer v-else @appear.once="onAppear">
       <crud-component
-        :anchor-id="crudComponentId"
         :title="title"
         :description="description"
         :count="itemsCount"
         is-collapsible
         :collapsed="isCollapsed"
         :show-zero-count="!loading"
-        persist-collapsed-state
         class="!gl-mt-5"
         :body-class="{
           '!gl-m-0 !gl-p-0': loading || (data && data.count),

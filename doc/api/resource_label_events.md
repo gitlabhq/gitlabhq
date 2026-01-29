@@ -112,15 +112,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
+> and is planned for removal in v5 of the API.
+> From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
+> Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
+> This change is a breaking change.
 
 ### List group epic label events
 

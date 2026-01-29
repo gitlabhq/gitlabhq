@@ -35,6 +35,16 @@ module Authz
           .last                         # '**/resource/action.yml'
           .split('/').reverse[2]        # ['action.yml', 'resource', ...]
       end
+
+      def category_name
+        category_definition&.name || category.titlecase
+      end
+
+      private
+
+      def category_definition
+        ::Authz::PermissionGroups::Category.get(category)
+      end
     end
   end
 end

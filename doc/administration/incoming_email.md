@@ -51,15 +51,12 @@ Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
 and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365).
 
-{{< alert type="note" >}}
-
-If your provider or server supports email sub-addressing, we recommend using it.
-A dedicated email address only supports Reply by Email functionality.
-A catch-all mailbox supports the same features as sub-addressing,
-but sub-addressing is still preferred because only one email address is used,
-leaving a catch-all available for other purposes beyond GitLab.
-
-{{< /alert >}}
+> [!note]
+> If your provider or server supports email sub-addressing, we recommend using it.
+> A dedicated email address only supports Reply by Email functionality.
+> A catch-all mailbox supports the same features as sub-addressing,
+> but sub-addressing is still preferred because only one email address is used,
+> leaving a catch-all available for other purposes beyond GitLab.
 
 ### Catch-all mailbox
 

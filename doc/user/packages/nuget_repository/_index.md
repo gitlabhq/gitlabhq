@@ -573,14 +573,11 @@ To prevent group members and users from publishing duplicate NuGet packages, tur
 You can also turn off duplicate NuGet packages with the
 `nuget_duplicates_allowed` setting in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 
-{{< alert type="warning" >}}
-
-If the `.nuspec` file is not located in the root of the package
-or the beginning of the archive, the package might
-not be immediately recognized as a duplicate. When it is inevitably recognized as
-a duplicate, an error displays in the **Package manager** page.
-
-{{< /alert >}}
+> [!warning]
+> If the `.nuspec` file is not located in the root of the package
+> or the beginning of the archive, the package might
+> not be immediately recognized as a duplicate. When it is inevitably recognized as
+> a duplicate, an error displays in the **Package manager** page.
 
 ## Install a package
 

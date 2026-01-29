@@ -146,11 +146,8 @@ Reasons for failure include:
   [`environment:name`](../../../ci/environments/_index.md). If your job has no
   `environment:name` set, the Kubernetes credentials are not passed to it.
 
-{{< alert type="note" >}}
-
-Project-level clusters upgraded from GitLab 12.0 or older may be configured
-in a way that causes this error. Ensure you clear the
-[GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
-namespaces and service accounts yourself.
-
-{{< /alert >}}
+> [!note]
+> Project-level clusters upgraded from GitLab 12.0 or older may be configured
+> in a way that causes this error. Ensure you clear the
+> [GitLab-managed cluster](gitlab_managed_clusters.md) option if you want to manage
+> namespaces and service accounts yourself.

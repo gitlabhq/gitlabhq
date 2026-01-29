@@ -155,7 +155,6 @@ describe('GlqlFacade', () => {
 
     it('renders crud component in expanded state', () => {
       const crudComponent = wrapper.findComponent(CrudComponent);
-      expect(crudComponent.props('anchorId')).toBe('glql-glql_key');
       expect(crudComponent.props('title')).toBe('Some title');
       expect(crudComponent.props('description')).toBe('Some description');
       expect(crudComponent.props('count')).toBe(2);

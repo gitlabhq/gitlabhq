@@ -237,14 +237,11 @@ allprojects {
 }
 ```
 
-{{< alert type="note" >}}
-
-The dependency report may indicate that dependencies for some configurations `FAILED` to be
-resolved. In this case dependency scanning logs a warning but does not fail the job. If you prefer
-to have the pipeline fail if resolution failures are reported, add the following extra steps to the
-`build` example above.
-
-{{< /alert >}}
+> [!note]
+> The dependency report may indicate that dependencies for some configurations `FAILED` to be
+> resolved. In this case dependency scanning logs a warning but does not fail the job. If you prefer
+> to have the pipeline fail if resolution failures are reported, add the following extra steps to the
+> `build` example above.
 
 ```shell
 while IFS= read -r -d '' file; do
@@ -438,14 +435,11 @@ The following CycloneDX SBOMs are created as job artifacts:
 
 You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM.
 
-{{< alert type="note" >}}
-
-GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
-to store implementation-specific details in the metadata of each CycloneDX SBOM, such as the
-location of dependency graph exports and lock files. If multiple CycloneDX SBOMs are merged together,
-this information is removed from the resulting merged file.
-
-{{< /alert >}}
+> [!note]
+> GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
+> to store implementation-specific details in the metadata of each CycloneDX SBOM, such as the
+> location of dependency graph exports and lock files. If multiple CycloneDX SBOMs are merged together,
+> this information is removed from the resulting merged file.
 
 For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
 merged, and the resulting file validated.

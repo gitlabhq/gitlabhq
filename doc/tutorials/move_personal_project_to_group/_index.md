@@ -74,14 +74,11 @@ You are redirected to the project's new page.
 If you have more than one personal project, you can repeat these steps for each
 project.
 
-{{< alert type="note" >}}
-
-For more information about these migration steps,
-see [Transferring your project into another namespace](../../user/project/working_with_projects.md#transfer-a-project).
-A migration might result in follow-up work to update the project path in
-your related resources and tools, such as websites and package managers.
-
-{{< /alert >}}
+> [!note]
+> For more information about these migration steps,
+> see [Transferring your project into another namespace](../../user/project/working_with_projects.md#transfer-a-project).
+> A migration might result in follow-up work to update the project path in
+> your related resources and tools, such as websites and package managers.
 
 ### Work with your group
 

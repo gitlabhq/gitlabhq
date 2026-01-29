@@ -328,14 +328,11 @@ To redact text from your repository:
 1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
-{{< alert type="note" >}}
-
-If the project containing the sensitive information has been forked, the housekeeping task might fail to
-complete this redaction process to maintain the integrity of the special object pool repository
-[which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
-For help, contact GitLab Support.
-
-{{< /alert >}}
+> [!note]
+> If the project containing the sensitive information has been forked, the housekeeping task might fail to
+> complete this redaction process to maintain the integrity of the special object pool repository
+> [which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
+> For help, contact GitLab Support.
 
 ## Troubleshooting
 

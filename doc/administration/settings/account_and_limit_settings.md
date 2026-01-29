@@ -340,15 +340,12 @@ The default prefix for personal access tokens is `glpat-` but administrators can
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
 [group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
 
-{{< alert type="warning" >}}
-
-By default, client-side secret detection, secret push protection, and pipeline secret detection do
-not detect tokens that have a custom prefix. This might result in an increase in false negatives.
-However, you can
-[customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
-to detect these tokens.
-
-{{< /alert >}}
+> [!warning]
+> By default, client-side secret detection, secret push protection, and pipeline secret detection do
+> not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+> However, you can
+> [customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+> to detect these tokens.
 
 ### Set a prefix
 
@@ -383,15 +380,12 @@ using a custom prefix include:
 - Leaked tokens are more easily identifiable during security scans.
 - Reduces the risk of token confusion between different instances.
 
-{{< alert type="warning" >}}
-
-By default, client-side secret detection, secret push protection, and pipeline secret detection do
-not detect tokens that have a custom prefix. This might result in an increase in false negatives.
-However, you can
-[customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
-to detect these tokens.
-
-{{< /alert >}}
+> [!warning]
+> By default, client-side secret detection, secret push protection, and pipeline secret detection do
+> not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+> However, you can
+> [customize pipeline secret detection](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+> to detect these tokens.
 
 Custom token prefixes apply only to the following tokens:
 

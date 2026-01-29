@@ -142,15 +142,12 @@ This option provides flexibility by allowing you to:
 - Use your own self-hosted models for features where you want full control.
 - Use GitLab-managed vendor models for specific features where you prefer the models GitLab has curated.
 
-{{< alert type="warning" >}}
-
-When features are configured to use GitLab AI vendor models:
-
-- All calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
-- Internet connectivity is required for these features.
-- This is not a fully self-hosted or isolated configuration.
-
-{{< /alert >}}
+> [!warning]
+> When features are configured to use GitLab AI vendor models:
+> 
+> - All calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
+> - Internet connectivity is required for these features.
+> - This is not a fully self-hosted or isolated configuration.
 
 For more information, see:
 
@@ -164,15 +161,12 @@ You can select the default GitLab model to use with an AI-native feature. For th
 
 When you select a specific GitLab managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI Gateway fail and users cannot use that feature until another model is selected.
 
-{{< alert type="note" >}}
-
-When you configure a feature to use GitLab managed models:
-
-- Calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
-- Internet connectivity is required for these features.
-- The configuration is not fully self-hosted or isolated.
-
-{{< /alert >}}
+> [!note]
+> When you configure a feature to use GitLab managed models:
+> 
+> - Calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
+> - Internet connectivity is required for these features.
+> - The configuration is not fully self-hosted or isolated.
 
 ### GitLab.com AI Gateway with default GitLab external vendor LLMs
 

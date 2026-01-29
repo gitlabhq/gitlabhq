@@ -33,14 +33,11 @@ are supported.
 | Redirect by country or language                   | {{< no >}} | `/  /anz     302  Country=au,nz` |
 | Redirect by role                                  | {{< no >}} | `/admin/*  200!  Role=admin` |
 
-{{< alert type="note" >}}
-
-The [matching behavior test cases](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/redirects/matching_test.go)
-are a good resource for understanding how GitLab implements rule matching in
-detail. Community contributions are welcome for any edge cases that aren't included in
-this test suite!
-
-{{< /alert >}}
+> [!note]
+> The [matching behavior test cases](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/redirects/matching_test.go)
+> are a good resource for understanding how GitLab implements rule matching in
+> detail. Community contributions are welcome for any edge cases that aren't included in
+> this test suite!
 
 ## Create redirects
 

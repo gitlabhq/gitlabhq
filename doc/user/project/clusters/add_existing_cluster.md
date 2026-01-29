@@ -227,14 +227,11 @@ integration to work properly.
 
 ![GitLab Kubernetes cluster integration settings for enabling RBAC.](img/rbac_v13_1.png)
 
-{{< alert type="warning" >}}
-
-Disabling RBAC means that any application running in the cluster,
-or user who can authenticate to the cluster, has full API access. This is a
-[security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
-and may not be desirable.
-
-{{< /alert >}}
+> [!warning]
+> Disabling RBAC means that any application running in the cluster,
+> or user who can authenticate to the cluster, has full API access. This is a
+> [security concern](../../infrastructure/clusters/connect/_index.md#security-implications-for-clusters-connected-with-certificates),
+> and may not be desirable.
 
 To effectively disable RBAC, global permissions can be applied granting full access:
 

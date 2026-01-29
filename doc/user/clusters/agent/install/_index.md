@@ -151,14 +151,11 @@ You must register an agent before you can install the agent in your cluster. To 
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-The GitLab Agent Helm Chart release does not fully support mTLS authentication.
-You should authenticate with the JWT method instead.
-Support for mTLS is tracked in
-[issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
-
-{{< /alert >}}
+> [!note]
+> The GitLab Agent Helm Chart release does not fully support mTLS authentication.
+> You should authenticate with the JWT method instead.
+> Support for mTLS is tracked in
+> [issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
 
 [Receptive agents](../_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
 cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.

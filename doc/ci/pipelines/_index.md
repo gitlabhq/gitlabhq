@@ -286,15 +286,12 @@ When you skip a pipeline:
   The pipeline appears in the UI and can be returned in API responses.
 - The pipeline status is **Skipped** in the UI, and `skipped` in the API.
 
-{{< alert type="note" >}}
-
-Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
-For more information, see:
-
-- The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
-- The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
-
-{{< /alert >}}
+> [!note]
+> Pipeline execution policies and scan execution policies can restrict or disable the `[skip ci]` directive.
+> For more information, see:
+>
+> - The [`skip_ci` type](../../user/application_security/policies/pipeline_execution_policies.md#skip_ci-type) in pipeline execution policies.
+> - The [`skip_ci` type](../../user/application_security/policies/scan_execution_policies.md#skip_ci-type) in scan execution policies.
 
 ### Delete a pipeline
 

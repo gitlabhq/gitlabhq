@@ -34,15 +34,12 @@ Prerequisites:
 
 ### Configure the primary site
 
-{{< alert type="note" >}}
-
-For Docker-based installations:
-
-Either apply the settings mentioned below directly to the GitLab container's `/etc/gitlab/gitlab.rb` file, or add them to the `GITLAB_OMNIBUS_CONFIG` environment variable in its [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose) file.
-
-When using [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose), use `docker-compose -f <docker-compose-file-name>.yml up` instead of `gitlab-ctl reconfigure` to apply configuration changes.
-
-{{< /alert >}}
+> [!note]
+> For Docker-based installations:
+> 
+> Either apply the settings mentioned below directly to the GitLab container's `/etc/gitlab/gitlab.rb` file, or add them to the `GITLAB_OMNIBUS_CONFIG` environment variable in its [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose) file.
+> 
+> When using [Docker Compose](../../../install/docker/installation.md#install-gitlab-by-using-docker-compose), use `docker-compose -f <docker-compose-file-name>.yml up` instead of `gitlab-ctl reconfigure` to apply configuration changes.
 
 1. SSH into your GitLab primary site and sign in as root:
 

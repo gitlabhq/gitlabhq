@@ -61,8 +61,10 @@ module Gitlab
         kwargs[:namespace] ||= project.namespace if project
 
         update_redis_values(event_name, additional_properties, kwargs)
-        trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
-        send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
+        return unless send_snowplow_event
+
+        trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs)
+        send_application_instrumentation_event(event_name, base_additional_properties, kwargs)
       end
 
       def update_redis_values(event_name, additional_properties, kwargs)
@@ -137,7 +139,7 @@ module Gitlab
         )
       end
 
-      def trigger_snowplow_event(event_name, category, additional_properties, extra, kwargs)
+      def trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs)
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
@@ -157,7 +159,13 @@ module Gitlab
         ).to_context
 
         contexts = [standard_context, service_ping_context]
-        track_struct_event(event_name, category, contexts: contexts, additional_properties: additional_properties)
+
+        if extra.present?
+          event = Gitlab::Tracking::EventDefinition.find(event_name)
+          contexts << Tracking::AiContext.new(extra).to_context if event.duo_event?
+        end
+
+        track_struct_event(event_name, category, contexts: contexts, additional_properties: base_additional_properties)
       end
 
       def track_struct_event(event_name, category, contexts:, additional_properties:)

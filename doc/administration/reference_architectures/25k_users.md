@@ -1301,15 +1301,12 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 - A static IP for all connections that doesn't change on failover.
 - [`LISTEN`](https://www.postgresql.org/docs/16/sql-listen.html) SQL functionality must be supported.
 
-{{< alert type="note" >}}
-
-With a third-party setup, it's possible to colocate Praefect's database on the same server as
-the main [GitLab](#provide-your-own-postgresql-instance) database as a convenience unless
-you are using Geo, where separate database instances are required for handling replication correctly.
-In this setup, the specs of the main database setup should not have to be changed because the impact should be
-minimal.
-
-{{< /alert >}}
+> [!note]
+> With a third-party setup, it's possible to colocate Praefect's database on the same server as
+> the main [GitLab](#provide-your-own-postgresql-instance) database as a convenience unless
+> you are using Geo, where separate database instances are required for handling replication correctly.
+> In this setup, the specs of the main database setup should not have to be changed because the impact should be
+> minimal.
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from

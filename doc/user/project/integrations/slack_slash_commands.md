@@ -15,14 +15,11 @@ description: "Configure Slack slash commands for GitLab Self-Managed instances."
 
 {{< /details >}}
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/569345) in GitLab 18.7
-and is planned for removal in 19.0. Use [GitLab for Slack app](gitlab_slack_application.md) instead.
-
-This change is a breaking change.
-
-{{< /alert >}}
+> [!warning]
+> This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/569345) in GitLab 18.7
+> and is planned for removal in 19.0. Use [GitLab for Slack app](gitlab_slack_application.md) instead.
+>
+> This change is a breaking change.
 
 You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
 like creating an issue, from a [Slack](https://slack.com/) chat environment.

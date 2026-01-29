@@ -258,15 +258,12 @@ You cannot skip merge trains for fast-forward or semi-linear merge methods. For 
 
 Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
 
-{{< alert type="warning" >}}
-
-You can use this feature to quickly merge security or bug fixes, but the changes
-in the merge request that skipped the train are not verified against
-any of the other merge requests in the train. If these other merge train pipelines
-complete successfully and merge, there is a risk that the combined changes are incompatible.
-The target branch could then require additional work to resolve the new failures.
-
-{{< /alert >}}
+> [!warning]
+> You can use this feature to quickly merge security or bug fixes, but the changes
+> in the merge request that skipped the train are not verified against
+> any of the other merge requests in the train. If these other merge train pipelines
+> complete successfully and merge, there is a risk that the combined changes are incompatible.
+> The target branch could then require additional work to resolve the new failures.
 
 Prerequisites:
 

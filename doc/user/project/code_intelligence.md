@@ -151,14 +151,11 @@ To enable code intelligence for a project, add GitLab CI/CD jobs to your project
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-GitLab limits the artifact produced by the code generation jobs to 200 MB by the
-[(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
-artifact application limit. On GitLab Self-Managed instances, an instance administrator
-can change this value.
-
-{{< /alert >}}
+> [!note]
+> GitLab limits the artifact produced by the code generation jobs to 200 MB by the
+> [(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
+> artifact application limit. On GitLab Self-Managed instances, an instance administrator
+> can change this value.
 
 ## View code intelligence results
 

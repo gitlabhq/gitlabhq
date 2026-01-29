@@ -725,15 +725,12 @@ toolbox:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
-creates a self-contained backup tar archive. This is because all subtasks except repositories are
-still creating full backups (they overwrite the existing full backup).
-See [issue 19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256) for a feature request to
-support incremental backups for all subtasks.
-
-{{< /alert >}}
+> [!note]
+> Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
+> creates a self-contained backup tar archive. This is because all subtasks except repositories are
+> still creating full backups (they overwrite the existing full backup).
+> See [issue 19256](https://gitlab.com/gitlab-org/gitlab/-/issues/19256) for a feature request to
+> support incremental backups for all subtasks.
 
 Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
 The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup

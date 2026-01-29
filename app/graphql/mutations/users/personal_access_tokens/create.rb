@@ -62,18 +62,35 @@ module Mutations
 
           case input.access.to_sym
           when ::Authz::GranularScope::Access::SELECTED_MEMBERSHIPS
-            input.resource_ids.map do |gid|
-              resource = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(gid))
+            ids_by_type = GitlabSchema.parse_gids(input.resource_ids).group_by { |gid| gid.model_class.name }
 
-              raise_resource_not_available_error! unless resource.is_a?(::Group) || resource.is_a?(::Project)
+            projects = batch_load(ids_by_type.fetch('Project', []), [:project_namespace])
+            project_scopes = build_resource_scopes(projects, base_attrs)
 
-              base_attrs.merge(namespace: boundary!(resource).namespace)
-            end
+            groups = batch_load(ids_by_type.fetch('Group', []))
+            group_scopes = build_resource_scopes(groups, base_attrs)
+
+            group_scopes + project_scopes
           when ::Authz::GranularScope::Access::PERSONAL_PROJECTS
             base_attrs.merge(namespace: boundary!(current_user).namespace)
           else
             # namespace_id is nil for all_memberships, user, and instance access
             base_attrs
+          end
+        end
+
+        def batch_load(gids, preloads = [])
+          gids.map do |gid|
+            ::Gitlab::Graphql::Loaders::BatchModelLoader.new(gid.model_class, gid.model_id, preloads).find
+          end
+        end
+
+        def build_resource_scopes(resources, scope_attrs)
+          resources.filter_map do |resource|
+            loaded = resource.sync
+            next unless loaded
+
+            scope_attrs.merge(namespace: boundary!(loaded).namespace)
           end
         end
 

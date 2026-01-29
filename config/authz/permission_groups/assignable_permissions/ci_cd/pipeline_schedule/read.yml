@@ -3,5 +3,6 @@ name: read_pipeline_schedule
 description: Grants the ability to read pipeline schedules
 permissions:
   - read_pipeline_schedule
+  - read_pipeline_schedule_variable
 boundaries:
   - project

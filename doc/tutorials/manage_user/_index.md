@@ -377,14 +377,11 @@ in the User Experience subgroup.
 However, due to inherited permissions, adding Grayson Garcia to the User Experience
 subgroup also adds them to the UX Design nested subgroup as a Developer.
 
-{{< alert type="note" >}}
-
-Be mindful of inherited permissions for groups and subgroups.
-Add users to a minimum number of groups and subgroups.
-This approach minimizes the chance of inadvertently adding a
-user to a group they do not need to be a member of.
-
-{{< /alert >}}
+> [!note]
+> Be mindful of inherited permissions for groups and subgroups.
+> Add users to a minimum number of groups and subgroups.
+> This approach minimizes the chance of inadvertently adding a
+> user to a group they do not need to be a member of.
 
 1. Go to the User Experience subgroup members page.
 1. Add Frankie Ali and Hunter Silva as **Reporters**. Give Hunter the same expiration date.

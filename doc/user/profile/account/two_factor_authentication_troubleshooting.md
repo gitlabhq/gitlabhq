@@ -156,14 +156,15 @@ recovery methods. If you lose your device, you may be able to restore your 2FA c
 logging into your authenticator app on a new device, provided you enabled backup features
 beforehand.
 
-{{< alert type="note" >}}
+Prerequisites:
 
 - You must enable your authenticator backup features before you lose access to your device.
-- GitLab Support cannot assist with recovery issues related to third-party authenticator apps.
-- GitLab recommends using recovery codes as your primary recovery method. Make sure you save
-  your recovery codes when you enable 2FA.
 
-{{< /alert >}}
+> [!note]
+> GitLab recommends using recovery codes as your primary recovery method. Make sure you save
+> your recovery codes when you enable 2FA.
+
+GitLab Support cannot assist with recovery issues related to third-party authenticator apps.
 
 For more information, see the documentation for your specific authenticator app.
 Documentation for common authenticators is available through the following locations:

@@ -22,14 +22,11 @@ description: Use the Maven virtual registry to configure and manage multiple pri
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available in [beta](../../../../policy/development_stages_support.md#beta).
-Review the documentation carefully before you use this feature.
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available in [beta](../../../../policy/development_stages_support.md#beta).
+> Review the documentation carefully before you use this feature.
 
 The Maven virtual registry uses a single, well-known URL to manage and distribute
 packages from multiple external registries in GitLab.

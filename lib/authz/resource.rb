@@ -13,11 +13,8 @@ module Authz
 
       private
 
-      def load_all
-        load_files_to_hash(config_path) do |file, content|
-          resource_name = File.basename(File.dirname(file)).to_sym
-          [resource_name, new(content, file)]
-        end
+      def resource_identifier(_, file_path)
+        File.basename(File.dirname(file_path)).to_sym
       end
     end
 

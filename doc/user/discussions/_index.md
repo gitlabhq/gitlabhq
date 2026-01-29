@@ -133,14 +133,11 @@ The comment displays on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Code** > **Commits** page.
 
-{{< alert type="note" >}}
-
-When your comment contains a reference to a commit included in the merge request,
-it's converted to a link in the context of the merge request.
-For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
-`https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
-
-{{< /alert >}}
+> [!note]
+> When your comment contains a reference to a commit included in the merge request,
+> it's converted to a link in the context of the merge request.
+> For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
+> `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
 
 ## Reply to a comment by sending email
 
