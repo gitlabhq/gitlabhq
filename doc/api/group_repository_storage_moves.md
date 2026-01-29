@@ -46,7 +46,9 @@ APIs are also available to move other types of repositories:
 - [Project repository storage moves API](project_repository_storage_moves.md).
 - [Snippet repository storage moves API](snippet_repository_storage_moves.md).
 
-## Retrieve all group repository storage moves
+## List all group repository storage moves
+
+Lists all group repository storage moves for an instance.
 
 ```plaintext
 GET /group_repository_storage_moves
@@ -81,9 +83,9 @@ Example response:
 ]
 ```
 
-## Retrieve all repository storage moves for a single group
+## List all repository storage moves for a group
 
-To retrieve all the repository storage moves for a single group you can use the following endpoint:
+Lists all repository storage moves for a specified group.
 
 ```plaintext
 GET /groups/:group_id/repository_storage_moves
@@ -124,10 +126,9 @@ Example response:
 ]
 ```
 
-## Get a single group repository storage move
+## Retrieve a group repository storage move
 
-To retrieve a single repository storage move throughout all the existing repository
-storage moves, you can use the following endpoint:
+Retrieves a specified group repository storage move.
 
 ```plaintext
 GET /group_repository_storage_moves/:repository_storage_id
@@ -163,10 +164,9 @@ Example response:
 }
 ```
 
-## Get a single repository storage move for a group
+## Retrieve a repository storage move for a group
 
-Given a group, you can retrieve a specific repository storage move for that group,
-through the following endpoint:
+Retrieves a specified repository storage move for a group.
 
 ```plaintext
 GET /groups/:group_id/repository_storage_moves/:repository_storage_id
@@ -203,9 +203,9 @@ Example response:
 }
 ```
 
-## Schedule a repository storage move for a group
+## Create a group repository storage move
 
-Schedules a repository storage move for a group. This endpoint:
+Creates a group repository storage move for a specified group. This endpoint:
 
 - Moves only group Wiki repositories.
 - Doesn't move repositories for projects in a group. To schedule project moves, use the [Project repository storage moves](project_repository_storage_moves.md) API.
@@ -247,10 +247,9 @@ Example response:
 }
 ```
 
-## Schedule repository storage moves for all groups on a storage shard
+## Create group repository storage moves for a storage shard
 
-Schedules repository storage moves for each group repository stored on the source storage shard.
-This endpoint migrates all groups at once.
+Creates repository storage moves for all groups on a specified storage shard.
 
 ```plaintext
 POST /group_repository_storage_moves

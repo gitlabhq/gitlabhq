@@ -6,7 +6,6 @@ import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import App from '~/whats_new/components/app.vue';
-import FeaturedCarousel from '~/whats_new/components/featured_carousel.vue';
 import { getDrawerBodyHeight } from '~/whats_new/utils/get_drawer_body_height';
 
 const MOCK_DRAWER_BODY_HEIGHT = 42;
@@ -95,23 +94,12 @@ describe('App', () => {
   };
 
   const getDrawer = () => wrapper.findComponent(GlDrawer);
-  const findFeaturedCarousel = () => wrapper.findComponent(FeaturedCarousel);
 
   afterEach(() => {
     if (trackingSpy) {
       unmockTracking();
       trackingSpy = null;
     }
-  });
-
-  describe("the what's new feature carousel", () => {
-    it('renders properly', () => {
-      createWrapper({
-        shallow: true,
-      });
-
-      expect(findFeaturedCarousel().exists()).toBe(true);
-    });
   });
 
   describe('drawer behavior', () => {

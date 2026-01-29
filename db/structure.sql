@@ -28866,6 +28866,27 @@ CREATE SEQUENCE security_scans_id_seq
 
 ALTER SEQUENCE security_scans_id_seq OWNED BY security_scans.id;
 
+CREATE TABLE security_scheduled_pipeline_execution_policy_test_runs (
+    id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    pipeline_id bigint,
+    error_message text,
+    state smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_e4fe96e07d CHECK ((char_length(error_message) <= 255))
+);
+
+CREATE SEQUENCE security_scheduled_pipeline_execution_policy_test_runs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_scheduled_pipeline_execution_policy_test_runs_id_seq OWNED BY security_scheduled_pipeline_execution_policy_test_runs.id;
+
 CREATE TABLE security_training_providers (
     id bigint NOT NULL,
     name text NOT NULL,
@@ -34974,6 +34995,8 @@ ALTER TABLE ONLY security_scan_profiles_projects ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
+ALTER TABLE ONLY security_scheduled_pipeline_execution_policy_test_runs ALTER COLUMN id SET DEFAULT nextval('security_scheduled_pipeline_execution_policy_test_runs_id_seq'::regclass);
+
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
 
 ALTER TABLE ONLY security_trainings ALTER COLUMN id SET DEFAULT nextval('security_trainings_id_seq'::regclass);
@@ -38962,6 +38985,9 @@ ALTER TABLE ONLY security_scan_profiles_projects
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY security_scheduled_pipeline_execution_policy_test_runs
+    ADD CONSTRAINT security_scheduled_pipeline_execution_policy_test_runs_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY security_training_providers
     ADD CONSTRAINT security_training_providers_pkey PRIMARY KEY (id);
 
@@ -42684,6 +42710,12 @@ CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan
 CREATE INDEX idx_slack_integrations_scopes_on_slack_api_scope_id ON slack_integrations_scopes USING btree (slack_api_scope_id);
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_custom_license_project ON software_license_policies USING btree (project_id, custom_software_license_id, scan_result_policy_id);
+
+CREATE INDEX idx_spep_test_runs_pipeline_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (pipeline_id);
+
+CREATE INDEX idx_spep_test_runs_policy_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (security_policy_id);
+
+CREATE INDEX idx_spep_test_runs_project_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (project_id);
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
 
@@ -53579,6 +53611,9 @@ ALTER TABLE ONLY wiki_page_slugs
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_3e78b9a150 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_scheduled_pipeline_execution_policy_test_runs
+    ADD CONSTRAINT fk_3ea4105dd5 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_custom_types
     ADD CONSTRAINT fk_3eb8ff21e3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -54037,6 +54072,9 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_719b74231d FOREIGN KEY (reassigned_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY security_scheduled_pipeline_execution_policy_test_runs
+    ADD CONSTRAINT fk_71b16d3f94 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_saved_views
     ADD CONSTRAINT fk_71bf55035c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -54888,7 +54926,7 @@ ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY gpg_key_subkeys
-    ADD CONSTRAINT fk_c0b9a5787c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_c0b9a5787c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT fk_c0bc6b19ff FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

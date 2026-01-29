@@ -254,25 +254,31 @@ To use scheduled pipeline execution policies:
 
 ### Security Policy Bot User
 
-Scheduled pipelines are executed by the Security Policy Bot User, a system account that GitLab automatically creates to handle the execution of security policies. This bot user has limited privileges and can access only the following files:
+Scheduled pipelines are executed by the Security Policy Bot User, a dedicated system account that GitLab automatically creates for each project the security policy applies to.
+To ensure that policy execution remains isolated and secure, the bot user has the following security restrictions:
 
-- Files in the security policy project
-- Files in public projects
+- The bot user is a member of that specific project only. It cannot be added to groups or other projects.
+- The bot user can access files only in the security policy project and in public projects. It cannot access files from other private projects, even if those projects are in the same group.
 
-The Security Policy Bot User cannot access files from private projects, even if those projects are in the same group. This security restriction ensures that policy execution remains isolated and secure.
+Because the bot user is not a member of other projects, it cannot complete any of the following actions:
+
+- Access CI/CD configuration files from other private projects.
+- Start multi-project child pipelines that target private projects.
+- Access artifacts or resources from private projects.
 
 > [!important]
 > Because of these privilege limitations, you must store all pipeline configuration files (including any files referenced with an `include:` statement) directly in your security policy project. Do not reference CI/CD configuration files from other private projects, as this results in access errors during pipeline execution.
 
-Note these limitations:
+## Scheduling limits
 
-- If no branches are specified, scheduled pipeline execution policies only run on the default branch.
+This feature is experimental and may change in future releases. Also, be aware of the following limits when creating scheduled pipeline execution policies:
+
+- The maximum number of scheduled pipeline execution policies per security policy project is limited to one policy with one schedule.
+- The maximum frequency for schedules is once per day (daily).
+- If no branches are specified, scheduled pipeline execution policies run only on the default branch.
 - You can specify up to five unique branch names in the `branches` array.
-- Time windows must be at least 10 minutes (600 seconds) to ensure proper distribution of pipelines.
-- The maximum number of scheduled pipeline execution policies per security policy project is limited to 1 policy with 1 schedule.
-- This feature is experimental and may change in future releases.
+- Time windows must be at least 10 minutes (600 seconds) to ensure sufficient distribution of pipelines.
 - Scheduled pipelines can be delayed if there are insufficient runners available.
-- The maximum frequency for schedules is daily.
 
 ## Troubleshooting
 

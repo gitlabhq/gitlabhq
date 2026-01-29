@@ -41,7 +41,7 @@ provenance, see [SLSA provenance specification](../ci/pipeline_security/slsa/pro
 
 {{< /history >}}
 
-Get a list of all attestations for a specific project and SHA-256 hash.
+Lists all attestations for a specified project and SHA-256 hash.
 
 ```plaintext
 GET /:id/attestations/:subject_digest
@@ -82,7 +82,7 @@ Example response:
 ]
 ```
 
-## Download attestation
+## Download an attestation
 
 {{< history >}}
 
@@ -90,9 +90,9 @@ Example response:
 
 {{< /history >}}
 
-Download a specific provenance Sigstore bundle by project and attestation IID.
-The bundle itself will be returned in the response body. For more information
-on this file format, please see the relevant [Sigstore documentation](https://docs.sigstore.dev/about/bundle/)
+Downloads a specific provenance Sigstore bundle by project and attestation IID.
+The bundle itself is returned in the response body. For more information
+on this file format, see the relevant [Sigstore documentation](https://docs.sigstore.dev/about/bundle/).
 
 ```plaintext
 GET /:id/attestations/:attestation_iid/download

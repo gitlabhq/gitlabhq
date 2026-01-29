@@ -49,13 +49,8 @@
   /* stylelint-enable gitlab/no-gl-class */
 }
 
-.featured-carousel {
-  position: sticky;
-  top: 87px;
-}
-
 .other-updates {
-  height: calc(100vh - 300px);
+  height: calc(100vh - 120px);
   overflow-y: hidden;
 }
 

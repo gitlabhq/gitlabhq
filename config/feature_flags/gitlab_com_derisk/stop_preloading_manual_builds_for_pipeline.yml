@@ -1,0 +1,10 @@
+---
+name: stop_preloading_manual_builds_for_pipeline
+description: Stop preloading manual and scheduled actions when the flag is passed in
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220352
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587577
+milestone: '18.9'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

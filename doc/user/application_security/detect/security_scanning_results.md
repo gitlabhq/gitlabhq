@@ -45,6 +45,9 @@ Security scanners run in branch pipelines and, if enabled, merge request pipelin
 scanner outputs a security report artifact containing details of all findings or vulnerabilities detected by
 the specific security scanner. You can download these for analysis outside GitLab.
 
+Security reports from [child pipelines](../../../ci/pipelines/downstream_pipelines.md#view-child-pipeline-reports-in-merge-requests)
+are included in pipeline security reports and merge request widgets.
+
 In a development (non-default) branch, findings include any vulnerabilities present in the target
 branch when the development branch was created.
 
@@ -158,8 +161,8 @@ description.
 {{< /details >}}
 
 The merge request displays a security widget that provides a summary of the difference the changes
-would make to findings. It takes some time after the CI/CD pipeline has run to process the security
-reports, so there may be a delay until the security widget is shown.
+would make to the findings. It takes some time after the CI/CD pipeline has run to process the security
+reports, so there might be a delay until the security widget is shown.
 
 For example, consider two pipelines with these scan results:
 

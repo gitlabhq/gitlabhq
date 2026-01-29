@@ -218,6 +218,7 @@ Example response:
   "mirror_overwrites_diverged_branches": false,
   "external_authorization_classification_label": null,
   "packages_enabled": true,
+  "empty_repo": false,
   "service_desk_enabled": false,
   "service_desk_address": null,
   "autoclose_referenced_issues": true,
@@ -908,6 +909,7 @@ Example response:
     "mirror_overwrites_diverged_branches": false,
     "external_authorization_classification_label": null,
     "packages_enabled": true, // deprecated, use package_registry_access_level instead
+    "empty_repo": false,
     "package_registry_access_level": "enabled",
     "service_desk_enabled": false,
     "service_desk_address": null,
@@ -1163,6 +1165,7 @@ Example response:
     "mirror_overwrites_diverged_branches": false,
     "external_authorization_classification_label": null,
     "packages_enabled": true, // deprecated, use package_registry_access_level instead
+    "empty_repo": false,
     "package_registry_access_level": "enabled",
     "service_desk_enabled": false,
     "service_desk_address": null,

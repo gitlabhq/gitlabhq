@@ -3,19 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Preloader do
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:stage) { double(:stage) }
   let(:commit) { double(:commit) }
   let(:scheduled_action) { double(:scheduled_action) }
   let(:manual_action) { double(:manual_action) }
 
   let(:pipeline) do
-    double(:pipeline, commit: commit, stages: [stage], scheduled_actions: [scheduled_action], manual_actions: [manual_action])
+    double(:pipeline, project: project, commit: commit, stages: [stage],
+      scheduled_actions: [scheduled_action], manual_actions: [manual_action])
   end
 
   describe '.preload!' do
     context 'when preloading multiple commits' do
-      let(:project) { create(:project, :repository) }
-
       it 'preloads all commits once' do
         expect(Commit).to receive(:decorate).once.and_call_original
 
@@ -37,8 +38,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       expect(pipeline).to receive(:lazy_ref_commit)
       expect(pipeline).to receive(:number_of_warnings)
       expect(stage).to receive(:number_of_warnings)
-      expect(scheduled_action).to receive(:persisted_environment)
-      expect(manual_action).to receive(:persisted_environment)
 
       described_class.preload!([pipeline])
     end
@@ -48,12 +47,27 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       allow(pipeline).to receive(:lazy_ref_commit)
       allow(pipeline).to receive(:number_of_warnings)
       allow(stage).to receive(:number_of_warnings)
-      allow(scheduled_action).to receive(:persisted_environment)
-      allow(manual_action).to receive(:persisted_environment)
 
       pipelines = [pipeline, pipeline]
 
       expect(described_class.preload!(pipelines)).to eq pipelines
+    end
+
+    context 'when stop_preloading_manual_builds_for_pipeline feature flag is disabled' do
+      before do
+        stub_feature_flags(stop_preloading_manual_builds_for_pipeline: false)
+        allow(commit).to receive(:lazy_author)
+        allow(pipeline).to receive(:lazy_ref_commit)
+        allow(pipeline).to receive(:number_of_warnings)
+        allow(stage).to receive(:number_of_warnings)
+      end
+
+      it 'preloads manual and scheduled actions' do
+        expect(scheduled_action).to receive(:persisted_environment)
+        expect(manual_action).to receive(:persisted_environment)
+
+        described_class.preload!([pipeline])
+      end
     end
   end
 end

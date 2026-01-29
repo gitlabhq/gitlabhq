@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
+RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
   include EverySidekiqWorkerTestHelper
 
   let(:workers_without_defaults) do

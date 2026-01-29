@@ -15,7 +15,9 @@ Prerequisites:
 
 - You must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members).
 
-## Generate Chat responses
+## Generate a Chat response
+
+Generates a response for a GitLab Duo Chat question.
 
 {{< history >}}
 

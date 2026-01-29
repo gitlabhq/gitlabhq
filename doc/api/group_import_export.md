@@ -36,9 +36,9 @@ the subgroups inherit the same level of visibility as the parent.
 
 To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make sure these users exist before importing the desired groups.
 
-## Schedule new export
+## Create a group export
 
-Start a new group export.
+Creates a group export for a specified group.
 
 ```plaintext
 POST /groups/:id/export
@@ -60,9 +60,9 @@ curl --request POST \
 }
 ```
 
-## Export download
+## Retrieve a group export download
 
-Download the finished export.
+Retrieves the exported archive for a specified group.
 
 ```plaintext
 GET /groups/:id/export/download
@@ -93,7 +93,9 @@ returns either:
 - The exported archive (when available)
 - A 404 message
 
-## Import a file
+## Create a group import
+
+Creates a group import by uploading a file.
 
 The maximum import file size can be set by the Administrator on GitLab Self-Managed (default is `0` (unlimited)).
 As an administrator, you can modify the maximum import file size either:

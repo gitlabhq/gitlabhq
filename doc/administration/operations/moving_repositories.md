@@ -130,7 +130,7 @@ You can move all groups or individual groups.
 
 To move all groups by using the API:
 
-1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#schedule-repository-storage-moves-for-all-groups-on-a-storage-shard).
+1. [Schedule repository storage moves for all groups on a storage shard](../../api/group_repository_storage_moves.md#create-group-repository-storage-moves-for-a-storage-shard).
    For example:
 
    ```shell
@@ -140,7 +140,7 @@ To move all groups by using the API:
         "https://gitlab.example.com/api/v4/group_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#retrieve-all-group-repository-storage-moves).
+1. [Query the most recent repository moves](../../api/group_repository_storage_moves.md#list-all-group-repository-storage-moves).
    The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.
@@ -157,7 +157,7 @@ To move all groups by using the API:
 1. Repeat for each storage as required.
 
 If you don't want to move all groups, follow the instructions for
-[individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group).
+[individual groups](../../api/group_repository_storage_moves.md#create-a-group-repository-storage-move).
 
 ## Migrate to another GitLab instance
 

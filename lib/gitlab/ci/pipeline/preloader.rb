@@ -59,6 +59,8 @@ module Gitlab
         # This batch loads the associated environments of multiple actions (builds)
         # that can't use `preload` due to the indirect relationship.
         def preload_persisted_environments
+          return if ::Feature.enabled?(:stop_preloading_manual_builds_for_pipeline, @pipeline.project)
+
           @pipeline.scheduled_actions.each { |action| action.persisted_environment }
           @pipeline.manual_actions.each { |action| action.persisted_environment }
         end

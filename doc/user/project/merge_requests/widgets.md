@@ -109,11 +109,9 @@ see the status of these checks in merge requests
 
 ## Application security scanning
 
-If you enable any application security scanning tools, GitLab shows the results in the security
-scanning widget. For more information, see
-[security scanning output in merge request widget](../../application_security/detect/security_scanning_results.md).
+If you enable any application security scanning tools,
+GitLab shows the results in the security scanning widget.
+For more information, see [security scanning results](../../application_security/detect/security_scanning_results.md).
 
-> [!note]
-> The results of security scans that run in [child pipelines](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
-> do not display in the security scanning widget. Support for this is proposed in [epic 18377](https://gitlab.com/groups/gitlab-org/-/epics/18377).
-> If you want security scan results to display in the widget, run the scanning jobs in the parent pipeline.
+Security reports from [child pipelines](../../../ci/pipelines/downstream_pipelines.md#view-child-pipeline-reports-in-merge-requests)
+are displayed in the security scanning widget alongside the results for the parent pipeline.

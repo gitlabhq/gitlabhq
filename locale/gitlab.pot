@@ -29759,34 +29759,13 @@ msgstr ""
 msgid "FeatureFlag|User List"
 msgstr ""
 
-msgid "FeaturedCard|Learn more about %{title}, opens in a new tab"
-msgstr ""
-
-msgid "FeaturedUpdate|%{current} / %{total}"
-msgstr ""
-
 msgid "FeaturedUpdate|%{releaseNumber} Release"
 msgstr ""
 
 msgid "FeaturedUpdate|Close article"
 msgstr ""
 
-msgid "FeaturedUpdate|Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate."
-msgstr ""
-
-msgid "FeaturedUpdate|Explore GitLab Duo Core"
-msgstr ""
-
-msgid "FeaturedUpdate|Featured updates"
-msgstr ""
-
-msgid "FeaturedUpdate|Granular access controls for GitLab Duo Core"
-msgstr ""
-
 msgid "FeaturedUpdate|Open article"
-msgstr ""
-
-msgid "FeaturedUpdate|Set detailed permissions for GitLab Duo Core across projects and groups to fit your workflow."
 msgstr ""
 
 msgid "Feb"
@@ -44820,9 +44799,6 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-msgid "Next card"
-msgstr ""
-
 msgid "Next commit"
 msgstr ""
 
@@ -51578,9 +51554,6 @@ msgid "Preview suppressed by a .gitattributes entry or the file's encoding is un
 msgstr ""
 
 msgid "Previous"
-msgstr ""
-
-msgid "Previous card"
 msgstr ""
 
 msgid "Previous commit"
@@ -82699,6 +82672,9 @@ msgid "must be a hash containing 'limits' attribute of type hash"
 msgstr ""
 
 msgid "must be a hash containing 'requests' attribute of type hash"
+msgstr ""
+
+msgid "must be a pipeline execution schedule policy"
 msgstr ""
 
 msgid "must be a root group."

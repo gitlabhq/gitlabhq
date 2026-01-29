@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :shared do
+RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :sidekiq do
   describe '.notify' do
     let(:key) { described_class.new.key }
 

@@ -129,9 +129,9 @@ Additional attributes might be returned for Group owners or on GitLab.com:
 ]
 ```
 
-## Get details on a namespace
+## Retrieve namespace details
 
-Gets details on a specified namespace.
+Retrieves details for a specified namespace.
 
 ```plaintext
 GET /namespaces/:id
@@ -206,7 +206,7 @@ Example response:
 
 ## Verify namespace availability
 
-Verifies if a specified namespace already exists. If the namespace does exist, the endpoint suggests an alternate name.
+Verifies if a specified namespace exists. If the namespace exists, the endpoint suggests an alternate name.
 
 ```plaintext
 GET /namespaces/:namespace/exists
