@@ -45,11 +45,8 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 1. Run `gitlab-ctl reconfigure`
 
-   {{< alert type="note" >}}
-
-   If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
-
-   {{< /alert >}}
+   > [!note]
+   > If the database was already running, it needs to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running PgBouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 

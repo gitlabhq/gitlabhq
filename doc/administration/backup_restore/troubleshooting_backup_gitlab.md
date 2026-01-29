@@ -296,11 +296,8 @@ To fix these files, you must clean up all remote uploaded files that are in the 
 
 1. If you are sure you want to delete these files and remove all non-referenced uploaded files, run:
 
-   {{< alert type="warning" >}}
-
-   The following action is irreversible.
-
-   {{< /alert >}}
+   > [!warning]
+   > The following action is irreversible.
 
    ```shell
    bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production DRY_RUN=false
@@ -420,11 +417,8 @@ Truncate the filenames in the `uploads` table:
 
 1. Validate that the new filenames from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
 
-   {{< alert type="warning" >}}
-
-   The following action is irreversible.
-
-   {{< /alert >}}
+   > [!warning]
+   > The following action is irreversible.
 
    ```sql
    CREATE TEMP TABLE uploads_with_long_filenames AS

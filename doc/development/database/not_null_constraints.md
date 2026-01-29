@@ -291,13 +291,13 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-   - Add the `NOT NULL` constraint:
+   - Then, **after the finalization**, add the `NOT NULL` constraint:
 
      ```ruby
      # db/post_migrate/
      class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
        disable_ddl_transaction!
-       milestone '16.7'
+       milestone '16.10'
 
        def up
          add_not_null_constraint :merge_request_diffs, :project_id
@@ -315,7 +315,7 @@ scheduled after the background migration has completed, which could be several r
      # db/post_migrate/
      class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
        disable_ddl_transaction!
-       milestone '16.7'
+       milestone '16.10'
 
        def up
          add_not_null_constraint :merge_request_diffs, :project_id, validate: false

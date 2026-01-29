@@ -161,11 +161,8 @@ To ensure agent for Kubernetes is properly installed:
     make test
    ```
 
-   {{< alert type="note" >}}
-
-   You might also need to do this in the `<GDK_ROOT>/gitlab-k8s-agent`, which is used by the GDK.
-
-   {{< /alert >}}
+   > [!note]
+   > You might also need to do this in the `<GDK_ROOT>/gitlab-k8s-agent`, which is used by the GDK.
 
 When `make test` passes, agent for Kubernetes is ready to use.
 
@@ -177,11 +174,8 @@ When `make test` passes, agent for Kubernetes is ready to use.
    1. Create a private project named `gitlab-agent-configurations` with a README.
    1. In the project, create a file at `.gitlab/agents/remotedev/config.yaml` with your `agentk` configuration.
 
-   {{< alert type="note" >}}
-
-   When you create or change this file, you must start or restart `agentk` described in step 4.
-
-   {{< /alert >}}
+   > [!note]
+   > When you create or change this file, you must start or restart `agentk` described in step 4.
 
 1. Register `agentk` with GitLab:
 

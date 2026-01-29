@@ -73,11 +73,8 @@ to update their client implementation.
 
 1. Optional. If you encounter version-specific bugs, pin the version of the `mcp-remote` module to a specific version. For example, use `mcp-remote@0.1.26` to pin the version to `0.1.26`.
 
-   {{< alert type="note" >}}
-
-   For security reasons, you should not pin versions if possible.
-
-   {{< /alert >}}
+   > [!note]
+   > For security reasons, you should not pin versions if possible.
 
 ## Troubleshoot GitLab MCP Server with Claude Desktop
 

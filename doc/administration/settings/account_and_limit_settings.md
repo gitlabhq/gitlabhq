@@ -175,11 +175,8 @@ You can change how long users can remain signed in without activity.
    > For more information, see [issue 19469](https://gitlab.com/gitlab-org/gitlab/-/issues/19469).
 1. Select **Save changes**.
 1. Restart GitLab to apply the changes.
-   {{< alert type="note" >}}
-
-   For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
-
-   {{< /alert >}}
+   > [!note]
+   > For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
 
 If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 

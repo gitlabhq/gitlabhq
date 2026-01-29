@@ -191,11 +191,8 @@ The following guide assumes that:
    connect to the **primary** site's database. For this reason, you need the IP address of
    each site.
 
-   {{< alert type="note" >}}
-
-   For external PostgreSQL instances, see [additional instructions](external_database.md).
-
-   {{< /alert >}}
+   > [!note]
+   > For external PostgreSQL instances, see [additional instructions](external_database.md).
 
    If you are using a cloud provider, you can look up the addresses for each
    Geo site through your cloud provider's management console.
@@ -368,11 +365,8 @@ The following guide assumes that:
    gitlab-ctl stop sidekiq
    ```
 
-   {{< alert type="note" >}}
-
-   This step is important so you don't try to execute anything before the site is fully configured.
-
-   {{< /alert >}}
+   > [!note]
+   > This step is important so you don't try to execute anything before the site is fully configured.
 
 1. [Check TCP connectivity](../../raketasks/maintenance.md) to the **primary** site's PostgreSQL server:
 
@@ -528,11 +522,7 @@ changed any defaults, configure the script accordingly (replacing any directorie
    > Each Geo **secondary** site must have its own unique replication slot name.
    > Using the same slot name between two secondaries breaks PostgreSQL replication.
 
-   {{< alert type="note" >}}
-
    Replication slot names must only contain lowercase letters, numbers, and the underscore character.
-
-   {{< /alert >}}
 
    When prompted, enter the plaintext password you set up for the `gitlab_replicator`
    user in the first step.

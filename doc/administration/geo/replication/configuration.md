@@ -174,11 +174,8 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    for file in <ssh_host_key_path>/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
-   {{< alert type="note" >}}
-
-   The output for private keys and public keys command should generate the same fingerprint.
-
-   {{< /alert >}}
+   > [!note]
+   > The output for private keys and public keys command should generate the same fingerprint.
 
 1. Restart either `sshd` for OpenSSH or the `gitlab-sshd` service on **each Rails node on your secondary** site:
 

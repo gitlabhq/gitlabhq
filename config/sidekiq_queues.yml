@@ -1069,8 +1069,6 @@
   - 1
 - - security_policies_skip_pipelines_audit
   - 1
-- - security_process_scan_result_policy
-  - 1
 - - security_project_tracked_contexts_update_default_context
   - 1
 - - security_recreate_orchestration_configuration

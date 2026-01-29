@@ -30,11 +30,8 @@ stop and uninstall this site. For each node on your secondary Geo site:
 
 1. Uninstall GitLab:
 
-   {{< alert type="note" >}}
-
-   If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
-
-   {{< /alert >}}
+   > [!note]
+   > If GitLab data has to be cleaned from the instance as well, see how to [uninstall the Linux package and all its data](https://docs.gitlab.com/omnibus/installation/#uninstall-the-linux-package-omnibus).
 
    ```shell
    # Stop gitlab and remove its supervision process
@@ -55,11 +52,8 @@ When GitLab has been uninstalled from each node on the **secondary** site, the r
    sudo gitlab-psql
    ```
 
-   {{< alert type="note" >}}
-
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
-
-   {{< /alert >}}
+   > [!note]
+   > Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
 1. Find the name of the relevant replication slot. This is the slot that is specified with `--slot-name` when running the replicate command: `gitlab-ctl replicate-geo-database`.
 

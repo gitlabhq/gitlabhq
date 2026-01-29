@@ -55,11 +55,8 @@ To install the GDK:
 
    This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `mise` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
 
-   {{< alert type="note" >}}
-
-   If you're using another tool version manager for those dependencies, refer to the [tool version manager](#use-a-different-tool-version-manager) to avoid conflicts.
-
-   {{< /alert >}}
+   > [!note]
+   > If you're using another tool version manager for those dependencies, refer to the [tool version manager](#use-a-different-tool-version-manager) to avoid conflicts.
 
 1. For the message `Where would you like to install the GDK? [./gdk]`,
    press <kbd>Enter</kbd> to accept the default location.

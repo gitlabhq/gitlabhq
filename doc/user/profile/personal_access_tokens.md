@@ -130,11 +130,8 @@ To revoke a personal access token:
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
 
-   {{< alert type="warning" >}}
-
-   These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
-
-   {{< /alert >}}
+   > [!warning]
+   > These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
 
 ## Disable personal access tokens
 

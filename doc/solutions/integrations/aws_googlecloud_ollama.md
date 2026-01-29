@@ -214,11 +214,8 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    Environment="OLLAMA_HOST=172.31.11.27"
    ```
 
-   {{< alert type="note" >}}
-
-   Replace the IP address with your actual server's internal IP address.
-
-   {{< /alert >}}
+   > [!note]
+   > Replace the IP address with your actual server's internal IP address.
 
 1. Reload and restart the service:
 

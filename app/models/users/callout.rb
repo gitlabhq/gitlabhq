@@ -100,7 +100,7 @@ module Users
       # 97 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196130
       # EE-only
       pipl_compliance_alert: 98,
-      new_merge_request_dashboard_welcome: 99,
+      # 99 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
       pipeline_inputs_announcement_banner: 100,
       pipeline_new_inputs_adoption_banner: 101,
       pipeline_schedules_inputs_adoption_banner: 102,
@@ -113,7 +113,7 @@ module Users
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110, # EE-only
       duo_amazon_q_alert: 111, # EE-only
-      personal_homepage_preferences_banner: 112,
+      # 112 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
       # 113 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210564
       email_otp_enrollment_callout: 114,
       merge_request_dashboard_show_drafts: 115,

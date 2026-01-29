@@ -102,11 +102,8 @@ To access and configure your GitLab Dedicated instance:
 1. In the **Access your GitLab Dedicated instance** banner, select **View credentials**.
 1. Copy the tenant URL and temporary root credentials for your instance.
 
-   {{< alert type="note" >}}
-
-   For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
-
-   {{< /alert >}}
+   > [!note]
+   > For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
 
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
 1. [Change your temporary root password](../../../user/profile/user_passwords.md#change-your-password) to a new secure password.

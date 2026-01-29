@@ -98,11 +98,8 @@ The instructions make the assumption that you are using the email address `incom
    quit
    ```
 
-   {{< alert type="note" >}}
-
-   The `.` is a literal period on its own line.
-
-   {{< /alert >}}
+   > [!note]
+   > The `.` is a literal period on its own line.
 
    If you receive an error after entering `rcpt to: incoming@localhost`
    then your Postfix `my_network` configuration is not correct. The error will

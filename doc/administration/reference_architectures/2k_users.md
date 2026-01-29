@@ -470,11 +470,8 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-   {{< alert type="note" >}}
-
-   You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
-
-   {{< /alert >}}
+   > [!note]
+   > You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
    <!--
    Updates to example must be made at:

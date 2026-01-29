@@ -1207,11 +1207,8 @@ due to large volumes of data being indexed:
 
    You can expect a 20% decrease in indexing time. After the indexing is complete, you can set `refresh_interval` and `number_of_replicas` back to their desired values.
 
-   {{< alert type="note" >}}
-
-   This step is optional but may help significantly speed up large indexing operations.
-
-   {{< /alert >}}
+   > [!note]
+   > This step is optional but may help significantly speed up large indexing operations.
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \

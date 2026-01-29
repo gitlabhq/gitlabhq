@@ -334,7 +334,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/search/zoekt/scheduling_worker.rb'
     - 'ee/app/workers/security/create_orchestration_policy_worker.rb'
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb'
-    - 'ee/app/workers/security/process_scan_result_policy_worker.rb'
     - 'ee/app/workers/security/scan_result_policies/sync_any_merge_request_approval_rules_worker.rb'
     - 'ee/app/workers/security/scan_result_policies/sync_findings_to_approval_rules_worker.rb'
     - 'ee/app/workers/security/scan_result_policies/sync_preexisting_states_approval_rules_worker.rb'

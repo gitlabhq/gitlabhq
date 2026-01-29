@@ -39,11 +39,8 @@ After you have defined the event, you must register it for AI tracking:
    events(troubleshoot_job: 7)
    ```
 
-   {{< alert type="note" >}}
-
-   The event type ID must be unique and will be stored in databases. If you change the ID for an existing event, ensure proper migration of existing data.
-
-   {{< /alert >}}
+   > [!note]
+   > The event type ID must be unique and will be stored in databases. If you change the ID for an existing event, ensure proper migration of existing data.
 
    If your event has additional metadata that should be stored, you need to declare the event with a transformation.
 
@@ -55,11 +52,8 @@ After you have defined the event, you must register it for AI tracking:
 
    You can declare additional transformation blocks with the `transformation` method.
 
-   {{< alert type="note" >}}
-
-   Your transformation blocks must return a serializable hash, because it will be serialized to the `jsonb` column in the database.
-
-   {{< /alert >}}
+   > [!note]
+   > Your transformation blocks must return a serializable hash, because it will be serialized to the `jsonb` column in the database.
 
 1. Invoke `InternalEvents.track_event` with your new event in appropriate codebase places to trigger the event.
 

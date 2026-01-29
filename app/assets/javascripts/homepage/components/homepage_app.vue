@@ -19,7 +19,6 @@ import {
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
 import workItemsWidgetMetadataQuery from '../graphql/queries/work_items_widget_metadata.query.graphql';
 import GreetingHeader from './greeting_header.vue';
-import HomepagePreferencesBanner from './homepage_preferences_banner.vue';
 import UserItemsCountWidget from './user_items_count_widget.vue';
 import ActivityWidget from './activity_widget.vue';
 import QuickAccessWidget from './quick_access_widget.vue';
@@ -31,7 +30,6 @@ import BaseWidget from './base_widget.vue';
 export default {
   components: {
     GreetingHeader,
-    HomepagePreferencesBanner,
     ActivityWidget,
     TodosWidget,
     QuickAccessWidget,
@@ -194,7 +192,6 @@ export default {
 <template>
   <div>
     <greeting-header />
-    <homepage-preferences-banner />
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/panel:gl-grid-cols-3">
       <section class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
         <base-widget

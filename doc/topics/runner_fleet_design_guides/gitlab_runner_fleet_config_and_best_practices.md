@@ -117,11 +117,8 @@ Complete the following steps to identify the compute and RAM resources needed:
 
    This script runs a detached container with the image built. The container ID is then used to collect its `CPU` and `Memory` usage until the container exits upon successful completion. The metrics collected are saved in a file called `metrics.log`.
 
-   {{< alert type="note" >}}
-
-   In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
-
-   {{< /alert >}}
+   > [!note]
+   > In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
 
 1. Analyze the `metrics.log` file to identify the peak usage of the test container.
 

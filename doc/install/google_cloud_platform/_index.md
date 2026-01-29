@@ -62,11 +62,8 @@ To deploy GitLab on GCP you must create a virtual machine:
    These labels tag the resources as related to a GitLab installation on Google Cloud, as required by the partnership agreement.
    For more information about resource labels, see the [Google Cloud documentation on labeling resources](https://cloud.google.com/compute/docs/labeling-resources#create_resources_with_labels).
 
-   {{< alert type="note" >}}
-
-   You can also use Terraform to automate the infrastructure creation with the appropriate labels. See the [GitLab installation on Google Cloud Terraform code](https://gitlab.com/gitlab-partners-public/google-cloud/source-code/gitlab-installation-on-google-cloud) for reference.
-
-   {{< /alert >}}
+   > [!note]
+   > You can also use Terraform to automate the infrastructure creation with the appropriate labels. See the [GitLab installation on Google Cloud Terraform code](https://gitlab.com/gitlab-partners-public/google-cloud/source-code/gitlab-installation-on-google-cloud) for reference.
 
 1. Allow HTTP and HTTPS traffic, then select **Create**. The process finishes in a few seconds.
 

@@ -28,11 +28,8 @@ If the secondary site is not able to reconnect, use the following steps to remov
    sudo gitlab-psql -d gitlabhq_production
    ```
 
-   {{< alert type="note" >}}
-
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
-
-   {{< /alert >}}
+   > [!note]
+   > Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
 
 1. View the replication slots and remove them if they are inactive:
 

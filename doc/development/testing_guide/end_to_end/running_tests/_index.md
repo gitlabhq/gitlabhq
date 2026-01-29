@@ -70,11 +70,8 @@ See the section above for situations that might require adjustment to the comman
     gitlab/gitlab-ee:nightly
    ```
 
-   {{< alert type="note" >}}
-
-   If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
-
-   {{< /alert >}}
+   > [!note]
+   > If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
 
 1. Once GitLab is up and accessible on `http://127.0.0.1`, in another shell tab, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
 
@@ -100,11 +97,8 @@ See the section above for situations that might require adjustment to the comman
    - [Ruby](https://rubyinstaller.org/downloads/). Refer to the [`.ruby-version` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.ruby-version)
      for the exact version of Ruby to install.
 
-   {{< alert type="note" >}}
-
-   Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
-
-   {{< /alert >}}
+   > [!note]
+   > Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
 
 1. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
 

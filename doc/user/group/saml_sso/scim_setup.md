@@ -96,11 +96,8 @@ Under the **Mappings** section, first provision the groups:
    GitLab. Leaving group provisioning enabled does not break the SCIM user provisioning, but it causes errors in the
    Entra ID SCIM provisioning log that may be confusing and misleading.
 
-   {{< alert type="note" >}}
-
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
-
-   {{< /alert >}}
+   > [!note]
+   > Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
 
 1. Select **Save**.
 

@@ -312,11 +312,8 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 1. Update the expiry date of the `GITLAB_TOKEN` field in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) table.
 1. Set the following variables to the new Personal Access Token created in step 2 above:
 
-   {{< alert type="note" >}}
-
-   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
-
-   {{< /alert >}}
+   > [!note]
+   > It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
 
    1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/analyzers`](https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings) group.
 

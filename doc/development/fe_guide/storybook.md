@@ -73,11 +73,8 @@ To add a story with API access:
 
 1. Create a [personal access token](../../user/profile/personal_access_tokens.md) in your GitLab instance.
 
-   {{< alert type="note" >}}
-
-   If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
-
-   {{< /alert >}}
+   > [!note]
+   > If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
 
 1. Create an `.env` file in the `storybook` directory. Use the `storybook/.env.template` file as
    a starting point.

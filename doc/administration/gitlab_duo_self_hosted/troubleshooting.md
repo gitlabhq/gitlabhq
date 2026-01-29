@@ -468,11 +468,8 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    **Important**: After troubleshooting, restart GitLab **without** this flag set.
 
-   {{< alert type="warning" >}}
-
-   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
-
-   {{< /alert >}}
+   > [!warning]
+   > **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
 
 1. To resolve this issue:
    - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).

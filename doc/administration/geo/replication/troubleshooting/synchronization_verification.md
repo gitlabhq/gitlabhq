@@ -1696,11 +1696,8 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Reset the Tracking Database.
 
-   {{< alert type="warning" >}}
-
-   If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
 
    ```shell
    gitlab-rake db:drop:geo DISABLE_DATABASE_ENVIRONMENT_CHECK=1   # on a secondary app node

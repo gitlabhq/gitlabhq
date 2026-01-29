@@ -130,11 +130,8 @@ You must register an agent before you can install the agent in your cluster. To 
 1. GitLab generates an access token for the agent. You need this token to install the agent
    in your cluster.
 
-   {{< alert type="warning" >}}
-
-   Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
-
-   {{< /alert >}}
+   > [!warning]
+   > Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
 
 1. Copy the command under **Recommended installation method**. You need it when you use
    the one-liner installation method to install the agent in your cluster.

@@ -993,11 +993,8 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    gitlab-ctl patroni members
    ```
 
-   {{< alert type="note" >}}
-
-   On a Geo secondary site, the Patroni leader node is called `standby leader`.
-
-   {{< /alert >}}
+   > [!note]
+   > On a Geo secondary site, the Patroni leader node is called `standby leader`.
 
 1. Stop Patroni only on replicas.
 
