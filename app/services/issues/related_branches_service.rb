@@ -43,9 +43,12 @@ module Issues
       project.repository.list_refs(
         [Gitlab::Git::BRANCH_REF_PREFIX + "#{issue.iid}-*"]
       ).each_with_object([]) do |ref, results|
-        if ref.name.match?(branch_ref_regex)
-          results << { name: ref.name.delete_prefix(Gitlab::Git::BRANCH_REF_PREFIX), target: ref.target }
-        end
+        next unless ref.name.match?(branch_ref_regex)
+
+        branch_name = Gitlab::EncodingHelper.encode_utf8_with_escaping!(
+          ref.name.delete_prefix(Gitlab::Git::BRANCH_REF_PREFIX)
+        )
+        results << { name: branch_name, target: ref.target }
       end
     end
 
