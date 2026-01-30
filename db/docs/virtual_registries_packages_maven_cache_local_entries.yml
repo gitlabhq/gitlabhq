@@ -6,11 +6,9 @@ feature_categories:
   - virtual_registry
 description: Local cache entry for the Maven virtual packages registry. Mainly used
   to reference a package file id from the Package Registry.
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207117
-milestone: '18.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218823
+milestone: '18.9'
+table_size: small
 gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
-table_size: small
-removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216108
-removed_in_milestone: '18.8'

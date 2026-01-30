@@ -182,9 +182,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         _old_build = create(:ci_build, :retried, pipeline: pipeline)
         _expired_build = create(:ci_build, :expired, pipeline: pipeline)
         _failed_jobs = [create(:ci_build, :failed, pipeline: pipeline),
-                        create(:ci_bridge, :failed, pipeline: pipeline)]
+          create(:ci_bridge, :failed, pipeline: pipeline)]
         successful_jobs = [create(:ci_build, :success, pipeline: pipeline),
-                           create(:ci_bridge, :success, pipeline: pipeline)]
+          create(:ci_bridge, :success, pipeline: pipeline)]
 
         expect(pipeline.latest_successful_jobs).to contain_exactly(successful_jobs.first, successful_jobs.second)
       end
@@ -933,7 +933,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat
-            merge_request_event external_pull_request_event])
+          merge_request_event external_pull_request_event])
     end
   end
 
@@ -954,7 +954,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_branch_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat
-            external_pull_request_event])
+          external_pull_request_event])
     end
   end
 
@@ -976,7 +976,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it 'filters on expected sources' do
       expect(::Enums::Ci::Pipeline.ci_and_security_orchestration_sources.keys).to contain_exactly(
         *%i[unknown push web trigger schedule api external pipeline chat merge_request_event
-            external_pull_request_event security_orchestration_policy])
+          external_pull_request_event security_orchestration_policy])
     end
   end
 

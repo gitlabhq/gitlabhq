@@ -3095,14 +3095,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           it 'returns variables in order depending on resource hierarchy' do
             expect(subject.to_runner_variables).to eq(
               [dependency_proxy_var,
-               job_jwt_var,
-               build_pre_var,
-               project_pre_var,
-               pipeline_pre_var,
-               build_yaml_var,
-               job_dependency_var,
-               { key: 'secret', value: 'value', public: false, masked: false },
-               { key: "CI_PAGES_URL", value: pages_url, masked: false, public: true }])
+                job_jwt_var,
+                build_pre_var,
+                project_pre_var,
+                pipeline_pre_var,
+                build_yaml_var,
+                job_dependency_var,
+                { key: 'secret', value: 'value', public: false, masked: false },
+                { key: "CI_PAGES_URL", value: pages_url, masked: false, public: true }])
           end
         end
 
@@ -4214,11 +4214,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it 'returns static predefined variables' do
           keys = %w[CI_JOB_NAME
-                    CI_COMMIT_SHA
-                    CI_COMMIT_SHORT_SHA
-                    CI_COMMIT_REF_NAME
-                    CI_COMMIT_REF_SLUG
-                    CI_JOB_STAGE]
+            CI_COMMIT_SHA
+            CI_COMMIT_SHORT_SHA
+            CI_COMMIT_REF_NAME
+            CI_COMMIT_REF_SLUG
+            CI_JOB_STAGE]
 
           variables = build.scoped_variables
 
@@ -4232,14 +4232,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it 'does not return prohibited variables' do
           keys = %w[CI_JOB_ID
-                    CI_JOB_URL
-                    CI_JOB_TOKEN
-                    CI_REGISTRY_USER
-                    CI_REGISTRY_PASSWORD
-                    CI_REPOSITORY_URL
-                    CI_ENVIRONMENT_URL
-                    CI_DEPLOY_USER
-                    CI_DEPLOY_PASSWORD]
+            CI_JOB_URL
+            CI_JOB_TOKEN
+            CI_REGISTRY_USER
+            CI_REGISTRY_PASSWORD
+            CI_REPOSITORY_URL
+            CI_ENVIRONMENT_URL
+            CI_DEPLOY_USER
+            CI_DEPLOY_PASSWORD]
 
           build.scoped_variables.map { |env| env[:key] }.tap do |names|
             expect(names).not_to include(*keys)

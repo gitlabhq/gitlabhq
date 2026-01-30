@@ -150,14 +150,14 @@ These settings [can be configured](settings/import_export_rate_limits.md).
 
 The following limits apply on migration by direct transfer.
 
-| Limit       | Configurable | Description |
-|:------------|:-------------|:------------|
-| 6           | {{< no >}}   | Maximum number of migrations permitted by a destination GitLab instance per minute per user. |
-| 210 seconds | {{< no >}}   | Maximum time to wait for decompressing an archive file. |
-| 50 MB       | {{< no >}}   | Maximum length an NDJSON row can have. |
-| 5 minutes   | {{< no >}}   | Maximum time until an empty export status on source instance is raised. |
-| 5 GiB       | {{< yes >}}  | Maximum relation size that can be downloaded from the source instance. |
-| 10 GiB      | {{< yes >}}  | Maximum size of a decompressed archive. |
+| Limit                                                                      | Default     | Configurable |
+|:---------------------------------------------------------------------------|:------------|:-------------|
+| Number of migrations by a destination GitLab instance per minute per user. | 6           | {{< no >}}   |
+| Time to wait for decompressing an archive file.                            | 210 seconds | {{< no >}}   |
+| Length of an NDJSON row.                                                   | 50 MB       | {{< no >}}   |
+| Time until an empty export status on source instance is raised.            | 5 minutes   | {{< no >}}   |
+| Relation size that can be downloaded from the source instance.             | 5 GiB       | {{< yes >}}  |
+| Size of a decompressed archive.                                            | 10 GiB      | {{< yes >}}  |
 
 For more information on changing configurable limits, see
 [import and export settings](settings/import_and_export_settings.md).

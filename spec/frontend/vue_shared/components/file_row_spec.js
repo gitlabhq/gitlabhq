@@ -292,7 +292,7 @@ describe('File row component', () => {
     });
   });
 
-  it('renders as button element', () => {
+  it('renders as button element when file does not have href', () => {
     createComponent({
       file: file('test.rb'),
       level: 0,
@@ -300,6 +300,36 @@ describe('File row component', () => {
 
     expect(findFileButton().element.tagName).toBe('BUTTON');
     expect(findFileButton().attributes('href')).toBeUndefined();
+  });
+
+  it('renders as link when file has href', () => {
+    createComponent({
+      file: {
+        name: 'Readme.md',
+        href: '/gitlab-org/gitlab/-/tree/readme.md',
+      },
+      level: 0,
+    });
+
+    expect(findFileButton().element.tagName).toBe('A');
+    expect(findFileButton().attributes('href')).toBe('/gitlab-org/gitlab/-/tree/readme.md');
+  });
+
+  it('prevents default when clicking link when file has href', () => {
+    createComponent({
+      file: {
+        name: 'Readme.md',
+        href: '/gitlab-org/gitlab/-/tree/readme.md',
+      },
+      level: 0,
+    });
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+
+    findFileButton().element.dispatchEvent(event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
   });
 
   it('emits clickRow and clickFile when clicking blob', () => {

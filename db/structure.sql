@@ -10050,6 +10050,218 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_en
     CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
 );
 
+CREATE SEQUENCE virtual_registries_packages_maven_cache_local_entries_iid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE virtual_registries_packages_maven_cache_local_entries (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+)
+PARTITION BY HASH (group_id);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15 (
+    iid bigint DEFAULT nextval('virtual_registries_packages_maven_cache_local_entries_iid_seq'::regclass) NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    package_file_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    relative_path text NOT NULL,
+    CONSTRAINT check_5fa779a799 CHECK ((char_length(relative_path) <= 1024))
+);
+
 CREATE SEQUENCE virtual_registries_packages_maven_cache_remote_entries_iid_seq
     START WITH 1
     INCREMENT BY 1
@@ -30855,6 +31067,33 @@ CREATE SEQUENCE virtual_registries_container_upstreams_id_seq
 
 ALTER SEQUENCE virtual_registries_container_upstreams_id_seq OWNED BY virtual_registries_container_upstreams.id;
 
+CREATE TABLE virtual_registries_packages_maven_local_upstreams (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    local_group_id bigint,
+    local_project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    metadata_cache_validity_hours smallint DEFAULT 1 NOT NULL,
+    cache_validity_hours smallint DEFAULT 24 NOT NULL,
+    name text DEFAULT ''::text NOT NULL,
+    description text,
+    CONSTRAINT check_473304b4aa CHECK ((metadata_cache_validity_hours > 0)),
+    CONSTRAINT check_5b4efbadf3 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_94fecbd418 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_aee1e46595 CHECK ((num_nonnulls(local_group_id, local_project_id) = 1)),
+    CONSTRAINT check_bfe0cc1afc CHECK ((cache_validity_hours >= 0))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_local_upstreams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_local_upstreams_id_seq OWNED BY virtual_registries_packages_maven_local_upstreams.id;
+
 CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -33447,6 +33686,38 @@ ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITIO
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02 FOR VALUES WITH (modulus 16, remainder 2);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03 FOR VALUES WITH (modulus 16, remainder 3);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04 FOR VALUES WITH (modulus 16, remainder 4);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05 FOR VALUES WITH (modulus 16, remainder 5);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06 FOR VALUES WITH (modulus 16, remainder 6);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07 FOR VALUES WITH (modulus 16, remainder 7);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08 FOR VALUES WITH (modulus 16, remainder 8);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09 FOR VALUES WITH (modulus 16, remainder 9);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10 FOR VALUES WITH (modulus 16, remainder 10);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11 FOR VALUES WITH (modulus 16, remainder 11);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12 FOR VALUES WITH (modulus 16, remainder 12);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13 FOR VALUES WITH (modulus 16, remainder 13);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14 FOR VALUES WITH (modulus 16, remainder 14);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_remote_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_remote_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
@@ -35155,6 +35426,8 @@ ALTER TABLE ONLY virtual_registries_container_registry_upstreams ALTER COLUMN id
 
 ALTER TABLE ONLY virtual_registries_container_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_upstreams_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_local_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_local_upstreams_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
@@ -36152,6 +36425,57 @@ ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cach
 
 ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15
     ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_15_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_local_entries
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_00_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_01_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_02_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_03_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_04_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_05_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_06_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_07_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_08_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_09_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_10_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_11_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_12_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_13_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_14_pkey PRIMARY KEY (group_id, iid);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_local_entries_15_pkey PRIMARY KEY (group_id, iid);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_remote_entries
     ADD CONSTRAINT virtual_registries_packages_maven_cache_remote_entries_pkey PRIMARY KEY (group_id, iid);
@@ -39285,6 +39609,9 @@ ALTER TABLE ONLY virtual_registries_container_registry_upstreams
 ALTER TABLE ONLY virtual_registries_container_upstreams
     ADD CONSTRAINT virtual_registries_container_upstreams_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_local_upstreams
+    ADD CONSTRAINT virtual_registries_packages_maven_local_upstreams_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_registries
     ADD CONSTRAINT virtual_registries_packages_maven_registries_pkey PRIMARY KEY (id);
 
@@ -41181,6 +41508,40 @@ CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_id
 
 CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx37 ON gitlab_partitions_static.virtual_registries_packages_npm_cache_remote_entries_15 USING btree (upstream_id, group_id, relative_path) WHERE (status = 0);
 
+CREATE UNIQUE INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ON ONLY virtual_registries_packages_maven_cache_local_entries USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx38 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx39 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx40 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx41 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx42 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx43 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx44 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx45 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx46 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx47 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx48 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx49 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx50 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx51 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx52 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14 USING btree (upstream_id, group_id, relative_path);
+
+CREATE UNIQUE INDEX virtual_registries_packages__upstream_id_group_id_relativ_idx53 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15 USING btree (upstream_id, group_id, relative_path);
+
 CREATE UNIQUE INDEX virtual_registries_packages_m_relative_path_object_storage__idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_remote_entries_00 USING btree (relative_path, object_storage_key, group_id);
 
 CREATE UNIQUE INDEX virtual_registries_packages_m_relative_path_object_storage_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_remote_entries_01 USING btree (relative_path, object_storage_key, group_id);
@@ -41370,6 +41731,40 @@ CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx8 ON 
 CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 USING gin (relative_path gin_trgm_ops);
 
 CREATE INDEX virtual_registries_packages_maven_cache_entri_relative_path_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ON ONLY virtual_registries_packages_maven_cache_local_entries USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx10 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx11 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx12 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx13 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx14 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_l_package_file_id_idx15 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx2 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx3 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx4 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx5 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx6 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx7 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx8 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_lo_package_file_id_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09 USING btree (package_file_id);
+
+CREATE INDEX virtual_registries_packages_maven_cache_loc_package_file_id_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00 USING btree (package_file_id);
 
 CREATE INDEX idx_vregs_pkgs_maven_cache_remote_entries_on_rel_path_trigram ON ONLY virtual_registries_packages_maven_cache_remote_entries USING gin (relative_path gin_trgm_ops);
 
@@ -42737,6 +43132,10 @@ CREATE INDEX idx_unarchived_occurrences_for_aggregation_severity_nulls_first ON 
 
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
 
+CREATE UNIQUE INDEX idx_uniq_vreg_pkgs_mvn_local_upstr_on_loc_group_id_group_id ON virtual_registries_packages_maven_local_upstreams USING btree (local_group_id, group_id) WHERE (local_group_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_uniq_vreg_pkgs_mvn_local_upstr_on_loc_proj_id_group_id ON virtual_registries_packages_maven_local_upstreams USING btree (local_project_id, group_id) WHERE (local_project_id IS NOT NULL);
+
 CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (connection_id, namespace_id);
 
 CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_project_id ON ONLY p_ai_active_context_code_repositories USING btree (connection_id, project_id);
@@ -42770,6 +43169,8 @@ CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles
 CREATE INDEX idx_vr_cleanup_policies_on_next_run_at_when_runnable ON virtual_registries_cleanup_policies USING btree (next_run_at) WHERE ((enabled = true) AND (status = ANY (ARRAY[0, 2])));
 
 CREATE INDEX idx_vreg_container_reg_upst_on_group ON virtual_registries_container_registry_upstreams USING btree (group_id);
+
+CREATE INDEX idx_vreg_pkgs_mvn_local_upstreams_on_name_trigram ON virtual_registries_packages_maven_local_upstreams USING gin (name gin_trgm_ops);
 
 CREATE INDEX idx_vuln_detection_transitions_on_occurrence_id_detected_id ON vulnerability_detection_transitions USING btree (vulnerability_occurrence_id, detected, id);
 
@@ -47477,6 +47878,8 @@ CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONL
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';
 
+CREATE INDEX index_virtual_reg_pkgs_maven_local_upstreams_on_group_id ON virtual_registries_packages_maven_local_upstreams USING btree (group_id);
+
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
@@ -50679,6 +51082,38 @@ ALTER INDEX i_uniq_v_pkg_npm_cache_rem_entrs_on_upstr_id_group_id_rel_path ATTAC
 
 ALTER INDEX i_uniq_v_pkg_npm_cache_rem_entrs_on_upstr_id_group_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx37;
 
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx38;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx39;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx40;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx41;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx42;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx43;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx44;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx45;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx46;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx47;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx48;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx49;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx50;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx51;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx52;
+
+ALTER INDEX idx_uniq_vreg_mvn_cache_local_entries_on_upstream_id_rel_path ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages__upstream_id_group_id_relativ_idx53;
+
 ALTER INDEX idx_uniq_vreg_pkgs_mvn_cache_remote_entries_on_rel_path_and_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_m_relative_path_object_storage__idx;
 
 ALTER INDEX idx_uniq_vreg_pkgs_mvn_cache_remote_entries_on_rel_path_and_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_m_relative_path_object_storage_idx1;
@@ -50890,6 +51325,70 @@ ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITIO
 ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14_pkey;
 
 ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15_pkey;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx10;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx11;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx12;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx13;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx14;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_l_package_file_id_idx15;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx1;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx2;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx3;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx4;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx5;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx6;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx7;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx8;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_lo_package_file_id_idx9;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_local_entries_on_package_file_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_loc_package_file_id_idx;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_00_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_01_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_02_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_03_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_04_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_05_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_06_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_07_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_08_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_09_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_10_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_11_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_12_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_13_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_14_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_local_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_local_entries_15_pkey;
 
 ALTER INDEX idx_vregs_pkgs_maven_cache_remote_entries_on_rel_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_rem_relative_path_idx10;
 
@@ -55639,6 +56138,9 @@ ALTER TABLE p_ci_build_sources
 ALTER TABLE ONLY automation_rules
     ADD CONSTRAINT fk_rails_025b519b8d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE virtual_registries_packages_maven_cache_local_entries
+    ADD CONSTRAINT fk_rails_0300080a73 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_032b12996a FOREIGN KEY (oncall_rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;
 
@@ -55884,6 +56386,9 @@ ALTER TABLE ONLY approval_policy_merge_request_bypass_events
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_1ecfd9f2de FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE virtual_registries_packages_maven_cache_local_entries
+    ADD CONSTRAINT fk_rails_1f4887d93d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY granular_scopes
     ADD CONSTRAINT fk_rails_1f506e10eb FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -57025,6 +57530,9 @@ ALTER TABLE ONLY virtual_registries_settings
 ALTER TABLE ONLY elastic_reindexing_slices
     ADD CONSTRAINT fk_rails_a17d86aeb9 FOREIGN KEY (elastic_reindexing_subtask_id) REFERENCES elastic_reindexing_subtasks(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY virtual_registries_packages_maven_local_upstreams
+    ADD CONSTRAINT fk_rails_a17f0510bd FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_aliases
     ADD CONSTRAINT fk_rails_a1804f74a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -57318,6 +57826,9 @@ ALTER TABLE ONLY custom_software_licenses
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_rails_c6df6e6328 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE virtual_registries_packages_maven_cache_local_entries
+    ADD CONSTRAINT fk_rails_c6f6218d37 FOREIGN KEY (upstream_id) REFERENCES virtual_registries_packages_maven_local_upstreams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY container_expiration_policies
     ADD CONSTRAINT fk_rails_c7360f09ad FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

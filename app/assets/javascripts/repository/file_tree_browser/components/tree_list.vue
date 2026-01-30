@@ -179,18 +179,20 @@ export default {
 
       trees.forEach((tree, index) => {
         const treePath = normalizePath(tree.path || tree.name);
+        const routerPath = buildURLwithRefType({
+          path: joinPaths(
+            '/-/tree',
+            this.escapedRef,
+            treePath.split('/').map(encodeURIComponent).join('/'),
+          ),
+          refType: this.refType,
+        });
         directoryList.push({
           id: `${treePath}-${tree.id}-${index}`,
           path: treePath,
           parentPath: path,
-          routerPath: buildURLwithRefType({
-            path: joinPaths(
-              '/-/tree',
-              this.escapedRef,
-              treePath.split('/').map(encodeURIComponent).join('/'),
-            ),
-            refType: this.refType,
-          }),
+          routerPath,
+          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
           type: 'tree',
           name: tree.name,
           level,
@@ -214,20 +216,23 @@ export default {
 
       blobs.forEach((blob, index) => {
         const blobPath = normalizePath(blob.path);
+        const routerPath = buildURLwithRefType({
+          path: joinPaths(
+            '/-/blob',
+            this.escapedRef,
+            blobPath.split('/').map(encodeURIComponent).join('/'),
+          ),
+          refType: this.refType,
+        });
+
         filesList.push({
           id: `${blobPath}-${blob.id}-${index}`,
           type: 'blob',
           fileHash: blob.sha,
           path: blobPath,
           parentPath: path,
-          routerPath: buildURLwithRefType({
-            path: joinPaths(
-              '/-/blob',
-              this.escapedRef,
-              blobPath.split('/').map(encodeURIComponent).join('/'),
-            ),
-            refType: this.refType,
-          }),
+          routerPath,
+          href: new URL(joinPaths('/', this.projectPath, routerPath), gon.gitlab_url).href,
           name: blob.name,
           mode: blob.mode,
           level,
@@ -250,6 +255,7 @@ export default {
           path: submodulePath,
           parentPath: path,
           webUrl: submodule.webUrl,
+          href: submodule.webUrl,
           name: submodule.name,
           submodule: true,
           level,

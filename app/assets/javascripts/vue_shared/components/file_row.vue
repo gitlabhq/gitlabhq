@@ -81,6 +81,12 @@ export default {
   },
   methods: {
     clickFile(event) {
+      // allow opening in new tab with ctrl/cmd and click
+      // without opening in current tab
+      if (this.file.href && (event.ctrlKey || event.metaKey)) {
+        return;
+      }
+
       this.$emit('clickRow', event);
 
       if (this.isTree) {
@@ -89,6 +95,10 @@ export default {
         this.$emit('clickSubmodule', event);
       } else if (this.isBlob) {
         this.$emit('clickFile', event);
+      }
+
+      if (this.file.href) {
+        event.preventDefault();
       }
     },
   },
@@ -133,7 +143,9 @@ export default {
       @click="$emit('toggleTree', $event)"
     />
 
-    <button
+    <component
+      :is="file.href ? 'a' : 'button'"
+      :href="file.href"
       :class="fileClass"
       :title="textForTitle"
       :data-level="level"
@@ -177,7 +189,7 @@ export default {
         <gl-truncate :text="file.name" position="middle" class="gl-items-center gl-pr-7" />
       </span>
       <slot></slot>
-    </button>
+    </component>
   </div>
 </template>
 

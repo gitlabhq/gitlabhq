@@ -79,10 +79,10 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
       # File tree starts open
       within('.file-tree-browser') do
         # Should auto-expand parent directories
-        files_folder = find_button('files')
+        files_folder = find_link('files')
         expect(files_folder[:class]).to include('is-open')
 
-        ruby_folder = find_button('ruby')
+        ruby_folder = find_link('ruby')
         expect(ruby_folder[:class]).to include('is-open')
 
         # Should highlight the current file

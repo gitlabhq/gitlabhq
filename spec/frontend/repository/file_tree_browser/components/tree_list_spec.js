@@ -141,6 +141,7 @@ describe('Tree List', () => {
         name: 'dir_2',
         path: '/dir_1/dir_2',
         routerPath: '/-/tree/main/dir_1/dir_2?ref_type=heads',
+        href: 'http://test.host/group/project/-/tree/main/dir_1/dir_2?ref_type=heads',
         type: 'tree',
       },
       level: 0,
@@ -156,6 +157,7 @@ describe('Tree List', () => {
         name: 'file.txt',
         path: '/dir_1/file.txt',
         routerPath: '/-/blob/main/dir_1/file.txt?ref_type=heads',
+        href: 'http://test.host/group/project/-/blob/main/dir_1/file.txt?ref_type=heads',
       },
       level: 0,
     });
@@ -980,7 +982,11 @@ describe('Tree List', () => {
     });
 
     it('renders submodules with correct properties', () => {
-      expect(findFileRows().at(1).props('file')).toMatchObject({ webUrl, submodule: true });
+      expect(findFileRows().at(1).props('file')).toMatchObject({
+        webUrl,
+        submodule: true,
+        href: webUrl,
+      });
     });
 
     it('navigates to submodule when clicked', () => {

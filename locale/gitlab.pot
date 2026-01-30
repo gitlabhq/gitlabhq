@@ -73146,7 +73146,7 @@ msgstr ""
 msgid "UsageBilling|Date/Time"
 msgstr ""
 
-msgid "UsageBilling|Displaying user data is disabled."
+msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn how to enable it%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits"

@@ -7,7 +7,7 @@ query getSecurityTrackedRefs(
 ) {
   project(fullPath: $fullPath) {
     id
-    securityTrackedRefs(first: $first, last: $last, after: $after, before: $before) @client {
+    securityTrackedRefs(first: $first, last: $last, after: $after, before: $before) {
       count
       nodes {
         id

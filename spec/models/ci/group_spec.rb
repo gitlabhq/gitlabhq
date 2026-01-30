@@ -46,7 +46,7 @@ RSpec.describe Ci::Group do
     context 'when there are more than one commit status in the group' do
       let(:jobs) do
         [create(:ci_build, :failed),
-         create(:ci_build, :success)]
+          create(:ci_build, :success)]
       end
 
       it 'fabricates a new detailed status object' do
@@ -58,7 +58,7 @@ RSpec.describe Ci::Group do
     context 'when one of the commit statuses in the group is allowed to fail' do
       let(:jobs) do
         [create(:ci_build, :failed, :allowed_to_fail),
-         create(:ci_build, :success)]
+          create(:ci_build, :success)]
       end
 
       it 'fabricates a new detailed status object' do
