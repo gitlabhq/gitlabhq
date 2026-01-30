@@ -23,7 +23,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -103,7 +103,7 @@ Both features support automatic reviews, custom instructions, and custom comment
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
@@ -147,7 +147,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../gitlab_duo/model_selection.md#default-models)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 

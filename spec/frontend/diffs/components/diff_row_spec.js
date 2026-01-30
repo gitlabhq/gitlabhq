@@ -1,21 +1,13 @@
 import { getByTestId, fireEvent } from '@testing-library/dom';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import DiffRow from '~/diffs/components/diff_row.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
-import diffsModule from '~/diffs/store/modules';
 import { findInteropAttributes } from '../find_interop_attributes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
-const showCommentForm = jest.fn();
-const enterdragging = jest.fn();
-const stopdragging = jest.fn();
-const setHighlightedRow = jest.fn();
-let wrapper;
-
 describe('DiffRow', () => {
+  let wrapper;
+
   const testLines = [
     {
       left: { old_line: 1, discussions: [] },
@@ -44,21 +36,8 @@ describe('DiffRow', () => {
     },
   ];
 
-  const createWrapper = ({ props, state = {}, actions, isLoggedIn = true }) => {
-    Vue.use(Vuex);
-
-    const diffs = diffsModule();
-    diffs.state = { ...diffs.state, ...state };
-    diffs.actions = { ...diffs.actions, ...actions };
-
-    const getters = { isLoggedIn: () => isLoggedIn };
-
-    const store = new Vuex.Store({
-      modules: { diffs },
-      getters,
-    });
-
-    window.gon = { current_user_id: isLoggedIn ? 1 : 0 };
+  const createWrapper = ({ props, state = {}, isLoggedIn = true }) => {
+    window.gon.current_user_id = isLoggedIn ? 1 : 0;
     const coverageFileData = state.coverageFiles?.files ? state.coverageFiles.files : {};
 
     const propsData = {
@@ -88,29 +67,9 @@ describe('DiffRow', () => {
 
     return shallowMount(DiffRow, {
       propsData,
-      store,
       provide,
-      listeners: {
-        enterdragging,
-        stopdragging,
-        setHighlightedRow,
-        showCommentForm,
-      },
     });
   };
-
-  afterEach(() => {
-    showCommentForm.mockReset();
-    enterdragging.mockReset();
-    stopdragging.mockReset();
-    setHighlightedRow.mockReset();
-
-    Object.values(DiffRow).forEach(({ cache }) => {
-      if (cache) {
-        cache.clear();
-      }
-    });
-  });
 
   const getCommentButton = (side) => wrapper.find(`[data-testid="${side}-comment-button"]`);
   const findRightCommentButton = () => wrapper.find('[data-testid="right-comment-button"]');
@@ -158,7 +117,7 @@ describe('DiffRow', () => {
           await commentButton.trigger('keydown.enter');
           await commentButton.trigger('keydown.space');
 
-          expect(showCommentForm).toHaveBeenCalledTimes(3);
+          expect(wrapper.emitted('show-comment-form')).toHaveLength(3);
         });
 
         it('ignores click and keyboard events when comments are disabled', async () => {
@@ -171,7 +130,7 @@ describe('DiffRow', () => {
           await commentButton.trigger('keydown.enter');
           await commentButton.trigger('keydown.space');
 
-          expect(showCommentForm).not.toHaveBeenCalled();
+          expect(wrapper.emitted('show-comment-form')).toBeUndefined();
         });
       });
 
@@ -224,7 +183,7 @@ describe('DiffRow', () => {
       wrapper = createWrapper({ props: { line } });
       fireEvent.dragEnter(getByTestId(wrapper.element, `${side}-side`));
 
-      expect(enterdragging).toHaveBeenCalledWith({ ...line[side], index: 0 });
+      expect(wrapper.emitted('enterdragging')).toEqual([[{ ...line[side], index: 0 }]]);
     });
 
     it.each`
@@ -235,7 +194,7 @@ describe('DiffRow', () => {
       wrapper = createWrapper({ props: { line } });
       fireEvent.dragEnd(getByTestId(wrapper.element, `${side}-side`));
 
-      expect(stopdragging).toHaveBeenCalled();
+      expect(wrapper.emitted('stopdragging')).toHaveLength(1);
     });
   });
 
@@ -312,38 +271,5 @@ describe('DiffRow', () => {
     wrapper = createWrapper({ props: { line: testLines[4], inline: false } });
 
     expect(wrapper.find('.add-diff-note').exists()).toBe(true);
-  });
-});
-
-describe('coverage state memoization', () => {
-  it('updates when coverage is loaded', () => {
-    const lineWithoutCoverage = {};
-    const lineWithCoverage = {
-      text: 'Test coverage: 5 hits',
-      class: 'coverage',
-    };
-
-    const unchangedProps = {
-      inline: true,
-      filePath: 'file/path',
-      line: { left: { new_line: 3 } },
-    };
-
-    const noCoverageProps = {
-      fileLineCoverage: () => lineWithoutCoverage,
-      coverageLoaded: false,
-      ...unchangedProps,
-    };
-    const coverageProps = {
-      fileLineCoverage: () => lineWithCoverage,
-      coverageLoaded: true,
-      ...unchangedProps,
-    };
-
-    // this caches no coverage for the line
-    expect(DiffRow.coverageStateLeft(noCoverageProps)).toStrictEqual(lineWithoutCoverage);
-
-    // this retrieves coverage for the line because it has been recached
-    expect(DiffRow.coverageStateLeft(coverageProps)).toStrictEqual(lineWithCoverage);
   });
 });

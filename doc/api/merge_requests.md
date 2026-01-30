@@ -44,9 +44,9 @@ in API v5 in favor of the [Merge request approvals API](merge_request_approvals.
 
 ## List merge requests
 
-Get all merge requests the authenticated user has access to. By
-default it returns only merge requests created by the current user. To
-get all merge requests, use parameter `scope=all`.
+List all merge requests accessible to the authenticated user. By
+default, returns only merge requests created by the current user.
+Use `scope=all` to retrieve all merge requests.
 
 Use the `state` parameter to get only merge requests with a
 given state (`opened`, `closed`, `locked`, or `merged`) or all states (`all`).
@@ -371,7 +371,7 @@ Example response:
 
 ## List project merge requests
 
-Get all merge requests for this project.
+List all merge requests for a project.
 
 ```plaintext
 GET /projects/:id/merge_requests
@@ -618,7 +618,7 @@ For important notes on response data, see [Merge requests list response notes](#
 
 ## List group merge requests
 
-Get all merge requests for this group and its subgroups.
+List all merge requests for a group and its subgroups.
 
 ```plaintext
 GET /groups/:id/merge_requests
@@ -931,9 +931,9 @@ Example response:
 
 For important notes on response data, see [Merge requests list response notes](#merge-requests-list-response-notes).
 
-## Get single MR
+## Retrieve a merge request
 
-Shows information about a single merge request.
+Retrieve information about a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid
@@ -1341,9 +1341,9 @@ The `prepared_at` field populates one time, only after these steps complete:
 
 The `prepared_at` field does not update if more changes are added to the merge request.
 
-## Get single merge request participants
+## Retrieve merge request participants
 
-Get a list of merge request participants.
+Retrieve participants for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/participants
@@ -1379,9 +1379,9 @@ Example response:
 ]
 ```
 
-## Get single merge request reviewers
+## Retrieve merge request reviewers
 
-Get a list of merge request reviewers.
+Retrieve reviewers for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/reviewers
@@ -1425,9 +1425,9 @@ Example response:
 ]
 ```
 
-## Get single merge request commits
+## Retrieve merge request commits
 
-Get a list of merge request commits.
+Retrieve commits for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/commits
@@ -1508,9 +1508,9 @@ Example response:
 ]
 ```
 
-## Get merge request dependencies
+## Retrieve merge request dependencies
 
-Shows information about the merge request dependencies that must be resolved before merging.
+Retrieve dependencies that must be resolved before a merge request can be merged.
 
 > [!note]
 > If the user does not have access to the blocking merge request, no `blocking_merge_request`
@@ -1966,9 +1966,9 @@ Example response:
 }
 ```
 
-## Get merge request blocked MRs
+## Retrieve blocked merge requests
 
-Shows information about the merge requests blocked by the current merge request.
+Retrieve merge requests blocked by a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/blockees
@@ -2160,7 +2160,7 @@ Example response:
 ]
 ```
 
-## Get single merge request changes
+## Retrieve merge request changes
 
 > [!warning]
 > This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
@@ -2168,7 +2168,7 @@ Example response:
 > [List merge request diffs](#list-merge-request-diffs) endpoint instead.
 > <!-- Do not remove line until endpoint is actually removed -->
 
-Shows information about the merge request including its files and changes.
+Retrieve information about a merge request, including its files and changes.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/changes
@@ -2451,7 +2451,7 @@ index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb73
 
 ## List merge request pipelines
 
-Get a list of merge request pipelines.
+List all pipelines for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/pipelines
@@ -2545,9 +2545,9 @@ Example response:
 }
 ```
 
-## Create MR
+## Create a merge request
 
-Creates a new merge request.
+Create a new merge request.
 
 ```plaintext
 POST /projects/:id/merge_requests
@@ -2702,9 +2702,9 @@ Example response:
 
 For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
 
-## Update MR
+## Update a merge request
 
-Updates an existing merge request. You can change the target branch, title, or even close the MR.
+Update an existing merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid
@@ -2879,7 +2879,7 @@ For important notes on response data, see [Single merge request response notes](
 
 ## Delete a merge request
 
-Only for administrators and project owners. Deletes the merge request in question.
+Delete a merge request. Only administrators and project owners can delete merge requests.
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid
@@ -3311,7 +3311,7 @@ If the request is added to the queue successfully, the response contains:
 }
 ```
 
-You can poll the [Get single MR](#get-single-mr) endpoint with the
+You can poll the [Retrieve a merge request](#retrieve-a-merge-request) endpoint with the
 `include_rebase_in_progress` parameter to check the status of the
 asynchronous request.
 
@@ -3349,7 +3349,7 @@ The [notes](notes.md) resource creates comments.
 
 ## List issues that close on merge
 
-Get all the issues that would close by merging the provided merge request.
+List issues that would close when a merge request is merged.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
@@ -3509,7 +3509,7 @@ Example response when you use an external issue tracker, like Jira:
 
 ## List issues related to the merge request
 
-Get all the related issues from title, description, commit messages, comments, and discussions of the merge request.
+List issues related to a merge request from its title, description, commit messages, comments, and discussions.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/related_issues
@@ -4043,9 +4043,9 @@ Example response:
 }
 ```
 
-## Get merge request diff versions
+## Retrieve merge request diff versions
 
-Get a list of merge request diff versions.
+Retrieve diff versions for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions
@@ -4098,7 +4098,7 @@ Example response:
 | `head_commit_sha`  | The HEAD commit of the source branch.                                               |
 | `start_commit_sha` | The HEAD commit SHA of the target branch when this version of the diff was created. |
 
-## Get a single merge request diff version
+## Retrieve a merge request diff version
 
 {{< history >}}
 
@@ -4106,7 +4106,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single merge request diff version.
+Retrieve a specific diff version for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
@@ -4372,7 +4372,9 @@ Example response:
 }
 ```
 
-## Get time tracking stats
+## Retrieve time tracking statistics
+
+Retrieve time tracking statistics for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/time_stats

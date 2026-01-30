@@ -47,8 +47,6 @@ export default {
     SectionLayout,
     GlButton,
     GlExperimentBadge,
-    UpgradeBanner: () =>
-      import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
     TrainingProviderList,
     RefTrackingList,
@@ -113,9 +111,6 @@ export default {
     };
   },
   computed: {
-    canUpgrade() {
-      return [...this.augmentedSecurityFeatures].some(({ available }) => !available);
-    },
     canViewCiHistory() {
       return Boolean(this.gitlabCiPresent && this.gitlabCiHistoryPath);
     },
@@ -215,12 +210,6 @@ export default {
     </user-callout-dismisser>
 
     <page-heading :heading="$options.i18n.securityConfiguration" />
-
-    <user-callout-dismisser v-if="canUpgrade" feature-name="security_configuration_upgrade_banner">
-      <template #default="{ dismiss, shouldShowCallout }">
-        <upgrade-banner v-if="shouldShowCallout" @close="dismiss" />
-      </template>
-    </user-callout-dismisser>
 
     <gl-tabs
       content-class="gl-pt-0"

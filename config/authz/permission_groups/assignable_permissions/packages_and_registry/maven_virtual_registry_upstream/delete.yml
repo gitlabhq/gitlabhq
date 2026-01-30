@@ -1,6 +1,0 @@
-name: delete_maven_virtual_registry_upstream
-description: Grants the ability to delete Maven virtual registry upstreams
-boundaries:
-  - instance
-permissions:
-  - delete_maven_virtual_registry_upstream

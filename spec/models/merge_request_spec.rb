@@ -1159,15 +1159,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '.by_commit_sha' do
+    include ProjectForksHelper
+
     subject(:by_commit_sha) { described_class.by_commit_sha(merge_request.project, sha) }
 
     let!(:merge_request) { create(:merge_request) }
 
     context 'with sha contained in latest merge request diff' do
-      let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+      let(:commit) { merge_request.merge_request_diff.merge_request_diff_commits.last }
+      let(:sha) { commit.sha }
 
-      it 'returns merge requests' do
-        expect(by_commit_sha).to eq([merge_request])
+      context 'when sha is only present in diff commit metadata' do
+        before do
+          commit.update!(sha: nil)
+        end
+
+        it 'returns merge requests' do
+          expect(by_commit_sha).to eq([merge_request])
+        end
+      end
+
+      context 'when sha is only present in diff commit' do
+        before do
+          commit.merge_request_commits_metadata.destroy!
+        end
+
+        it 'returns merge requests' do
+          expect(by_commit_sha).to eq([merge_request])
+        end
       end
     end
 
@@ -1191,6 +1210,72 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns empty result' do
         expect(by_commit_sha).to be_empty
+      end
+    end
+
+    context 'when target_project_ids is provided' do
+      let_it_be(:target_project_1) { create(:project) }
+      let_it_be(:target_project_2) { create(:project) }
+      let_it_be(:forked_project_1) { fork_project(target_project_1, nil, repository: true) }
+      let_it_be(:forked_project_2) { fork_project(target_project_2, nil, repository: true) }
+      let(:sha) { '2ab7834c' }
+
+      let!(:same_repo_mr) do
+        create(:merge_request, source_project: target_project_1, target_project: target_project_1)
+      end
+
+      let!(:fork_mr_1) do
+        create(:merge_request, source_project: forked_project_1, target_project: target_project_1)
+      end
+
+      let!(:fork_mr_2) do
+        create(:merge_request, source_project: forked_project_2, target_project: target_project_2)
+      end
+
+      before do
+        metadata1 = create(:merge_request_commits_metadata, project: target_project_1, sha: sha)
+        metadata2 = create(:merge_request_commits_metadata, project: target_project_2, sha: sha)
+
+        create(:merge_request_diff_commit,
+          merge_request_diff: same_repo_mr.merge_request_diffs.last,
+          sha: nil,
+          merge_request_commits_metadata: metadata1,
+          relative_order: 0)
+
+        create(:merge_request_diff_commit,
+          merge_request_diff: fork_mr_1.merge_request_diffs.last,
+          sha: nil,
+          merge_request_commits_metadata: metadata1,
+          relative_order: 0)
+
+        create(:merge_request_diff_commit,
+          merge_request_diff: fork_mr_2.merge_request_diffs.last,
+          sha: nil,
+          merge_request_commits_metadata: metadata2,
+          relative_order: 0)
+      end
+
+      context 'with single target_project_ids' do
+        it 'finds merge requests for the specified target project' do
+          result = described_class.by_commit_sha(forked_project_1, sha, [target_project_1.id])
+
+          expect(result).to contain_exactly(same_repo_mr, fork_mr_1)
+        end
+      end
+
+      context 'with multiple target_project_ids' do
+        it 'finds merge requests across all specified target projects' do
+          result = described_class.by_commit_sha(forked_project_1, sha, [target_project_1.id, target_project_2.id])
+
+          expect(result).to contain_exactly(same_repo_mr, fork_mr_1, fork_mr_2)
+        end
+      end
+
+      context 'without target_project_ids array' do
+        it 'falls back to using project parameter' do
+          expect(described_class.by_commit_sha(target_project_1, sha))
+            .to contain_exactly(same_repo_mr, fork_mr_1)
+        end
       end
     end
 

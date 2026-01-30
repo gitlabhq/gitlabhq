@@ -77,7 +77,13 @@ class MergeRequestDiff < ApplicationRecord
   scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
   scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
-  scope :by_commit_sha, ->(project, sha) do
+  # Finds merge request diffs by commit SHA.
+  # Commit metadata is stored in `merge_request_commits_metadata` with `project_id` set to
+  # the MR's target_project_id.
+  # - Use `project` = MR's target project
+  # - Use `target_project_ids` = array of target project IDs (cross-project cases)
+  # IMPORTANT: Do not pass the source project as `project` - it won't match the metadata's project_id.
+  scope :by_commit_sha, ->(project, sha, target_project_ids = []) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
       Gitlab::AppLogger.info(
         event: 'merge_request_diff_by_commit_sha_call',
@@ -94,13 +100,15 @@ class MergeRequestDiff < ApplicationRecord
       # to handle that as well.
       sha_array = Array.wrap(sha)
       serialized_shas = sha_array.map { |s| Gitlab::Database::ShaAttribute.new.serialize(s) }
+      project_ids_list = Array.wrap(target_project_ids).presence || [project.id]
 
-      metadata_query =
-        MergeRequestDiff.joins(:merge_request_diff_commits)
-          .joins(
-            "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id = #{project.id}"
-          )
-          .where(merge_request_commits_metadata: { sha: serialized_shas })
+      metadata_query = MergeRequestDiff.joins(:merge_request_diff_commits)
+                                       .joins(
+                                         MergeRequestDiff.sanitize_sql_array([
+                                           "INNER JOIN merge_request_commits_metadata ON merge_request_commits_metadata.id = merge_request_diff_commits.merge_request_commits_metadata_id AND merge_request_commits_metadata.project_id IN (?)",
+                                           project_ids_list
+                                         ])
+                                       ).where(merge_request_commits_metadata: { sha: serialized_shas })
 
       diff_commits_query =
         MergeRequestDiff

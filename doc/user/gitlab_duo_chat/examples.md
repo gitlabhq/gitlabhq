@@ -15,7 +15,7 @@ title: Ask GitLab Duo Chat
 
 {{< collapsible title="Model information" >}}
 
-Unless stated otherwise, the default LLM for GitLab Duo Chat (Classic) is Anthropic [Claude Sonnet 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4-5).
+- [Default LLM](../gitlab_duo/model_selection.md#default-models)
 
 {{< /collapsible >}}
 

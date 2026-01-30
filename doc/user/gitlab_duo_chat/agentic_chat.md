@@ -15,7 +15,7 @@ This feature uses [GitLab Credits](../../subscriptions/gitlab_credits.md).
 
 {{< collapsible title="Model information" >}}
 
-- Default LLM: Anthropic [Claude Haiku 4.5](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-haiku-4-5)
+- [Default LLM](../duo_agent_platform/model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}

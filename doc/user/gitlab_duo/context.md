@@ -22,26 +22,35 @@ Information can be available:
 
 {{< /history >}}
 
-The following context is available to GitLab Duo Chat.
+The context available to GitLab Duo Chat depends on:
 
-### Always available
+- Whether you're using [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md) or [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md).
+- Where you're using Chat.
+
+### GitLab Duo Chat (Classic)
+
+The following context is available to GitLab Duo Chat (Classic).
+
+#### Always available
 
 - GitLab documentation.
 - General programming knowledge, best practices, and language specifics.
 - Content in the file you're viewing or editing, including code before and after your cursor.
 - When using Chat in the GitLab UI, the current page title and URL.
-- The `/refactor`, `/fix`, and `/tests` slash commands have access to the latest
+- The `/refactor`, `/fix`, `/tests`, and `/explain` slash commands have access to the latest
   [Repository X-Ray report](../project/repository/code_suggestions/repository_xray.md).
 
-### Based on location
+#### Based on location
 
 When you have any of these resources open, GitLab Duo knows about them.
 
-- Files (included with the `/include` command)
-- Code selected in a file
-- Issues (GitLab Duo Enterprise only)
-- Epics (GitLab Duo Enterprise only)
-- [Other work item types](../work_items/_index.md#work-item-types) (GitLab Duo Enterprise only)
+- Files you've told Chat about, by either:
+  - Providing a direct file path.
+  - In your IDE, including with the `/include` command.
+- Code selected in a file.
+- Issues (GitLab Duo Enterprise only).
+- Epics (GitLab Duo Enterprise only).
+- [Other work item types](../work_items/_index.md#work-item-types) (GitLab Duo Enterprise only).
 
 > [!note]
 > In the IDEs, secrets and sensitive values that match known formats are redacted before
@@ -53,10 +62,50 @@ In the UI, when you're in a merge request, GitLab Duo also knows about:
 - Commits in the merge request (GitLab Duo Enterprise only).
 - The merge request pipeline's CI/CD jobs (GitLab Duo Enterprise only).
 
-### When referenced explicitly
+#### When referenced explicitly
 
 All of the resources that are available based on your location
 are also available when you refer to them explicitly by their ID or URL.
+
+### GitLab Duo Chat (Agentic)
+
+The following context is available to GitLab Duo Chat (Agentic).
+
+#### Always available
+
+- GitLab documentation.
+- General programming knowledge, best practices, and language specifics.
+- Your entire project and all of its files that are tracked by Git.
+- The GitLab [Search API](../../api/search.md), which Chat uses to find related issues or merge requests.
+- When using Chat in the GitLab UI, the current page title and URL.
+
+#### Based on location
+
+- In your IDE, files you have open. You can close those files if you do not want them used for context.
+- In the GitLab UI, the current page context (for example, when viewing a merge request or issue).
+
+#### When referenced explicitly
+
+GitLab Duo Chat (Agentic) can autonomously retrieve and use:
+
+- Files (by searching your project or when you provide file paths)
+- Epics
+- Issues
+- Merge requests
+- CI/CD pipelines and job logs
+- Commits
+- Work items
+
+Unlike Classic Chat, Agentic Chat can search for these resources without requiring you to specify exact IDs or URLs. For example, you can ask "Find the merge request about authentication" and Chat searches for relevant merge requests.
+
+#### Extended context in IDEs
+
+When using GitLab Duo Chat (Agentic) in a supported IDE, you can extend Chat's capabilities:
+
+- Use the [Model Context Protocol (MCP)](model_context_protocol/_index.md) to
+  connect Chat to external data sources and tools.
+- Use a [custom rules](customize_duo/custom_rules.md) or [AGENTS.md](customize_duo/agents_md.md)
+  file to provide Chat with project-specific context, coding standards, and team practices.
 
 ## Software development flow
 
@@ -93,13 +142,19 @@ The following context is available to Code Suggestions.
 ### Based on location
 
 - Files you have open in tabs in the IDE. Optional, but on by default.
+  - Prerequisites:
+    - GitLab 17.2 or later for optimal context weighting.
+    - Supported IDE extensions. For version requirements, see
+      [using open files as context](#using-open-files-as-context).
   - These files provide GitLab Duo with information about the standards and practices in your project.
   - Close files if you do not want them used for context.
+  - The most recently opened or changed files are prioritized for context.
   - Code completion is aware of all [supported languages](../project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide).
   - Code generation is aware of files in these languages only:
     Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 - Files imported in the file you're viewing or editing. Optional, and off by default.
   - These files provide GitLab Duo with information about the classes and methods in your file.
+  - Supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 - Code selected in your editor.
 - [Repository X-Ray files](../project/repository/code_suggestions/repository_xray.md).
 
@@ -107,6 +162,9 @@ The following context is available to Code Suggestions.
 > Secrets and sensitive values that match known formats are redacted before
 > they are used to generate code.
 > This applies to files added by using `/include`.
+
+For more information about how Code Suggestions uses context in IDEs, see the
+[GitLab Language Server documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp#use-open-tabs-as-context).
 
 #### Change what Code Suggestions uses for context
 

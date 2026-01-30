@@ -16,7 +16,7 @@ title: Code Suggestions
 
 {{< collapsible title="Model information" >}}
 
-- LLM for code completion: [Fireworks Codestral](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) (default), [Vertex AI-hosted Codestral](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) For code generation: [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](../../../gitlab_duo/model_selection.md#default-models)
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 

@@ -4456,6 +4456,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(pipeline.all_merge_requests).to eq([merge_request])
       end
 
+      it 'returns merge requests when sha is in merge_request_commits_metadata' do
+        commit_metadata = create(:merge_request_commits_metadata, project: project, sha: pipeline.sha)
+        create(:merge_request_diff_commit,
+          merge_request_diff: merge_request.merge_request_diff,
+          merge_request_commits_metadata: commit_metadata,
+          sha: nil)
+
+        expect(pipeline.all_merge_requests).to eq([merge_request])
+      end
+
       it "doesn't return merge requests having the same source branch without the pipeline sha" do
         create(:merge_request_diff_commit, merge_request_diff: merge_request.merge_request_diff, sha: 'unrelated')
 
@@ -4466,6 +4476,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         create(:merge_request, source_project: pipeline_project, target_project: project, source_branch: 'feature', target_branch: 'master')
 
         expect(pipeline.all_merge_requests).to be_empty
+      end
+
+      context 'when feature flag merge_request_diff_commits_dedup is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'returns all merge requests having the same source branch and the pipeline sha' do
+          create(:merge_request_diff_commit, merge_request_diff: merge_request.merge_request_diff, sha: pipeline.sha)
+
+          expect(pipeline.all_merge_requests).to eq([merge_request])
+        end
       end
 
       context 'when there is a merge request pipeline' do

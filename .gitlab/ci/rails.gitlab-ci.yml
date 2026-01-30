@@ -1002,6 +1002,22 @@ rspec-ee system pg16:
     - .rspec-ee-system-parallel
     - .rails:rules:ee-only-system
 
+rspec-ee system pg16 vue3:
+  extends:
+    - rspec-ee system pg16
+    - .rails:rules:ee-and-foss-system-vue3
+  needs:
+    # Same as needs of "rspec-ee system pg16" with
+    # "compile-test-assets vue3" instead of "compile-test-assets"
+    - !reference [.repo-from-artifacts, needs]
+    - job: "setup-test-env"
+    - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets vue3"
+    - job: "detect-tests"
+      optional: true
+    - job: "db:setup-ee pg16"
+      optional: true
+
 rspec-ee system pg16 single-db:
   extends:
     - rspec-ee system pg16

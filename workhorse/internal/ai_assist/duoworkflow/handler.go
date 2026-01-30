@@ -85,7 +85,7 @@ func (h *Handler) Build() http.Handler {
 		if err := runner.Execute(r.Context()); err != nil {
 			log.WithRequest(r).WithError(err).WithFields(log.Fields{
 				"duration_ms": time.Since(start).Milliseconds(),
-			}).Error()
+			}).Error("error executing workflow")
 
 			if errors.Is(err, errFailedToAcquireLockError) {
 				// We provide the client with specific error details

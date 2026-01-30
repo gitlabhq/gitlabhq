@@ -1,0 +1,8 @@
+name: create_virtual_registry
+description: Grants the ability to create virtual registries
+boundaries:
+  - instance
+  - group
+permissions:
+  - upload_maven_package_file
+  - associate_maven_virtual_registry_upstream

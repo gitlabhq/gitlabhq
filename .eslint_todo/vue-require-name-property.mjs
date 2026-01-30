@@ -424,7 +424,6 @@ export default {
     'app/assets/javascripts/google_cloud/aiml/panel.vue',
     'app/assets/javascripts/google_cloud/aiml/service_table.vue',
     'app/assets/javascripts/google_cloud/components/google_cloud_menu.vue',
-    'app/assets/javascripts/google_cloud/components/incubation_banner.vue',
     'app/assets/javascripts/google_cloud/components/revoke_oauth.vue',
     'app/assets/javascripts/google_cloud/configuration/panel.vue',
     'app/assets/javascripts/google_cloud/databases/cloudsql/create_instance_form.vue',

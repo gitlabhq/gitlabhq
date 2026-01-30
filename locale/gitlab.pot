@@ -12880,9 +12880,6 @@ msgstr ""
 msgid "Branches|Please type the following to confirm: %{codeStart}delete%{codeEnd}."
 msgstr ""
 
-msgid "Branches|See all branch-related settings together with branch rules"
-msgstr ""
-
 msgid "Branches|Show active branches"
 msgstr ""
 
@@ -12935,9 +12932,6 @@ msgid "Branches|Yes, delete protected branch"
 msgstr ""
 
 msgid "Branches|You are about to %{strongStart}delete all branches%{strongEnd} that were merged into %{codeStart}%{defaultBranch}%{codeEnd}."
-msgstr ""
-
-msgid "Branches|You can now find an overview of settings for protected branches, merge request approvals, status checks, and security approvals conveniently in one spot."
 msgstr ""
 
 msgid "Branches|You're about to permanently delete the branch %{branchName}."
@@ -60963,12 +60957,6 @@ msgstr ""
 msgid "SecurityConfiguration|Enabled"
 msgstr ""
 
-msgid "SecurityConfiguration|High-level vulnerability statistics across projects and groups"
-msgstr ""
-
-msgid "SecurityConfiguration|Immediately begin risk analysis and remediation with application security features. Start with SAST and Secret Detection, available to all plans. Upgrade to Ultimate to get all features, including:"
-msgstr ""
-
 msgid "SecurityConfiguration|Learn more about our vulnerability data retention policies"
 msgstr ""
 
@@ -60987,9 +60975,6 @@ msgstr ""
 msgid "SecurityConfiguration|Manage profiles for use by DAST scans."
 msgstr ""
 
-msgid "SecurityConfiguration|More scan types, including DAST, Dependency Scanning, Fuzzing"
-msgstr ""
-
 msgid "SecurityConfiguration|Not enabled"
 msgstr ""
 
@@ -61002,16 +60987,10 @@ msgstr ""
 msgid "SecurityConfiguration|Quickly enable all continuous testing and compliance tools by enabling %{linkStart}Auto DevOps%{linkEnd}"
 msgstr ""
 
-msgid "SecurityConfiguration|Runtime security metrics for application environments"
-msgstr ""
-
 msgid "SecurityConfiguration|SAST configuration"
 msgstr ""
 
 msgid "SecurityConfiguration|Secret detection configuration"
-msgstr ""
-
-msgid "SecurityConfiguration|Secure your project"
 msgstr ""
 
 msgid "SecurityConfiguration|Security configuration"
@@ -61038,9 +61017,6 @@ msgstr ""
 msgid "SecurityConfiguration|Toggle secret push protection"
 msgstr ""
 
-msgid "SecurityConfiguration|Upgrade or start a free trial"
-msgstr ""
-
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
 msgstr ""
 
@@ -61054,9 +61030,6 @@ msgid "SecurityConfiguration|Vulnerability Management"
 msgstr ""
 
 msgid "SecurityConfiguration|Vulnerability archives"
-msgstr ""
-
-msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
 msgid "SecurityDescription|The linked group refers to the groups that are linked to security policy projects. Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
@@ -70025,9 +69998,6 @@ msgstr ""
 msgid "This is an automated message. Please don't reply to this message."
 msgstr ""
 
-msgid "This is an experimental feature developed by GitLab Incubation Engineering."
-msgstr ""
-
 msgid "This is really just a warning"
 msgstr ""
 
@@ -72144,6 +72114,9 @@ msgid "Trial|Start your free Ultimate and GitLab Duo Agent Platform trial"
 msgstr ""
 
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
+msgstr ""
+
+msgid "Trial|Start your free Ultimate trial"
 msgstr ""
 
 msgid "Trial|Start your free Ultimate trial!"
@@ -75213,6 +75186,9 @@ msgstr ""
 msgid "Virtual registry"
 msgstr ""
 
+msgid "Virtual registry|Upstream not found."
+msgstr ""
+
 msgid "VirtualRegistries|API endpoints rate limit"
 msgstr ""
 
@@ -75408,6 +75384,9 @@ msgstr ""
 msgid "VirtualRegistry|Connection successful."
 msgstr ""
 
+msgid "VirtualRegistry|Container"
+msgstr ""
+
 msgid "VirtualRegistry|Container virtual registries"
 msgstr ""
 
@@ -75427,6 +75406,9 @@ msgid "VirtualRegistry|Create registry"
 msgstr ""
 
 msgid "VirtualRegistry|Create upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Delete Container upstream cache entry?"
 msgstr ""
 
 msgid "VirtualRegistry|Delete Maven registry"
@@ -76697,9 +76679,6 @@ msgid "We have detected that your message might be composed against %{linkStart}
 msgstr ""
 
 msgid "We heard back from your device. You have been authenticated."
-msgstr ""
-
-msgid "We invite you to %{featureLinkStart}request a feature%{featureLinkEnd}, %{bugLinkStart}report a bug%{bugLinkEnd} or %{feedbackLinkStart}share feedback%{feedbackLinkEnd}"
 msgstr ""
 
 msgid "We recommend a work email address."

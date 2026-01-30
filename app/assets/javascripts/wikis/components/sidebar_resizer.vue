@@ -13,45 +13,41 @@ export default {
       sidebarWidth: 220,
       minWidth: 200,
       maxWidth: 600,
-      prevTransitions: {},
     };
   },
   mounted() {
     window.addEventListener('resize', this.updateWidths);
     this.updateWidths();
-    this.getSidebar().classList.remove('gl-hidden');
+    this.getSidebarContainer().classList.remove('gl-hidden');
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.updateWidths);
   },
   methods: {
-    getSidebar() {
+    getSidebarContainer() {
       return document.querySelector('.sidebar-container');
     },
+    getSidebar() {
+      return document.querySelector('.wiki-sidebar');
+    },
     updateSidebarWidth(width) {
-      const el = this.getSidebar();
+      const el = this.getSidebarContainer();
       el.style.width = width;
     },
-    updateSidebarTransition(transition) {
-      const el = this.getSidebar();
-      el.style.transition = transition;
-    },
     removeTransitions() {
-      this.prevTransitions = {
-        sidebar: this.getSidebar().style.transition,
-      };
-
-      this.updateSidebarTransition('0s');
+      this.getSidebar().classList.remove('transition-enabled');
     },
     restoreTransitions() {
-      this.updateSidebarTransition(this.prevTransitions.sidebar);
+      this.getSidebar().classList.add('transition-enabled');
     },
     updateWidths(width) {
+      this.removeTransitions();
+
       if (typeof width === 'number') this.sidebarWidth = width;
 
       this.updateSidebarWidth(`${this.sidebarWidth}px`);
 
-      this.resizeEnabled = true;
+      requestAnimationFrame(this.restoreTransitions);
     },
     resetSize() {
       this.sidebarWidth = this.defaultWidth;

@@ -5,7 +5,10 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
     DEFAULT_OPTIONS = {
       multipart: true,
       allow_local_requests: true,
-      silent_mode_enabled: false # override default value to be always false to allow clickhouse requests in silent mode
+      # override default value to be always false to allow clickhouse requests in silent mode
+      silent_mode_enabled: false,
+      # higher timeout for test environment
+      read_timeout: Rails.env.test? ? 60 : Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS[:read_timeout]
     }.freeze
 
     def self.build_post_proc(**additional_options)

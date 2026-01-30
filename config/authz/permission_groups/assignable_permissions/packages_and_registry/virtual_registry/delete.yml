@@ -1,0 +1,8 @@
+name: delete_virtual_registry
+description: Grants the ability to delete virtual registries
+boundaries:
+  - instance
+permissions:
+  - purge_maven_virtual_registry_upstream_cache
+  - disassociate_maven_virtual_registry_upstream
+  - delete_maven_virtual_registry_upstream

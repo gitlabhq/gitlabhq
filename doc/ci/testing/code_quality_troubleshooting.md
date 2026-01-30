@@ -43,7 +43,7 @@ Missing report on the target branch can be due to:
 - Commits are made to the default branch that do not run the Code Quality job.
 - The [`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in) CI/CD setting can cause the Code Quality artifacts to expire faster than desired.
 
-Verify the presence of report on the base commit by obtaining the `base_sha` using the [merge request API](../../api/merge_requests.md#get-single-mr) and use the [pipelines API with the `sha` attribute](../../api/pipelines.md#list-project-pipelines) to check if pipelines ran.
+Verify the presence of report on the base commit by obtaining the `base_sha` using the [merge request API](../../api/merge_requests.md#retrieve-a-merge-request) and use the [pipelines API with the `sha` attribute](../../api/pipelines.md#list-project-pipelines) to check if pipelines ran.
 
 ## No Code Quality symbol in the changes view
 

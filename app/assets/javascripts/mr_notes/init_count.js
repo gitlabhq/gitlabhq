@@ -4,7 +4,7 @@ export function initOverviewTabCounter() {
   const discussionsCount = document.querySelector('.js-discussions-count');
 
   const store = useNotes();
-  let counter = store.discussionTabCounter;
+  let counter = parseInt(discussionsCount.textContent, 10);
   store.$subscribe(() => {
     const newCounter = store.discussionTabCounter;
     if (counter !== newCounter) {

@@ -13,7 +13,6 @@ module Users
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
-    BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
     BRANCH_RULES_TIP_CALLOUT = 'branch_rules_tip_callout'
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
     PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
@@ -79,10 +78,6 @@ module Users
       return false unless object.is_a?(::WebHooks::HasWebHooks)
 
       user_dismissed?(WEB_HOOK_DISABLED, object.last_webhook_failure, object: object)
-    end
-
-    def show_branch_rules_info?
-      !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
     end
 
     def show_branch_rules_tip?

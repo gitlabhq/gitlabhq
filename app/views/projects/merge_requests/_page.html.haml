@@ -33,7 +33,7 @@
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
                 = _("Overview")
                 = render Pajamas::BadgeComponent.new do
-                  %span.js-discussions-count= @merge_request.related_notes.user.count
+                  %span.js-discussions-count= @merge_request.notes.user.count
             - if @merge_request.source_project
               = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
                 = tab_link_for @merge_request, :commits do

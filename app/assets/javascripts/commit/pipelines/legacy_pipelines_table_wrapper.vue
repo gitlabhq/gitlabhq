@@ -516,7 +516,7 @@ export default {
     <div v-else-if="shouldRenderTable">
       <div
         v-if="canRenderPipelineButton"
-        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @lg/panel:gl-hidden"
+        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @md/panel:gl-hidden"
       >
         <gl-button
           class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"

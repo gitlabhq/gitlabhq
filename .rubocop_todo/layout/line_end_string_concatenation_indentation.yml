@@ -164,7 +164,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/controllers/projects/deploy_keys_controller_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/licenses/admin_adds_license_spec.rb'
-    - 'ee/spec/features/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/features/groups/contribution_analytics_spec.rb'
     - 'ee/spec/features/groups/group_overview_spec.rb'
     - 'ee/spec/features/merge_request/user_merges_with_namespace_storage_limits_spec.rb'

@@ -50,7 +50,7 @@ When creating and updating users through the API, `null` was a valid value for t
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/322117).
 
 The endpoint to get
-[changes from a single merge request](../merge_requests.md#get-single-merge-request-changes)
+[changes from a single merge request](../merge_requests.md#retrieve-merge-request-changes)
 has been deprecated in favor the
 [list merge request diffs](../merge_requests.md#list-merge-request-diffs) endpoint.
 API users are encouraged to switch to the new diffs endpoint instead.

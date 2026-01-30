@@ -3,7 +3,7 @@ stage: Fulfillment
 group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Understand how GitLab Credits work and view your credit usage.
-title: GitLab Credits
+title: GitLab Credits and usage billing
 ---
 
 {{< details >}}
@@ -52,8 +52,8 @@ All users in your subscription can draw from this shared pool after they have co
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
 The number of credits purchased for the year is divided in 12.
 
-For example, you purchase 12,000 GitLab Credits for the year.
-You get access to 1,000 per month, representing the Monthly Commitment Pool.
+For example, when you purchase a monthly commitment pool of 1,000 credits,
+you will have 1,000 credits available each month for the contract term.
 
 You can increase your commitment at any time through your GitLab account team.
 The additional commitment applies for the remainder of your contract term.
@@ -65,15 +65,22 @@ The commitment is billed up front at the start of the contract term.
 Credits become available immediately after purchase, and reset on the first of every month.
 Unused credits do not roll over to the next month.
 
+> [!note]
+> When purchasing a monthly commitment pool, you accept the usage billing terms, including On-Demand credit usage.
+
 ## On-Demand credits
 
 On-Demand credits cover usage incurred after you have used all included credits
 and the credits in the Monthly Committed Pool.
 On-Demand credits are billed monthly.
 
+On-Demand credits are consumed at the list price of $1 per credit used.
+
 On-Demand credits can be used after you have accepted usage billing terms.
 You can accept these terms when you purchase your monthly commitment,
 or directly in the GitLab Credits dashboard.
+By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
+in the current monthly billing period, and any On-Demand charges incurred going forward.
 
 If you haven’t accepted usage billing terms, you can’t use GitLab Duo Agent Platform and consume On-Demand credits.
 You can regain access to GitLab Duo Agent Platform by either purchasing

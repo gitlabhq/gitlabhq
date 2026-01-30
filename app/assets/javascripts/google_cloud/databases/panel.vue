@@ -1,13 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import GoogleCloudMenu from '../components/google_cloud_menu.vue';
-import IncubationBanner from '../components/incubation_banner.vue';
 import InstanceTable from './cloudsql/instance_table.vue';
 import ServiceTable from './service_table.vue';
 
 export default {
   components: {
-    IncubationBanner,
     InstanceTable,
     GoogleCloudMenu,
     ServiceTable,
@@ -51,8 +49,6 @@ export default {
 
 <template>
   <div>
-    <incubation-banner />
-
     <google-cloud-menu
       active="databases"
       :configuration-url="configurationUrl"

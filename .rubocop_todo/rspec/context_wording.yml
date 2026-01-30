@@ -78,7 +78,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/epic_boards/multiple_epic_boards_spec.rb'
     - 'ee/spec/features/epic_boards/new_epic_spec.rb'
     - 'ee/spec/features/geo_node_spec.rb'
-    - 'ee/spec/features/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/charts_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/multiple_value_streams_spec.rb'

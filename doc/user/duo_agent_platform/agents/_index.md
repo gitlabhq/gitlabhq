@@ -14,7 +14,7 @@ title: Agents
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+- [Default LLM](../model_selection.md#default-models)
 
 {{< /collapsible >}}
 

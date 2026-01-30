@@ -172,6 +172,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.by_commit_sha' do
+    include ProjectForksHelper
+
     let_it_be(:project) { create(:project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
@@ -237,6 +239,70 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it 'returns merge request diffs matching SHA in diff commits' do
         expect(described_class.by_commit_sha(project, 'abc123')).to be_empty
         expect(described_class.by_commit_sha(project, 'def456')).to eq([merge_request_diff])
+      end
+    end
+
+    context 'when target_project_ids is provided' do
+      let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
+      let_it_be(:forked_mr) { create(:merge_request, source_project: project, target_project: forked_project) }
+      let_it_be(:forked_mr_diff) { create(:merge_request_diff, merge_request: forked_mr) }
+
+      let_it_be(:commits_metadata1) { create(:merge_request_commits_metadata, project: forked_project, sha: 'xyz789') }
+
+      let_it_be(:diff_commit_with_metadata) do
+        create(
+          :merge_request_diff_commit,
+          merge_request_diff: forked_mr_diff,
+          merge_request_commits_metadata_id: commits_metadata1.id,
+          relative_order: 0,
+          sha: nil
+        )
+      end
+
+      context 'with single target_project_id' do
+        it 'finds diffs in the specified target project' do
+          result = described_class.by_commit_sha(project, 'xyz789', [forked_project.id])
+
+          expect(result).to eq([forked_mr_diff])
+        end
+      end
+
+      context 'with multiple target_project_ids' do
+        let_it_be(:forked_project2) { fork_project(project, nil, repository: true) }
+        let_it_be(:forked_mr_2) { create(:merge_request, source_project: project, target_project: forked_project2) }
+        let_it_be(:forked_mr_diff_2) { create(:merge_request_diff, merge_request: forked_mr_2) }
+        let_it_be(:commits_metadata2) do
+          create(:merge_request_commits_metadata, project: forked_project2, sha: 'abc123')
+        end
+
+        let_it_be(:diff_commit_with_metadata2) do
+          create(
+            :merge_request_diff_commit,
+            merge_request_diff: forked_mr_diff_2,
+            merge_request_commits_metadata_id: commits_metadata2.id,
+            relative_order: 0,
+            sha: nil
+          )
+        end
+
+        it 'finds diffs across multiple projects' do
+          result =
+            described_class.by_commit_sha(
+              project,
+              %w[abc123 xyz789],
+              [project.id, forked_project.id, forked_project2.id]
+            )
+
+          expect(result).to contain_exactly(merge_request_diff, forked_mr_diff_2, forked_mr_diff)
+        end
+      end
+
+      context 'with empty target_project_ids array' do
+        it 'falls back to using project parameter' do
+          result = described_class.by_commit_sha(project, 'abc123', [])
+
+          expect(result).to eq([merge_request_diff])
+        end
       end
     end
 

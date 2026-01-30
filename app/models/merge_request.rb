@@ -369,7 +369,13 @@ class MergeRequest < ApplicationRecord
   scope :including_target_project, -> do
     includes(:target_project)
   end
-  scope :by_commit_sha, ->(project, sha) do
+  # Finds merge requests containing the given commit SHA(s).
+  # Commit metadata is stored in `merge_request_commits_metadata` with `project_id` set to
+  # the MR's target_project_id.
+  # - Use `project` = MR's target project
+  # - Use `target_project_ids` = array of target project IDs (cross-project cases)
+  # IMPORTANT: Do not pass the source project as `project` - it won't match the metadata's project_id.
+  scope :by_commit_sha, ->(project, sha, target_project_ids = []) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- pre-existing ff, ops flag
       Gitlab::AppLogger.info(
         event: 'merge_request_by_commit_sha_call',
@@ -377,7 +383,7 @@ class MergeRequest < ApplicationRecord
       )
     end
 
-    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(project, sha)).reorder(nil)
+    where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(project, sha, target_project_ids)).reorder(nil)
   end
   scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)

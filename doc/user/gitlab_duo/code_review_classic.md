@@ -15,7 +15,7 @@ title: GitLab Duo Code Review (Classic)
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+- [Default LLM](model_selection.md#default-models)
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
