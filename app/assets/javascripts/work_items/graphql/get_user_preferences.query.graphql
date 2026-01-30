@@ -1,16 +1,20 @@
-query getUserWorkItemsPreferences($namespace: ID!, $workItemTypeId: WorkItemsTypeID!) {
+query getUserWorkItemsPreferences(
+  $namespace: ID!
+  $workItemTypeId: WorkItemsTypeID!
+  $userPreferencesOnly: Boolean = false
+) {
   currentUser {
     id
     userPreferences {
       workItemsDisplaySettings
     }
-    workItemPreferences(namespacePath: $namespace) {
+    workItemPreferences(namespacePath: $namespace) @skip(if: $userPreferencesOnly) {
       displaySettings
     }
     workItemPreferencesWithType: workItemPreferences(
       namespacePath: $namespace
       workItemTypeId: $workItemTypeId
-    ) {
+    ) @skip(if: $userPreferencesOnly) {
       sort
     }
   }

@@ -1,40 +1,82 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import MergeChecksTitleRegex from '~/vue_merge_request_widget/components/checks/title_regex.vue';
 import MergeChecksMessage from '~/vue_merge_request_widget/components/checks/message.vue';
+import titleRegexQuery from '~/vue_merge_request_widget/queries/title_regex.query.graphql';
+
+Vue.use(VueApollo);
+
+const TEST_PROJECT_PATH = 'gitlab-org/gitlab';
+const TEST_PROJECT_ID = 'gid://gitlab/Project/1';
 
 describe('MergeChecksTitleRegex component', () => {
   let wrapper;
 
-  function createComponent(
-    propsData = {
-      check: {
-        status: 'FAILED',
-        identifier: 'title_regex',
+  const createTitleRegexQueryResponse = (mergeRequestTitleRegexDescription = null) => ({
+    data: {
+      project: {
+        __typename: 'Project',
+        id: TEST_PROJECT_ID,
+        mergeRequestTitleRegexDescription,
       },
     },
-  ) {
-    wrapper = mountExtended(MergeChecksTitleRegex, {
-      propsData,
-    });
-  }
+  });
 
-  it('passes check down to the MergeChecksMessage', () => {
-    const check = {
-      status: 'failed',
-      identifier: 'title_regex',
-    };
-    createComponent({ check });
+  const createComponent = async ({
+    check = { status: 'FAILED', identifier: 'title_regex' },
+    mr = { targetProjectFullPath: TEST_PROJECT_PATH },
+    titleRegexQueryHandler = jest.fn().mockResolvedValue(createTitleRegexQueryResponse()),
+  } = {}) => {
+    const apolloProvider = createMockApollo([[titleRegexQuery, titleRegexQueryHandler]]);
+
+    wrapper = mountExtended(MergeChecksTitleRegex, {
+      apolloProvider,
+      propsData: { check, mr },
+    });
+
+    await waitForPromises();
+  };
+
+  it('passes check to MergeChecksMessage', async () => {
+    const check = { status: 'FAILED', identifier: 'title_regex' };
+    await createComponent({ check });
 
     expect(wrapper.findComponent(MergeChecksMessage).props('check')).toEqual(check);
   });
 
-  it('has a link to the edit page', () => {
-    const editPath = `${document.location.pathname.replace(/\/$/, '')}/edit`;
+  it('links to the edit page', async () => {
+    await createComponent();
 
-    createComponent();
+    expect(wrapper.findByTestId('extension-actions-button').attributes('href')).toBe(
+      `${document.location.pathname.replace(/\/$/, '')}/edit`,
+    );
+  });
 
-    const editLink = wrapper.findByTestId('extension-actions-button');
+  it('queries for title regex description with correct project path', async () => {
+    const titleRegexQueryHandler = jest.fn().mockResolvedValue(createTitleRegexQueryResponse());
+    await createComponent({ titleRegexQueryHandler });
 
-    expect(editLink.attributes('href')).toBe(editPath);
+    expect(titleRegexQueryHandler).toHaveBeenCalledWith({ projectPath: TEST_PROJECT_PATH });
+  });
+
+  it.each([
+    ['renders description when present', 'MR title must match: ^feat|fix|chore:', true],
+    ['does not render description when null', null, false],
+    ['does not render description when empty', '', false],
+  ])('%s', async (_, description, shouldExist) => {
+    await createComponent({
+      titleRegexQueryHandler: jest
+        .fn()
+        .mockResolvedValue(createTitleRegexQueryResponse(description)),
+    });
+
+    const descriptionEl = wrapper.find('.gl-text-subtle');
+    expect(descriptionEl.exists()).toBe(shouldExist);
+    if (shouldExist) {
+      expect(descriptionEl.text()).toBe(description);
+    }
   });
 });

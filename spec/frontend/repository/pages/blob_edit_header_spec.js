@@ -471,11 +471,10 @@ describe('BlobEditHeader', () => {
 
           expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
             url: window.location.href,
-            targetProjectPath: 'user/gitlab-fork',
-            targetProjectId: 456,
-            projectId: 123,
-            originalBranch: 'main',
+            forkProjectPath: 'user/gitlab-fork',
             sourceBranch: 'patch-1',
+            upstreamProjectId: 123,
+            targetBranch: 'main',
           });
           expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
         });
@@ -510,11 +509,10 @@ describe('BlobEditHeader', () => {
           expect(mock.history.post[0].url).toBe('/api/v4/projects/456/repository/commits');
           expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
             url: window.location.href,
-            targetProjectPath: 'user/gitlab-fork',
-            targetProjectId: 456,
-            projectId: 123,
-            originalBranch: 'main',
+            forkProjectPath: 'user/gitlab-fork',
             sourceBranch: 'patch-1',
+            upstreamProjectId: 123,
+            targetBranch: 'main',
           });
           expect(redirectUtils.redirectToBlobWithAlert).not.toHaveBeenCalled();
         });

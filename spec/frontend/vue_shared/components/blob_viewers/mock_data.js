@@ -16,6 +16,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                   {
                     lineno: 1,
                     span: 3,
+                    previousPath: 'old/file.js',
                     blameOffset: '0px',
                     commit: {
                       id: 'gid://gitlab/CommitPresenter/13b0aca4142d1d55931577f69289a792f216f805',
@@ -27,9 +28,9 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       webPath: '/commit/1234',
                       author: {},
                       sha: '13b0aca4142d1d55931577f69289a792f216f805',
+                      parentSha: 'parent123',
                     },
                     commitData: {
-                      projectBlameLink: 'project/blame/link',
                       ageMapClass: 'blame-commit-age-9',
                     },
                   },

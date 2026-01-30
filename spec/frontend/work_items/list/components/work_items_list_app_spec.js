@@ -410,10 +410,8 @@ describe('when work items are fetched', () => {
     expect(findWorkItemUserPreferences().props()).toMatchObject({
       isEpicsList: false, // default work item is null so not an epics list
       fullPath: 'full/path',
-      displaySettings: {
-        commonPreferences: { shouldOpenItemsInSidePanel: true },
-        namespacePreferences: {},
-      },
+      commonPreferences: { shouldOpenItemsInSidePanel: true },
+      namespacePreferences: {},
     });
   });
 

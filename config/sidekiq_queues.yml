@@ -1011,6 +1011,8 @@
   - 1
 - - security_analyzers_status_update_archived_analyzer_status
   - 1
+- - security_attributes_background_operation_bulk_update
+  - 1
 - - security_attributes_bulk_update
   - 1
 - - security_attributes_bulk_update_scheduler

@@ -289,21 +289,21 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
 
           context 'when notes widget is disabled for task' do
             let(:policy) { described_class.new(developer, note) }
+            let(:noteable_task) { create(:work_item, :task, project: project) }
+            let(:noteable_issue) { create(:work_item, project: project) }
 
             before do
-              WorkItems::Type.default_by_type(:task).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
+              stub_work_item_widget(noteable_task, notes: false)
             end
 
             context 'when noteable is task' do
-              let(:noteable) { create(:work_item, :task, project: project) }
-              let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
+              let(:note) { create(:note, system: true, noteable: noteable_task, author: user, project: project) }
 
               it_behaves_like 'user cannot read or act on the note'
             end
 
             context 'when noteable is issue' do
-              let(:noteable) { create(:work_item, project: project) }
-              let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
+              let(:note) { create(:note, system: true, noteable: noteable_issue, author: user, project: project) }
 
               it_behaves_like 'user can read the note'
               it_behaves_like 'user can act on the note'

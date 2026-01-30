@@ -7,9 +7,13 @@ import { BLAME_DATA_MOCK } from '../mock_data';
 describe('BlameInfo component', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(BlameInfo, {
-      propsData: { blameInfo: BLAME_DATA_MOCK },
+      propsData: {
+        blameInfo: BLAME_DATA_MOCK,
+        projectPath: 'gitlab-org/gitlab',
+        ...props,
+      },
     });
   };
 
@@ -27,11 +31,12 @@ describe('BlameInfo component', () => {
 
   it.each(BLAME_DATA_MOCK)(
     'sets the correct data and positioning for the commitInfo',
-    ({ commit, commitData, index, blameOffset }) => {
+    ({ commit, index, blameOffset, previousPath }) => {
       const commitInfoComponent = findCommitInfoComponents().at(index);
 
       expect(commitInfoComponent.props('commit')).toEqual(commit);
-      expect(commitInfoComponent.props('prevBlameLink')).toBe(commitData?.projectBlameLink || null);
+      expect(commitInfoComponent.props('previousPath')).toBe(previousPath);
+      expect(commitInfoComponent.props('projectPath')).toBe('gitlab-org/gitlab');
       expect(commitInfoComponent.element.style.top).toBe(blameOffset);
     },
   );

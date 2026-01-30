@@ -6,6 +6,7 @@ import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
+  name: 'ApprovalsEmptyState',
   components: {
     UserCalloutDismisser,
     GlBanner,

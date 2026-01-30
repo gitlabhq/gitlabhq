@@ -546,7 +546,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
           project_path: project.full_path,
           new_merge_request_path: project_new_merge_request_path(project),
           target_project_id: 999,
-          target_project_path: namespace_project_path(user, fork_project),
+          target_project_path: fork_project.full_path,
           next_fork_branch_name: 'patch-1'
         })
       end
@@ -790,42 +790,21 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
 
     describe '#edit_blob_fork_project_path' do
       context 'when user is logged in' do
-        context 'when user has forked the project and cannot create groups' do
-          before do
-            fork_project = build_stubbed(:project, id: 999)
-            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
-            allow(user).to receive(:already_forked?).with(project).and_return(true)
-            allow(user).to receive(:has_groups_allowing_project_creation?).and_return(false)
-          end
-
+        context 'when user has forked the project' do
           it 'returns the fork project path' do
             fork_project = build_stubbed(:project, id: 999)
+            allow(fork_project).to receive(:full_path).and_return('user/forked-project')
             allow(user).to receive(:fork_of).with(project).and_return(fork_project)
 
             path = helper.send(:edit_blob_fork_project_path, project)
 
-            expect(path).to eq(namespace_project_path(user, fork_project))
+            expect(path).to eq('user/forked-project')
           end
         end
 
         context 'when user has not forked the project' do
           before do
-            allow(user).to receive(:already_forked?).with(project).and_return(false)
-          end
-
-          it 'returns nil' do
-            path = helper.send(:edit_blob_fork_project_path, project)
-
-            expect(path).to be_nil
-          end
-        end
-
-        context 'when user can create groups' do
-          before do
-            fork_project = build_stubbed(:project, id: 999)
-            allow(user).to receive(:fork_of).with(project).and_return(fork_project)
-            allow(user).to receive(:already_forked?).with(project).and_return(true)
-            allow(user).to receive(:has_groups_allowing_project_creation?).and_return(true)
+            allow(user).to receive(:fork_of).with(project).and_return(nil)
           end
 
           it 'returns nil' do

@@ -57,7 +57,7 @@ RSpec.describe 'Destroying a Note', feature_category: :team_planning do
 
     context 'without notes widget' do
       before do
-        WorkItems::Type.default_by_type(:issue).widget_definitions.find_by_widget_type(:notes).update!(disabled: true)
+        stub_all_work_item_widgets(notes: false)
       end
 
       it 'does not update the Note' do

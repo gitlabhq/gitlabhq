@@ -112,7 +112,10 @@ describe('Blob Simple Viewer component', () => {
           BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+        expect(findBlameComponents().at(0).props()).toMatchObject({
+          blameInfo,
+          projectPath: 'test',
+        });
       });
 
       it('calls the blame data query', async () => {

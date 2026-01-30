@@ -229,7 +229,7 @@ export default {
   <div>
     <div class="flash-container gl-mb-3"></div>
     <div ref="fileContent" class="gl-relative gl-flex">
-      <blame-info v-if="showBlame" :blame-info="blameInfo" />
+      <blame-info v-if="showBlame" :blame-info="blameInfo" :project-path="projectPath" />
 
       <blame-skeleton-loader
         v-for="chunkIndex in activeLoadingChunks"

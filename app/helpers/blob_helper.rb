@@ -395,9 +395,9 @@ module BlobHelper
     return unless current_user&.namespace
 
     fork_of_project = current_user.fork_of(project)
-    return unless current_user.already_forked?(project) && !current_user.has_groups_allowing_project_creation?
+    return unless fork_of_project
 
-    namespace_project_path(current_user, fork_of_project)
+    fork_of_project.full_path
   end
 
   def edit_blob_fork_project(project)

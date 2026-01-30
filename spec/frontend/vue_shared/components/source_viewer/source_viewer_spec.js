@@ -140,7 +140,10 @@ describe('Source Viewer component', () => {
         await triggerChunkAppear();
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
-        expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+        expect(findBlameComponents().at(0).props()).toMatchObject({
+          blameInfo,
+          projectPath,
+        });
       });
 
       describe('per-chunk skeleton loaders', () => {

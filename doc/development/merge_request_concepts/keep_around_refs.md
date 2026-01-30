@@ -41,7 +41,7 @@ Following is a typical way to create a keep-around ref for the given commit SHA.
 project.repository.keep_around(sha, source: self.class.name)
 ```
 
-This command creates a ref called `refs/keep-around/<SHA>` where <SHA> is the commit SHA that is being
+This command creates a ref called `refs/keep-around/<SHA>` where `<SHA>` is the commit SHA that is being
 kept around. This prevents the commit SHA and all parent commits from being garbage collected as
 we now have a ref that points to the commit directly. `source` is used as a way for us to attribute
 the keep-around ref creations to specific classes.

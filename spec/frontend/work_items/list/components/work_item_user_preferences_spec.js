@@ -106,6 +106,7 @@ describe('WorkItemUserPreferences', () => {
         isGroup: false,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
         sortKey: 'UPDATED_DESC',
+        preventAutoSubmit: false,
         ...props,
       },
       provide: {
@@ -124,36 +125,42 @@ describe('WorkItemUserPreferences', () => {
   });
 
   describe('when user is signed in', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('renders dropdown with correct props', () => {
-      expect(findDropdown().exists()).toBe(true);
-      expect(findDropdown().props('toggleText')).toBe('Display options');
-    });
-
-    it('renders toggles for all applicable metadata fields', () => {
-      const toggles = findToggles();
-      // All metadata fields + side panel toggle
-      expect(toggles).toHaveLength(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.length + 1);
-    });
-
-    it('handles empty displaySettings gracefully', () => {
-      createComponent({
-        props: {
-          displaySettings: {
-            commonPreferences: {},
-            namespacePreferences: {},
-          },
-        },
+    describe('rendering', () => {
+      beforeEach(() => {
+        createComponent();
       });
 
-      const sidePanelToggle = findToggles().at(findToggles().length - 1);
-      expect(sidePanelToggle.props('value')).toBe(true); // defaults to true
+      it('renders dropdown with correct props', () => {
+        expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('toggleText')).toBe('Display options');
+      });
+
+      it('renders toggles for all applicable metadata fields', () => {
+        const toggles = findToggles();
+        // All metadata fields + side panel toggle
+        expect(toggles).toHaveLength(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.length + 1);
+      });
+
+      it('handles empty displaySettings gracefully', () => {
+        createComponent({
+          props: {
+            displaySettings: {
+              commonPreferences: {},
+              namespacePreferences: {},
+            },
+          },
+        });
+
+        const sidePanelToggle = findToggles().at(findToggles().length - 1);
+        expect(sidePanelToggle.props('value')).toBe(true); // defaults to true
+      });
     });
 
     describe('side panel preference toggle', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
       it('updates cache and calls mutation on toggle', async () => {
         const dropdownItems = findDropdownItems();
         const sidePanelItem = dropdownItems.at(dropdownItems.length - 1);
@@ -228,7 +235,7 @@ describe('WorkItemUserPreferences', () => {
       });
     });
 
-    describe('metadata field toggles', () => {
+    describe('metadata preferences', () => {
       it('renders toggles for group-applicable metadata fields in group context', () => {
         createComponent({ props: { isGroup: true } });
         const toggles = findToggles();
@@ -236,52 +243,6 @@ describe('WorkItemUserPreferences', () => {
           (field) => field.isPresentInGroup,
         );
         expect(toggles).toHaveLength(groupApplicableFields.length + 1);
-      });
-
-      it('toggles metadata field visibility and updates cache', async () => {
-        const dropdownItems = findDropdownItems();
-        const firstMetadataItem = dropdownItems.at(0);
-
-        firstMetadataItem.vm.$emit('action');
-        await waitForPromises();
-
-        expect(namespacePreferencesHandler).toHaveBeenCalledWith({
-          namespace: 'gitlab-org/gitlab',
-          displaySettings: {
-            hiddenMetadataKeys: [firstMetadataKey],
-          },
-        });
-
-        const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
-          query: getUserWorkItemsPreferences,
-          variables: {
-            namespace: 'gitlab-org/gitlab',
-            workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
-          },
-        });
-
-        expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
-          hiddenMetadataKeys: [firstMetadataKey],
-        });
-      });
-
-      it('handles namespace preference errors gracefully', async () => {
-        const error = new Error('Network error');
-        const errorHandler = jest.fn().mockRejectedValue(error);
-
-        createComponent({ namespaceHandler: errorHandler });
-
-        const dropdownItems = findDropdownItems();
-        const firstMetadataItem = dropdownItems.at(0);
-
-        firstMetadataItem.vm.$emit('action');
-        await waitForPromises();
-
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'Something went wrong while saving the preference.',
-          captureError: true,
-          error,
-        });
       });
 
       it('renders only group-applicable metadata fields in group context', () => {
@@ -295,23 +256,6 @@ describe('WorkItemUserPreferences', () => {
         const metadataToggles = allToggles;
 
         expect(metadataToggles).toHaveLength(expectedGroupFields.length + 1);
-      });
-
-      it('tracks work_item_metadata_field_hidden event when user hides field', async () => {
-        const dropdownItems = findDropdownItems();
-        const firstMetadataItem = dropdownItems.at(0);
-
-        firstMetadataItem.vm.$emit('action');
-        await waitForPromises();
-
-        const { trackEventSpy } = bindInternalEventDocument(document.body);
-        expect(trackEventSpy).toHaveBeenCalledWith(
-          'work_item_metadata_field_hidden',
-          {
-            property: firstMetadataKey,
-          },
-          undefined,
-        );
       });
 
       it('does not render `Status` settings for epics listing', () => {
@@ -347,6 +291,120 @@ describe('WorkItemUserPreferences', () => {
         const firstMetadataItem = findDropdownItems().at(0);
 
         expect(firstMetadataItem.text()).toBe('Status');
+      });
+    });
+
+    describe('when preventAutoSubmit is false', () => {
+      beforeEach(() => {
+        createComponent({ props: { preventAutoSubmit: false } });
+      });
+
+      describe('metadata field toggles', () => {
+        it('toggles metadata field visibility and updates cache', async () => {
+          const dropdownItems = findDropdownItems();
+          const firstMetadataItem = dropdownItems.at(0);
+
+          firstMetadataItem.vm.$emit('action');
+          await waitForPromises();
+
+          expect(namespacePreferencesHandler).toHaveBeenCalledWith({
+            namespace: 'gitlab-org/gitlab',
+            displaySettings: {
+              hiddenMetadataKeys: [firstMetadataKey],
+            },
+          });
+
+          const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
+            query: getUserWorkItemsPreferences,
+            variables: {
+              namespace: 'gitlab-org/gitlab',
+              workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
+            },
+          });
+
+          expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
+            hiddenMetadataKeys: [firstMetadataKey],
+          });
+        });
+
+        it('handles namespace preference errors gracefully', async () => {
+          const error = new Error('Network error');
+          const errorHandler = jest.fn().mockRejectedValue(error);
+
+          createComponent({ namespaceHandler: errorHandler });
+
+          const dropdownItems = findDropdownItems();
+          const firstMetadataItem = dropdownItems.at(0);
+
+          firstMetadataItem.vm.$emit('action');
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'Something went wrong while saving the preference.',
+            captureError: true,
+            error,
+          });
+        });
+
+        it('tracks work_item_metadata_field_hidden event when user hides field', async () => {
+          const dropdownItems = findDropdownItems();
+          const firstMetadataItem = dropdownItems.at(0);
+
+          firstMetadataItem.vm.$emit('action');
+          await waitForPromises();
+
+          const { trackEventSpy } = bindInternalEventDocument(document.body);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'work_item_metadata_field_hidden',
+            {
+              property: firstMetadataKey,
+            },
+            undefined,
+          );
+        });
+      });
+    });
+
+    describe('when preventAutoSubmit is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { preventAutoSubmit: true } });
+      });
+
+      describe('metadata field toggles', () => {
+        it('toggles metadata field visibility and emits local change', async () => {
+          const dropdownItems = findDropdownItems();
+          const firstMetadataItem = dropdownItems.at(0);
+
+          firstMetadataItem.vm.$emit('action');
+          await waitForPromises();
+
+          expect(namespacePreferencesHandler).not.toHaveBeenCalled();
+
+          expect(wrapper.emitted('local-update')).toEqual([
+            [
+              {
+                hiddenMetadataKeys: [firstMetadataKey],
+              },
+            ],
+          ]);
+        });
+
+        it('tracks work_item_metadata_field_hidden event when user hides field', async () => {
+          const dropdownItems = findDropdownItems();
+          const firstMetadataItem = dropdownItems.at(0);
+
+          firstMetadataItem.vm.$emit('action');
+          await waitForPromises();
+
+          const { trackEventSpy } = bindInternalEventDocument(document.body);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'work_item_metadata_field_hidden',
+            {
+              property: firstMetadataKey,
+            },
+            undefined,
+          );
+        });
       });
     });
   });

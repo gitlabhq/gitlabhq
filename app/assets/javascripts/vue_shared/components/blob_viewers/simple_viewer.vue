@@ -180,7 +180,11 @@ export default {
       ref="fileContent"
       class="file-content code code-syntax-highlight-theme js-syntax-highlight gl-flex"
     >
-      <blame v-if="showBlame && blameInfoForRange.length" :blame-info="blameInfoForRange" />
+      <blame
+        v-if="showBlame && blameInfoForRange.length"
+        :blame-info="blameInfoForRange"
+        :project-path="projectPath"
+      />
       <div class="line-numbers !gl-px-0">
         <div v-for="line in lineNumbers" :key="line" class="diff-line-num line-links gl-flex">
           <a

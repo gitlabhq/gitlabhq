@@ -32,7 +32,7 @@ export const CHUNK_3 = {
   blamePath,
 };
 
-export const SOURCE_CODE_CONTENT_MOCK = `    
+export const SOURCE_CODE_CONTENT_MOCK = `
 <div class="file-holder">
   <div class="blob-viewer">
     <div class="content">
@@ -52,20 +52,32 @@ export const SOURCE_CODE_CONTENT_MOCK = `
 </div>`;
 
 const COMMIT_DATA_MOCK = {
-  projectBlameLink: 'project/blame/link',
   ageMapClass: 'blame-commit-age-9',
 };
 
 export const BLAME_DATA_MOCK = [
   {
     lineno: 1,
-    commit: { author: 'Peter', sha: 'abc' },
+    commit: { author: 'Peter', sha: 'abc', parentSha: 'parent-abc' },
+    previousPath: 'old/path.js',
     index: 0,
     blameOffset: '0px',
     commitData: COMMIT_DATA_MOCK,
   },
-  { lineno: 2, commit: { author: 'Sarah', sha: 'def' }, index: 1, blameOffset: '1px' },
-  { lineno: 3, commit: { author: 'Peter', sha: 'ghi' }, index: 2, blameOffset: '2px' },
+  {
+    lineno: 2,
+    commit: { author: 'Sarah', sha: 'def', parentSha: 'parent-def' },
+    previousPath: 'old/path2.js',
+    index: 1,
+    blameOffset: '1px',
+  },
+  {
+    lineno: 3,
+    commit: { author: 'Peter', sha: 'ghi', parentSha: 'parent-ghi' },
+    previousPath: 'old/path3.js',
+    index: 2,
+    blameOffset: '2px',
+  },
 ];
 
 export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
@@ -86,6 +98,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                   {
                     lineno: 1,
                     span: 3,
+                    previousPath: 'old/file.js',
                     commit: {
                       id: 'gid://gitlab/CommitPresenter/13b0aca4142d1d55931577f69289a792f216f805',
                       titleHtml: 'Upload New File',
@@ -96,6 +109,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       webPath: '/commit/1234',
                       author: {},
                       sha: '13b0aca4142d1d55931577f69289a792f216f805',
+                      parentSha: 'parent123',
                     },
                     commitData: COMMIT_DATA_MOCK,
                   },

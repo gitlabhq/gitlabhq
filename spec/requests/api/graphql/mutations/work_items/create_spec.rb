@@ -681,8 +681,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
 
       before do
-        WorkItems::Type.default_by_type(:task).widget_definitions
-          .find_by_widget_type(:time_tracking).update!(disabled: true)
+        stub_all_work_item_widgets(time_tracking: false)
       end
 
       it 'ignores the quick action' do

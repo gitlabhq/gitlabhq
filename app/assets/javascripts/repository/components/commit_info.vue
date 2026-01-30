@@ -1,6 +1,7 @@
 <script>
 import { GlTooltipDirective, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -32,7 +33,12 @@ export default {
       required: false,
       default: null,
     },
-    prevBlameLink: {
+    previousPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    projectPath: {
       type: String,
       required: false,
       default: null,
@@ -58,6 +64,20 @@ export default {
         this.commit.authorEmail !== this.commit.committerEmail
       );
     },
+    previousBlameUrl() {
+      if (!this.previousPath || !this.commit.parentSha || !this.projectPath) {
+        return null;
+      }
+
+      const blobPath = joinPaths(
+        '/',
+        this.projectPath,
+        '-/blob',
+        this.commit.parentSha,
+        this.previousPath,
+      );
+      return `${blobPath}?blame=1`;
+    },
   },
   methods: {
     toggleShowDescription() {
@@ -74,6 +94,7 @@ export default {
     authoredAndCommitted: __(
       '%{author} authored %{authoredDate} and %{committer} committed %{committedDate}',
     ),
+    viewBlamePrior: __('View blame prior to this change'),
   },
 };
 </script>
@@ -188,10 +209,18 @@ export default {
       <div class="gl-grow"></div>
       <slot></slot>
     </div>
-    <div
-      v-if="prevBlameLink"
-      v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"
+    <gl-button
+      v-if="previousBlameUrl"
+      v-gl-tooltip
+      :href="previousBlameUrl"
+      :title="$options.i18n.viewBlamePrior"
+      :aria-label="$options.i18n.viewBlamePrior"
+      category="tertiary"
+      size="small"
+      icon="doc-versions"
       data-event-tracking="click_previous_blame_on_blob_page"
-    ></div>
+      data-testid="view-previous-blame-button"
+      class="focus:!gl-focus-inset"
+    />
   </div>
 </template>

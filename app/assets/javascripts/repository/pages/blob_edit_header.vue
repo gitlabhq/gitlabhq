@@ -253,7 +253,6 @@ export default {
         projectPath,
         fromMergeRequestIid,
         targetProjectPath,
-        targetProjectId,
         projectId,
         originalBranch,
         newMergeRequestPath,
@@ -264,11 +263,10 @@ export default {
       } else if (!this.canPushToBranch) {
         redirectToForkMergeRequest({
           url,
-          targetProjectPath,
-          targetProjectId,
-          projectId,
-          originalBranch,
+          forkProjectPath: targetProjectPath,
           sourceBranch: resultingBranch,
+          upstreamProjectId: projectId,
+          targetBranch: originalBranch,
         });
       } else if (this.shouldCreateNewMR(formData, isNewBranch)) {
         redirectToCreateMergeRequest({ newMergeRequestPath, sourceBranch: resultingBranch });

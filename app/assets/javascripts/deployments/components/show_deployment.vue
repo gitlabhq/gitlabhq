@@ -14,6 +14,7 @@ import DetailsFeedback from './details_feedback.vue';
 const DEPLOYMENT_QUERY_POLLING_INTERVAL = 3000;
 
 export default {
+  name: 'ShowDeployment',
   components: {
     GlAlert,
     GlSprintf,

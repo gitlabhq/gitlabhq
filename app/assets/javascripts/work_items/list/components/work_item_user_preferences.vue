@@ -38,7 +38,12 @@ export default {
     fields: s__('WorkItems|Fields'),
   },
   props: {
-    displaySettings: {
+    namespacePreferences: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    commonPreferences: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -70,7 +75,12 @@ export default {
       type: String,
       required: true,
     },
+    preventAutoSubmit: {
+      type: Boolean,
+      required: true,
+    },
   },
+  emits: ['local-update'],
   data() {
     return {
       isDropdownVisible: false,
@@ -83,10 +93,10 @@ export default {
       return !this.isDropdownVisible ? this.$options.i18n.displayOptions : '';
     },
     shouldOpenItemsInSidePanel() {
-      return this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
+      return this.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
     },
     hiddenMetadataKeys() {
-      return this.displaySettings.namespacePreferences?.hiddenMetadataKeys || [];
+      return this.namespacePreferences?.hiddenMetadataKeys || [];
     },
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
@@ -115,61 +125,70 @@ export default {
         hiddenMetadataKeys: newHiddenKeys,
       };
 
-      try {
-        await this.$apollo.mutate({
-          mutation: updateWorkItemListUserPreference,
-          variables: {
-            namespace: this.fullPath,
-            displaySettings: input,
-          },
-          optimisticResponse: {
-            workItemUserPreferenceUpdate: {
-              errors: [],
-              userPreferences: {
-                displaySettings: {
-                  hiddenMetadataKeys: newHiddenKeys,
-                },
-                sort: this.sortKey,
-                __typename: 'WorkItemTypesUserPreference',
-              },
-              __typename: 'WorkItemUserPreferenceUpdatePayload',
-            },
-          },
-          update: (
-            cache,
-            {
-              data: {
-                workItemUserPreferenceUpdate: { userPreferences },
-              },
-            },
-          ) => {
-            cache.updateQuery(
-              {
-                query: getUserWorkItemsPreferences,
-                variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
-              },
-              (existingData) =>
-                produce(existingData, (draftData) => {
-                  draftData.currentUser.workItemPreferences = {
-                    ...(draftData.currentUser.workItemPreferences ?? {}),
-                    displaySettings: userPreferences.displaySettings,
-                  };
-                }),
-            );
-          },
-        });
-
+      if (this.preventAutoSubmit) {
+        this.$emit('local-update', input);
         if (!wasHidden) {
           this.trackEvent('work_item_metadata_field_hidden', {
             property: metadataKey,
           });
         }
-      } catch (error) {
-        createAlert({
-          message: __('Something went wrong while saving the preference.'),
-          captureError: true,
-          error,
-        });
+      } else {
+        try {
+          await this.$apollo.mutate({
+            mutation: updateWorkItemListUserPreference,
+            variables: {
+              namespace: this.fullPath,
+              displaySettings: input,
+            },
+            optimisticResponse: {
+              workItemUserPreferenceUpdate: {
+                errors: [],
+                userPreferences: {
+                  displaySettings: {
+                    hiddenMetadataKeys: newHiddenKeys,
+                  },
+                  sort: this.sortKey,
+                  __typename: 'WorkItemTypesUserPreference',
+                },
+                __typename: 'WorkItemUserPreferenceUpdatePayload',
+              },
+            },
+            update: (
+              cache,
+              {
+                data: {
+                  workItemUserPreferenceUpdate: { userPreferences },
+                },
+              },
+            ) => {
+              cache.updateQuery(
+                {
+                  query: getUserWorkItemsPreferences,
+                  variables: { namespace: this.fullPath, workItemTypeId: this.workItemTypeId },
+                },
+                (existingData) =>
+                  produce(existingData, (draftData) => {
+                    draftData.currentUser.workItemPreferences = {
+                      ...(draftData.currentUser.workItemPreferences ?? {}),
+                      displaySettings: userPreferences.displaySettings,
+                    };
+                  }),
+              );
+            },
+          });
+
+          if (!wasHidden) {
+            this.trackEvent('work_item_metadata_field_hidden', {
+              property: metadataKey,
+            });
+          }
+        } catch (error) {
+          createAlert({
+            message: __('Something went wrong while saving the preference.'),
+            captureError: true,
+            error,
+          });
+        }
       }
     },
 

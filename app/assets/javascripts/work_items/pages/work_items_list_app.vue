@@ -295,6 +295,7 @@ export default {
       showLocalBoard: false,
       namespaceId: null,
       displaySettings: {},
+      localDisplaySettings: {},
       workItemTypes: [],
       isLoggedIn: isLoggedIn(),
       isSortKeyInitialized: !this.isLoggedIn,
@@ -314,6 +315,7 @@ export default {
         return {
           namespace: this.rootPageFullPath,
           workItemTypeId: this.workItemTypeId,
+          userPreferencesOnly: this.isSavedView,
         };
       },
       update(data) {
@@ -339,7 +341,7 @@ export default {
         this.isSortKeyInitialized = true;
       },
       skip() {
-        return !this.workItemTypeId || !this.isLoggedIn || this.isSavedView;
+        return !this.workItemTypeId || !this.isLoggedIn;
       },
       error(error) {
         this.isSortKeyInitialized = true;
@@ -499,6 +501,7 @@ export default {
         this.initialViewTokens = tokens;
         const sortKey = savedView?.sort;
         this.sortKey = sortKey;
+        this.localDisplaySettings = savedView.displaySettings;
       },
       error(error) {
         Sentry.captureException(error);
@@ -524,6 +527,9 @@ export default {
     },
   },
   computed: {
+    displaySettingsSoT() {
+      return this.isSavedView ? this.localDisplaySettings : this.displaySettings;
+    },
     isSavedView() {
       return this.$route.name === ROUTES.savedView;
     },
@@ -958,7 +964,7 @@ export default {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
     hiddenMetadataKeys() {
-      return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+      return this.displaySettingsSoT?.namespacePreferences?.hiddenMetadataKeys || [];
     },
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.workItems.length > 0;
@@ -1010,7 +1016,7 @@ export default {
       if (!this.initialPreferences) return false;
 
       const currentPreferences = {
-        hiddenMetadataKeys: this.displaySettings.namespacePreferences?.hiddenMetadataKeys ?? [],
+        hiddenMetadataKeys: this.displaySettingsSoT.namespacePreferences?.hiddenMetadataKeys ?? [],
       };
 
       return !isEqual(currentPreferences, this.initialPreferences);
@@ -1080,6 +1086,9 @@ export default {
             hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
           };
         }
+        if (isEmpty(this.localDisplaySettings) || !this.isSavedView) {
+          this.localDisplaySettings = { ...this.value };
+        }
       },
     },
   },
@@ -1104,6 +1113,14 @@ export default {
     setPageDefaultWidth();
   },
   methods: {
+    async handleLocalDisplayPreferencesUpdate(newSettings) {
+      this.localDisplaySettings = {
+        ...this.localDisplaySettings,
+        namespacePreferences: {
+          hiddenMetadataKeys: [...newSettings.hiddenMetadataKeys],
+        },
+      };
+    },
     handleListDataResults(listData) {
       this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
 
@@ -1683,13 +1700,16 @@ export default {
       >
         <template #user-preference>
           <work-item-user-preferences
-            :display-settings="displaySettings"
+            :namespace-preferences="displaySettingsSoT.namespacePreferences"
+            :common-preferences="displaySettings.commonPreferences"
             :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
             :is-service-desk-list="isServiceDeskList"
             :work-item-type-id="workItemTypeId"
             :sort-key="sortKey"
+            :prevent-auto-submit="isSavedView"
+            @local-update="handleLocalDisplayPreferencesUpdate"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled && !isServiceDeskList" #nav-actions>

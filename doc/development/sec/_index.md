@@ -18,6 +18,10 @@ See [Terminology](../../user/application_security/terminology/_index.md) for an 
 - [Severity Levels](../../user/application_security/vulnerabilities/severities.md)
 - [Analyzer Development](analyzer_development_guide.md)
 
+## Security inventory
+
+- [Background operations](background_operations.md)
+
 ## Overview
 
 The architecture supporting the Secure features is split into two main parts:

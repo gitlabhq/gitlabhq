@@ -46,31 +46,32 @@ export const redirectToCreateMergeRequest = ({ newMergeRequestPath, sourceBranch
 };
 
 /**
- * Redirects to create a merge request from a fork
+ * Redirects to create a merge request from a fork to an upstream project.
+ *
+ * Navigation target vs. MR target distinction:
+ * - The URL navigates to the fork project (source of the MR)
+ * - But the MR itself targets the upstream project (destination of the MR)
+ *
  * @param {Object} options - Redirect options
  * @param {string} options.url - The current URL
- * @param {string} options.targetProjectPath - The target (fork) project path
- * @param {string} options.targetProjectId - The target (fork) project ID
+ * @param {string} options.forkProjectPath - The fork project path (MR source, navigation target)
  * @param {string} options.sourceBranch - The source branch in the fork
- * @param {string} options.projectId - The original project ID
- * @param {string} options.originalBranch - The original branch to merge into
+ * @param {string} options.upstreamProjectId - The upstream project ID (MR target)
+ * @param {string} options.targetBranch - The target branch in the upstream project
  */
 export const redirectToForkMergeRequest = ({
   url,
-  targetProjectPath,
-  targetProjectId,
+  forkProjectPath,
   sourceBranch,
-  projectId,
-  originalBranch,
+  upstreamProjectId,
+  targetBranch,
 }) => {
   const urlCopy = new URL(url);
-  urlCopy.pathname = joinPaths(targetProjectPath, '/-/merge_requests/new');
-
+  urlCopy.pathname = joinPaths(forkProjectPath, '/-/merge_requests/new');
   const mrParams = {
-    'merge_request[source_project_id]': targetProjectId,
     'merge_request[source_branch]': sourceBranch,
-    'merge_request[target_project_id]': projectId,
-    'merge_request[target_branch]': originalBranch,
+    'merge_request[target_project_id]': upstreamProjectId,
+    'merge_request[target_branch]': targetBranch,
   };
 
   const finalMrUrl = mergeUrlParams(mrParams, urlCopy.toString());

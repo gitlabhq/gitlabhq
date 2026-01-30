@@ -5,6 +5,7 @@ import { captureException } from '~/sentry/sentry_browser_wrapper';
 import deployMutation from '../graphql/mutations/deploy.mutation.graphql';
 
 export default {
+  name: 'DeploymentDeployBlock',
   components: {
     GlAlert,
     GlIcon,

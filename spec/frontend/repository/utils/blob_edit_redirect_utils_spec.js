@@ -91,17 +91,15 @@ describe('blobEditRedirectUtils', () => {
     it('redirects to create merge request from fork', () => {
       redirectToForkMergeRequest({
         url: 'https://gitlab.com/user/forked-project/-/blob/main/file.js',
-        targetProjectPath: '/user/forked-project',
-        targetProjectId: '456',
+        forkProjectPath: '/user/forked-project',
         sourceBranch: 'patch-1',
-        projectId: '123',
-        originalBranch: 'main',
+        upstreamProjectId: '123',
+        targetBranch: 'main',
       });
 
       const calledUrl = urlUtility.visitUrl.mock.calls[0][0];
 
       expect(calledUrl).toContain('/user/forked-project/-/merge_requests/new');
-      expect(calledUrl).toContain('merge_request%5Bsource_project_id%5D=456');
       expect(calledUrl).toContain('merge_request%5Bsource_branch%5D=patch-1');
       expect(calledUrl).toContain('merge_request%5Btarget_project_id%5D=123');
       expect(calledUrl).toContain('merge_request%5Btarget_branch%5D=main');
@@ -110,16 +108,14 @@ describe('blobEditRedirectUtils', () => {
     it('includes all required merge request parameters', () => {
       redirectToForkMergeRequest({
         url: 'https://gitlab.com/fork/project/-/blob/feature/file.js',
-        targetProjectPath: '/fork/project',
-        targetProjectId: '789',
+        forkProjectPath: '/fork/project',
         sourceBranch: 'my-feature',
-        projectId: '100',
-        originalBranch: 'develop',
+        upstreamProjectId: '100',
+        targetBranch: 'develop',
       });
 
       const calledUrl = urlUtility.visitUrl.mock.calls[0][0];
 
-      expect(calledUrl).toContain('merge_request%5Bsource_project_id%5D=789');
       expect(calledUrl).toContain('merge_request%5Bsource_branch%5D=my-feature');
       expect(calledUrl).toContain('merge_request%5Btarget_project_id%5D=100');
       expect(calledUrl).toContain('merge_request%5Btarget_branch%5D=develop');

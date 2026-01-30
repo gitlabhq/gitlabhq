@@ -18,6 +18,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isFinished } from '../utils';
 
 export default {
+  name: 'DeploymentHeader',
   components: {
     GlBadge,
     GlIcon,

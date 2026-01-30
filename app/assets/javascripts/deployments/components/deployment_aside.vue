@@ -10,6 +10,7 @@ import { CLICK_PIPELINE_LINK_ON_DEPLOYMENT_PAGE } from '~/deployments/utils';
 import AsideItem from './aside_item.vue';
 
 export default {
+  name: 'DeploymentAside',
   components: {
     AsideItem,
     AssigneeAvatarLink,

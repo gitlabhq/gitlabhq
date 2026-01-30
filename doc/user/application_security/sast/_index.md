@@ -1049,7 +1049,7 @@ flags are added to the scanner's CLI options.
       </td>
       <td>
         Multi-core scanning is enabled by default, auto-detecting available CPU cores (capped at 4 on self-hosted runners).
-        Override with <code>--multi-core <number of cores></code> (for example, <code>--multi-core 12</code>).
+        Override with <code>--multi-core &lt;number of cores&gt;</code> (for example, <code>--multi-core 12</code>).
         Multi-core execution requires proportionally more memory. You should allocate 4 GB per core.
         To disable, set <code>DISABLE_MULTI_CORE</code>.
         Exceeding available resources may cause performance issues.
