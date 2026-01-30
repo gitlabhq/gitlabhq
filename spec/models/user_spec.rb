@@ -5878,6 +5878,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     it { is_expected.to contain_exactly private_group, child_group, project_group, project_group_parent }
 
+    context 'when include_project_authorizations is false' do
+      subject { user.authorized_groups(include_project_authorizations: false) }
+
+      it { is_expected.to contain_exactly(private_group, child_group) }
+    end
+
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }
       let_it_be(:shared_group_descendant) { create(:group, parent: shared_group) }
