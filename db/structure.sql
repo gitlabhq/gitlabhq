@@ -53891,7 +53891,7 @@ ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
     ADD CONSTRAINT fk_5ddc4a2f7b FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY award_emoji
-    ADD CONSTRAINT fk_5e03b44d0b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_5e03b44d0b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_5e0c8d9154 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -55289,7 +55289,7 @@ ALTER TABLE ONLY tag_gpg_signatures
     ADD CONSTRAINT fk_e72d8fc117 FOREIGN KEY (gpg_key_id) REFERENCES gpg_keys(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY award_emoji
-    ADD CONSTRAINT fk_e766b8f650 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_e766b8f650 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_e7a0b20a6b FOREIGN KEY (custom_project_templates_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;

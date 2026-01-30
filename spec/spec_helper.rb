@@ -373,6 +373,10 @@ RSpec.configure do |config|
 
       # This feature flag will be removed in %19.0
       stub_feature_flags(work_item_legacy_url: false)
+
+      # Feature specs for when two_step_sign_in is enabled will be added in
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
+      stub_feature_flags(two_step_sign_in: false)
     else
       unstub_all_feature_flags
     end

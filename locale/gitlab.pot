@@ -7294,6 +7294,9 @@ msgstr ""
 msgid "AiPowered|Block GitLab from processing your code and project data for AI-powered features by default. Your data stays private unless subgroups or projects individually opt in."
 msgstr ""
 
+msgid "AiPowered|Buy Credits"
+msgstr ""
+
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -7507,6 +7510,9 @@ msgstr ""
 msgid "AiPowered|Only members of these groups will have access to selected AI features."
 msgstr ""
 
+msgid "AiPowered|Orchestrate AI agents across your entire software lifecycle to automate complex workflows, accelerate delivery, and keep your team in flow."
+msgstr ""
+
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr ""
 
@@ -7529,6 +7535,9 @@ msgid "AiPowered|Specify how code completion requests are sent to the AI gateway
 msgstr ""
 
 msgid "AiPowered|Start date: %{startDate}"
+msgstr ""
+
+msgid "AiPowered|Talk to Sales"
 msgstr ""
 
 msgid "AiPowered|Tanuki AI icon"
@@ -14753,9 +14762,6 @@ msgstr ""
 msgid "CiCatalog|Verified creator"
 msgstr ""
 
-msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
-msgstr ""
-
 msgid "CiCatalog|What are verified component creators?"
 msgstr ""
 
@@ -19580,9 +19586,6 @@ msgid "Container registry is not enabled on this GitLab instance. Ask an adminis
 msgstr ""
 
 msgid "Container scanning"
-msgstr ""
-
-msgid "Container virtual registry not available"
 msgstr ""
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
@@ -72035,7 +72038,7 @@ msgstr ""
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
 msgstr ""
 
-msgid "Trial|By clicking %{buttonText} or registering through a third party, you accept the %{subscriptionAgreement} and acknowledge the %{privacyStatement}."
+msgid "Trial|By clicking %{buttonText} you accept the %{subscriptionAgreement} and acknowledge the %{privacyStatement}."
 msgstr ""
 
 msgid "Trial|Company name"
@@ -75360,6 +75363,9 @@ msgstr ""
 msgid "VirtualRegistry|Container virtual registries"
 msgstr ""
 
+msgid "VirtualRegistry|Container virtual registry not available"
+msgstr ""
+
 msgid "VirtualRegistry|Copy virtual registry ID: %{id}"
 msgstr ""
 
@@ -75502,6 +75508,9 @@ msgid "VirtualRegistry|Maven upstreams"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registry not available"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registry was created"

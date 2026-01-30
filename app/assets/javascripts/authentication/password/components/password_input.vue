@@ -42,6 +42,11 @@ export default {
       required: false,
       default: 'current-password',
     },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     required: {
       type: Boolean,
       required: false,
@@ -102,6 +107,7 @@ export default {
       class="js-password-complexity-validation js-track-error !gl-pr-8"
       :required="required"
       :autocomplete="autocomplete"
+      :autofocus="autofocus"
       :name="name"
       :minlength="minimumPasswordLength"
       :data-testid="testid"

@@ -77,6 +77,7 @@ module SessionsHelper
   def sign_in_form_app_data
     {
       sign_in_path: user_session_path,
+      users_sign_in_path_path: users_sign_in_path_path,
       passkeys_sign_in_path: users_passkeys_sign_in_path,
       is_unconfirmed_email: unconfirmed_email?,
       new_user_confirmation_path: new_user_confirmation_path,

@@ -146,7 +146,6 @@ apply_suggestion
 approve_user
 archive_group
 assign_default_duo_group
-assign_runner
 audit_event_definitions
 award_achievement
 award_emoji
@@ -708,7 +707,6 @@ transfer_projects
 trigger_ai_flow
 trigger_amazon_q
 troubleshoot_job_with_ai
-unassign_runner
 unlink
 unschedule_job
 update_admin_role

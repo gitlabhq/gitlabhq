@@ -39,6 +39,12 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
       expect(response.body).to have_pushed_frontend_feature_flags(signInFormVue: true)
     end
 
+    it 'pushes twoStepSignIn feature flag to frontend' do
+      perform_request
+
+      expect(response.body).to have_pushed_frontend_feature_flags(twoStepSignIn: false)
+    end
+
     include_examples 'set_current_context'
   end
 

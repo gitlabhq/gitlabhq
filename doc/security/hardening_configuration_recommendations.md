@@ -54,8 +54,6 @@ the security of NGINX itself:
 
    # Turn off session ticket reuse
    nginx['ssl_session_tickets'] = "off"
-   # Pick our own curve instead of what openssl hands us
-   nginx['ssl_ecdh_curve'] = "secp384r1"
    ```
 
 1. Reconfigure GitLab:

@@ -1,0 +1,8 @@
+---
+name: assign_runner
+description: Grants the ability to assign runners
+boundaries:
+  - project
+permissions:
+  - assign_runner
+  - unassign_runner

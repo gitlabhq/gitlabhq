@@ -18,7 +18,7 @@ a given prompt.
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
 If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](cloud_connector.md#tutorial-connect-a-new-feature-using-cloud-connector):
 
-For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+For more information, see [Cloud Connector: Configuration](unit_primitives.md).
 
 ### 2. Create a prompt definition in the AI Gateway
 

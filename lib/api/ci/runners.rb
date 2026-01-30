@@ -366,7 +366,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
-        route_setting :authorization, permissions: :create_runner, boundary_type: :project
+        route_setting :authorization, permissions: :assign_runner, boundary_type: :project
         post ':id/runners' do
           authorize! :create_runners, user_project # Ensure the user is allowed to create a runner on the target project
 
@@ -394,7 +394,7 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
-        route_setting :authorization, permissions: :delete_runner, boundary_type: :project
+        route_setting :authorization, permissions: :unassign_runner, boundary_type: :project
         delete ':id/runners/:runner_id' do
           runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           authenticate_disable_runner!(runner_project)

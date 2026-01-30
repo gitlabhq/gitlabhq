@@ -1,9 +1,7 @@
 <script>
-import { GlBanner, GlLink } from '@gitlab/ui';
-import ChatBubbleSvg from '@gitlab/svgs/dist/illustrations/chat-sm.svg?url';
+import { GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { CATALOG_FEEDBACK_DISMISSED_KEY } from '../../constants';
 
 const defaultTitle = __('CI/CD Catalog');
 const defaultDescription = s__(
@@ -13,7 +11,6 @@ const defaultDescription = s__(
 export default {
   name: 'CatalogHeader',
   components: {
-    GlBanner,
     GlLink,
   },
   inject: {
@@ -23,46 +20,14 @@ export default {
     },
     legalDisclaimer: { default: '' },
   },
-  data() {
-    return {
-      isFeedbackBannerDismissed: localStorage.getItem(CATALOG_FEEDBACK_DISMISSED_KEY) === 'true',
-    };
-  },
-  methods: {
-    handleDismissBanner() {
-      localStorage.setItem(CATALOG_FEEDBACK_DISMISSED_KEY, 'true');
-      this.isFeedbackBannerDismissed = true;
-    },
-  },
   i18n: {
-    banner: {
-      title: __('Your feedback is important to us 👋'),
-      description: s__(
-        "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!",
-      ),
-      btnText: __('Give us some feedback'),
-    },
     learnMore: __('Learn more'),
   },
   learnMorePath: helpPagePath('ci/components/_index'),
-  ChatBubbleSvg,
 };
 </script>
 <template>
   <div class="page-title-holder">
-    <gl-banner
-      v-if="!isFeedbackBannerDismissed"
-      class="gl-mt-5"
-      :title="$options.i18n.banner.title"
-      :button-text="$options.i18n.banner.btnText"
-      button-link="https://gitlab.com/gitlab-org/gitlab/-/issues/407556"
-      :svg-path="$options.ChatBubbleSvg"
-      @close="handleDismissBanner"
-    >
-      <p>
-        {{ $options.i18n.banner.description }}
-      </p>
-    </gl-banner>
     <h1 class="page-title gl-text-size-h-display">{{ pageTitle }}</h1>
     <p class="gl-mb-3">
       <span data-testid="page-description">{{ pageDescription }}</span>

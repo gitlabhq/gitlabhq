@@ -2723,7 +2723,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
     end
 
-    it_behaves_like 'authorizing granular token permissions', :create_runner do
+    it_behaves_like 'authorizing granular token permissions', :assign_runner do
       let(:user) { users.first }
       let(:runner) { create(:ci_runner, :project, projects: [project2]) }
       let(:boundary_object) { project }
@@ -2813,7 +2813,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
     end
 
-    it_behaves_like 'authorizing granular token permissions', :delete_runner do
+    it_behaves_like 'authorizing granular token permissions', :unassign_runner do
       let(:user) { users.first }
       let(:boundary_object) { project2 }
       let(:request) { delete api(path, personal_access_token: pat) }

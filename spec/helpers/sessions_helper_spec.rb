@@ -369,6 +369,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       expect(json).to match(
         {
           'sign_in_path' => '/users/sign_in',
+          'users_sign_in_path_path' => '/users/sign_in_path',
           'passkeys_sign_in_path' => '/users/passkeys/sign_in',
           'is_unconfirmed_email' => false,
           'new_user_confirmation_path' => '/users/confirmation/new',
