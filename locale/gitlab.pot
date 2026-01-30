@@ -26209,6 +26209,9 @@ msgstr ""
 msgid "DuoCoreTrialDiscover|Now featuring GitLab Duo"
 msgstr ""
 
+msgid "DuoCoreTrialDiscover|Now featuring GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoCoreTrialDiscover|Prevent pipeline conflicts with merge trains and push rules, store build outputs with Artifact Registry, and reuse working templates across teams."
 msgstr ""
 
