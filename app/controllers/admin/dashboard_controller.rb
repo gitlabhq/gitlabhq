@@ -18,7 +18,7 @@ class Admin::DashboardController < Admin::ApplicationController
     @groups = Group.order_id_desc.with_route.limit(10)
     @notices = Gitlab::ConfigChecker::ExternalDatabaseChecker.check
     @kas_server_info = Gitlab::Kas::ServerInfo.new.present if Gitlab::Kas.enabled?
-    @redis_versions = Gitlab::Redis::ALL_CLASSES.map(&:version).uniq
+    @redis_versions = Gitlab::Redis::ALL_CLASSES.select(&:active?).map(&:version).uniq
   end
 
   def stats

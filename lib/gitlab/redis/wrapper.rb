@@ -96,6 +96,10 @@ module Gitlab
           init_redis(params)
         end
 
+        def active?
+          true
+        end
+
         private
 
         def init_redis(config)

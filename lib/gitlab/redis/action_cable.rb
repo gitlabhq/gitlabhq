@@ -8,6 +8,12 @@ module Gitlab
         def config_fallback
           nil
         end
+
+        def active?
+          return super if config_file_name
+
+          false
+        end
       end
     end
   end
