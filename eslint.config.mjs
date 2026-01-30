@@ -185,6 +185,8 @@ export default [
       'storybook/public',
       'spec/fixtures/**/*.graphql',
       'ee/frontend_islands/',
+      'app/assets/javascripts/lib/utils/path_helpers/*.js',
+      'ee/app/assets/javascripts/lib/utils/path_helpers/*.js',
     ],
   },
   ...compat.extends(...extendConfigs),

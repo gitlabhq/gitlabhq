@@ -4,6 +4,8 @@ description: Grants the ability to read packages
 permissions:
   - read_package
   - download_helm_chart
+  - download_maven_package_file
 boundaries:
+  - instance
   - group
   - project

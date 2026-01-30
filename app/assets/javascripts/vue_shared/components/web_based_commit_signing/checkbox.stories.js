@@ -4,9 +4,9 @@ export default {
   component: WebBasedCommitSigningCheckbox,
   title: 'vue_shared/web_based_commit_signing/checkbox',
   argTypes: {
-    isChecked: {
+    initialValue: {
       control: 'boolean',
-      description: 'Current setting state',
+      description: 'Initial checkbox state',
     },
     hasGroupPermissions: {
       control: 'boolean',
@@ -18,11 +18,15 @@ export default {
     },
     isGroupLevel: {
       control: 'boolean',
-      description: 'Whether the setting is inherited from group level',
+      description: 'Whether this is a group-level setting',
     },
-    disabled: {
+    groupWebBasedCommitSigningEnabled: {
       control: 'boolean',
-      description: 'Whether checkbox is disabled',
+      description: 'Whether web based commit signing is enabled at group level (project only)',
+    },
+    fullPath: {
+      control: 'text',
+      description: 'Full path of the group or project',
     },
   },
 };
@@ -31,35 +35,63 @@ const Template = (args, { argTypes }) => ({
   components: { WebBasedCommitSigningCheckbox },
   props: Object.keys(argTypes),
   template: `
-    <web-based-commit-signing-checkbox
-      v-bind="$props"
-      @update:model-value="value = $event"
-    />
+    <web-based-commit-signing-checkbox v-bind="$props" />
   `,
 });
 
-export const Default = Template.bind({});
-Default.args = {
-  isChecked: false,
-  hasGroupPermissions: false,
+export const GroupLevel = Template.bind({});
+GroupLevel.args = {
+  initialValue: false,
+  hasGroupPermissions: true,
   groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
-  isGroupLevel: false,
-  disabled: false,
+  isGroupLevel: true,
+  fullPath: 'my-group',
 };
 
-export const WithGroupInheritance = Template.bind({});
-WithGroupInheritance.args = {
-  isChecked: false,
+export const GroupLevelChecked = Template.bind({});
+GroupLevelChecked.args = {
+  initialValue: true,
+  hasGroupPermissions: true,
+  groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
+  isGroupLevel: true,
+  fullPath: 'my-group',
+};
+
+export const GroupLevelNoPermissions = Template.bind({});
+GroupLevelNoPermissions.args = {
+  initialValue: false,
   hasGroupPermissions: false,
   groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
   isGroupLevel: true,
-  disabled: false,
+  fullPath: 'my-group',
 };
 
-export const Disabled = Template.bind({});
-Disabled.args = {
-  isChecked: false,
+export const ProjectLevel = Template.bind({});
+ProjectLevel.args = {
+  initialValue: false,
+  hasGroupPermissions: true,
+  groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
+  isGroupLevel: false,
+  groupWebBasedCommitSigningEnabled: false,
+  fullPath: 'my-group/my-project',
+};
+
+export const ProjectLevelGroupEnabled = Template.bind({});
+ProjectLevelGroupEnabled.args = {
+  initialValue: false,
+  hasGroupPermissions: true,
+  groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
+  isGroupLevel: false,
+  groupWebBasedCommitSigningEnabled: true,
+  fullPath: 'my-group/my-project',
+};
+
+export const ProjectLevelNoPermissions = Template.bind({});
+ProjectLevelNoPermissions.args = {
+  initialValue: false,
   hasGroupPermissions: false,
   groupSettingsRepositoryPath: '/groups/my-group/-/settings/repository',
-  disabled: true,
+  isGroupLevel: false,
+  groupWebBasedCommitSigningEnabled: false,
+  fullPath: 'my-group/my-project',
 };

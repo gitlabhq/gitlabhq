@@ -20,8 +20,12 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
     process_sql(ActiveRecord::Base, "SELECT 1 FROM projects")
   end
 
-  context 'properly observes all queries', :add_ci_connection do
+  context 'properly observes all queries' do
     using RSpec::Parameterized::TableSyntax
+
+    before do
+      skip_if_multiple_databases_not_setup
+    end
 
     where do
       {

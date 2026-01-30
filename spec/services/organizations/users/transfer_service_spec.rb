@@ -10,7 +10,7 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
   let(:users) { group.users_with_descendants }
   let(:service) { described_class.new(users: users, new_organization: new_organization) }
 
-  describe '#execute' do
+  describe '#execute', :eager_load do
     context 'when users belong to different organizations' do
       let_it_be(:other_organization) { create(:organization) }
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
@@ -399,7 +399,7 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
       end
     end
 
-    context 'with associated organization_id updates' do
+    context 'with associated organization_id updates', :aggregate_failures do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
@@ -426,78 +426,154 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
           expect { service.execute }.not_to change { non_group_token.reload.organization_id }
         end
       end
-    end
 
-    context 'with nested groups' do
-      let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
-      let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }
-      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
-      let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
-      let_it_be_with_refind(:user3) { create(:user, organization: old_organization) }
+      context 'with nested groups' do
+        let_it_be_with_refind(:subgroup) { create(:group, parent: group, organization: old_organization) }
+        let_it_be_with_refind(:nested_subgroup) { create(:group, parent: subgroup, organization: old_organization) }
+        let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:user3) { create(:user, organization: old_organization) }
 
-      before_all do
-        group.add_maintainer(user1)
-        subgroup.add_developer(user2)
-        nested_subgroup.add_guest(user3)
+        before_all do
+          group.add_maintainer(user1)
+          subgroup.add_developer(user2)
+          nested_subgroup.add_guest(user3)
+        end
+
+        it 'updates all users from the group hierarchy' do
+          service.execute
+
+          expect(user1.reload.organization_id).to eq(new_organization.id)
+          expect(user2.reload.organization_id).to eq(new_organization.id)
+          expect(user3.reload.organization_id).to eq(new_organization.id)
+        end
       end
 
-      it 'updates all users from the group hierarchy' do
-        service.execute
+      context 'with dynamic migration models' do
+        let(:foss_migratable_models) do
+          [
+            "AuthenticationEvent",
+            "AwardEmoji",
+            "BulkImport",
+            "DeployKey",
+            "Doorkeeper::AccessToken",
+            "Key",
+            "OauthAccessGrant",
+            "OauthAccessToken",
+            "PersonalAccessToken",
+            "PersonalSnippet",
+            "SpamLog",
+            "Import::Offline::Export",
+            "Import::PlaceholderUserDetail",
+            "ResourceEvents::AbuseReportEvent"
+          ]
+        end
 
-        expect(user1.reload.organization_id).to eq(new_organization.id)
-        expect(user2.reload.organization_id).to eq(new_organization.id)
-        expect(user3.reload.organization_id).to eq(new_organization.id)
-      end
-    end
+        let(:ee_migratable_models) do
+          [
+            "Ai::Catalog::ItemVersion",
+            "Ai::Conversation::Thread",
+            "Ai::EventsCount",
+            "Ai::UsageEvent",
+            "Analytics::CustomDashboards::DashboardVersion",
+            "Dependencies::DependencyListExport",
+            "GitlabSubscriptions::SeatAssignment",
+            "LDAPKey",
+            "RemoteDevelopment::OrganizationClusterAgentMapping",
+            "Vulnerabilities::Export"
+          ]
+        end
 
-    context 'with authentication events' do
-      let_it_be_with_refind(:user1) { create(:user, organization: old_organization, developer_of: [group]) }
-      let_it_be_with_refind(:user2) { create(:user, organization: old_organization, developer_of: [group]) }
-      let_it_be_with_refind(:auth_event1) do
-        create(:authentication_event, user: user1, organization_id: old_organization.id)
-      end
+        context 'with self.skipped_transfer_models' do
+          let(:skipped_transfer_models) do
+            [
+              'User',
+              'Project',
+              'Group',
+              'AbuseReport',
+              'GitlabSubscriptions::AddOnPurchase',
+              'Authz::AdminRole',
+              'MemberRole',
+              'Ai::Catalog::ItemConsumer',
+              'ProjectSnippet',
+              'Snippet'
+            ]
+          end
 
-      let_it_be_with_refind(:auth_event2) do
-        create(:authentication_event, user: user1, organization_id: old_organization.id)
-      end
+          it 'returns skipped models' do
+            expect(described_class.skipped_transfer_models).to match_array(skipped_transfer_models)
+          end
+        end
 
-      let_it_be_with_refind(:auth_event3) do
-        create(:authentication_event, user: user2, organization_id: old_organization.id)
-      end
+        context 'with self.migratable_models' do
+          before do
+            described_class.clear_memoization(:migratable_models)
+          end
 
-      before_all do
-        group.add_developer(user1)
-        group.add_developer(user2)
-      end
+          context 'when running in FOSS edition', unless: Gitlab.ee? do
+            it 'returns only FOSS models' do
+              expect(described_class.migratable_models.map(&:to_s)).to match_array(foss_migratable_models)
+            end
 
-      it 'updates organization_id for authentication events of transferred users' do
-        service.execute
+            it 'does not include EE models' do
+              model_names = described_class.migratable_models.map(&:to_s)
 
-        expect(auth_event1.reload.organization_id).to eq(new_organization.id)
-        expect(auth_event2.reload.organization_id).to eq(new_organization.id)
-        expect(auth_event3.reload.organization_id).to eq(new_organization.id)
-      end
+              expect(model_names & ee_migratable_models).to be_empty
+            end
+          end
 
-      it 'does not update authentication events for users not in the transferred group' do
-        non_group_user = create(:user, organization: old_organization)
-        non_group_auth_event = create(:authentication_event, user: non_group_user, organization_id: old_organization.id)
+          context 'when running in EE edition', if: Gitlab.ee? do
+            it 'returns both FOSS and EE models' do
+              expected_models = foss_migratable_models + ee_migratable_models
 
-        service.execute
+              expect(described_class.migratable_models.map(&:to_s)).to match_array(expected_models)
+            end
+          end
 
-        expect(non_group_auth_event.reload.organization_id).to eq(old_organization.id)
-      end
+          it 'does not include skipped models' do
+            model_names = described_class.migratable_models.map(&:to_s)
+            skipped_models = described_class.skipped_transfer_models
 
-      context 'when a failure occurs in another part of the service' do
-        it 'rolls back authentication event updates due to transaction' do
-          # Stub update_todos to raise an error after authentication events are updated
-          allow(service).to receive(:update_todos).and_raise(StandardError, 'Todos update failed')
+            expect(model_names & skipped_models).to be_empty
+          end
 
-          expect { service.execute }.to raise_error(StandardError, 'Todos update failed')
+          described_class.migratable_models.each do |model_class|
+            context "for #{model_class}" do
+              let(:factory_name) do
+                factory = FactoryBot.factories.detect do |f|
+                  f.build_class.to_s == model_class.to_s
+                rescue NameError
+                  # Sometimes there are factories that link back to models that don't exist
+                  # so we'll skip over them. If we do require one of these classes, this spec
+                  # will fail.
+                  false
+                end
+                factory.name
+              end
 
-          # Verify authentication events were not updated due to transaction rollback
-          expect(auth_event1.reload.organization_id).to eq(old_organization.id)
-          expect(auth_event2.reload.organization_id).to eq(old_organization.id)
-          expect(auth_event3.reload.organization_id).to eq(old_organization.id)
+              let(:user_assoc_name) do
+                model_class.reflect_on_all_associations.find do |association|
+                  association.class_name == "User"
+                end.name
+              end
+
+              it 'updates organization_id' do
+                instance1 = create(factory_name, organization: old_organization, user_assoc_name => user1)
+                instance2 = create(factory_name, organization: old_organization, user_assoc_name => user2)
+
+                service.execute
+
+                expect(instance1.reload.organization_id).to eq(new_organization.id)
+                expect(instance2.reload.organization_id).to eq(new_organization.id)
+              end
+
+              it 'does not update for users outside the group' do
+                instance1 = create(factory_name, organization: old_organization, user_assoc_name => non_group_user)
+
+                expect { service.execute }.not_to change { instance1.reload.organization_id }
+              end
+            end
+          end
         end
       end
     end

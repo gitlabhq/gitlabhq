@@ -82,11 +82,13 @@ module Types
             end
 
         def filters
-          {}
+          filters_data = validated_result[:filters]
+
+          filters_data.deep_transform_keys { |key| key.to_s.camelize(:lower) }
         end
 
         def filter_warnings
-          []
+          validated_result[:warnings]
         end
 
         def subscribed
@@ -105,6 +107,24 @@ module Types
           else
             project = namespace.project
             Gitlab::Routing.url_helpers.project_saved_view_url(project, object.id)
+          end
+        end
+
+        private
+
+        def validated_result
+          context["saved_view_sanitized_result_#{object.id}"] ||= begin
+            result = ::WorkItems::SavedViews::FilterSanitizerService.new(
+              filter_data: object.filter_data,
+              namespace: object.namespace,
+              current_user: current_user
+            ).execute
+
+            if result.success?
+              result.payload
+            else
+              { filters: {}, warnings: [{ field: :base, message: result.message }] }
+            end
           end
         end
       end

@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { markRaw } from 'vue';
 import { joinPaths } from '~/lib/utils/url_utility';
 import Page from './page/index.vue';
 
@@ -66,7 +67,7 @@ export default {
     renderPages(pdf) {
       const pagePromises = [];
       for (let num = 1; num <= pdf.numPages; num += 1) {
-        pagePromises.push(pdf.getPage(num));
+        pagePromises.push(pdf.getPage(num).then((page) => markRaw(page)));
       }
       return Promise.all(pagePromises);
     },

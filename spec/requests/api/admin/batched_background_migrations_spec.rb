@@ -106,11 +106,15 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
         end
       end
 
-      context 'when multiple database is enabled', :add_ci_connection do
+      context 'when multiple database is enabled' do
         let(:database) { :ci }
         let(:schema) { :gitlab_ci }
         let(:ci_model) { Ci::ApplicationRecord }
         let(:params) { { database: database } }
+
+        before do
+          skip_if_multiple_databases_not_setup
+        end
 
         context 'when CI database is provided' do
           let(:db_config) do

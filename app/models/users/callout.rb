@@ -43,7 +43,7 @@ module Users
       security_newsletter_callout: 39,
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,
-      security_training_feature_promotion: 42, # EE-only
+      # 42 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221211
       namespace_storage_pre_enforcement_banner: 43, # EE-only
       ci_minutes_limit_alert_warning_stage: 44,  # EE-only
       ci_minutes_limit_alert_danger_stage: 45,   # EE-only

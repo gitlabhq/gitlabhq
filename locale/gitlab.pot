@@ -27393,9 +27393,6 @@ msgstr ""
 msgid "Enable searching"
 msgstr ""
 
-msgid "Enable security training"
-msgstr ""
-
 msgid "Enable two-factor authentication"
 msgstr ""
 
@@ -55895,9 +55892,6 @@ msgstr ""
 msgid "Reduce project visibility"
 msgstr ""
 
-msgid "Reduce risk and triage fewer vulnerabilities with security training"
-msgstr ""
-
 msgid "Reference"
 msgstr ""
 
@@ -57013,6 +57007,9 @@ msgid "RepositoryGraph|Search revision and rerender the graph"
 msgstr ""
 
 msgid "RepositoryGraph|Select display option"
+msgstr ""
+
+msgid "Repository|Configure general repository settings."
 msgstr ""
 
 msgid "Repository|New branch"
@@ -63494,9 +63491,6 @@ msgstr ""
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
-msgid "SecurityReports|Enhanced dashboard available"
-msgstr ""
-
 msgid "SecurityReports|Ensure that %{trackingStart}issue tracking%{trackingEnd} is enabled for this project and you have %{permissionsStart}permission to create new issues%{permissionsEnd}."
 msgstr ""
 
@@ -63736,9 +63730,6 @@ msgstr ""
 msgid "SecurityReports|Reachable:"
 msgstr ""
 
-msgid "SecurityReports|Read more about the new dashboards"
-msgstr ""
-
 msgid "SecurityReports|Recommendation: Auto-resolve when no longer detected"
 msgstr ""
 
@@ -63847,9 +63838,6 @@ msgid "SecurityReports|The following SBOM reports could not be parsed. Therefore
 msgstr ""
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
-msgstr ""
-
-msgid "SecurityReports|The new security dashboards offer additional insights including risk scores for projects and groups, the median age of open vulnerabilities, vulnerability report integration, and more. You do not have advanced search enabled, which is required to access all of the new features. %{linkStart}How do I enable advanced search?%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
@@ -64051,13 +64039,7 @@ msgstr[1] ""
 msgid "SecurityTrackedRefs|tag"
 msgstr ""
 
-msgid "SecurityTraining|Enable security training to learn how to fix vulnerabilities. View security training from selected educational providers relevant to the detected vulnerability."
-msgstr ""
-
 msgid "SecurityTraining|Primary Training"
-msgstr ""
-
-msgid "SecurityTraining|Resolve with security training"
 msgstr ""
 
 msgid "SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled."

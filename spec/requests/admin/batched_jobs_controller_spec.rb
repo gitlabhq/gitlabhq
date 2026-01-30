@@ -41,11 +41,12 @@ RSpec.describe Admin::BatchedJobsController, :enable_admin_mode, feature_categor
       end
     end
 
-    context 'when multiple database is enabled', :add_ci_connection do
+    context 'when multiple database is enabled' do
       let(:base_models) { { 'main' => default_model, 'ci' => ci_model }.with_indifferent_access }
       let(:ci_model) { Ci::ApplicationRecord }
 
       before do
+        skip_if_multiple_databases_not_setup
         allow(Gitlab::Database).to receive(:database_base_models).and_return(base_models)
       end
 

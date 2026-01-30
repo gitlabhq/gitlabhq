@@ -8,6 +8,28 @@ module Organizations
 
       BATCH_SIZE = 50
 
+      class << self
+        include Gitlab::Utils::StrongMemoize
+
+        # Ensure Rails.application.eager_load! returns true before calling this method
+        def migratable_models
+          ApplicationRecord.descendants.select do |model|
+            !model.to_s.in?(skipped_transfer_models) &&
+              model.reflect_on_all_associations.one? { |assoc| assoc.class_name == 'User' } &&
+              model.reflect_on_all_associations.one? { |assoc| assoc.class_name == 'Organizations::Organization' }
+          end
+        end
+        strong_memoize_attr :migratable_models
+
+        def skipped_transfer_models
+          # For User, Project, Group we explicitly want to skip these as they're going to be migrated in
+          # another service.
+
+          ["User", "Project", "Group", "AbuseReport", "GitlabSubscriptions::AddOnPurchase", "Authz::AdminRole",
+            "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet"]
+        end
+      end
+
       def initialize(users:, new_organization:)
         @users = users
         @new_organization = new_organization
@@ -90,8 +112,15 @@ module Organizations
       # `.where(organization_id: old_organization.id)` is automatically added to all queries.
       # See Organizations::Concerns::OrganizationUpdater#update_organization_id_for for more details.
       def update_associated_organization_ids(user_ids)
-        update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
-        update_organization_id_for(AuthenticationEvent) { |relation| relation.for_user(user_ids) }
+        self.class.migratable_models.each do |model_class|
+          user_assoc = model_class.reflect_on_all_associations.find { |assoc| assoc.class_name == "User" }
+
+          user_key = user_assoc.foreign_key
+
+          update_organization_id_for(model_class) do |relation|
+            relation.where(user_key => user_ids) # rubocop:disable CodeReuse/ActiveRecord -- cannot guarantee each model has a specific user scope
+          end
+        end
       end
 
       def update_users(user_ids)

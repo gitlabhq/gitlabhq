@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
           use_tcp: false,
           max_replica_pools: nil
         )
-        expect(config.pool_size).to eq(Gitlab::Database.default_pool_size)
+        expect(config.pool_size).to eq(Gitlab::Database::LoadBalancing.default_pool_size)
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
     it 'returns false when running inside a Rake task' do
       config = described_class.new(ActiveRecord::Base, %w[foo bar])
 
-      allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+      allow(Gitlab::Database::LoadBalancing).to receive(:enabled).and_return(false)
 
       expect(config.load_balancing_enabled?).to eq(false)
     end
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
 
   describe '#service_discovery_enabled?' do
     it 'returns false when running inside a Rake task' do
-      allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+      allow(Gitlab::Database::LoadBalancing).to receive(:enabled).and_return(false)
 
       config = described_class.new(ActiveRecord::Base)
       config.service_discovery[:record] = 'foo'
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration, :request_store do
       it 'returns the default pool size' do
         config = described_class.new(model)
 
-        expect(config.pool_size).to eq(Gitlab::Database.default_pool_size)
+        expect(config.pool_size).to eq(Gitlab::Database::LoadBalancing.default_pool_size)
       end
     end
   end

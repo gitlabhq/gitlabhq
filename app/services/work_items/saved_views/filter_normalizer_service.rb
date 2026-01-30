@@ -31,6 +31,8 @@ module WorkItems
 
         normalize_hierarchy
 
+        normalize_negated_parent_ids
+
         ServiceResponse.success(payload: normalized_filters)
       rescue ArgumentError => e
         ServiceResponse.error(message: e.message)
@@ -189,6 +191,13 @@ module WorkItems
 
         normalized_filters[:or] ||= {}
         normalized_filters[:or][:label_ids] = find_label_ids(filters[:or][:label_names])
+      end
+
+      def normalize_negated_parent_ids
+        return unless filters.dig(:not, :parent_ids)
+
+        normalized_filters[:not] ||= {}
+        normalized_filters[:not][:parent_ids] = filters[:not][:parent_ids]
       end
     end
   end

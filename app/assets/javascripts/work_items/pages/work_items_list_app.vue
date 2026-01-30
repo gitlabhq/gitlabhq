@@ -552,10 +552,13 @@ export default {
       if (this.isEpicsList) {
         return this.canBulkAdminEpic;
       }
-      if (this.isGroup) {
-        return this.canAdminIssue && this.hasGroupBulkEditFeature;
+      if (!this.isGroup) {
+        return this.canAdminIssue;
       }
-      return this.canAdminIssue;
+      // Groups require EE bulk edit feature, or CE planning view with projects
+      const hasCEBulkEdit =
+        this.workItemPlanningViewEnabled && this.hasProjects && !this.hasEpicsFeature;
+      return this.canAdminIssue && (this.hasGroupBulkEditFeature || hasCEBulkEdit);
     },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {

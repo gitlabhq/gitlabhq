@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+# Configure Load Balancing
+Gitlab::Database::LoadBalancing.configure! do |load_balancer|
+  load_balancer.enabled = !Gitlab::Runtime.rake?
+  load_balancer.default_pool_size = Gitlab::Database.default_pool_size
+  load_balancer.base_models = ::Gitlab::Database.database_base_models_using_load_balancing.values.freeze
+  load_balancer.all_database_names = ::Gitlab::Database.all_database_names.freeze
+end
+
 Gitlab::Application.configure do |config|
   config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
 

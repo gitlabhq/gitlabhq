@@ -143,7 +143,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/markdown/mount_markdown_editor.js',
     'app/assets/javascripts/vue_shared/components/nested_groups_projects_list/mock_data.js',
     'app/assets/javascripts/vue_shared/components/projects_list/formatter.js',
-    'app/assets/javascripts/vue_shared/components/projects_list/projects_list_item.vue',
     'app/assets/javascripts/vue_shared/components/source_viewer/plugins/utils/go_sum_linker.js',
     'app/assets/javascripts/vue_shared/components/source_viewer/plugins/utils/godeps_json_linker.js',
     'app/assets/javascripts/vue_shared/components/topic_badges.vue',

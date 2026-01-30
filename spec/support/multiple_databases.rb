@@ -14,10 +14,4 @@ RSpec.configure do |config|
       example.run
     end
   end
-
-  config.around(:each, :add_ci_connection) do |example|
-    with_added_ci_connection do
-      example.run
-    end
-  end
 end

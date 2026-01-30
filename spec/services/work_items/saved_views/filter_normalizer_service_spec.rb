@@ -496,5 +496,17 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
         expect(result.message).to eq('Example Error')
       end
     end
+
+    context 'with negated parent_ids' do
+      let(:filter_data) { { not: { parent_ids: ['gid://gitlab/WorkItem/1', 'gid://gitlab/WorkItem/2'] } } }
+
+      it 'normalizes negated parent_ids' do
+        result = service.execute
+
+        expect(result).to be_success
+        expect(result.payload.dig(:not,
+          :parent_ids)).to match_array(['gid://gitlab/WorkItem/1', 'gid://gitlab/WorkItem/2'])
+      end
+    end
   end
 end

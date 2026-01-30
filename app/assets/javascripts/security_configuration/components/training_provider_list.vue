@@ -9,7 +9,6 @@ import {
   GlSkeletonLoader,
   GlIcon,
 } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';
@@ -21,7 +20,6 @@ import {
   TEMP_PROVIDER_LOGOS,
   TEMP_PROVIDER_URLS,
 } from '~/security_configuration/constants';
-import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import securityTrainingProvidersQuery from '~/security_configuration/graphql/security_training_providers.query.graphql';
 import configureSecurityTrainingProvidersMutation from '~/security_configuration/graphql/configure_security_training_providers.mutation.graphql';
 import {
@@ -86,7 +84,6 @@ export default {
     return {
       errorMessage: '',
       securityTrainingProviders: [],
-      hasTouchedConfiguration: false,
     };
   },
   computed: {
@@ -100,36 +97,7 @@ export default {
       return this.$apollo.queries.securityTrainingProviders.loading;
     },
   },
-  created() {
-    const unwatchConfigChance = this.$watch('hasTouchedConfiguration', () => {
-      this.dismissFeaturePromotionCallout();
-      unwatchConfigChance();
-    });
-  },
   methods: {
-    async dismissFeaturePromotionCallout() {
-      try {
-        const {
-          data: {
-            userCalloutCreate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: dismissUserCalloutMutation,
-          variables: {
-            input: {
-              featureName: 'security_training_feature_promotion',
-            },
-          },
-        });
-
-        // handle errors reported from the backend
-        if (errors?.length > 0) {
-          throw new Error(errors[0]);
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-      }
-    },
     async toggleProvider(provider) {
       const { isEnabled, isPrimary } = provider;
       const toggledIsEnabled = !isEnabled;
@@ -196,8 +164,6 @@ export default {
           // throwing an error here means we can handle scenarios within the `catch` block below
           throw new Error();
         }
-
-        this.hasTouchedConfiguration = true;
       } catch {
         this.errorMessage = this.$options.i18n.configMutationErrorMessage;
       }

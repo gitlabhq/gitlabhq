@@ -18,6 +18,9 @@ import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.
 import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import CiCatalogBadge from '~/vue_shared/components/projects_list/ci_catalog_badge.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
+import { projectStarrersPath, projectForksPath } from '~/lib/utils/path_helpers/project';
+import { projectMergeRequestsPath } from '~/lib/utils/path_helpers/merge_requests';
+import { projectIssuesPath } from '~/lib/utils/path_helpers/issues';
 
 export default {
   i18n: {
@@ -114,16 +117,16 @@ export default {
       return Object.hasOwn(this.project, 'statistics');
     },
     starsHref() {
-      return `${this.project.relativeWebUrl}/-/starrers`;
+      return projectStarrersPath(this.project.fullPath);
     },
     mergeRequestsHref() {
-      return `${this.project.relativeWebUrl}/-/merge_requests`;
+      return projectMergeRequestsPath(this.project.fullPath);
     },
     forksHref() {
-      return `${this.project.relativeWebUrl}/-/forks`;
+      return projectForksPath(this.project.fullPath);
     },
     issuesHref() {
-      return `${this.project.relativeWebUrl}/-/issues`;
+      return projectIssuesPath(this.project.fullPath);
     },
     isMergeRequestsEnabled() {
       return (

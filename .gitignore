@@ -137,3 +137,7 @@ config/helpers/tailwind/css_in_js.js
 # yalc for temporary testing
 .yalc
 yalc.lock
+
+# Ignore automatically generated js-routes files.
+/app/assets/javascripts/lib/utils/path_helpers
+/ee/app/assets/javascripts/lib/utils/path_helpers

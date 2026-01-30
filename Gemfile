@@ -443,6 +443,9 @@ gem 'gitlab-security_report_schemas', '0.1.3.min15.0.0.max15.2.3', feature_categ
 gem 'vite_rails', '~> 3.0.17', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'vite_ruby', '~> 3.9.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
+# Provide Rails path helpers to the frontend
+gem "js-routes", "~> 2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+
 # OpenTelemetry
 group :opentelemetry do
   # Core OpenTelemetry gems

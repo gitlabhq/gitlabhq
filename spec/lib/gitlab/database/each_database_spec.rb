@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::EachDatabase do
-  describe '.each_connection', :add_ci_connection do
+  describe '.each_connection' do
     let(:database_base_models) { { main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access }
 
     before do
+      skip_if_multiple_databases_not_setup
+
       allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(database_base_models)
     end
 
@@ -85,11 +87,13 @@ RSpec.describe Gitlab::Database::EachDatabase do
   end
 
   describe '.each_model_connection' do
-    context 'when the model inherits from SharedModel', :add_ci_connection do
+    context 'when the model inherits from SharedModel' do
       let(:model1) { Class.new(Gitlab::Database::SharedModel) }
       let(:model2) { Class.new(Gitlab::Database::SharedModel) }
 
       before do
+        skip_if_multiple_databases_not_setup
+
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared)
           .and_return({ main: ActiveRecord::Base, ci: Ci::ApplicationRecord }.with_indifferent_access)
       end

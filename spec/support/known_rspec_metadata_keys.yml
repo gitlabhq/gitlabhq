@@ -1,6 +1,5 @@
 - :absolute_file_path
 - :active_context
-- :add_ci_connection
 - :aggregate_failures
 - :allow_forgery_protection
 - :allow_rich_text_editor_for_new_users

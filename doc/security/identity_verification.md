@@ -101,9 +101,8 @@ or create a [support ticket](https://about.gitlab.com/support/).
 
 ## Credit card verification
 
-In addition to email and phone number verification, you might have to provide a valid credit card number.
+In addition to an email address and phone number, you might also need to provide a valid credit card number to verify your account.
 
-To verify your account, you might need to provide a valid credit card number in addition to your
-email address and phone number. GitLab does not store your card details directly or make any charges.
+GitLab does not store your card details directly or make any charges. This process is not connected to any billing information for your groups.
 
 You cannot verify an account with a credit card number associated with a banned user.

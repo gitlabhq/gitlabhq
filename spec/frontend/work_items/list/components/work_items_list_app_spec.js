@@ -1964,6 +1964,40 @@ describe('when bulk editing', () => {
       );
     });
 
+    describe('when CE group with workItemPlanningViewEnabled', () => {
+      it('allows bulk editing when user can admin issues and group has projects', async () => {
+        mountComponent({
+          provide: {
+            isGroup: true,
+            canAdminIssue: true,
+            hasProjects: true,
+            hasEpicsFeature: false,
+            hasGroupBulkEditFeature: false,
+            workItemPlanningViewEnabled: true,
+          },
+        });
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(true);
+      });
+
+      it('does not allow bulk editing when user cannot admin issues', async () => {
+        mountComponent({
+          provide: {
+            isGroup: true,
+            canAdminIssue: false,
+            hasProjects: true,
+            hasEpicsFeature: false,
+            hasGroupBulkEditFeature: false,
+            workItemPlanningViewEnabled: true,
+          },
+        });
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(false);
+      });
+    });
+
     describe('when project', () => {
       it.each([true, false])('renders depending on canAdminIssue=%s', async (canAdminIssue) => {
         mountComponent({ provide: { isGroup: false, canAdminIssue } });

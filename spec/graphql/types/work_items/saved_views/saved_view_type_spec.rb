@@ -48,14 +48,103 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
   end
 
   describe '#filters' do
-    it 'returns an empty hash' do
-      expect(resolve_field(:filters, saved_view, current_user: current_user)).to eq({})
+    it 'returns validated filters from filter_data' do
+      expect(resolve_field(:filters, saved_view, current_user: current_user)).to eq({
+        'state' => 'opened',
+        'confidential' => true
+      })
+    end
+
+    context 'with assignee filter' do
+      let_it_be(:assignee) { create(:user) }
+      let_it_be(:saved_view_with_assignee) do
+        create(:saved_view, namespace: group, filter_data: { assignee_ids: [assignee.id] })
+      end
+
+      it 'returns assignee_usernames' do
+        filters = resolve_field(:filters, saved_view_with_assignee, current_user: current_user)
+
+        expect(filters['assigneeUsernames']).to eq([assignee.username])
+      end
+    end
+
+    context 'with deleted assignee' do
+      let_it_be(:deleted_user_id) { non_existing_record_id }
+      let_it_be(:saved_view_with_deleted_assignee) do
+        create(:saved_view, namespace: group, filter_data: { assignee_ids: [deleted_user_id] })
+      end
+
+      it 'returns empty filters' do
+        filters = resolve_field(:filters, saved_view_with_deleted_assignee, current_user: current_user)
+
+        expect(filters['assigneeUsernames']).to be_nil
+      end
+    end
+
+    context 'when FilterSanitizerService fails' do
+      let_it_be(:saved_view_with_data) do
+        create(:saved_view, namespace: group, filter_data: { state: 'opened' })
+      end
+
+      before do
+        allow_next_instance_of(::WorkItems::SavedViews::FilterSanitizerService) do |service|
+          allow(service).to receive(:execute).and_return(
+            ServiceResponse.error(message: 'Invalid filter format')
+          )
+        end
+      end
+
+      it 'returns empty filters and base error in filter_warnings' do
+        filters = resolve_field(:filters, saved_view_with_data, current_user: current_user)
+        warnings = resolve_field(:filter_warnings, saved_view_with_data, current_user: current_user)
+
+        expect(filters).to eq({})
+        expect(warnings).to contain_exactly(
+          { field: :base, message: 'Invalid filter format' }
+        )
+      end
     end
   end
 
   describe '#filter_warnings' do
-    it 'returns an empty array' do
+    it 'returns empty array when all filters are valid' do
       expect(resolve_field(:filter_warnings, saved_view, current_user: current_user)).to eq([])
+    end
+
+    context 'with deleted assignee' do
+      let_it_be(:deleted_user_id) { non_existing_record_id }
+      let_it_be(:saved_view_with_deleted_assignee) do
+        create(:saved_view, namespace: group, filter_data: { assignee_ids: [deleted_user_id] })
+      end
+
+      it 'returns warning for missing assignee' do
+        warnings = resolve_field(:filter_warnings, saved_view_with_deleted_assignee, current_user: current_user)
+
+        expect(warnings).to contain_exactly(
+          { field: :assignee_usernames, message: '1 assignee(s) not found' }
+        )
+      end
+    end
+
+    context 'with multiple deleted records' do
+      let_it_be(:existing_user) { create(:user) }
+      let_it_be(:deleted_user_id) { non_existing_record_id }
+      let_it_be(:deleted_label_id) { non_existing_record_id }
+      let_it_be(:multi_filter_saved_view) do
+        create(:saved_view, namespace: group, filter_data: {
+          assignee_ids: [existing_user.id, deleted_user_id],
+          label_ids: [deleted_label_id]
+        })
+      end
+
+      it 'returns warnings for all missing records' do
+        warnings = resolve_field(:filter_warnings, multi_filter_saved_view, current_user: current_user)
+
+        expect(warnings).to contain_exactly(
+          { field: :assignee_usernames, message: '1 assignee(s) not found' },
+          { field: :label_name, message: '1 label(s) not found' }
+        )
+      end
     end
   end
 

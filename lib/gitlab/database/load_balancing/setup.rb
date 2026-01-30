@@ -30,7 +30,7 @@ module Gitlab
 
           hash = db_config_object.configuration_hash.merge(
             prepared_statements: false,
-            pool: Gitlab::Database.default_pool_size
+            pool: Gitlab::Database::LoadBalancing.default_pool_size
           )
 
           hash_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(

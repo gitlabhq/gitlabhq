@@ -81,7 +81,7 @@ InitializerConnections.raise_if_new_database_connection do
       match '/oauth/token' => 'oauth/tokens#create', via: :options
       match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
 
-      match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options
+      match '/-/jira_connect/oauth_application_id' => 'jira_connect/oauth_application_ids#show', via: :options, as: :jira_connect_oauth_application_id_options
       match '/-/jira_connect/subscriptions(.:format)' => 'jira_connect/subscriptions#index', via: :options
       match '/-/jira_connect/subscriptions/:id' => 'jira_connect/subscriptions#delete', via: :options
 
