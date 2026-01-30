@@ -9601,9 +9601,6 @@ msgstr[1] ""
 msgid "ApprovalRules|Define target branch approval rules for new merge requests."
 msgstr ""
 
-msgid "ApprovalRule|A merge request author collaborating with a merge request approver"
-msgstr ""
-
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
@@ -9628,15 +9625,6 @@ msgstr ""
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
-msgid "ApprovalRule|Improve your organization's code review with required approvals."
-msgstr ""
-
-msgid "ApprovalRule|Increase quality and maintain standards."
-msgstr ""
-
-msgid "ApprovalRule|Learn more about merge request approval rules"
-msgstr ""
-
 msgid "ApprovalRule|Need triage"
 msgstr ""
 
@@ -9647,9 +9635,6 @@ msgid "ApprovalRule|New"
 msgstr ""
 
 msgid "ApprovalRule|Previously existing"
-msgstr ""
-
-msgid "ApprovalRule|Reduce your time to merge."
 msgstr ""
 
 msgid "ApprovalRule|Required number of approvals"
@@ -9673,13 +9658,7 @@ msgstr ""
 msgid "ApprovalRule|Search users or groups"
 msgstr ""
 
-msgid "ApprovalRule|Select eligible approvers by expertise or files changed."
-msgstr ""
-
 msgid "ApprovalRule|Target branch"
-msgstr ""
-
-msgid "ApprovalRule|Try for free"
 msgstr ""
 
 msgid "ApprovalRule|any"
@@ -25888,6 +25867,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
+msgid "DuoAgentPlatform|Show tool details"
+msgstr ""
+
 msgid "DuoAgentPlatform|Triggered"
 msgstr ""
 
@@ -34736,9 +34718,6 @@ msgid "Help translate GitLab into your language"
 msgstr ""
 
 msgid "Help translate to your language"
-msgstr ""
-
-msgid "Help us improve the merge train visualization by sharing your feedback with us."
 msgstr ""
 
 msgid "Helpful"
@@ -67576,16 +67555,10 @@ msgstr ""
 msgid "SuperSonics|An error occurred during activation"
 msgstr ""
 
-msgid "SuperSonics|Buy subscription"
-msgstr ""
-
 msgid "SuperSonics|Cannot activate instance due to a connectivity issue"
 msgstr ""
 
 msgid "SuperSonics|Could not activate subscription"
-msgstr ""
-
-msgid "SuperSonics|Customers Portal"
 msgstr ""
 
 msgid "SuperSonics|Enter activation code"
@@ -67594,13 +67567,7 @@ msgstr ""
 msgid "SuperSonics|Export license usage file"
 msgstr ""
 
-msgid "SuperSonics|Free trial"
-msgstr ""
-
 msgid "SuperSonics|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
-msgstr ""
-
-msgid "SuperSonics|Instance subscription"
 msgstr ""
 
 msgid "SuperSonics|Learn how to %{linkStart}activate your subscription%{linkEnd}."
@@ -67618,16 +67585,13 @@ msgstr ""
 msgid "SuperSonics|Online license"
 msgstr ""
 
-msgid "SuperSonics|Ready to get started? A GitLab plan is ideal for scaling organizations and for multi team usage."
-msgstr ""
-
 msgid "SuperSonics|Received a license key? %{linkStart}Go to license settings%{linkEnd} to add it to your GitLab instance."
 msgstr ""
 
 msgid "SuperSonics|Select that you agree before activating the subscription."
 msgstr ""
 
-msgid "SuperSonics|Start free trial"
+msgid "SuperSonics|Subscription"
 msgstr ""
 
 msgid "SuperSonics|Subscription cannot be activated if %{silentModeDocsLinkStart}Silent Mode%{silentModeDocsLinkEnd} is enabled. Disable Silent Mode and try again."
@@ -67666,13 +67630,7 @@ msgstr ""
 msgid "SuperSonics|You can %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} and try again. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
-msgid "SuperSonics|You can start a free trial of GitLab Ultimate without any obligation or payment details."
-msgstr ""
-
 msgid "SuperSonics|You can sync your subscription data to ensure your details are up to date."
-msgstr ""
-
-msgid "SuperSonics|You do not have an active subscription"
 msgstr ""
 
 msgid "SuperSonics|You have a future dated license"
@@ -68150,9 +68108,6 @@ msgid "Telephone number"
 msgstr ""
 
 msgid "Tell us about your company"
-msgstr ""
-
-msgid "Tell us what you think"
 msgstr ""
 
 msgid "Template"
@@ -78260,6 +78215,9 @@ msgstr ""
 msgid "WorkItem|Edit type name and icon"
 msgstr ""
 
+msgid "WorkItem|Edit view"
+msgstr ""
+
 msgid "WorkItem|Edit work item"
 msgstr ""
 
@@ -79186,6 +79144,9 @@ msgid "WorkItem|Use work items (also known as tickets or stories on other platfo
 msgstr ""
 
 msgid "WorkItem|View current version"
+msgstr ""
+
+msgid "WorkItem|View has been saved."
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"

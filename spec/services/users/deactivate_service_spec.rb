@@ -61,6 +61,20 @@ RSpec.describe Users::DeactivateService, feature_category: :user_management do
         expect(operation[:message]).to eq('Internal users cannot be deactivated')
         expect(operation.reason).to eq :forbidden
       end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'User deactivation failed',
+            error: 'Internal users cannot be deactivated',
+            reason: 'forbidden',
+            username: user.username,
+            user_id: user.id
+          )
+        )
+
+        operation
+      end
     end
 
     context 'when user is blocked', :enable_admin_mode do
@@ -71,13 +85,43 @@ RSpec.describe Users::DeactivateService, feature_category: :user_management do
         expect(operation[:message]).to eq('Error occurred. A blocked user cannot be deactivated')
         expect(operation.reason).to eq :forbidden
       end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'User deactivation failed',
+            error: 'Error occurred. A blocked user cannot be deactivated',
+            reason: 'forbidden',
+            username: user.username,
+            user_id: user.id
+          )
+        )
+
+        operation
+      end
     end
 
     context 'when user is not an admin' do
+      let(:user) { create(:user) }
+
       it 'returns permissions error message' do
         expect(operation[:status]).to eq(:error)
         expect(operation[:message]).to eq("You are not authorized to perform this action")
         expect(operation.reason).to eq :forbidden
+      end
+
+      it 'logs the error' do
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'User deactivation failed',
+            error: 'You are not authorized to perform this action',
+            reason: 'forbidden',
+            username: user.username,
+            user_id: user.id
+          )
+        )
+
+        operation
       end
     end
 

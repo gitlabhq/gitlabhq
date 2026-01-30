@@ -16,6 +16,7 @@ import { s__ } from '~/locale';
 import { SAVED_VIEW_VISIBILITY, NEW_SAVED_VIEWS_GID } from '~/work_items/constants';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
+import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
 
 export default {
   name: 'WorkItemsNewSavedViewModal',
@@ -47,10 +48,14 @@ export default {
       type: Boolean,
       required: true,
     },
-    title: {
-      type: String,
+    savedView: {
+      type: Object,
       required: false,
-      default: s__('WorkItem|New view'),
+      default: () => ({}),
+    },
+    fullPath: {
+      type: String,
+      required: true,
     },
     filters: {
       type: Object,
@@ -62,10 +67,6 @@ export default {
       required: false,
       default: () => {},
     },
-    fullPath: {
-      type: String,
-      required: true,
-    },
     sortKey: {
       type: String,
       required: true,
@@ -76,12 +77,33 @@ export default {
   SAVED_VIEW_VISIBILITY,
   data() {
     return {
-      savedViewDescription: '',
-      savedViewTitle: '',
+      savedViewDescription: this.savedView?.description,
+      savedViewTitle: this.savedView?.name,
       isTitleValid: true,
-      savedViewVisibility: SAVED_VIEW_VISIBILITY.PRIVATE,
+      savedViewVisibility: this.getSavedViewVisibility(),
       error: '',
     };
+  },
+  computed: {
+    modalTitle() {
+      return this.isEdit ? s__('WorkItem|Edit view') : s__('WorkItem|New view');
+    },
+    submitButtonLabel() {
+      return this.isEdit ? s__('WorkItem|Save') : s__('WorkItem|Create view');
+    },
+    isEdit() {
+      return Boolean(this.savedView?.id);
+    },
+  },
+  watch: {
+    show: {
+      immediate: true,
+      handler() {
+        this.savedViewTitle = this.savedView?.name;
+        this.savedViewDescription = this.savedView?.description;
+        this.savedViewVisibility = this.getSavedViewVisibility();
+      },
+    },
   },
   methods: {
     focusTitleInput() {
@@ -90,56 +112,66 @@ export default {
     validateTitle() {
       this.isTitleValid = Boolean(this.savedViewTitle.trim());
     },
-    async createSavedView() {
+    async saveSavedView() {
       this.validateTitle();
 
       if (!this.isTitleValid) {
         return;
       }
 
-      try {
-        const inputVariables = {
-          namespacePath: this.fullPath,
-          name: this.savedViewTitle,
-          description: this.savedViewDescription,
-          private: this.savedViewVisibility === SAVED_VIEW_VISIBILITY.PRIVATE,
-          filters: this.filters || {},
-          displaySettings: this.displaySettings || {},
-          sort: this.sortKey,
-        };
-        const {
-          data: {
-            workItemSavedViewCreate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: createSavedViewMutation,
-          variables: {
-            input: inputVariables,
-          },
-          optimisticResponse: {
-            workItemSavedViewCreate: {
-              errors: [],
-              savedView: {
+      const isPrivate = this.savedViewVisibility === SAVED_VIEW_VISIBILITY.PRIVATE;
+      const mutation = this.isEdit ? updateSavedViewMutation : createSavedViewMutation;
+      const mutationKey = this.isEdit ? 'workItemSavedViewUpdate' : 'workItemSavedViewCreate';
+
+      const commonInput = {
+        name: this.savedViewTitle,
+        description: this.savedViewDescription || '',
+        private: isPrivate,
+        filters: this.filters ?? {},
+        displaySettings: this.displaySettings ?? {},
+        sort: this.sortKey,
+      };
+
+      const inputVariables = this.isEdit
+        ? { id: this.savedView.id, ...commonInput }
+        : { namespacePath: this.fullPath, ...commonInput };
+
+      const commonSavedViewResponse = {
+        name: this.savedViewTitle,
+        description: this.savedViewDescription || '',
+        isPrivate,
+        filters: this.filters ?? {},
+        displaySettings: this.displaySettings ?? {},
+      };
+
+      const optimisticResponse = {
+        [mutationKey]: {
+          errors: [],
+          savedView: this.isEdit
+            ? {
+                id: this.savedView.id,
+                ...commonSavedViewResponse,
+                userPermissions: this.savedView.userPermissions,
+                subscribed: this.savedView.subscribed,
+              }
+            : {
                 id: NEW_SAVED_VIEWS_GID,
-                name: this.savedViewTitle,
-                description: this.savedViewDescription,
-                isPrivate: this.savedViewVisibility === SAVED_VIEW_VISIBILITY.PRIVATE,
+                ...commonSavedViewResponse,
                 subscribed: true,
-                filters: this.filters || {},
-                displaySettings: this.displaySettings || {},
-                userPermissions: {
-                  updateSavedView: true,
-                },
+                userPermissions: { updateSavedView: true },
               },
-            },
-          },
-          update: (cache, { data }) => {
+        },
+      };
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation,
+          variables: { input: inputVariables },
+          optimisticResponse,
+          update: (cache, { data: responseData }) => {
             const query = {
               query: getSubscribedSavedViewsQuery,
-              variables: {
-                fullPath: this.fullPath,
-                subscribedOnly: false,
-              },
+              variables: { fullPath: this.fullPath, subscribedOnly: false },
             };
             const sourceData = cache.readQuery(query);
 
@@ -148,23 +180,35 @@ export default {
             }
 
             const newData = produce(sourceData, (draftState) => {
-              const newSavedView = data.workItemSavedViewCreate.savedView;
-              const savedViews = draftState.namespace.savedViews.nodes;
-              savedViews.push(newSavedView);
+              const { savedView } = responseData[mutationKey];
+              const { nodes: savedViews } = draftState.namespace.savedViews;
+
+              if (this.isEdit) {
+                const index = savedViews.findIndex(({ id }) => id === savedView.id);
+                if (index !== -1) {
+                  savedViews[index] = savedView;
+                }
+              } else {
+                // TODO: shift the view to the overflow index rather than at last
+                // Also, redirect it to the new view
+                savedViews.push(savedView);
+              }
             });
 
             cache.writeQuery({ ...query, data: newData });
           },
         });
 
-        if (errors?.length > 0) {
+        if (data[mutationKey].errors?.length) {
           this.error = s__('WorkItem|Something went wrong while saving the view');
           return;
         }
 
-        this.$toast.show(s__('WorkItem|New view created.'));
+        this.$toast.show(
+          this.isEdit ? s__('WorkItem|View has been saved.') : s__('WorkItem|New view created.'),
+        );
         this.hideAddNewViewModal();
-      } catch (e) {
+      } catch {
         this.error = s__('WorkItem|Something went wrong while saving the view');
       }
     },
@@ -172,12 +216,19 @@ export default {
       this.isTitleValid = true;
       this.savedViewTitle = '';
       this.savedViewDescription = '';
-      this.savedViewDescription = '';
       this.savedViewVisibility = SAVED_VIEW_VISIBILITY.PRIVATE;
     },
     hideAddNewViewModal() {
-      this.$emit('hide', false);
       this.resetModal();
+      this.$emit('hide', false);
+    },
+    getSavedViewVisibility() {
+      if (!this.savedView?.id) {
+        return SAVED_VIEW_VISIBILITY.PRIVATE;
+      }
+      return this.savedView?.isPrivate
+        ? SAVED_VIEW_VISIBILITY.PRIVATE
+        : SAVED_VIEW_VISIBILITY.SHARED;
     },
   },
 };
@@ -187,8 +238,8 @@ export default {
   <gl-modal
     modal-id="create-saved-view-modal"
     modal-class="create-saved-view-modal"
-    :aria-label="title"
-    :title="title"
+    :aria-label="modalTitle"
+    :title="modalTitle"
     :visible="show"
     body-class="!gl-pb-0"
     size="sm"
@@ -196,7 +247,7 @@ export default {
     @shown="focusTitleInput"
     @hide="hideAddNewViewModal"
   >
-    <gl-form data-testid="add-new-saved-view-form" @submit.prevent="createSavedView">
+    <gl-form data-testid="add-new-saved-view-form" @submit.prevent="saveSavedView">
       <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>
@@ -268,7 +319,7 @@ export default {
           :disabled="!isTitleValid"
           data-testid="create-view-button"
         >
-          {{ s__('WorkItem|Create view') }}
+          {{ submitButtonLabel }}
         </gl-button>
       </div>
     </gl-form>

@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
+import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 
 export default {
   name: 'WorkItemsSavedViewSelector',
@@ -17,12 +18,26 @@ export default {
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
     GlButton,
+    WorkItemsNewSavedViewModal,
   },
   props: {
     savedView: {
       type: Object,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    sortKey: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isNewViewModalVisible: false,
+    };
   },
   computed: {
     isViewActive() {
@@ -33,11 +48,13 @@ export default {
       const id = getIdFromGraphQLId(this.savedView.id).toString();
       return { name: ROUTES.savedView, params: { view_id: id }, query: undefined };
     },
+    canUpdateSavedView() {
+      return this.savedView?.userPermissions?.updateSavedView;
+    },
   },
   methods: {
     editView() {
-      // TODO: to replace this with logic to edit a view
-      return '';
+      this.isNewViewModalVisible = true;
     },
     duplicateView() {
       // TODO: replace this with logic to duplicate a view
@@ -70,7 +87,11 @@ export default {
       class="saved-view-selector saved-view-selector-active !gl-h-full !gl-rounded-none"
       data-testid="saved-view-selector"
     >
-      <gl-disclosure-dropdown-item data-testid="edit-action" @action="editView">
+      <gl-disclosure-dropdown-item
+        v-if="canUpdateSavedView"
+        data-testid="edit-action"
+        @action="editView"
+      >
         <template #list-item>
           <gl-icon name="pencil" class="gl-mr-2" variant="subtle" />
           {{ s__('WorkItem|Edit') }}
@@ -119,5 +140,12 @@ export default {
     >
       {{ savedView.name }}
     </gl-button>
+    <work-items-new-saved-view-modal
+      v-model="isNewViewModalVisible"
+      :saved-view="savedView"
+      :full-path="fullPath"
+      :sort-key="sortKey"
+      @hide="isNewViewModalVisible = false"
+    />
   </div>
 </template>

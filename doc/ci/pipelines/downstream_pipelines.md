@@ -899,7 +899,7 @@ the ones defined in the upstream project take precedence.
 
 {{< /details >}}
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-an-environment-variable-to-another-job).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-environment-variables-to-later-jobs).
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 

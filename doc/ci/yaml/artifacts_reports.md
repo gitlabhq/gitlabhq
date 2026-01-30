@@ -282,14 +282,13 @@ GitLab can display the results of one or more reports in:
 The `dotenv` report collects environment variables from a file
 and makes them available as CI/CD variables to later jobs in the pipeline.
 
-The collected variables are registered as runtime-created variables.
-You can [use them in subsequent job scripts](../variables/job_scripts.md#pass-an-environment-variable-to-another-job)
+The collected variables are registered as job variables that you can
+[use in subsequent job scripts](../variables/job_scripts.md#pass-environment-variables-to-later-jobs)
 or [set dynamic environment URLs](../environments/_index.md#set-a-dynamic-environment-url).
 
-If duplicate environment variables are present in a `dotenv` report, the last one specified is used.
+If the same variable name appears multiple times in a `dotenv` report, the last value is used.
 
-Don't include sensitive data like credentials in `dotenv` reports
-because they can be accessed by pipeline users.
+Don't include sensitive data like credentials, API keys, or tokens because they can be accessed by pipeline users.
 To restrict access, use [`artifacts:access`](_index.md#artifactsaccess).
 
 GitLab uses the [`dotenv` gem](https://github.com/bkeepers/dotenv) to handle `dotenv` files,

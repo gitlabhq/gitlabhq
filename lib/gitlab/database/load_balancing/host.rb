@@ -88,9 +88,9 @@ module Gitlab
         # timeout - The time after which the pool should be forcefully
         #           disconnected.
         def disconnect!(timeout: 120)
-          start_time = ::Gitlab::Utils::System.monotonic_time
+          start_time = ::Gitlab::Metrics::System.monotonic_time
 
-          while (::Gitlab::Utils::System.monotonic_time - start_time) <= timeout
+          while (::Gitlab::Metrics::System.monotonic_time - start_time) <= timeout
             return if try_disconnect
 
             sleep(2)

@@ -28677,6 +28677,8 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobfailuremessage"></a>`failureMessage` | [`String`](#string) | Message on why the job failed. |
 | <a id="cijobfinishedat"></a>`finishedAt` | [`Time`](#time) | When a job has finished running. |
 | <a id="cijobid"></a>`id` | [`JobID`](#jobid) | ID of the job. |
+| <a id="cijobinputs"></a>`inputs` | [`[CiInputsField!]`](#ciinputsfield) | Input values that were used when the job was created or retried. A value is only present in the field if it differs from the default value in the input configuration. This field can only be resolved for one job in any single request. |
+| <a id="cijobinputsspec"></a>`inputsSpec` | [`[CiInputsSpec!]`](#ciinputsspec) | Input specification for the job. Defines the inputs that can be provided when creating or retrying the job. This field can only be resolved for one job in any single request. |
 | <a id="cijobkind"></a>`kind` | [`CiJobKind!`](#cijobkind) | Indicates the type of job. |
 | <a id="cijobmanualjob"></a>`manualJob` | [`Boolean`](#boolean) | Whether the job has a manual action. |
 | <a id="cijobmanualvariables"></a>`manualVariables` | [`CiManualVariableConnection`](#cimanualvariableconnection) | Variables added to a manual job when the job is triggered. (see [Connections](#connections)) |

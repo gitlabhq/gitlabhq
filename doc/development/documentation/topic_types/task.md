@@ -46,7 +46,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
 1. In the upper-right corner, select **New issue**.
 1. Complete the fields. (If you have reference content that lists each field, link to it here.)

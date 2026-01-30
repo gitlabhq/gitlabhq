@@ -322,8 +322,6 @@ module SystemNotes
       cross_reference = noteable_ref.to_reference(container)
       body = "moved #{direction} #{cross_reference}"
 
-      track_issue_event(:track_issue_moved_action)
-
       create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
     end
 
@@ -345,8 +343,6 @@ module SystemNotes
 
       cross_reference = noteable_ref.to_reference(container)
       body = "cloned #{direction} #{cross_reference}"
-
-      track_issue_event(:track_issue_cloned_action) if direction == :to
 
       create_note(NoteSummary.new(noteable, project, author, body, action: 'cloned', created_at: created_at))
     end

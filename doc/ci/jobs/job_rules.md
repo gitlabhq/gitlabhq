@@ -358,7 +358,7 @@ runs in all cases except merge requests.
 ## Reuse rules in different jobs
 
 Use [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) to reuse rules in different
-jobs. You can combine `!reference` rules with regular job-defined rules. For example:
+jobs. You can combine `!reference` rules with rules defined in the job. For example:
 
 ```yaml
 .default_rules:

@@ -68,6 +68,7 @@ export default {
       v-model="isNewViewModalVisible"
       :full-path="fullPath"
       :sort-key="sortKey"
+      @hide="isNewViewModalVisible = false"
     />
     <work-items-existing-saved-views-modal
       v-model="isExistingViewModalVisible"

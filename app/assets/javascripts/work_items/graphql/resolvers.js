@@ -234,7 +234,7 @@ export const allSavedViews = [
     name: 'AI team 1',
     description: 'Work focusing on chatbot and other AI features',
     subscribed: false,
-    private: false,
+    private: true,
     id: 'gid://gitlab/WorkItems::SavedViews::SavedView/11',
     userPermissions: {
       updateSavedView: true,

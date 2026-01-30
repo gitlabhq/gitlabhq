@@ -35,7 +35,7 @@ For additional support:
 
 To enable debug logs in JetBrains:
 
-1. On the top bar, go to **Help** > **Diagnostic Tools** > **Debug Log Settings**, or
+1. In the top bar, go to **Help** > **Diagnostic Tools** > **Debug Log Settings**, or
    search for the action by going to **Help** > **Find Action** > **Debug log settings**.
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
@@ -133,12 +133,12 @@ are running a supported version of PyCharm:
 
 If you experience issues with GitLab Duo Chat related to JCEF (Java Chromium Embedded Framework), you can try these steps:
 
-1. On the top bar, go to **Help** > **Find Action** and search for `Registry`.
+1. In the top bar, go to **Help** > **Find Action** and search for `Registry`.
 1. Find or search for `ide.browser.jcef.sandbox.enable`.
 1. Clear the checkbox to disable this setting.
 1. Close the Registry dialog.
 1. Restart your IDE.
-1. On the top bar, go to **Help** > **Find Action** and search for `Choose Boot Java Runtime for the IDE`.
+1. In the top bar, go to **Help** > **Find Action** and search for `Choose Boot Java Runtime for the IDE`.
 1. Select the boot java runtime version that's the same as your current IDE version, but with JCEF bundled:
    ![JCEF supporting runtime example](img/jcef_supporting_runtime_example_v17_3.png)
 1. Restart your IDE.

@@ -221,9 +221,7 @@ In the following example a review app creates a new environment for each merge r
 - The `review` job is triggered by every push, and creates or updates an environment named
   `review/your-branch-name`. The environment URL is set to `$DYNAMIC_ENVIRONMENT_URL`.
 - When the `review` job finishes, GitLab updates the `review/your-branch-name` environment's URL.
-  It parses the `deploy.env` report artifact, registers a list of variables as runtime-created,
-  expands the `environment:url: $DYNAMIC_ENVIRONMENT_URL` and sets it to the environment
-  URL.
+  It parses the `deploy.env` report, extracts the variables, and uses them to expand and set the `environment:url`.
 
 ```yaml
 review:

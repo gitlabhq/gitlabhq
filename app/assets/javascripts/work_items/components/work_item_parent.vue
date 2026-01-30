@@ -12,6 +12,7 @@ import {
   findHierarchyWidgetDefinition,
   isReference,
   newWorkItemId,
+  convertTypeEnumToName,
 } from '~/work_items/utils';
 import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
@@ -25,6 +26,7 @@ import {
   NO_WORK_ITEM_IID,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 
 export default {
@@ -37,6 +39,7 @@ export default {
     IssuePopover: () => import('~/issuable/popover/components/issue_popover.vue'),
     WorkItemSidebarDropdownWidget,
   },
+  inject: ['getWorkItemTypeConfiguration', 'workItemTypesConfiguration'],
   props: {
     workItemId: {
       type: String,
@@ -142,6 +145,28 @@ export default {
     allowedParentTypesForNewWorkItemEnums() {
       return this.allowedParentTypesForNewWorkItem.map((type) => NAME_TO_ENUM_MAP[type.name]) || [];
     },
+    workItemConfig() {
+      return this.getWorkItemTypeConfiguration(this.workItemType) || {};
+    },
+    propagatesMilestone() {
+      const hierarchyWidgetDefinition = this.workItemConfig?.widgetDefinitions?.find(
+        (widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY,
+      );
+      return hierarchyWidgetDefinition?.propagatesMilestone;
+    },
+    fetchGroupWorkItems() {
+      // original implementation
+      return this.isGroup || this.isIssue;
+    },
+    areAnyAllowedParentTypesGroupWorkItems() {
+      /* we should be fetching group work items only if any of the allowed parents is a group work item */
+      /** Issues and Epics can have epics has parent types , so group work items make sense there */
+      const isAnyAllowedParentGroupType = this.allowedParentTypes.some(
+        (typename) =>
+          this.workItemTypesConfiguration[convertTypeEnumToName(typename)]?.isGroupWorkItemType,
+      );
+      return isAnyAllowedParentGroupType || this.fetchGroupWorkItems;
+    },
   },
   watch: {
     parent: {
@@ -150,7 +175,7 @@ export default {
       },
     },
     localSelectedItem() {
-      if (this.isEpic) this.handleSelectedParentMilestone();
+      if (this.propagatesMilestone || this.isEpic) this.handleSelectedParentMilestone();
     },
   },
   apollo: {
@@ -159,7 +184,9 @@ export default {
         // The logic to fetch the Parent seems to be different than other pages
         // Below issue targets to have a common logic across work items app
         // https://gitlab.com/gitlab-org/gitlab/-/issues/571302
-        return this.isGroup || this.isIssue ? groupWorkItemsQuery : projectWorkItemsQuery;
+        return this.areAnyAllowedParentTypesGroupWorkItems
+          ? groupWorkItemsQuery
+          : projectWorkItemsQuery;
       },
       variables() {
         // TODO: Remove the this.isIssue check once issues are migrated to work items

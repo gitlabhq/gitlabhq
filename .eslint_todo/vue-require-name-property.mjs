@@ -1355,7 +1355,6 @@ export default {
     'ee/app/assets/javascripts/approvals/components/security_configuration/unconfigured_security_rule.vue',
     'ee/app/assets/javascripts/approvals/components/security_configuration/unconfigured_security_rules.vue',
     'ee/app/assets/javascripts/approvals/mr_edit/app.vue',
-    'ee/app/assets/javascripts/approvals/mr_edit/free_tier_promo.vue',
     'ee/app/assets/javascripts/approvals/mr_edit/mr_rules.vue',
     'ee/app/assets/javascripts/approvals/mr_edit/mr_rules_hidden_inputs.vue',
     'ee/app/assets/javascripts/approvals/project_settings/app.vue',

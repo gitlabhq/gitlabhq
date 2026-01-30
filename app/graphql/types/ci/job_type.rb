@@ -138,6 +138,16 @@ module Types
       field :exit_code, GraphQL::Types::Int, null: true,
         description: 'Exit code of the job. Available for jobs that started after upgrading to GitLab 16.10 and failed with an exit code.'
 
+      field :inputs_spec, [Types::Ci::Inputs::SpecType], null: true,
+        description: 'Input specification for the job. Defines the inputs that can be provided when creating or retrying the job. This field can only be resolved for one job in any single request.' do
+          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+        end
+
+      field :inputs, [Types::Ci::Inputs::FieldType], null: true,
+        description: 'Input values that were used when the job was created or retried. A value is only present in the field if it differs from the default value in the input configuration. This field can only be resolved for one job in any single request.' do
+          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+        end
+
       def can_play_job?
         object.playable? && Ability.allowed?(current_user, :play_job, object)
       end
@@ -280,6 +290,21 @@ module Types
 
       def exit_code
         object.exit_code if object.build.respond_to?(:exit_code)
+      end
+
+      def inputs_spec
+        return [] unless object.is_a?(::Ci::Build)
+
+        inputs_spec = object.options[:inputs]
+        return [] unless inputs_spec.present?
+
+        ::Ci::Inputs::Builder.new(inputs_spec).all_inputs
+      end
+
+      def inputs
+        return unless object.is_a?(::Ci::Build)
+
+        object.inputs
       end
     end
   end

@@ -69477,6 +69477,13 @@ paths:
           type: string
         in: query
         example: John Doe
+      - name: last_commit_id
+        required: false
+        description: Last known file commit id
+        schema:
+          type: string
+        in: query
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
   "/api/v4/projects/{id}/repository/files/{file_path}/authorize":
     post:
       operationId: postApiV4ProjectsIdRepositoryFilesFilePathAuthorize

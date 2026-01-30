@@ -18,13 +18,8 @@ module Gitlab
         ActiveRecord::ConnectionNotEstablished
       ].freeze
 
-      mattr_accessor :base_models
-      mattr_accessor :all_database_names
-      mattr_accessor :default_pool_size
-      mattr_accessor :enabled, default: true
-
-      def self.configure!
-        yield(self)
+      def self.base_models
+        @base_models ||= ::Gitlab::Database.database_base_models_using_load_balancing.values.freeze
       end
 
       def self.each_load_balancer
@@ -58,7 +53,7 @@ module Gitlab
       def self.db_role_for_connection(connection)
         return ROLE_UNKNOWN if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
 
-        db_config = db_config_for_connection(connection)
+        db_config = Database.db_config_for_connection(connection)
         return ROLE_UNKNOWN unless db_config
 
         if db_config.name.ends_with?(LoadBalancer::REPLICA_SUFFIX)
@@ -66,30 +61,6 @@ module Gitlab
         else
           ROLE_PRIMARY
         end
-      end
-
-      def self.db_config_for_connection(connection)
-        return unless connection
-
-        # For a ConnectionProxy we want to avoid ambiguous db_config as it may
-        # sometimes default to replica so we always return the primary config
-        # instead.
-        if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
-          return connection.load_balancer.configuration.db_config
-        end
-
-        # During application init we might receive `NullPool`
-        return unless connection.respond_to?(:pool) &&
-          connection.pool.respond_to?(:db_config)
-
-        db_config = connection.pool.db_config
-        db_config unless empty_config?(db_config)
-      end
-
-      def self.empty_config?(db_config)
-        return true unless db_config
-
-        db_config.is_a?(ActiveRecord::ConnectionAdapters::NullPool::NullConfig)
       end
     end
   end

@@ -97,19 +97,4 @@ RSpec.describe 'load_balancing', :delete, :reestablished_active_record_base, fea
       end
     end
   end
-
-  describe Gitlab::Database::LoadBalancing do
-    describe '.base_models' do
-      it 'returns the models to apply load balancing to' do
-        models = described_class.base_models
-
-        expect(models).to include(ActiveRecord::Base)
-        expect(models).to include(Ci::ApplicationRecord) if Gitlab::Database.has_config?(:ci)
-      end
-
-      it 'returns the models as a frozen array' do
-        expect(described_class.base_models).to be_frozen
-      end
-    end
-  end
 end

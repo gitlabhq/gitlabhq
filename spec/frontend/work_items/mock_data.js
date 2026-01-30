@@ -5663,7 +5663,7 @@ export const groupWorkItemStateCountsQueryResponse = {
 
 export const groupEpicsWithMilestonesQueryResponse = {
   data: {
-    group: {
+    namespace: {
       id: 'gid://gitlab/Group/3',
       __typename: 'Group',
       workItems: {
@@ -5682,6 +5682,11 @@ export const groupEpicsWithMilestonesQueryResponse = {
                 milestone: mockMilestone,
               },
             ],
+            namespace: {
+              id: 'gid://gitlab/Group/3',
+              fullPath: 'twitter',
+              __typename: 'Namespace',
+            },
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',
               name: 'Epic',
@@ -5702,6 +5707,11 @@ export const groupEpicsWithMilestonesQueryResponse = {
                 milestone: mockMilestone,
               },
             ],
+            namespace: {
+              id: 'gid://gitlab/Group/3',
+              fullPath: 'twitter',
+              __typename: 'Namespace',
+            },
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',
               name: 'Epic',
@@ -9793,5 +9803,813 @@ export const mockWorkItemTypesConfigurationResponse = {
       },
       __typename: 'Namespace',
     },
+  },
+};
+
+export const mockFullWorkItemTypeConfiguration = {
+  Epic: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/8',
+    name: 'Epic',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'COLOR',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'HEALTH_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+        type: 'START_AND_DUE_DATE',
+        canRollUp: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'VERIFICATION_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionWeight',
+        type: 'WEIGHT',
+      },
+    ],
+  },
+  Incident: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/2',
+    name: 'Incident',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CRM_CONTACTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DEVELOPMENT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'EMAIL_PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'ITERATION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_RESOURCES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+    ],
+  },
+  Issue: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/1',
+    name: 'Issue',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CRM_CONTACTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESIGNS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DEVELOPMENT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'EMAIL_PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'ERROR_TRACKING',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'HEALTH_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'ITERATION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+        type: 'START_AND_DUE_DATE',
+        canRollUp: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'VULNERABILITIES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_RESOURCES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionWeight',
+        type: 'WEIGHT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStatus',
+        type: 'STATUS',
+      },
+    ],
+  },
+  'Key Result': {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/7',
+    name: 'Key Result',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'HEALTH_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+        type: 'START_AND_DUE_DATE',
+        canRollUp: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionProgress',
+        type: 'PROGRESS',
+        showPopover: null,
+      },
+    ],
+  },
+  Objective: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/6',
+    name: 'Objective',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'HEALTH_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionProgress',
+        type: 'PROGRESS',
+        showPopover: null,
+      },
+    ],
+  },
+  Requirement: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/4',
+    name: 'Requirement',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'REQUIREMENT_LEGACY',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'VERIFICATION_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TEST_REPORTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+    ],
+  },
+  Task: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CRM_CONTACTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DEVELOPMENT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'ITERATION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_RESOURCES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+        type: 'START_AND_DUE_DATE',
+        canRollUp: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionWeight',
+        type: 'WEIGHT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStatus',
+        type: 'STATUS',
+      },
+    ],
+  },
+  'Test Case': {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/3',
+    name: 'Test Case',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+    ],
+  },
+  Ticket: {
+    __typename: 'WorkItemType',
+    id: 'gid://gitlab/WorkItems::Type/9',
+    name: 'Ticket',
+    archived: null,
+    canPromoteToObjective: null,
+    canUserCreateItems: null,
+    isConfigurable: null,
+    isFilterable: null,
+    isGroupWorkItemType: null,
+    isIncidentManagement: null,
+    isServiceDesk: null,
+    showProjectSelector: null,
+    supportsMoveAction: null,
+    supportsRoadmapView: null,
+    useIssueView: null,
+    visibleInSettings: null,
+    widgetDefinitions: [
+      {
+        __typename: 'WorkItemWidgetDefinitionAssignees',
+        type: 'ASSIGNEES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'AWARD_EMOJI',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CRM_CONTACTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'CURRENT_USER_TODOS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionCustomFields',
+        type: 'CUSTOM_FIELDS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESCRIPTION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DESIGNS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'DEVELOPMENT',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'EMAIL_PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'HEALTH_STATUS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionHierarchy',
+        type: 'HIERARCHY',
+        propagatesMilestone: null,
+        autoExpandTreeOnMove: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'ITERATION',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionLabels',
+        type: 'LABELS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'LINKED_ITEMS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'MILESTONE',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTES',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'NOTIFICATIONS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'PARTICIPANTS',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+        type: 'START_AND_DUE_DATE',
+        canRollUp: null,
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionGeneric',
+        type: 'TIME_TRACKING',
+      },
+      {
+        __typename: 'WorkItemWidgetDefinitionWeight',
+        type: 'WEIGHT',
+      },
+    ],
   },
 };

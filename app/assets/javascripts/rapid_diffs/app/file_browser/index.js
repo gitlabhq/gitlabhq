@@ -7,14 +7,29 @@ import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
-import { removeLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
+import {
+  removeLinkedFileUrlParams,
+  withLinkedFileUrlParams,
+} from '~/rapid_diffs/utils/linked_file';
 import FileBrowser from './file_browser.vue';
 import FileBrowserDrawer from './file_browser_drawer.vue';
 import FileBrowserDrawerToggle from './file_browser_drawer_toggle.vue';
 
+function addFileLinks(diffFiles) {
+  return diffFiles.map((diffFile) => {
+    return Object.assign(diffFile, {
+      href: withLinkedFileUrlParams(new URL(window.location), {
+        oldPath: diffFile.old_path,
+        newPath: diffFile.new_path,
+        fileId: diffFile.file_hash,
+      }).toString(),
+    });
+  });
+}
+
 const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
   const { data } = await axios.get(diffFilesEndpoint);
-  useFileBrowser().setTreeData(data.diff_files, shouldSort);
+  useFileBrowser().setTreeData(addFileLinks(data.diff_files), shouldSort);
 };
 
 const initToggle = (el) => {

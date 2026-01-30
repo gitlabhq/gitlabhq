@@ -64,25 +64,21 @@ To use false positive detection, you must have:
 
 ### Enable false positive detection
 
-False positive detection is turned off by default. You can enable it for an instance, group, or project. When you enable the setting for an instance or group, the setting applies to all of its descendant groups and projects.
+False positive detection is turned off by default. To use this feature, you must enable the foundational flow for the group and turn on the feature for the project.
 
-Recommended: You should enable the settings for the group to apply the setting to all projects in that group.
+#### Allow foundational flow for a group
 
-#### Enable for a group (recommended)
-
-To enable false positive detection for all projects in a group:
+You can allow all projects in a group to use the foundational flow. Individual projects must still enable the feature in their project settings.
+To allow false positive detection for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Select the **Turn on SAST false positive detection** checkbox.
+1. Under **Allow foundational flows**, select the **SAST False Positive Detection** checkbox.
 1. Select **Save changes**.
 
-This setting applies to all descendant projects in the group. Individual projects can override this setting if they need to disable it.
+#### Turn on for a project
 
-#### Enable for a project
-
-To enable false positive detection for a specific project:
+To turn on false positive detection for a specific project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
@@ -90,17 +86,7 @@ To enable false positive detection for a specific project:
 1. Turn on the **Turn on SAST false positive detection** toggle.
 1. Select **Save changes**.
 
-#### Enable for an instance
-
-GitLab administrators can enable false positive detection for the entire instance:
-
-1. On the left sidebar, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **GitLab Duo**.
-1. Select the **Turn on SAST false positive detection** checkbox.
-1. Select **Save changes**.
-
-False positive detection works automatically with your existing SAST scanners when enabled for an instance, group, or project.
+When you allow false positive detection for the group and turn it on for the project, the feature work works automatically with your existing SAST scanners.
 
 ## Confidence scores
 

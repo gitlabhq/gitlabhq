@@ -25,6 +25,8 @@ import {
   mockWorkItemReferenceQueryResponse,
   allowedParentTypesResponse,
   groupEpicsWithMilestonesQueryResponse,
+  mockFullWorkItemTypeConfiguration,
+  mockMilestone,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -40,7 +42,7 @@ describe('WorkItemParent component', () => {
   const workItemId = 'gid://gitlab/WorkItem/1';
   const mockFullPath = 'full-path';
 
-  const firstParentOption = groupEpicsWithMilestonesQueryResponse.data.group.workItems.nodes[0];
+  const firstParentOption = groupEpicsWithMilestonesQueryResponse.data.namespace.workItems.nodes[0];
 
   const groupWorkItemsSuccessHandler = jest
     .fn()
@@ -67,6 +69,23 @@ describe('WorkItemParent component', () => {
     findSidebarDropdownWidget().vm.$emit('dropdownShown');
   };
 
+  const mockWorkItemConfigGetter = jest.fn().mockImplementation((workItemType) => {
+    // Default mock implementation that returns a valid config structure
+
+    return {
+      workItemType,
+      isGroupWorkItemType: null,
+      widgetDefinitions: [
+        {
+          autoExpandTreeOnMove: null,
+          propagatesMilestone: null,
+          type: 'HIERARCHY',
+          __typename: 'WorkItemWidgetDefinitionHierarchy',
+        },
+      ],
+    };
+  });
+
   const createComponent = ({
     workItemType = 'Objective',
     canUpdate = true,
@@ -76,6 +95,7 @@ describe('WorkItemParent component', () => {
     mutationHandler = successUpdateWorkItemMutationHandler,
     hasParent = true,
     isGroup = false,
+    provide = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
@@ -94,6 +114,11 @@ describe('WorkItemParent component', () => {
         hasParent,
         isGroup,
         allowedParentTypesForNewWorkItem,
+      },
+      provide: {
+        getWorkItemTypeConfiguration: mockWorkItemConfigGetter,
+        workItemTypesConfiguration: mockFullWorkItemTypeConfiguration,
+        ...provide,
       },
       stubs: {
         IssuePopover: true,
@@ -480,6 +505,87 @@ describe('WorkItemParent component', () => {
       await nextTick();
 
       expect(wrapper.emitted('parentMilestone')).toBeDefined();
+    });
+  });
+
+  describe('work item type configuration', () => {
+    describe('query selection based on configuration', () => {
+      it.each`
+        workItemType   | isGroup  | isIssue  | isGroupWorkItemType | expectedQuery
+        ${'Epic'}      | ${true}  | ${false} | ${true}             | ${'group'}
+        ${'Epic'}      | ${true}  | ${false} | ${null}             | ${'group'}
+        ${'Objective'} | ${false} | ${false} | ${false}            | ${'project'}
+        ${'Objective'} | ${false} | ${false} | ${null}             | ${'project'}
+        ${'Issue'}     | ${true}  | ${true}  | ${false}            | ${'group'}
+        ${'Issue'}     | ${false} | ${true}  | ${null}             | ${'group'}
+      `(
+        'selects correct query when workItemType=$workItemType, isGroup=$isGroup, isGroupWorkItemType=$isGroupWorkItemType',
+        async ({ workItemType, isGroup, isGroupWorkItemType, expectedQuery }) => {
+          mockWorkItemConfigGetter.mockImplementation(() => {
+            return { isGroupWorkItemType };
+          });
+
+          createComponent({ workItemType, isGroup });
+
+          showDropdown();
+          await waitForPromises();
+
+          const expectedHandler =
+            expectedQuery === 'group'
+              ? groupWorkItemsSuccessHandler
+              : availableWorkItemsSuccessHandler;
+          expect(expectedHandler).toHaveBeenCalled();
+        },
+      );
+    });
+
+    describe('propagatesMilestone', () => {
+      it.each`
+        workItemType | propagatesMilestone | shouldEmitMilestone
+        ${'Epic'}    | ${true}             | ${true}
+        ${'Epic'}    | ${false}            | ${true}
+        ${'Epic'}    | ${null}             | ${true}
+        ${'Issue'}   | ${true}             | ${true}
+        ${'Issue'}   | ${false}            | ${false}
+        ${'Issue'}   | ${null}             | ${false}
+      `(
+        'emits parentMilestone correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
+        async ({ workItemType, propagatesMilestone, shouldEmitMilestone }) => {
+          mockWorkItemConfigGetter.mockImplementation(() => {
+            return {
+              isGroupWorkItemType: null,
+              widgetDefinitions: [
+                {
+                  type: 'HIERARCHY',
+                  propagatesMilestone,
+                  __typename: 'WorkItemWidgetDefinitionHierarchy',
+                },
+              ],
+            };
+          });
+
+          createComponent({ workItemType, isGroup: true });
+          showDropdown();
+          await waitForPromises();
+
+          selectWorkItem(firstParentOption.id);
+          await waitForPromises();
+          await nextTick();
+
+          if (shouldEmitMilestone) {
+            expect(wrapper.emitted('parentMilestone')).toEqual([
+              [
+                expect.objectContaining({
+                  id: mockMilestone.id,
+                  title: mockMilestone.title,
+                }),
+              ],
+            ]);
+          } else {
+            expect(wrapper.emitted('parentMilestone')).toBeUndefined();
+          }
+        },
+      );
     });
   });
 });

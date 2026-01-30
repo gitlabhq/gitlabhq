@@ -3,10 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validate_connection, feature_category: :database do
-  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
-  let(:config) do
-    Gitlab::Database::LoadBalancing::Configuration
-      .new(ActiveRecord::Base, [db_host])
+  describe '.base_models' do
+    it 'returns the models to apply load balancing to' do
+      models = described_class.base_models
+
+      expect(models).to include(ActiveRecord::Base)
+
+      if Gitlab::Database.has_config?(:ci)
+        expect(models).to include(Ci::ApplicationRecord)
+      end
+    end
+
+    it 'returns the models as a frozen array' do
+      expect(described_class.base_models).to be_frozen
+    end
   end
 
   describe '.each_load_balancer' do
@@ -67,6 +77,12 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
     end
 
     context 'when the load balancing is configured' do
+      let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
+      let(:config) do
+        Gitlab::Database::LoadBalancing::Configuration
+          .new(ActiveRecord::Base, [db_host])
+      end
+
       let(:load_balancer) { described_class::LoadBalancer.new(config) }
       let(:proxy) { described_class::ConnectionProxy.new(load_balancer) }
 
@@ -106,29 +122,13 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
     end
   end
 
-  describe '.empty_config?' do
-    let(:null_config) { ActiveRecord::ConnectionAdapters::NullPool::NullConfig.new }
-
-    it 'returns true if the db config does not exist' do
-      expect(described_class.empty_config?(nil)).to eq(true)
-    end
-
-    it 'returns true if the db config is a NullConfig' do
-      expect(described_class.empty_config?(null_config)).to eq(true)
-    end
-
-    it 'returns false if the db config is valid' do
-      expect(described_class.empty_config?(config)).to eq(false)
-    end
-  end
-
   # For such an important module like LoadBalancing, full mocking is not
   # enough. This section implements some integration tests to test a full flow
   # of the load balancer.
   # - A real model with a table backed behind is defined
   # - The load balancing module is set up for this module only, as to prevent
   # breaking other tests. The replica configuration is cloned from the test
-  # configuration.
+  # configuraiton.
   # - In each test, we listen to the SQL queries (via sql.active_record
   # instrumentation) while triggering real queries from the defined model.
   # - We assert the desinations (replica/primary) of the queries in order.

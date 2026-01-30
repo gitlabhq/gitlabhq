@@ -1572,6 +1572,16 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:no_content)
         end
       end
+
+      context 'with a correct last_commit_id' do
+        let(:params) { super().merge(last_commit_id: last_commit_for_path.id) }
+
+        it 'deletes the file successfully' do
+          delete api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
     end
 
     describe 'when files are not deleted' do
@@ -1596,6 +1606,19 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           delete api(route(file_path), user), params: params
 
           expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'with stale last_commit_id' do
+        let(:params) { super().merge(last_commit_id: last_commit_for_path.parent_id) }
+
+        it 'returns a 400 bad request' do
+          delete api(route(file_path), user), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(
+            _('You are attempting to delete a file that has been previously updated.')
+          )
         end
       end
 

@@ -1,19 +1,30 @@
 import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemsSavedViewSelector from '~/work_items/list/components/work_items_saved_view_selector.vue';
+import { CREATED_DESC } from '~/work_items/list/constants';
 
 const mockSavedView = {
   __typename: 'SavedView',
   id: '1',
   name: 'My View',
+  userPermissions: {
+    updateSavedView: true,
+  },
 };
 describe('WorkItemsSavedViewSelector', () => {
   let wrapper;
 
-  const createComponent = (routeMock = { params: { view_id: undefined } }) => {
+  const createComponent = ({
+    routeMock = {
+      params: { view_id: undefined },
+    },
+    savedView = mockSavedView,
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemsSavedViewSelector, {
       propsData: {
-        savedView: mockSavedView,
+        savedView,
+        fullPath: 'test-project-path',
+        sortKey: CREATED_DESC,
       },
       mocks: {
         $route: routeMock,
@@ -32,7 +43,7 @@ describe('WorkItemsSavedViewSelector', () => {
 
   describe('when active', () => {
     beforeEach(() => {
-      createComponent({ params: { view_id: '1' } });
+      createComponent({ routeMock: { params: { view_id: '1' } } });
     });
 
     it('renders a dropdown', () => {
@@ -50,6 +61,20 @@ describe('WorkItemsSavedViewSelector', () => {
     it('shows the caret when active and applies appropriate styles', () => {
       expect(findSelector().classes()).toContain('saved-view-selector-active');
       expect(findSelector().props('noCaret')).toBe(false);
+    });
+
+    it('does not render edit action when there is no permission', () => {
+      createComponent({
+        routeMock: { params: { view_id: '1' } },
+        savedView: {
+          ...mockSavedView,
+          userPermissions: {
+            updateSavedView: false,
+          },
+        },
+      });
+
+      expect(findEditAction().exists()).toBe(false);
     });
   });
 

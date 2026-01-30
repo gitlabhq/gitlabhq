@@ -140,7 +140,6 @@ export default {
     'ee/app/assets/javascripts/analytics/repository_analytics/index.js',
     'ee/app/assets/javascripts/approvals/group_settings/mount_group_settings.js',
     'ee/app/assets/javascripts/approvals/mr_edit/mount_mr_edit.js',
-    'ee/app/assets/javascripts/approvals/mr_edit/mount_mr_promo.js',
     'ee/app/assets/javascripts/approvals/project_settings/mount_project_settings.js',
     'ee/app/assets/javascripts/arkose_labs/index.js',
     'ee/app/assets/javascripts/billings/qrtly_reconciliation/init_qrtly_reconciliation_alert.js',

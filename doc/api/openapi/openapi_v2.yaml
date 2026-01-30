@@ -19997,6 +19997,12 @@ paths:
         type: string
         required: false
         example: John Doe
+      - in: query
+        name: last_commit_id
+        description: Last known file commit id
+        type: string
+        required: false
+        example: 2695effb5807a22ff3d138d593fd856244e155e7
       responses:
         '204':
           description: Delete an existing file in repository

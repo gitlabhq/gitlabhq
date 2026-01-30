@@ -12,8 +12,6 @@ module Gitlab
       ISSUE_MILESTONE_CHANGED = 'g_project_management_issue_milestone_changed'
       ISSUE_TITLE_CHANGED = 'g_project_management_issue_title_changed'
       ISSUE_CROSS_REFERENCED = 'g_project_management_issue_cross_referenced'
-      ISSUE_MOVED = 'g_project_management_issue_moved'
-      ISSUE_CLONED = 'g_project_management_issue_cloned'
       ISSUE_MARKED_AS_DUPLICATE = 'g_project_management_issue_marked_as_duplicate'
       ISSUE_LOCKED = 'g_project_management_issue_locked'
       ISSUE_UNLOCKED = 'g_project_management_issue_unlocked'
@@ -62,10 +60,6 @@ module Gitlab
           track_internal_event(ISSUE_CROSS_REFERENCED, author, project)
         end
 
-        def track_issue_moved_action(author:, project:)
-          track_internal_event(ISSUE_MOVED, author, project)
-        end
-
         def track_issue_marked_as_duplicate_action(author:, project:)
           track_internal_event(ISSUE_MARKED_AS_DUPLICATE, author, project)
         end
@@ -100,10 +94,6 @@ module Gitlab
 
         def track_issue_comment_removed_action(author:, project:)
           track_internal_event(ISSUE_COMMENT_REMOVED, author, project)
-        end
-
-        def track_issue_cloned_action(author:, project:)
-          track_internal_event(ISSUE_CLONED, author, project)
         end
 
         def track_issue_design_comment_removed_action(author:, project:)

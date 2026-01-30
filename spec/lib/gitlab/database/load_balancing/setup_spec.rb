@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         .with('test', 'main', {
           host: 'localhost',
           prepared_statements: false,
-          pool: Gitlab::Database::LoadBalancing.default_pool_size
+          pool: Gitlab::Database.default_pool_size
         })
         .and_call_original
 

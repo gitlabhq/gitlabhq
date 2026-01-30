@@ -192,7 +192,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
+    ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :beta)
   end
 
   def rapid_diffs_force_disabled?

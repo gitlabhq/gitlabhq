@@ -140,7 +140,11 @@ export default {
           class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
           data-testid="visible-view-selector"
         >
-          <work-items-saved-view-selector :saved-view="view" :full-path="fullPath" />
+          <work-items-saved-view-selector
+            :saved-view="view"
+            :full-path="fullPath"
+            :sort-key="sortKey"
+          />
         </li>
       </ul>
 
@@ -153,7 +157,11 @@ export default {
           :key="view.id"
           class="gl-flex gl-shrink-0 gl-whitespace-nowrap"
         >
-          <work-items-saved-view-selector :saved-view="view" :full-path="fullPath" />
+          <work-items-saved-view-selector
+            :saved-view="view"
+            :full-path="fullPath"
+            :sort-key="sortKey"
+          />
         </li>
       </ul>
 

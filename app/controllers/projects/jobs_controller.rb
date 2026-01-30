@@ -24,6 +24,9 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_job_subscription_feature_flag, only: [:index]
+  before_action only: [:show] do
+    push_frontend_feature_flag(:ci_job_inputs, @project)
+  end
   layout 'project'
 
   feature_category :continuous_integration

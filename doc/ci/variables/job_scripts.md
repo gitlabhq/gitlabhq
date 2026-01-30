@@ -109,18 +109,15 @@ Quote script commands and variable values to prevent YAML and shell parsing erro
       - gcc $COMPILE_FLAGS main.c  # Expands to: gcc -Wall -Werror -O2 main.c
   ```
 
-## Pass an environment variable to another job
+## Pass environment variables to later jobs
 
 You can define environment variables in a job script and pass them to other jobs
-in later stages using [`dotenv` artifact reports](../yaml/artifacts_reports.md#artifactsreportsdotenv).
+in later stages using [`dotenv` reports](../yaml/artifacts_reports.md#artifactsreportsdotenv).
 
-Environment variables from `dotenv` artifacts have the following limitations:
+Environment variables from `dotenv` reports can only be used in job scripts, not to configure pipelines.
+The variables [take precedence](_index.md#cicd-variable-precedence) over job variables defined in the `.gitlab-ci.yml` file.
 
-- The variables [take precedence](_index.md#cicd-variable-precedence)
-  over certain types of variable definitions such as job defined variables.
-- The variables can only be used in job scripts, not to configure pipelines.
-
-To pass a job-created environment variable to other jobs:
+To pass `dotenv` variables to later jobs:
 
 1. In the job script, save the variable as a `.env` file with the format `VARIABLE_NAME=value`. For example:
 

@@ -39,7 +39,7 @@ Prerequisites:
 
 To protect an environment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. Select **Protect an environment**.
@@ -273,7 +273,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 {{< /history >}}
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the [deployment tier of environments](_index.md#deployment-tier-of-environments) you want to protect.

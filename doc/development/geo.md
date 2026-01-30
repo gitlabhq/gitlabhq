@@ -17,7 +17,7 @@ the diagram below and are described in more detail in this document.
 Geo handles replication for different components:
 
 - [Database](#database-replication): includes the entire application, except cache and jobs.
-- [Git repositories](#repository-replication): includes both projects and wikis.
+- [Git repositories](geo/repository_sync.md): includes both projects and wikis.
 - [Blobs](geo/blob_replication.md): includes anything from images attached on issues
   to raw logs and assets from CI.
 
@@ -46,8 +46,8 @@ for new events and creates background jobs for each specific event type.
 
 For example when a repository is updated, the Geo **primary** site creates
 a Geo event with an associated repository updated event. The Geo Log Cursor daemon
-picks the event up and schedules a `Geo::ProjectSyncWorker` job which
-uses the `Geo::RepositorySyncService` to update the repository.
+picks the event up and schedules a `Geo::EventWorker` job which
+uses the `Geo::EventService` to update the repository.
 
 The Geo Log Cursor daemon can operate in High Availability mode automatically.
 The daemon tries to acquire a lock from time to time and once acquired, it
@@ -75,46 +75,7 @@ for example, all the issues and merge requests.
 Geo also replicates repositories. Each **secondary** site keeps track of
 the state of every repository in the [tracking database](#tracking-database).
 
-There are a few ways a repository gets replicated by the:
-
-- [Repository Registry Sync worker](#repository-registry-sync-worker).
-- [Geo Log Cursor](#geo-log-cursor-daemon).
-
-#### Project Repository Registry
-
-The `Geo::ProjectRepositoryRegistry` class defines the model used to track the
-state of repository replication. For each project in the main
-database, one record in the tracking database is kept.
-
-It records the following about repositories:
-
-- The last time they were synced.
-- The last time they were successfully synced.
-- If they need to be resynced.
-- When a retry should be attempted.
-- The number of retries.
-- If and when they were verified.
-
-It also stores these attributes for project wikis in dedicated columns.
-
-#### Repository Registry Sync worker
-
-The `Geo::RepositoryRegistrySyncWorker` class runs periodically in the
-background and it searches the `Geo::ProjectRepositoryRegistry` model for
-projects that need updating. Those projects can be:
-
-- Unsynced: Projects that have never been synced on the **secondary**
-  site and so do not exist yet.
-- Updated recently: Projects that have a `last_repository_updated_at`
-  timestamp that is more recent than the `last_repository_successful_sync_at`
-  timestamp in the `Geo::ProjectRepositoryRegistry` model.
-- Manual: The administrator can manually flag a repository to resync in the
-  [Geo **Admin** area](../administration/geo_sites.md).
-
-When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
-times, Geo does a so-called _re-download_. It will do a clean clone
-into the `@geo-temporary` directory in the root of the storage. When
-it's successful, we replace the main repository with the newly cloned one.
+For detailed information about the repository sync flow and lease mechanism, see the [repository synchronization documentation](geo/repository_sync.md).
 
 ### Blob replication
 

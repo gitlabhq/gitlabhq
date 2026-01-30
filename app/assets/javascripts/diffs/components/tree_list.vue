@@ -294,6 +294,7 @@ export default {
       class="gl-mb-3"
     />
     <nav
+      v-if="treeList.length"
       :class="{ 'tree-list-blobs': !renderTreeList || search }"
       class="mr-tree-list"
       :aria-label="__('File tree')"
@@ -336,10 +337,12 @@ export default {
           <div class="tree-list-gutter"></div>
         </template>
       </recycle-scroller>
-      <p v-else class="gl-my-3">
+    </nav>
+    <div role="status">
+      <p v-if="!treeList.length" class="gl-my-3">
         {{ s__('MergeRequest|No files found') }}
       </p>
-    </nav>
+    </div>
   </section>
 </template>
 

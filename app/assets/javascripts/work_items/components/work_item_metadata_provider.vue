@@ -75,6 +75,7 @@ export default normalizeRender({
       getWorkItemTypeConfiguration: computed(() => (typeName) => {
         return this.workItemTypesConfiguration[typeName];
       }),
+      workItemTypesConfiguration: computed(() => this.workItemTypesConfiguration),
     };
   },
   props: {

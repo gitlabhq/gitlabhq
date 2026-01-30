@@ -491,7 +491,7 @@ The order of precedence for variables is (from highest to lowest):
    the job uses the value from the closest subgroup. For example, if you have
    `Group > Subgroup 1 > Subgroup 2 > Project`, the variable defined in `Subgroup 2` takes precedence.
 1. Instance variables.
-1. [Variables from `dotenv` reports](job_scripts.md#pass-an-environment-variable-to-another-job).
+1. [Variables from `dotenv` reports](job_scripts.md#pass-environment-variables-to-later-jobs).
 1. Job variables, defined in jobs in the `.gitlab-ci.yml` file.
 1. Default variables for all jobs, defined at the top-level of the `.gitlab-ci.yml` file.
 1. [Deployment variables](predefined_variables.md#deployment-variables).

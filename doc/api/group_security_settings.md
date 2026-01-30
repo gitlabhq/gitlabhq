@@ -2,6 +2,7 @@
 stage: Security Risk Management
 group: Security Platform Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Update group security settings in GitLab. Configure secret push protection and other security policies for all projects within a group.
 title: Group security settings API
 ---
 
@@ -22,9 +23,9 @@ Every API call to group security settings must be [authenticated](rest/authentic
 
 If a user isn't a member of a private group, requests to the private group return a `404 Not Found` status code.
 
-## Update the `secret_push_protection_enabled` setting
+## Update group security settings
 
-Updates the `secret_push_protection_enabled` setting for all projects in a specified group.
+Updates group security settings for a specified group.
 
 Prerequisites:
 

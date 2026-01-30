@@ -120,7 +120,6 @@
 - './ee/spec/features/merge_request/user_sees_approval_widget_spec.rb'
 - './ee/spec/features/merge_request/user_sees_closing_issues_message_spec.rb'
 - './ee/spec/features/merge_request/user_sees_merge_widget_spec.rb'
-- './ee/spec/features/merge_request/user_sees_mr_approvals_promo_spec.rb'
 - './ee/spec/features/merge_request/user_sees_status_checks_widget_spec.rb'
 - './ee/spec/features/merge_request/user_selects_branches_for_new_mr_spec.rb'
 - './ee/spec/features/merge_request/user_sets_approval_rules_spec.rb'

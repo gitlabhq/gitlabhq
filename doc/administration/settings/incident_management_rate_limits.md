@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure rate limits for inbound incident management alerts. Set maximum requests per project and time periods to prevent alert overload.
 gitlab_dedicated: yes
 title: Incident management rate limits
 ---

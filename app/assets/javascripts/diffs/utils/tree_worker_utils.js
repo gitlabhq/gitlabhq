@@ -98,6 +98,7 @@ export const generateTreeList = (files) => {
               removedLines: file.removed_lines,
               parentPath: parent ? `${parent.path}/` : '/',
               submodule: file.submodule,
+              href: file.href,
             });
           } else {
             Object.assign(entry, {

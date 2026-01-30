@@ -9,8 +9,8 @@ title: Customize review instructions for GitLab Duo
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

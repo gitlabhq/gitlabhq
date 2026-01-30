@@ -618,6 +618,71 @@ And to actually delete the orphaned upload rows:
 delete_orphaned_uploads(dry_run: false)
 ```
 
+### Orphaned exclusive lease keys blocking repository sync
+
+Repository synchronization may be blocked when an exclusive lease key is orphaned, preventing sync operations for up to 8 hours.
+
+**Symptoms:**
+
+- Repository sync blocked: the replication state of the affected repository alternates between `pending` and `failed` states.
+- Increased count of log lines with "Cannot obtain an exclusive lease" message in `geo.log`.
+- No active sync job running for the affected repository.
+- Affects a single repository for up to 8 hours until the lease expires.
+
+**Diagnosis:**
+
+1. Confirm the repository is not actively syncing by checking the Geo admin interface.
+1. Check `geo.log` for an increased amount of "Cannot obtain an exclusive lease" messages:
+
+   ```shell
+   grep "Cannot obtain an exclusive lease" /var/log/gitlab/geo/geo.log
+   ```
+
+1. Verify that all these log lines include a `lease_key` field with value
+   `geo_sync_ssf_service:project_repository:<repository id>`, where `<repository id>`
+   is the unique ID of the affected repository.
+1. Verify no active sync jobs are running in Sidekiq for the affected repository.
+
+**Workaround:**
+
+> [!warning]
+> The recommended approach is to wait for the 8-hour lease expiration. Manual lease release should only be used when
+> immediate sync is critical and you have confirmed no sync job is actively running.
+
+To manually release an orphaned lease key:
+
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
+1. Find the project ID of the affected repository (replace `<project-path>` with the actual project path):
+
+   ```ruby
+   project = Project.find_by_full_path('<project-path>')
+   project_id = project.id
+   ```
+
+1. In the same session, release the orphaned lease:
+
+   ```ruby
+   replicator = Geo::ProjectRepositoryRegistry.find_by(project_id: project_id).replicator
+   sync_service = Geo::FrameworkRepositorySyncService.new(replicator)
+   uuid = Gitlab::ExclusiveLease.get_uuid(sync_service.lease_key)
+
+   if uuid
+     Gitlab::ExclusiveLease.cancel(sync_service.lease_key, uuid)
+     puts "Lease released for project ID #{project_id}"
+   else
+     puts "No active lease found for project ID #{project_id}"
+   end
+   ```
+
+1. Verify the lease was released and trigger a new sync:
+
+   ```ruby
+   replicator.sync
+   ```
+
+> [!note]
+> After releasing the lease, the repository sync will be retried according to the normal Geo sync schedule, or you can manually trigger a sync as shown above.
+
 ### Error: `Error syncing repository: 13:fatal: could not read Username`
 
 The `last_sync_failure` error

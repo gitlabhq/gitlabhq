@@ -84,22 +84,6 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
   end
 
-  context 'for Issue moved actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_MOVED }
-
-      subject(:track_event) { described_class.track_issue_moved_action(author: user, project: project) }
-    end
-  end
-
-  context 'for Issue cloned actions' do
-    it_behaves_like 'internal event tracking' do
-      let(:event) { described_class::ISSUE_CLONED }
-
-      subject(:track_event) { described_class.track_issue_cloned_action(author: user, project: project) }
-    end
-  end
-
   context 'for Issue marked as duplicate actions' do
     it_behaves_like 'internal event tracking' do
       let(:event) { described_class::ISSUE_MARKED_AS_DUPLICATE }

@@ -398,12 +398,18 @@ module API
           desc: 'The email of the author', documentation: { example: 'johndoe@example.com' }
         optional :author_name, type: String,
           desc: 'The name of the author', documentation: { example: 'John Doe' }
+        optional :last_commit_id, type: String,
+          desc: 'Last known file commit id', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
       end
       delete ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
-        result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
+        begin
+          result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
+        rescue ::Files::UpdateService::FileChangedError => e
+          render_api_error!(e.message, 400)
+        end
 
         if result[:status] != :success
           render_api_error!(result[:message], 400)
