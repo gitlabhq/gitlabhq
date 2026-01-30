@@ -7230,6 +7230,9 @@ msgstr ""
 msgid "AiPowered|Block GitLab from processing your code and project data for AI-powered features by default. Your data stays private unless subgroups or projects individually opt in."
 msgstr ""
 
+msgid "AiPowered|Buy Credits"
+msgstr ""
+
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -7443,6 +7446,9 @@ msgstr ""
 msgid "AiPowered|Only members of these groups will have access to selected AI features."
 msgstr ""
 
+msgid "AiPowered|Orchestrate AI agents across your entire software lifecycle to automate complex workflows, accelerate delivery, and keep your team in flow."
+msgstr ""
+
 msgid "AiPowered|Purchase Duo Pro seats"
 msgstr ""
 
@@ -7465,6 +7471,9 @@ msgid "AiPowered|Specify how code completion requests are sent to the AI gateway
 msgstr ""
 
 msgid "AiPowered|Start date: %{startDate}"
+msgstr ""
+
+msgid "AiPowered|Talk to Sales"
 msgstr ""
 
 msgid "AiPowered|Tanuki AI icon"
