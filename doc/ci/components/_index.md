@@ -651,7 +651,7 @@ For a click-through demo, see [the CI/CD Catalog beta Product Tour](https://gitl
 
 To access the CI/CD Catalog and view the published components that are available to you:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Explore**.
 1. Select **CI/CD Catalog**.
 

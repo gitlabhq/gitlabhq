@@ -5,8 +5,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Explain vulnerabilities with AI
 ---
 
-## Vulnerability Explanation
-
 {{< details >}}
 
 - Tier: Ultimate
@@ -67,7 +65,7 @@ On GitLab.com this feature is available. By default, it is powered by the Anthro
 model. GitLab cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
-### Data shared with third-party AI APIs for Vulnerability Explanation
+## Data shared with third-party AI APIs for Vulnerability Explanation
 
 The following data is shared with third-party AI APIs:
 

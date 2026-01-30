@@ -11269,6 +11269,12 @@ msgstr ""
 msgid "Billing"
 msgstr ""
 
+msgid "BillingPlans|$12 in GitLab Credits/User/Month"
+msgstr ""
+
+msgid "BillingPlans|$24 in GitLab Credits/User/Month"
+msgstr ""
+
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr ""
 
@@ -11303,6 +11309,12 @@ msgid "BillingPlans|AI Chat in the IDE"
 msgstr ""
 
 msgid "BillingPlans|AI Code Suggestions in the IDE"
+msgstr ""
+
+msgid "BillingPlans|AI agents and automated flows that work alongside you to answer complex questions, automate tasks, and streamline development. Use pre-built options or create custom agents and flows for your team."
+msgstr ""
+
+msgid "BillingPlans|AI agents and automated flows that work alongside you to answer complex questions, automate tasks, and streamline development. Use pre-built options or create custom agents and flows for your team. Powered by GitLab Credits."
 msgstr ""
 
 msgid "BillingPlans|AI-powered features that help you write code, understand your work, and automate tasks across your workflow."
@@ -11443,6 +11455,12 @@ msgstr ""
 msgid "BillingPlans|Get the most out of GitLab with Ultimate and GitLab Duo Enterprise"
 msgstr ""
 
+msgid "BillingPlans|GitLab Duo Agent Platform"
+msgstr ""
+
+msgid "BillingPlans|GitLab Duo Agent Platform:"
+msgstr ""
+
 msgid "BillingPlans|GitLab Free"
 msgstr ""
 
@@ -11459,6 +11477,9 @@ msgid "BillingPlans|Includes"
 msgstr ""
 
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
+msgstr ""
+
+msgid "BillingPlans|Learn more"
 msgstr ""
 
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
@@ -11498,6 +11519,9 @@ msgid "BillingPlans|Not ready to trial the full suite of GitLab and GitLab Duo f
 msgstr ""
 
 msgid "BillingPlans|Now with AI features included"
+msgstr ""
+
+msgid "BillingPlans|Now with GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "BillingPlans|Premium"
@@ -11632,6 +11656,9 @@ msgstr ""
 msgid "BillingPlans|Your %{platform} is on %{planName}"
 msgstr ""
 
+msgid "BillingPlans|a trial of Ultimate"
+msgstr ""
+
 msgid "BillingPlans|a trial of Ultimate + Duo Enterprise"
 msgstr ""
 
@@ -11713,6 +11740,9 @@ msgstr ""
 msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."
 msgstr ""
 
+msgid "Billings|GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "Billings|Group"
 msgstr ""
 
@@ -11776,6 +11806,9 @@ msgid "Billings|View subscription details and manage billing for your %{linkStar
 msgstr ""
 
 msgid "Billings|You have unlimited seat count."
+msgstr ""
+
+msgid "Billings|Your group is on a trial of Gitlab Ultimate"
 msgstr ""
 
 msgid "Billings|Your group is on a trial of Ultimate + GitLab Duo Enterprise"
@@ -20666,6 +20699,9 @@ msgid "Copy link"
 msgstr ""
 
 msgid "Copy link URL"
+msgstr ""
+
+msgid "Copy link to the file"
 msgstr ""
 
 msgid "Copy permalink"
@@ -31650,6 +31686,9 @@ msgstr ""
 msgid "GitLab Duo Agent Platform"
 msgstr ""
 
+msgid "GitLab Duo Agent Platform features"
+msgstr ""
+
 msgid "GitLab Duo Agentic Chat"
 msgstr ""
 
@@ -36027,6 +36066,9 @@ msgstr ""
 msgid "InProductMarketing|AI Code Suggestions in the IDE"
 msgstr ""
 
+msgid "InProductMarketing|Accelerate delivery with GitLab Ultimate + GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
@@ -36078,6 +36120,9 @@ msgstr ""
 msgid "InProductMarketing|Start with Self-Managed"
 msgstr ""
 
+msgid "InProductMarketing|Support compliance"
+msgstr ""
+
 msgid "InProductMarketing|Team Project Management"
 msgstr ""
 
@@ -36085,6 +36130,12 @@ msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
 msgid "InProductMarketing|Trusted by"
+msgstr ""
+
+msgid "InProductMarketing|Try our most advanced features, including GitLab Duo Agent Platform to automate development tasks with AI agents. After your %{duration}-day trial, continue with free features or upgrade to unlock the full value of GitLab."
+msgstr ""
+
+msgid "InProductMarketing|Try our most advanced features, including GitLab Duo Enterprise to automate development tasks with AI. After your %{duration}-day trial, continue with free features or upgrade to unlock the full value of GitLab."
 msgstr ""
 
 msgid "InProductMarketing|Unlimited Licensed Users"
@@ -40035,7 +40086,16 @@ msgstr ""
 msgid "LearnGitLab|Add code to this project's repository"
 msgstr ""
 
+msgid "LearnGitLab|Agentic Chat:"
+msgstr ""
+
+msgid "LearnGitLab|Agents:"
+msgstr ""
+
 msgid "LearnGitLab|Analyze your application for vulnerabilities with DAST"
+msgstr ""
+
+msgid "LearnGitLab|Answer complex questions with context-aware chat that understands your code, pipelines, and projects."
 msgstr ""
 
 msgid "LearnGitLab|Assign a GitLab Duo seat to your colleagues"
@@ -40086,6 +40146,9 @@ msgstr ""
 msgid "LearnGitLab|Explore these resources to learn essential features and best practices."
 msgstr ""
 
+msgid "LearnGitLab|Flows:"
+msgstr ""
+
 msgid "LearnGitLab|Follow these steps to get familiar with the GitLab workflow."
 msgstr ""
 
@@ -40095,13 +40158,22 @@ msgstr ""
 msgid "LearnGitLab|Get familiar with GitLab Duo"
 msgstr ""
 
+msgid "LearnGitLab|Get familiar with GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "LearnGitLab|Get started"
+msgstr ""
+
+msgid "LearnGitLab|GitLab Credits:"
 msgstr ""
 
 msgid "LearnGitLab|GitLab Duo Code Suggestions"
 msgstr ""
 
 msgid "LearnGitLab|GitLab University"
+msgstr ""
+
+msgid "LearnGitLab|Handle specific tasks autonomously, from searching across projects to creating commits."
 msgstr ""
 
 msgid "LearnGitLab|In this tutorial, we explore 10 tips and best practices to integrate GitLab Duo Chat into your AI-native DevSecOps workflows and refine your prompts for the best results."
@@ -40119,7 +40191,13 @@ msgstr ""
 msgid "LearnGitLab|Learn GitLab"
 msgstr ""
 
+msgid "LearnGitLab|Learn about GitLab Credits"
+msgstr ""
+
 msgid "LearnGitLab|Learn more"
+msgstr ""
+
+msgid "LearnGitLab|Let you automate entire workflows by combining agents into sequences that run in your IDE or directly in GitLab CI/CD."
 msgstr ""
 
 msgid "LearnGitLab|Next steps"
@@ -40192,6 +40270,9 @@ msgid "LearnGitLab|You don't have sufficient access to perform this action: "
 msgstr ""
 
 msgid "LearnGitLab|Your team is growing! You've successfully invited new team members to the %{projectName} project."
+msgstr ""
+
+msgid "LearnGitLab|Your trial includes a pool of GitLab Credits shared across your team. Use them to access GitLab Duo Agent Platform features like AI Agents, Flows, and enhanced Chat."
 msgstr ""
 
 msgid "LearnGitlab|- Included in trial"
@@ -40491,6 +40572,9 @@ msgid "Link title"
 msgstr ""
 
 msgid "Link title is required"
+msgstr ""
+
+msgid "Link to diff file copied."
 msgstr ""
 
 msgid "Link to go to GitLab pipeline documentation"
@@ -54624,9 +54708,6 @@ msgstr ""
 msgid "Promotions|Keep track of events in your project"
 msgstr ""
 
-msgid "Promotions|Learn more"
-msgstr ""
-
 msgid "Promotions|Merge request approvals"
 msgstr ""
 
@@ -54664,12 +54745,6 @@ msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Try it for free"
-msgstr ""
-
-msgid "Promotions|Unlock epics, advanced boards, status, weight, iterations, and more to seamlessly tie your strategy to your DevSecOps workflows with GitLab."
-msgstr ""
-
-msgid "Promotions|Upgrade for advanced agile planning"
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
@@ -63437,19 +63512,7 @@ msgstr ""
 msgid "SecurityReports|GitLab Duo FP detection"
 msgstr ""
 
-msgid "SecurityReports|GitLab Duo SAST false positive detection - available for a limited time in free Beta"
-msgstr ""
-
-msgid "SecurityReports|GitLab Duo can automatically review new critical and high severity SAST vulnerabilities on the default branch to %{linkStart}identify potential false positives%{linkEnd}. GitLab Duo can assign each false positive a confidence score and %{dismissLinkStart}you can bulk dismiss the identified false positives%{dismissLinkEnd} in the vulnerability report. The feature is available as a free beta for a limited time and is disabled by default. You can turn on this feature in the GitLab Duo settings."
-msgstr ""
-
-msgid "SecurityReports|GitLab Duo can automatically scan security findings to %{fpLinkStart}identify false positives%{fpLinkEnd} and %{vrLinkStart}generate fixes for vulnerabilities%{vrLinkEnd}. GitLab Duo can assign each finding a GitLab Duo confidence score. You can adjust or disable these features in the GitLab Duo Settings. These features are available as a free beta for a limited time and are disabled by default."
-msgstr ""
-
 msgid "SecurityReports|GitLab Duo resolution"
-msgstr ""
-
-msgid "SecurityReports|GitLab Duo security features are here - available for a limited time in free Beta"
 msgstr ""
 
 msgid "SecurityReports|Go to policies"
@@ -63500,9 +63563,6 @@ msgstr ""
 msgid "SecurityReports|KEV:"
 msgstr ""
 
-msgid "SecurityReports|Learn more"
-msgstr ""
-
 msgid "SecurityReports|Learn more about security configuration"
 msgstr ""
 
@@ -63525,9 +63585,6 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your proje
 msgstr ""
 
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
-msgstr ""
-
-msgid "SecurityReports|Manage settings"
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"
@@ -70366,7 +70423,10 @@ msgstr ""
 msgid "TierBadgePopover|Explore paid plans"
 msgstr ""
 
-msgid "TierBadgePopover|Get advanced features like GitLab Duo, merge approvals, epics, and code review analytics."
+msgid "TierBadgePopover|Get advanced features like GitLab Duo Agent Platform, merge approvals, epics, and code review analytics."
+msgstr ""
+
+msgid "TierBadgePopover|Get advanced features like merge approvals, epics, and code review analytics."
 msgstr ""
 
 msgid "TierBadgePopover|Start a free trial"
@@ -72029,6 +72089,9 @@ msgstr ""
 msgid "Trial|Select state or province"
 msgstr ""
 
+msgid "Trial|Start your free Ultimate and GitLab Duo Agent Platform trial"
+msgstr ""
+
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr ""
 
@@ -72039,6 +72102,9 @@ msgid "Trial|Start your free trial"
 msgstr ""
 
 msgid "Trial|State or province"
+msgstr ""
+
+msgid "Trial|Try GitLab Ultimate and automate tasks with GitLab Duo Agent Platform free for %{duration} days. After that, continue with free features or upgrade to a paid plan."
 msgstr ""
 
 msgid "Trial|We need a few more details from you to activate your trial for your GitLab instance."
@@ -72123,6 +72189,9 @@ msgid "Trusted"
 msgstr ""
 
 msgid "Trusted applications are automatically authorized on GitLab OAuth flow. It's highly recommended for the security of users that trusted applications have the confidential setting set to true."
+msgstr ""
+
+msgid "Try GitLab Ultimate for free and automate tasks with GitLab Duo Agent Platform when you create a new project."
 msgstr ""
 
 msgid "Try adjusting the filters, or creating an issue or merge request to collect more data"

@@ -33,8 +33,10 @@ describe('Diff File Options Menu Adapter', () => {
 
   const mount = () => {
     const viewer = 'any';
+    const oldPath = '/old';
+    const newPath = '/new';
     document.body.innerHTML = `
-      <diff-file data-file-data='${JSON.stringify({ viewer })}'>
+      <diff-file id="file" data-file-data='${JSON.stringify({ viewer, old_path: oldPath, new_path: newPath })}'>
         <div class="rd-diff-file">
           <div class="rd-diff-file-header">
           <div class="rd-diff-file-options-menu">
@@ -94,8 +96,8 @@ describe('Diff File Options Menu Adapter', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items).toHaveLength(1);
-    expect(items[0].textContent.trim()).toBe(item1.text);
-    expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.href);
+    expect(items[0].textContent.trim()).toBe('Copy link to the file');
+    expect(items[1].textContent.trim()).toBe(item1.text);
+    expect(items[1].querySelector('a').getAttribute('href')).toBe(item1.href);
   });
 });

@@ -5,7 +5,10 @@ import {
   GlDisclosureDropdownGroup,
   GlSprintf,
 } from '@gitlab/ui';
-import { sprintf } from '~/locale';
+import { sprintf, __ } from '~/locale';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import { withLinkedFileUrlParams } from '~/rapid_diffs/utils/linked_file';
+import toast from '~/vue_shared/plugins/global_toast';
 
 export default {
   name: 'DiffFileOptionsMenu',
@@ -20,22 +23,28 @@ export default {
       type: Array,
       required: true,
     },
-    // eslint-disable-next-line vue/no-unused-properties -- Invoked by parent component
+    fileId: {
+      type: String,
+      required: true,
+    },
     oldPath: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
-    // eslint-disable-next-line vue/no-unused-properties -- Invoked by parent component
     newPath: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
   },
   computed: {
-    isGrouped() {
-      return this.items.length > 0 && this.items[0].items !== undefined;
+    allItems() {
+      return [
+        {
+          text: __('Copy link to the file'),
+          action: this.onFileLinkCopyClick,
+        },
+        ...this.items,
+      ];
     },
   },
   async mounted() {
@@ -63,6 +72,15 @@ export default {
     closeAndFocus() {
       this.$refs.dropdown.closeAndFocus();
     },
+    onFileLinkCopyClick() {
+      const url = withLinkedFileUrlParams(new URL(window.location), {
+        oldPath: this.oldPath,
+        newPath: this.newPath,
+        fileId: this.fileId,
+      });
+      copyToClipboard(url);
+      toast(__('Link to diff file copied.'));
+    },
   },
 };
 </script>
@@ -80,33 +98,33 @@ export default {
     :toggle-text="s__('RapidDiffs|Show options')"
     text-sr-only
   >
-    <template v-if="isGrouped">
-      <gl-disclosure-dropdown-group
-        v-for="(group, index) in items"
-        :key="index"
-        :group="group"
-        :bordered="group.bordered"
-      >
-        <template #list-item="{ item }">
-          <gl-sprintf :message="transformMessage(item)">
-            <template #code="{ content }">
-              <code v-text="content"></code>
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-disclosure-dropdown-group>
-    </template>
-
-    <template v-else>
-      <gl-disclosure-dropdown-item v-for="(item, index) in items" :key="index" :item="item">
-        <template #list-item>
-          <gl-sprintf :message="transformMessage(item)">
-            <template #code="{ content }">
-              <code v-text="content"></code>
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-disclosure-dropdown-item>
+    <template v-for="(dropdownItem, index) in allItems">
+      <template v-if="dropdownItem.items">
+        <gl-disclosure-dropdown-group
+          :key="index"
+          :group="dropdownItem"
+          :bordered="dropdownItem.bordered"
+        >
+          <template #list-item="{ item }">
+            <gl-sprintf :message="transformMessage(item)">
+              <template #code="{ content }">
+                <code v-text="content"></code>
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-disclosure-dropdown-group>
+      </template>
+      <template v-else>
+        <gl-disclosure-dropdown-item :key="index" :item="dropdownItem">
+          <template #list-item>
+            <gl-sprintf :message="transformMessage(dropdownItem)">
+              <template #code="{ content }">
+                <code v-text="content"></code>
+              </template>
+            </gl-sprintf>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </template>
     </template>
   </gl-disclosure-dropdown>
 </template>

@@ -120,7 +120,7 @@ module Users
       focused_vulnerability_reporting: 116,
       expired_trial_status_widget: 117, # EE-only
       work_item_consolidated_list_feedback: 118,
-      ai_experiment_sast_fp_detection: 119, # EE-only
+      # 119 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221219
       vulnerability_report_limited_experience: 120, # EE-only
       file_tree_browser_popover: 121,
       virtual_registry_permission_change_alert: 122 # EE-only

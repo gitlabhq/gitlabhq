@@ -15,7 +15,14 @@ start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 # Build an array of filename globs to process.
 # Only search file types that might use or define a method.
 #
-extensions = %w[rb haml erb].flat_map { |ext| ["{ee/,}app/**/*.#{ext}", "{ee/,}lib/**/*.#{ext}", "gems/**/*.#{ext}"] }
+extensions = %w[rb haml erb].flat_map do |ext|
+  [
+    "{ee/,}app/**/*.#{ext}",
+    "config/**/*.#{ext}",
+    "gems/**/*.#{ext}",
+    "{ee/,}lib/**/*.#{ext}"
+  ]
+end
 
 # Build a hash of all the source files to search.
 # Key is filename, value is an array of the lines.

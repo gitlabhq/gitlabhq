@@ -17,9 +17,6 @@ ee/app/models/cloud_connector/keys.rb:
 - create_new_key!
 - trim!
 - truncated_pem
-ee/app/models/concerns/approval_rule_like.rb:
-- vulnerability_attribute_known_exploited
-- vulnerability_attribute_epss_score
 ee/app/models/concerns/ee/issuable_link.rb:
 - blocked_issuables_for_collection
 ee/app/models/concerns/ee/vulnerability_flag_helpers.rb:
@@ -41,8 +38,6 @@ ee/app/models/concerns/security/scan_result_policy.rb:
 - applicable_scan_result_policies_with_real_index
 ee/app/models/dast_site_profile.rb:
 - scan_file_path_or_dast_site_url
-ee/app/models/ee/active_session.rb:
-- unset_marketing_user_cookies
 ee/app/models/ee/ci/build.rb:
 - has_artifact?
 - collect_license_scanning_reports!
@@ -114,8 +109,6 @@ ee/app/models/project_security_setting.rb:
 ee/app/models/search/zoekt.rb:
 - index_in
 - delete_in
-ee/app/models/secrets_management/group_secrets_managers/pipeline_helper.rb:
-- ci_policy_name_for_environment
 ee/app/models/security/attribute.rb:
 - really_destroy!
 ee/app/models/security/category.rb:
@@ -123,8 +116,6 @@ ee/app/models/security/category.rb:
 ee/app/models/security/orchestration_policy_configuration.rb:
 - compliance_framework_ids_with_policy_index
 - experiment_configuration
-ee/app/models/virtual_registries/packages/maven/upstream.rb:
-- cache_local_entries
 ee/app/models/work_items/statuses/system_defined/status.rb:
 - find_by_work_item_and_name
 app/helpers/ci/catalog/resources_helper.rb:
@@ -161,9 +152,6 @@ app/helpers/sorting_titles_values_helper.rb:
 - sort_value_version_desc
 app/models/application_record.rb:
 - deleted_from_database?
-app/models/application_setting.rb:
-- max_login_attempts_column_exists?
-- failed_login_attempts_unlock_period_in_minutes_column_exists?
 app/models/application_setting_implementation.rb:
 - ensure_key_restrictions!
 app/models/bulk_imports/export.rb:
@@ -205,6 +193,7 @@ app/models/clusters/concerns/application_version.rb:
 - update_available?
 app/models/commit.rb:
 - touch_later
+- valid_full_sha
 app/models/concerns/awardable.rb:
 - user_authored?
 app/models/concerns/counter_attribute.rb:
@@ -318,3 +307,17 @@ app/models/todo.rb:
 app/models/user.rb:
 - inactive_message
 - will_save_change_to_login?
+- reset_password_by_token
+- unlock_access_by_token
+ee/app/models/ai/duo_code_review.rb:
+- classic?
+ee/app/models/concerns/ai/user_authorizable.rb:
+- any_group_with_ai_available?
+ee/app/models/work_items/types_framework/system_defined/definitions/epic.rb:
+- support_roadmap_view?
+app/models/ci/stage.rb:
+- update_legacy_status
+app/models/work_items/types_framework/custom/type.rb:
+- icon_name_with_prefix
+app/models/work_items/types_framework/system_defined/definitions/issue.rb:
+- support_move_action?

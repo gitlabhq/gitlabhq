@@ -182,8 +182,6 @@ export default {
     'app/assets/javascripts/vue_shared/issuable/create/components/issuable_form.vue',
     'app/assets/javascripts/vue_shared/issuable/create/components/issuable_label_selector.vue',
     'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue',
-    'app/assets/javascripts/whats_new/components/app.vue',
-    'app/assets/javascripts/whats_new/components/other_updates.vue',
     'app/assets/javascripts/wikis/components/wiki_content.vue',
     'app/assets/javascripts/wikis/components/wiki_form.vue',
     'app/assets/javascripts/wikis/wiki_notes/components/discussion_actions.vue',

@@ -22,6 +22,14 @@ describe('linked_file utilities', () => {
       expect(result.hash).toBe('');
     });
 
+    it('removes file hash', () => {
+      const url = new URL(
+        'https://example.com/project/merge_requests/1#abcdefabcdef1234567890123456789012345678',
+      );
+      const result = removeLinkedFileUrlParams(url);
+      expect(result.hash).toBe('');
+    });
+
     it('preserves non-line hashes', () => {
       const url = new URL('https://example.com/project/merge_requests/1#some-anchor');
       const result = removeLinkedFileUrlParams(url);
@@ -89,6 +97,28 @@ describe('linked_file utilities', () => {
 
       expect(result.hash).toBe('');
       expect(result.searchParams.get('file_path')).toBe('app/models/user.rb');
+    });
+
+    it('sets hash when fileId is provided', () => {
+      const url = new URL('https://example.com/merge_requests/1');
+      const result = withLinkedFileUrlParams(url, {
+        oldPath: 'app/models/user.rb',
+        newPath: 'app/models/user.rb',
+        fileId: 'abc123',
+      });
+
+      expect(result.hash).toBe('#abc123');
+      expect(result.searchParams.get('file_path')).toBe('app/models/user.rb');
+    });
+
+    it('preserves hash when fileId is not provided', () => {
+      const url = new URL('https://example.com/merge_requests/1#other');
+      const result = withLinkedFileUrlParams(url, {
+        oldPath: 'app/models/user.rb',
+        newPath: 'app/models/user.rb',
+      });
+
+      expect(result.hash).toBe('#other');
     });
   });
 });

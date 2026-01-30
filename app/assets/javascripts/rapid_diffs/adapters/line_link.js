@@ -9,6 +9,7 @@ function scrollToLegacyFileFragment() {
   if (fileHash !== this.id) return;
   if (!oldLine && !newLine) {
     this.selectFile();
+    delete this.appData.legacyFileFragment;
     return;
   }
   const lineLink = this.diffElement.querySelector(
