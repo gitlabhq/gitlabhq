@@ -101,7 +101,7 @@ module Users
       # EE-only
       pipl_compliance_alert: 98,
       # 99 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
-      pipeline_inputs_announcement_banner: 100,
+      # 100 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220975
       pipeline_new_inputs_adoption_banner: 101,
       pipeline_schedules_inputs_adoption_banner: 102,
       product_usage_data_collection_changes: 103,

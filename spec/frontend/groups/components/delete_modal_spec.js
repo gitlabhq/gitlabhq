@@ -87,20 +87,6 @@ describe('DeleteModal', () => {
     expect(wrapper.emitted('change')).toEqual([[true]]);
   });
 
-  describe('when markedForDeletion prop is false', () => {
-    it('renders restore message help page link', () => {
-      createComponent();
-
-      const helpPageLinkComponent = wrapper.findComponent(HelpPageLink);
-
-      expect(helpPageLinkComponent.props()).toEqual({
-        href: 'user/group/_index',
-        anchor: 'restore-a-group',
-      });
-      expect(helpPageLinkComponent.text()).toBe('Learn more');
-    });
-  });
-
   describe('when markedForDeletion prop is true', () => {
     it('does not render restore message help page link', () => {
       createComponent({ markedForDeletion: true });

@@ -38,6 +38,10 @@ module Approvable
         .arel.exists.not
       ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422085')
     end
+
+    scope :with_existing_approval, -> do
+      where_exists(Approval.where(arel_table[:id].eq(Approval.arel_table[:merge_request_id])))
+    end
   end
 
   class_methods do

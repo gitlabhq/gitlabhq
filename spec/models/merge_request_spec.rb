@@ -545,6 +545,48 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.by_source_branch' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      let_it_be(:mr_with_feature_branch) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_branch: 'master',
+          target_project: project)
+      end
+
+      let_it_be(:mr_with_fix_branch) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'fix',
+          target_branch: 'master',
+          target_project: project)
+      end
+
+      let_it_be(:another_mr_with_feature_branch) do
+        create(:merge_request,
+          source_project: project,
+          source_branch: 'feature',
+          target_branch: 'develop',
+          target_project: project)
+      end
+
+      it 'returns merge requests with the specified source branch' do
+        expect(described_class.by_source_branch('feature'))
+          .to contain_exactly(mr_with_feature_branch, another_mr_with_feature_branch)
+      end
+
+      it 'excludes merge requests with different source branches' do
+        expect(described_class.by_source_branch('feature'))
+          .not_to include(mr_with_fix_branch)
+      end
+
+      it 'returns empty when no merge requests match the source branch' do
+        expect(described_class.by_source_branch('non-existent-branch')).to be_empty
+      end
+    end
+
     describe '.without_hidden', feature_category: :insider_threat do
       let_it_be(:banned_user) { create(:user, :banned) }
       let_it_be(:hidden_merge_request) { create(:merge_request, :unique_branches, author: banned_user) }

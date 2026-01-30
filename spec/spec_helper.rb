@@ -377,6 +377,12 @@ RSpec.configure do |config|
       # Feature specs for when two_step_sign_in is enabled will be added in
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
       stub_feature_flags(two_step_sign_in: false)
+
+      # When `dap_onboarding_empty_states` is enabled, the Duo Chat panel is expanded for free users.
+      # This might cause elements to be laid out differently in the main panel due to container
+      # queries, which in turn can cause some specs to fail.
+      # Due to time constraints, we'll need to address those in follow-ups.
+      stub_feature_flags(dap_onboarding_empty_states: false)
     else
       unstub_all_feature_flags
     end

@@ -2950,13 +2950,19 @@ msgstr ""
 msgid "AICatalog|Is visible only to users with at least the Developer role for this project, and to users with the Owner role for the top-level group."
 msgstr ""
 
-msgid "AICatalog|Is visible to all users."
+msgid "AICatalog|Is visible to everyone, including users outside your organization."
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational agents"
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational flows"
+msgstr ""
+
+msgid "AICatalog|Make %{itemType} public?"
+msgstr ""
+
+msgid "AICatalog|Make public"
 msgstr ""
 
 msgid "AICatalog|Manage agent settings."
@@ -25933,6 +25939,12 @@ msgstr ""
 msgid "DuoAgenticChat|Select default namespace"
 msgstr ""
 
+msgid "DuoAgenticChat|Start a Free Trial"
+msgstr ""
+
+msgid "DuoAgenticChat|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} to collaborate with agents and automate workflows across your development process."
+msgstr ""
+
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
@@ -25943,6 +25955,9 @@ msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{
 msgstr ""
 
 msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|Try GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoAgenticChat|Turn off Agentic mode"
@@ -25969,6 +25984,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Analyze pipeline failures and get fix suggestions"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This action cannot be undone."
 msgstr ""
 
@@ -25982,6 +26000,12 @@ msgid "DuoAgentsPlatform|Cancel session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Cancel session?"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Chat with a specialized agent"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Concise view"
@@ -26062,6 +26086,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Fix a failing pipeline"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Fix pipeline"
 msgstr ""
 
@@ -26075,6 +26102,9 @@ msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Identify code improvements"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Issue to merge request"
@@ -26116,7 +26146,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Planning Agent"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Read file"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Review a merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -26132,6 +26168,9 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Security Agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account user"
@@ -26186,6 +26225,9 @@ msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
+msgstr ""
+
+msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
@@ -34413,7 +34455,10 @@ msgstr ""
 msgid "Groups|There was an error creating the Group README."
 msgstr ""
 
-msgid "Groups|This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
+msgid "Groups|This action will place this group, including its subgroups and projects, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}."
+msgstr ""
+
+msgid "Groups|This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strongStart}immediately%{strongEnd}. This action cannot be undone."
 msgstr ""
 
 msgid "Groups|This process deletes the group, subgroups and project repositories, and all related resources."
@@ -50363,9 +50408,6 @@ msgstr ""
 msgid "Pipelines|Pipeline inputs empty state image"
 msgstr ""
 
-msgid "Pipelines|Pipeline inputs now available!"
-msgstr ""
-
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
@@ -50409,9 +50451,6 @@ msgid "Pipelines|Something went wrong while cleaning runners cache."
 msgstr ""
 
 msgid "Pipelines|Something went wrong while updating pipeline information"
-msgstr ""
-
-msgid "Pipelines|Start using inputs"
 msgstr ""
 
 msgid "Pipelines|Start with a migration plan"
@@ -50568,9 +50607,6 @@ msgid "Pipelines|Use CI/CD pipelines to automatically build, test, and deploy yo
 msgstr ""
 
 msgid "Pipelines|Use a template based on your project's language or framework to get started with GitLab CI/CD."
-msgstr ""
-
-msgid "Pipelines|Use inputs to increase the flexibility of your CI/CD configuration files and enhance reusability across your projects."
 msgstr ""
 
 msgid "Pipelines|Use template"
@@ -54541,6 +54577,12 @@ msgid "Projects|Projects that are archived or pending deletion will appear here.
 msgstr ""
 
 msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
+msgstr ""
+
+msgid "Projects|This action will place this project, including all its resources, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}."
+msgstr ""
+
+msgid "Projects|This project is scheduled for deletion on %{date}. This action will permanently delete this project, including all its resources, %{strongStart}immediately%{strongEnd}. This action cannot be undone."
 msgstr ""
 
 msgid "Projects|View projects that are archived or pending deletion."
@@ -61516,6 +61558,9 @@ msgstr ""
 msgid "SecurityOrchestration|A vulnerability management policy can contain only rules of same type."
 msgstr ""
 
+msgid "SecurityOrchestration|API Fuzzing Scanning Rule"
+msgstr ""
+
 msgid "SecurityOrchestration|API request"
 msgstr ""
 
@@ -61774,6 +61819,9 @@ msgstr ""
 msgid "SecurityOrchestration|Container Scanning Rule"
 msgstr ""
 
+msgid "SecurityOrchestration|Coverage Fuzzing Scanning Rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Create custom variable"
 msgstr ""
 
@@ -61802,6 +61850,9 @@ msgid "SecurityOrchestration|Custom roles"
 msgstr ""
 
 msgid "SecurityOrchestration|Custom scan experiment has ended in 17.3"
+msgstr ""
+
+msgid "SecurityOrchestration|DAST Scanning Rule"
 msgstr ""
 
 msgid "SecurityOrchestration|Days of month"
@@ -70214,9 +70265,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "This process deletes the project repository and all related resources."
-msgstr ""
-
-msgid "This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}."

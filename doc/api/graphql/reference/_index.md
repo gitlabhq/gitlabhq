@@ -55831,7 +55831,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumperiod_in_terraform_state_name_alert"></a>`PERIOD_IN_TERRAFORM_STATE_NAME_ALERT` | Callout feature name for period_in_terraform_state_name_alert. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumpersonal_project_limitations_banner"></a>`PERSONAL_PROJECT_LIMITATIONS_BANNER` | Callout feature name for personal_project_limitations_banner. |
-| <a id="usercalloutfeaturenameenumpipeline_inputs_announcement_banner"></a>`PIPELINE_INPUTS_ANNOUNCEMENT_BANNER` | Callout feature name for pipeline_inputs_announcement_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
 | <a id="usercalloutfeaturenameenumpipeline_new_inputs_adoption_banner"></a>`PIPELINE_NEW_INPUTS_ADOPTION_BANNER` | Callout feature name for pipeline_new_inputs_adoption_banner. |

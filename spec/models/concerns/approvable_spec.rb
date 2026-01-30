@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Approvable do
+RSpec.describe Approvable, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:user) { create(:user) }
 
@@ -137,6 +137,56 @@ RSpec.describe Approvable do
 
     it 'has the merge request that is not approved at all and not approved by either user' do
       expect(subject).to contain_exactly(merge_request3, merge_request4)
+    end
+  end
+
+  describe '.with_existing_approval' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:other_project) { create(:project, :repository) }
+    let_it_be(:approver1) { create(:user) }
+    let_it_be(:approver2) { create(:user) }
+
+    let_it_be(:merge_request_with_approval) do
+      create(:merge_request, source_project: project, source_branch: 'fix')
+    end
+
+    let_it_be(:merge_request_with_multiple_approvals) do
+      create(:merge_request, source_project: other_project, target_project: other_project)
+    end
+
+    let_it_be(:merge_request_without_approval) do
+      create(:merge_request, source_project: project, source_branch: 'fix', target_branch: 'staging')
+    end
+
+    subject(:scope) { MergeRequest.with_existing_approval }
+
+    before_all do
+      create(:approval, merge_request: merge_request_with_approval, user: approver1)
+      create(:approval, merge_request: merge_request_with_multiple_approvals, user: approver1)
+      create(:approval, merge_request: merge_request_with_multiple_approvals, user: approver2)
+    end
+
+    it 'returns merge requests that have at least one approval' do
+      expect(scope).to include(merge_request_with_approval, merge_request_with_multiple_approvals)
+      expect(scope).not_to include(merge_request_without_approval)
+    end
+
+    it 'returns merge requests with multiple approvals only once' do
+      expect(scope.where(id: merge_request_with_multiple_approvals.id).count).to eq(1)
+    end
+
+    it 'returns an empty result when no merge requests have approvals' do
+      Approval.delete_all
+
+      expect(scope).to be_empty
+    end
+
+    context 'with performance considerations' do
+      it 'uses EXISTS subquery for efficient querying' do
+        sql = scope.to_sql
+
+        expect(sql).to include('EXISTS', 'approvals', 'merge_request_id')
+      end
     end
   end
 end
