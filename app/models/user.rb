@@ -1504,23 +1504,29 @@ class User < ApplicationRecord
   end
 
   # Returns the groups a user has access to, either through direct or inherited membership or a project authorization
-  def authorized_groups
+  # with_minimal_access is used in EE only
+  def authorized_groups(with_minimal_access: true, include_project_authorizations: true)
     Group.unscoped do
       direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
       direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
 
-      groups_from_authorized_projects = Group.id_in(authorized_projects.select(:namespace_id)).self_and_ancestors
       groups_from_shares = Group.joins(:shared_with_group_links)
                              .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })
                              .self_and_descendants
 
+      union_relations = [
+        Group.from(direct_groups_cte_alias).self_and_descendants,
+        groups_from_shares
+      ]
+
+      if include_project_authorizations
+        groups_from_authorized_projects = Group.id_in(authorized_projects.select(:namespace_id)).self_and_ancestors
+        union_relations << groups_from_authorized_projects
+      end
+
       Group
         .with(direct_groups_cte.to_arel)
-        .from_union([
-          Group.from(direct_groups_cte_alias).self_and_descendants,
-          groups_from_authorized_projects,
-          groups_from_shares
-        ])
+        .from_union(union_relations)
     end
   end
 
