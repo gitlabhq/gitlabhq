@@ -175,6 +175,7 @@ export default {
           "
           name="link"
           :size="16"
+          class="gl-flex-none"
         />
         <file-icon
           class="gl-mr-2"
@@ -186,7 +187,11 @@ export default {
           :size="16"
           :submodule="file.submodule"
         />
-        <gl-truncate :text="file.name" position="middle" class="gl-items-center gl-pr-7" />
+        <gl-truncate
+          :text="file.name"
+          position="middle"
+          class="gl-min-w-0 gl-items-center gl-pr-2"
+        />
       </span>
       <slot></slot>
     </component>

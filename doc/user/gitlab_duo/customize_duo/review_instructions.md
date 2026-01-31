@@ -52,7 +52,7 @@ To configure custom merge request review instructions:
          <your_custom_review_instructions>
    ```
 
-   Use glob patterns in the `fileFilters` section to target specific files for
+   The `fileFilters` section is mandatory. Use glob patterns in this section to target specific files for
    the custom review rules.
 
    For example:
@@ -97,6 +97,12 @@ To configure custom merge request review instructions:
          1. Test both happy paths and edge cases
          2. Include error scenarios
          3. Use shared examples to reduce duplication
+
+     - name: All Files
+       fileFilters:
+         - "**/*"   # All files in the repository
+       instructions: |
+         1. Explain the "why" behind each suggestion
    ```
 
    For glob syntax examples, see the

@@ -13,6 +13,9 @@ description: Set rate limits on Projects API endpoints.
 
 {{< /details >}}
 
+> [!note]
+> When upgrading to GitLab 18.0 or later, configurable rate limits for this API are set to `0`. Administrators can adjust rate limits as needed. For information about which rate limits are affected, see [Rate limitations announced for Projects, Groups, and Users APIs](https://about.gitlab.com/blog/rate-limitations-announced-for-projects-groups-and-users-apis/#rate-limitation-details).
+
 ## Configure Projects API rate limits
 
 {{< history >}}
