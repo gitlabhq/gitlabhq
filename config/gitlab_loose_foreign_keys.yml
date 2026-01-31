@@ -39,7 +39,23 @@ approval_merge_request_rules:
   - table: approval_policy_rules
     column: approval_policy_rule_id
     on_delete: async_nullify
+ascp_component_dependencies:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+ascp_components:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 ascp_scans:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+ascp_security_contexts:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+ascp_security_guidelines:
   - table: projects
     column: project_id
     on_delete: async_delete

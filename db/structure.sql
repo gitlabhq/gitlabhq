@@ -14733,6 +14733,49 @@ CREATE SEQUENCE arkose_sessions_id_seq
 
 ALTER SEQUENCE arkose_sessions_id_seq OWNED BY arkose_sessions.id;
 
+CREATE TABLE ascp_component_dependencies (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    component_id bigint NOT NULL,
+    dependency_id bigint NOT NULL
+);
+
+CREATE SEQUENCE ascp_component_dependencies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ascp_component_dependencies_id_seq OWNED BY ascp_component_dependencies.id;
+
+CREATE TABLE ascp_components (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    title text NOT NULL,
+    sub_directory text NOT NULL,
+    description text,
+    expected_user_behavior text,
+    CONSTRAINT check_604d9dbc04 CHECK ((char_length(expected_user_behavior) <= 4096)),
+    CONSTRAINT check_74fdfbc4a5 CHECK ((char_length(title) <= 255)),
+    CONSTRAINT check_75675eeea7 CHECK ((char_length(description) <= 4096)),
+    CONSTRAINT check_b57d81c70a CHECK ((char_length(sub_directory) <= 1024))
+);
+
+CREATE SEQUENCE ascp_components_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ascp_components_id_seq OWNED BY ascp_components.id;
+
 CREATE TABLE ascp_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -14755,6 +14798,61 @@ CREATE SEQUENCE ascp_scans_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ascp_scans_id_seq OWNED BY ascp_scans.id;
+
+CREATE TABLE ascp_security_contexts (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    component_id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    summary text,
+    authentication_model text,
+    authorization_model text,
+    data_sensitivity text,
+    CONSTRAINT check_341adadf79 CHECK ((char_length(authentication_model) <= 1024)),
+    CONSTRAINT check_551286ee26 CHECK ((char_length(summary) <= 4096)),
+    CONSTRAINT check_75ecfb66c4 CHECK ((char_length(data_sensitivity) <= 255)),
+    CONSTRAINT check_ba891cb51a CHECK ((char_length(authorization_model) <= 1024))
+);
+
+CREATE SEQUENCE ascp_security_contexts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ascp_security_contexts_id_seq OWNED BY ascp_security_contexts.id;
+
+CREATE TABLE ascp_security_guidelines (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    security_context_id bigint NOT NULL,
+    scan_id bigint NOT NULL,
+    severity_if_violated smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    operation text NOT NULL,
+    legitimate_use text,
+    security_boundary text,
+    business_context text,
+    CONSTRAINT check_2a43590319 CHECK ((char_length(legitimate_use) <= 4096)),
+    CONSTRAINT check_66c7d32a04 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_782c35e135 CHECK ((char_length(operation) <= 1024)),
+    CONSTRAINT check_91d730f14d CHECK ((char_length(business_context) <= 4096)),
+    CONSTRAINT check_e7772e4084 CHECK ((char_length(security_boundary) <= 4096))
+);
+
+CREATE SEQUENCE ascp_security_guidelines_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ascp_security_guidelines_id_seq OWNED BY ascp_security_guidelines.id;
 
 CREATE TABLE atlassian_identities (
     user_id bigint NOT NULL,
@@ -34155,7 +34253,15 @@ ALTER TABLE ONLY approvals ALTER COLUMN id SET DEFAULT nextval('approvals_id_seq
 
 ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
 
+ALTER TABLE ONLY ascp_component_dependencies ALTER COLUMN id SET DEFAULT nextval('ascp_component_dependencies_id_seq'::regclass);
+
+ALTER TABLE ONLY ascp_components ALTER COLUMN id SET DEFAULT nextval('ascp_components_id_seq'::regclass);
+
 ALTER TABLE ONLY ascp_scans ALTER COLUMN id SET DEFAULT nextval('ascp_scans_id_seq'::regclass);
+
+ALTER TABLE ONLY ascp_security_contexts ALTER COLUMN id SET DEFAULT nextval('ascp_security_contexts_id_seq'::regclass);
+
+ALTER TABLE ONLY ascp_security_guidelines ALTER COLUMN id SET DEFAULT nextval('ascp_security_guidelines_id_seq'::regclass);
 
 ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('atlassian_identities_user_id_seq'::regclass);
 
@@ -37090,8 +37196,20 @@ ALTER TABLE ONLY ar_internal_metadata
 ALTER TABLE ONLY arkose_sessions
     ADD CONSTRAINT arkose_sessions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ascp_component_dependencies
+    ADD CONSTRAINT ascp_component_dependencies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ascp_components
+    ADD CONSTRAINT ascp_components_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ascp_scans
     ADD CONSTRAINT ascp_scans_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ascp_security_contexts
+    ADD CONSTRAINT ascp_security_contexts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ascp_security_guidelines
+    ADD CONSTRAINT ascp_security_guidelines_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT atlassian_identities_pkey PRIMARY KEY (user_id);
@@ -42558,6 +42676,14 @@ CREATE INDEX idx_approval_project_rules_on_configuration_id_and_id ON approval_p
 
 CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
+CREATE UNIQUE INDEX idx_ascp_component_deps_on_proj_comp_dep ON ascp_component_dependencies USING btree (project_id, component_id, dependency_id);
+
+CREATE UNIQUE INDEX idx_ascp_components_on_project_scan_subdir ON ascp_components USING btree (project_id, scan_id, sub_directory);
+
+CREATE UNIQUE INDEX idx_ascp_security_contexts_on_project_scan_comp ON ascp_security_contexts USING btree (project_id, scan_id, component_id);
+
+CREATE INDEX idx_ascp_security_guidelines_on_proj_ctx ON ascp_security_guidelines USING btree (project_id, security_context_id);
+
 CREATE INDEX idx_audit_events_namespace_event_type_filters_on_group_id ON audit_events_group_streaming_event_type_filters USING btree (namespace_id);
 
 CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
@@ -43638,6 +43764,12 @@ CREATE INDEX index_arkose_sessions_on_user_id ON arkose_sessions USING btree (us
 
 CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree (verified_at);
 
+CREATE INDEX index_ascp_component_dependencies_on_component_id ON ascp_component_dependencies USING btree (component_id);
+
+CREATE INDEX index_ascp_component_dependencies_on_dependency_id ON ascp_component_dependencies USING btree (dependency_id);
+
+CREATE INDEX index_ascp_components_on_scan_id ON ascp_components USING btree (scan_id);
+
 CREATE INDEX index_ascp_scans_on_base_scan_id ON ascp_scans USING btree (base_scan_id);
 
 CREATE INDEX index_ascp_scans_on_commit_sha ON ascp_scans USING btree (commit_sha);
@@ -43645,6 +43777,14 @@ CREATE INDEX index_ascp_scans_on_commit_sha ON ascp_scans USING btree (commit_sh
 CREATE UNIQUE INDEX index_ascp_scans_on_project_id_and_scan_sequence ON ascp_scans USING btree (project_id, scan_sequence);
 
 CREATE INDEX index_ascp_scans_on_project_id_and_scan_type ON ascp_scans USING btree (project_id, scan_type);
+
+CREATE INDEX index_ascp_security_contexts_on_component_id ON ascp_security_contexts USING btree (component_id);
+
+CREATE INDEX index_ascp_security_contexts_on_scan_id ON ascp_security_contexts USING btree (scan_id);
+
+CREATE INDEX index_ascp_security_guidelines_on_scan_id ON ascp_security_guidelines USING btree (scan_id);
+
+CREATE INDEX index_ascp_security_guidelines_on_security_context_id ON ascp_security_guidelines USING btree (security_context_id);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identities USING btree (extern_uid);
 
@@ -53361,6 +53501,9 @@ ALTER TABLE ONLY custom_dashboard_versions
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY ascp_component_dependencies
+    ADD CONSTRAINT fk_01477aca8a FOREIGN KEY (component_id) REFERENCES ascp_components(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY activation_metrics
     ADD CONSTRAINT fk_0156a10bb0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -53624,6 +53767,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_1551efdd17 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ascp_security_contexts
+    ADD CONSTRAINT fk_157154ac67 FOREIGN KEY (component_id) REFERENCES ascp_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY redirect_routes
     ADD CONSTRAINT fk_157ba4733c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -54549,6 +54695,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 ALTER TABLE ONLY scim_oauth_access_tokens
     ADD CONSTRAINT fk_6f24f34b0d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ascp_security_contexts
+    ADD CONSTRAINT fk_6fb0a2b15c FOREIGN KEY (scan_id) REFERENCES ascp_scans(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_7082f8a288 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -54614,6 +54763,9 @@ ALTER TABLE ONLY authentication_events
 
 ALTER TABLE ONLY admin_roles
     ADD CONSTRAINT fk_74591b3a95 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ascp_components
+    ADD CONSTRAINT fk_749112e620 FOREIGN KEY (scan_id) REFERENCES ascp_scans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT fk_74b2492545 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -54788,6 +54940,9 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY tag_x509_signatures
     ADD CONSTRAINT fk_81b00bcc6e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ascp_security_guidelines
+    ADD CONSTRAINT fk_82046cabc2 FOREIGN KEY (scan_id) REFERENCES ascp_scans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_secrets_manager_maintenance_tasks
     ADD CONSTRAINT fk_8211c0d849 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -55401,6 +55556,9 @@ ALTER TABLE ONLY resource_link_events
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_bdb0b31131 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ascp_security_guidelines
+    ADD CONSTRAINT fk_be2c636993 FOREIGN KEY (security_context_id) REFERENCES ascp_security_contexts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_compliance_framework_settings
     ADD CONSTRAINT fk_be413374a9 FOREIGN KEY (framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;
 
@@ -55898,6 +56056,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_f05c5e5a42 FOREIGN KEY (management_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ascp_component_dependencies
+    ADD CONSTRAINT fk_f062cd0c97 FOREIGN KEY (dependency_id) REFERENCES ascp_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_external_issue_links
     ADD CONSTRAINT fk_f07bb8233d FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;

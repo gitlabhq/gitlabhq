@@ -1,0 +1,16 @@
+---
+table_name: ascp_component_dependencies
+classes:
+  - Security::Ascp::ComponentDependency
+feature_categories:
+  - static_application_security_testing
+description: >
+  Tracks dependencies between ASCP components within a project.
+  Each record represents a directed edge from one component to another
+  it depends on. Used to understand component relationships for security
+  analysis and impact assessment.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219888
+milestone: '18.9'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

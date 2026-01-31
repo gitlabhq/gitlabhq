@@ -1,0 +1,5 @@
+---
+name: read_ascp_security_context
+description: Grants the ability to read ASCP security contexts
+boundaries:
+  - project

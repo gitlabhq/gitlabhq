@@ -1,0 +1,16 @@
+---
+table_name: ascp_security_guidelines
+classes:
+  - Security::Ascp::SecurityGuideline
+feature_categories:
+  - static_application_security_testing
+description: >
+  Stores security guidelines associated with ASCP security contexts.
+  Each guideline defines an operation, its legitimate use cases, security
+  boundaries, business context, and the severity if the guideline is violated.
+  Used to inform vulnerability severity assessment during analysis.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219888
+milestone: '18.9'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
