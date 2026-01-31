@@ -4,7 +4,7 @@
     "check-dependencies": "scripts/frontend/check_dependencies.sh",
     "deps:check": "depcruise --config config/dependency_cruiser.js --no-ignore-known",
     "deps:check:all": "yarn run deps:check .",
-    "clean": "rm -rf public/assets tmp/cache/webpack tmp/cache/vite app/assets/javascripts/lib/utils/path_helpers ee/app/assets/javascripts/lib/utils/path_helpers tmp/js_routes_hash",
+    "clean": "rm -rf public/assets tmp/cache/webpack tmp/cache/vite",
     "dev-server": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",

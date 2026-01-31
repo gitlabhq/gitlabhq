@@ -48,7 +48,10 @@ class UserPolicy < BasePolicy
   rule { (user_is_self | admin) & ~blocked }.enable :manage_user_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :get_user_associations_count
 
-  rule { admin }.enable :read_custom_attribute
+  rule { admin }.policy do
+    enable :read_custom_attribute
+    enable :update_custom_attribute
+  end
 
   def private_profile?
     @subject.private_profile?

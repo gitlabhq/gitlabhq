@@ -92,3 +92,19 @@ test-coverage:export-workhorse:
       - workhorse-test-reports/
       - workhorse-test-mapping/
     expire_in: 7d
+
+sync-category-owners:
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .rails:rules:sync-category-owners
+  stage: post-qa
+  needs: []
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
+    - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
+  script:
+    - bundle exec sync-category-owners
+        --clickhouse-url "${GLCI_DA_CLICKHOUSE_URL}"
+        --clickhouse-database shared
+        --clickhouse-username "${GLCI_CLICKHOUSE_METRICS_USERNAME}"

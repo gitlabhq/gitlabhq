@@ -102,8 +102,6 @@ build-vite-prod:
   needs:
     - job: cache:node-modules
       optional: true
-    - job: generate-js-routes
-      optional: true
   script:
     - source scripts/utils.sh
     - yarn_install_script
@@ -133,27 +131,6 @@ compile-fe-islands:
   artifacts:
     paths:
       - ee/frontend_islands/apps/*/dist/main.js
-
-generate-js-routes:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .ruby-cache
-    - .repo-from-artifacts
-    - .frontend:rules:jest
-  stage: prepare
-  needs:
-    - !reference [.repo-from-artifacts, needs]
-    - job: cache:ruby-gems
-      optional: true
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle exec rake gitlab:js:routes
-  artifacts:
-    paths:
-      - app/assets/javascripts/lib/utils/path_helpers
-      - ee/app/assets/javascripts/lib/utils/path_helpers
 
 .frontend-fixtures-base:
   extends:
@@ -288,8 +265,6 @@ upload-graphql-schema-dump:
   cache:
     - !reference [.yarn-cache, cache]
   needs:
-    - job: generate-js-routes
-      optional: true
     - job: compile-fe-islands
       optional: true
 
@@ -362,8 +337,9 @@ jest:
     - .frontend-test-base
     - .frontend:rules:jest
   needs:
-    - !reference [.frontend-test-base, needs]
     - job: jest-build-cache
+      optional: true
+    - job: compile-fe-islands
       optional: true
   artifacts:
     name: coverage-frontend
@@ -401,7 +377,8 @@ jest vue3:
     - .frontend:rules:jest
     - .vue3
   needs:
-    - !reference [.frontend-test-base, needs]
+    - job: compile-fe-islands
+      optional: true
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   artifacts:
     name: vue3-mr-junit
@@ -420,7 +397,6 @@ jest-with-fixtures vue3:
     - jest vue3
     - .repo-from-artifacts
   needs:
-    - !reference [.frontend-test-base, needs]
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
@@ -548,10 +524,11 @@ jest-integration:
     - yarn jest:integration --ci
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.frontend-test-base, needs]
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-islands
+      optional: true
 
 jest-snapshot-vue3:
   extends:
@@ -560,9 +537,10 @@ jest-snapshot-vue3:
     - .frontend:rules:jest-snapshot-vue3
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.frontend-test-base, needs]
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
+    - job: compile-fe-islands
+      optional: true
   variables:
     VUE_VERSION: 3
     JEST_REPORT: jest-test-report.json
@@ -666,10 +644,11 @@ compile-storybook:
   stage: pages
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.frontend-test-base, needs]
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-islands
+      optional: true
   artifacts:
     name: storybook
     expire_in: 31d
@@ -689,10 +668,11 @@ test-storybook:
   stage: test-frontend
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.frontend-test-base, needs]
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: compile-fe-islands
+      optional: true
   allow_failure: true
   timeout: 60m
   artifacts:
@@ -719,8 +699,6 @@ bundle-size-review:
     - .frontend:rules:bundle-size-review
   stage: test-frontend
   needs:
-    - job: generate-js-routes
-      optional: true
     - job: compile-fe-islands
       optional: true
     - job: compile-production-assets

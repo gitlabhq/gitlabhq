@@ -73,8 +73,6 @@ generate-apollo-graphql-schema:
       optional: true
     - job: compile-fe-islands
       optional: true
-    - job: generate-js-routes
-      optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"

@@ -88,8 +88,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
 
       it 'exposes current_organization' do
         expect(gon).to receive(:current_organization=).with(
-          current_organization.slice(:id, :name, :path, :full_path, :web_url, :avatar_url)
-            .merge({ has_scoped_paths: current_organization.scoped_paths? })
+          current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
         )
 
         add_gon_variables

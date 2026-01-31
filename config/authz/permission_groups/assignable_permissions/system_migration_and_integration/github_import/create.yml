@@ -1,0 +1,7 @@
+---
+name: create_github_import
+description: Grants the ability to import projects from GitHub
+permissions:
+  - create_github_import
+boundaries:
+  - group

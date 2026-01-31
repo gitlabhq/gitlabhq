@@ -2775,6 +2775,17 @@
       when: never
     - <<: *if-export-coverage
 
+# Sync category owners from stages.yml to ClickHouse
+.rails:rules:sync-category-owners:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-missing-clickhouse-coverage-credentials
+      when: never
+    - <<: *if-export-coverage
+    - <<: *if-schedule-pipeline
+      when: manual
+
 .rails:rules:rspec-undercoverage:
   rules:
     - <<: *if-not-ee

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gitlab/middleware/strip_cookies'
-require 'gitlab/middleware/js_routes'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
@@ -110,6 +109,4 @@ Rails.application.configure do
   )
 
   config.log_level = Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :debug)
-
-  config.middleware.use(Gitlab::Middleware::JsRoutes)
 end

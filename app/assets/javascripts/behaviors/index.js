@@ -11,7 +11,6 @@ import './shortcuts';
 import './toggler_behavior';
 import './preview_markdown';
 import './find_and_replace';
-import './configure_path_helpers';
 
 installGlEmojiElement();
 initCopyAsGFM();

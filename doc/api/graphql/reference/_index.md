@@ -14676,6 +14676,34 @@ Input type: `UserCalloutCreateInput`
 | <a id="mutationusercalloutcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | User callout dismissed. |
 
+### `Mutation.userCustomAttributeSet`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Creates or updates a custom attribute on a user. Only available to admins.
+
+Input type: `UserCustomAttributeSetInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusercustomattributesetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusercustomattributesetkey"></a>`key` | [`String!`](#string) | Key of the custom attribute. |
+| <a id="mutationusercustomattributesetuserid"></a>`userId` | [`UserID!`](#userid) | Global ID of the user. |
+| <a id="mutationusercustomattributesetvalue"></a>`value` | [`String!`](#string) | Value of the custom attribute. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusercustomattributesetclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusercustomattributesetcustomattribute"></a>`customAttribute` | [`CustomAttribute`](#customattribute) | Custom attribute after mutation. |
+| <a id="mutationusercustomattributeseterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.userGroupCalloutCreate`
 
 Input type: `UserGroupCalloutCreateInput`
