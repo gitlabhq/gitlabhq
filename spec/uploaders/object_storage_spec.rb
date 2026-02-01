@@ -586,9 +586,25 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           expect(subject[:UploadHashFunctions]).to eq(upload_hash_functions)
         end
 
+        context 'when a supplied function is invalid' do
+          let(:upload_hash_functions) { %w[sha1 other] }
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(described_class::InvalidHashFunction, 'Unsupported hash functions: other')
+          end
+        end
+
         context 'when FIPS is enabled', :fips_mode do
           it 'returns only the requested functions' do
             expect(subject[:UploadHashFunctions]).to match_array(upload_hash_functions)
+          end
+
+          context 'when a supplied function is invalid' do
+            let(:upload_hash_functions) { %w[md5 sha1] }
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::InvalidHashFunction, 'Unsupported hash functions: md5')
+            end
           end
         end
       end

@@ -116,8 +116,6 @@ ee/app/models/security/category.rb:
 ee/app/models/security/orchestration_policy_configuration.rb:
 - compliance_framework_ids_with_policy_index
 - experiment_configuration
-ee/app/models/work_items/statuses/system_defined/status.rb:
-- find_by_work_item_and_name
 app/helpers/ci/catalog/resources_helper.rb:
 - can_view_namespace_catalog?
 - js_ci_catalog_data
