@@ -47928,7 +47928,6 @@ Represents a standard role.
 | <a id="standardroleid"></a>`id` | [`ID!`](#id) | Role ID. |
 | <a id="standardrolememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="standardrolename"></a>`name` | [`String`](#string) | Role name. |
-| <a id="standardroleuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
 
 ### `StandardsAdherenceChecksStatus`
 
@@ -58835,7 +58834,6 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="memberroleinterfacememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
-| <a id="memberroleinterfaceuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
 
 #### `NamespaceMetadata`
 
