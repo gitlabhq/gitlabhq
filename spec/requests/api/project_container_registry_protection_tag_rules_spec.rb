@@ -23,8 +23,8 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
   let(:url) { "/projects/#{project.id}/#{path}" }
 
   describe 'GET /projects/:id/registry/protection/tag/rules' do
-    let(:path) { 'registry/protection/tag/rules' }
-    let(:url) { "/projects/#{project.id}/#{path}" }
+    let_it_be(:path) { 'registry/protection/tag/rules' }
+    let_it_be(:url) { "/projects/#{project.id}/#{path}" }
 
     subject(:get_tag_rules) { get(api(url, api_user)) }
 
@@ -328,6 +328,91 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
 
     context 'with invalid token' do
       subject(:patch_tag_rule) { patch(api(url), headers: headers_with_invalid_token, params: params) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+
+  describe 'DELETE /projects/:id/registry/protection/tag/rules/:tag_rule_id' do
+    let(:protection_rule) { tag_rule }
+    let(:protection_rule_id) { protection_rule.id }
+    let(:path) { "registry/protection/tag/rules/#{protection_rule_id}" }
+    let(:url) { "/projects/#{project.id}/#{path}" }
+    let(:headers) { {} }
+
+    subject(:delete_tag_rule) { delete(api(url, api_user), headers: headers) }
+
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+    end
+
+    it_behaves_like 'rejecting project protection rules request when not enough permissions'
+
+    context 'for maintainer' do
+      let(:api_user) { maintainer }
+
+      it 'deletes the tag protection rule', :aggregate_failures do
+        expect { delete_tag_rule }.to change { ContainerRegistry::Protection::TagRule.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_empty
+
+        expect { tag_rule.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it_behaves_like 'rejecting protection rules request when handling rule ids'
+      it_behaves_like 'rejecting protection rules request when invalid project'
+
+      context 'when the GitLab API is not supported' do
+        before do
+          stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+        end
+
+        it 'returns bad request with error message' do
+          expect { delete_tag_rule }.not_to change { ContainerRegistry::Protection::TagRule.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response).to eq({ 'message' => { 'error' => 'GitLab container registry API not supported' } })
+        end
+      end
+
+      context 'with If-Unmodified-Since header' do
+        context 'when rule has not been modified since' do
+          let(:headers) { { 'If-Unmodified-Since' => 1.day.from_now.httpdate } }
+
+          it 'deletes the rule', :aggregate_failures do
+            delete_tag_rule
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect { tag_rule.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          end
+        end
+
+        context 'when rule has been modified since' do
+          let(:headers) { { 'If-Unmodified-Since' => 1.day.ago.httpdate } }
+
+          it 'returns precondition failed' do
+            delete_tag_rule
+
+            expect(response).to have_gitlab_http_status(:precondition_failed)
+            expect(tag_rule.reload).to be_present
+          end
+        end
+      end
+    end
+
+    context 'for admin' do
+      subject(:delete_tag_rule) { delete(api(url, admin, admin_mode: true)) }
+
+      it 'deletes the tag protection rule' do
+        expect { delete_tag_rule }.to change { ContainerRegistry::Protection::TagRule.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'with invalid token' do
+      subject(:delete_tag_rule) { delete(api(url), headers: { 'PRIVATE-TOKEN' => invalid_token }) }
 
       it_behaves_like 'returning response status', :unauthorized
     end

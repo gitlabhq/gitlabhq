@@ -43783,6 +43783,38 @@ paths:
                   description: Minimum GitLab access level required to delete container
                     tags. For example, Maintainer, Owner, or Admin. To unset the value,
                     use an empty string (`""`).
+    delete:
+      operationId: deleteApiV4ProjectsIdRegistryProtectionTagRulesProtectionRuleId
+      summary: Delete container protection tag rule
+      description: This feature was introduced in GitLab 18.9.
+      tags:
+      - Projects
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project.
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: protection_rule_id
+        required: true
+        description: The ID of the container protection tag rule.
+        schema:
+          type: integer
+        in: path
   "/api/v4/projects/{id}/registry/protection/repository/rules":
     get:
       operationId: getApiV4ProjectsIdRegistryProtectionRepositoryRules
