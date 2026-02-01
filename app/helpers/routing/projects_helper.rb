@@ -39,7 +39,7 @@ module Routing
     end
 
     def work_item_url(entity, *args)
-      return group_work_item_url(entity.namespace, entity.iid, *args) if entity.group_level?
+      return group_work_item_url(entity.namespace, entity, *args) if entity.group_level?
 
       if entity.use_work_item_url?
         project_work_item_url(entity.project, entity.iid, *args)
