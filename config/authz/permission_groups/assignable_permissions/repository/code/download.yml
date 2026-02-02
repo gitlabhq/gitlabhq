@@ -1,0 +1,7 @@
+---
+name: download_code
+description: Grants the ability to pull/clone code from a repository via Git
+permissions:
+  - download_code
+boundaries:
+  - project

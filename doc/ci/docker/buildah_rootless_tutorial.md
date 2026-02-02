@@ -89,7 +89,7 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    oc adm policy add-scc-to-user anyuid -z buildah-sa -n gitlab-runner
    ```
 
-1. Use a [runner configuration template](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template)
+1. Use a [runner configuration template](https://docs.gitlab.com/runner/configuration/configuring_runner_operator/#customize-configtoml-with-a-configuration-template)
    to configure Operator to use the new service account. Create a `custom-config.toml` file that contains:
 
    ```toml
@@ -104,7 +104,7 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    oc create configmap custom-config-toml --from-file config.toml=custom-config.toml -n gitlab-runner
    ```
 
-1. Set the `config` property of the `Runner` by updating its [Custom Resource Definition (CRD) file](https://docs.gitlab.com/runner/install/operator.html#install-gitlab-runner):
+1. Set the `config` property of the `Runner` by updating its [Custom Resource Definition (CRD) file](https://docs.gitlab.com/runner/install/operator/#install-gitlab-runner):
 
    ```yaml
    apiVersion: apps.gitlab.com/v1beta2
@@ -152,5 +152,5 @@ Congratulations, you've successfully built an image with Buildah in a rootless c
 ## Troubleshooting
 
 There is a [known issue](https://github.com/containers/buildah/issues/4049) with running as non-root.
-You might need to use a [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#configure-setfcap)
+You might need to use a [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator/#configure-setfcap)
 if you are using an OpenShift runner.

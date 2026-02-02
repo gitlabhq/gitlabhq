@@ -8,5 +8,6 @@ description: Stores diff notes positions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28113
 milestone: '13.0'
 gitlab_schema: gitlab_main_org
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550693
+sharding_key:
+  namespace_id: namespaces
 table_size: medium

@@ -278,9 +278,8 @@ When proxying is disabled, users who access only the secondary site cannot prope
 
 As a workaround, you must access the primary site at least once to properly accept terms and conditions. After accepted on the primary, this information is replicated to secondary sites through normal Geo synchronization.
 
-{{< alert type="note" >}}
-This limitation affects organizations that require documented acceptance of terms and conditions for compliance or legal purposes. Ensure users have access to the primary site for the initial terms acceptance.
-{{< /alert >}}
+> [!note]
+> This limitation affects organizations that require documented acceptance of terms and conditions for compliance or legal purposes. Ensure users have access to the primary site for the initial terms acceptance.
 
 ### Disable proxy on all secondary sites
 

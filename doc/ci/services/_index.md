@@ -35,7 +35,7 @@ Use an existing image and run it as an additional container
 instead of installing `mysql` every time you build a project.
 
 You're not limited to only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
@@ -230,7 +230,7 @@ end-to-end-tests:
 ```
 
 For this solution to work, you must use
-[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+[the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker/#create-a-network-for-each-job).
 
 ## Passing CI/CD variables to services
 
@@ -457,7 +457,7 @@ In addition to the `build` and `helper` containers, six more containers are crea
     alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
     case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
     'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
-    Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
+    Check https://docs.gitlab.com/runner/shells/index/#shell-profile-loading for more information.
     ```
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
@@ -487,7 +487,7 @@ access-service:
 
 For this solution to work, you must:
 
-- Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
+- Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker/#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-docker-socket-binding).
   If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
 
@@ -625,4 +625,4 @@ is already populated with data. The service that tries to write the `CI_PROJECT_
 immediately after it started might fail with a `No such file or directory` error.
 
 In scenarios where services that interact with job data are not controlled by the job itself, consider the
-[Docker executor workflow](https://docs.gitlab.com/runner/executors/docker.html#docker-executor-workflow).
+[Docker executor workflow](https://docs.gitlab.com/runner/executors/docker/#docker-executor-workflow).

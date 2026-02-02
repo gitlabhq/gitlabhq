@@ -51,6 +51,24 @@ RSpec.describe Gitlab::Auth::Result do
     end
   end
 
+  describe '#personal_access_token' do
+    context 'when a token is not present' do
+      it 'returns nil' do
+        expect(subject.personal_access_token).to be_nil
+      end
+    end
+
+    context 'when a token is present' do
+      let(:pat) { build(:personal_access_token) }
+
+      subject { described_class.new(actor, nil, nil, [], personal_access_token: pat) }
+
+      it 'returns the token' do
+        expect(subject.personal_access_token).to eq(pat)
+      end
+    end
+  end
+
   describe '#can_perform_action_on_project?' do
     let(:project) { double }
 

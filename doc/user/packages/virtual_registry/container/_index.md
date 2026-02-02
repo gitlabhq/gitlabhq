@@ -150,7 +150,7 @@ services:
 ### Virtual registry authentication issues from CI/CD jobs
 
 GitLab Runner authenticates automatically using the CI/CD job token. However, the underlying Docker engine
-is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#precedence-of-docker-authorization-resolving).
+is still subject to its [authorization resolving process](https://docs.gitlab.com/runner/configuration/advanced-configuration/#precedence-of-docker-authorization-resolving).
 
 Misconfigurations in the authentication mechanism may cause `HTTP Basic: Access denied` and `403: Access forbidden` errors.
 

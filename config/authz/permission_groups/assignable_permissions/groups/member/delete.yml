@@ -5,4 +5,5 @@ boundaries:
   - group
   - project
 permissions:
+  - delete_billable_member
   - delete_member

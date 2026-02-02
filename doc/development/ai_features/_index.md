@@ -40,10 +40,9 @@ If there is any issue, check out [the troubleshooting documentation](ai_developm
 
 This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI Gateway with GDK.
 
-{{< alert type="note" >}}
-Make sure your license has a GitLab Duo Pro or GitLab Duo Enterprise add-on enabled before you proceed.
-GitLab Duo Core access is available automatically when you have a Premium or Enterprise license. For GitLab Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For GitLab Duo Enterprise, ask [#g_provision](ai_development_license.md#gitlab-duo-enterprise).
-{{< /alert >}}
+> [!note]
+> Make sure your license has a GitLab Duo Pro or GitLab Duo Enterprise add-on enabled before you proceed.
+> GitLab Duo Core access is available automatically when you have a Premium or Enterprise license. For GitLab Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For GitLab Duo Enterprise, ask [#g_provision](ai_development_license.md#gitlab-duo-enterprise).
 
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test GitLab Duo features locally.
 AI Gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure

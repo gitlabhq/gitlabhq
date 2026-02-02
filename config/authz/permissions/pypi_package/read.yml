@@ -1,0 +1,6 @@
+---
+name: read_pypi_package
+description: Grants the ability to list PyPI packages
+boundaries:
+  - group
+  - project

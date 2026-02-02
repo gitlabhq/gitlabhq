@@ -63,9 +63,8 @@ Several factors can impact migration timelines:
 - Plan for buffer time to handle unexpected issues
 - Prioritize system stability over speed of deployment
 
-{{< alert type="note" >}}
-While some migrations can technically be completed quickly, we typically plan for longer timelines to ensure proper testing and staged rollouts. This approach helps maintain system stability and reliability.
-{{< /alert >}}
+> [!note]
+> While some migrations can technically be completed quickly, we typically plan for longer timelines to ensure proper testing and staged rollouts. This approach helps maintain system stability and reliability.
 
 ## Team Responsibilities
 
@@ -88,9 +87,8 @@ R = Responsible, A = Accountable, C = Consulted, I = Informed
 
 ## Migration Process
 
-{{< alert type="note" >}}
-**Model Mapping Resource**: You can see which features use which models and versions via the [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/) page.
-{{< /alert >}}
+> [!note]
+> **Model Mapping Resource**: You can see which features use which models and versions via the [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/) page.
 
 ### Standard Migration Process
 
@@ -201,9 +199,8 @@ For model deprecations:
    - Plan for gradual rollout
    - Allow time for infrastructure changes
 
-{{< alert type="note" >}}
-Documentation of model changes and deprecations is crucial for tracking impact and future troubleshooting. Always create an issue before beginning any migration process.
-{{< /alert >}}
+> [!note]
+> Documentation of model changes and deprecations is crucial for tracking impact and future troubleshooting. Always create an issue before beginning any migration process.
 
 ## Implementation Guidelines
 
@@ -233,9 +230,8 @@ Feature teams should use the [AI Model Rollout template](https://gitlab.com/gitl
 - Monitor performance during rollout
 - Update documentation
 
-{{< alert type="note" >}}
-While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
-{{< /alert >}}
+> [!note]
+> While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
 
 ### Vertex Models Migration Tasks
 
@@ -259,9 +255,8 @@ While we're moving toward AI Gateway holding the prompts, feature flag implement
 
 For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/_index.md).
 
-{{< alert type="note" >}}
-Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
-{{< /alert >}}
+> [!note]
+> Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
 
 ### Model Selection Implementation
 

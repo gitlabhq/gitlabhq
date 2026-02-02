@@ -1,8 +1,11 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
+import { produce } from 'immer';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import unsubscribeFromSavedView from '../graphql/unsubscribe_from_saved_view.mutation.graphql';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from './work_items_saved_view_selector.vue';
 
@@ -30,7 +33,7 @@ export default {
       required: true,
     },
   },
-  emits: ['reset-to-default-view'],
+  emits: ['reset-to-default-view', 'error'],
   data() {
     return {
       visibleViews: [],
@@ -111,6 +114,90 @@ export default {
       const id = getIdFromGraphQLId(view.id).toString();
       this.$router.push({ name: ROUTES.savedView, params: { view_id: id }, query: undefined });
     },
+    async handleRemoveViewFromList(view) {
+      if (!view) return;
+
+      const viewIndex = this.savedViews.findIndex((v) => v.id === view.id);
+
+      // Determine next view: prefer right, fall back to left
+      let nextNearestView = null;
+      if (this.savedViews.length > 1) {
+        nextNearestView =
+          viewIndex < this.savedViews.length - 1
+            ? this.savedViews[viewIndex + 1]
+            : this.savedViews[viewIndex - 1];
+      }
+
+      try {
+        await this.$apollo.mutate({
+          mutation: unsubscribeFromSavedView,
+          variables: {
+            id: view.id,
+          },
+
+          optimisticResponse: {
+            unsubscribeFromSavedView: {
+              __typename: 'UnsubscribeFromSavedViewPayload',
+              errors: [],
+              savedView: {
+                __typename: 'WorkItemSavedViewType',
+                id: view.id,
+              },
+            },
+          },
+          update: (cache) => {
+            const query = {
+              query: getSubscribedSavedViewsQuery,
+              variables: {
+                fullPath: this.fullPath,
+                subscribedOnly: false,
+              },
+            };
+
+            const sourceData = cache.readQuery(query);
+            if (!sourceData) return;
+
+            const newData = produce(sourceData, (draftState) => {
+              const savedViews = draftState.namespace.savedViews.nodes;
+              const index = savedViews.findIndex((v) => v.id === view.id);
+              if (index !== -1) {
+                savedViews.splice(index, 1);
+              }
+            });
+
+            cache.writeQuery({ ...query, data: newData });
+          },
+        });
+
+        await this.detectViewsOverflow();
+
+        if (nextNearestView) {
+          // After recalculation, check if next view ended up in overflow
+          const isInOverflow = this.overflowedViews.some((v) => v.id === nextNearestView.id);
+
+          if (isInOverflow) {
+            // Manually move it to visible
+            this.overflowedViews = this.overflowedViews.filter((v) => v.id !== nextNearestView.id);
+            this.visibleViews = [...this.visibleViews, nextNearestView];
+          }
+
+          this.$router.push({
+            name: ROUTES.savedView,
+            params: { view_id: getIdFromGraphQLId(nextNearestView.id).toString() },
+          });
+        } else {
+          this.$emit('reset-to-default-view');
+        }
+
+        this.$toast.show(s__('WorkItem|View removed from your list'));
+      } catch (e) {
+        this.$emit(
+          'error',
+          e,
+          s__('WorkItem|An error occurred while removing the view. Please try again.'),
+        );
+      }
+    },
   },
 };
 </script>
@@ -144,6 +231,7 @@ export default {
             :saved-view="view"
             :full-path="fullPath"
             :sort-key="sortKey"
+            @remove-saved-view="handleRemoveViewFromList"
           />
         </li>
       </ul>
@@ -161,6 +249,7 @@ export default {
             :saved-view="view"
             :full-path="fullPath"
             :sort-key="sortKey"
+            @remove-saved-view="handleRemoveViewFromList"
           />
         </li>
       </ul>

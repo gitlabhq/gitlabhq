@@ -103,7 +103,7 @@ you need to install build dependencies, but you don't need them to be present in
 
 ## Use an image pull policy
 
-When using the `docker` or `docker+machine` executors, you can set a [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+When using the `docker` or `docker+machine` executors, you can set a [`pull_policy`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy)
 parameter in your runner `config.toml` that defines how the runner works when pulling Docker images.
 To avoid transferring data when using large and rarely updated images, consider using the
 `if-not-present` pull policy when pulling images from remote registries.

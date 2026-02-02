@@ -10,6 +10,7 @@ module Repositories
 
     delegate :authentication_abilities, to: :authentication_result, allow_nil: true
     delegate :type, to: :authentication_result, allow_nil: true, prefix: :auth_result
+    delegate :personal_access_token, to: :authentication_result, allow_nil: true
 
     # Git clients will not know what authenticity token to send along
     skip_around_action :set_session_storage

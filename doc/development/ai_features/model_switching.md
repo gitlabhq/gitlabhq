@@ -109,9 +109,8 @@ Each feature setting entry includes:
 - `default_model`: The `gitlab_identifier` of the default model
 - `selectable_models`: List of `gitlab_identifier` values that users can choose from
 
-{{< alert type="note" >}}
-The `default_model` must always be included in the `selectable_models` list, or validation will fail.
-{{< /alert >}}
+> [!note]
+> The `default_model` must always be included in the `selectable_models` list, or validation will fail.
 
 ### Validation
 

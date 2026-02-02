@@ -77,8 +77,8 @@ Prerequisites:
 
 - The `test` stage is required in the `.gitlab-ci.yml` file.
 - With self-managed runners you need a GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable the analyzer, either:

@@ -141,7 +141,7 @@ configuration apply.
 ### Docker
 
 If you have access to GitLab Runner configuration, add the directory as a
-[volume mount](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#volumes-in-the-runnersdocker-section).
+[volume mount](https://docs.gitlab.com/runner/configuration/advanced-configuration/#volumes-in-the-runnersdocker-section).
 
 Replace `gitlab.example.com` with the actual domain of the registry.
 

@@ -256,7 +256,7 @@ many unexpected user agents in this output indicate unoptimized scripts.
 Expected user agents include `gitlab-runner`, `GitLab-Shell`, and browsers.
 
 The performance impact of runners checking for new jobs can be reduced by increasing
-[the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section),
+[the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-global-section),
 for example.
 
 ### Parsing `gitlab-rails/geo.log`

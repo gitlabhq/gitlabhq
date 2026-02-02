@@ -34,6 +34,7 @@ export default {
       required: true,
     },
   },
+  emits: ['remove-saved-view'],
   data() {
     return {
       isNewViewModalVisible: false,
@@ -66,8 +67,7 @@ export default {
       return '';
     },
     removeView() {
-      // TODO: to replace with logic to unsubsribe from a view. The view is not deleted.
-      return '';
+      this.$emit('remove-saved-view', this.savedView);
     },
     deleteView() {
       // TODO: to replace with logic to delete view.

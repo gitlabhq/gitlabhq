@@ -315,7 +315,6 @@ destroy_wiki
 destroy_work_item
 developer_access
 disable_two_factor
-download_code
 download_wiki_code
 duo_generate_direct_access_token
 duo_workflow
@@ -396,7 +395,6 @@ public_access
 public_user_access
 publish_catalog_version
 publish_status_page
-push_code
 push_code_to_protected_branches
 push_to_delete_protected_branch
 read_abuse_report

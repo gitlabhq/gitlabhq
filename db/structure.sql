@@ -17783,7 +17783,8 @@ CREATE TABLE commit_user_mentions (
     mentioned_groups_ids bigint[],
     commit_id character varying NOT NULL,
     note_id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_ddd6f289f4 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE commit_user_mentions_id_seq
@@ -19196,7 +19197,8 @@ CREATE TABLE diff_note_positions (
     head_sha bytea NOT NULL,
     old_path text NOT NULL,
     new_path text NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE diff_note_positions_id_seq
@@ -23727,7 +23729,8 @@ CREATE TABLE note_metadata (
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     namespace_id bigint,
-    CONSTRAINT check_40aa5ff1c6 CHECK ((char_length(email_participant) <= 255))
+    CONSTRAINT check_40aa5ff1c6 CHECK ((char_length(email_participant) <= 255)),
+    CONSTRAINT check_67a890ebba CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE note_metadata_note_id_seq
@@ -29868,7 +29871,8 @@ CREATE TABLE suggestions (
     lines_below integer DEFAULT 0 NOT NULL,
     outdated boolean DEFAULT false NOT NULL,
     note_id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_e69372e45f CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE suggestions_id_seq
@@ -37475,17 +37479,11 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE user_details
     ADD CONSTRAINT check_3b9aec5742 CHECK ((char_length(company) <= 500)) NOT VALID;
 
-ALTER TABLE diff_note_positions
-    ADD CONSTRAINT check_4c86140f48 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
-
-ALTER TABLE note_metadata
-    ADD CONSTRAINT check_67a890ebba CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE cluster_providers_aws
     ADD CONSTRAINT check_6d49cca3b0 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
@@ -37523,14 +37521,8 @@ ALTER TABLE packages_packages
 ALTER TABLE vulnerabilities
     ADD CONSTRAINT check_d7634b42b6 CHECK ((char_length(solution) <= 7000)) NOT VALID;
 
-ALTER TABLE commit_user_mentions
-    ADD CONSTRAINT check_ddd6f289f4 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
-
-ALTER TABLE suggestions
-    ADD CONSTRAINT check_e69372e45f CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE note_diff_files
     ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;

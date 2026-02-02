@@ -1108,7 +1108,7 @@ Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 ```
 
 GitLab Runner also has an
-[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+[`output_limit` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
 that configures the maximum log size in a runner. Jobs that exceed the runner limit
 continue to run, but the log is truncated when it hits the limit.
 

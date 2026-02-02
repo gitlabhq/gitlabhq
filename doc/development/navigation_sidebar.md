@@ -34,10 +34,8 @@ If you must use Vue to render nav items (for example, if you need to use Vue Rou
 However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
 {{< /alert >}}
 
-{{< alert type="note" >}}
-
-Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.
-{{< /alert >}}
+> [!note]
+> Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.
 
 ## Snowplow Tracking
 

@@ -221,11 +221,11 @@ ERROR: Job failed (system failure): resolving secrets: initializing Vault servic
 You have two options to solve this error:
 
 - Add the self-signed certificate to the GitLab Runner server's CA store.
-  If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html), you have to create your own GitLab Runner image.
+  If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/), you have to create your own GitLab Runner image.
 - Use the `VAULT_CACERT` environment variable to configure GitLab Runner to trust the certificate:
-  - If you are using systemd to manage GitLab Runner, see [how to add an environment variable for GitLab Runner](https://docs.gitlab.com/runner/configuration/init.html#setting-custom-environment-variables).
-  - If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html):
-    1. [Provide a custom certificate for accessing GitLab](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#access-gitlab-with-a-custom-certificate),
+  - If you are using systemd to manage GitLab Runner, see [how to add an environment variable for GitLab Runner](https://docs.gitlab.com/runner/configuration/init/#setting-custom-environment-variables).
+  - If you deployed GitLab Runner using the [Helm chart](https://docs.gitlab.com/runner/install/kubernetes/):
+    1. [Provide a custom certificate for accessing GitLab](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration/#access-gitlab-with-a-custom-certificate),
        and make sure to add the certificate for the Vault server instead of the certificate for GitLab.
        If your GitLab instance is also using a self-signed certificate, you should be able to
        add both in the same `Secret`.

@@ -212,7 +212,7 @@ Implementing this pattern reduces the number of separate runner configurations y
 - In the job definition (`.gitlab-ci.yml`), specify the right limit needed by the jobs.
   - If not specified, the default values set in the `config.toml` file is used.
   - If a container exceeds its memory limit, the system automatically terminates it using the Out of Memory (OOM) kill process.
-- Use the feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`. For more details, see the [feature flags documentation](https://docs.gitlab.com/runner/configuration/feature-flags.html).
+- Use the feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`. For more details, see the [feature flags documentation](https://docs.gitlab.com/runner/configuration/feature-flags/).
 
 ## Deploy the runner on GKE
 
@@ -369,7 +369,7 @@ In the previous configuration:
 
 - The `pod_spec` parameter allows us to set a node selector for the pod running GitLab Runner. In the configuration, the node selector is set to `"app" = "gitlab-runner"` to ensure that GitLab Runner is installed on the runner-manager node pool.
 - The `config_template` parameters provides a default limit for all jobs run by the GitLab Runner Manager. It also allows an overwrite of those limits as long as the value set is not greater than the default values.
-- The feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`are also set to ease debugging in the event of a job failure. See the [feature flag documentation](https://docs.gitlab.com/runner/configuration/feature-flags.html) for more details.
+- The feature flags `FF_RETRIEVE_POD_WARNING_EVENTS` and `FF_PRINT_POD_EVENTS`are also set to ease debugging in the event of a job failure. See the [feature flag documentation](https://docs.gitlab.com/runner/configuration/feature-flags/) for more details.
 
 ### Real life applications for a hypothetical use case
 

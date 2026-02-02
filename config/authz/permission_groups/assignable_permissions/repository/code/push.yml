@@ -1,0 +1,7 @@
+---
+name: push_code
+description: Grants the ability to push code to a repository via Git
+permissions:
+  - push_code
+boundaries:
+  - project

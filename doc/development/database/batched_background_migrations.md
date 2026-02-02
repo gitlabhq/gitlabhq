@@ -15,10 +15,8 @@ to a separate table instead.
 > Batched background migrations replaced the legacy background migrations framework.
 > Check that documentation in reference to any changes involving that framework.
 
-{{< alert type="note" >}}
-
-The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can interact with the batched background migrations present in the system.
-{{< /alert >}}
+The batched background migrations framework has ChatOps support. Using ChatOps, GitLab engineers can
+interact with the batched background migrations present in the system.
 
 ## When to use batched background migrations
 

@@ -86,7 +86,7 @@ For more information about the security of hosted runners for GitLab.com, see:
 
 ### Caching on hosted runners for GitLab.com
 
-The hosted runners share a [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
+The hosted runners share a [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching)
 stored in a Google Cloud Storage (GCS) bucket. Cache contents not updated in the last 14 days are automatically
 removed, based on the [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
 The maximum size of an uploaded cache artifact can be 5 GB after the cache becomes a compressed archive.

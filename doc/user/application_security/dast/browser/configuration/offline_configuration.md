@@ -28,9 +28,9 @@ You can use any version of DAST in an offline environment. To do this, you need:
   [DAST container registry](https://gitlab.com/security-products/dast/container_registry).
   See [Loading Docker images onto your offline host](../../../offline_deployments/_index.md#loading-docker-images-onto-your-offline-host).
 
-GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
+GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker/#using-the-always-pull-policy),
 meaning the runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
+copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy)
 in an offline environment if you prefer using only locally available Docker images.
 However, you should keep the pull policy setting to `always` if you are not in an
 offline environment. This setting enables the use of updated scanners in your CI/CD

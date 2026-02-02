@@ -12,12 +12,8 @@ see [Create a feature flag](../../operations/feature_flags.md#create-a-feature-f
 A [complete list of feature flags](../../administration/feature_flags/list.md) in GitLab is also available.
 
 > [!warning]
-> All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle).
-
-{{< alert type="warning" >}}
-
-All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
-{{< /alert >}}
+> All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle)
+> and [used with an actor](controls.md#percentage-based-actor-selection).
 
 Design documents:
 

@@ -89,10 +89,9 @@ to create a new schedule rule.
 > [!note]
 > The Kubernetes agent must be running in your cluster to scan running container images
 
-{{< alert type="note" >}}
-
-Operational container scanning operates independently of GitLab pipelines. It is fully automated and managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy. The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
-{{< /alert >}}
+Operational container scanning operates independently of GitLab pipelines. It is fully automated and
+managed by the Kubernetes Agent, which initiates new scans at the scheduled time configured in the Scan Execution Policy.
+The agent creates a dedicated Job within your cluster to perform the scan and report findings back to GitLab.
 
 Here is an example of a policy which enables operational container scanning within the cluster the Kubernetes agent is attached to:
 

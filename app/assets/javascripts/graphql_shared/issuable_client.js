@@ -33,6 +33,7 @@ import { preserveDetailsState } from '~/work_items/utils';
 export const linkedItems = makeVar({});
 export const currentAssignees = makeVar({});
 export const availableStatuses = makeVar({});
+export const savedViewsVar = makeVar([...allSavedViews]);
 
 export const config = {
   typeDefs,
@@ -89,7 +90,8 @@ export const config = {
               // Do not reset the cache data, just load what is written in the cache
               if (existing) return existing;
 
-              const nodes = subscribedOnly ? allSubscribedSavedViews : allSavedViews;
+              const views = savedViewsVar();
+              const nodes = subscribedOnly ? allSubscribedSavedViews : views;
 
               return { nodes };
             },
@@ -510,6 +512,19 @@ export const resolvers = {
       };
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
+    },
+    unsubscribeFromSavedView: (_, { id }) => {
+      const currentViews = savedViewsVar();
+      savedViewsVar(currentViews.filter((view) => view.id !== id));
+
+      return {
+        errors: [],
+        savedView: {
+          id,
+          __typename: 'WorkItemsSavedView',
+        },
+        __typename: 'UnsubscribeFromSavedViewPayload',
+      };
     },
   },
 };

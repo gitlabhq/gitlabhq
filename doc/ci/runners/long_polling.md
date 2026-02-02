@@ -13,7 +13,7 @@ title: Long polling
 {{< /details >}}
 
 By default, a GitLab Runner polls a GitLab instance for new CI/CD
-jobs periodically. The actual polling interval [depends on the `check_interval` and number of runners configured in the runner configuration file](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works).
+jobs periodically. The actual polling interval [depends on the `check_interval` and number of runners configured in the runner configuration file](https://docs.gitlab.com/runner/configuration/advanced-configuration/#how-check_interval-works).
 
 On a server that handles many runners, this polling can lead to these performance issues:
 

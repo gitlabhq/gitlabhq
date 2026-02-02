@@ -132,7 +132,7 @@ The [Prometheus Node Exporter](https://prometheus.io/docs/guides/node-exporter/)
 can monitor runners on Linux hosts, and [`kube-state-metrics`](https://github.com/kubernetes/kube-state-metrics)
 runs in a Kubernetes cluster.
 
-You can also test [GitLab Runner auto-scaling](https://docs.gitlab.com/runner/configuration/autoscale.html)
+You can also test [GitLab Runner auto-scaling](https://docs.gitlab.com/runner/configuration/autoscale/)
 with cloud providers, and define offline times to reduce costs.
 
 #### Dashboards and incident management

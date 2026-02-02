@@ -31,9 +31,8 @@ Prerequisites:
   openssl genrsa -out duo_workflow_jwt.key 2048
   ```
 
-  {{< alert type="warning" >}}
-  Keep the `duo_workflow_jwt.key` file secure and do not share it publicly. This key is used for signing JWT tokens and must be treated as a sensitive credential.
-  {{< /alert >}}
+  > [!warning]
+  > Keep the `duo_workflow_jwt.key` file secure and do not share it publicly. This key is used for signing JWT tokens and must be treated as a sensitive credential.
 
 To ensure better performance, especially under heavy usage, consider allocating
 more disk space, memory, and resources than the minimum requirements.

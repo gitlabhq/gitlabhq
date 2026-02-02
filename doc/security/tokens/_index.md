@@ -179,7 +179,7 @@ instead of a runner registration token. Runner registration tokens are
 
 After you create a runner and its configuration, you receive a runner authentication token
 that you use to register the runner. The runner authentication token is stored locally in
-the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file,
+the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/) file,
 which you use to configure the runner.
 
 The runner uses the runner authentication token to authenticate with GitLab when it
@@ -236,7 +236,7 @@ multiple jobs run on the same machine (for example, with the [shell runner](http
 You can use the [project allowlist](../../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to further limit what the job token can access.
 
 On Docker Machine runners, you should configure
-[`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersmachine-section)
+[`MaxBuilds=1`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersmachine-section)
 to ensure runner machines run only one build
 and are destroyed afterwards. Provisioning takes time,
 so this configuration can affect performance.

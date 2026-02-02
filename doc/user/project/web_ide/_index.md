@@ -184,9 +184,8 @@ To commit and force push your changes:
 1. Select the action button menu or select the ellipsis ({{< icon name="ellipsis_h" >}}).
 1. Select **Commit and Force push**.
 
-{{< alert type="warning" >}}
-This action overwrites the remote history of the current branch. Use with caution.
-{{< /alert >}}
+> [!warning]
+> This action overwrites the remote history of the current branch. Use with caution.
 
 ### Amend commit and force push
 

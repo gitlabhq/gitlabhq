@@ -475,7 +475,7 @@ Some key details about runners:
 - You can use the [`tags` keyword](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale.html).
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/configuration/autoscale/).
   Use autoscaling to provision runners only when needed and scale down when not needed.
 
 For example, in a GitHub Actions `workflow` file:
@@ -567,7 +567,7 @@ use_cat:
 A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
-[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
+[distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching).
 
 For example, in a GitHub Actions `workflow` file:
 

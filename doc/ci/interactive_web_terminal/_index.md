@@ -31,7 +31,7 @@ taken to protect the users.
 Two things need to be configured for the interactive web terminal to work:
 
 - The runner needs to have
-  [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+  [`[session_server]` configured properly](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section)
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
@@ -77,7 +77,7 @@ the terminal and type commands like in a standard shell.
 
 If your terminal is open after the job completes,
 the job doesn't finish until after the configured
-[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
+[`[session_server].session_timeout`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-session_server-section)
 duration. To avoid this, you can close the terminal after the job finishes.
 
 ![Job complete with active terminal session](img/finished_job_with_terminal_open_v11_2.png)

@@ -642,7 +642,7 @@ see [getting started](#getting-started).
 
 By default the runner pulls container images from the GitLab container registry even if a local
 copy is available. If you prefer to use only local container images, you can change the
-[`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 However, you should keep the `pull_policy` setting to the default unless you have good reason to
 change it.
 

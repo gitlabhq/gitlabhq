@@ -17,6 +17,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   let(:redirected_path) { nil }
   let(:auth_result_type) { nil }
   let(:gitaly_context) { { 'key' => 'value' } }
+  let(:personal_access_token) { nil }
   let(:changes) { Gitlab::GitAccess::ANY }
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
@@ -342,6 +343,28 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   end
 
   describe '#check_authentication_abilities!' do
+    context 'with a granular personal access token' do
+      let(:personal_access_token) { build(:granular_pat) }
+
+      it 'delegates to check_granular_pat_permissions!' do
+        instance = access
+        expect(instance).to receive(:check_granular_pat_permissions!)
+
+        instance.send(:check_authentication_abilities!)
+      end
+    end
+
+    context 'without a granular personal access token' do
+      it 'delegates to check_legacy_authentication_abilities!' do
+        instance = access
+        expect(instance).to receive(:check_legacy_authentication_abilities!)
+
+        instance.send(:check_authentication_abilities!)
+      end
+    end
+  end
+
+  describe '#check_legacy_authentication_abilities!' do
     before do
       project.add_maintainer(user)
     end
@@ -383,6 +406,214 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         it 'does not raise any errors' do
           expect { push_access_check }.not_to raise_error
         end
+      end
+    end
+  end
+
+  describe '#check_granular_pat_permissions!' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'without a personal access token' do
+      it 'does not check granular permissions' do
+        expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        expect { pull_access_check }.not_to raise_error
+      end
+    end
+
+    context 'with a non-granular personal access token' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+      it 'does not check granular permissions for download' do
+        expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        expect { pull_access_check }.not_to raise_error
+      end
+    end
+
+    context 'with a granular personal access token' do
+      let(:boundary) { Authz::Boundary.for(project) }
+      let(:personal_access_token) { create(:granular_pat, user: user, boundary: boundary, permissions: permissions) }
+
+      context 'when token has no code permissions' do
+        let(:permissions) { [] }
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
+            'Access denied: Your Personal Access Token lacks the required permissions: [download_code] ' \
+            "for \"#{project.full_path}\".")
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(described_class::ForbiddenError,
+            'Access denied: Your Personal Access Token lacks the required permissions: [push_code] ' \
+            "for \"#{project.full_path}\".")
+        end
+      end
+
+      context 'when token has download_code permission' do
+        let(:permissions) { :download_code }
+
+        it 'allows git pull' do
+          expect { pull_access_check }.not_to raise_error
+        end
+
+        it 'denies git push' do
+          expect { push_access_check }.to raise_error(described_class::ForbiddenError,
+            'Access denied: Your Personal Access Token lacks the required permissions: [push_code] ' \
+            "for \"#{project.full_path}\".")
+        end
+      end
+
+      context 'when token has push_code permission' do
+        let(:permissions) { :push_code }
+
+        it 'allows git push' do
+          expect { push_access_check }.not_to raise_error
+        end
+
+        it 'denies git pull' do
+          expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
+            'Access denied: Your Personal Access Token lacks the required permissions: [download_code] ' \
+            "for \"#{project.full_path}\".")
+        end
+      end
+
+      context 'when token has both download_code and push_code permissions' do
+        let(:permissions) { [:push_code, :download_code] }
+
+        it 'allows git pull' do
+          expect { pull_access_check }.not_to raise_error
+        end
+
+        it 'allows git push' do
+          expect { push_access_check }.not_to raise_error
+        end
+      end
+    end
+  end
+
+  describe '#permission_for_command' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'with a download command' do
+      it 'returns :download_code' do
+        git_access = access
+        git_access.check('git-upload-pack', changes)
+        expect(git_access.send(:permission_for_command)).to eq(:download_code)
+      end
+    end
+
+    context 'with a push command' do
+      it 'returns :push_code' do
+        git_access = access
+        git_access.check('git-receive-pack', changes)
+        expect(git_access.send(:permission_for_command)).to eq(:push_code)
+      end
+    end
+
+    context 'with an unknown command' do
+      it 'returns nil' do
+        expect(access.send(:permission_for_command)).to be_nil
+      end
+    end
+  end
+
+  describe '#has_authentication_ability?' do
+    context 'with a granular personal access token' do
+      let(:personal_access_token) { build(:granular_pat) }
+      let(:authentication_abilities) { [] }
+
+      it 'returns true regardless of authentication_abilities' do
+        expect(access.send(:has_authentication_ability?, :download_code)).to be(true)
+      end
+    end
+
+    context 'without a granular personal access token' do
+      context 'when authentication_abilities includes the ability' do
+        let(:authentication_abilities) { [:download_code] }
+
+        it 'returns true' do
+          expect(access.send(:has_authentication_ability?, :download_code)).to be(true)
+        end
+      end
+
+      context 'when authentication_abilities does not include the ability' do
+        let(:authentication_abilities) { [] }
+
+        it 'returns false' do
+          expect(access.send(:has_authentication_ability?, :download_code)).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#user_can_download?' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'without a granular personal access token' do
+      context 'when authentication_abilities includes :download_code' do
+        let(:authentication_abilities) { [:download_code] }
+
+        it 'returns true' do
+          expect(access.send(:user_can_download?)).to be(true)
+        end
+      end
+
+      context 'when authentication_abilities does not include :download_code' do
+        let(:authentication_abilities) { [] }
+
+        it 'returns falsey' do
+          expect(access.send(:user_can_download?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with a granular personal access token and empty authentication_abilities' do
+      let(:personal_access_token) { create(:granular_pat) }
+      let(:authentication_abilities) { [] }
+
+      it 'returns true' do
+        expect(access.send(:user_can_download?)).to be(true)
+      end
+    end
+  end
+
+  describe '#user_can_push?' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'without a granular personal access token' do
+      context 'when authentication_abilities includes :push_code' do
+        let(:authentication_abilities) { [:push_code] }
+
+        it 'returns true' do
+          expect(access.send(:user_can_push?)).to be(true)
+        end
+      end
+
+      context 'when authentication_abilities does not include :push_code' do
+        let(:authentication_abilities) { [] }
+
+        it 'returns falsey' do
+          expect(access.send(:user_can_push?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with a granular personal access token and empty authentication_abilities' do
+      let(:personal_access_token) { create(:granular_pat) }
+      let(:authentication_abilities) { [] }
+
+      it 'returns true' do
+        expect(access.send(:user_can_push?)).to be(true)
       end
     end
   end
@@ -1428,7 +1659,8 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     access_class.new(actor, project, protocol,
       authentication_abilities: authentication_abilities,
       repository_path: repository_path,
-      redirected_path: redirected_path, auth_result_type: auth_result_type, gitaly_context: gitaly_context)
+      redirected_path: redirected_path, auth_result_type: auth_result_type, gitaly_context: gitaly_context,
+      personal_access_token: personal_access_token)
   end
 
   def push_access_check_build(access_project, changes)

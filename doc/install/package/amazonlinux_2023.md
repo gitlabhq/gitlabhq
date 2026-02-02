@@ -150,9 +150,8 @@ installations, use the password from `/etc/gitlab/initial_root_password` or
 | `GITLAB_ROOT_EMAIL` | Custom email for the root administrator account | Optional | `GITLAB_ROOT_EMAIL="admin@example.com"` |
 | `GITLAB_ROOT_PASSWORD` | Custom password (8 characters minimum) for the root administrator account | Optional | `GITLAB_ROOT_PASSWORD="strongpassword"` |
 
-{{< alert type="note" >}}
-If GitLab can't detect a valid hostname during installation, reconfigure won't run automatically. In this case, pass any needed environment variables to your first `gitlab-ctl reconfigure` command.
-{{< /alert >}}
+If GitLab can't detect a valid hostname during installation, reconfigure won't run automatically.
+In this case, pass any needed environment variables to your first `gitlab-ctl reconfigure` command.
 
 > [!warning]
 > While you can also set the initial password in `/etc/gitlab/gitlab.rb` by setting

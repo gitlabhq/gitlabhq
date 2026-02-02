@@ -1,0 +1,5 @@
+---
+name: upload_pypi_package
+description: Grants the ability to upload PyPI packages
+boundaries:
+  - project

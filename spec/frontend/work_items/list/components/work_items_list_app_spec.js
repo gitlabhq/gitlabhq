@@ -2414,4 +2414,21 @@ describe('when service desk list', () => {
       expect(document.title).toBe('Service Desk · Test · GitLab');
     });
   });
+
+  describe('error handling from saved views', () => {
+    it('displays error alert when saved views component emits error', async () => {
+      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
+      await waitForPromises();
+
+      const testError = new Error('Test error');
+      const errorMessage = 'An error occurred while removing the view. Please try again.';
+
+      findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
+      await nextTick();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(testError);
+      expect(findGlAlert().exists()).toBe(true);
+      expect(findGlAlert().text()).toContain(errorMessage);
+    });
+  });
 });

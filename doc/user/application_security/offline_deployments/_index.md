@@ -136,7 +136,7 @@ of the project where the pipeline is executed. These archives can be transferred
 and [loaded](https://docs.docker.com/reference/cli/docker/image/load/) in a Docker daemon.
 This method requires a runner with access to both `gitlab.com` (including
 `registry.gitlab.com`) and the local offline instance. This runner must run in
-[privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode)
+[privileged mode](https://docs.gitlab.com/runner/executors/docker/#use-docker-in-docker-with-privileged-mode)
 to be able to use the `docker` command inside the jobs. This runner can be installed in a DMZ or on
 a bastion, and used only for this specific project.
 

@@ -503,7 +503,7 @@ for more details.
 - S3 object storage access for the GitLab Runner distributed cache is now handled by the
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
   You can enable the MinIO client again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER`
-  [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
+  [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/) to `true`.
 - The token used by Gitaly to authenticate with GitLab is now [its own setting](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8688).
   This means Gitaly doesn't need GitLab Rails and Shell recipes to run and populate the default secret file inside the shell directory,
   and can have its own secret file. Some customized environments may need to

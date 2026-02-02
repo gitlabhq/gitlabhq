@@ -96,7 +96,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
 
    {{< /alert >}}
 
-1. [Configure GitLab Runner](../../ci/runners/_index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+1. [Configure GitLab Runner](../../ci/runners/_index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes/) executor.
 1. Configure the [Kubernetes integration](../infrastructure/clusters/_index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you need it

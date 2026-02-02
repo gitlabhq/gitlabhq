@@ -47,7 +47,7 @@ module Gitlab
 
     attr_reader :actor, :protocol, :authentication_abilities,
       :repository_path, :redirected_path, :auth_result_type,
-      :cmd, :changes, :push_options, :gitaly_context
+      :cmd, :changes, :push_options, :gitaly_context, :personal_access_token
     attr_accessor :container
 
     def self.error_message(key)
@@ -60,7 +60,7 @@ module Gitlab
       raise ArgumentError, "No error message defined for #{key}"
     end
 
-    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil, gitaly_context: nil) # rubocop:disable Metrics/ParameterLists -- it needs a refactoring to resolve
+    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil, gitaly_context: nil, personal_access_token: nil) # rubocop:disable Metrics/ParameterLists -- it needs a refactoring to resolve
       @actor     = actor
       @container = container
       @protocol  = protocol
@@ -70,6 +70,7 @@ module Gitlab
       @auth_result_type = auth_result_type
       @push_options = Gitlab::PushOptions.new(push_options)
       @gitaly_context = gitaly_context
+      @personal_access_token = personal_access_token
     end
 
     def check(cmd, changes)
@@ -113,11 +114,6 @@ module Gitlab
         deploy_key? &&
         deploy_key.has_access_to?(container) &&
         (project? && repository_access_level != ::Featurable::DISABLED)
-    end
-
-    def user_can_download?
-      authentication_abilities.include?(:download_code) &&
-        user_access.can_do_action?(download_ability)
     end
 
     # @return [Symbol] the name of a Declarative Policy ability to check
@@ -232,6 +228,14 @@ module Gitlab
     end
 
     def check_authentication_abilities!
+      if personal_access_token&.granular?
+        check_granular_pat_permissions!
+      else
+        check_legacy_authentication_abilities!
+      end
+    end
+
+    def check_legacy_authentication_abilities!
       case cmd
       when *DOWNLOAD_COMMANDS
         unless authentication_abilities.include?(:download_code) || authentication_abilities.include?(:build_download_code)
@@ -242,6 +246,31 @@ module Gitlab
           raise ForbiddenError, error_message(:auth_upload)
         end
       end
+    end
+
+    def check_granular_pat_permissions!
+      result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+        boundary: ::Authz::Boundary.for(project),
+        permissions: permission_for_command,
+        token: personal_access_token
+      ).execute
+
+      raise ForbiddenError, result.message if result.error?
+    end
+
+    def permission_for_command
+      case cmd
+      when *DOWNLOAD_COMMANDS
+        :download_code
+      when *PUSH_COMMANDS
+        :push_code
+      end
+    end
+
+    # For granular PATs, permissions are validated earlier via check_granular_pat_permissions!
+    # so we can skip the authentication_abilities check.
+    def has_authentication_ability?(ability)
+      personal_access_token&.granular? || authentication_abilities.include?(ability)
     end
 
     def check_project_accessibility!
@@ -362,9 +391,12 @@ module Gitlab
       check_change_access!
     end
 
+    def user_can_download?
+      has_authentication_ability?(:download_code) && user_access.can_do_action?(download_ability)
+    end
+
     def user_can_push?
-      authentication_abilities.include?(:push_code) &&
-        user_access.can_do_action?(push_ability)
+      has_authentication_ability?(:push_code) && user_access.can_do_action?(push_ability)
     end
 
     def check_change_access!

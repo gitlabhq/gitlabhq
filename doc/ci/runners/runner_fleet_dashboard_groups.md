@@ -51,6 +51,6 @@ configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 To view the runner fleet dashboard for groups:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.

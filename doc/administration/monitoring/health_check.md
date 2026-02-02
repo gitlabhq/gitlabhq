@@ -92,9 +92,8 @@ GitLab OK
 
 ## Comprehensive health check
 
-{{< alert type="warning" >}}
-**Do not use `/health_check` for load balancing or autoscaling.** This endpoint validates backend services (database, Redis) and will fail even when the application is functioning properly if these services are slow or unavailable. This can cause unnecessary removal of healthy application nodes from load balancers.
-{{< /alert >}}
+> [!warning]
+> **Do not use `/health_check` for load balancing or autoscaling.** This endpoint validates backend services (database, Redis) and will fail even when the application is functioning properly if these services are slow or unavailable. This can cause unnecessary removal of healthy application nodes from load balancers.
 
 The `/health_check` endpoint performs comprehensive health checks including database connectivity, Redis availability, and other backend services. It's provided by the `health_check` gem and validates the entire application stack.
 

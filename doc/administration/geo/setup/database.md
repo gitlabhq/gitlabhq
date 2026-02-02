@@ -452,9 +452,8 @@ The following guide assumes that:
    This step is similar to how you configured the **primary** instance.
    You must enable this, even if using a single node.
 
-   {{< alert type="warning" >}}
-   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
-   {{< /alert >}}
+   > [!warning]
+   > Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
 
    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
    addresses with addresses appropriate to your network configuration:
@@ -592,9 +591,8 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 ### Changing the replication password
 
-{{< alert type="warning" >}}
-When changing the replication password, you must update it on **all** Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
-{{< /alert >}}
+> [!warning]
+> When changing the replication password, you must update it on **all** Geo sites (primary and all secondaries) with the [same password value](#database-password-consistency-requirements). Failure to keep passwords synchronized breaks replication.
 
 To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
@@ -979,9 +977,8 @@ For each node running a Patroni instance on the secondary site:
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
-   {{< alert type="warning" >}}
-   Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
-   {{< /alert >}}
+   > [!warning]
+   > Each password type must have [matching values](#database-password-consistency-requirements) across all Geo sites.
 
    ```ruby
    roles(['consul_role', 'patroni_role'])

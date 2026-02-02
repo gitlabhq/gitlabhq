@@ -673,7 +673,7 @@ In this diagram:
    `direct_download=true` query parameter on the first attempt to indicate
    that it is capable of downloading from object storage directly. Direct
    downloads can be disabled in the runner configuration via the
-   [`FF_USE_DIRECT_DOWNLOAD` feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html).
+   [`FF_USE_DIRECT_DOWNLOAD` feature flag](https://docs.gitlab.com/runner/configuration/feature-flags/).
    This flag is set to `true` by default.
 
 1. The runner sends the GET request using HTTP Basic Authentication

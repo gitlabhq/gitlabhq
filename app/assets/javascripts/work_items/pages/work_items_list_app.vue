@@ -1627,6 +1627,12 @@ export default {
 
       // TODO: Add resetting preferences to defaults
     },
+    handleError(error, message) {
+      Sentry.captureException(error);
+
+      // if custom message is provided, use it
+      if (message) this.error = message;
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1822,6 +1828,7 @@ export default {
               :saved-views="subscribedSavedViews"
               :sort-key="sortKey"
               @reset-to-default-view="resetToDefaultView"
+              @error="handleError"
             >
               <template #header-area>
                 <work-item-list-actions

@@ -53,8 +53,8 @@ To get started with pipeline secret detection, select a pilot project and enable
 
 Prerequisites:
 
-- You have a Linux-based runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- You have a Linux-based runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
   If you use hosted runners for GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.

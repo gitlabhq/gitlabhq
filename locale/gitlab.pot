@@ -77930,6 +77930,9 @@ msgstr ""
 msgid "WorkItem|An error occurred while making status default."
 msgstr ""
 
+msgid "WorkItem|An error occurred while removing the view. Please try again."
+msgstr ""
+
 msgid "WorkItem|An error occurred while reordering statuses."
 msgstr ""
 
@@ -79171,6 +79174,9 @@ msgid "WorkItem|View has been saved."
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"
+msgstr ""
+
+msgid "WorkItem|View removed from your list"
 msgstr ""
 
 msgid "WorkItem|Views"

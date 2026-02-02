@@ -358,7 +358,7 @@ however, be aware that you might experience other issues unrelated to runners, i
 If a runner is repeatedly unable to connect to a GitLab instance, it stops trying to connect for a
 period of time. By default, this period is 1 hour. To avoid this, shut down the runners until
 the GitLab instance is reachable. See
-[the `check_interval` documentation](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works),
+[the `check_interval` documentation](https://docs.gitlab.com/runner/configuration/advanced-configuration/#how-check_interval-works),
 and the configuration options `unhealthy_requests_limit` and `unhealthy_interval`.
 
 - If you use our **Location aware URL**: After the old primary is removed from the DNS configuration,

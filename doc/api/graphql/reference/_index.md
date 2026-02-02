@@ -7948,6 +7948,30 @@ Input type: `GroupSavedReplyUpdateInput`
 | <a id="mutationgroupsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsavedreplyupdatesavedreply"></a>`savedReply` | [`GroupSavedReply`](#groupsavedreply) | Saved reply after mutation. |
 
+### `Mutation.groupSecretCreate`
+
+Input type: `GroupSecretCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretcreatedescription"></a>`description` | [`String`](#string) | Description of the group secret. |
+| <a id="mutationgroupsecretcreateenvironment"></a>`environment` | [`String!`](#string) | Environment that can access the secret. |
+| <a id="mutationgroupsecretcreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secret. |
+| <a id="mutationgroupsecretcreatename"></a>`name` | [`String!`](#string) | Name of the group secret. |
+| <a id="mutationgroupsecretcreateprotected"></a>`protected` | [`Boolean!`](#boolean) | Whether the secret is only accessible from protected branches. |
+| <a id="mutationgroupsecretcreatesecret"></a>`secret` | [`String!`](#string) | Value of the group secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretcreategroupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Group secret. |
+
 ### `Mutation.groupSecretsManagerDeprovision`
 
 Input type: `GroupSecretsManagerDeprovisionInput`
@@ -36743,6 +36767,22 @@ Contains release-related statistics about a group.
 | <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of the group-level saved reply. |
 | <a id="groupsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
+### `GroupSecret`
+
+Represents a group secret.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecretdescription"></a>`description` | [`String`](#string) | Description of the group secret. |
+| <a id="groupsecretenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
+| <a id="groupsecretgroup"></a>`group` | [`Group!`](#group) | Group the secret belongs to. |
+| <a id="groupsecretmetadataversion"></a>`metadataVersion` | [`Int`](#int) | Current metadata version of the group secret. |
+| <a id="groupsecretname"></a>`name` | [`String!`](#string) | Name of the group secret. |
+| <a id="groupsecretprotected"></a>`protected` | [`Boolean!`](#boolean) | Whether the secret is only accessible from protected branches. |
+| <a id="groupsecretstatus"></a>`status` | [`SecretStatus!`](#secretstatus) | Computed lifecycle status of the secret, based on timestamps. |
+
 ### `GroupSecretsManager`
 
 Representation of a group secrets manager.
@@ -46036,9 +46076,9 @@ Representation of a project secret.
 | <a id="projectsecretenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="projectsecretmetadataversion"></a>`metadataVersion` | [`Int`](#int) | Current metadata version of the project secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
-| <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
+| <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belongs to. |
 | <a id="projectsecretrotationinfo"></a>`rotationInfo` | [`SecretRotationInfo`](#secretrotationinfo) | Rotation configuration for the secret. |
-| <a id="projectsecretstatus"></a>`status` | [`ProjectSecretStatus!`](#projectsecretstatus) | Computed lifecycle status of the secret, based on timestamps. |
+| <a id="projectsecretstatus"></a>`status` | [`SecretStatus!`](#secretstatus) | Computed lifecycle status of the secret, based on timestamps. |
 
 ### `ProjectSecretsManager`
 
@@ -55137,18 +55177,6 @@ Project member relation.
 | <a id="projectmemberrelationinvited_groups"></a>`INVITED_GROUPS` | Invited Groups members. |
 | <a id="projectmemberrelationshared_into_ancestors"></a>`SHARED_INTO_ANCESTORS` | Shared Into Ancestors members. |
 
-### `ProjectSecretStatus`
-
-Status of project secret.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="projectsecretstatuscompleted"></a>`COMPLETED` | Secret is complete. |
-| <a id="projectsecretstatuscreate_in_progress"></a>`CREATE_IN_PROGRESS` | Secret creation is in progress. |
-| <a id="projectsecretstatuscreate_stale"></a>`CREATE_STALE` | Secret creation appears stale (started long ago or missing completion timestamp). |
-| <a id="projectsecretstatusupdate_in_progress"></a>`UPDATE_IN_PROGRESS` | Secret update is in progress. |
-| <a id="projectsecretstatusupdate_stale"></a>`UPDATE_STALE` | Secret update appears stale (started long ago or missing completion timestamp). |
-
 ### `ProjectSecretsManagerStatus`
 
 Values for the project secrets manager status.
@@ -55418,6 +55446,18 @@ Status of secret rotation.
 | <a id="secretrotationstatusapproaching"></a>`APPROACHING` | Rotation is due within 7 days. |
 | <a id="secretrotationstatusok"></a>`OK` | Rotation is not due soon. |
 | <a id="secretrotationstatusoverdue"></a>`OVERDUE` | Rotation is overdue (reminder was sent). |
+
+### `SecretStatus`
+
+Status of secret.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="secretstatuscompleted"></a>`COMPLETED` | Secret is complete. |
+| <a id="secretstatuscreate_in_progress"></a>`CREATE_IN_PROGRESS` | Secret creation is in progress. |
+| <a id="secretstatuscreate_stale"></a>`CREATE_STALE` | Secret creation appears stale (started long ago or missing completion timestamp). |
+| <a id="secretstatusupdate_in_progress"></a>`UPDATE_IN_PROGRESS` | Secret update is in progress. |
+| <a id="secretstatusupdate_stale"></a>`UPDATE_STALE` | Secret update appears stale (started long ago or missing completion timestamp). |
 
 ### `SecretsManagementAction`
 

@@ -99,9 +99,8 @@ To install a pre-release build, either:
 - [Add the `alpha` plugin repository](https://www.jetbrains.com/help/idea/managing-plugins.html#add_plugin_repos)
   to your IDE. For the repository URL, use `https://plugins.jetbrains.com/plugins/alpha/list`.
 
-  {{< alert type="note" >}}
-  To see the alpha release after adding the `alpha` plugin repository, you might need to uninstall and reinstall the GitLab Duo plugin.
-  {{< /alert >}}
+  > [!note]
+  > To see the alpha release after adding the `alpha` plugin repository, you might need to uninstall and reinstall the GitLab Duo plugin.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For a video tutorial of this process, see

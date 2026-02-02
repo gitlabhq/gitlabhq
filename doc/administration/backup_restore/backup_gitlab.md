@@ -189,12 +189,14 @@ See also:
 ### Storing configuration files
 
 > [!warning]
-> The backup Rake task GitLab provides does not store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD secure variables. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
-
-{{< alert type="warning" >}}
-
-The secrets file may change after upgrades.
-{{< /alert >}}
+> The backup Rake task GitLab provides does not store your configuration files.
+> The primary reason for this is that your database contains items including encrypted information
+> for two-factor authentication and the CI/CD secure variables. Storing encrypted information
+> in the same location as its key defeats the purpose of using encryption in the first place.
+> For example, the secrets file contains your database encryption key. If you lose it,
+> then the GitLab application will not be able to decrypt any encrypted values in the database.
+>
+> Additionally, the secrets file may change after upgrades.
 
 You should back up the configuration directory. At the very minimum, you must back up:
 

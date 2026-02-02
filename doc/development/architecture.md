@@ -602,7 +602,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 - [Project page](https://gitlab.com/gitlab-org/gitlab-runner/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/runner/)
-  - [Charts](https://docs.gitlab.com/runner/install/kubernetes.html)
+  - [Charts](https://docs.gitlab.com/runner/install/kubernetes/)
   - [Source](https://docs.gitlab.com/runner/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
 - Layer: Core Service (Processor)

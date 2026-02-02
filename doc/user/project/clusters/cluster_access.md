@@ -73,7 +73,7 @@ GitLab creates the following resources for ABAC clusters.
 
 ## Security of runners
 
-Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#the-privileged-mode)
+Runners have the [privileged mode](https://docs.gitlab.com/runner/executors/docker/#the-privileged-mode)
 enabled by default, which allows them to execute special commands and run
 Docker in Docker. This functionality is needed to run some of the
 [Auto DevOps](../../../topics/autodevops/_index.md)
@@ -88,4 +88,4 @@ arbitrary images as they effectively have root access.
 If you don't want to use a runner in privileged mode, either:
 
 - Use instance runners on GitLab.com. They don't have this security issue.
-- Set up your own runners that use [`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
+- Set up your own runners that use [`docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine/).

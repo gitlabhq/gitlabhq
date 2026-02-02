@@ -735,7 +735,7 @@ However, if no network connectivity is available, you must change the default Gi
 `pull_policy` variable.
 
 Configure the GitLab Runner CI/CD variable `pull_policy` to
-[`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 
 ### Use local pipeline secret detection analyzer image
 

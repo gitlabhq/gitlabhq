@@ -37,8 +37,8 @@ Prerequisites:
 - The `test` stage is required in the `.gitlab-ci.yml` file. If your project defines its own
   `stages` list, make sure the `test` stage is included.
 - On GitLab Self-Managed you need GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable IaC scanning:
@@ -276,7 +276,7 @@ However, if no network connectivity is available, you must change the default Gi
 `pull_policy` variable.
 
 Configure the GitLab Runner CI/CD variable `pull_policy` to
-[`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+[`if-not-present`](https://docs.gitlab.com/runner/executors/docker/#using-the-if-not-present-pull-policy).
 
 ### Use local IaC analyzer image
 

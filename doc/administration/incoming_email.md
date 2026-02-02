@@ -165,19 +165,15 @@ See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/303
 for a real-world example of this exploit.
 
 > [!warning]
-> Use a mail server that has been configured to reduce
-> spam.
+> Use a mail server that has been configured to reduce spam.
 > A Postfix mail server that is running on a default configuration, for example,
 > can result in abuse. All messages received on the configured mailbox are processed
 > and messages that are not intended for the GitLab instance receive a reject notice.
 > If the sender's address is spoofed, the reject notice is delivered to the spoofed
-> `FROM` address, which can cause the mail server's IP or domain to appear on a block
-> list.
+> `FROM` address, which can cause the mail server's IP or domain to appear on a block list.
 
-{{< alert type="warning" >}}
-
-Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first. This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
-{{< /alert >}}
+Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first.
+This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
 
 ### Linux package installations
 

@@ -5,12 +5,13 @@ import { CREATED_DESC } from '~/work_items/list/constants';
 
 const mockSavedView = {
   __typename: 'SavedView',
-  id: '1',
+  id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
   name: 'My View',
   userPermissions: {
     updateSavedView: true,
   },
 };
+
 describe('WorkItemsSavedViewSelector', () => {
   let wrapper;
 
@@ -75,6 +76,15 @@ describe('WorkItemsSavedViewSelector', () => {
       });
 
       expect(findEditAction().exists()).toBe(false);
+    });
+
+    describe('unsubscribe action', () => {
+      it('emits remove-saved-view event with saved view when clicked', async () => {
+        await findUnsubscribeAction().vm.$emit('action');
+
+        expect(wrapper.emitted('remove-saved-view')).toHaveLength(1);
+        expect(wrapper.emitted('remove-saved-view')[0]).toEqual([mockSavedView]);
+      });
     });
   });
 

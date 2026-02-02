@@ -165,10 +165,9 @@ The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/securi
          - ${BUILD_DIR} # Pass the split CDB files to the parallelized gitlab-advanced-sast-cpp jobs
    ```
 
-   {{< alert type="note" >}}
-   `split_cdb` is hardcoded to read `${BUILD_DIR}/compile_commands.json`.
-   Make sure your build generates the CDB at this exact location before calling `split_cdb`.
-   {{< /alert >}}
+   > [!note]
+   > `split_cdb` is hardcoded to read `${BUILD_DIR}/compile_commands.json`.
+   > Make sure your build generates the CDB at this exact location before calling `split_cdb`.
 
 1. Run parallel analyzer jobs:
 

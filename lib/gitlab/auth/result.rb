@@ -56,6 +56,10 @@ module Gitlab
 
         authentication_abilities.include?(ability)
       end
+
+      def personal_access_token
+        authentication_context[:personal_access_token]
+      end
     end
   end
 end

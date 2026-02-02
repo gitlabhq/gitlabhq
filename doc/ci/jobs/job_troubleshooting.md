@@ -154,7 +154,7 @@ The configuration can be added to:
         - git config --global http.version "HTTP/1.1"
   ```
 
-- The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+- The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/)
   with [Git configuration environment variables](https://git-scm.com/docs/git-config#ENVIRONMENT):
 
   ```toml

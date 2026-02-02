@@ -260,13 +260,11 @@ Sidekiq jobs can consume substantial database resources. If your job only batche
 
 ## Batching strategies
 
+To keep the examples easy to follow, we omit the code for limiting the runtime.
+
 > [!note]
-> To keep the examples easy to follow, we omit the code for limiting the runtime.
-
-{{< alert type="note" >}}
-
-Some examples include an optional variable assignment to the `cursor` variable. This is optional step which can be used when implementing the "continue later" mechanism.
-{{< /alert >}}
+> Some examples include an optional variable assignment to the `cursor` variable.
+> This is optional step which can be used when implementing the "continue later" mechanism.
 
 ### Loop-based batching
 

@@ -44,9 +44,8 @@ The supported ClickHouse version differs depending on your GitLab version:
 
 ClickHouse Cloud is always compatible with the latest stable GitLab release.
 
-{{< alert type="warning" >}}
-If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
-{{< /alert >}}
+> [!warning]
+> If you're using ClickHouse 25.12, note that it introduced a [backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change) to `ALTER MODIFY COLUMN`. This breaks the migration process for the GitLab ClickHouse integration in versions prior to 18.8. It requires upgrading GitLab to version 18.8+.
 
 ## Set up ClickHouse
 
@@ -87,9 +86,8 @@ To set up ClickHouse Cloud:
    - Username
    - Password
 
-{{< alert type="note" >}}
-ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse).
-{{< /alert >}}
+> [!note]
+> ClickHouse Cloud automatically handles version upgrades and security patches. Enterprise Edition (EE) customers can schedule upgrades to control when they occur, and avoid unexpected service interruptions during business hours. For more information, see [upgrade ClickHouse](#upgrade-clickhouse).
 
 After you create your ClickHouse Cloud service, you then [create the GitLab database and user](#create-database-and-user).
 
@@ -104,9 +102,8 @@ Prerequisites:
 - Enable network connectivity from your GitLab instance to ClickHouse.
 - Be an Administrator for both ClickHouse and your GitLab instance.
 
-{{< alert type="warning" >}}
-For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades, security patches, and backups. For more information, see [Upgrade ClickHouse](#upgrade-clickhouse).
-{{< /alert >}}
+> [!warning]
+> For ClickHouse for GitLab Self-Managed, you are responsible for planning and executing version upgrades, security patches, and backups. For more information, see [Upgrade ClickHouse](#upgrade-clickhouse).
 
 #### Configure High Availability
 
@@ -182,9 +179,8 @@ Before configuring the database, verify ClickHouse is installed and accessible:
    clickhouse-client --host your-clickhouse-host --port 9440 --secure --user default --password 'your-password'
    ```
 
-   {{< alert type="note" >}}
-   If you have not configured TLS yet, use port `9000` without the `--secure` flag for initial testing.
-   {{< /alert >}}
+   > [!note]
+   > If you have not configured TLS yet, use port `9000` without the `--secure` flag for initial testing.
 
 ### Create database and user
 
@@ -302,9 +298,8 @@ To provide GitLab with ClickHouse credentials:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-For production deployments, configure TLS/SSL on your ClickHouse instance and use `https://` URLs. For GitLab Self-Managed installations, see the [Network Security](#network-security) documentation.
-{{< /alert >}}
+> [!note]
+> For production deployments, configure TLS/SSL on your ClickHouse instance and use `https://` URLs. For GitLab Self-Managed installations, see the [Network Security](#network-security) documentation.
 
 ### Verify the connection
 
@@ -389,9 +384,8 @@ To disable:
 1. Clear the **Enable ClickHouse for Analytics** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
-Disabling ClickHouse for Analytics stops GitLab from querying ClickHouse but does not delete any data from your ClickHouse instance. Analytics features that rely on ClickHouse will fall back to alternative data sources or become unavailable.
-{{< /alert >}}
+> [!note]
+> Disabling ClickHouse for Analytics stops GitLab from querying ClickHouse but does not delete any data from your ClickHouse instance. Analytics features that rely on ClickHouse will fall back to alternative data sources or become unavailable.
 
 ## Upgrade ClickHouse
 
@@ -401,9 +395,8 @@ ClickHouse Cloud automatically handles version upgrades and security patches. No
 
 For information about upgrade scheduling and maintenance windows, see the [ClickHouse Cloud documentation](https://clickhouse.com/docs/cloud/manage/updates).
 
-{{< alert type="note" >}}
-ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
-{{< /alert >}}
+> [!note]
+> ClickHouse Cloud notifies you in advance of upcoming upgrades. Review the [ClickHouse Cloud changelog](https://clickhouse.com/docs/cloud/changes) to stay informed about new features and changes.
 
 ### ClickHouse for GitLab Self-Managed (BYOC)
 
@@ -429,9 +422,8 @@ To upgrade ClickHouse:
    - Wait for the node to rejoin the cluster.
    - Verify cluster health before proceeding to the next node.
 
-{{< alert type="warning" >}}
-Always ensure the ClickHouse version remains compatible with your GitLab version. Incompatible versions might cause indexing to pause and features to fail. For more information, see [supported ClickHouse versions](#supported-clickhouse-versions)
-{{< /alert >}}
+> [!warning]
+> Always ensure the ClickHouse version remains compatible with your GitLab version. Incompatible versions might cause indexing to pause and features to fail. For more information, see [supported ClickHouse versions](#supported-clickhouse-versions)
 
 For detailed upgrade procedures, see the [ClickHouse documentation on updates](https://clickhouse.com/docs/manage/updates).
 
@@ -474,9 +466,8 @@ If a ClickHouse migration fails:
    bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
    ```
 
-{{< alert type="note" >}}
-Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
-{{< /alert >}}
+> [!note]
+> Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
 
 ## ClickHouse Rake tasks
 
@@ -493,9 +484,8 @@ The following Rake tasks are available:
 | [`sudo gitlab-rake gitlab:clickhouse:schema:dump`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Dumps the current database schema to a file for backup or version control. |
 | [`sudo gitlab-rake gitlab:clickhouse:schema:load`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | Loads the database schema from a dump file. |
 
-{{< alert type="note" >}}
-For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
-{{< /alert >}}
+> [!note]
+> For self-compiled installations, use `bundle exec rake` instead of `sudo gitlab-rake` and add `RAILS_ENV=production` to the end of the command.
 
 ### Common task examples
 
@@ -527,9 +517,8 @@ bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
 
 #### Reset the database
 
-{{< alert type="warning" >}}
-This deletes all data in your ClickHouse database. Use only in development or when troubleshooting.
-{{< /alert >}}
+> [!warning]
+> This deletes all data in your ClickHouse database. Use only in development or when troubleshooting.
 
 To drop and recreate the database:
 
@@ -553,9 +542,8 @@ You can use environment variables to control Rake task behavior:
 
 ## Performance tuning
 
-{{< alert type="note" >}}
-For resource sizing and deployment recommendations based on your user count, see [system requirements](#system-requirements).
-{{< /alert >}}
+> [!note]
+> For resource sizing and deployment recommendations based on your user count, see [system requirements](#system-requirements).
 
 For information about ClickHouse architecture and performance tuning, see the [ClickHouse documentation on architecture](https://clickhouse.com/docs/architecture/introduction).
 

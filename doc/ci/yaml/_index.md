@@ -3176,7 +3176,7 @@ job1:
 
 **Related topics**:
 
-- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)
 
 ---
 
@@ -3389,7 +3389,7 @@ test-job:
 
 {{< /history >}}
 
-Use `image:docker` to pass options to runners using the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+Use `image:docker` to pass options to runners using the [Docker executor](https://docs.gitlab.com/runner/executors/docker/)
 or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 This keyword does not work with other executor types.
 
@@ -3513,8 +3513,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
-- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies).
 
 ---
 
@@ -4528,10 +4528,10 @@ Use `release` to create a [release](../../user/project/releases/_index.md).
 The release job must have access to the [`glab` CLI](https://gitlab.com/gitlab-org/cli),
 which must be in the `$PATH`.
 
-If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
+If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/),
 you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/cli:latest`
 
-If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
+If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell/) or similar,
 [install `glab` CLI](https://gitlab.com/gitlab-org/cli#installation) on the server where the runner is registered.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -6257,8 +6257,8 @@ job2:
 **Related topics**:
 
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
-- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker.html#configure-how-runners-pull-images).
-- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker.html#set-multiple-pull-policies).
+- [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images).
+- [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies).
 
 ---
 
@@ -6310,7 +6310,7 @@ job4:
 - The stage name must be 255 characters or fewer.
 - Jobs can run in parallel if they run on different runners.
 - If you have only one runner, jobs can run in parallel if the runner's
-  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+  [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-global-section)
   is greater than `1`.
 
 ---
@@ -6537,7 +6537,7 @@ trigger-multi-project-pipeline:
   these variables to downstream pipelines.
 - [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
-- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
+- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 - You cannot use [`needs:pipeline:job`](#needspipelinejob) in a trigger job.
 
 **Related topics**:

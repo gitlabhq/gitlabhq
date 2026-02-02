@@ -3,7 +3,9 @@ name: create_package
 description: Grants the ability to create packages
 permissions:
   - authorize_helm_chart
+  - authorize_pypi_package
   - upload_helm_chart
   - upload_maven_package_file
+  - upload_pypi_package
 boundaries:
   - project

@@ -76,7 +76,7 @@ this error can happen if your job previously relied on environment variables der
 such as `DOCKER_PORT_2375_TCP`. Your job fails with this error if:
 
 - Your CI/CD image relies on a legacy variable, such as `DOCKER_PORT_2375_TCP`.
-- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags.html) is set to `true`.
+- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags/) is set to `true`.
 - `DOCKER_HOST` is not explicitly set.
 
 ## Error: `unauthorized: incorrect username or password`

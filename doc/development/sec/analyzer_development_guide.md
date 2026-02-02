@@ -476,7 +476,7 @@ Verify whether the underlying tool has:
 
 - A [permissive software license](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software).
 - Headless execution (CLI tool).
-- Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+- Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker/).
 - Compatible projects that can be detected based on filenames or extensions.
 - Offline execution (no internet access) or can be configured to use custom proxies and/or CA certificates.
 - The image is compatible with other container orchestration tools (see [testing container orchestration compatibility](#testing-container-orchestration-compatibility)).

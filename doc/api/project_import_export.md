@@ -506,11 +506,7 @@ be populated with any occurrences of relations that failed to import due to eith
 
 > [!note]
 > An element's `id` field in `failed_relations` references the failure record, not the relation.
-
-{{< alert type="note" >}}
-
-The `failed_relations` array is capped to 100 items.
-{{< /alert >}}
+> Also, the `failed_relations` array is capped to 100 items.
 
 ```json
 {

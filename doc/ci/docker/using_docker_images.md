@@ -17,7 +17,7 @@ You can run your CI/CD jobs in Docker containers hosted on dedicated CI/CD build
 
 To run CI/CD jobs in a Docker container, you need to:
 
-1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker/).
 1. Specify the container image where you want to run the CI/CD jobs in the `.gitlab-ci.yml` file.
 1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/_index.md)
    in your `.gitlab-ci.yml` file.
@@ -63,7 +63,7 @@ uses to run CI/CD jobs.
 
 By default, the executor pulls images from [Docker Hub](https://hub.docker.com/).
 However, you can configure the registry location in the `gitlab-runner/config.toml` file.
-For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work)
+For example, you can set the [Docker pull policy](https://docs.gitlab.com/runner/executors/docker/#how-pull-policies-work)
 to use local images.
 
 For more information about images and Docker Hub, see
@@ -166,7 +166,7 @@ CI/CD jobs:
 1. The runner sends the script to the container's shell `stdin` and receives the
    output.
 
-To override the [entrypoint](https://docs.gitlab.com/runner/executors/docker.html#configure-a-docker-entrypoint) of a Docker image,
+To override the [entrypoint](https://docs.gitlab.com/runner/executors/docker/#configure-a-docker-entrypoint) of a Docker image,
 in the `.gitlab-ci.yml` file:
 
 - For Docker 17.06 and later, set `entrypoint` to an empty value.

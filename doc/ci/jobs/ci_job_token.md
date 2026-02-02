@@ -80,7 +80,7 @@ GitLab:
 You should also configure your [runners](../runners/_index.md) to be secure:
 
 - Avoid using Docker `privileged` mode if the machines are re-used.
-- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell/) when jobs
   run on the same machine.
 
 An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other

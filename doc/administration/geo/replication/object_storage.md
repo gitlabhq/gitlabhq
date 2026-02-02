@@ -46,10 +46,9 @@ To have:
 
 Geo verifies files stored in object storage to ensure data integrity between primary and secondary sites.
 
-{{< alert type="warning" >}}
-Disabling object storage verification is not recommended.
-When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
-{{< /alert >}}
+> [!warning]
+> Disabling object storage verification is not recommended.
+> When you disable the `geo_object_storage_verification` feature flag, GitLab asynchronously deletes all existing verification state records.
 
 When the `geo_object_storage_verification` feature flag is disabled:
 

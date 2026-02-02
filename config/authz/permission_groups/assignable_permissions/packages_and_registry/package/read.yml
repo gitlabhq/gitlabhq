@@ -2,9 +2,11 @@
 name: read_package
 description: Grants the ability to read packages
 permissions:
-  - read_package
   - download_helm_chart
   - download_maven_package_file
+  - download_pypi_package
+  - read_package
+  - read_pypi_package
 boundaries:
   - instance
   - group

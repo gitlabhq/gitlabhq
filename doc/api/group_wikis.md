@@ -19,7 +19,7 @@ Comments on a wiki page are called `notes`. To interact with them, use the [note
 
 ## List wiki pages
 
-List all wiki pages for a given group.
+Lists all wiki pages for a specified group.
 
 ```plaintext
 GET /groups/:id/wikis
@@ -63,9 +63,9 @@ Example response:
 ]
 ```
 
-## Get a wiki page
+## Retrieve a wiki page
 
-Get a wiki page for a given group.
+Retrieves a wiki page for a specified group.
 
 ```plaintext
 GET /groups/:id/wikis/:slug
@@ -96,9 +96,9 @@ Example response:
 }
 ```
 
-## Create a new wiki page
+## Create a wiki page
 
-Create a new wiki page for the given repository with the given title, slug, and content.
+Creates a wiki page for a specific project with the given title, slug, and content.
 
 ```plaintext
 POST /projects/:id/wikis
@@ -130,9 +130,9 @@ Example response:
 }
 ```
 
-## Edit an existing wiki page
+## Update a wiki page
 
-Update an existing wiki page. At least one parameter is required to update the wiki page.
+Updates a wiki page. At least one parameter is required to update the wiki page.
 
 ```plaintext
 PUT /groups/:id/wikis/:slug
@@ -169,7 +169,7 @@ Example response:
 
 ## Delete a wiki page
 
-Delete a wiki page with a given slug.
+Deletes a wiki page from a specific project with a specified slug.
 
 ```plaintext
 DELETE /groups/:id/wikis/:slug
@@ -190,7 +190,7 @@ If successful, a `204 No Content` HTTP response with an empty body is expected.
 
 ## Upload an attachment to the wiki repository
 
-Upload a file to the attachment folder inside the wiki's repository. The
+Uploads a file to the attachment folder inside the wiki's repository for a specific project. The
 attachment folder is the `uploads` folder.
 
 ```plaintext
