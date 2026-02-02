@@ -55,6 +55,7 @@ export default (id) => {
   const attachMainComponent = () => {
     return new Vue({
       el,
+      name: 'HarborRegistryExplorerRoot',
       router,
       provide() {
         return {

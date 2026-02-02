@@ -9,6 +9,7 @@ const mountWikiMoreActions = () => {
 
   return new Vue({
     el,
+    name: 'WikiMoreDropdownRoot',
     provide: {
       pageHeading,
       cloneSshUrl,

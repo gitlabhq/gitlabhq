@@ -17,6 +17,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'FindFileRefSelectorRoot',
     render(createElement) {
       return createElement(RefSelector, {
         props: {

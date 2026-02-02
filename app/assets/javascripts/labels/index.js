@@ -61,6 +61,7 @@ export function initLabelActions(el) {
 
   return new Vue({
     el,
+    name: 'LabelActionsRoot',
     apolloProvider,
     render(createElement) {
       return createElement(LabelActions, {

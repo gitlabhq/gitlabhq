@@ -36,6 +36,7 @@ const initToggle = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
     el: document.querySelector('#js-page-breadcrumbs-extra'),
+    name: 'FileBrowserDrawerToggleRoot',
     pinia,
     computed: {
       visible() {
@@ -51,6 +52,7 @@ const initToggle = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'FileBrowserToggleRoot',
     pinia,
     computed: {
       visible() {

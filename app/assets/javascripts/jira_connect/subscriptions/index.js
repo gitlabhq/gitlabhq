@@ -31,6 +31,7 @@ export function initJiraConnect() {
 
   return new Vue({
     el,
+    name: 'JiraConnectAppRoot',
     store,
     provide: {
       groupsPath,

@@ -8,6 +8,7 @@ export function initHiddenFilesWarning(el) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'HiddenFilesWarningRoot',
     pinia,
     computed: {
       ...mapState(useDiffsView, ['overflow', 'totalFilesCount']),

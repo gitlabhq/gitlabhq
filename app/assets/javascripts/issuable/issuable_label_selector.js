@@ -31,6 +31,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'IssuableLabelSelectorRoot',
     apolloProvider,
     provide: {
       allowLabelCreate: true,

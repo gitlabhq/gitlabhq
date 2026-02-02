@@ -10,7 +10,7 @@ class Key < ApplicationRecord
   include CreatedAtFilterable
   include Cells::Claimable
 
-  cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::SSH_KEYS
+  cells_claims_attribute :key, type: CLAIMS_BUCKET_TYPE::SSH_KEYS, feature_flag: :cells_claims_keys
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 

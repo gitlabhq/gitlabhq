@@ -33,6 +33,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ServiceDeskRootRoot',
     provide: {
       serviceDeskEmail,
       serviceDeskEmailEnabled: parseBoolean(serviceDeskEmailEnabled),

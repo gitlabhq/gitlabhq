@@ -217,7 +217,7 @@ export default {
           );
           return;
         }
-        if (!isElementClipped(itemElement)) return;
+        if (!isElementClipped(itemElement, this.$refs.scroller.$el)) return;
         itemElement.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       }, 20);
     },

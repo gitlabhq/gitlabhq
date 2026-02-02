@@ -107,6 +107,7 @@ export function initMergeRequestDashboard(el) {
   // eslint-disable-next-line no-new
   new Vue({
     el: document.getElementById('js-merge-request-dashboard-config'),
+    name: 'MergeRequestDashboardConfigDropdownRoot',
     apolloProvider,
     render(h) {
       return h(ConfigDropdown);

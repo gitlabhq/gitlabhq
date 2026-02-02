@@ -14,6 +14,7 @@ const { featureFlagsHelpPagePath, errorStateSvgPath, projectId, newUserListPath 
 
 new Vue({
   el,
+  name: 'UserListsRoot',
   store: createStore({ projectId }),
   provide: {
     featureFlagsHelpPagePath,

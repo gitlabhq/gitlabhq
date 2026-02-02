@@ -1,4 +1,3 @@
-import { GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -37,8 +36,6 @@ describe('CommitListItem', () => {
   const findCommitTitleLink = () => wrapper.findByTestId('commit-title-link');
   const findUserPopover = () => wrapper.findByTestId('commit-user-popover');
   const findAuthorLink = () => wrapper.findByTestId('commit-author-link');
-  const findTruncate = () => wrapper.findComponent(GlTruncate);
-
   const findTimeagoTooltip = () => wrapper.findComponent(TimeagoTooltip);
   const findCommitBadges = () => wrapper.findComponent(CommitListItemBadges);
   const findActionButtons = () => wrapper.findComponent(CommitListItemActionButtons);
@@ -88,6 +85,7 @@ describe('CommitListItem', () => {
     it('renders commit title as a link', () => {
       const titleLink = findCommitTitleLink();
       expect(titleLink.attributes('href')).toBe(mockCommit.webPath);
+      expect(titleLink.text()).toBe(mockCommit.title);
     });
 
     it('applies italic styling when commit has no message', () => {
@@ -99,9 +97,10 @@ describe('CommitListItem', () => {
     });
 
     it('renders truncated text with tooltip enabled', () => {
-      const truncate = findTruncate();
-      expect(truncate.props('withTooltip')).toBe(true);
-      expect(truncate.props('text')).toBe(mockCommit.titleHtml);
+      const titleLink = findCommitTitleLink();
+
+      expect(titleLink.classes()).toContain('gl-truncate');
+      expect(titleLink.attributes('title')).toBe(mockCommit.title);
     });
   });
 
@@ -194,6 +193,23 @@ describe('CommitListItem', () => {
         const description = findDescription();
         expect(description.isVisible()).toBe(true);
       });
+    });
+
+    describe('when commit has no description', () => {
+      beforeEach(() => {
+        createComponent({ commit: { ...mockCommit, description: null } });
+      });
+
+      it('does not render expand/collapse button container', () => {
+        expect(findNarrowScreenExpandCollapseContainer().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('description', () => {
+    it('passes commit sha to description component', async () => {
+      await findExpandCollapseButton().vm.$emit('click');
+      expect(findDescription().props('commitSha')).toBe(mockCommit.sha);
     });
   });
 });

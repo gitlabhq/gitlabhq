@@ -48,6 +48,7 @@ const initHookTestDropdown = (el) => {
 
   return new Vue({
     el,
+    name: 'TestDropdownRoot',
     render(h) {
       return h(TestDropdown, {
         props: {

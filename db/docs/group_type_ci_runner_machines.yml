@@ -12,4 +12,4 @@ gitlab_schema: gitlab_ci
 sharding_key:
   organization_id: organizations
 organization_transfer_support: todo
-table_size: small
+table_size: medium

@@ -6,7 +6,7 @@ class Route < ApplicationRecord
   include EachBatch
   include Cells::Claimable
 
-  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES
+  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES, feature_flag: :cells_claims_routes
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :namespace_id
 

@@ -19,4 +19,14 @@ RSpec.describe 'Claim for Group', feature_category: :cell do
   it_behaves_like 'deleting existing claims' do
     include_context 'with claims records for Group'
   end
+
+  context 'when claims feature is disabled' do
+    before do
+      stub_feature_flags(cells_claims_routes: false)
+      stub_feature_flags(cells_claims_namespaces: false)
+    end
+
+    it_behaves_like 'not creating claims'
+    it_behaves_like 'not deleting claims'
+  end
 end

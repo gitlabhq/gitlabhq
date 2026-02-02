@@ -57,6 +57,7 @@ export default () => {
 
     return new Vue({
       el,
+      name: 'NotificationsDropdownRoot',
       provide: {
         containerClass,
         buttonSize,

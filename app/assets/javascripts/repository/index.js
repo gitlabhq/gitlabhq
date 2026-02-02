@@ -92,6 +92,7 @@ export default function setupVueRepositoryList() {
     } = forkEl.dataset;
     return new Vue({
       el: forkEl,
+      name: 'ForkInfoRoot',
       apolloProvider,
       render(h) {
         return h(ForkInfo, {
@@ -117,6 +118,7 @@ export default function setupVueRepositoryList() {
   const initLastCommitApp = () =>
     new Vue({
       el: lastCommitEl,
+      name: 'LastCommitRoot',
       router,
       apolloProvider,
       render(h) {
@@ -165,6 +167,7 @@ export default function setupVueRepositoryList() {
     // eslint-disable-next-line no-new
     new Vue({
       el: breadcrumbEl,
+      name: 'BreadcrumbsRoot',
       router,
       apolloProvider,
       render(h) {

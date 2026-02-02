@@ -17,6 +17,7 @@ export const initLanguageSwitcher = () => {
 
   return new Vue({
     el,
+    name: 'LanguageSwitcherRoot',
     provide,
     render(createElement) {
       return createElement(LanguageSwitcher);

@@ -15,6 +15,7 @@ export default function featureFlagsUserListInit() {
 
   return new Vue({
     el,
+    name: 'UserListRoot',
     store: createStore(el.dataset),
     render(h) {
       const { emptyStatePath } = el.dataset;

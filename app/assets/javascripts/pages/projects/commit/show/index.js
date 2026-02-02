@@ -45,6 +45,7 @@ const loadDiffStats = () => {
 
       new Vue({
         el: diffStatsEl,
+        name: 'DiffStatsRoot',
         render(createElement) {
           return createElement(DiffStats, {
             props: {

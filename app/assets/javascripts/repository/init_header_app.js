@@ -90,6 +90,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
     // eslint-disable-next-line no-new
     new Vue({
       el: headerEl,
+      name: 'HeaderAreaRoot',
       provide: {
         canCollaborate: parseBoolean(breadcrumbsCanCollaborate),
         canEditTree: parseBoolean(breadcrumbsCanEditTree),

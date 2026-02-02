@@ -19,6 +19,7 @@ export const createOptionsMenuAdapter = (dropdownComponent) => {
         // eslint-disable-next-line no-new
         new Vue({
           el: button,
+          name: 'DropdownComponentRoot',
           pinia,
           render(h) {
             return h(dropdownComponent, { props: { items, oldPath, newPath, fileId } });

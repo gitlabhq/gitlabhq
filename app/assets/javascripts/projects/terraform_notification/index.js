@@ -20,6 +20,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TerraformNotificationRoot',
     apolloProvider,
     provide: {
       terraformImagePath,

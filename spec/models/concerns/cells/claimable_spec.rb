@@ -15,8 +15,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
   let(:instance) { test_klass.create!(path: 'gitlab') }
 
   before do
-    test_klass.cells_claims_attribute :path,
-      type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+    test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+      feature_flag: :cells_claims_organizations
     test_klass.cells_claims_metadata subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
       subject_key: subject_key
   end
@@ -26,7 +26,8 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       expect(test_klass.cells_claims_subject_type).to eq(Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION)
       expect(test_klass.cells_claims_source_type).to eq(Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
       expect(test_klass.cells_claims_attributes).to eq(
-        path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH }
+        path: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+                feature_flag: :cells_claims_organizations }
       )
     end
 
@@ -100,6 +101,19 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         end
       end
 
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(cells_claims_organizations: false)
+        end
+
+        it 'does not create or destroy claims' do
+          expect(transaction_record).not_to receive(:create_record)
+          expect(transaction_record).not_to receive(:destroy_record)
+
+          instance.update!(path: 'new-path')
+        end
+      end
+
       context 'when transaction record does not exist' do
         before do
           allow(Cells::TransactionRecord).to receive(:current_transaction).and_return(nil)
@@ -123,6 +137,18 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
             .to receive(:destroy_record).with(a_hash_including(bucket: {
               type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH, value: old_path
             }))
+          instance.destroy!
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(cells_claims_organizations: false)
+        end
+
+        it 'does not destroy claims' do
+          expect(transaction_record).not_to receive(:destroy_record)
+
           instance.destroy!
         end
       end

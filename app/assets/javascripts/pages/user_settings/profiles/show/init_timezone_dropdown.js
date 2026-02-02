@@ -13,6 +13,7 @@ export const initTimezoneDropdown = () => {
 
   const timezoneDropdown = new Vue({
     el,
+    name: 'TimezoneDropdownRoot',
     data() {
       return {
         value: initialValue,

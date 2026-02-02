@@ -1,0 +1,57 @@
+# @feature_category: source_code_management
+query getCommitList($projectPath: ID!, $ref: String!, $first: Int) {
+  project(fullPath: $projectPath) {
+    id
+    repository {
+      commits(ref: $ref, first: $first) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          sha
+          shortId
+          title
+          titleHtml
+          description
+          webPath
+          authoredDate
+          authorName
+          authorGravatar
+          author {
+            id
+            name
+            avatarUrl
+            webPath
+          }
+          signature {
+            ... on GpgSignature {
+              gpgKeyPrimaryKeyid
+              verificationStatus
+            }
+            ... on X509Signature {
+              verificationStatus
+            }
+            ... on SshSignature {
+              verificationStatus
+            }
+          }
+          pipelines(first: 1) {
+            edges {
+              node {
+                id
+                detailedStatus {
+                  id
+                  detailsPath
+                  icon
+                  text
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

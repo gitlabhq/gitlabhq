@@ -28,6 +28,7 @@ export default () => {
   } = el.dataset;
   return new Vue({
     el,
+    name: 'RegistrySettingsAppRoot',
     apolloProvider,
     components: {
       RegistrySettingsApp,

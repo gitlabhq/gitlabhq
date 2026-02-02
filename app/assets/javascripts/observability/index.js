@@ -17,6 +17,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'ObservabilityAppRoot',
     render(h) {
       return h(ObservabilityApp, {
         props: {

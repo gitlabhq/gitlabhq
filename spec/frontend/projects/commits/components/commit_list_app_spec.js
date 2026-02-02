@@ -1,63 +1,171 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
 import CommitListApp from '~/projects/commits/components/commit_list_app.vue';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
-import { mockCommits } from 'jest/projects/commits/components/mock_data';
+import commitsQuery from '~/projects/commits/graphql/queries/commits.query.graphql';
+import {
+  mockCommitsNodes,
+  mockCommitsQueryResponse,
+  mockEmptyCommitsQueryResponse,
+} from './mock_data';
 
-describe('Commit List App', () => {
+Vue.use(VueApollo);
+
+jest.mock('~/alert');
+
+describe('CommitListApp', () => {
   let wrapper;
 
-  const createComponent = (provide = {}) => {
+  const defaultProvide = {
+    projectFullPath: 'gitlab-org/gitlab',
+    escapedRef: 'main',
+  };
+
+  const commitsQueryHandler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+
+  const createComponent = (handler = commitsQueryHandler) => {
     wrapper = shallowMountExtended(CommitListApp, {
-      provide: {
-        ...provide,
-      },
+      apolloProvider: createMockApollo([[commitsQuery, handler]]),
+      provide: defaultProvide,
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCommitHeader = () => wrapper.findComponent(CommitListHeader);
   const findDailyCommits = () => wrapper.findAllByTestId('daily-commits');
   const findTimeElements = () => wrapper.findAll('time');
+  const findEmptyState = () => wrapper.find('p');
+
+  describe('when loading', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders loading icon', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('does not render commits', () => {
+      expect(findDailyCommits()).toHaveLength(0);
+    });
+  });
 
   describe('commit header', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
     it('renders the commit header component', () => {
       expect(findCommitHeader().exists()).toBe(true);
     });
   });
 
   describe('commits data', () => {
-    it('renders the correct number of commits', () => {
-      expect(findDailyCommits()).toHaveLength(mockCommits.length);
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('renders the correct number of day groups', () => {
+      // mockCommitsNodes has 2 commits on 2025-06-23 and 1 on 2025-06-21
+      expect(findDailyCommits()).toHaveLength(2);
+    });
+
+    it('hides loading icon after data loads', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
     });
   });
 
   describe('commit day rendering', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
     it('renders time elements with correct data', () => {
       const timeElements = findTimeElements();
-      expect(timeElements).toHaveLength(mockCommits.length);
+      expect(timeElements).toHaveLength(2);
 
       const expectedDateText = ['Jun 23, 2025', 'Jun 21, 2025'];
+      const expectedDatetime = ['2025-06-23', '2025-06-21'];
 
       timeElements.wrappers.forEach((timeElement, index) => {
-        expect(timeElement.attributes('datetime')).toBe(mockCommits[index].day);
+        expect(timeElement.attributes('datetime')).toBe(expectedDatetime[index]);
         expect(timeElement.text()).toBe(expectedDateText[index]);
       });
     });
   });
 
   describe('commit list items', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
     it('passes correct commit data to each commit list item', () => {
-      mockCommits.forEach((day, dayIndex) => {
-        const dailyCommits = findDailyCommits().at(dayIndex);
-        day.dailyCommits.forEach((expectedCommit, commitIndex) => {
-          const commitItems = dailyCommits.findAllComponents(CommitListItem);
-          expect(commitItems.at(commitIndex).props('commit')).toBe(expectedCommit);
-        });
+      const firstDayCommits = findDailyCommits().at(0).findAllComponents(CommitListItem);
+
+      expect(firstDayCommits).toHaveLength(2);
+
+      expect(firstDayCommits.at(0).props('commit')).toMatchObject({
+        id: mockCommitsNodes[0].id,
+        title: mockCommitsNodes[0].title,
+        authoredDate: mockCommitsNodes[0].authoredDate,
       });
+
+      expect(firstDayCommits.at(1).props('commit')).toMatchObject({
+        id: mockCommitsNodes[1].id,
+        title: mockCommitsNodes[1].title,
+        authoredDate: mockCommitsNodes[1].authoredDate,
+      });
+
+      const secondDayCommits = findDailyCommits().at(1).findAllComponents(CommitListItem);
+
+      expect(secondDayCommits).toHaveLength(1);
+
+      expect(secondDayCommits.at(0).props('commit')).toMatchObject({
+        id: mockCommitsNodes[2].id,
+        title: mockCommitsNodes[2].title,
+        authoredDate: mockCommitsNodes[2].authoredDate,
+      });
+    });
+  });
+
+  describe('when no commits exist', () => {
+    beforeEach(async () => {
+      createComponent(jest.fn().mockResolvedValue(mockEmptyCommitsQueryResponse));
+      await waitForPromises();
+    });
+
+    it('renders empty state message', () => {
+      expect(findEmptyState().text()).toBe('No commits found');
+    });
+
+    it('does not render day groups', () => {
+      expect(findDailyCommits()).toHaveLength(0);
+    });
+  });
+
+  describe('when query fails', () => {
+    beforeEach(async () => {
+      createComponent(jest.fn().mockRejectedValue(new Error('Network error')));
+      await waitForPromises();
+    });
+
+    it('shows error alert', () => {
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Something went wrong while loading commits. Please try again.',
+          captureError: true,
+        }),
+      );
     });
   });
 });

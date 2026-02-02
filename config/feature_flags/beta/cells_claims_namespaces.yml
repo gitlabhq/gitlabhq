@@ -1,0 +1,10 @@
+---
+name: cells_claims_namespaces
+description:
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/602
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219582
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587909
+milestone: '18.9'
+group: group::cells infrastructure
+type: beta
+default_enabled: false

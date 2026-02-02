@@ -14,6 +14,7 @@ export default () => {
   // eslint-disable-next-line no-new
   new Vue({
     el: entryPoint,
+    name: 'ClustersIntegrationFormRoot',
     store: createStore(entryPoint.dataset),
     provide: {
       autoDevopsHelpPath,

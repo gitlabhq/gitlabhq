@@ -24,6 +24,7 @@ const initAdminJobsApp = () => {
 
   return new Vue({
     el: containerEl,
+    name: 'AdminJobsTableAppRoot',
     apolloProvider,
     provide: {
       url,

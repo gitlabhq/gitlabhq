@@ -19,11 +19,15 @@ module Gitlab
             end
 
             def content
-              fetch_with_error_handling do
-                fetch_async_content.value.tap do |content|
-                  verify_integrity(content) if params[:integrity]
-                end
-              end
+              body = fetch_response_body
+
+              return unless body
+
+              verify_integrity(body) if params[:integrity]
+
+              return if errors.any?
+
+              body
             end
             strong_memoize_attr :content
 
@@ -50,6 +54,14 @@ module Gitlab
             end
 
             private
+
+            def fetch_response_body
+              response = fetch_with_error_handling do
+                fetch_async_content.value
+              end
+
+              response&.body
+            end
 
             def fetch_async_content
               # It starts fetching the remote content in a separate thread and returns a lazy_response immediately.
@@ -79,7 +91,7 @@ module Gitlab
                     next
                   end
 
-                  return response.body if errors.none?
+                  return response if errors.none?
                 rescue SocketError
                   if retry_or_add_error(attempt, max_attempts, "Remote file `#{masked_location}` could not be fetched after #{max_attempts} attempts because of a socket error!")
                     next

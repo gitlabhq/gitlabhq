@@ -139,40 +139,17 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
       }
     end
 
-    before do
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(feature_flag_enabled)
+    it 'passes validations' do
+      expect(config).to be_valid
+      expect(config.errors).to be_empty
     end
 
-    context 'when ci_file_inputs feature flag is enabled' do
-      let(:feature_flag_enabled) { true }
-
-      it 'passes validations' do
-        expect(config).to be_valid
-        expect(config.errors).to be_empty
-      end
-
-      it 'returns the value with include' do
-        expect(config.value).to eq(spec_hash)
-      end
-
-      it 'has include entry defined' do
-        expect(config.include_value).to eq([{ local: '/inputs.yml' }])
-      end
+    it 'returns the value with include' do
+      expect(config.value).to eq(spec_hash)
     end
 
-    context 'when ci_file_inputs feature flag is disabled' do
-      let(:feature_flag_enabled) { false }
-
-      it 'fails validations' do
-        expect(config).not_to be_valid
-        expect(config.errors).to include('spec config contains unknown keys: include')
-      end
-
-      it 'still returns the value' do
-        expect(config.value).to eq(spec_hash)
-      end
+    it 'has include entry defined' do
+      expect(config.include_value).to eq([{ local: '/inputs.yml' }])
     end
   end
 
@@ -183,12 +160,6 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
           { local: '/inputs.yml' }
         ]
       }
-    end
-
-    before do
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(true)
     end
 
     it 'passes validations' do
@@ -212,12 +183,6 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
         ],
         component: %w[name version]
       }
-    end
-
-    before do
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(true)
     end
 
     it 'passes validations' do

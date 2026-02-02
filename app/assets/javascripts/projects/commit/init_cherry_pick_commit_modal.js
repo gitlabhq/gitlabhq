@@ -44,6 +44,7 @@ export default function initInviteMembersModal(primaryActionEventName) {
 
   return new Vue({
     el,
+    name: 'CommitFormModalRoot',
     store,
     render: (createElement) =>
       createElement(CommitFormModal, {

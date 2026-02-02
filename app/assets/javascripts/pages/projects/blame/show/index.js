@@ -13,6 +13,7 @@ const initBlamePreferences = () => {
 
   return new Vue({
     el,
+    name: 'BlamePreferencesRoot',
     render: (createElement) =>
       createElement(BlamePreferences, { props: { hasRevsFile: parseBoolean(hasRevsFile) } }),
   });

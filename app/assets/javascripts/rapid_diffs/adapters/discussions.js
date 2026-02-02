@@ -7,6 +7,7 @@ import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discuss
 function mountVueApp({ el, position, appData, onEmpty }) {
   const instance = new Vue({
     el,
+    name: 'DiffLineDiscussionsRoot',
     pinia,
     provide() {
       return {

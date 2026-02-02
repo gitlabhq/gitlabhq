@@ -89,6 +89,7 @@ const initCodeDropdown = () => {
 
   return new Vue({
     el: codeDropdownEl,
+    name: 'CompactCodeDropdownRoot',
     provide: { newWorkspacePath, organizationId },
     apolloProvider,
     render(createElement) {

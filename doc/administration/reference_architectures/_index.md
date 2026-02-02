@@ -438,21 +438,33 @@ Use a reputable provider that runs a [supported PostgreSQL version](../../instal
 - [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal).
 - [Amazon RDS](https://aws.amazon.com/rds/).
 
+#### Configuration considerations
+
 Consider the following when using external database services:
 
-- For optimal performance, enable [database load balancing](../postgresql/database_load_balancing.md) with read replicas. Match the node counts to those used in standard
-  Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
-- Database connection poolers are not required because options vary per service. You might need to adjust connection count configuration depending on your environment size.
-  If pooling is desired, explore third-party options because the GitLab-bundled PgBouncer only works with the bundled PostgreSQL.
-  [Database Load Balancing](../postgresql/database_load_balancing.md) can also spread load accordingly. Ensure any cloud provider pooler can handle total load without
-  bottlenecks. For example, Azure Database for PostgreSQL flexible server can optionally deploy PgBouncer, but because PgBouncer is single-threaded, it might bottleneck under
-  heavy load. Use database load balancing across multiple nodes to mitigate this.
+- For optimal performance, enable [database load balancing](../postgresql/database_load_balancing.md) with read replicas. Match the node counts to those used in standard Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
 - High availability node requirements might vary by service and differ from Linux package installations.
 - For [GitLab Geo](../geo/_index.md), ensure the service supports cross-region replication.
 
-#### Unsupported database services
+#### Connection management
 
-The following database cloud provider services are not recommended due to lack of support or known issues:
+For optimal connection handling with external database services:
+
+- Use [database load balancing](../postgresql/database_load_balancing.md) to distribute connections across read replicas.
+- Tune PostgreSQL connection count configuration for your environment size and workload. Monitor and adjust based on performance.
+- If additional connection pooling is required, deploy your own PgBouncer. Other third-party pooling solutions may work but have not been validated.
+
+Cloud provider pooling services have the following limitations and are either incompatible or not recommended:
+
+- [AWS RDS Proxy](https://aws.amazon.com/rds/proxy/): Not validated for use with GitLab.
+- [Azure Database for PostgreSQL PgBouncer](https://learn.microsoft.com/en-us/azure/postgresql/connectivity/concepts-pgbouncer): Single-threaded architecture with limited observability. Can cause bottlenecks under heavy load.
+
+> [!note]
+> The GitLab-bundled PgBouncer only works with the bundled PostgreSQL and cannot be used with external database services.
+
+#### Database service compatibility
+
+The following database cloud provider services are either incompatible or not recommended:
 
 - [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. For more details, see [14.4.0](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes/#1440).
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) are not tested and are not recommended. Both solutions are not expected to work with GitLab Geo.

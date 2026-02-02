@@ -36,9 +36,7 @@ RSpec.shared_context 'with claiming tools' do
   before do
     stub_config_cell(enabled: true)
     allow(Current).to receive(:cells_claims_leases?).and_return(true)
-
-    allow(GRPC::Core::TimeConsts).to receive(:from_relative_time)
-      .and_return(deadline)
+    allow(GRPC::Core::TimeConsts).to receive(:from_relative_time).and_return(deadline)
   end
 
   def expect_begin_update(type, success: true)
@@ -102,6 +100,18 @@ RSpec.shared_context 'with claiming tools' do
           raise fake_error, 'Abort commit'
         end
     end
+  end
+
+  def expect_no_begin_update(action)
+    expect(claim_service).not_to receive(:begin_update).with(action)
+  end
+
+  def expect_no_commit_update
+    expect(claim_service).not_to receive(:commit_update)
+  end
+
+  def expect_no_rollback_update
+    expect(claim_service).not_to receive(:rollback_update)
   end
 
   def sort_records(records)
@@ -287,6 +297,41 @@ RSpec.shared_examples 'updating existing claims' do
 
         expect(Cells::OutstandingLease.count).to eq(1)
       end
+    end
+  end
+end
+
+RSpec.shared_examples 'not creating claims' do
+  include_context 'with claiming tools'
+
+  context 'when creating the record' do
+    it 'saves the record without invoking claiming logic' do
+      expect_no_begin_update(:save)
+      expect_no_commit_update
+      expect_no_rollback_update
+
+      expect(subject.save).to be(true)
+      expect(subject.class.count).to eq(1)
+      expect(Cells::OutstandingLease.count).to eq(0)
+    end
+  end
+end
+
+RSpec.shared_examples 'not deleting claims' do
+  include_context 'with claiming tools'
+
+  context 'when deleting the record' do
+    subject! { super().tap(&:save!) }
+
+    it 'destroys the record without invoking claiming logic' do
+      expect_no_begin_update(:destroy)
+      expect_no_commit_update
+      expect_no_rollback_update
+
+      subject.destroy!
+      expect(subject.destroyed?).to be(true)
+      expect(subject.class.count).to eq(0)
+      expect(Cells::OutstandingLease.count).to eq(0)
     end
   end
 end

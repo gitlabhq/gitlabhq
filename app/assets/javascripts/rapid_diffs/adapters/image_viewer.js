@@ -10,6 +10,7 @@ export const imageAdapter = {
     // eslint-disable-next-line no-new
     new Vue({
       el: this.diffElement.querySelector('[data-image-view]'),
+      name: 'ImageViewerRoot',
       render(h) {
         return h(ImageViewer, {
           props: {

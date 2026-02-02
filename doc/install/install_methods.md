@@ -77,7 +77,7 @@ For more information, see [self-compiled installation](self_compiled/_index.md).
 
 [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#documentation) is a set of opinionated Terraform and Ansible scripts.
 
-Use to deploy a [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers.
+You can use GET to deploy scaled GitLab environments following the [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers (GCP, AWS, and Azure).
 
 This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 

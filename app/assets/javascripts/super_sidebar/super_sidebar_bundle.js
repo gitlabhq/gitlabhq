@@ -201,6 +201,7 @@ export const initSuperTopbar = ({
 
   return new Vue({
     el,
+    name: 'SuperTopbarRoot',
     apolloProvider,
     provide: {
       rootPath,

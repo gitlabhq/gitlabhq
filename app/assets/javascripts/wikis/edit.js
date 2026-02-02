@@ -28,6 +28,7 @@ const mountWikiEditApp = () => {
 
   return new Vue({
     el,
+    name: 'WikiContentAppRoot',
     apolloProvider,
     provide: {
       isEditingPath: true,

@@ -105,6 +105,7 @@ export function mountMarkdownEditor(options = {}) {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'MarkdownEditorRoot',
     render(h) {
       return h(MarkdownEditor, {
         props: {

@@ -5,7 +5,7 @@ class Email < ApplicationRecord
   include Gitlab::SQL::Pattern
   include Cells::Claimable
 
-  cells_claims_attribute :email, type: CLAIMS_BUCKET_TYPE::EMAILS
+  cells_claims_attribute :email, type: CLAIMS_BUCKET_TYPE::EMAILS, feature_flag: :cells_claims_emails
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :user_id
 

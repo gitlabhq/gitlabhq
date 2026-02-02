@@ -90,6 +90,7 @@ function mountPipelines() {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
   const { mrWidgetData } = gl;
   const table = new Vue({
+    name: 'MergeRequestPipelinesTableRoot',
     components: {
       MergeRequestPipelinesTable: () => {
         return gon.features.mrPipelinesGraphql

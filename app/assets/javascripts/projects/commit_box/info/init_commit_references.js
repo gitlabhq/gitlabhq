@@ -20,6 +20,7 @@ export default (selector = 'js-commit-branches-and-tags') => {
 
   return new Vue({
     el,
+    name: 'CommitBranchesRoot',
     apolloProvider,
     provide: {
       fullPath,

@@ -261,25 +261,6 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           inline_input = spec_inputs.all_inputs.find { |i| i.name == :inline_input }
           expect(inline_input.default).to eq('inline_value')
         end
-
-        context 'when ci_file_inputs feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_file_inputs: false)
-          end
-
-          it 'does not process header includes and only uses inline inputs' do
-            result = service.execute
-
-            expect(result).to be_success
-
-            spec_inputs = result.payload.fetch(:inputs)
-            expect(spec_inputs.errors).to be_empty
-
-            input_names = spec_inputs.all_inputs.map(&:name)
-            expect(input_names).to include(:inline_input)
-            expect(input_names).not_to include(:external_input)
-          end
-        end
       end
 
       context 'when header include processing fails' do

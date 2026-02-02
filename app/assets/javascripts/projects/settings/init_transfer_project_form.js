@@ -23,6 +23,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TransferProjectFormRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),

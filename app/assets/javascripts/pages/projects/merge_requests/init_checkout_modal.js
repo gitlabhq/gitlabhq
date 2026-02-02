@@ -12,6 +12,7 @@ export default () => {
 
   return new Vue({
     el: modalEl,
+    name: 'MrWidgetHowToMergeModalRoot',
     render(h) {
       return h(MrWidgetHowToMergeModal, {
         props: {

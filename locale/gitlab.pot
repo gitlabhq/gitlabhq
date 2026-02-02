@@ -17132,10 +17132,19 @@ msgstr ""
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
+msgid "Commits|No commits found"
+msgstr ""
+
 msgid "Commits|No related merge requests found"
 msgstr ""
 
 msgid "Commits|Something went wrong while fetching commit details"
+msgstr ""
+
+msgid "Commits|Something went wrong while loading commits. Please try again."
+msgstr ""
+
+msgid "Commits|Something went wrong while loading the commit description. Please try again."
 msgstr ""
 
 msgid "Committed by"

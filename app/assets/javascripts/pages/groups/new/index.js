@@ -55,6 +55,7 @@ function initNewGroupCreation(el) {
 
   return new Vue({
     el,
+    name: 'NewGroupCreationAppRoot',
     apolloProvider,
     provide,
     render(h) {

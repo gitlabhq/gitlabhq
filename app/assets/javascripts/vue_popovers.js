@@ -5,6 +5,7 @@ const mountVuePopover = (el) => {
   const props = JSON.parse(el.dataset.appData);
 
   const instance = new Vue({
+    name: 'GlPopoverRoot',
     render(createElement) {
       return createElement(GlPopover, {
         attrs: props,

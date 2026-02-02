@@ -132,10 +132,6 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
     end
 
     before do
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(true)
-
       allow(Ci::PipelineCreation::FindPipelineInputsService)
         .to receive(:new)
         .and_return(service)

@@ -16,6 +16,7 @@ const initUpdateUsername = () => {
 
   return new Vue({
     el: updateUsernameElement,
+    name: 'UpdateUsernameRoot',
     components: {
       UpdateUsername,
     },
@@ -40,6 +41,7 @@ const initDeleteAccountModal = () => {
 
   return new Vue({
     el: deleteAccountModalEl,
+    name: 'DeleteAccountModalRoot',
     components: {
       DeleteAccountModal,
     },

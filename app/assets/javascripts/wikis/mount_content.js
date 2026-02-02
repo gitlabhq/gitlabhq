@@ -19,6 +19,7 @@ export const mountSidebarResizer = () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: resizer,
+      name: 'SidebarResizerRoot',
       render: (createElement) => createElement(SidebarResizer),
     });
   }
@@ -86,6 +87,7 @@ export const mountWikiApp = () => {
 
   return new Vue({
     el,
+    name: 'WikiContentAppRoot',
     apolloProvider,
     provide: {
       isEditingPath: false,

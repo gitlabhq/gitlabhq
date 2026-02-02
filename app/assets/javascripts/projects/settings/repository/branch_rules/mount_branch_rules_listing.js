@@ -25,6 +25,7 @@ export default function mountBranchRulesListing(el) {
 
   return new Vue({
     el,
+    name: 'BranchRulesAppRoot',
     apolloProvider,
     provide: {
       projectPath,

@@ -29,9 +29,9 @@ group results in a `404` status code.
 Multi-level Epics are available only in [GitLab Ultimate](https://about.gitlab.com/pricing/).
 If the Multi-level Epics feature is not available, a `403` status code is returned.
 
-## List epics related to a given epic
+## List all child epics of an epic
 
-Gets all child epics of an epic.
+List all child epics of an epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_iid/epics
@@ -142,7 +142,7 @@ Example response:
 
 ## Create and assign a child epic
 
-Creates a new epic and associates it with provided parent epic. The response is LinkedEpic object.
+Create a new epic and associate it with provided parent epic. The response is a `LinkedEpic` object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/epics
@@ -237,7 +237,7 @@ Example response:
 
 ## Unassign a child epic
 
-Unassigns a child epic from a parent epic.
+Unassign a child epic from a parent epic.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id

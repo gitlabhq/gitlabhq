@@ -29,9 +29,9 @@ module Cells
             .const_get("RAILS_TABLE_#{table_name.upcase}", false)
       end
 
-      def cells_claims_attribute(name, type:)
+      def cells_claims_attribute(name, type:, feature_flag: nil)
         self.cells_claims_attributes = cells_claims_attributes
-          .merge(name => { type: type })
+          .merge(name => { type: type, feature_flag: feature_flag })
           .freeze
       end
     end
@@ -51,11 +51,20 @@ module Cells
 
     private
 
+    # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against feature flag name dynamically
+    def cells_claims_enabled_for_attribute?(attribute_config)
+      return true if attribute_config[:feature_flag].nil?
+
+      Feature.enabled?(attribute_config[:feature_flag], :current_request)
+    end
+    # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+
     def cells_claims_save_changes
       transaction_record = ::Cells::TransactionRecord.current_transaction(connection)
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
+        next unless cells_claims_enabled_for_attribute?(config)
         next unless saved_change_to_attribute?(attribute)
 
         was, is = saved_change_to_attribute(attribute)
@@ -77,6 +86,8 @@ module Cells
       return unless transaction_record
 
       self.class.cells_claims_attributes.each do |attribute, config|
+        next unless cells_claims_enabled_for_attribute?(config)
+
         transaction_record.destroy_record(
           cells_claims_metadata_for(config[:type], public_send(attribute))) # rubocop:disable GitlabSecurity/PublicSend -- developer hard coded
       end

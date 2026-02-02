@@ -88,6 +88,8 @@ module Cells
     end
 
     def before_committed!
+      return if create_records.empty? && destroy_records.empty?
+
       raise Error, 'Already done' if done
       raise Error, 'Already created lease' if outstanding_lease
       raise Error, 'Attributes can now only be claimed on main DB' if Cells::OutstandingLease.connection != @connection
@@ -115,6 +117,8 @@ module Cells
     end
 
     def committed!(should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface
+      return if create_records.empty? && destroy_records.empty?
+
       raise Error, 'Already done' if done
       raise Error, 'No lease created' unless outstanding_lease
 

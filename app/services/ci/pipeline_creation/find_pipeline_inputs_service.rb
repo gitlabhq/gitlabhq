@@ -129,7 +129,6 @@ module Ci
       end
 
       def process_header_includes(spec, sha)
-        return spec unless Feature.enabled?(:ci_file_inputs, project)
         return spec unless spec[:include].present?
 
         processor = ::Gitlab::Ci::Config::External::Header::Processor.new(spec, build_context(sha))

@@ -54,6 +54,7 @@ const initLastCommitApp = (router) => {
 
   return new Vue({
     el: lastCommitEl,
+    name: 'BlobLastCommitRoot',
     router,
     apolloProvider,
     render(h) {
@@ -166,6 +167,7 @@ const initForkInfo = () => {
   } = forkEl.dataset;
   return new Vue({
     el: forkEl,
+    name: 'BlobForkInfoRoot',
     apolloProvider,
     render(h) {
       return h(ForkInfo, {
@@ -194,6 +196,7 @@ if (commitPipelineStatusEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: commitPipelineStatusEl,
+    name: 'BlobCommitPipelineStatusRoot',
     components: {
       CommitPipelineStatus,
     },
@@ -231,6 +234,7 @@ if (tableContentsEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: tableContentsEl,
+    name: 'BlobTableOfContentsRoot',
     render(h) {
       return h(TableOfContents);
     },
@@ -242,6 +246,7 @@ const initTreeHistoryLinkApp = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'BlobTreeHistoryLink',
     router: new VueRouter({ mode: 'history' }),
     render(h) {
       const url = generateHistoryUrl(

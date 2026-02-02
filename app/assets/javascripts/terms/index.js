@@ -15,6 +15,7 @@ export const initTermsApp = () => {
 
   return new Vue({
     el,
+    name: 'TermsAppRoot',
     provide: { terms, permissions, paths },
     render(createElement) {
       return createElement(TermsApp);

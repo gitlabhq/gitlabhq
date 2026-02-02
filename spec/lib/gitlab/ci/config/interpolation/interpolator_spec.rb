@@ -297,10 +297,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
         allow(instance).to receive(:check_execution_time!)
       end
-
-      allow(Gitlab::Ci::Config::FeatureFlags).to receive(:enabled?)
-        .with(:ci_file_inputs)
-        .and_return(true)
     end
 
     context 'when spec includes external input files' do

@@ -24,6 +24,7 @@ export default () => {
   } = el.dataset;
   return new Vue({
     el,
+    name: 'PackagesCleanupImageTagsRoot',
     apolloProvider,
     provide: {
       isAdmin: parseBoolean(isAdmin),

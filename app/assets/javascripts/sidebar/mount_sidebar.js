@@ -52,6 +52,7 @@ function mountSubmitReviewButton() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'SubmitReviewButtonRoot',
     pinia,
     render(h) {
       return h(SubmitReviewButton);
@@ -183,6 +184,7 @@ function mountSidebarReviewers(mediator) {
     // eslint-disable-next-line no-new
     new Vue({
       el: reviewersInputEl,
+      name: 'SidebarReviewersInputsRoot',
       render(createElement) {
         return createElement(SidebarReviewersInputs);
       },
@@ -650,6 +652,7 @@ export function mountAssigneesDropdown() {
 
   return new Vue({
     el,
+    name: 'UserSelectRoot',
     apolloProvider,
     data() {
       return {

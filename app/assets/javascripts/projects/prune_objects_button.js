@@ -11,6 +11,7 @@ export default (selector = '#js-project-prune-unreachable-objects-button') => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'PruneUnreachableObjectsButtonRoot',
     render(createElement) {
       return createElement(PruneUnreachableObjectsButton, {
         props: {

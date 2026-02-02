@@ -27,7 +27,7 @@ class Namespace < ApplicationRecord
 
   extend Gitlab::Utils::Override
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS
+  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS, feature_flag: :cells_claims_namespaces
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :id
 

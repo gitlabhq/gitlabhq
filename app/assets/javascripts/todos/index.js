@@ -18,6 +18,7 @@ export default () => {
 
   return new Vue({
     el,
+    name: 'TodosAppRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),

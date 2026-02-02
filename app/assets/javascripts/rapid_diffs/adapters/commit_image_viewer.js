@@ -12,6 +12,7 @@ export const commitImageViewerAdapter = {
     // eslint-disable-next-line no-new
     new Vue({
       el: this.diffElement.querySelector('[data-image-view]'),
+      name: 'ImageViewerRoot',
       provide() {
         return {
           userPermissions: appData.userPermissions,

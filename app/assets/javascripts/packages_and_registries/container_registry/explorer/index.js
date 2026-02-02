@@ -49,6 +49,7 @@ export default () => {
   const attachMainComponent = () =>
     new Vue({
       el,
+      name: 'ContainerRegistryExplorerRoot',
       router,
       apolloProvider,
       components: {

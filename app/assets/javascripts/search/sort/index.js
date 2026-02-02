@@ -15,6 +15,7 @@ export const initSearchSort = (store) => {
 
   return new Vue({
     el,
+    name: 'GlobalSearchSortRoot',
     store,
     render(createElement) {
       return createElement(GlobalSearchSort, {

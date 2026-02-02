@@ -255,6 +255,7 @@ export default {
     createTaskListItemActions() {
       const app = new Vue({
         el: document.createElement('div'),
+        name: 'TaskListItemActionsRoot',
         provide: { id: this.workItemId, issuableType: this.workItemType },
         render: (createElement) => createElement(TaskListItemActions),
       });

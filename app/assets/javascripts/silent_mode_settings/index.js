@@ -16,6 +16,7 @@ export const initSilentModeSettings = () => {
 
   return new Vue({
     el,
+    name: 'SilentModeSettingsAppRoot',
     render(createElement) {
       return createElement(SilentModeSettingsApp, {
         props: {

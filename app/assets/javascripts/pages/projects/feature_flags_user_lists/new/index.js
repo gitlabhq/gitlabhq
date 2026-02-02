@@ -12,6 +12,7 @@ const el = document.getElementById('js-new-user-list');
 const { userListsDocsPath, featureFlagsPath } = el.dataset;
 new Vue({
   el,
+  name: 'FeatureFlagsNewUserListRoot',
   store: createStore(el.dataset),
   provide: {
     userListsDocsPath,

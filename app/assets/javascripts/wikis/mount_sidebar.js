@@ -19,6 +19,7 @@ export const mountWikiSidebar = () => {
 
   return new Vue({
     el,
+    name: 'WikiSidebarRoot',
     provide: {
       hasCustomSidebar: parseBoolean(hasCustomSidebar),
       canCreate: parseBoolean(canCreate),

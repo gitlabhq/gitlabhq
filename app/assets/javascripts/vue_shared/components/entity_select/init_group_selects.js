@@ -25,6 +25,7 @@ export const initGroupSelects = () => {
 
     return new Vue({
       el,
+      name: 'GroupSelectRoot',
       components: {
         GroupSelect,
       },

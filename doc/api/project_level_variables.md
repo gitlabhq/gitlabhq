@@ -22,7 +22,7 @@ Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-
 
 ## List project variables
 
-Get list of a project's variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
+Lists all variables for a project. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
 parameters to control the pagination of results.
 
 ```plaintext
@@ -70,9 +70,9 @@ Example response:
 ]
 ```
 
-## Get a single variable
+## Retrieve a single variable
 
-Get the details of a single variable. If there are multiple variables with the same key,
+Retrieves details of a single variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
 
 ```plaintext
@@ -117,7 +117,7 @@ Example response:
 
 {{< /history >}}
 
-Create a new variable. If a variable with the same `key` already exists, the new variable
+Creates a new variable. If a variable with the same `key` already exists, the new variable
 must have a different `environment_scope`. Otherwise, GitLab returns a message similar to:
 `VARIABLE_NAME has already been taken`.
 
@@ -166,7 +166,7 @@ Example response:
 
 ## Update a variable
 
-Update a project's variable. If there are multiple variables with the same key,
+Updates a project variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
 
 ```plaintext
@@ -212,7 +212,7 @@ Example response:
 
 ## Delete a variable
 
-Delete a project's variable. If there are multiple variables with the same key,
+Deletes a project variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
 
 ```plaintext
