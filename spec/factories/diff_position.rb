@@ -40,6 +40,10 @@ FactoryBot.define do
         old_line { nil }
       end
 
+      trait :removed do
+        new_line { nil }
+      end
+
       trait :multi_line do
         line_range do
           {

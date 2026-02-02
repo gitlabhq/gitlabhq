@@ -46,6 +46,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
+  Ci::PipelineArtifact.file_types.each_key do |file_type|
+    it { is_expected.to have_one(:"pipeline_artifacts_#{file_type}").class_name('Ci::PipelineArtifact').inverse_of(:pipeline) }
+  end
+
   it { is_expected.to have_many(:job_environments).class_name('Environments::Job').inverse_of(:pipeline) }
 
   it do

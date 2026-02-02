@@ -406,6 +406,9 @@ ci_pipelines: &pipeline_definition
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
+- pipeline_artifacts_code_coverage
+- pipeline_artifacts_code_quality_mr_diff
+- pipeline_artifacts_pipeline_variables
 - dast_profile
 - dast_profiles_pipeline
 - dast_site_profile

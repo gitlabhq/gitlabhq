@@ -51197,13 +51197,13 @@ msgstr ""
 msgid "Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
+msgid "Please wait and do not make any changes to the repository until import is complete. You can refresh this page at any time."
+msgstr ""
+
 msgid "Please wait for the current action to complete"
 msgstr ""
 
 msgid "Please wait while we connect to your repository. Refresh at will."
-msgstr ""
-
-msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we prepare for verification."

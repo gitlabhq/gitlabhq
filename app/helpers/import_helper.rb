@@ -45,7 +45,7 @@ module ImportHelper
   end
 
   def import_wait_and_refresh_message
-    _('Please wait while we import the repository for you. Refresh at will.')
+    _('Please wait and do not make any changes to the repository until import is complete. You can refresh this page at any time.')
   end
 
   def import_github_authorize_message

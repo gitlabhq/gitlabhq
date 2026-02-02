@@ -81,6 +81,18 @@ FactoryBot.define do
         end
       end
 
+      trait :removed_line do
+        position do
+          association(
+            :text_diff_position,
+            :removed,
+            file: "files/ruby/popen.rb",
+            old_line: line_number,
+            diff_refs: diff_refs
+          )
+        end
+      end
+
       factory :image_diff_note_on_merge_request do
         position do
           association(

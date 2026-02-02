@@ -167,6 +167,13 @@ module Ci
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+    Ci::PipelineArtifact.file_types.each_key do |file_type|
+      has_one :"pipeline_artifacts_#{file_type}", -> { with_file_types(file_type) },
+        class_name: 'Ci::PipelineArtifact',
+        foreign_key: [:pipeline_id, :partition_id],
+        inverse_of: :pipeline
+    end
+
     has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?

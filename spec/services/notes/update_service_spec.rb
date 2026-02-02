@@ -272,6 +272,47 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'webhooks for diff notes' do
+      let(:project) { create(:project, :public, :repository, group: group) }
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      context 'when note is on a suggestible line (new)' do
+        let(:diff_note) do
+          create(:diff_note_on_merge_request, project: project, noteable: merge_request, author: user)
+        end
+
+        it 'creates a webhook event' do
+          expect(project).to receive(:execute_hooks)
+
+          described_class.new(project, user, note: 'updated text').execute(diff_note)
+        end
+      end
+
+      context 'when note is on a non-suggestible line (removed)' do
+        let(:diff_note) do
+          create(:diff_note_on_merge_request, :removed_line, project: project, noteable: merge_request, author: user)
+        end
+
+        it 'creates a webhook event' do
+          expect(project).to receive(:execute_hooks)
+
+          described_class.new(project, user, note: 'updated text').execute(diff_note)
+        end
+      end
+
+      context 'when note is on a suggestible line (context)' do
+        let(:diff_note) do
+          create(:diff_note_on_merge_request, :folded_position, project: project, noteable: merge_request, author: user)
+        end
+
+        it 'creates a webhook event' do
+          expect(project).to receive(:execute_hooks)
+
+          described_class.new(project, user, note: 'updated text').execute(diff_note)
+        end
+      end
+    end
+
     context 'todos' do
       shared_examples 'does not update todos' do
         it 'keep todos' do
