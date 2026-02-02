@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0.html).
+[the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0/).
 
 ## Issues to be aware of when upgrading
 
@@ -919,7 +919,7 @@ application automatically generates the missing secrets at startup.
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
-you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
+you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0/).
 
 {{< /tab >}}
 

@@ -949,7 +949,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-incoming-emails).
 
 {{< /tab >}}
 

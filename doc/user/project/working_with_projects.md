@@ -542,6 +542,7 @@ A project transfer includes:
   - CI/CD pipelines and configurations
   - Dashboards and wikis
   - Repository code and Git history
+  - Project access tokens
 - Project members:
   - Direct project members and their roles
   - Pending membership invitations

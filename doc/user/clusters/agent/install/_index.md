@@ -249,7 +249,7 @@ the CA certificate used by KAS. The certificate is automatically stored in a
 config map and mounted in the `agentk` pod.
 
 If KAS is installed with the GitLab chart, and the chart is configured to provide
-an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/charts/installation/tls.html#option-4-use-auto-generated-self-signed-wildcard-certificate), you can extract the CA certificate from the `RELEASE-wildcard-tls-ca` secret.
+an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/charts/installation/tls/#option-4-use-auto-generated-self-signed-wildcard-certificate), you can extract the CA certificate from the `RELEASE-wildcard-tls-ca` secret.
 
 ##### Use the agent behind an HTTP proxy
 

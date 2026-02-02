@@ -58,7 +58,7 @@ can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
 
 > [!note]
-> For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
+> For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals/#consolidated-object-storage).
 
 Configuring the object storage using the consolidated form has a number of advantages:
 
@@ -156,7 +156,7 @@ gitlab_rails['artifacts_enabled'] = false
 
 With the storage-specific form, every object defines its own object
 storage connection and configuration. You should [use the consolidated form](#transition-to-consolidated-form) instead,
-except for the storage types not supported by the consolidated form. When working with the GitLab Helm charts, refer to how the charts handle [consolidated form for object storage](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
+except for the storage types not supported by the consolidated form. When working with the GitLab Helm charts, refer to how the charts handle [consolidated form for object storage](https://docs.gitlab.com/charts/charts/globals/#consolidated-object-storage).
 
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.
@@ -381,7 +381,7 @@ If you use ADC, be sure that:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: Google
@@ -565,7 +565,7 @@ The following are the valid connection parameters for Azure. For more informatio
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: AzureRM
@@ -895,7 +895,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#connection):
 
    ```yaml
    provider: AWS

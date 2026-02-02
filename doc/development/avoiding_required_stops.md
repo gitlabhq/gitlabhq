@@ -137,7 +137,7 @@ Examples of deprecations are too numerous to be listed here, but can found in th
   - [GitLab 17](../update/versions/gitlab_17_changes.md)
   - [GitLab 16](../update/versions/gitlab_16_changes.md)
   - [GitLab 15](../update/versions/gitlab_15_changes.md)
-- [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade.html).
+- [GitLab chart upgrade notes](https://docs.gitlab.com/charts/installation/upgrade/).
 
 ## Adding required stops
 
@@ -178,7 +178,7 @@ is identified after release, the following steps must still be completed:
 ### In the release following the required stop
 
 1. In the `charts` project, update the
-   [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop.html)
+   [upgrade check hook](https://docs.gitlab.com/charts/development/upgrade_stop/)
    to the required stop version.
 
 ## GitLab-maintained projects which depend on `upgrade_path.yml`
@@ -199,7 +199,7 @@ it might affect one of the following projects:
 - [Documentation: Upgrade GitLab](../update/_index.md)
   - [Package (Omnibus) upgrade](../update/package/_index.md)
   - [Docker upgrade](../update/docker/_index.md)
-  - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)
+  - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade/)
 - [Example of required stop planning issue (17.3)](https://gitlab.com/gitlab-org/gitlab/-/issues/457453)
 - [Issue: Put in place measures to avoid addition/proliferation of GitLab upgrade path stops](https://gitlab.com/gitlab-org/gitlab/-/issues/375553)
 - [Issue: Brainstorm ways for background migrations to be finalized without introducing a required upgrade step](https://gitlab.com/gitlab-org/gitlab/-/issues/357561)

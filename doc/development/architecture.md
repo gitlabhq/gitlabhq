@@ -486,7 +486,7 @@ You can read more about:
   - [Charts](https://github.com/cert-manager/cert-manager/blob/master/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/)
-  - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
+  - [Charts](https://docs.gitlab.com/charts/installation/tls/)
   - [Source](../install/self_compiled/_index.md#using-https)
   - [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/nginx/)
 - Layer: Core Service (Processor)
@@ -497,7 +497,7 @@ You can read more about:
 - [Project page](https://github.com/hashicorp/consul/blob/main/README.md)
 - Configuration:
   - [Omnibus](../administration/consul.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Consul](../user/gitlab_com/_index.md#consul)
 
@@ -736,7 +736,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 - [Project page](https://github.com/pgbouncer/pgbouncer/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/postgresql/pgbouncer.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
 - Layer: Core Service (Data)
 - GitLab.com: [Database Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#database-architecture)
 
@@ -747,7 +747,7 @@ Lightweight connection pooler for PostgreSQL.
 - [Project page](https://github.com/prometheus-community/pgbouncer_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/pgbouncer_exporter.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
 - Layer: Monitoring
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
 
@@ -758,7 +758,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 - [Project page](https://github.com/postgres/postgres/)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
   - [Source](../install/self_compiled/_index.md#7-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
@@ -771,7 +771,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
 - [Project page](https://github.com/prometheus-community/postgres_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/postgres_exporter.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#postgresql)
 - Layer: Monitoring
 - Process: `postgres-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
@@ -783,7 +783,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
 - [Project page](https://github.com/prometheus/prometheus/blob/main/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/_index.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#prometheus)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#prometheus)
 - Layer: Monitoring
 - Process: `prometheus`
 - GitLab.com: [Prometheus](../user/gitlab_com/_index.md#prometheus)
@@ -795,7 +795,7 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 - [Project page](https://github.com/redis/redis/blob/unstable/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#redis)
   - [Source](../install/self_compiled/_index.md#8-redis)
 - Layer: Core Service (Data)
 - Process: `redis`
@@ -813,7 +813,7 @@ See our [Redis guidelines](redis.md) for more information about how GitLab uses 
 - [Project page](https://github.com/oliver006/redis_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/redis_exporter.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
+  - [Charts](https://docs.gitlab.com/charts/installation/deployment/#redis)
 - Layer: Monitoring
 - Process: `redis-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
@@ -893,7 +893,7 @@ Starting with GitLab 13.0, Puma is the default web server.
 
 - Configuration:
   - [Omnibus](../administration/auth/ldap/_index.md)
-  - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
+  - [Charts](https://docs.gitlab.com/charts/charts/globals/#ldap)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/ldap.md)
 - Layer: Core Service (Processor)
@@ -903,7 +903,7 @@ Starting with GitLab 13.0, Puma is the default web server.
 
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/smtp.html)
-  - [Charts](https://docs.gitlab.com/charts/installation/command-line-options.html#outgoing-email-configuration)
+  - [Charts](https://docs.gitlab.com/charts/installation/command-line-options/#outgoing-email-configuration)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
@@ -913,7 +913,7 @@ Starting with GitLab 13.0, Puma is the default web server.
 
 - Configuration:
   - [Omnibus](../administration/incoming_email.md)
-  - [Charts](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
+  - [Charts](https://docs.gitlab.com/charts/installation/command-line-options/#incoming-email-configuration)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
@@ -1187,7 +1187,7 @@ When adding a setting to `gitlab.yml`:
 
 1. Ensure that it is also
    [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
-1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
+1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide/), if needed.
 1. Ensure that it is also [added to GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb).
 
 ### Maintenance tasks

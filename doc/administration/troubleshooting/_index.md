@@ -23,7 +23,7 @@ for in this list, you should search the documentation.
 - [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
 - [Geo](../geo/replication/troubleshooting/_index.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
-- [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Linux cheat sheet](linux_cheat_sheet.md)
 - [Parsing GitLab logs with `jq`](../logs/log_parsing.md)
 - [Diagnostics tools](diagnostics_tools.md)
@@ -50,7 +50,7 @@ before referring to these documents.
 
 - [Diagnostics tools](diagnostics_tools.md)
 - [Linux commands](linux_cheat_sheet.md)
-- [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
+- [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/)
 - [Troubleshooting PostgreSQL](postgresql.md)
 - [Guide to test environments](test_environments.md) (for Support Engineers)
 - [Troubleshooting SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)

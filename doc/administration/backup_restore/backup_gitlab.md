@@ -226,7 +226,7 @@ For more information, see [Backup and restore Linux package (Omnibus) configurat
 
 {{< tab title="GitLab Helm chart" >}}
 
-- Follow the [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#back-up-the-secrets)
+- Follow the [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup/#back-up-the-secrets)
   instructions.
 
 {{< /tab >}}
@@ -290,7 +290,7 @@ sudo gitlab-backup create
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Run the backup task by using `kubectl` to run the `backup-utility` script on the GitLab toolbox pod. For more details, see the [charts backup documentation](https://docs.gitlab.com/charts/backup-restore/backup.html).
+Run the backup task by using `kubectl` to run the `backup-utility` script on the GitLab toolbox pod. For more details, see the [charts backup documentation](https://docs.gitlab.com/charts/backup-restore/backup/).
 
 {{< /tab >}}
 
@@ -564,7 +564,7 @@ sudo gitlab-backup create SKIP=db,uploads
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup.html#skipping-components) in charts backup documentation.
+See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup/#skipping-components) in charts backup documentation.
 
 {{< /tab >}}
 
@@ -661,7 +661,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=tr
 kubectl exec <Toolbox pod name> -it -- backup-utility --repositories-server-side
 ```
 
-When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup),
 add the `--repositories-server-side` flag to the extra arguments.
 
 {{< /tab >}}

@@ -44,6 +44,11 @@ module Types
           null: false,
           description: 'Permission category.'
 
+        field :category_name,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Display name of the permission category.'
+
         field :boundaries,
           [Types::Authz::AccessTokens::BoundaryEnum],
           null: true,

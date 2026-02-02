@@ -28,7 +28,7 @@ Configure Gitaly in one of two ways:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Configure the [Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/).
-1. [Upgrade your Helm release](https://docs.gitlab.com/charts/installation/deployment.html).
+1. [Upgrade your Helm release](https://docs.gitlab.com/charts/installation/deployment/).
 
 {{< /tab >}}
 

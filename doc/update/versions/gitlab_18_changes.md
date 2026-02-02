@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
+[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0/).
 
 ## Required upgrade stops
 

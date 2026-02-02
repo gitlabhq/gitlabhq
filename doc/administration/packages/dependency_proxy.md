@@ -69,7 +69,7 @@ global:
         key:
 ```
 
-For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals.html#configure-appconfig-settings).
+For more information, see [Configure Charts using Globals](https://docs.gitlab.com/charts/charts/globals/#configure-appconfig-settings).
 
 {{< /tab >}}
 

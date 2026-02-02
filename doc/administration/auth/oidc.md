@@ -418,7 +418,7 @@ gitlab_rails['omniauth_providers'] = [
 
 For Helm installations:
 
-Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals.html#providers) in a YAML file (for example, `provider.yaml`):
+Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals/#providers) in a YAML file (for example, `provider.yaml`):
 
 {{< tabs >}}
 
@@ -489,7 +489,7 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
 - **For users with an email address in Entra ID**, to allow falling back to email address and updating the user's identity,
   configure the following:
   - In a Linux package installation, [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users).
-  - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
+  - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals/#omniauth).
 
 - **For users with no email address**, administrators must take one of the following actions:
 

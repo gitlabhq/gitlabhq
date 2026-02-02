@@ -74,7 +74,7 @@ sudo -u git -H psql -d gitlabhq_production
   for Linux package.
 - Use the console that's part of your external third-party PostgreSQL service.
 - Run `gitlab-rails dbconsole` in the toolbox pod.
-  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/#gitlab-specific-kubernetes-information) for details.
 
 > [!note]
 > For cloud native deployments using managed PostgreSQL services (such as AWS RDS),

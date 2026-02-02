@@ -105,7 +105,7 @@ For more information on:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls.html).
+1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls/).
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
@@ -150,7 +150,7 @@ For more information on:
    unchangeable.
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -462,7 +462,7 @@ To set up multiple SAML IdPs:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers)
    for the first SAML provider:
 
    ```yaml
@@ -476,7 +476,7 @@ To set up multiple SAML IdPs:
    ```
 
 1. Put the following content in a file named `saml_2.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers)
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers)
    for the second SAML provider:
 
    ```yaml
@@ -945,7 +945,7 @@ If the attribute specified in `groups_attribute` is incorrect or missing then al
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -1116,7 +1116,7 @@ Example configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -1285,7 +1285,7 @@ Example configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -1456,7 +1456,7 @@ Example configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -1657,7 +1657,7 @@ list.
    {{< tab title="Helm chart (Kubernetes)" >}}
 
    1. Put the following content in a file named `saml.yaml` to be used as a
-      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
       ```yaml
       name: 'saml'
@@ -1826,7 +1826,7 @@ An example configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -1974,7 +1974,7 @@ An example configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -2259,7 +2259,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -2412,7 +2412,7 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -2586,7 +2586,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
 
 1. [Configure OmniAuth to sync the desired attributes](omniauth.md#keep-omniauth-user-profiles-up-to-date).
 1. Save the following YAML content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -2750,7 +2750,7 @@ The value given is added to the current time at which the response is validated.
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -2917,7 +2917,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -3093,7 +3093,7 @@ This makes the key file one long string with no line feeds.
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'saml'
@@ -3280,7 +3280,7 @@ To implement signing:
    {{< tab title="Helm chart (Kubernetes)" >}}
 
    1. Put the following content in a file named `saml.yaml` to be used as a
-      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+      [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
       ```yaml
       name: 'saml'
@@ -3489,9 +3489,9 @@ To configure group SAML SSO:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls.html).
+1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls/).
 1. Put the following content in a file named `group_saml.yaml` to be used as a
-   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
    ```yaml
    name: 'group_saml'

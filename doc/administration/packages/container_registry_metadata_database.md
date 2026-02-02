@@ -35,7 +35,7 @@ which removes old data automatically with zero downtime.
 This database works in conjunction with the storage already used by the registry, but does not replace object storage or a file system.
 You must continue to maintain a storage solution even after performing a metadata import to the metadata database.
 
-For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
+For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database/#create-the-database)
 in the Helm Charts documentation.
 
 ## Enhancements

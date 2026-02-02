@@ -95,9 +95,9 @@ Based on your installation method, restore the following:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-[Restore the secrets](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-the-secrets).
+[Restore the secrets](https://docs.gitlab.com/charts/backup-restore/restore/#restoring-the-secrets).
 
-[GitLab Helm chart secrets can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package.html), if required.
+[GitLab Helm chart secrets can be converted to the Linux package format](https://docs.gitlab.com/charts/installation/migration/helm_to_package/), if required.
 
 {{< /tab >}}
 
@@ -270,7 +270,7 @@ the backup location (default location is `/var/opt/gitlab/backups`).
 ### Restore for Helm chart installations
 
 The GitLab Helm chart uses the process documented in
-[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore.html#restoring-a-gitlab-installation)
+[restoring a GitLab Helm chart installation](https://docs.gitlab.com/charts/backup-restore/restore/#restoring-a-gitlab-installation)
 
 ### Restore for Docker image installations
 
@@ -598,7 +598,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=11493107454_2018_04
 kubectl exec <Toolbox pod name> -it -- backup-utility --restore -t <backup_ID> --repositories-server-side
 ```
 
-When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup),
 add the `--repositories-server-side` flag to the extra arguments.
 
 {{< /tab >}}

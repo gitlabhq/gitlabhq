@@ -263,7 +263,7 @@ They can be upgraded in parallel:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 After all stateful components are upgraded, follow
-[GitLab chart upgrade steps](https://docs.gitlab.com/charts/installation/upgrade.html)
+[GitLab chart upgrade steps](https://docs.gitlab.com/charts/installation/upgrade/)
 to upgrade the stateless components (Webservice, Sidekiq, other supporting services).
 
 After you perform the GitLab chart upgrade, resume the database clients:

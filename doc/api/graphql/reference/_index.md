@@ -18719,6 +18719,20 @@ The connection type for [`ContainerRegistry`](#containerregistry).
 | <a id="containerregistryconnectionnodes"></a>`nodes` | [`[ContainerRegistry]`](#containerregistry) | A list of nodes. |
 | <a id="containerregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 
+##### Fields with arguments
+
+###### `ContainerRegistryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
 #### `ContainerRegistryEdge`
 
 The edge type for [`ContainerRegistry`](#containerregistry).
@@ -21051,6 +21065,20 @@ The connection type for [`MavenRegistry`](#mavenregistry).
 | <a id="mavenregistryconnectionedges"></a>`edges` | [`[MavenRegistryEdge]`](#mavenregistryedge) | A list of edges. |
 | <a id="mavenregistryconnectionnodes"></a>`nodes` | [`[MavenRegistry]`](#mavenregistry) | A list of nodes. |
 | <a id="mavenregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MavenRegistryConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenregistryconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
 
 #### `MavenRegistryEdge`
 
@@ -25399,6 +25427,7 @@ Permission that belongs to a granular scope.
 | <a id="accesstokenpermissionaction"></a>`action` | [`String!`](#string) | Action of the permission. |
 | <a id="accesstokenpermissionboundaries"></a>`boundaries` | [`[PermissionBoundary!]`](#permissionboundary) | List of resource types that the permission can be applied to. |
 | <a id="accesstokenpermissioncategory"></a>`category` | [`String!`](#string) | Permission category. |
+| <a id="accesstokenpermissioncategoryname"></a>`categoryName` | [`String`](#string) | Display name of the permission category. |
 | <a id="accesstokenpermissiondescription"></a>`description` | [`String!`](#string) | Description of the permission. |
 | <a id="accesstokenpermissionname"></a>`name` | [`String!`](#string) | Name of the permission. |
 | <a id="accesstokenpermissionresource"></a>`resource` | [`String!`](#string) | Resource of the permission. |

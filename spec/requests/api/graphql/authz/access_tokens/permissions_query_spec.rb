@@ -17,6 +17,11 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
     ::Authz::PermissionGroups::Resource.new(resource_definition, 'source_file')
   end
 
+  let(:category) do
+    category_definition = { name: 'Wiki Category' }
+    ::Authz::PermissionGroups::Category.new(category_definition, 'source_file')
+  end
+
   let(:query) do
     <<~GQL
       query {
@@ -28,6 +33,7 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
           resourceName
           resourceDescription
           category
+          categoryName
           boundaries
         }
       }
@@ -43,6 +49,9 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
 
     allow(::Authz::PermissionGroups::Resource).to receive(:get)
       .with("#{target_permission.category}/#{target_permission.resource}").and_return(resource)
+
+    allow(::Authz::PermissionGroups::Category).to receive(:get)
+      .with(target_permission.category).and_return(category)
   end
 
   context 'when user is authenticated' do
@@ -57,6 +66,7 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
         'resourceName' => 'Wiki Resource',
         'resourceDescription' => resource.definition[:description],
         'category' => 'wiki',
+        'categoryName' => 'Wiki Category',
         'boundaries' => %w[GROUP PROJECT]
       }])
     end

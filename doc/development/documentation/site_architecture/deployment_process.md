@@ -38,7 +38,7 @@ This branch pulls content from the corresponding stable branches of included pro
 - The stable branch from the `gitlab-runner` project (for example, `17-2-stable`).
 - The stable branch from the `omnibus-gitlab` project (for example, `17-2-stable`).
 - The stable branch from the `charts/gitlab` project (for example, `7-2-stable`).
-  `charts/gitlab` versions are [mapped](https://docs.gitlab.com/charts/installation/version_mappings.html) to GitLab versions.
+  `charts/gitlab` versions are [mapped](https://docs.gitlab.com/charts/installation/version_mappings/) to GitLab versions.
 - The default branch for the `gitlab-org/cloud-native/gitlab-operator`.
 - The default branch for the `cli` project.
 

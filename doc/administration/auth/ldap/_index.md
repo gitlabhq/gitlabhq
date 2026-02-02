@@ -202,7 +202,7 @@ The file you edit differs depending on your GitLab setup:
    ```
 
 For more information, see
-[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals/#ldap).
 
 {{< /tab >}}
 
@@ -408,7 +408,7 @@ The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_opt
    ```
 
 For more information, see
-[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+[how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals/#ldap).
 
 {{< /tab >}}
 
@@ -1177,7 +1177,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the LDAP password. For more information,
-read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#ldap-password).
+read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secrets/#ldap-password).
 
 {{< /tab >}}
 

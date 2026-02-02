@@ -111,7 +111,7 @@ To change the OmniAuth settings:
      ```
 
      For more details, see the
-     [globals documentation](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
+     [globals documentation](https://docs.gitlab.com/charts/charts/globals/#omniauth).
 
   1. Save the file and apply the new values:
 

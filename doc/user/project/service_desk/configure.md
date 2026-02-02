@@ -818,7 +818,7 @@ The supported configuration items for the encrypted file are:
 {{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the Service Desk email password. For more information,
-read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-service-desk-emails).
+read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets/#imap-password-for-service-desk-emails).
 
 {{< /tab >}}
 
@@ -953,13 +953,13 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-1. Create the [Kubernetes Secret containing the OAuth 2.0 application client secret](https://docs.gitlab.com/charts/installation/secrets.html#microsoft-graph-client-secret-for-service-desk-emails):
+1. Create the [Kubernetes Secret containing the OAuth 2.0 application client secret](https://docs.gitlab.com/charts/installation/secrets/#microsoft-graph-client-secret-for-service-desk-emails):
 
    ```shell
    kubectl create secret generic service-desk-email-client-secret --from-literal=secret=<YOUR-CLIENT_SECRET>
    ```
 
-1. Create the [Kubernetes Secret for the GitLab Service Desk email auth token](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-service-desk-email-auth-token).
+1. Create the [Kubernetes Secret for the GitLab Service Desk email auth token](https://docs.gitlab.com/charts/installation/secrets/#gitlab-service-desk-email-auth-token).
    Replace `<name>` with the name of the [Helm release name](https://helm.sh/docs/intro/using_helm/) for the GitLab installation:
 
    ```shell
@@ -1171,8 +1171,8 @@ from the `incoming_email` and `service_desk_email` mailboxes.
 
 The [GitLab Helm chart](https://docs.gitlab.com/charts/) is made up of multiple subcharts, and one of them is
 the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/). Configure the
-[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
-and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#service-desk-email-configuration).
+[common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options/#incoming-email-configuration)
+and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options/#service-desk-email-configuration).
 
 ### Linux package (Omnibus)
 

@@ -21,7 +21,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 6.0 upgrade notes](https://docs.gitlab.com/charts/releases/6_0.html).
+[the Helm chart 6.0 upgrade notes](https://docs.gitlab.com/charts/releases/6_0/).
 
 ## 15.11.1
 

@@ -58,7 +58,7 @@ If you have a license, you can also import it when you install GitLab.
     gitlab_rails['initial_license_file'] = "/path/to/license/file"
     ```
 
-- For Helm Charts installations, use [the `global.gitlab.license` configuration keys](https://docs.gitlab.com/charts/installation/command-line-options.html#basic-configuration).
+- For Helm Charts installations, use [the `global.gitlab.license` configuration keys](https://docs.gitlab.com/charts/installation/command-line-options/#basic-configuration).
 
 > [!warning]
 > These methods only add a license at the time of installation. To renew or upgrade

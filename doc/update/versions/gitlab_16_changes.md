@@ -19,7 +19,7 @@ Ensure you review these instructions for:
 - All versions between your current version and your target version.
 
 For additional information for Helm chart installations, see
-[the Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0.html).
+[the Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0/).
 
 ## Issues to be aware of when upgrading from 15.11
 
@@ -1812,7 +1812,7 @@ differ for other installation types:
 
 - Omit `sudo`.
 - Shell into the `toolbox` pod to run the Rake commands: `gitlab-rake` is in `/usr/local/bin` if not in the `PATH`.
-  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/#gitlab-specific-kubernetes-information) for details.
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
 {{< /tab >}}

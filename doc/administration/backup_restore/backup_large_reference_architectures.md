@@ -195,7 +195,7 @@ Set up cronjobs to perform Gitaly server-side backups:
    This causes Gitaly nodes to upload the Git data and some metadata to remote storage. See [Toolbox included tools](https://docs.gitlab.com/charts/charts/gitlab/toolbox/#toolbox-included-tools).
 
 1. Check that the full backup created data in both the Gitaly backup bucket as well as the regular backup bucket. Incremental repository backup is not supported by `backup-utility` with server-side repository backup, see [charts issue 3421](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3421).
-1. [Configure cron to make daily backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup). Specifically, set `gitlab.toolbox.backups.cron.extraArgs` to include:
+1. [Configure cron to make daily backups](https://docs.gitlab.com/charts/backup-restore/backup/#cron-based-backup). Specifically, set `gitlab.toolbox.backups.cron.extraArgs` to include:
 
    ```shell
    --repositories-server-side --skip db --skip repositories --skip uploads --skip builds --skip artifacts --skip pages --skip lfs --skip terraform_state --skip registry --skip packages --skip ci_secure_files

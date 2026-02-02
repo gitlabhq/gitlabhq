@@ -689,4 +689,4 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 1. Repeat the fork operation.
 
 > [!note]
-> For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
+> For the GitLab Helm chart, use [`extraEnv`](https://docs.gitlab.com/charts/charts/globals/#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
