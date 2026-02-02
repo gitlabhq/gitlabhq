@@ -1178,11 +1178,6 @@ Writing tests is required for:
 - The batched background migration itself.
 - A cleanup migration.
 
-The `:migration` and `schema: :latest` RSpec tags are automatically set for
-background migration specs. Refer to the
-[Testing Rails migrations](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
-style guide.
-
 Remember that `before` and `after` RSpec hooks
 migrate your database down and up. These hooks can result in other batched background
 migrations being called. Using `spy` test doubles with

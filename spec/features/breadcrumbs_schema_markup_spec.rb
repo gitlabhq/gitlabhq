@@ -109,7 +109,7 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
     expect(item_list[2]['item']).to eq project_wiki_url(project, wiki_home_page)
 
     expect(item_list[3]['name']).to eq 'Home'
-    expect(item_list[3]['item']).to eq "#{project_wiki_url(project, wiki_home_page)}/"
+    expect(item_list[3]['item']).to eq project_wiki_url(project, wiki_home_page)
 
     expect(item_list[4]['name']).to eq 'subpage'
     expect(item_list[4]['item']).to eq project_wiki_url(project, wiki_sub_page)

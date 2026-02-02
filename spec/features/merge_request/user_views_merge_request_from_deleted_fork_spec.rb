@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 # This is a feature spec because the problems arrise when rendering the view for

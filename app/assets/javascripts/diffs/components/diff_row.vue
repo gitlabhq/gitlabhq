@@ -245,7 +245,7 @@ export default {
             :discussions="line.left.discussions"
             :discussions-expanded="line.left.discussionsExpanded"
             data-testid="left-discussions"
-            @toggle-line-discussions="
+            @toggleLineDiscussions="
               $emit('toggle-line-discussions', {
                 lineCode: line.left.line_code,
                 expanded: !line.left.discussionsExpanded,
@@ -372,7 +372,7 @@ export default {
             :discussions="line.right.discussions"
             :discussions-expanded="line.right.discussionsExpanded"
             data-testid="right-discussions"
-            @toggle-line-discussions="
+            @toggleLineDiscussions="
               $emit('toggle-line-discussions', {
                 lineCode: line.right.line_code,
                 expanded: !line.right.discussionsExpanded,

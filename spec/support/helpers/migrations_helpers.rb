@@ -195,20 +195,16 @@ ERROR
   end
 
   def migration_schema_version
-    metadata_schema = self.class.metadata[:schema]
-
-    if metadata_schema == :latest
-      migrations.last.version
-    elsif self.class.metadata[:level] == :background_migration
-      raise FINALIZE_FIRST_ERROR if ENV['CI'].nil? && !metadata_schema.nil?
-
-      metadata_schema || finalized_by_version || migrations.last.version
+    if self.class.metadata[:level] == :background_migration
+      finalized_by_version || migrations.last.version
     else
-      metadata_schema || previous_migration.version
+      previous_migration.version
     end
   end
 
   def schema_migrate_down!
+    return if self.class.metadata[:schema] == :latest
+
     with_db_config do
       disable_migrations_output do
         migration_context.down(migration_schema_version)

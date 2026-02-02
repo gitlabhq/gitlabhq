@@ -19390,6 +19390,7 @@ CREATE TABLE duo_workflows_workflows (
     ai_catalog_item_version_id bigint,
     issue_id bigint,
     merge_request_id bigint,
+    service_account_id bigint,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
@@ -44812,6 +44813,8 @@ CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_work
 
 CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workflows USING btree (project_id);
 
+CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
+
 CREATE INDEX index_duo_workflows_workflows_on_user_id ON duo_workflows_workflows USING btree (user_id);
 
 CREATE INDEX index_duo_workflows_workflows_project_environment_created_at ON duo_workflows_workflows USING btree (project_id, environment, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
@@ -55868,6 +55871,9 @@ ALTER TABLE ONLY work_item_number_field_values
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_duo_workflows_workflows_service_account_id FOREIGN KEY (service_account_id) REFERENCES users(id) ON DELETE SET NULL NOT VALID;
 
 ALTER TABLE ONLY merge_request_cleanup_schedules
     ADD CONSTRAINT fk_e0655f1a25 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -33,7 +33,7 @@ You can react with emoji on the following resources:
 
 For information on using these endpoints with comments, see [Add reactions to comments](#add-reactions-to-comments).
 
-### List an awardable's emoji reactions
+### List all emoji reactions for a resource
 
 {{< history >}}
 
@@ -41,7 +41,7 @@ For information on using these endpoints with comments, see [Add reactions to co
 
 {{< /history >}}
 
-Get a list of all emoji reactions for a specified awardable. This endpoint can
+Lists all emoji reactions for a specified issue, snippet, or merge request. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
@@ -104,7 +104,7 @@ Example response:
 ]
 ```
 
-### Get single emoji reaction
+### Retrieve an emoji reaction from a resource
 
 {{< history >}}
 
@@ -112,8 +112,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single emoji reaction from an issue, snippet, or merge request. This endpoint can
-be accessed without authentication if the awardable is publicly accessible.
+Retrieves a specified emoji reaction from an issue, snippet, or merge request. This endpoint can be accessed without authentication if the awardable is publicly accessible.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
@@ -158,9 +157,9 @@ Example response:
 }
 ```
 
-### Add a new emoji reaction
+### Add an emoji reaction to a resource
 
-Add an emoji reaction on the specified awardable.
+Adds an emoji reaction to an issue, snippet, or merge request.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/award_emoji
@@ -203,9 +202,9 @@ Example Response:
 }
 ```
 
-### Delete an emoji reaction
+### Delete an emoji reaction from a resource
 
-Sometimes it's just not meant to be and you need to remove your reaction.
+Deletes a specified emoji reaction from an issue, snippet, or merge request.
 
 Only an administrator or the author of the reaction can delete an emoji reaction.
 
@@ -238,7 +237,7 @@ Comments (also known as notes) are a sub-resource of issues, merge requests, and
 > adapted to comments on merge requests and snippets. Therefore, you have to replace
 > `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
-### List a comment's emoji reactions
+### List all emoji reactions for a comment
 
 {{< history >}}
 
@@ -246,7 +245,7 @@ Comments (also known as notes) are a sub-resource of issues, merge requests, and
 
 {{< /history >}}
 
-Get all emoji reactions for a comment (note). This endpoint can
+Lists all emoji reactions for a specified comment. This endpoint can
 be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
@@ -292,7 +291,7 @@ Example response:
 ]
 ```
 
-### Get an emoji reaction for a comment
+### Retrieve an emoji reaction from a comment
 
 {{< history >}}
 
@@ -300,7 +299,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single emoji reaction for a comment (note). This endpoint can
+Retrieves an emoji reaction from a specified comment. This endpoint can
 be accessed without authentication if the comment is publicly accessible.
 
 ```plaintext
@@ -345,9 +344,9 @@ Example response:
 }
 ```
 
-### Add a new emoji reaction to a comment
+### Add an emoji reaction to a comment
 
-Create an emoji reaction on the specified comment (note).
+Adds an emoji reaction to a specified comment.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -393,7 +392,7 @@ Example response:
 
 ### Delete an emoji reaction from a comment
 
-Sometimes it's just not meant to be and you need to remove the reaction.
+Deletes an emoji reaction from a specified comment.
 
 Only an administrator or the author of the reaction can delete an emoji reaction.
 

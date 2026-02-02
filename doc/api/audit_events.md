@@ -31,7 +31,7 @@ Use this API to retrieve [instance audit events](../administration/compliance/au
 
 To retrieve audit events using the API, you must [authenticate yourself](rest/authentication.md) as an Administrator.
 
-### Retrieve all instance audit events
+### List all instance audit events
 
 {{< history >}}
 
@@ -40,7 +40,7 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/au
 
 {{< /history >}}
 
-Retrieve all available instance audit events, limited to a maximum of 30 days for each query.
+Lists all available instance audit events, limited to a maximum of 30 days for each query.
 
 ```plaintext
 GET /audit_events
@@ -153,7 +153,9 @@ Example response:
 ]
 ```
 
-### Retrieve single instance audit event
+### Retrieve an instance audit event
+
+Retrieves a specified instance audit event.
 
 ```plaintext
 GET /audit_events/:id
@@ -214,13 +216,15 @@ A user with:
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. Keyset-based
 pagination is recommended when requesting consecutive pages of results.
 
-### Retrieve all group audit events
+### List all group audit events
 
 {{< history >}}
 
 - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 {{< /history >}}
+
+Lists all audit events for a specified group.
 
 ```plaintext
 GET /groups/:id/audit_events
@@ -284,9 +288,9 @@ Example response:
 ]
 ```
 
-### Retrieve a specific group audit event
+### Retrieve a group audit event
 
-Only available to group owners and administrators.
+Retrieves an audit event for a specified group. Only available to group owners and administrators.
 
 ```plaintext
 GET /groups/:id/audit_events/:audit_event_id
@@ -332,13 +336,15 @@ Use this API to retrieve [project audit events](../user/compliance/audit_events.
 A user with a Maintainer role (or above) can retrieve project audit events of all users.
 A user with a Developer role is limited to project audit events based on their individual actions.
 
-### Retrieve all project audit events
+### List all project audit events
 
 {{< history >}}
 
 - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 {{< /history >}}
+
+Lists all audit events for a specified project.
 
 ```plaintext
 GET /projects/:id/audit_events
@@ -411,9 +417,9 @@ Example response:
 ]
 ```
 
-### Retrieve a specific project audit event
+### Retrieve a project audit event
 
-Only available to users with at least the Maintainer role for the project.
+Retrieves an audit event for a specified project. Only available to users with at least the Maintainer role for the project.
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id

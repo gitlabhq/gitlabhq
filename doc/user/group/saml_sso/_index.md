@@ -206,9 +206,9 @@ The following GitLab settings correspond to the Keycloak fields.
    1. In the **Signature and Encryption** section, turn on **Sign documents**.
    1. On the **Keys** tab, make sure all sections are disabled.
    1. On the **Client scopes** tab:
-      1. Select the client scope for GitLab.
-      1. Select the `email` AttributeStatement.
-      1. Set the **User Attribute** field to `email`.
+      1. Select the client scope for GitLab. The name of the scope should look like `https://gitlab.com/groups/your-group-name-dedicated`.
+      1. Select **Configure a new mapper**, and select **User Attribute** in the window that opens.
+      1. On the **Add mapper** page, set the **Name**, **User Attribute**, and **SAML Attribute Name** fields to `email`.
       1. Select **Save**.
 1. Retrieve client information from Keycloak.
    1. In the **Action** dropdown list, select **Download adapter config**.
@@ -220,7 +220,7 @@ The following GitLab settings correspond to the Keycloak fields.
       1. Note the value of the `Location` attribute.
    1. Retrieve the certificate fingerprint.
       1. Note the value of the `<ds:X509Certificate>` tag.
-      1. Convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3).
+      1. Copy the value to a separate file and convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3). To do this, add `-----BEGIN CERTIFICATE-----` at the beginning of the file and `-----END CERTIFICATE-----` at the end of the file as new lines.
       1. [Calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
 
 ### Configure assertions

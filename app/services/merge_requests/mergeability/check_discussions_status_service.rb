@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module MergeRequests
   module Mergeability
     class CheckDiscussionsStatusService < CheckBaseService

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::Patches::Collection do

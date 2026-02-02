@@ -118,7 +118,10 @@ RSpec.shared_context 'ProjectPolicy context' do
   end
 
   let(:team_member_reporter_permissions) do
-    %i[build_download_code build_read_container_image]
+    %i[
+      build_download_code
+      build_read_container_image
+    ]
   end
 
   let(:developer_permissions) do

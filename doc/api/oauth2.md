@@ -469,7 +469,9 @@ Example cURL request:
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --request POST "https://gitlab.example.com/oauth/token"
+curl --request POST \
+  --url "https://gitlab.example.com/oauth/token" \
+  --data "@auth.txt"
 ```
 
 You can also use this grant flow with registered OAuth applications, by using
@@ -477,8 +479,10 @@ HTTP Basic Authentication with the application's `client_id` and `client_secret`
 
 ```shell
 echo 'grant_type=password&username=<your_username>&password=<your_password>' > auth.txt
-curl --data "@auth.txt" --user client_id:client_secret \
-     --request POST "https://gitlab.example.com/oauth/token"
+curl --request POST \
+  --url "https://gitlab.example.com/oauth/token" \
+  --data "@auth.txt" \
+  --user client_id:client_secret
 ```
 
 Then, you receive a response containing the access token:

@@ -149,6 +149,7 @@ end
 | `boundary_type` | The boundary type for single-boundary endpoints: `:project`, `:group`, `:user`, or `:instance` |
 | `boundary_param` | Optional. The request parameter containing the boundary identifier. Defaults to `:id` for projects and `:id` or `:group_id` for groups |
 | `boundaries` | Alternative to `boundary_type` for endpoints supporting multiple boundaries (see below) |
+| `boundary` | Alternative to `boundary_type` for endpoints where the boundary cannot be determined through standard parameter lookup. A callable object (proc, lambda, or method) that returns the boundary object |
 
 Example with custom `boundary_param`:
 
@@ -159,9 +160,24 @@ get 'jobs' do
 end
 ```
 
+Example using `boundary`:
+
+```ruby
+def registry
+  ::VirtualRegistries::Packages::Maven::Registry.find(params[:id])
+end
+
+route_setting :authorization, permissions: :download_maven_package_file, boundary: ->{ registry.group }
+get '/api/v4/virtual_registries/packages/maven/:id/*path' do
+  # Boundary cannot be determined through `params`. Instead, it is determined
+  # from an object (registry) fetched using an ID from the endpoint's
+  # parameters.
+end
+```
+
 #### Multiple Boundaries per Endpoint
 
-Some endpoints may need to support multiple boundary types. For example, an import endpoint might work at the group level when importing into a group namespace, or at the user level when importing into a personal namespace. In these cases, use the `boundaries` option instead of `boundary_type`:
+Some endpoints may need to support multiple boundary types. For example, an import endpoint might work at the group level when importing into a group namespace, or at the user level when importing into a personal namespace. In these cases, use the `boundaries` option instead of `boundary_type` or `boundary`:
 
 ```ruby
 route_setting :authorization, permissions: :create_bitbucket_import,
@@ -182,7 +198,7 @@ When multiple boundaries are defined:
 - Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
 - The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
-- Use `boundary_type` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
+- Use `boundary_type` or `boundary` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
 
 ### Step 6: Add Test Coverage
 

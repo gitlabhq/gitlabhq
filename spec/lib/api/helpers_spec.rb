@@ -1868,6 +1868,39 @@ RSpec.describe API::Helpers, feature_category: :api do
       allow(helper).to receive(:access_token).and_return(access_token)
     end
 
+    context 'with :boundary authorization setting' do
+      subject(:boundary) { helper.send(:boundary_for_endpoint) }
+
+      before do
+        allow(helper).to receive(:authorization_settings).and_return({ boundary: boundary_setting })
+        allow(helper).to receive(:project).and_return(project)
+      end
+
+      context 'when setting value responds to call' do
+        let(:boundary_setting) { -> { project } }
+
+        it 'evaluates the Proc and returns the boundary' do
+          expect(boundary).to be_a(Authz::Boundary::ProjectBoundary)
+        end
+
+        context 'when Proc returns a value that does not correspond to a valid boundary' do
+          let(:boundary_setting) { -> { 'not a boundary' } }
+
+          it 'returns nil' do
+            expect(boundary).to be_nil
+          end
+        end
+      end
+
+      context 'when setting value does not respond to call' do
+        let(:boundary_setting) { :project }
+
+        it 'returns nil' do
+          expect(boundary).to be_nil
+        end
+      end
+    end
+
     context 'when boundaries are defined in different order' do
       before do
         allow(helper).to receive(:authorization_settings).and_return({

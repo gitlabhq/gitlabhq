@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillDastPreScanVerificationStepsProjectId,
   feature_category: :dynamic_application_security_testing,
-  schema: 20250203154150,
   migration: :gitlab_sec do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :dast_pre_scan_verification_steps }

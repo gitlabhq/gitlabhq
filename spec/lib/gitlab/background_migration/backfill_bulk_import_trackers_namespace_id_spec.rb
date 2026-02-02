@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillBulkImportTrackersNamespaceId,
-  feature_category: :importers,
-  schema: 20250205195333 do
+  feature_category: :importers do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :bulk_import_trackers }
     let(:backfill_column) { :namespace_id }

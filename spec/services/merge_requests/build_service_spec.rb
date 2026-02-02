@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workflow do

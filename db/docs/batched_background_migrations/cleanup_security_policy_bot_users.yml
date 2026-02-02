@@ -1,0 +1,10 @@
+---
+migration_job_name: CleanupSecurityPolicyBotUsers
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214535
+milestone: '18.9'
+queued_migration_version: 20260126103611
+description: |
+  This migration cleans up security policy bot users that were incorrectly created
+  in Premium-tier projects without the security_orchestration_policies licensed feature.
+  See https://gitlab.com/gitlab-org/gitlab/-/issues/581863

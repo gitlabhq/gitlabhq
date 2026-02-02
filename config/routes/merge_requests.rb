@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 resources :merge_requests, concerns: :awardable, except: [:new, :create, :show], constraints: { id: /\d+/ } do
   member do
     get :show # Insert this first to ensure redirections using merge_requests#show match this route

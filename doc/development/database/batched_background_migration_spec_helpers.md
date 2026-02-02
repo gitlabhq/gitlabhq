@@ -153,8 +153,7 @@ To convert an existing spec to use the helpers:
 
 ```ruby
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20240501044347 do
+  feature_category: :code_review_workflow do
 
   let!(:projects) { table(:projects) }
   let!(:merge_requests) { table(:merge_requests) }
@@ -174,8 +173,7 @@ end
 
 ```ruby
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectId,
-  feature_category: :code_review_workflow,
-  schema: 20240501044347 do
+  feature_category: :code_review_workflow do
 
   include Gitlab::BackgroundMigration::SpecHelpers::V1
 

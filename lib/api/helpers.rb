@@ -1121,7 +1121,10 @@ module API
     def boundary_for_endpoint
       return unless access_token.try(:granular?)
 
-      if authorization_settings[:boundaries]
+      if authorization_settings[:boundary] && authorization_settings[:boundary].respond_to?(:call)
+        boundary_object = instance_exec(&authorization_settings[:boundary])
+        ::Authz::Boundary.for(boundary_object) if boundary_object
+      elsif authorization_settings[:boundaries]
         boundary_type_order = { project: 0, group: 1, user: 2, instance: 3 }
 
         authorization_settings[:boundaries]

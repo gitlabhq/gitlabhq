@@ -578,6 +578,22 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         end
       end
 
+      context 'with Proc enum values' do
+        let(:options) { { type: 'String', values: -> { %w[foo bar] } } }
+
+        it 'does not include Proc enum (not serializable)' do
+          expect(converter.schema).to eq({ type: 'string' })
+        end
+      end
+
+      context 'with lambda enum values' do
+        let(:options) { { type: 'Integer', values: -> { [1, 2, 3] } } }
+
+        it 'does not include lambda enum (not serializable)' do
+          expect(converter.schema).to eq({ type: 'integer' })
+        end
+      end
+
       context 'with Time object default' do
         let(:options) { { type: 'String', default: Time.current } }
 

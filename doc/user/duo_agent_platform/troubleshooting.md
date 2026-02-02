@@ -21,8 +21,12 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
-1. Ensure the required feature flags are enabled for the flow you're trying to use.
-   For the latest flag information, check the documentation history for the feature.
+1. If the top-level group is configured correctly but flows are not visible for an individual project:
+   1. Go to the project.
+   1. Select **Automate** > **Flows**.
+   1. In the upper-right corner, select **Enable flow from group**.
+   1. Select a flow, then select **Enable**.
+
 1. If it still does not work:
    1. Disable the affected flow in the top-level group and save the configuration.
    1. Enable the affected flow in the top-level group and save the configuration.
@@ -61,8 +65,9 @@ To configure push rules for a project:
 
 1. Find the email address associated with the service account:
    1. In the upper-right corner, select **Admin**.
-   1. Select **Overview** > **Users** and search for `duo-developer`.
-   1. Locate the `duo-developer` user and copy the email address.
+   1. Select **Overview** > **Users** and search for the account associated with the flow.
+      The account follows the pattern `duo-[flow-name]-[top-level-group-name]`.
+   1. Locate the service account user and copy the email address.
 
 1. Allow the email address to push to the project:
    1. On the top bar, select **Search or go to** and find your project.

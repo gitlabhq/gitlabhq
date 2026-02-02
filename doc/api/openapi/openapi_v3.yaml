@@ -4668,11 +4668,9 @@ paths:
               properties:
                 source_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The source storage shard
                 destination_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The destination storage shard
               required:
               - source_storage_name
@@ -7151,7 +7149,6 @@ paths:
                   description: Explanation for the detection result
                 origin:
                   type: string
-                  default: !ruby/object:Proc {}
                   description: Origin of the AI detection
                   pattern: "\\A.{1,255}\\z"
               required:
@@ -7585,7 +7582,6 @@ paths:
                   example: MIT
                 approval_status:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The approval status of the license. "allowed" or "denied".
               required:
               - name
@@ -7660,7 +7656,6 @@ paths:
                   example: MIT
                 approval_status:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The approval status of the license. "allowed" or "denied".
     delete:
       operationId: deleteApiV4ProjectsIdManagedLicensesManagedLicenseId
@@ -8384,7 +8379,6 @@ paths:
                     properties:
                       op:
                         type: string
-                        enum: !ruby/object:Proc {}
                         description: Operation type
                       path:
                         type: string
@@ -16074,7 +16068,6 @@ paths:
               properties:
                 number_of_replicas_override:
                   type: integer
-                  enum: !ruby/object:Proc {}
                   description: The number of replicas override to set (nil to unset)
   "/api/v4/admin/zoekt/shards":
     get:
@@ -20525,11 +20518,9 @@ paths:
               properties:
                 source_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The source storage shard
                 destination_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The destination storage shard
               required:
               - source_storage_name
@@ -22913,11 +22904,9 @@ paths:
               properties:
                 source_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The source storage shard
                 destination_storage_name:
                   type: string
-                  enum: !ruby/object:Proc {}
                   description: The destination storage shard
               required:
               - source_storage_name
@@ -29865,7 +29854,6 @@ paths:
                   description: Avatar image for topic
                 organization_id:
                   type: integer
-                  default: !ruby/object:Proc {}
                   description: The organization id for the topic
               required:
               - name
@@ -66224,7 +66212,6 @@ paths:
                   description: Strategy for behavior on timeouts
                 pagination_limit:
                   type: integer
-                  enum: !ruby/object:Proc {}
                   description: Pagination limit
               required:
               - personal_access_token
@@ -67060,7 +67047,6 @@ paths:
                     into. Defaults to the current user's namespace.
                 organization_id:
                   type: integer
-                  default: !ruby/object:Proc {}
                   description: 'The ID of the organization that the group will be
                     part of. '
               required:
@@ -69354,14 +69340,12 @@ paths:
         description: The first line of the range to blame
         schema:
           type: integer
-          enum: !ruby/object:Proc {}
         in: query
       - name: range[end]
         required: true
         description: The last line of the range to blame
         schema:
           type: integer
-          enum: !ruby/object:Proc {}
         in: query
   "/api/v4/projects/{id}/repository/files/{file_path}/raw":
     get:
@@ -83319,7 +83303,6 @@ paths:
                   description: The parent group id for creating nested group
                 organization_id:
                   type: integer
-                  default: !ruby/object:Proc {}
                   description: The organization id for the group
                 description:
                   type: string
@@ -89018,12 +89001,10 @@ paths:
                 starts_at:
                   type: string
                   format: date-time
-                  default: !ruby/object:Proc {}
                   description: Starting time
                 ends_at:
                   type: string
                   format: date-time
-                  default: !ruby/object:Proc {}
                   description: Ending time
                 color:
                   type: string

@@ -53,6 +53,37 @@ RSpec.describe WikiHelper, feature_category: :wiki do
     end
   end
 
+  describe '#wiki_breadcrumb_items' do
+    let(:wiki) { build_stubbed(:wiki) }
+
+    before do
+      helper.instance_variable_set(:@wiki, wiki)
+    end
+
+    it 'builds breadcrumb items for each parent page' do
+      items = helper.wiki_breadcrumb_items('home/Core-DevOps/CI-CD')
+
+      expect(items).to eq(
+        [
+          { text: 'Home', href: wiki_page_path(wiki, 'home') },
+          { text: 'Core DevOps', href: wiki_page_path(wiki, 'home/Core-DevOps') }
+        ]
+      )
+    end
+
+    it 'returns an empty array when page_slug is empty' do
+      items = helper.wiki_breadcrumb_items('')
+
+      expect(items).to eq([])
+    end
+
+    it 'returns an empty array for malformed slugs' do
+      items = helper.wiki_breadcrumb_items('///home///')
+
+      expect(items).to eq([])
+    end
+  end
+
   describe '#wiki_attachment_upload_url' do
     let_it_be(:wiki) { build_stubbed(:project_wiki) }
 

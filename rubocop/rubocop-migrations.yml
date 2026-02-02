@@ -58,6 +58,7 @@ Migration/UpdateLargeTable:
   - :personal_access_tokens
   - :project_authorizations_for_migration
   - :project_daily_statistics
+  - :project_uploads
   - :projects
   - :resource_state_events
   - :sbom_occurrence_refs

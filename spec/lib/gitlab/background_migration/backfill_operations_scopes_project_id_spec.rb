@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillOperationsScopesProjectId,
-  feature_category: :feature_flags,
-  schema: 20250204151544 do
+  feature_category: :feature_flags do
   include_examples 'desired sharding key backfill job' do
     let(:batch_table) { :operations_scopes }
     let(:backfill_column) { :project_id }

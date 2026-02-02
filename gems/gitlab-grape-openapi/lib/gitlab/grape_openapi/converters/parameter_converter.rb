@@ -65,7 +65,9 @@ module Gitlab
         end
 
         def build_enum_schema(object_type)
-          { type: object_type, enum: options[:values] }
+          schema = { type: object_type }
+          schema[:enum] = options[:values] unless options[:values].is_a?(Proc)
+          schema
         end
 
         def build_array_schema
