@@ -1,0 +1,23 @@
+# @feature_category: pipeline_composition
+
+query getJobInputs($fullPath: ID!, $id: JobID!) {
+  project(fullPath: $fullPath) {
+    id
+    job(id: $id) {
+      id
+      inputs @gl_introduced(version: "18.9.0") {
+        name
+        value
+      }
+      inputsSpec @gl_introduced(version: "18.9.0") {
+        name
+        type
+        description
+        required
+        default
+        options
+        regex
+      }
+    }
+  }
+}

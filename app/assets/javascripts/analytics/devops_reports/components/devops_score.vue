@@ -3,7 +3,6 @@ import { GlBadge, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { sprintf, s__ } from '~/locale';
-import DevopsScoreCallout from './devops_score_callout.vue';
 
 const defaultHeaderAttrs = {
   thClass: '!gl-bg-default',
@@ -18,7 +17,6 @@ export default {
     GlSingleStat,
     GlLink,
     GlEmptyState,
-    DevopsScoreCallout,
   },
   inject: {
     devopsScoreMetrics: {
@@ -69,7 +67,6 @@ export default {
 </script>
 <template>
   <div data-testid="devops-score-container">
-    <devops-score-callout />
     <gl-empty-state
       v-if="isEmpty"
       :title="__('Data is still calculating…')"

@@ -41,13 +41,19 @@ export default {
     },
     queryRef: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     emptySelectionText: {
       type: String,
       required: true,
     },
     savedInputs: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    initialInputs: {
       type: Array,
       required: false,
       default: () => [],
@@ -74,7 +80,7 @@ export default {
         };
       },
       skip() {
-        return !this.projectPath;
+        return !this.projectPath || !this.queryRef;
       },
       update({ project }) {
         const queryInputs = project?.ciPipelineCreationInputs || [];
@@ -89,16 +95,7 @@ export default {
         return processedInputs;
       },
       result() {
-        this.inputs = structuredClone(this.sourceInputs);
-
-        this.selectedInputNames = this.inputs
-          .filter((input) => input.isSelected && !input.hasRules)
-          .map((input) => input.name);
-
-        this.$emit('update-inputs-metadata', {
-          totalAvailable: this.inputs.length,
-          totalModified: this.modifiedInputs.length,
-        });
+        this.initializeInputs(this.sourceInputs);
       },
       error(error) {
         this.createErrorAlert(error);
@@ -232,6 +229,18 @@ export default {
     this.debouncedSearch = debounce((searchTerm) => {
       this.searchTerm = searchTerm;
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+    if (this.initialInputs?.length) {
+      const { processedInputs, hasDynamicRules } = processQueryInputs(
+        this.initialInputs,
+        this.savedInputs,
+        this.preselectAllInputs,
+      );
+
+      this.hasDynamicRules = hasDynamicRules;
+
+      this.initializeInputs(processedInputs);
+    }
   },
   methods: {
     createErrorAlert(error) {
@@ -241,6 +250,18 @@ export default {
         : s__('Pipelines|There was a problem fetching the pipeline inputs. Please try again.');
 
       createAlert({ message });
+    },
+    initializeInputs(inputs) {
+      this.inputs = structuredClone(inputs);
+
+      this.selectedInputNames = this.inputs
+        .filter((input) => input.isSelected && !input.hasRules)
+        .map((input) => input.name);
+
+      this.$emit('update-inputs-metadata', {
+        totalAvailable: this.inputs.length,
+        totalModified: this.modifiedInputs.length,
+      });
     },
     formatInputValue(input) {
       let { value } = input;

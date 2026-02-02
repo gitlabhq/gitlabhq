@@ -527,35 +527,79 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
   end
 
   describe '.use_new_checksum_approach?' do
-    subject { described_class.use_new_checksum_approach?(partition_id) }
+    subject { described_class.use_new_checksum_approach?(project.id, partition_id) }
 
-    context 'when not on GitLab.com' do
-      before do
-        allow(Gitlab).to receive(:com?).and_return(false)
-      end
-
-      context 'with partition_id below threshold' do
-        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
-
-        it { is_expected.to be true }
-      end
-
-      context 'with partition_id at or above threshold' do
-        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
-
-        it { is_expected.to be true }
-      end
+    before do
+      stub_feature_flags(ci_job_definitions_force_new_checksum: false)
     end
 
-    context 'when on GitLab.com' do
+    context 'with partition_id below threshold' do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with partition_id at threshold' do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with partition_id above threshold' do
+      let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when partition_id is missing but a current ci_partitions record exists' do
+      let(:partition_id) { nil }
+
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        create(:ci_partition, :current)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when partition_id is missing and no ci_partitions records exist' do
+      let(:partition_id) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_job_definitions_new_checksum: false)
       end
 
       context 'with partition_id below threshold' do
         let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
 
         it { is_expected.to be false }
+      end
+
+      context 'with partition_id at threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
+
+        it { is_expected.to be false }
+      end
+
+      context 'with partition_id above threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
+
+        it { is_expected.to be false }
+      end
+    end
+
+    context 'when override feature flag is enabled' do
+      before do
+        stub_feature_flags(ci_job_definitions_force_new_checksum: true)
+      end
+
+      context 'with partition_id below threshold' do
+        let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
+
+        it { is_expected.to be true }
       end
 
       context 'with partition_id at threshold' do
@@ -568,30 +612,6 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
         let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
 
         it { is_expected.to be true }
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_job_definitions_new_checksum: false)
-        end
-
-        context 'with partition_id below threshold' do
-          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
-
-          it { is_expected.to be false }
-        end
-
-        context 'with partition_id at threshold' do
-          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
-
-          it { is_expected.to be false }
-        end
-
-        context 'with partition_id above threshold' do
-          let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD + 1 }
-
-          it { is_expected.to be false }
-        end
       end
     end
   end
@@ -651,7 +671,7 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
 
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(ci_job_definitions_force_new_checksum: false)
       end
 
       context 'when interruptible is not specified' do
@@ -690,7 +710,7 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
 
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(ci_job_definitions_force_new_checksum: false)
       end
 
       context 'when interruptible is not specified' do
@@ -716,15 +736,47 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           expect(fabricate.interruptible).to be true
         end
       end
+
+      context 'when the force flag is enabled' do
+        before do
+          stub_feature_flags(ci_job_definitions_force_new_checksum: true)
+        end
+
+        context 'when interruptible is not specified' do
+          let(:config) { { options: { script: ['echo test'] } } }
+
+          it 'does not include normalized data columns in persisted config' do
+            expect(fabricate.config).not_to have_key(:interruptible)
+          end
+
+          it 'sets normalized data column attribute' do
+            expect(fabricate.interruptible).to eq(described_class.column_defaults['interruptible'])
+          end
+        end
+
+        context 'when interruptible is explicitly set' do
+          let(:config) { { options: { script: ['echo test'] }, interruptible: true } }
+
+          it 'does not include normalized data columns in persisted config' do
+            expect(fabricate.config).not_to have_key(:interruptible)
+          end
+
+          it 'sets normalized data column attribute' do
+            expect(fabricate.interruptible).to be true
+          end
+        end
+      end
     end
 
-    context 'when FF `ci_job_definitions_new_checksum` is disabled' do
+    context 'when the feature flags are disabled' do
       let(:partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD }
       let(:old_partition_id) { described_class::NEW_CHECKSUM_PARTITION_THRESHOLD - 1 }
 
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
-        stub_feature_flags(ci_job_definitions_new_checksum: false)
+        stub_feature_flags(
+          ci_job_definitions_new_checksum: false,
+          ci_job_definitions_force_new_checksum: false
+        )
       end
 
       context 'when interruptible is not specified' do

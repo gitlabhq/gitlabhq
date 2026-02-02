@@ -6,6 +6,8 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import { getProjectRepositoryHealth } from '~/rest_api';
 import RepositoryHealthDetailsSection from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_section.vue';
+import RepositoryHealthDetailsHeader from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_header.vue';
+import RepositoryHealthDetailsStorageBreakdown from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_storage_breakdown.vue';
 import {
   MOCK_REPOSITORY,
   MOCK_REPOSITORY_HEALTH_DETAILS,
@@ -62,6 +64,10 @@ describe('RepositoryHealthDetailsSection', () => {
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findGlEmptyStateButton = () => findGlEmptyState().findComponent(GlButton);
+  const findRepositoryHealthDetailsHeader = () =>
+    wrapper.findComponent(RepositoryHealthDetailsHeader);
+  const findRepositoryHealthDetailsStorageBreakdown = () =>
+    wrapper.findComponent(RepositoryHealthDetailsStorageBreakdown);
 
   describe('when no projectId exists', () => {
     beforeEach(async () => {
@@ -141,8 +147,26 @@ describe('RepositoryHealthDetailsSection', () => {
       );
     });
 
-    it('renders a blob with the response data', () => {
-      expect(wrapper.text()).toBe(JSON.stringify(MOCK_REPOSITORY_HEALTH_DETAILS, null, 2));
+    it('renders RepositoryHealthDetailsHeader with correct props', () => {
+      expect(findRepositoryHealthDetailsHeader().props('healthDetails')).toEqual(
+        MOCK_REPOSITORY_HEALTH_DETAILS,
+      );
+    });
+
+    it('calls fetchRepositoryHealth with generate param when header emits regenerate-report', async () => {
+      findRepositoryHealthDetailsHeader().vm.$emit('regenerate-report');
+      await nextTick();
+
+      expect(getProjectRepositoryHealth).toHaveBeenCalledWith(
+        getIdFromGraphQLId(MOCK_REPOSITORY.project.id),
+        { generate: true },
+      );
+    });
+
+    it('renders RepositoryHealthDetailsStorageBreakdown with correct props', () => {
+      expect(findRepositoryHealthDetailsStorageBreakdown().props('healthDetails')).toEqual(
+        MOCK_REPOSITORY_HEALTH_DETAILS,
+      );
     });
   });
 

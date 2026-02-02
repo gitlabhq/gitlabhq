@@ -986,7 +986,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find_by_testid('retry-button').click
+        find_by_testid('retry-job-link').click
       end
 
       it 'shows the right status and buttons' do
@@ -1021,7 +1021,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
         wait_for_requests
 
-        find_by_testid('retry-button').click
+        find_by_testid('retry-job-button').click
       end
 
       it 'shows a modal to warn the user' do

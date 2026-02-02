@@ -1142,6 +1142,12 @@ Gitlab/RailsLogger:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
+Gitlab/AvoidRailsCacheDeleteMatched:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 RSpec/FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'

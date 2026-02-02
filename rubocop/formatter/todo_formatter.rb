@@ -92,13 +92,6 @@ module RuboCop
         @config_inspect_todo_dir[cop_name] || {}
       end
 
-      def previously_disabled?(todo)
-        config = config_for(todo)
-        return false if config.empty?
-
-        config['Enabled'] == false
-      end
-
       def grace_period?(todo)
         config = config_for(todo)
 
@@ -106,8 +99,6 @@ module RuboCop
       end
 
       def todos_increased?(todo)
-        return false if todo.previously_disabled
-
         config = config_for(todo)
         before = (config['Exclude'] || []).size
         after = todo.files.size
@@ -116,12 +107,7 @@ module RuboCop
       end
 
       def configure_and_validate_todo(todo)
-        todo.previously_disabled = previously_disabled?(todo)
         todo.grace_period = grace_period?(todo) || todos_increased?(todo)
-
-        if todo.previously_disabled && todo.grace_period
-          raise "#{todo.cop_name}: Cop must be enabled to use `#{GracefulFormatter.grace_period_key_value}`."
-        end
 
         todo.generate?
       end

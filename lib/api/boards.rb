@@ -31,6 +31,7 @@ module API
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_issue_board, boundary_type: :project
         get '/' do
           authorize!(:read_issue_board, user_project)
           present paginate(board_parent.boards.with_associations), with: Entities::Board
@@ -41,6 +42,7 @@ module API
           success Entities::Board
           tags ['project_boards']
         end
+        route_setting :authorization, permissions: :read_issue_board, boundary_type: :project
         get '/:board_id' do
           authorize!(:read_issue_board, user_project)
           present board, with: Entities::Board
@@ -54,6 +56,7 @@ module API
         params do
           requires :name, type: String, desc: 'The board name'
         end
+        route_setting :authorization, permissions: :create_issue_board, boundary_type: :project
         post '/' do
           authorize!(:admin_issue_board, board_parent)
 
@@ -68,6 +71,7 @@ module API
         params do
           use :update_params
         end
+        route_setting :authorization, permissions: :update_issue_board, boundary_type: :project
         put '/:board_id' do
           authorize!(:admin_issue_board, board_parent)
 
@@ -79,7 +83,7 @@ module API
           success Entities::Board
           tags ['project_boards']
         end
-
+        route_setting :authorization, permissions: :delete_issue_board, boundary_type: :project
         delete '/:board_id' do
           authorize!(:admin_issue_board, board_parent)
 
@@ -99,6 +103,7 @@ module API
         params do
           use :pagination
         end
+        route_setting :authorization, permissions: :read_issue_board_list, boundary_type: :project
         get '/lists' do
           authorize!(:read_issue_board, user_project)
           present paginate(board_lists), with: Entities::List
@@ -112,6 +117,7 @@ module API
         params do
           requires :list_id, type: Integer, desc: 'The ID of a list'
         end
+        route_setting :authorization, permissions: :read_issue_board_list, boundary_type: :project
         get '/lists/:list_id' do
           authorize!(:read_issue_board, user_project)
           present board_lists.find(params[:list_id]), with: Entities::List
@@ -125,6 +131,7 @@ module API
         params do
           use :list_creation_params
         end
+        route_setting :authorization, permissions: :create_issue_board_list, boundary_type: :project
         post '/lists' do
           authorize!(:admin_issue_board_list, user_project)
 
@@ -140,6 +147,7 @@ module API
           requires :list_id,  type: Integer, desc: 'The ID of a list'
           requires :position, type: Integer, desc: 'The position of the list'
         end
+        route_setting :authorization, permissions: :update_issue_board_list, boundary_type: :project
         put '/lists/:list_id' do
           list = board_lists.find(params[:list_id])
 
@@ -156,6 +164,7 @@ module API
         params do
           requires :list_id, type: Integer, desc: 'The ID of a board list'
         end
+        route_setting :authorization, permissions: :delete_issue_board_list, boundary_type: :project
         delete "/lists/:list_id" do
           authorize!(:admin_issue_board_list, user_project)
           list = board_lists.find(params[:list_id])

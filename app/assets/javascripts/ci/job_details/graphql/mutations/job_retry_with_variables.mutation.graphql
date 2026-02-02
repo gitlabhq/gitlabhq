@@ -1,7 +1,11 @@
 #import "~/ci/job_details/graphql/fragments/ci_job.fragment.graphql"
 
-mutation retryJobWithVariables($id: CiProcessableID!, $variables: [CiVariableInput!]) {
-  jobRetry(input: { id: $id, variables: $variables }) {
+mutation retryJobWithVariables(
+  $id: CiProcessableID!
+  $variables: [CiVariableInput!]
+  $inputs: [CiInputsInput!]
+) {
+  jobRetry(input: { id: $id, variables: $variables, inputs: $inputs }) {
     job {
       ...BaseCiJob
       webPath

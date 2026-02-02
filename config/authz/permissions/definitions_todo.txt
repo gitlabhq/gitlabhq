@@ -201,8 +201,6 @@ create_group_via_api
 create_group_with_default_branch_protection
 create_incident
 create_instance_runners
-create_issue_board
-create_issue_board_list
 create_iteration
 create_iteration_cadence
 create_jira_connect_subscription
@@ -526,8 +524,6 @@ read_issuable_metric_image
 read_issuable_participables
 read_issuable_resource_link
 read_issue_analytics
-read_issue_board
-read_issue_board_list
 read_issue_iid
 read_iteration_cadence
 read_job_artifacts
@@ -730,8 +726,6 @@ update_group_link
 update_group_member
 update_group_stage
 update_issuable_metric_image
-update_issue_board
-update_issue_board_list
 update_issue_link
 update_iteration
 update_max_artifacts_size

@@ -1,0 +1,6 @@
+---
+name: read_issue_board_list
+description: Grants the ability to read issue board lists
+boundaries:
+  - project
+  - group

@@ -1,0 +1,6 @@
+---
+name: delete_issue_board_list
+description: Grants the ability to delete issue board lists
+boundaries:
+  - project
+  - group

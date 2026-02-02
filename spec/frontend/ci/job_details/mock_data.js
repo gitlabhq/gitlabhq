@@ -136,3 +136,26 @@ export const mockPendingJobData = {
     },
   },
 };
+
+export const mockJobInputsQueryHandler = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/4',
+      job: {
+        id: `gid://gitlab/Ci::Build/${mockId}`,
+        inputsSpec: [
+          {
+            name: 'environment',
+            type: 'STRING',
+            description: 'Target environment',
+            required: false,
+            default: 'staging',
+            options: ['staging', 'production'],
+            regex: null,
+          },
+        ],
+        inputs: [{ name: 'environment', value: 'staging' }],
+      },
+    },
+  },
+};

@@ -9,6 +9,8 @@ permissions:
   - create_epic_issue
   - create_epic_link
   - create_issue
+  - create_issue_board
+  - create_issue_board_list
   - create_issue_link
   - create_issue_time_estimate
   - create_label
@@ -26,6 +28,8 @@ permissions:
   - update_epic_issue
   - update_epic_link
   - update_issue
+  - update_issue_board
+  - update_issue_board_list
   - update_label
   - update_milestone
 boundaries:

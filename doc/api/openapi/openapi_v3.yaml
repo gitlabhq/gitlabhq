@@ -1824,6 +1824,65 @@ paths:
         schema:
           type: string
         in: query
+  "/api/v4/groups/{id}/-/virtual_registries/container/upstreams/test":
+    post:
+      operationId: postApiV4GroupsIdDashVirtualRegistriesContainerUpstreamsTest
+      summary: Test connection to a container virtual registry upstream with provided
+        parameters
+      description: |-
+        This feature was introduced in GitLab 18.9. \
+                          This feature is an experiment. \
+                          This feature is behind the `container_virtual_registries` feature flag.
+      tags:
+      - Container virtual registries
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The group ID or full group path. Must be a top-level group
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  default: 1
+                  description: Current page number
+                  example: 1
+                per_page:
+                  type: integer
+                  default: 20
+                  description: Number of items per page
+                  example: 20
+                url:
+                  type: string
+                  description: The URL of the container virtual registry upstream
+                username:
+                  type: string
+                  description: The username of the container virtual registry upstream
+                password:
+                  type: string
+                  description: The password of the container virtual registry upstream
+              required:
+              - url
   "/api/v4/virtual_registries/container/registries/{id}/upstreams":
     get:
       operationId: getApiV4VirtualRegistriesContainerRegistriesIdUpstreams
@@ -2046,6 +2105,50 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/virtual_registries/container/upstreams/{id}/test":
+    post:
+      operationId: postApiV4VirtualRegistriesContainerUpstreamsIdTest
+      summary: Test connection to an existing container virtual registry upstream
+        with optional override params
+      description: |-
+        This feature was introduced in GitLab 18.9. \
+                              This feature is an experiment. \
+                              This feature is behind the `container_virtual_registries` feature flag.
+      tags:
+      - Container virtual registries
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The URL of the container virtual registry upstream
+                username:
+                  type: string
+                  description: The username of the container virtual registry upstream
+                password:
+                  type: string
+                  description: The password of the container virtual registry upstream
   "/api/v4/virtual_registries/container/registry_upstreams":
     post:
       operationId: postApiV4VirtualRegistriesContainerRegistryUpstreams

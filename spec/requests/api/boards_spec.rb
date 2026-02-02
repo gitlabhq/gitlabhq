@@ -51,6 +51,11 @@ RSpec.describe API::Boards, :with_license, feature_category: :portfolio_manageme
       expect(response).to have_gitlab_http_status(:bad_request)
       expect(json_response['error']).to eq('name is missing')
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_issue_board do
+      let(:boundary_object) { board_parent }
+      let(:request) { post api(url, personal_access_token: pat), params: { name: 'Test Board' } }
+    end
   end
 
   describe "DELETE /projects/:id/boards/:board_id" do
@@ -62,6 +67,11 @@ RSpec.describe API::Boards, :with_license, feature_category: :portfolio_manageme
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { board_parent.boards.count }.by(-1)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_issue_board do
+      let(:boundary_object) { board_parent }
+      let(:request) { delete api(url, personal_access_token: pat) }
     end
   end
 

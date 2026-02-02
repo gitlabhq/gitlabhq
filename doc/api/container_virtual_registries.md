@@ -286,6 +286,66 @@ Example response:
 ]
 ```
 
+### Test connection before creating an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578679) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+
+{{< /history >}}
+
+Tests the connection to a container upstream registry that has not been added to the virtual registry yet. This endpoint validates connectivity and credentials before creating the upstream registry.
+
+```plaintext
+POST /groups/:id/-/virtual_registries/container/upstreams/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:-----|:---------|:------------|
+| `id` | string or integer | Yes | The group ID or full-group path. Must be a top-level group. |
+| `url` | string | Yes | The URL of the upstream registry. |
+| `password` | string | No | The password of the upstream registry. |
+| `username` | string | No | The username of the upstream registry. |
+
+> [!note]
+> You must include both the `username` and `password` in the request, or neither. If not set, a public (anonymous) request is used to access the upstream.
+
+#### Test workflow
+
+The `test` endpoint sends a HEAD request to the provided upstream URL using a test path to validate connectivity and authentication. The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Description | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success. Upstream accessible | `{ "success": true }` |
+| 404 | Success. Upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection/timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/groups/5/-/virtual_registries/container/upstreams/test"
+     --data '{"url": "https://registry-1.docker.io", "username": "<your_username>", "password": "<your_password>"}' \
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
+
+> [!note]
+> Both `2XX` (found) and `404 Not Found` HTTP status codes from the upstream registry are considered successful responses, as they indicate the upstream is reachable and properly configured.
+
 ### List all upstream registries for a virtual registry
 
 Lists all upstream registries for a container virtual registry.
@@ -604,6 +664,102 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
+### Test connection to an upstream registry with override parameters
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578679) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
+
+{{< /history >}}
+
+Tests the connection to an existing container upstream registry with optional parameter overrides.
+
+This way, you can test changes to the URL, username, or password before updating the upstream registry configuration.
+
+```plaintext
+POST /virtual_registries/container/upstreams/:id/test
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | Yes | The ID of the upstream registry. |
+| `password` | string | No | The override password for testing. |
+| `url` | string | No | The override URL for testing. If provided, tests connection to this URL instead of the upstream's configured URL. |
+| `username` | string | No | The override username for testing. |
+
+#### How the test works
+
+The endpoint performs a HEAD request to the upstream URL using a test path to validate connectivity and authentication. If the upstream has a cached artifact, the relative path of the upstream is used for testing. Otherwise, a placeholder path is used.
+
+The test behavior depends on the parameters provided:
+
+- No parameters: Tests the upstream with its current configuration (existing URL, username, and password)
+- URL override: Tests connectivity to the new URL (username and password must be provided together or not at all)
+- Credential override: Tests the existing URL with new credentials
+
+The response received from the HEAD request is interpreted as follows:
+
+| Upstream Response | Meaning | Result |
+|:------------------|:--------|:-------|
+| 2XX | Success. Upstream accessible | `{ "success": true }` |
+| 404 | Success. Upstream accessible, but test artifact not found | `{ "success": true }` |
+| 401 | Authentication failed | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | Access forbidden | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | Upstream server error | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| Network errors | Connection or timeout issues | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+> [!note]
+> Both `2XX` (found) and `404 Not Found` responses indicate successful connectivity and authentication to the upstream registry. The test does not validate whether a specific artifact exists.
+
+Example request (test existing configuration):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with URL override and no credentials):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "https://registry-1.docker.io"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with URL and credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "https://registry-1.docker.io", "username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example request (test with credential override):
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/container/upstreams/1/test"
+```
+
+Example response:
+
+```json
+{
+  "success": true
+}
+```
 
 ## Manage cache entries
 

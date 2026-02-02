@@ -51,7 +51,7 @@ frameworks, or a combination, that you specify.
 | Field                   | Type     | Possible values          | Description |
 |-------------------------|----------|--------------------------|-------------|
 | `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
-| `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+| `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
 | `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
 
 ### Scope examples
@@ -99,6 +99,25 @@ subgroups and their projects), excluding the project with ID `64`.
     projects:
       excluding:
         - id: 64
+```
+
+In this example, the scan execution policy enforces a SAST scan on all projects except archived
+projects. This is useful when you have many archived projects that should not be scanned.
+
+```yaml
+- name: Enforce SAST scan excluding archived projects
+  description: This policy enforces SAST scans but excludes archived projects
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: sast
+  policy_scope:
+    projects:
+      excluding:
+        - type: archived
 ```
 
 ## Separation of duties

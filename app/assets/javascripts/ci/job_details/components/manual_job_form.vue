@@ -1,15 +1,18 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
+import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
+import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import playJobWithVariablesMutation from '../graphql/mutations/job_play_with_variables.mutation.graphql';
 import retryJobWithVariablesMutation from '../graphql/mutations/job_retry_with_variables.mutation.graphql';
+import getJobInputsQuery from '../graphql/queries/get_job_inputs.query.graphql';
 import JobVariablesForm from './job_variables_form.vue';
 
 // This component is a port of ~/ci/job_details/components/legacy_manual_variables_form.vue
@@ -20,10 +23,16 @@ export default {
   components: {
     GlButton,
     JobVariablesForm,
+    PipelineInputsForm,
   },
-  inject: ['canSetPipelineVariables'],
+  mixins: [glFeatureFlagMixin()],
+  inject: ['canSetPipelineVariables', 'projectPath'],
   props: {
     isRetryable: {
+      type: Boolean,
+      required: true,
+    },
+    isManual: {
       type: Boolean,
       required: true,
     },
@@ -41,11 +50,34 @@ export default {
       default: null,
     },
   },
+  apollo: {
+    job: {
+      query: getJobInputsQuery,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          id: convertToGraphQLId(TYPENAME_COMMIT_STATUS, this.jobId),
+        };
+      },
+      skip() {
+        return Boolean(!this.glFeatures.ciJobInputs || !this.isRetryable || this.isManual);
+      },
+      update(data) {
+        const job = data?.project?.job;
+        return job || { inputs: [], inputsSpec: [] };
+      },
+      error() {
+        createAlert({ message: JOB_GRAPHQL_ERRORS.jobInputsQueryErrorText });
+      },
+    },
+  },
   emits: ['hide-manual-variables-form'],
   data() {
     return {
       runBtnDisabled: false,
       preparedVariables: [],
+      updatedInputs: [],
+      job: {},
     };
   },
   i18n: {
@@ -64,6 +96,14 @@ export default {
       return this.isRetryable
         ? this.$options.i18n.runAgainButtonText
         : this.$options.i18n.runButtonText;
+    },
+    showInputsForm() {
+      return (
+        this.glFeatures.ciJobInputs &&
+        this.isRetryable &&
+        !this.isManual &&
+        !this.$apollo.queries.job.loading
+      );
     },
   },
   methods: {
@@ -92,7 +132,7 @@ export default {
       try {
         const { data } = await this.$apollo.mutate({
           mutation: retryJobWithVariablesMutation,
-          variables: this.mutationVariables,
+          variables: { ...this.mutationVariables, inputs: this.updatedInputs },
         });
         if (data.jobRetry?.errors?.length) {
           createAlert({ message: data.jobRetry.errors[0] });
@@ -127,11 +167,24 @@ export default {
         this.playJob();
       }
     },
+    handleInputsUpdated(updatedInputs) {
+      this.updatedInputs = updatedInputs;
+    },
   },
 };
 </script>
 <template>
   <div>
+    <pipeline-inputs-form
+      v-if="showInputsForm"
+      emit-modified-only
+      preselect-all-inputs
+      :saved-inputs="job.inputs"
+      :initial-inputs="job.inputsSpec"
+      :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"
+      @update-inputs="handleInputsUpdated"
+    />
+
     <job-variables-form
       v-if="canSetPipelineVariables"
       :job-id="jobId"

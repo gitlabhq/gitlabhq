@@ -559,7 +559,12 @@ Repeat the steps for all affected resources and Geo data types.
 
 ### Message: `"Error during verification","error":"File is not checksummable"`
 
-The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
+The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Since GitLab 18.9, the error message includes additional details about the cause:
+
+- `File is not checksummable - file does not exist at: <path>`: The file is missing from storage. The path shown helps identify the missing file.
+- `File is not checksummable - <ModelClass> <ID> is excluded from verification`: The record is excluded from the verification scope.
+
+Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
 
 ### Failed verification of Uploads on the primary Geo site
 

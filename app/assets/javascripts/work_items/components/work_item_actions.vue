@@ -260,7 +260,9 @@ export default {
       skip() {
         return (
           !this.canUpdateMetadata ||
-          !this.workItemTypeConfiguration?.canPromoteToObjective ||
+          (this.workItemTypeConfiguration?.canPromoteToObjective !== null
+            ? !this.workItemTypeConfiguration?.canPromoteToObjective
+            : false) ||
           this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT
         );
       },

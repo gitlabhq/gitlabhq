@@ -11,6 +11,7 @@ export const FILTER_TAG_IDENTIFIER = 'tag';
 export const JOB_GRAPHQL_ERRORS = {
   jobMutationErrorText: __('There was an error running the job. Please try again.'),
   jobQueryErrorText: __('There was an error fetching the job.'),
+  jobInputsQueryErrorText: __('There was an error fetching inputs for this job.'),
 };
 
 export const ICONS = {

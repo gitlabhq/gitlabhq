@@ -6,6 +6,8 @@ permissions:
   - delete_epic_link
   - delete_epic_issue
   - delete_issue
+  - delete_issue_board
+  - delete_issue_board_list
   - delete_issue_link
   - delete_label
   - delete_milestone

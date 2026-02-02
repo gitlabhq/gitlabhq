@@ -42,6 +42,17 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
   end
 
+  shared_context 'with stubbed project import service' do
+    before do
+      target_namespace = boundary_object == :user ? user.namespace : boundary_object
+      project = create(:project, namespace: target_namespace, name: 'test-import', path: 'test-import')
+      service_response = ServiceResponse.success(payload: project)
+      allow_next_instance_of(::Import::GitlabProjects::CreateProjectService) do |instance|
+        allow(instance).to receive(:execute).and_return(service_response)
+      end
+    end
+  end
+
   describe 'POST /projects/import' do
     subject(:perform_archive_upload) { upload_archive(file_upload, workhorse_headers, params) }
 
@@ -60,6 +71,33 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { namespace }
+      let(:request) do
+        workhorse_finalize(
+          api("/projects/import", personal_access_token: pat),
+          method: :post,
+          file_key: :file,
+          params: params.merge(file: file_upload, namespace_path: namespace.full_path),
+          headers: workhorse_headers,
+          send_rewritten_field: true
+        )
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { :user }
+      let(:request) do
+        workhorse_finalize(
+          api("/projects/import", personal_access_token: pat),
+          method: :post,
+          file_key: :file,
+          params: params.merge(file: file_upload),
+          headers: workhorse_headers,
+          send_rewritten_field: true
+        )
+      end
+    end
 
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
@@ -428,6 +466,25 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { namespace }
+
+      include_context 'with stubbed project import service'
+
+      let(:request) do
+        post api('/projects/remote-import', personal_access_token: pat), params: params.merge(namespace_id: namespace.id)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { :user }
+
+      include_context 'with stubbed project import service'
+
+      let(:request) do
+        post api('/projects/remote-import', personal_access_token: pat), params: params
+      end
+    end
 
     context 'when the response is successful' do
       it 'schedules the import successfully' do
@@ -494,6 +551,25 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { namespace }
+
+      include_context 'with stubbed project import service'
+
+      let(:request) do
+        post api('/projects/remote-import-s3', personal_access_token: pat), params: params.merge(namespace_id: namespace.id)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { :user }
+
+      include_context 'with stubbed project import service'
+
+      let(:request) do
+        post api('/projects/remote-import-s3', personal_access_token: pat), params: params
+      end
+    end
 
     context 'when the response is successful' do
       it 'schedules the import successfully' do
@@ -543,6 +619,19 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'GET /projects/:id/import' do
+    it_behaves_like 'authorizing granular token permissions', :read_project_import do
+      let(:project) { create(:project, :import_started) }
+      let(:boundary_object) { project }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      let(:request) do
+        get api("/projects/#{project.id}/import", personal_access_token: pat)
+      end
+    end
+
     context 'with an unauthenticated user' do
       it 'returns unauthorized response for public project import status' do
         project = create(:project, :public)
@@ -604,6 +693,26 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :create_project_relation_import do
+      let(:boundary_object) { test_project }
+      let(:test_project) { create(:project, name: 'test-import', path: 'test-import') }
+
+      before do
+        test_project.add_maintainer(user)
+        params[:path] = test_project.full_path
+      end
+
+      let(:request) do
+        workhorse_finalize(
+          api("/projects/import-relation", personal_access_token: pat),
+          method: :post,
+          file_key: :file,
+          params: params.merge(file: file_upload),
+          headers: workhorse_headers,
+          send_rewritten_field: true
+        )
+      end
+    end
 
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_relation_import }
@@ -694,6 +803,19 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'GET /projects/:id/relation-imports' do
+    it_behaves_like 'authorizing granular token permissions', :read_project_relation_import do
+      let(:test_project) { create(:project) }
+      let(:boundary_object) { test_project }
+
+      before do
+        test_project.add_maintainer(user)
+      end
+
+      let(:request) do
+        get api("/projects/#{test_project.id}/relation-imports", personal_access_token: pat)
+      end
+    end
+
     context 'when the user is unauthorized' do
       let_it_be(:project) { create(:project, :public) }
 
@@ -754,6 +876,12 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :authorize_project_import do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api('/projects/import/authorize', personal_access_token: pat), headers: workhorse_headers
+      end
+    end
 
     it 'authorizes importing project with workhorse header' do
       authorize_import
@@ -813,6 +941,12 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
+    it_behaves_like 'authorizing granular token permissions', :authorize_project_relation_import do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api('/projects/import-relation/authorize', personal_access_token: pat), headers: workhorse_headers
+      end
+    end
 
     it 'authorizes importing project with workhorse header' do
       authorize_import

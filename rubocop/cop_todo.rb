@@ -4,7 +4,7 @@ require_relative 'formatter/graceful_formatter'
 
 module RuboCop
   class CopTodo
-    attr_accessor :previously_disabled, :grace_period
+    attr_accessor :grace_period
 
     attr_reader :cop_name, :files, :offense_count
 
@@ -13,7 +13,6 @@ module RuboCop
       @files = Set.new
       @offense_count = 0
       @cop_class = self.class.find_cop_by_name(cop_name)
-      @previously_disabled = false
       @grace_period = false
     end
 
@@ -31,7 +30,7 @@ module RuboCop
     end
 
     def generate?
-      previously_disabled || grace_period || files.any?
+      grace_period || files.any?
     end
 
     def to_yaml
@@ -39,12 +38,6 @@ module RuboCop
       yaml << '---'
       yaml << '# Cop supports --autocorrect.' if autocorrectable?
       yaml << "#{cop_name}:"
-
-      if previously_disabled
-        yaml << "  # Offense count: #{offense_count}"
-        yaml << '  # Temporarily disabled due to too many offenses'
-        yaml << '  Enabled: false'
-      end
 
       yaml << "  #{RuboCop::Formatter::GracefulFormatter.grace_period_key_value}" if grace_period
 

@@ -112,7 +112,7 @@ $merge-request-sticky-header-height: 45px;
   .merge-request-sticky-header-wrapper {
     @include gl-container-width-up(md, panel) {
       top: $calc-application-header-height;
-      min-height: 88px;
+      min-height: 89px;
       container-type: scroll-state;
       container-name: sticky-header;
       z-index: $top-bar-z-index - 1;

@@ -227,7 +227,7 @@ To continue to use `heroku/builder:22` after GitLab 19.0, set `AUTO_DEVOPS_BUILD
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/583607).
 
 The **Trending** tab in **Explore** > **Projects** and its associated GraphQL arguments are deprecated in GitLab 18.8 and will be removed in GitLab 19.0.
-Starting in 18.8, the **Trending** tab will redirect to the **Most starred** tab.
+In the month before the GitLab 19.0 release, the ***Trending** tab redirects to the **Active** tab sorted by stars in descending order on GitLab.com.
 
 **What's being removed**
 
@@ -243,11 +243,10 @@ The trending algorithm only considers public projects, making it ineffective for
 
 **Action required**
 
-UI users: The **Trending** tab will redirect to **Most starred** in 18.8 before full removal in 19.0. We recommend using:
+UI users: The **Trending** tab will be inaccessible during the next breaking change window before full removal in 19.0. We recommend using:
 
-- The **Active** tab for recently updated projects
+- The **Active** tab for recently updated or most starred projects
 - The **All** tab for comprehensive browsing with search
-- The **Most starred** tab for popular projects
 
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 

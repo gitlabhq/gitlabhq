@@ -56,6 +56,15 @@ export const MOCK_REPOSITORY = {
 };
 
 export const MOCK_REPOSITORY_HEALTH_DETAILS = {
-  objects: {},
-  references: {},
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  size: 5000,
+  objects: {
+    size: 3000,
+    recentSize: 1500,
+    staleSize: 1500,
+  },
+  references: {
+    packedSize: 2000,
+    looseCount: 42,
+  },
 };

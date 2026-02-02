@@ -88,11 +88,7 @@ export default {
       return !this.railsFields.login.value;
     },
     passwordFieldAutofocusAttr() {
-      if (this.isTwoStepSignInEnabled) {
-        return this.showPasswordField;
-      }
-
-      return Boolean(this.railsFields.login.value);
+      return !this.loginFieldAutofocusAttr;
     },
     fields() {
       const baseFields = {

@@ -1,0 +1,6 @@
+---
+name: create_issue_board_list
+description: Grants the ability to create issue board lists
+boundaries:
+  - project
+  - group

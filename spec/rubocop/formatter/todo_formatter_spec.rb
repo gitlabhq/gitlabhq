@@ -175,35 +175,6 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
       end
     end
 
-    context 'when cop previously explicitly disabled in rubocop_todo/' do
-      before do
-        todo_dir.write('B/TooManyOffenses', <<~YAML)
-          ---
-          B/TooManyOffenses:
-            Enabled: false
-            Exclude:
-              - 'x.rb'
-        YAML
-
-        todo_dir.inspect_all
-      end
-
-      it 'keeps cop disabled' do
-        run_formatter
-
-        expect(todo_yml('B/TooManyOffenses')).to eq(<<~YAML)
-          ---
-          B/TooManyOffenses:
-            # Offense count: 3
-            # Temporarily disabled due to too many offenses
-            Enabled: false
-            Exclude:
-              - 'a.rb'
-              - 'c.rb'
-        YAML
-      end
-    end
-
     context 'with grace period' do
       let(:yaml) do
         <<~YAML
@@ -261,24 +232,6 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
                 - 'a.rb'
                 - 'c.rb'
           YAML
-        end
-      end
-
-      context 'and previously disabled' do
-        let(:yaml) do
-          <<~YAML
-            ---
-            B/TooManyOffenses:
-              Enabled: false
-              Details: grace period
-              Exclude:
-                - 'x.rb'
-          YAML
-        end
-
-        it 'raises an exception' do
-          expect { run_formatter }
-            .to raise_error(RuntimeError, 'B/TooManyOffenses: Cop must be enabled to use `Details: grace period`.')
         end
       end
     end

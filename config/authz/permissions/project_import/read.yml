@@ -1,0 +1,5 @@
+---
+name: read_project_import
+description: Grants the ability to read project import status
+boundaries:
+  - project

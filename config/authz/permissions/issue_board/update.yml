@@ -1,0 +1,6 @@
+---
+name: update_issue_board
+description: Grants the ability to update issue boards
+boundaries:
+  - project
+  - group

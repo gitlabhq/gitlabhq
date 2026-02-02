@@ -141,7 +141,7 @@ export default {
     showJobForm() {
       return (
         this.showUpdateVariablesState ||
-        (this.job?.playable && !this.job?.scheduled && !this.hasJobLog)
+        (this.job.playable && !this.job.scheduled && !this.hasJobLog)
       );
     },
   },
@@ -334,7 +334,7 @@ export default {
         </div>
         <!-- EO job log -->
 
-        <!-- job form (variables) -->
+        <!-- job form for variables and inputs -->
 
         <template v-if="showJobForm">
           <h2>{{ emptyStateTitle }}</h2>
@@ -344,10 +344,11 @@ export default {
           </p>
           <manual-job-form
             :is-retryable="isJobRetryable"
+            :is-manual="job.playable && !job.scheduled"
             :job-id="job.id"
             :job-name="jobName"
             :confirmation-message="jobConfirmationMessage"
-            @hide-manual-variables-form="onHideManualVariablesForm()"
+            @hide-manual-variables-form="onHideManualVariablesForm"
           />
         </template>
 
@@ -374,7 +375,7 @@ export default {
           }"
           :artifact-help-url="artifactHelpUrl"
           data-testid="job-sidebar"
-          @update-variables="onUpdateVariables()"
+          @update-variables="onUpdateVariables"
         />
       </div>
     </template>

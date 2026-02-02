@@ -1,0 +1,10 @@
+---
+name: ci_job_definitions_force_new_checksum
+description: Implement new checksum approach for `Ci::JobDefinition`
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/577902
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221445
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583425
+milestone: '18.9'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

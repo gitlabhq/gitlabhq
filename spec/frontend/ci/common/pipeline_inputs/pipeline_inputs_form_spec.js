@@ -154,6 +154,44 @@ describe('PipelineInputsForm', () => {
     });
   });
 
+  describe('when initialInputs prop is provided', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn();
+      const initialInputs = [
+        {
+          name: 'deploy_environment',
+          type: 'STRING',
+          description: 'Specify deployment environment',
+          required: false,
+          default: 'staging',
+          options: ['staging', 'production'],
+          regex: '^(staging|production)$',
+        },
+        {
+          name: 'api_token',
+          type: 'STRING',
+          description: 'API token for deployment',
+          required: true,
+          default: '',
+          options: [],
+          regex: null,
+        },
+      ];
+      await createComponent({ props: { initialInputs, queryRef: '' } });
+    });
+
+    it('uses initialInputs instead of GraphQL query', () => {
+      expect(pipelineInputsHandler).not.toHaveBeenCalled();
+    });
+
+    it('renders inputs from initialInputs', () => {
+      expect(findInputsSelector().props('items')).toEqual([
+        { text: 'deploy_environment', value: 'deploy_environment' },
+        { text: 'api_token', value: 'api_token' },
+      ]);
+    });
+  });
+
   describe('GraphQL query', () => {
     describe('with inputs', () => {
       beforeEach(async () => {
@@ -415,6 +453,18 @@ describe('PipelineInputsForm', () => {
       });
 
       it('does not execute the query', () => {
+        expect(pipelineInputsHandler).not.toHaveBeenCalled();
+        expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('when queryRef is empty', () => {
+      beforeEach(async () => {
+        pipelineInputsHandler = jest.fn();
+        await createComponent({ props: { queryRef: '' } });
+      });
+
+      it('does not execute the GraphQL query', () => {
         expect(pipelineInputsHandler).not.toHaveBeenCalled();
         expect(findEmptyState().exists()).toBe(true);
       });

@@ -44,6 +44,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
         expect_schema_match_for(response, 'public_api/v4/boards', ee)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_board do
+        let(:boundary_object) { board_parent }
+        let(:request) { get api(root_url, personal_access_token: pat) }
+      end
     end
   end
 
@@ -54,6 +59,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       get api(url, user)
 
       expect_schema_match_for(response, 'public_api/v4/board', ee)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_board do
+      let(:boundary_object) { board_parent }
+      let(:request) { get api(url, personal_access_token: pat) }
     end
   end
 
@@ -73,6 +83,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['hide_backlog_list']).to eq(true)
       expect(json_response['hide_closed_list']).to eq(true)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_issue_board do
+      let(:boundary_object) { board_parent }
+      let(:request) { put api(url, personal_access_token: pat) }
     end
   end
 
@@ -94,6 +109,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_board_list do
+      let(:boundary_object) { board_parent }
+      let(:request) { get api(url, personal_access_token: pat) }
+    end
   end
 
   describe "GET #{route_definition}/:board_id/lists/:list_id" do
@@ -112,6 +132,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       get api("#{url}/5324", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_issue_board_list do
+      let(:boundary_object) { board_parent }
+      let(:request) { get api(url, personal_access_token: pat) }
     end
   end
 
@@ -137,6 +162,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_issue_board_list do
+      let(:boundary_object) { board_parent }
+      let(:request) { post api(url, personal_access_token: pat), params: { label_id: ux_label.id } }
+    end
   end
 
   describe "PUT #{route_definition}/:board_id/lists/:list_id to update only position" do
@@ -159,6 +189,11 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
       put api("#{url}/#{test_list.id}", guest), params: { position: 1 }
 
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_issue_board_list do
+      let(:boundary_object) { board_parent }
+      let(:request) { put api("#{url}/#{test_list.id}", personal_access_token: pat), params: { position: 1 } }
     end
   end
 
@@ -202,6 +237,12 @@ RSpec.shared_examples 'group and project boards' do |route_definition, ee = fals
 
       it_behaves_like '412 response' do
         let(:request) { api("#{url}/#{dev_list.id}", owner) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_issue_board_list do
+        let(:boundary_object) { board_parent }
+        let(:user) { owner }
+        let(:request) { delete api("#{url}/#{dev_list.id}", personal_access_token: pat) }
       end
     end
   end

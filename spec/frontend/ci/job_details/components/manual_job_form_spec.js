@@ -13,12 +13,15 @@ import playJobMutation from '~/ci/job_details/graphql/mutations/job_play_with_va
 import retryJobMutation from '~/ci/job_details/graphql/mutations/job_retry_with_variables.mutation.graphql';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import JobVariablesForm from '~/ci/job_details/components/job_variables_form.vue';
+import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
+import getJobInputsQuery from '~/ci/job_details/graphql/queries/get_job_inputs.query.graphql';
 
 import {
   mockFullPath,
   mockId,
   mockJobPlayMutationData,
   mockJobRetryMutationData,
+  mockJobInputsQueryHandler,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
@@ -34,6 +37,7 @@ const defaultProps = {
   jobId: mockId,
   jobName: 'job-name',
   isRetryable: false,
+  isManual: false,
 };
 
 const defaultProvide = {
@@ -60,6 +64,7 @@ describe('Manual Variables Form', () => {
     mockApollo = createMockApollo([
       [playJobMutation, handlers.playJobMutationHandler],
       [retryJobMutation, handlers.retryJobMutationHandler],
+      [getJobInputsQuery, handlers.getJobInputsQueryHandler],
     ]);
 
     const options = {
@@ -82,6 +87,7 @@ describe('Manual Variables Form', () => {
   const findCancelBtn = () => wrapper.findByTestId('cancel-btn');
   const findRunBtn = () => wrapper.findByTestId('run-manual-job-btn');
   const findVariablesForm = () => wrapper.findComponent(JobVariablesForm);
+  const findInputsForm = () => wrapper.findComponent(PipelineInputsForm);
 
   afterEach(() => {
     createAlert.mockClear();
@@ -269,6 +275,102 @@ describe('Manual Variables Form', () => {
 
     it('does not render job variables form', () => {
       expect(findVariablesForm().exists()).toBe(false);
+    });
+  });
+
+  describe('job inputs', () => {
+    describe('when feature flag is enabled and job is retryable', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { isRetryable: true, isManual: false },
+          provide: { glFeatures: { ciJobInputs: true } },
+          handlers: {
+            ...defaultHandlers,
+            getJobInputsQueryHandler: jest.fn().mockResolvedValue(mockJobInputsQueryHandler),
+          },
+        });
+        await waitForPromises();
+      });
+
+      it('passes saved inputs to form', () => {
+        expect(findInputsForm().props('savedInputs')).toEqual([
+          { name: 'environment', value: 'staging' },
+        ]);
+      });
+
+      it('passes job creation inputs to form', () => {
+        expect(findInputsForm().props('initialInputs')).toEqual([
+          {
+            name: 'environment',
+            type: 'STRING',
+            description: 'Target environment',
+            required: false,
+            default: 'staging',
+            options: ['staging', 'production'],
+            regex: null,
+          },
+        ]);
+      });
+
+      it('updates inputs when form emits update-inputs', () => {
+        const updatedInputs = [{ name: 'environment', value: 'production' }];
+
+        findInputsForm().vm.$emit('update-inputs', updatedInputs);
+        findRunBtn().vm.$emit('click');
+
+        expect(retryJobMutationHandler).toHaveBeenCalledWith({
+          id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
+          variables: [],
+          inputs: updatedInputs,
+        });
+      });
+    });
+
+    describe('when feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isRetryable: true, isManual: false },
+          provide: { glFeatures: { ciJobInputs: false } },
+        });
+      });
+
+      it('does not render inputs form', async () => {
+        await waitForPromises();
+        expect(findInputsForm().exists()).toBe(false);
+      });
+    });
+
+    describe('when job is manual', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isRetryable: true, isManual: true },
+          provide: { glFeatures: { ciJobInputs: true } },
+        });
+      });
+
+      it('does not render inputs form', async () => {
+        await waitForPromises();
+        expect(findInputsForm().exists()).toBe(false);
+      });
+    });
+
+    describe('when job inputs query fails', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { isRetryable: true, isManual: false },
+          provide: { glFeatures: { ciJobInputs: true } },
+          handlers: {
+            getJobInputsQueryHandler: jest.fn().mockRejectedValue(new Error('Query failed')),
+          },
+        });
+      });
+
+      it('shows error alert', async () => {
+        await waitForPromises();
+        expect(createAlert).toHaveBeenCalledWith({
+          message: JOB_GRAPHQL_ERRORS.jobInputsQueryErrorText,
+        });
+      });
     });
   });
 });

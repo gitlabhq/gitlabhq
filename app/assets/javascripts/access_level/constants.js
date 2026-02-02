@@ -12,6 +12,8 @@ export const ACCESS_LEVEL_MAINTAINER_INTEGER = 40;
 export const ACCESS_LEVEL_OWNER_INTEGER = 50;
 export const ACCESS_LEVEL_ADMIN_INTEGER = 60;
 
+export const ACCESS_LEVEL_EVERYONE_INTEGER = -1;
+
 // Matches `app/graphql/types/access_level_enum.rb`
 export const ACCESS_LEVEL_NO_ACCESS_STRING = 'NO_ACCESS';
 export const ACCESS_LEVEL_MINIMAL_ACCESS_STRING = 'MINIMAL_ACCESS';

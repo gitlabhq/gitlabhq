@@ -111,7 +111,7 @@ To identify maximum observed RPS over the specified time period:
 
      ```prometheus
      max_over_time(
-       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*", action!="POST /api/jobs/request"}[1m]))[7d:1m]
      )
      ```
 
@@ -153,7 +153,7 @@ To identify typical high-load levels, filtering out rare spikes:
 
      ```prometheus
      quantile_over_time(0.95,
-       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))[7d:1m]
+       sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*", action!="POST /api/jobs/request"}[1m]))[7d:1m]
      )
      ```
 
