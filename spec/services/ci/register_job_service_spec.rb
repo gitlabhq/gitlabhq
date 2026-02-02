@@ -1317,5 +1317,35 @@ module Ci
     def build_on(runner, runner_manager: nil, params: {})
       described_class.new(runner, runner_manager).execute(params).build
     end
+
+    context 'when encoded_jwt was memoized before timeout was set' do
+      # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/581924
+      # In cross-pipeline dependency scenarios (parent-child pipelines), has_valid_build_dependencies?
+      # can trigger scoped_variables -> kubernetes_variables_from_job -> job.token, memoizing the JWT
+      # before update_timeout_state runs. This results in a token with ~6 min TTL instead of the
+      # job's actual timeout.
+      it 'discards the stale token and returns one with correct expiration' do
+        stale_jwt = 'stale.jwt.token'
+
+        # Inject a stale memoized token during pre_assign_runner_checks
+        allow_next_found_instance_of(Ci::Build) do |build|
+          allow(build).to receive(:has_valid_build_dependencies?).and_wrap_original do |method|
+            build.strong_memoize(:encoded_jwt) { stale_jwt }
+            method.call
+          end
+        end
+
+        result = described_class.new(project_runner, nil).execute
+        build = result.build
+
+        expect(build.token).not_to eq(stale_jwt)
+
+        jwt = ::Ci::JobToken::Jwt.decode(build.token)
+        exp = jwt.instance_variable_get(:@jwt).payload['exp']
+        token_ttl = exp - Time.current.to_i
+
+        expect(token_ttl).to be > build.timeout
+      end
+    end
   end
 end
