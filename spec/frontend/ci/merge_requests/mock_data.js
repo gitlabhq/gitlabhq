@@ -127,13 +127,15 @@ export const generateMockPipeline = ({
   },
 });
 
-const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', count = 1 } = {}) => {
+const createMergeRequestPipelines = ({
+  mergeRequestEventType = 'MERGE_TRAIN',
+  count = 1,
+  status = 'SKIPPED',
+} = {}) => {
   const pipelines = [];
 
-  for (let i = 0; i < count; i += 1) {
-    pipelines.push(
-      generateMockPipeline({ id: String(i), mergeRequestEventType, status: 'SKIPPED' }),
-    );
+  for (let i = 1; i <= count; i += 1) {
+    pipelines.push(generateMockPipeline({ id: String(i), mergeRequestEventType, status }));
   }
 
   return {
@@ -150,7 +152,11 @@ const createMergeRequestPipelines = ({ mergeRequestEventType = 'MERGE_TRAIN', co
   };
 };
 
-export const generateMRPipelinesResponse = ({ mergeRequestEventType = '', count = 1 } = {}) => {
+export const generateMRPipelinesResponse = ({
+  mergeRequestEventType = '',
+  count = 1,
+  status = 'SKIPPED',
+} = {}) => {
   return {
     data: {
       project: {
@@ -163,7 +169,7 @@ export const generateMRPipelinesResponse = ({ mergeRequestEventType = '', count 
           iid: '1',
           title: 'Fix everything',
           webPath: '/merge_requests/1',
-          pipelines: createMergeRequestPipelines({ count, mergeRequestEventType }),
+          pipelines: createMergeRequestPipelines({ count, mergeRequestEventType, status }),
         },
       },
     },
@@ -172,7 +178,7 @@ export const generateMRPipelinesResponse = ({ mergeRequestEventType = '', count 
 
 export const mockPipelineUpdateResponse = {
   data: {
-    ciPipelineStatusesUpdated: {
+    ciPipelineStatusUpdated: {
       id: 'gid://gitlab/Ci::Pipeline/701',
       iid: '63',
       detailedStatus: {
@@ -295,7 +301,7 @@ export const mockPipelineUpdateResponse = {
 
 export const mockPipelineUpdateResponseEmpty = {
   data: {
-    ciPipelineStatusesUpdated: null,
+    ciPipelineStatusUpdated: null,
   },
 };
 

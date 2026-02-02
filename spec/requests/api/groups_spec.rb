@@ -1209,6 +1209,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     context 'when authenticated as the group owner' do
       it 'updates the group', :aggregate_failures do
+        # TODO: remove threshold once https://gitlab.com/gitlab-org/gitlab/-/work_items/588290 is resolved
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+
         workhorse_form_with_file(
           api("/groups/#{group1.id}", user1),
           method: :put,
@@ -1229,7 +1232,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(new_group_name)
-        expect(json_response['description']).to eq('')
+        expect(json_response['description']).to be_nil
         expect(json_response['visibility']).to eq('public')
         expect(json_response['share_with_group_lock']).to eq(false)
         expect(json_response['require_two_factor_authentication']).to eq(false)

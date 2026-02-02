@@ -163,7 +163,7 @@ The 100 RPS / 5k user reference architecture is designed to accommodate most com
 | Git (Pull)    | 10 RPS            |
 | Git (Push)    | 2 RPS             |
 
-These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
+These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads. This represents a typical workload composition. For guidance on atypical workload patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 

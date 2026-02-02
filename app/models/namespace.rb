@@ -70,7 +70,7 @@ class Namespace < ApplicationRecord
     inverse_of: :namespace, class_name: 'NamespaceSetting', primary_key: :id, foreign_key: :namespace_id
 
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
-  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
+  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: true
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_one :catalog_verified_namespace, class_name: 'Namespaces::VerifiedNamespace', inverse_of: :namespace
@@ -211,11 +211,10 @@ class Namespace < ApplicationRecord
   end
 
   before_create :sync_share_with_group_lock_with_parent
+  after_create :create_namespace_details!, unless: -> { namespace_details.persisted? }
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
-
-  after_save :save_namespace_details_changes
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -1015,16 +1014,6 @@ class Namespace < ApplicationRecord
     elsif group_namespace?
       errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user_namespace?
     end
-  end
-
-  def save_namespace_details_changes
-    attribute_names_to_sync = Namespace::Detail.attribute_names - ['namespace_id']
-    attributes_to_sync = namespace_details.changes.slice(*attribute_names_to_sync)
-                                          .transform_values { |val| val[1] }
-
-    self.namespace_details = Namespace::Detail.find_by_namespace_id(id) || build_namespace_details
-    namespace_details.assign_attributes(attributes_to_sync)
-    namespace_details.save!
   end
 
   def sync_share_with_group_lock_with_parent

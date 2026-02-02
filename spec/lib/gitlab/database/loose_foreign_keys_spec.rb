@@ -321,7 +321,6 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
     let(:pending_exceptions) do
       %w[
         application_settings
-        deployment_clusters
         merge_request_diff_commits
         plans
         push_rules

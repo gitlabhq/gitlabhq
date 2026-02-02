@@ -44,7 +44,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    | Field | Predetermined by | Description |
    | :---- | :---- | :---- |
-   | **Reference architecture** | Account team (from contract) | The infrastructure sizing tier for your instance, based on expected load and usage patterns. Named by maximum recommended user count (e.g., "Up to 3,000 users"). See [Expected load (RPS or user count)](../../reference_architectures/_index.md#expected-load-rps-or-user-count) for more information |
+   | **Reference architecture** | Account team (from contract) | The infrastructure sizing tier for your instance, based on expected load and usage patterns. Named by maximum recommended user count (e.g., "Up to 3,000 users"). See [Expected load](../../reference_architectures/_index.md#expected-load) for more information |
    | **Total purchased storage** | Account team (from contract) | The total purchased storage space (repository and object storage) purchased with your contract. |
    | **Repository storage** | Initial capacity planning discussions ([Evaluate](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/evaluate) tool) | The total storage space available for all repositories in your instance (for example, 16 GiB). Can be increased but not decreased after provisioning. |
 

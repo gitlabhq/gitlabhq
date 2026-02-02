@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module Aggregation
       module ClickHouse
-        class Rate < Column
+        class Rate < MetricDefinition
           # Uses regular expression as numerator condition and "if" expression as denominator condition
           def initialize(name, type = :float, numerator_if:, denominator_if: nil, **kwargs)
             super(name, type, numerator_if, if: denominator_if, **kwargs)

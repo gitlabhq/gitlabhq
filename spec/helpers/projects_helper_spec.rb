@@ -130,7 +130,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'respects the settings of a parent group' do
-      context 'when a parent group has disabled diff previews ' do
+      context 'when a parent group has disabled diff previews' do
         it 'returns false for all users' do
           new_project = create(:project, group: create(:group))
           new_project.group.update_attribute(:show_diff_preview_in_email, false)

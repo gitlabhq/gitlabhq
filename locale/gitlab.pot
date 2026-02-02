@@ -2677,9 +2677,6 @@ msgstr ""
 msgid "AICatalog|Configuration is required."
 msgstr ""
 
-msgid "AICatalog|Configure"
-msgstr ""
-
 msgid "AICatalog|Connects to an AI model provider outside GitLab."
 msgstr ""
 
@@ -2908,9 +2905,6 @@ msgstr ""
 msgid "AICatalog|Foundational agent"
 msgstr ""
 
-msgid "AICatalog|Foundational agents and flows are built, tested, and supported by GitLab, and can help accelerate your productivity. Get started by configuring them now."
-msgstr ""
-
 msgid "AICatalog|Foundational flow"
 msgstr ""
 
@@ -2987,9 +2981,6 @@ msgid "AICatalog|New agent"
 msgstr ""
 
 msgid "AICatalog|New flow"
-msgstr ""
-
-msgid "AICatalog|New foundational agents and flows now available"
 msgstr ""
 
 msgid "AICatalog|No triggers configured. %{linkStart}Add a trigger%{linkEnd} to make this %{itemType} available."
@@ -7249,6 +7240,9 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
+msgid "AiPowered|Access to GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "AiPowered|Add group"
 msgstr ""
 
@@ -7354,19 +7348,10 @@ msgstr ""
 msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
 msgstr ""
 
-msgid "AiPowered|Control who can use AI features that run using CI/CD pipelines."
-msgstr ""
-
-msgid "AiPowered|Control who can use AI features that run without using CI/CD pipelines."
-msgstr ""
-
-msgid "AiPowered|Define the minimum role for the following actions"
+msgid "AiPowered|Control who can access AI-native features executed with or without CI/CD pipelines."
 msgstr ""
 
 msgid "AiPowered|Direct connections"
-msgstr ""
-
-msgid "AiPowered|Duo Agent Platform Permissions"
 msgstr ""
 
 msgid "AiPowered|Enable AI logs"
@@ -7393,12 +7378,6 @@ msgstr ""
 msgid "AiPowered|Everyone"
 msgstr ""
 
-msgid "AiPowered|Execute Duo Agent Platform"
-msgstr ""
-
-msgid "AiPowered|Execute Duo Agent Platform with CI/CD pipelines"
-msgstr ""
-
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
@@ -7421,6 +7400,12 @@ msgid "AiPowered|Features are not available and cannot be turned on for any grou
 msgstr ""
 
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
+msgid "AiPowered|Features with CI/CD pipelines"
+msgstr ""
+
+msgid "AiPowered|Features without CI/CD pipelines"
 msgstr ""
 
 msgid "AiPowered|Get started with GitLab Duo"
@@ -31443,6 +31428,9 @@ msgstr ""
 msgid "Geo|Time in seconds"
 msgstr ""
 
+msgid "Geo|Troubleshooting: %{link}"
+msgstr ""
+
 msgid "Geo|Tuning settings"
 msgstr ""
 
@@ -31507,6 +31495,9 @@ msgid "Geo|Verifies data integrity on the primary site by calculating a checksum
 msgstr ""
 
 msgid "Geo|Verifying"
+msgstr ""
+
+msgid "Geo|View troubleshooting docs"
 msgstr ""
 
 msgid "Geo|Whether this site's database is connected to the primary database directly or through data replication"

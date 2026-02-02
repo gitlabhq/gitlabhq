@@ -44,7 +44,7 @@ RSpec.describe Mutations::Achievements::Revoke, feature_category: :user_profile 
         end
       end
 
-      it 'revokes  user_achievement' do
+      it 'revokes user_achievement' do
         response = resolve_mutation[:user_achievement]
 
         expect(response.revoked_at).not_to be_nil

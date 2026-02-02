@@ -22,6 +22,7 @@ import {
 import { DEFAULT_MANUAL_ACTIONS_LIMIT } from '~/ci/constants';
 import {
   generateMRPipelinesResponse,
+  generateMockPipeline,
   mockPipelineUpdateResponseEmpty,
   mockPipelineUpdateResponse,
 } from '../mock_data';
@@ -68,7 +69,7 @@ const createResponseWithPageInfo = ({ hasNextPage, hasPreviousPage }) => {
   return response;
 };
 
-const createComponent = ({ mountFn = shallowMountExtended, props = {}, glFeatures = {} } = {}) => {
+const createComponent = ({ mountFn = shallowMountExtended, props = {} } = {}) => {
   const handlers = [
     [getMergeRequestsPipelines, mergeRequestPipelinesRequest],
     [cancelPipelineMutation, cancelPipelineMutationRequest],
@@ -83,10 +84,6 @@ const createComponent = ({ mountFn = shallowMountExtended, props = {}, glFeature
     provide: {
       ...defaultProvide,
       manualActionsLimit: DEFAULT_MANUAL_ACTIONS_LIMIT,
-      glFeatures: {
-        ciPipelineStatusesUpdatedSubscription: true,
-        ...glFeatures,
-      },
     },
     propsData: {
       ...defaultProps,
@@ -426,7 +423,7 @@ describe('PipelinesTableWrapper component', () => {
           await waitForPromises();
 
           expect(cancelPipelineMutationRequest.mock.calls[0]).toEqual([
-            { id: 'gid://gitlab/Ci::Pipeline/0' },
+            { id: 'gid://gitlab/Ci::Pipeline/1' },
           ]);
         });
       });
@@ -440,7 +437,7 @@ describe('PipelinesTableWrapper component', () => {
           await waitForPromises();
 
           expect(retryPipelineMutationRequest.mock.calls[0]).toEqual([
-            { id: 'gid://gitlab/Ci::Pipeline/0' },
+            { id: 'gid://gitlab/Ci::Pipeline/1' },
           ]);
         });
       });
@@ -531,28 +528,90 @@ describe('PipelinesTableWrapper component', () => {
   });
 
   describe('subscription', () => {
-    it('calls subscription with correct variables', async () => {
-      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
-      await createComponent();
+    describe('subscribing to active pipelines', () => {
+      it('subscribes to each active pipeline with correct pipeline ID', async () => {
+        const response = generateMRPipelinesResponse({ count: 1, status: 'RUNNING' });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+        await createComponent();
 
-      expect(subscriptionHandler).toHaveBeenCalledWith({
-        projectId: 'gid://gitlab/Project/5',
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1',
+        });
       });
-    });
 
-    it('skips subscription when feature flag is disabled', async () => {
-      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
-      await createComponent({ glFeatures: { ciPipelineStatusesUpdatedSubscription: false } });
+      it('does not subscribe to completed pipelines', async () => {
+        const response = generateMRPipelinesResponse({ count: 1, status: 'SUCCESS' });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+        await createComponent();
 
-      expect(subscriptionHandler).not.toHaveBeenCalled();
-    });
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
 
-    it('skips subscription when there are no pipelines', async () => {
-      mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 0 }));
-      subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
-      await createComponent();
+      it('subscribes only to running pipelines when mixed statuses exist', async () => {
+        const response = generateMRPipelinesResponse({ count: 0 });
+        response.data.project.mergeRequest.pipelines.nodes = [
+          generateMockPipeline({ id: '1', status: 'RUNNING' }),
+          generateMockPipeline({ id: '2', status: 'SUCCESS' }),
+          generateMockPipeline({ id: '3', status: 'PENDING' }),
+          generateMockPipeline({ id: '4', status: 'FAILED' }),
+        ];
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+        await createComponent();
 
-      expect(subscriptionHandler).not.toHaveBeenCalled();
+        expect(subscriptionHandler).toHaveBeenCalledTimes(2);
+        expect(subscriptionHandler).toHaveBeenNthCalledWith(1, {
+          pipelineId: 'gid://gitlab/Ci::Pipeline/1',
+        });
+        expect(subscriptionHandler).toHaveBeenNthCalledWith(2, {
+          pipelineId: 'gid://gitlab/Ci::Pipeline/3',
+        });
+      });
+
+      it.each`
+        status                    | shouldSubscribe
+        ${'CREATED'}              | ${true}
+        ${'WAITING_FOR_RESOURCE'} | ${true}
+        ${'PREPARING'}            | ${true}
+        ${'WAITING_FOR_CALLBACK'} | ${true}
+        ${'PENDING'}              | ${true}
+        ${'RUNNING'}              | ${true}
+        ${'CANCELING'}            | ${true}
+        ${'SUCCESS'}              | ${false}
+        ${'FAILED'}               | ${false}
+        ${'CANCELED'}             | ${false}
+        ${'SKIPPED'}              | ${false}
+        ${'MANUAL'}               | ${false}
+      `(
+        'subscribes to pipeline with status $status: $shouldSubscribe',
+        async ({ status, shouldSubscribe }) => {
+          const response = generateMRPipelinesResponse({ count: 0 });
+          response.data.project.mergeRequest.pipelines.nodes = [
+            generateMockPipeline({ id: '1', status }),
+          ];
+          mergeRequestPipelinesRequest.mockResolvedValue(response);
+          subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+          await createComponent();
+
+          if (shouldSubscribe) {
+            expect(subscriptionHandler).toHaveBeenCalledWith({
+              pipelineId: 'gid://gitlab/Ci::Pipeline/1',
+            });
+          } else {
+            expect(subscriptionHandler).not.toHaveBeenCalled();
+          }
+        },
+      );
+
+      it('skips subscription when there are no pipelines', async () => {
+        mergeRequestPipelinesRequest.mockResolvedValue(generateMRPipelinesResponse({ count: 0 }));
+        subscriptionHandler.mockResolvedValue(mockPipelineUpdateResponse);
+        await createComponent();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
     });
   });
 });

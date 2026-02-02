@@ -3409,6 +3409,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
       expect(user).to be_two_factor_enabled
       expect(user.encrypted_otp_secret).not_to be_nil
+      expect(user.otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
       expect(user.otp_grace_period_started_at).not_to be_nil
       expect(user.email_otp_required_after).to be_nil
@@ -3419,6 +3420,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       expect(user.encrypted_otp_secret).to be_nil
       expect(user.encrypted_otp_secret_iv).to be_nil
       expect(user.encrypted_otp_secret_salt).to be_nil
+      expect(user.read_attribute(:otp_secret)).to be_nil
       expect(user.otp_backup_codes).to be_nil
       expect(user.otp_grace_period_started_at).to be_nil
       expect(user.otp_secret_expires_at).to be_nil
@@ -10439,6 +10441,41 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
         expect(unlock_access_by_token).to be_a(described_class)
         expect(unlock_access_by_token.errors[:organization_id]).not_to be_empty
+      end
+    end
+  end
+
+  describe '#legacy_otp_secret' do
+    let_it_be(:user) { create(:user) }
+
+    subject(:legacy_otp_secret) { user.send(:legacy_otp_secret) }
+
+    context 'when encrypted_otp_secret is nil' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when otp_secret_encryption_key is nil' do
+      before do
+        user.update!(encrypted_otp_secret: 'dummy')
+        allow(described_class).to receive(:otp_secret_encryption_key).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when user has two factor auth enabled' do
+      let_it_be(:user) { create(:user, :two_factor) }
+      let(:otp_secret) { 'my-otp-secret' }
+
+      before do
+        encrypted_secret = user.attr_encrypted_encrypt(:otp_secret, otp_secret)
+        user.update!(encrypted_otp_secret: encrypted_secret)
+      end
+
+      it { is_expected.to eq(otp_secret) }
+
+      it 'resolves the legacy otp secret' do
+        expect(user.reload.otp_secret).to eq(otp_secret)
       end
     end
   end

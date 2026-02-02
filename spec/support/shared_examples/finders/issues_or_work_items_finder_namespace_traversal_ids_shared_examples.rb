@@ -51,8 +51,8 @@ RSpec.shared_examples 'issues or work items finder with namespace_traversal_ids 
       { group_id: group, include_subgroups_param => true, search: "test", attempt_group_search_optimizations: true }
     end
 
-    it 'overrides use_cte_for_search?' do
-      expect(finder.use_cte_for_search?).to be_falsey
+    it 'does not use CTE for search when namespace_traversal_ids filtering is enabled' do
+      expect(finder.use_cte_for_search?).to be(false)
     end
   end
 

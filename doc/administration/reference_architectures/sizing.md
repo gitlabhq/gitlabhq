@@ -189,7 +189,7 @@ To identify typical high-load levels, filtering out rare spikes:
 
 To map traffic to reference architectures, using the results you recorded earlier:
 
-1. Consult the [initial sizing guide](_index.md#initial-sizing-guide) to see which reference architecture each traffic
+1. Consult the [available reference architectures](_index.md#available-reference-architectures) to see which reference architecture each traffic
    type suggests.
 1. Fill in an analysis table. Use the following table as a guide:
 
@@ -255,6 +255,55 @@ Reference architecture assessment summary:
 
 Highest RPS Peak timestamp for workload analysis: _____
 ```
+
+## Understanding RPS composition and workload patterns
+
+Total RPS is the primary sizing metric, but workload composition significantly impacts component resource requirements. Different request types stress different components with varying intensity.
+
+### RPS breakdown by request type
+
+Reference Architecture RPS targets assume typical workload composition based on production data:
+
+- **API requests** (~80% of total RPS) - Automation, integrations, webhooks, and API-driven tools
+- **Web requests** (~10% of total RPS) - UI interactions, page navigation, and user-driven actions
+- **Git operations** (~10% of total RPS) - Repository clones and pulls, with lower push rates
+
+**Atypical compositions** - Environments where one request type significantly exceeds typical proportions (may require component-specific adjustments even within target RPS ranges)
+
+### Identifying atypical workload patterns
+
+Use the RPS extraction queries from [Extract peak traffic metrics](#extract-peak-traffic-metrics) to understand your workload composition. Compare your distribution to typical patterns:
+
+**API-heavy workloads** (API >90% of total RPS):
+
+- Heavy automation, extensive integrations, or API-driven tooling
+- Primary impact: Rails (Webservice), PostgreSQL, Gitaly
+- Consider: Increased Webservice/Rails capacity, database read replicas
+
+**Web-heavy workloads** (Web >20% of total RPS):
+
+- Large active user base with extensive UI interaction
+- Primary impact: Rails (Webservice), PostgreSQL
+- Consider: Increased Webservice capacity, database optimization
+
+**Git-intensive workloads** (Git >15% of total RPS or pull rates notably above typical for your size):
+
+- Large teams with frequent pulls, monorepo patterns, or CI/CD-heavy workflows with repository clones
+- Primary impact: Gitaly, network bandwidth
+- Consider: Gitaly vertical scaling, repository optimization, network-enhanced VMs
+
+### Assessment approach
+
+1. Extract RPS breakdown using the provided PromQL queries
+1. Calculate percentage of total for each request type
+1. Identify if any type significantly exceeds typical proportions
+1. If atypical, see [Identify component adjustments](#identify-component-adjustments) for scaling guidance
+
+{{< alert type="note" >}}
+
+Small variations (5-10 RPS difference in any category) do not require architecture changes. Monitor actual component saturation metrics (CPU, memory, queue depths) from production rather than making decisions based solely on RPS comparisons. Components under 70% sustained utilization generally have sufficient capacity regardless of minor RPS variations.
+
+{{< /alert >}}
 
 ## Identify component adjustments
 

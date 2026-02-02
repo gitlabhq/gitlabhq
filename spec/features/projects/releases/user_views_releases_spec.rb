@@ -111,7 +111,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
         it_behaves_like 'releases sort order'
       end
 
-      context "when the page is sorted by created_at ascending " do
+      context "when the page is sorted by created_at ascending" do
         let(:expected_releases) { [release_v2, release_v1, release_v3] }
 
         before do

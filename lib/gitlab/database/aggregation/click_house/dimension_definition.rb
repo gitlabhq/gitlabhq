@@ -4,16 +4,16 @@ module Gitlab
   module Database
     module Aggregation
       module ClickHouse
-        class Column < PartDefinition
-          attr_reader :name, :type, :expression, :secondary_expression
+        class DimensionDefinition < PartDefinition
+          attr_reader :association
 
-          def initialize(*args, **kwargs)
+          def initialize(*args, association: false, **kwargs)
             super
-            @secondary_expression = kwargs[:if]
+            @association = association == true ? {} : association
           end
 
-          def secondary_arel(_context)
-            secondary_expression&.call
+          def association?
+            !!association
           end
 
           def to_inner_arel(context)

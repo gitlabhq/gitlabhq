@@ -27,6 +27,17 @@ export const PASSED_STATUS = 'passed';
 export const MANUAL_STATUS = 'manual';
 export const SUCCESS_STATUS = 'SUCCESS';
 
+// These statuses match ALIVE_STATUSES from app/models/concerns/ci/has_status.rb
+export const PIPELINE_ALIVE_STATUSES = [
+  'CREATED',
+  'WAITING_FOR_RESOURCE',
+  'PREPARING',
+  'WAITING_FOR_CALLBACK',
+  'PENDING',
+  'RUNNING',
+  'CANCELING',
+];
+
 export const PIPELINE_ID_KEY = 'id';
 export const PIPELINE_IID_KEY = 'iid';
 

@@ -72,7 +72,6 @@ ee/app/models/ee/namespace.rb:
 ee/app/models/ee/namespace_statistics.rb:
 - update_wiki_size
 ee/app/models/ee/project.rb:
-- member_usernames_among
 - mirror_last_update_failed?
 - search_by_visibility
 - group_ldap_synced?

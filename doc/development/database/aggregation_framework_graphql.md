@@ -66,7 +66,6 @@ query IssueAnalytics($projectId: ID!) {
     ) {
       nodes {
         dimensions {
-          authorId
           createdAt(granularity: "monthly")
         }
         totalCount
@@ -110,6 +109,94 @@ end
 ```
 
 The `validate_request!` method receives a `Gitlab::Database::Aggregation::Request` object containing `dimensions`, `metrics`, `filters` and `order` specifications.
+
+## Dimensions for ActiveRecord association
+
+Dimensions can be marked as associations using the `association: true` option. This changes how the dimension is exposed in GraphQL, automatically resolving the associated model instead of exposing just the ID.
+
+### Defining Association Dimensions
+
+In your aggregation engine, declare a dimension with `association: true`:
+
+```ruby
+class AgentPlatformSessions < Gitlab::Database::Aggregation::ClickHouse::Engine
+  dimensions do
+    column :flow_type, :string, description: 'Type of session'
+    column :user_id, :integer, description: 'Session owner', association: true
+  end
+end
+```
+
+### GraphQL Schema Impact
+
+When a dimension is marked as an association object is exposed instead of raw `*_id` field. Dimension above will transform to `field :user, Types::UserType, ...` in GraphQL with batch loading by ID.
+You can order by the association ID using the association name without `_id` suffix (e.g., `orderBy: [{ identifier: "user", direction: DESC }]`).
+
+Note: you must ensure all proper authorization checks on association GraphQL type (e.g. `authorize :read_user`)
+
+### Custom Association Configuration
+
+By default, the association model and GraphQL type are inferred from the dimension name:
+
+- Model: `user_id` → `User`
+- GraphQL type: `User` → `Types::UserType`
+
+You can customize this behavior by passing a hash to the `association` option:
+
+```ruby
+dimensions do
+  column :author_id, :integer,
+    description: 'Issue author',
+    association: { model: User }
+    # or model and GraphQL type
+    # association: { model: User, graphql_type: Types::CurrentUserType }
+end
+```
+
+### GraphQL Query Examples
+
+**Without association**
+
+```graphql
+query {
+  project(fullPath: "gitlab-org/gitlab") {
+    aiUsage {
+      agentPlatformSessions {
+        nodes {
+          dimensions {
+            userId  # Returns: 123 (integer)
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**With association**
+
+```graphql
+query {
+  project(fullPath: "gitlab-org/gitlab") {
+    aiUsage {
+      agentPlatformSessions(
+        userId: [1, 2]  # Filter still uses original dimension identifier
+        orderBy: [{ identifier: "user", direction: DESC }]  # Order uses association name
+      ) {
+        nodes {
+          dimensions {
+            user {  # Returns: full User object
+              id
+              username
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 ## Related Documentation
 

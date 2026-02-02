@@ -29,6 +29,14 @@ module Gitlab
         def dimensions
           @dimensions ||= begin
             definitions = engine.class.dimensions.index_by(&:identifier)
+            # Duplicate association definitions without `_id`
+            engine.class.dimensions.each do |dimension|
+              next unless dimension.association?
+
+              association_identifier = dimension.identifier.to_s.delete_suffix('_id').to_sym
+              definitions[association_identifier] = dimension
+            end
+
             request.dimensions.map do |configuration|
               Dimension.new(definitions[configuration[:identifier]], configuration)
             end

@@ -640,12 +640,14 @@ CREATE TABLE users (
     color_mode_id smallint DEFAULT 1 NOT NULL,
     composite_identity_enforced boolean DEFAULT false NOT NULL,
     organization_id bigint NOT NULL,
+    otp_secret text,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
     CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
     CONSTRAINT check_693c6f3aab CHECK ((hide_no_ssh_key IS NOT NULL)),
     CONSTRAINT check_7bde697e8e CHECK ((char_length(static_object_token_encrypted) <= 255)),
-    CONSTRAINT check_c737c04b87 CHECK ((notified_of_own_activity IS NOT NULL))
+    CONSTRAINT check_c737c04b87 CHECK ((notified_of_own_activity IS NOT NULL)),
+    CONSTRAINT check_d0b84b7b3a CHECK ((char_length(otp_secret) <= 255))
 );
 
 CREATE FUNCTION find_users_by_id(users_id bigint) RETURNS users
@@ -5260,40 +5262,6 @@ SET
 WHERE
   vulnerability_id = NEW.vulnerability_id;
 RETURN NULL;
-
-END
-$$;
-
-CREATE FUNCTION update_namespace_details_from_namespaces() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-INSERT INTO
-  namespace_details (
-    description,
-    description_html,
-    cached_markdown_version,
-    updated_at,
-    created_at,
-    namespace_id
-  )
-VALUES
-  (
-    NEW.description,
-    NEW.description_html,
-    NEW.cached_markdown_version,
-    NEW.updated_at,
-    NEW.updated_at,
-    NEW.id
-  ) ON CONFLICT (namespace_id) DO
-UPDATE
-SET
-  description = NEW.description,
-  description_html = NEW.description_html,
-  cached_markdown_version = NEW.cached_markdown_version,
-  updated_at = NEW.updated_at
-WHERE
-  namespace_details.namespace_id = NEW.id;RETURN NULL;
 
 END
 $$;
@@ -18943,7 +18911,8 @@ CREATE TABLE deployment_clusters (
     deployment_id bigint NOT NULL,
     cluster_id bigint NOT NULL,
     kubernetes_namespace character varying(255),
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_bb095c4b11 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE deployment_merge_requests (
@@ -37501,6 +37470,9 @@ ALTER TABLE clusters_kubernetes_namespaces
 ALTER TABLE merge_request_context_commit_diff_files
     ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE security_findings
+    ADD CONSTRAINT check_9c3ba4d6f2 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE related_epic_links
     ADD CONSTRAINT check_a6d9d7c276 CHECK ((issue_link_id IS NOT NULL)) NOT VALID;
 
@@ -53444,10 +53416,6 @@ CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE
 CREATE TRIGGER trigger_sync_work_item_transitions_from_issues AFTER INSERT OR UPDATE OF moved_to_id, duplicated_to_id, promoted_to_epic_id, namespace_id ON issues FOR EACH ROW EXECUTE FUNCTION sync_work_item_transitions_from_issues();
 
 CREATE TRIGGER trigger_todos_sharding_key BEFORE INSERT OR UPDATE ON todos FOR EACH ROW EXECUTE FUNCTION todos_sharding_key();
-
-CREATE TRIGGER trigger_update_details_on_namespace_insert AFTER INSERT ON namespaces FOR EACH ROW WHEN (((new.type)::text <> 'Project'::text)) EXECUTE FUNCTION update_namespace_details_from_namespaces();
-
-CREATE TRIGGER trigger_update_details_on_namespace_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((((new.type)::text <> 'Project'::text) AND (((old.description)::text IS DISTINCT FROM (new.description)::text) OR (old.description_html IS DISTINCT FROM new.description_html) OR (old.cached_markdown_version IS DISTINCT FROM new.cached_markdown_version)))) EXECUTE FUNCTION update_namespace_details_from_namespaces();
 
 CREATE TRIGGER trigger_update_details_on_project_insert AFTER INSERT ON projects FOR EACH ROW EXECUTE FUNCTION update_namespace_details_from_projects();
 

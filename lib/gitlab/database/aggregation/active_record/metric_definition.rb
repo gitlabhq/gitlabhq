@@ -41,7 +41,7 @@ module Gitlab
         # # SELECT "issue_metrics"."first_added_to_board_at" FROM "issues"
         # # INNER JOIN "issue_metrics" ON "issue_metrics"."issue_id" = "issues"."id"
         # # WHERE "issues"."project_id" = 1
-        class Column < PartDefinition
+        class MetricDefinition < PartDefinition
           # Returns an Arel node representing this column or metric in a SELECT statement.
           # Subclasses may wrap the expression (e.g., date_trunc, AVG, COUNT).
           def to_arel(context)

@@ -8,15 +8,7 @@ description: "(Deprecated) Join table between `deployments` and `clusters`"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24235
 milestone: '12.8'
 gitlab_schema: gitlab_main_org
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: deployment_id
-        table: deployments
-        sharding_key: project_id
-        belongs_to: deployment
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583002
+sharding_key:
+  project_id: projects
 table_size: small
 desired_sharding_key_migration_job_name: BackfillDeploymentClustersProjectId

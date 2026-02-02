@@ -1,8 +1,8 @@
 # @feature_category: continuous_integration
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 
-subscription mrPipelineStatusUpdated($projectId: ProjectID!) {
-  ciPipelineStatusesUpdated(projectId: $projectId) {
+subscription mrPipelineStatusUpdated($pipelineId: CiPipelineID!) {
+  ciPipelineStatusUpdated(pipelineId: $pipelineId) {
     id
     iid
     detailedStatus {

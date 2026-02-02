@@ -55,7 +55,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceDetails, fea
   end
 
   before do
-    namespace_details.where.not(namespace_id: namespace_1.id).delete_all
+    namespace_details.insert({
+      namespace_id: namespace_1.id,
+      created_at: Time.current,
+      updated_at: Time.current
+    })
   end
 
   it 'creates namespace_details for namespaces that are missing them', :aggregate_failures do

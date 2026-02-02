@@ -1068,7 +1068,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       it { is_expected.to be_falsey }
     end
 
-    context 'when flag is old while log_state_changes is not present ' do
+    context 'when flag is old while log_state_changes is not present' do
       let(:log_state_changes) { nil }
 
       it { is_expected.to be_falsey }

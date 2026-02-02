@@ -203,7 +203,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       end
     end
 
-    context 'integrations ' do
+    context 'integrations' do
       let(:tab) { 'integrations' }
 
       it 'renders details tab' do
@@ -221,7 +221,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       end
     end
 
-    context 'details ' do
+    context 'details' do
       let(:tab) { 'details' }
 
       it 'renders details tab' do

@@ -26,7 +26,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one :root_storage_statistics }
     it { is_expected.to have_one :aggregation_schedule }
     it { is_expected.to have_one :namespace_settings }
-    it { is_expected.to have_one(:namespace_details).autosave(false) }
+    it { is_expected.to have_one(:namespace_details).autosave(true) }
     it { is_expected.to have_one(:namespace_statistics) }
     it { is_expected.to have_one(:catalog_verified_namespace) }
     it { is_expected.to have_many :custom_emoji }
@@ -379,34 +379,24 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to match("@.q-w_e") }
   end
 
-  describe 'save_namespace_details_changes' do
+  describe 'namespace_details autosave' do
     let(:namespace) { create(:namespace) }
     let(:description) { 'my-namespace-description' }
 
-    it 'saves the namespace_details changes' do
-      namespace_details = namespace.namespace_details
-      namespace_details.description = description
+    it 'automatically saves namespace_details changes when namespace is saved' do
+      namespace.namespace_details.description = description
 
       namespace.save!
 
-      namespace_details.reload
-      expect(namespace_details.description).to eq(description)
+      expect(namespace.namespace_details.reload.description).to eq(description)
     end
 
-    context 'when associated namespace_details does not exist' do
-      before do
-        namespace.namespace_details.delete
-        namespace.reload
-      end
+    context 'when namespace is new' do
+      it 'initializes namespace_details on initialization' do
+        new_namespace = described_class.new(name: 'test', path: 'test')
 
-      it 'create namespace_details and saves the changes' do
-        namespace_details = namespace.namespace_details
-        namespace_details.description = description
-
-        namespace.save!
-
-        namespace_details.reload
-        expect(namespace_details.description).to eq(description)
+        expect(new_namespace.namespace_details).to be_present
+        expect(new_namespace.namespace_details).to be_a(Namespace::Detail)
       end
     end
   end

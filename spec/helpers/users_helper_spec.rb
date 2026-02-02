@@ -202,7 +202,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
         stub_config_setting(impersonation_enabled: true)
       end
 
-      it 'allows the admin to impersonate a  user' do
+      it 'allows the admin to impersonate a user' do
         expect(helper.impersonation_enabled?).to eq(true)
       end
 

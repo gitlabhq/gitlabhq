@@ -318,7 +318,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
 
     context 'respects the settings of a parent group' do
-      context 'when a parent group has disabled diff previews ' do
+      context 'when a parent group has disabled diff previews' do
         before do
           group.update_attribute(:show_diff_preview_in_email, false)
         end

@@ -26,7 +26,7 @@ RSpec.describe Resolvers::UsersResolver, feature_category: :user_management do
       end
     end
 
-    context 'when both ids and usernames are passed ' do
+    context 'when both ids and usernames are passed' do
       it 'generates an error' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
           resolve_users(args: { ids: [user1.to_global_id.to_s], usernames: [user1.username] })

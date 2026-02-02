@@ -108,6 +108,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceDetailsDescriptionF
       end
 
       let!(:namespace_detail) do
+        namespace_details.insert({
+          namespace_id: namespace.id,
+          description: nil,
+          description_html: nil,
+          cached_markdown_version: nil,
+          created_at: Time.current,
+          updated_at: Time.current
+        })
+
         ApplicationRecord.connection.execute(<<~SQL)
           UPDATE namespaces
           SET description = 'New description',
@@ -148,6 +157,15 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceDetailsDescriptionF
       end
 
       let!(:namespace_detail) do
+        namespace_details.insert({
+          namespace_id: namespace.id,
+          description: nil,
+          description_html: nil,
+          cached_markdown_version: nil,
+          created_at: Time.current,
+          updated_at: Time.current
+        })
+
         ApplicationRecord.connection.execute(<<~SQL)
           UPDATE namespaces
           SET description = 'Updated description',

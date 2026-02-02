@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::Aggregation::QueryPlan, feature_category: :data
     Gitlab::Database::Aggregation::Engine.build do
       def self.dimensions_mapping
         {
-          column: Gitlab::Database::Aggregation::PartDefinition
+          column: Gitlab::Database::Aggregation::ActiveRecord::DimensionDefinition
         }
       end
 
@@ -25,6 +25,7 @@ RSpec.describe Gitlab::Database::Aggregation::QueryPlan, feature_category: :data
 
       dimensions do
         column :state_id, :integer
+        column :user_id, :integer, association: true
       end
 
       metrics do
@@ -144,6 +145,30 @@ RSpec.describe Gitlab::Database::Aggregation::QueryPlan, feature_category: :data
 
         expect(query_plan).not_to be_valid
         expect(query_plan.errors.to_a).to include(a_string_matching(/duplicated identifiers found: total_count/))
+      end
+    end
+
+    context 'when dimensions have associations' do
+      it 'accepts association name as identifier' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        query_plan = described_class.new(engine, request)
+
+        expect(query_plan).to be_valid
+      end
+
+      it 'accepts pure identifier as identifier' do
+        request = Gitlab::Database::Aggregation::Request.new(
+          dimensions: [{ identifier: :user_id }],
+          metrics: [{ identifier: :total_count }]
+        )
+
+        query_plan = described_class.new(engine, request)
+
+        expect(query_plan).to be_valid
       end
     end
   end

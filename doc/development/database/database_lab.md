@@ -138,8 +138,8 @@ To access the database lab instances, you must:
 
 - Have your user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and
   the `db-lab` role. Example: [MR](https://gitlab.com/gitlab-com/gl-infra/chef-repo/-/merge_requests/6330).
-- Have `AllFeaturesUser` role in [postgres.ai](https://console.postgres.ai/). If you don't have this already, post in
-  `#g_database_frameworks` Slack channel and tag `@db-team` to update/add the role.
+- `AllFeaturesUser` is the default role given in [postgres.ai](https://console.postgres.ai/). If you don't have this already, post in
+  `#g_database_frameworks` Slack channel and tag `@db-team` to add the role.
 - Configure `ssh` as follows:
 
 ```plaintext
