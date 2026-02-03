@@ -42,8 +42,6 @@ module Authz
 
     enum :access, Access::LEVELS
 
-    ignore_column :all_membership_namespaces, remove_with: '18.8', remove_after: '2026-01-15'
-
     def self.permitted_for_boundary?(boundary, permissions)
       required_permissions = Array(permissions).map(&:to_sym)
       token_permissions = token_permissions(boundary)

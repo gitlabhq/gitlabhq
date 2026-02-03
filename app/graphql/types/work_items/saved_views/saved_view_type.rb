@@ -92,7 +92,9 @@ module Types
         end
 
         def subscribed
-          false
+          BatchLoader::GraphQL.for(object.id).batch(key: current_user.id) do |saved_view_ids, loader, args|
+            batch_load_subscriptions(saved_view_ids, loader, args[:key])
+          end
         end
 
         def sort
@@ -125,6 +127,18 @@ module Types
             else
               { filters: {}, warnings: [{ field: :base, message: result.message }] }
             end
+          end
+        end
+
+        def batch_load_subscriptions(saved_view_ids, loader, user_id)
+          subscriptions = ::WorkItems::SavedViews::UserSavedView
+                            .for_user(user_id)
+                            .for_saved_view(saved_view_ids)
+                            .pluck(:saved_view_id) # rubocop: disable CodeReuse/ActiveRecord -- Batch loading requires pluck for performance
+                            .to_set
+
+          saved_view_ids.each do |saved_view_id|
+            loader.call(saved_view_id, subscriptions.include?(saved_view_id))
           end
         end
       end

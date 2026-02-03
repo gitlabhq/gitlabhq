@@ -37,7 +37,7 @@ For other repository types see:
 - [Snippet repository storage moves API](snippet_repository_storage_moves.md).
 - [Group repository storage moves API](group_repository_storage_moves.md).
 
-## Retrieve all project repository storage moves
+## List all project repository storage moves
 
 ```plaintext
 GET /project_repository_storage_moves
@@ -76,7 +76,7 @@ Example response:
 ]
 ```
 
-## Retrieve all repository storage moves for a project
+## List all repository storage moves for a project
 
 ```plaintext
 GET /projects/:project_id/repository_storage_moves
@@ -121,7 +121,7 @@ Example response:
 ]
 ```
 
-## Get a single project repository storage move
+## Retrieve a project repository storage move
 
 ```plaintext
 GET /project_repository_storage_moves/:repository_storage_id
@@ -161,7 +161,7 @@ Example response:
 }
 ```
 
-## Get a single repository storage move for a project
+## Retrieve a repository storage move for a project
 
 ```plaintext
 GET /projects/:project_id/repository_storage_moves/:repository_storage_id
@@ -202,7 +202,7 @@ Example response:
 }
 ```
 
-## Schedule a repository storage move for a project
+## Create a repository storage move for a project
 
 ```plaintext
 POST /projects/:project_id/repository_storage_moves
@@ -246,9 +246,9 @@ Example response:
 }
 ```
 
-## Schedule repository storage moves for all projects on a storage shard
+## Create repository storage moves for all projects on a storage shard
 
-Schedules repository storage moves for each project repository stored on the source storage shard.
+Creates repository storage moves for each project repository stored on the source storage shard.
 This endpoint migrates all projects at once.
 
 ```plaintext

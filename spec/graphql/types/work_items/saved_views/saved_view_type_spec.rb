@@ -149,10 +149,50 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
   end
 
   describe '#subscribed' do
-    it 'returns false' do
-      saved_view = create(:saved_view)
+    context 'when user is not subscribed' do
+      it 'returns false', :request_store do
+        result = resolve_field(:subscribed, saved_view, current_user: current_user)
 
-      expect(resolve_field(:subscribed, saved_view, current_user: current_user)).to be false
+        expect(sync(result)).to be false
+      end
+    end
+
+    context 'when user is subscribed' do
+      before do
+        create(:user_saved_view, user: current_user, saved_view: saved_view, namespace: group)
+      end
+
+      it 'returns true', :request_store do
+        result = resolve_field(:subscribed, saved_view, current_user: current_user)
+
+        expect(sync(result)).to be true
+      end
+    end
+
+    context 'when batch loading multiple saved views', :request_store do
+      let_it_be(:saved_view2) { create(:saved_view, namespace: group) }
+      let_it_be(:saved_view3) { create(:saved_view, namespace: group) }
+
+      before do
+        create(:user_saved_view, user: current_user, saved_view: saved_view, namespace: group)
+        create(:user_saved_view, user: current_user, saved_view: saved_view3, namespace: group)
+      end
+
+      it 'does not cause N+1 queries' do
+        single_view = [saved_view]
+        all_views = [saved_view, saved_view2, saved_view3]
+
+        control = ActiveRecord::QueryRecorder.new do
+          results = single_view.map { |view| resolve_field(:subscribed, view, current_user: current_user) }
+          sync(results)
+        end
+
+        expect do
+          results = all_views.map { |view| resolve_field(:subscribed, view, current_user: current_user) }
+          synced = sync(results)
+          expect(synced).to match_array([true, false, true])
+        end.not_to exceed_query_limit(control)
+      end
     end
   end
 

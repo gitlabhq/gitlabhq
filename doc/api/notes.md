@@ -55,9 +55,9 @@ See [Notes rate limits](../administration/settings/rate_limit_on_notes_creation.
 
 ## Issues
 
-### List project issue notes
+### List all issue notes
 
-Gets a list of all notes for a single issue.
+Lists all notes for a specified issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes
@@ -131,9 +131,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/notes"
 ```
 
-### Get single issue note
+### Retrieve an issue note
 
-Returns a single note for a specific project issue
+Retrieves a specified note for a project issue.
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/notes/:note_id
@@ -152,9 +152,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/notes/1"
 ```
 
-### Create new issue note
+### Create an issue note
 
-Creates a new note to a single project issue.
+Creates a note for a specified project issue.
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes
@@ -176,9 +176,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note"
 ```
 
-### Modify existing issue note
+### Update an issue note
 
-Modify existing note of an issue.
+Updates a specified note of an issue.
 
 ```plaintext
 PUT /projects/:id/issues/:issue_iid/notes/:note_id
@@ -226,7 +226,7 @@ The Snippets Notes API is intended for project-level snippets, and not for perso
 
 ### List all snippet notes
 
-Gets a list of all notes for a single snippet. Snippet notes are comments users can post to a snippet.
+Lists all notes for a specified snippet. Snippet notes are comments users can post to a snippet.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/notes
@@ -245,9 +245,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/notes"
 ```
 
-### Get single snippet note
+### Retrieve a snippet note
 
-Returns a single note for a given snippet.
+Retrieves a specified note for a snippet.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/notes/:note_id
@@ -293,9 +293,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/notes/11"
 ```
 
-### Create new snippet note
+### Create a snippet note
 
-Creates a new note for a single snippet. Snippet notes are user comments on snippets.
+Creates a new note for a specified snippet. Snippet notes are user comments on snippets.
 If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
@@ -316,9 +316,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note"
 ```
 
-### Modify existing snippet note
+### Update a snippet note
 
-Modify existing note of a snippet.
+Updates a specified note of a snippet.
 
 ```plaintext
 PUT /projects/:id/snippets/:snippet_id/notes/:note_id
@@ -363,7 +363,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### List all merge request notes
 
-Gets a list of all notes for a single merge request.
+Lists all notes for a specified merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/notes
@@ -382,9 +382,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes"
 ```
 
-### Get single merge request note
+### Retrieve a merge request note
 
-Returns a single note for a given merge request.
+Retrieves a specified note for a merge request.
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
@@ -428,9 +428,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes/1"
 ```
 
-### Create new merge request note
+### Create a merge request note
 
-Creates a new note for a single merge request. Notes are not attached to specific
+Creates a note for a specified merge request. Notes are not attached to specific
 lines in a merge request. For other approaches with more granular control, see
 [Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
 and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
@@ -458,9 +458,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note"
 ```
 
-### Modify existing merge request note
+### Update a merge request note
 
-Modify existing note of a merge request.
+Updates a specified note of a merge request.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
@@ -520,7 +520,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### List all epic notes
 
-Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.
+Lists all notes for a specified epic. Epic notes are comments users can post to an epic.
 
 > [!note]
 > The epics notes API uses the epic ID instead of epic IID. If you use the epic's IID, GitLab returns either a 404
@@ -544,9 +544,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/notes"
 ```
 
-### Get single epic note
+### Retrieve an epic note
 
-Returns a single note for a given epic.
+Retrieves a specified note for an epic.
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/notes/:note_id
@@ -592,9 +592,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/notes/1"
 ```
 
-### Create new epic note
+### Create an epic note
 
-Creates a new note for a single epic. Epic notes are comments users can post to an epic.
+Creates a note for a specified epic. Epic notes are comments users can post to an epic.
 If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
@@ -616,9 +616,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/notes?body=note"
 ```
 
-### Modify existing epic note
+### Update an epic note
 
-Modify existing note of an epic.
+Updates a specified note of an epic.
 
 ```plaintext
 PUT /groups/:id/epics/:epic_id/notes/:note_id
@@ -664,7 +664,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### List all project wiki notes
 
-Gets a list of all notes for a project wiki page. Project wiki notes are comments users can post to a wiki page.
+Lists all notes for a specified project wiki page. Project wiki notes are comments users can post to a wiki page.
 
 > [!note]
 > The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
@@ -689,9 +689,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes"
 ```
 
-### Get single wiki page note
+### Retrieve a wiki page note
 
-Returns a single note for a given wiki page.
+Retrieves a single note for a specified wiki page.
 
 ```plaintext
 GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
@@ -739,7 +739,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes/1218"
 ```
 
-### Create new wiki page note
+### Create a wiki page note
 
 Creates a new note for a single wiki page. Wiki page notes are comments users can post to a wiki page.
 
@@ -760,9 +760,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes?body=note"
 ```
 
-### Modify existing wiki page note
+### Update a wiki page note
 
-Modifies an existing note on a wiki page.
+Updates an existing note on a wiki page.
 
 ```plaintext
 PUT /projects/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
@@ -812,9 +812,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-### List all group wiki notes
+### List group wiki notes
 
-Gets a list of all notes for a group wiki page. Group wiki notes are comments users can post to a wiki page.
+Lists all notes for a specified group wiki page. Group wiki notes are comments users can post to a wiki page.
 
 > [!note]
 > The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
@@ -837,9 +837,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes"
 ```
 
-### Get single wiki page note
+### Retrieve a wiki page note
 
-Returns a single note for a given wiki page.
+Retrieves a specified note for a wiki page.
 
 ```plaintext
 GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
@@ -887,9 +887,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes/1218"
 ```
 
-### Create new wiki page note
+### Create a wiki page note
 
-Creates a new note for a single wiki page. Wiki page notes are comments users can post to a wiki page.
+Creates a note for a specified wiki page. Wiki page notes are comments users can post to a wiki page.
 
 ```plaintext
 POST /groups/:id/wiki_pages/:wiki_page_meta_id/notes
@@ -908,9 +908,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes?body=note"
 ```
 
-### Modify existing wiki page note
+### Update a wiki page note
 
-Modifies an existing note on a wiki page.
+Updates a specified note on a wiki page.
 
 ```plaintext
 PUT /groups/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id

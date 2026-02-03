@@ -314,7 +314,7 @@ module MergeRequestsHelper
           'show',
           _('Overview'),
           project_merge_request_path(project, merge_request),
-          merge_request.related_notes.user.count
+          merge_request.notes.user.count
         ],
         ['commits', _('Commits'), commits_project_merge_request_path(project, merge_request), @commits_count],
         ['diffs', _('Changes'), diffs_project_merge_request_path(project, merge_request), @diffs_count]

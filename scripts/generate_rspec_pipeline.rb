@@ -70,6 +70,14 @@ class GenerateRspecPipeline
       return
     end
 
+    # Predictive system tests should be skipped in tier2/3 pipeline, use skip.yml to avoid empty child pipelines.
+    # Exception: spec-only MRs should still run system tests.
+    if tier_2_or_above? && only_system_tests? && !spec_only?
+      info "Using #{SKIP_PIPELINE_YML_FILE} due to only system tests detected in tier-2/3 pipeline"
+      FileUtils.cp(SKIP_PIPELINE_YML_FILE, generated_pipeline_path)
+      return
+    end
+
     info "pipeline_template_path: #{pipeline_template_path}"
     info "generated_pipeline_path: #{generated_pipeline_path}"
 
@@ -183,6 +191,18 @@ class GenerateRspecPipeline
 
   def test_level_service
     @test_level_service ||= Quality::TestLevel.new(test_suite_prefix)
+  end
+
+  def tier_2_or_above?
+    ENV['CI_MERGE_REQUEST_LABELS']&.match?(/pipeline::tier-[23]/)
+  end
+
+  def spec_only?
+    ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline:spec-only')
+  end
+
+  def only_system_tests?
+    (TEST_LEVELS - [:system]).all? { |level| rspec_files_per_test_level.dig(level, :files).empty? }
   end
 end
 

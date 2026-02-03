@@ -47,7 +47,7 @@ You can move all projects or individual projects.
 
 To move all projects by using the API:
 
-1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#schedule-repository-storage-moves-for-all-projects-on-a-storage-shard)
+1. [Schedule repository storage moves for all projects on a storage shard](../../api/project_repository_storage_moves.md#create-repository-storage-moves-for-all-projects-on-a-storage-shard)
    using the API. For example:
 
    ```shell
@@ -57,7 +57,7 @@ To move all projects by using the API:
         "https://gitlab.example.com/api/v4/project_repository_storage_moves"
    ```
 
-1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#retrieve-all-project-repository-storage-moves)
+1. [Query the most recent repository moves](../../api/project_repository_storage_moves.md#list-all-project-repository-storage-moves)
    using the API. The response indicates either:
    - The moves have completed successfully. The `state` field is `finished`.
    - The moves are in progress. Re-query the repository move until it completes successfully.
@@ -81,7 +81,7 @@ To move all projects by using the API:
 1. Repeat for each storage as required.
 
 If you don't want to move all projects, follow the instructions for
-[moving individual projects](../../api/project_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-project).
+[moving individual projects](../../api/project_repository_storage_moves.md#create-a-repository-storage-move-for-a-project).
 
 ### Move snippets
 

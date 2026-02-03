@@ -1062,7 +1062,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 Creates a new thread to a single project merge request. Similar to creating
 a note but other comments (replies) can be added to it later. For other approaches,
 see [Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
-and [Create new merge request note](notes.md#create-new-merge-request-note) in the Notes API.
+and [Create a merge request note](notes.md#create-a-merge-request-note) in the Notes API.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions
