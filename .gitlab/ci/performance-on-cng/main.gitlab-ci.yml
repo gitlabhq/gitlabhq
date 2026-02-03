@@ -35,6 +35,18 @@ build-cng:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
 
+dont-interrupt-me:
+  stage: .pre
+  interruptible: false
+  script:
+    - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+  rules:
+    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
+      allow_failure: true
+    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+      when: manual
+      allow_failure: true
+
 # ==========================================
 # Test stage
 # ==========================================

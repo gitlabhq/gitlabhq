@@ -1,6 +1,9 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { toggleFileAdapter } from '~/rapid_diffs/adapters/toggle_file';
 import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
+
+jest.mock('~/lib/utils/sticky');
 
 describe('Diff File Toggle Behavior', () => {
   function get(element) {
@@ -71,10 +74,34 @@ describe('Diff File Toggle Behavior', () => {
     expect(document.activeElement).toEqual(show);
   });
 
+  it('scrolls collapsed file into view when hide button is clicked', () => {
+    const file = get('file');
+    const scrollIntoViewSpy = jest.spyOn(file.diffElement, 'scrollIntoView');
+
+    delegatedClick(get('hide'));
+
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: 'instant',
+    });
+    expect(scrollPastCoveringElements).toHaveBeenCalledWith(file.diffElement);
+  });
+
   it('collapses file', () => {
     get('file').trigger(COLLAPSE_FILE);
     expect(get('body').open).toEqual(false);
     expect(get('file').diffElement.dataset.collapsed).toEqual('true');
+  });
+
+  it('does not scroll when collapsed via COLLAPSE_FILE event', () => {
+    const file = get('file');
+    const scrollIntoViewSpy = jest.spyOn(file.diffElement, 'scrollIntoView');
+
+    get('file').trigger(COLLAPSE_FILE);
+
+    expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+    expect(scrollPastCoveringElements).not.toHaveBeenCalled();
   });
 
   it('expands file', () => {

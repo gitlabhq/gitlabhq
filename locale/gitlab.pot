@@ -25457,9 +25457,6 @@ msgstr ""
 msgid "Dismiss Alert"
 msgstr ""
 
-msgid "Dismiss merge request promotion"
-msgstr ""
-
 msgid "Dismiss trial promotion"
 msgstr ""
 
@@ -54690,9 +54687,6 @@ msgstr ""
 msgid "Promotions|Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr ""
 
-msgid "Promotions|Improve merge requests and customer support with GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
@@ -54703,9 +54697,6 @@ msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edit
 msgstr ""
 
 msgid "Promotions|Keep track of events in your project"
-msgstr ""
-
-msgid "Promotions|Merge request approvals"
 msgstr ""
 
 msgid "Promotions|Not now, thanks!"
@@ -54724,9 +54715,6 @@ msgid "Promotions|Repository Mirroring is a way to mirror repositories from exte
 msgstr ""
 
 msgid "Promotions|See the other features in the %{subscription_link}"
-msgstr ""
-
-msgid "Promotions|Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
 msgstr ""
 
 msgid "Promotions|Start GitLab Ultimate trial"
@@ -54751,9 +54739,6 @@ msgid "Promotions|Upgrade your plan to activate Group Webhooks."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate audit events."
-msgstr ""
-
-msgid "Promotions|Upgrade your plan to improve merge requests."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."

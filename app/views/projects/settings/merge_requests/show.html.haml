@@ -9,8 +9,6 @@
   - c.with_description do
     = render_if_exists 'projects/settings/merge_requests/merge_request_settings_description_text'
   - c.with_body do
-    = render_if_exists 'shared/promotions/promote_mr_features'
-
     = gitlab_ui_form_for @project, url: project_settings_merge_requests_path(@project), html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/settings/merge_requests/merge_request_settings', form: f

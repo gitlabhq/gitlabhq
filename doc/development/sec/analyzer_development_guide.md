@@ -578,7 +578,7 @@ In order to push images to this location:
 
    1. Add the following permissions:
 
-      - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
+      - Maintainer: `@gitlab-org/secure/managers`
       - Developer: [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation)
 
         This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
