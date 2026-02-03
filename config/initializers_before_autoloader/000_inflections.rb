@@ -39,6 +39,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_repository_registry
     project_statistics
     snippet_repository_registry
+    supply_chain_attestation_registry
     system_note_metadata
     terraform_state_version_registry
     vulnerabilities_feedback

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Boards::Lists::Update do
+RSpec.describe Mutations::Boards::Lists::Update, feature_category: :portfolio_management do
   context 'on group issue boards' do
     let_it_be(:group)    { create(:group, :private) }
     let_it_be(:board)    { create(:board, group: group) }

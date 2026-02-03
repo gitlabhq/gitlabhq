@@ -723,7 +723,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(109)
 
         project = create(:project, namespace: group2, path: 'Foo')
         project2 = create(:project, namespace: group2, path: 'Foo2')

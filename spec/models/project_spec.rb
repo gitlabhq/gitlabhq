@@ -1771,6 +1771,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:cancel_deletion).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:cancel_deletion!).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:deletion_in_progress?).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:deletion_scheduled?).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:namespace_details).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[

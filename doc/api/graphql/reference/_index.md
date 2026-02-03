@@ -53768,6 +53768,7 @@ Geo registry class.
 | <a id="georegistryclassproject_repository_registry"></a>`PROJECT_REPOSITORY_REGISTRY` | Geo::ProjectRepositoryRegistry registry class. |
 | <a id="georegistryclassproject_wiki_repository_registry"></a>`PROJECT_WIKI_REPOSITORY_REGISTRY` | Geo::ProjectWikiRepositoryRegistry registry class. |
 | <a id="georegistryclasssnippet_repository_registry"></a>`SNIPPET_REPOSITORY_REGISTRY` | Geo::SnippetRepositoryRegistry registry class. |
+| <a id="georegistryclasssupply_chain_attestation_registry"></a>`SUPPLY_CHAIN_ATTESTATION_REGISTRY` | Geo::SupplyChainAttestationRegistry registry class. |
 | <a id="georegistryclassterraform_state_version_registry"></a>`TERRAFORM_STATE_VERSION_REGISTRY` | Geo::TerraformStateVersionRegistry registry class. |
 | <a id="georegistryclassupload_registry"></a>`UPLOAD_REGISTRY` | Geo::UploadRegistry registry class. |
 

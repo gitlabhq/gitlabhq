@@ -75,11 +75,15 @@ module ActiveContext
         end
 
         def process_and(children)
-          relation = base_relation
-          children.each do |child|
-            relation = relation.merge(process(child))
+          if contains_knn?(children)
+            process_and_with_knn(children)
+          else
+            relation = base_relation
+            children.each do |child|
+              relation = relation.merge(process(child))
+            end
+            relation
           end
-          relation
         end
 
         def process_or(children)
@@ -92,6 +96,13 @@ module ActiveContext
 
         def contains_knn?(children)
           children.any? { |child| child.type == :knn }
+        end
+
+        def process_and_with_knn(children)
+          knn_children, non_knn_children = children.partition { |child| child.type == :knn }
+          relation = base_relation
+          non_knn_children.each { |child| relation = relation.merge(process(child)) }
+          process_knn(knn_children.first, relation)
         end
 
         def process_or_with_knn(children)
@@ -122,12 +133,18 @@ module ActiveContext
           vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values)
           limit = node.value[:k]
           vector_str = "[#{vector.join(',')}]"
+          distance_expr = "#{quote_column(column)} <=> #{model.connection.quote(vector_str)}"
+          score_expr = "((2.0 - (#{distance_expr})) / 2.0) AS score"
 
-          relation
-            .order(
-              Arel.sql("#{quote_column(column)} <=> #{model.connection.quote(vector_str)}")
-            )
-            .limit(limit)
+          # Build SQL manually to avoid schema introspection from .select()
+          base_sql = relation.to_sql
+          select_end = base_sql.index(' FROM ')
+
+          select_part = base_sql[0...select_end]
+          from_part = base_sql[select_end..]
+          final_sql = "#{select_part}, #{score_expr}#{from_part} ORDER BY #{distance_expr} LIMIT #{limit}"
+
+          Struct.new(:to_sql).new(final_sql)
         end
 
         def process_limit(node)

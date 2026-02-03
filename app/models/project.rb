@@ -555,7 +555,9 @@ class Project < ApplicationRecord
       :reschedule_deletion!,
       :cancel_deletion,
       :cancel_deletion!,
-      :deletion_in_progress?
+      :deletion_in_progress?,
+      :deletion_scheduled?,
+      :namespace_details
   end
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
@@ -886,6 +888,7 @@ class Project < ApplicationRecord
   scope :include_fork_networks, -> { includes(:fork_network) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
+  scope :with_project_namespace_details, -> { preload(project_namespace: :namespace_details) }
   scope :joins_namespace, -> { joins(:namespace) }
   scope :with_group, -> { includes(:group) }
   scope :with_import_state, -> { includes(:import_state) }
@@ -1056,7 +1059,8 @@ class Project < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings])
+    with_project_namespace_details
+      .preload(:project_feature, :route, :creator, group: :parent, namespace: [:route, :owner, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings])
   end
 
   def self.with_api_commit_entity_associations

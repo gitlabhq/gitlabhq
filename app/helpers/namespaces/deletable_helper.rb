@@ -32,7 +32,7 @@ module Namespaces
 
       messages = {
         group: _('This group and its subgroups are being deleted.'),
-        project: _('This project is being deleted. Repository and other project resources are read-only.')
+        project: _('This project is being deleted.')
       }
 
       message_for_namespace(namespace, messages)

@@ -118,8 +118,8 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       :project           | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
       :project_namespace | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
       :group             | true  | nil  | 'This group and its subgroups are being deleted.'
-      :project           | true  | nil  | 'This project is being deleted. Repository and other project resources are read-only.'
-      :project_namespace | true  | nil  | 'This project is being deleted. Repository and other project resources are read-only.'
+      :project           | true  | nil  | 'This project is being deleted.'
+      :project_namespace | true  | nil  | 'This project is being deleted.'
     end
     # rubocop:enable Layout/LineLength
 

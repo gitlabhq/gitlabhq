@@ -97,6 +97,30 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
         result
       end
+
+      it 'rolls back the state' do
+        expect { result }.not_to change { project.reload.state }
+      end
+    end
+
+    context 'when update service fails' do
+      before do
+        allow_next_instance_of(Projects::UpdateService) do |instance|
+          allow(instance).to receive(:execute).and_return(
+            status: :error,
+            message: 'Failed to update project'
+          )
+        end
+      end
+
+      it 'returns error response' do
+        expect(result).to be_error
+        expect(result.message).to eq('Failed to update project')
+      end
+
+      it 'rolls back the state' do
+        expect { result }.not_to change { project.reload.state }
+      end
     end
   end
 

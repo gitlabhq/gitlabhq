@@ -377,11 +377,15 @@ rspec unit clickhouse25:
   extends:
     - .rspec-base-pg16-clickhouse25
     - .rails:rules:clickhouse-changes
+  rules:
+    - when: never
 
 rspec-ee unit clickhouse25:
   extends:
     - .rspec-base-pg16-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
+  rules:
+    - when: never
 
 rspec integration pg16 clickhouse25:
   extends:

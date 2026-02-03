@@ -31308,6 +31308,12 @@ msgstr ""
 msgid "Geo|Successfully recalculated checksum for %{name}."
 msgstr ""
 
+msgid "Geo|Supply Chain Attestation"
+msgstr ""
+
+msgid "Geo|Supply Chain Attestations"
+msgstr ""
+
 msgid "Geo|Sync failed"
 msgstr ""
 
@@ -70219,7 +70225,7 @@ msgstr ""
 msgid "This project is archived. Its data is %{strong_open}read-only%{strong_close}."
 msgstr ""
 
-msgid "This project is being deleted. Repository and other project resources are read-only."
+msgid "This project is being deleted."
 msgstr ""
 
 msgid "This project is licensed under the %{strong_start}%{license_name}%{strong_end}."

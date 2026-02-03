@@ -26,6 +26,36 @@ RSpec.describe ActiveContext::Databases::Postgresql::QueryResult do
     it 'returns enumerator when no block given' do
       expect(query_result.each).to be_a(Enumerator)
     end
+
+    context 'when rows contain score from KNN query' do
+      it 'converts score string to float' do
+        rows = [
+          { 'id' => '1', 'name' => 'test1', 'score' => '0.9523' },
+          { 'id' => '2', 'name' => 'test2', 'score' => '0.7891' }
+        ]
+
+        allow(pg_result).to receive(:each).and_yield(rows[0]).and_yield(rows[1])
+
+        results = query_result.to_a
+
+        expect(results[0]).to eq({ 'id' => '1', 'name' => 'test1', 'score' => 0.9523 })
+        expect(results[1]).to eq({ 'id' => '2', 'name' => 'test2', 'score' => 0.7891 })
+        expect(results[0]['score']).to be_a(Float)
+      end
+    end
+
+    context 'when rows do not contain score (non-KNN query)' do
+      it 'yields rows unchanged' do
+        rows = [
+          { 'id' => '1', 'name' => 'test1' },
+          { 'id' => '2', 'name' => 'test2' }
+        ]
+
+        allow(pg_result).to receive(:each).and_yield(rows[0]).and_yield(rows[1])
+
+        expect { |b| query_result.each(&b) }.to yield_successive_args(*rows)
+      end
+    end
   end
 
   describe '#count' do

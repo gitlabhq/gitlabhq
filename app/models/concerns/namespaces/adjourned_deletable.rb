@@ -23,12 +23,12 @@ module Namespaces
 
     # Returns the date when the scheduled deletion was created.
     def self_deletion_scheduled_deletion_created_on
-      marked_for_deletion_on if respond_to?(:marked_for_deletion_on)
+      self_deletion_scheduled_deletion_created_on_legacy || deletion_schedule_from_state_metadata
     end
 
     # Returns true if the record is scheduled for deletion.
     def self_deletion_scheduled?
-      self_deletion_scheduled_deletion_created_on.present?
+      self_deletion_scheduled_deletion_created_on_legacy.present? || deletion_scheduled?
     end
 
     def ancestor_scheduled_for_deletion?
@@ -54,6 +54,19 @@ module Namespaces
 
     def deletion_adjourned_period
       ::Gitlab::CurrentSettings.deletion_adjourned_period
+    end
+
+    private
+
+    def deletion_schedule_from_state_metadata
+      return unless try(:namespace_details)
+
+      deletion_schedule = namespace_details.state_metadata['deletion_scheduled_at']
+      Time.zone.parse(deletion_schedule) if deletion_schedule.present?
+    end
+
+    def self_deletion_scheduled_deletion_created_on_legacy
+      try(:marked_for_deletion_on)
     end
   end
 end

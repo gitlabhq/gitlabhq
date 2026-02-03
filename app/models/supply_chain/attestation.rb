@@ -15,7 +15,7 @@ module SupplyChain
 
     has_internal_id :iid, scope: :project
 
-    validates :project_id, presence: true
+    validates :project, presence: true
     validates :file, presence: true, unless: :error?
     validates :predicate_kind, presence: true
     validates :predicate_type, presence: true
@@ -49,3 +49,5 @@ module SupplyChain
     end
   end
 end
+
+SupplyChain::Attestation.prepend_mod

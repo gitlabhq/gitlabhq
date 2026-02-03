@@ -39,12 +39,12 @@ describe('Commit Rapid Diffs app', () => {
     lazy: false,
   };
 
-  const createApp = (data = {}) => {
+  const createApp = (data = {}, options = {}) => {
     setHTMLFixture(
       `
       <main>
-        <div class="container-fluid">
-          <div
+        <div class="container-fluid ${options.fixedLayout ? 'js-fixed-layout container-limited' : ''}" data-diffs-container>
+        <div
             data-rapid-diffs
             data-app-data='${JSON.stringify({ ...appData, ...data })}'
           >
@@ -59,7 +59,7 @@ describe('Commit Rapid Diffs app', () => {
             <div data-stream-remaining-diffs></div>
             <div data-commit-timeline></div>
           </div>
-        </div>
+       </div>
       </main>
       `,
     );
@@ -102,16 +102,35 @@ describe('Commit Rapid Diffs app', () => {
     });
   });
 
-  it('switches container layout', async () => {
-    const discussions = [{}];
-    axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
-    createApp();
-    await app.init();
-    useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
-    useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
-    expect(document.querySelector('.container-fluid').classList.contains('container-limited')).toBe(
-      true,
-    );
+  describe('container layout switching', () => {
+    beforeEach(() => {
+      const discussions = [{}];
+      axiosMock.onGet(appData.discussionsEndpoint).reply(HTTP_STATUS_OK, { discussions });
+    });
+
+    it('switches container layout when switching view types with fixed layout', async () => {
+      // eslint-disable-next-line vue/one-component-per-file
+      createApp({}, { fixedLayout: true });
+      await app.init();
+      const diffsContainer = document.querySelector('[data-diffs-container]');
+      expect(diffsContainer.classList.contains('container-limited')).toBe(true);
+      useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(true);
+    });
+
+    it('does not switch container layout when js-fixed-layout is not present', async () => {
+      // eslint-disable-next-line vue/one-component-per-file
+      createApp({}, { fixedLayout: false });
+      await app.init();
+      const diffsContainer = document.querySelector('[data-diffs-container]');
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(PARALLEL_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+      useDiffsView().updateViewType(INLINE_DIFF_VIEW_TYPE);
+      expect(diffsContainer.classList.contains('container-limited')).toBe(false);
+    });
   });
 
   it('initializes timeline', async () => {

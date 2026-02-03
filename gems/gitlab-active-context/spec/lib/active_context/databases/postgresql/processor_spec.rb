@@ -89,7 +89,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
           ),
           ActiveContext::Query.filter(status: 'active')
         ),
-        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+        "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+          "FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
           "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
     end
   end
@@ -119,7 +120,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
             k: 5
           )
         ),
-        "SELECT \"items\".* FROM \"items\" ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
+        "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+          "FROM \"items\" ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
       it_behaves_like 'a SQL transformer',
         ActiveContext::Query.or(
@@ -130,7 +132,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
           ),
           ActiveContext::Query.filter(status: 'active')
         ),
-        "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+        "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+          "FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
           "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
     end
   end
@@ -142,14 +145,16 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
       ActiveContext::Query.knn(
         content: 'something',
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" ORDER BY \"items\".\"preset_field\" <=> '[0.5,0.6]' LIMIT 5"
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"preset_field\" <=> '[0.5,0.6]')) / 2.0) AS score " \
+        "FROM \"items\" ORDER BY \"items\".\"preset_field\" <=> '[0.5,0.6]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
       ActiveContext::Query.filter(status: 'active').knn(
@@ -157,7 +162,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
         "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
@@ -166,7 +172,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"project_id\" IN (1, 2, 3)) " \
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" WHERE (\"items\".\"project_id\" IN (1, 2, 3)) " \
         "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
@@ -178,7 +185,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
         "AND (\"items\".\"category\" = 'product') ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
@@ -190,7 +198,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ),
-      "SELECT \"items\".* FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
+      "SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" WHERE (\"items\".\"status\" = 'active') " \
         "AND (\"items\".\"name\" LIKE 'test%') ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5"
   end
 
@@ -205,8 +214,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
         vector: [0.1, 0.2],
         k: 5
       ).limit(10),
-      "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" " \
-        "ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
+      "SELECT subq.* FROM (SELECT \"items\".*, ((2.0 - (\"items\".\"embedding\" <=> '[0.1,0.2]')) / 2.0) AS score " \
+        "FROM \"items\" ORDER BY \"items\".\"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
   end
 
   context 'with missing queries' do

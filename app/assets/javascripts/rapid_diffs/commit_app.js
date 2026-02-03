@@ -21,13 +21,20 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
     await this.#initDiscussions();
   }
 
+  /**
+   * Adjusts the diffs container width when switching between inline and side-by-side view modes.
+   *
+   * Listens for view type changes via the diffs store and toggles the `container-limited` class
+   * on the diffs container. Side-by-side/parallel view always renders full-width for diffs,
+   * no matter user preferences (fluid/fixed width). So we do NOT toggle the class.
+   */
   // eslint-disable-next-line class-methods-use-this
   #initViewModeResize() {
     useDiffsView().$onAction(({ name }) => {
       if (name !== 'updateViewType') return;
-      const container = document.querySelector('main .container-fluid');
-      if (!container) return;
-      container.classList.toggle(
+      const diffsContainer = document.querySelector('.js-fixed-layout');
+      if (!diffsContainer) return;
+      diffsContainer.classList.toggle(
         'container-limited',
         useDiffsView().viewType !== INLINE_DIFF_VIEW_TYPE,
       );

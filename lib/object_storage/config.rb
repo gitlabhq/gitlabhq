@@ -76,6 +76,12 @@ module ObjectStorage
     end
     # End Azure-specific options
 
+    # Google-specific options
+    def universe_domain
+      credentials[:universe_domain]
+    end
+    # End Google-specific options
+
     def google?
       provider == GOOGLE_PROVIDER
     end
