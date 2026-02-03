@@ -87,7 +87,7 @@ module Users
       transition_to_jihu_callout: 84,
       # 85 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169248
       # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
-      deployment_details_feedback: 87,
+      # 87 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221380
       # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
       # 89 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152981
       deployment_approvals_empty_state: 90,
@@ -109,7 +109,7 @@ module Users
       # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       # 107 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
-      explore_duo_core_banner: 108, # EE-only
+      # 108 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221367
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110, # EE-only
       duo_amazon_q_alert: 111, # EE-only

@@ -7,3 +7,4 @@ permissions:
   - download_maven_package_file
   - read_maven_virtual_registry_upstream
   - test_maven_virtual_registry_upstream
+  - read_maven_virtual_registry

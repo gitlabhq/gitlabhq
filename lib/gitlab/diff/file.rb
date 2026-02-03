@@ -393,7 +393,7 @@ module Gitlab
       def rendered
         return unless ipynb? && modified_file? && !collapsed? && !too_large?
 
-        strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
+        strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self).rendered }
       end
 
       def rendered?

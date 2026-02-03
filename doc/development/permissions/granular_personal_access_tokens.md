@@ -150,6 +150,7 @@ end
 | `boundary_param` | Optional. The request parameter containing the boundary identifier. Defaults to `:id` for projects and `:id` or `:group_id` for groups |
 | `boundaries` | Alternative to `boundary_type` for endpoints supporting multiple boundaries (see below) |
 | `boundary` | Alternative to `boundary_type` for endpoints where the boundary cannot be determined through standard parameter lookup. A callable object (proc, lambda, or method) that returns the boundary object |
+| `skip_granular_token_authorization` | Optional. When set to `true`, allows granular PATs to access the endpoint without requiring specific permissions (see below) |
 
 Example with custom `boundary_param`:
 
@@ -193,12 +194,33 @@ When multiple boundaries are defined:
 - The first boundary that can be resolved (based on available parameters) is used for authorization
 - Each boundary in the array requires a `boundary_type` key and optionally a `boundary_param` key to specify which request parameter contains the boundary identifier
 
+#### Skipping Granular Token Authorization
+
+Some endpoints don't require authentication and are publicly accessible, or do not implement token authentication. Since token authentication is skipped for these endpoints, defining granular permissions doesn't make sense. However, to maintain coverage tracking for all endpoints, use the `skip_granular_token_authorization` option:
+
+```ruby
+route_setting :authorization, skip_granular_token_authorization: true
+get 'public-endpoint' do
+  # endpoint implementation
+end
+```
+
+**When to use `skip_granular_token_authorization`:**
+
+- Public endpoints that don't require authentication
+- Endpoints that authenticate by other means than personal access tokens
+- Discovery or metadata endpoints that are accessible without authentication
+- Endpoints where authentication is optional and the response is the same regardless
+
+Adding this decorator ensures that all endpoints are explicitly covered by the authorization system, even those that don't require permissions.
+
 **Important Notes:**
 
 - Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
 - The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
 - Use `boundary_type` or `boundary` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
+- Use `skip_granular_token_authorization: true` sparingly and only for endpoints that truly don't require permission checks
 
 ### Step 6: Add Test Coverage
 

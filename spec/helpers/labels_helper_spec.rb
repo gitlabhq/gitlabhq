@@ -196,9 +196,9 @@ RSpec.describe LabelsHelper do
   describe 'presented_labels_sorted_by_title' do
     let(:labels) do
       [build(:label, title: 'a'),
-       build(:label, title: 'B'),
-       build(:label, title: 'c'),
-       build(:label, title: 'D')]
+        build(:label, title: 'B'),
+        build(:label, title: 'c'),
+        build(:label, title: 'D')]
     end
 
     it 'sorts labels alphabetically' do

@@ -46,7 +46,7 @@ module Gitlab
           end
 
           def rendered
-            self
+            notebook_diff ? self : nil
           end
 
           def rendered?

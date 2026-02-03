@@ -1465,7 +1465,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     shared_examples 'access after accepting terms' do
       let(:actions) do
         [-> { pull_access_check },
-         -> { push_access_check }]
+          -> { push_access_check }]
       end
 
       it 'blocks access when the user did not accept terms' do

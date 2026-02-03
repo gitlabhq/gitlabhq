@@ -6,12 +6,14 @@ module BulkImports
 
     EXISTING_EXPORT_TTL = 3.minutes
 
-    def initialize(user, portable, relation, jid)
+    # @param offline_export_id [Integer] ID of offline transfer to which export is related
+    def initialize(user, portable, relation, jid, offline_export_id: nil)
       @user = user
       @portable = portable
       @relation = relation
       @jid = jid
       @config = FileTransfer.config_for(portable)
+      @offline_export_id = offline_export_id
     end
 
     def execute
@@ -28,12 +30,19 @@ module BulkImports
 
     private
 
-    attr_reader :user, :portable, :relation, :jid, :config
+    attr_reader :user, :portable, :relation, :jid, :config, :offline_export_id
 
     delegate :export_path, to: :config
 
     def find_or_create_export!
-      export = portable.bulk_import_exports.safe_find_or_create_by!(relation: relation, user: user)
+      # TODO: Once `offline_export_id` is actually supported, we'll only want to supply
+      # the `user` parameter if `offline_export_id` is absent.
+      # Epic link: https://gitlab.com/groups/gitlab-org/-/work_items/8985
+      export = portable.bulk_import_exports.safe_find_or_create_by!(
+        relation: relation,
+        user: user,
+        offline_export_id: nil
+      )
 
       return export if export.finished? && export.updated_at > EXISTING_EXPORT_TTL.ago && !export.batched?
 

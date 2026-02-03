@@ -58,14 +58,11 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
 
 1. Authenticate your request.
 
-   {{< alert type="note" >}}
-
-   If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
-
-   - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
-
-   {{< /alert >}}
+   > [!note]
+   > If you have enabled two-factor authentication (2FA), you cannot use username and password authentication. Instead:
+   >
+   > - [Use a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
+   > - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
 
 1. To view the files, go to the new directory:
 

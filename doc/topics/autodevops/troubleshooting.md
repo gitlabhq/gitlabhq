@@ -118,14 +118,11 @@ If you receive this error, you can do one of the following actions:
   database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
   redeploying.
 
-  {{< alert type="warning" >}}
-
-  Deleting the channel 1 PostgreSQL database permanently deletes the existing
-  channel 1 database and all its data. See
-  [Upgrading PostgreSQL](upgrading_postgresql.md)
-  for more information on backing up and upgrading your database.
-
-  {{< /alert >}}
+  > [!warning]
+  > Deleting the channel 1 PostgreSQL database permanently deletes the existing
+  > channel 1 database and all its data. See
+  > [Upgrading PostgreSQL](upgrading_postgresql.md)
+  > for more information on backing up and upgrading your database.
 
 - If you are not using the in-cluster database, you can set
   `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to

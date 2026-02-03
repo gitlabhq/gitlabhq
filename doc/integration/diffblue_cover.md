@@ -47,12 +47,9 @@ To integrate Diffblue Cover into your pipeline:
      In general, use a GitLab [project access token](../user/project/settings/project_access_tokens.md) with the `Developer` role, plus `api` and `write_repository` scopes.
      If necessary you can use a [group access token](../user/group/settings/group_access_tokens.md) or a [personal access token](../user/profile/personal_access_tokens.md), again with the `Developer` role, plus `api` and `write_repository` scopes.
 
-     {{< alert type="note" >}}
-
-     Using an access token with excessive permissions is a security risk.
-     If you use a Personal access token, consider creating a dedicated user with access limited to just the project, minimizing the impact of the token being leaked.
-
-     {{< /alert >}}
+     > [!note]
+     > Using an access token with excessive permissions is a security risk.
+     > If you use a Personal access token, consider creating a dedicated user with access limited to just the project, minimizing the impact of the token being leaked.
 
 1. Select **Save changes**.
    Your Diffblue Cover integration is now <mark style="color:green;">**Active**</mark> and ready for use in your project.

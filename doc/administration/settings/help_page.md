@@ -67,7 +67,7 @@ You can specify a custom URL to which users are directed when they:
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
-1. In the **Support page URL** field, enter the URL.
+1. In the **Support page URL** text box, enter the URL.
 1. Select **Save changes**.
 
 ## Redirect `/help` pages
@@ -77,10 +77,10 @@ You can redirect all `/help` links to a destination that meets the [necessary re
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Help page**.
-1. In the **Documentation pages URL** field, enter the URL.
+1. In the **Documentation pages URL** text box, enter the URL.
 1. Select **Save changes**.
 
-If the **Documentation pages URL** field is empty, the GitLab instance displays a basic version of the documentation
+If the **Documentation pages URL** text box is empty, the GitLab instance displays a basic version of the documentation
 sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab.
 
 ### Destination requirements

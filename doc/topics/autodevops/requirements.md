@@ -116,12 +116,9 @@ To make full use of Auto DevOps with Kubernetes, you need:
      the Ingress manifest to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
 
-     {{< alert type="note" >}}
-
-     If your cluster is installed on bare metal, see
-     [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
-
-     {{< /alert >}}
+     > [!note]
+     > If your cluster is installed on bare metal, see
+     > [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
 
 - **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps) and
   [Auto Deploy](stages.md#auto-deploy))

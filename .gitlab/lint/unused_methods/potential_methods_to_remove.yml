@@ -165,7 +165,6 @@ app/models/ci/job_artifact.rb:
 app/models/ci/job_token/allowlist.rb:
 - project_link_traversal_ids
 - group_link_traversal_ids
-- bulk_add_projects!
 - bulk_add_groups!
 app/models/ci/pipeline.rb:
 - has_archive_artifacts?

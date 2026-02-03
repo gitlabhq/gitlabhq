@@ -274,14 +274,11 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
    1. In **AWS access key** and **AWS secret access key**,
       enter your access keys for authentication.
 
-      {{< alert type="note" >}}
-
-      GitLab deployments that run directly on EC2 instances (not in containers)
-      don't have to enter access keys.
-      Your GitLab instance obtains these keys automatically from the
-      [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
-
-      {{< /alert >}}
+      > [!note]
+      > GitLab deployments that run directly on EC2 instances (not in containers)
+      > don't have to enter access keys.
+      > Your GitLab instance obtains these keys automatically from the
+      > [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
 
 1. Select **Save changes**.
 
@@ -1153,20 +1150,17 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-{{< alert type="warning" >}}
-
-Indexing a large instance generates a lot of Sidekiq jobs.
-Make sure to prepare for this task by having a
-[scalable setup](../../administration/reference_architectures/_index.md) or by creating
-[extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
-
-Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
-However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
-
-For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
-on the primary site's Sidekiq nodes.
-
-{{< /alert >}}
+> [!warning]
+> Indexing a large instance generates a lot of Sidekiq jobs.
+> Make sure to prepare for this task by having a
+> [scalable setup](../../administration/reference_architectures/_index.md) or by creating
+> [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+>
+> Both Geo primary and secondary nodes point to the same Elasticsearch cluster.
+> However, Elasticsearch indexing workers run only on the Sidekiq nodes of the primary site.
+>
+> For this reason, you must configure any [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md)
+> on the primary site's Sidekiq nodes.
 
 If [enabling advanced search](#enable-advanced-search) causes problems
 due to large volumes of data being indexed:

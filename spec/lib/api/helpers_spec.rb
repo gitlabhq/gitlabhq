@@ -1890,6 +1890,14 @@ RSpec.describe API::Helpers, feature_category: :api do
             expect(boundary).to be_nil
           end
         end
+
+        context 'when Proc returns nil' do
+          let(:boundary_setting) { -> { nil } }
+
+          it 'returns nil' do
+            expect(boundary).to be_nil
+          end
+        end
       end
 
       context 'when setting value does not respond to call' do
@@ -1954,22 +1962,6 @@ RSpec.describe API::Helpers, feature_category: :api do
 
         expect(boundary).to be_a(Authz::Boundary::NilBoundary)
         expect(boundary.access).to eq(Authz::GranularScope::Access::USER)
-      end
-    end
-
-    context 'when access token is not granular' do
-      let(:access_token) { instance_double(PersonalAccessToken, granular?: false) }
-
-      before do
-        allow(helper).to receive(:authorization_settings).and_return({
-          boundaries: [
-            { boundary_type: :project }
-          ]
-        })
-      end
-
-      it 'returns nil' do
-        expect(helper.send(:boundary_for_endpoint)).to be_nil
       end
     end
   end
@@ -2045,6 +2037,104 @@ RSpec.describe API::Helpers, feature_category: :api do
 
           helper.authenticate_by_gitlab_shell_or_workhorse_token!
         end
+      end
+    end
+  end
+
+  describe '#authorize_granular_token?' do
+    let(:token) { instance_double(PersonalAccessToken) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:access_token).and_return(token)
+      allow(helper).to receive(:initial_current_user).and_return(nil)
+      allow(helper).to receive(:params).and_return({})
+      allow(helper).to receive(:env).and_return({})
+      allow(helper).to receive(:scopes_registered_for_endpoint).and_return(nil)
+      allow(helper).to receive(:validate_and_save_access_token!).and_return(token)
+    end
+
+    context 'when access token is not granular' do
+      before do
+        allow(token).to receive(:granular?).and_return(false)
+      end
+
+      it 'returns false' do
+        allow(helper).to receive(:authorization_settings).and_return({})
+
+        expect(helper.send(:authorize_granular_token?)).to be(false)
+      end
+
+      it 'does not authorize granular tokens' do
+        expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        helper.current_user
+      end
+    end
+
+    context 'when access token is granular' do
+      before do
+        allow(token).to receive(:granular?).and_return(true)
+      end
+
+      context 'when skip_granular_token_authorization is not set' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return({})
+        end
+
+        it 'returns true' do
+          expect(helper.send(:authorize_granular_token?)).to be(true)
+        end
+
+        it 'authorizes granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).to receive(:new).and_call_original
+
+          helper.current_user
+        end
+      end
+
+      context 'when skip_granular_token_authorization is false' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return(skip_granular_token_authorization: false)
+        end
+
+        it 'returns true' do
+          expect(helper.send(:authorize_granular_token?)).to be(true)
+        end
+
+        it 'authorizes granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).to receive(:new).and_call_original
+
+          helper.current_user
+        end
+      end
+
+      context 'when skip_granular_token_authorization is true' do
+        before do
+          allow(helper).to receive(:authorization_settings).and_return(skip_granular_token_authorization: true)
+        end
+
+        it 'returns false' do
+          expect(helper.send(:authorize_granular_token?)).to be(false)
+        end
+
+        it 'does not authorize granular tokens' do
+          expect(Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+          helper.current_user
+        end
+      end
+    end
+
+    context 'when access token is nil' do
+      before do
+        allow(helper).to receive(:access_token).and_return(nil)
+      end
+
+      it 'returns falsey' do
+        allow(helper).to receive(:authorization_settings).and_return({})
+
+        expect(helper.send(:authorize_granular_token?)).to be_falsey
       end
     end
   end

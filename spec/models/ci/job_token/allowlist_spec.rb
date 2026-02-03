@@ -270,30 +270,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     end
   end
 
-  describe '#bulk_add_projects!' do
-    let_it_be(:added_project1) { create(:project) }
-    let_it_be(:added_project2) { create(:project) }
-    let_it_be(:user) { create(:user) }
-    let_it_be(:policies) { %w[read_deployments read_packages] }
-
-    subject(:add_projects) do
-      allowlist.bulk_add_projects!([added_project1, added_project2], policies: policies, user: user)
-    end
-
-    it 'adds the project scope links' do
-      add_projects
-
-      project_links = Ci::JobToken::ProjectScopeLink.where(source_project_id: source_project.id)
-      project_link = project_links.first
-
-      expect(allowlist.projects).to match_array([source_project, added_project1, added_project2])
-      expect(project_link.added_by_id).to eq(user.id)
-      expect(project_link.source_project_id).to eq(source_project.id)
-      expect(project_link.target_project_id).to eq(added_project1.id)
-      expect(project_link.job_token_policies).to eq(policies)
-    end
-  end
-
   describe '#bulk_add_groups!' do
     let_it_be(:added_group1) { create(:group) }
     let_it_be(:added_group2) { create(:group) }

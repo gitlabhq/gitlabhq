@@ -6,3 +6,5 @@ permissions:
   - purge_maven_virtual_registry_upstream_cache
   - disassociate_maven_virtual_registry_upstream
   - delete_maven_virtual_registry_upstream
+  - delete_maven_virtual_registry
+  - purge_maven_virtual_registry_cache

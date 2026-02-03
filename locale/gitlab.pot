@@ -7381,9 +7381,6 @@ msgstr ""
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
-msgid "AiPowered|Explore GitLab Duo Core"
-msgstr ""
-
 msgid "AiPowered|Failed to disable composite identity for GitLab Duo Agent Platform."
 msgstr ""
 
@@ -7406,9 +7403,6 @@ msgid "AiPowered|Features with CI/CD pipelines"
 msgstr ""
 
 msgid "AiPowered|Features without CI/CD pipelines"
-msgstr ""
-
-msgid "AiPowered|Get started with GitLab Duo"
 msgstr ""
 
 msgid "AiPowered|GitLab Credits dashboard"
@@ -7622,9 +7616,6 @@ msgid "AiPowered|When you turn off composite identity for the Agent Platform, ac
 msgstr ""
 
 msgid "AiPowered|When you turn on composite identity for GitLab Duo Agent Platform, a service account is created."
-msgstr ""
-
-msgid "AiPowered|You now have access to GitLab Duo Chat and Code Suggestions in supported IDEs. To start using these features, %{link1Start}install the GitLab extension in your IDE%{link1End}. If you already have this extension installed, %{link2Start}explore what you can do with GitLab Duo Core%{link2End}."
 msgstr ""
 
 msgid "Akismet"
@@ -24561,9 +24552,6 @@ msgstr ""
 msgid "Deployment|Latest Deployed"
 msgstr ""
 
-msgid "Deployment|Leave feedback"
-msgstr ""
-
 msgid "Deployment|Needs Approval"
 msgstr ""
 
@@ -24660,12 +24648,6 @@ msgid "Deployment|Waiting"
 msgstr ""
 
 msgid "Deployment|Waiting to be deployed."
-msgstr ""
-
-msgid "Deployment|We know this page is a bit empty at the moment, but we're working hard to bring you a great experience! In the meantime, we'd love to hear your feedback."
-msgstr ""
-
-msgid "Deployment|What would you like to see here?"
 msgstr ""
 
 msgid "Deployment|You"
@@ -52039,9 +52021,6 @@ msgstr ""
 msgid "ProfileSession|on"
 msgstr ""
 
-msgid "ProfilesAuthentication|Add a passkey to sign in securely with your trusted device. %{link_start}Learn more about passkeys%{link_end}."
-msgstr ""
-
 msgid "ProfilesAuthentication|Add passkey"
 msgstr ""
 
@@ -52102,9 +52081,6 @@ msgstr ""
 msgid "ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA."
 msgstr ""
 
-msgid "ProfilesAuthentication|Sign in faster with passkeys"
-msgstr ""
-
 msgid "ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below."
 msgstr ""
 
@@ -52142,9 +52118,6 @@ msgid "ProfilesAuthentication|You cannot modify your enrollment because the inst
 msgstr ""
 
 msgid "ProfilesAuthentication|You cannot modify your enrollment because your account does not use a password to sign in."
-msgstr ""
-
-msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
 msgstr ""
 
 msgid "Profiles| You are about to permanently delete %{strongStart}your account%{strongEnd}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{strongStart}Delete account%{strongEnd}, your account cannot be recovered."

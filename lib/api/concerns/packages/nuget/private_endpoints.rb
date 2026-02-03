@@ -20,6 +20,8 @@ module API
           NON_NEGATIVE_INTEGER_REGEX = %r{\A(0|[1-9]\d*)\z}
 
           included do
+            boundary_type
+
             # https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
             params do
               requires :package_name, type: String, desc: 'The NuGet package name',
@@ -40,6 +42,7 @@ module API
                 ]
                 tags %w[nuget_packages]
               end
+              route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
               get 'index', format: :json, urgency: :low do
                 present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages),
                   with: ::API::Entities::Nuget::PackagesMetadata
@@ -59,6 +62,7 @@ module API
                 requires :package_version, type: String, desc: 'The NuGet package version',
                   regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
               end
+              route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
               get '*package_version', format: :json, urgency: :low do
                 present ::Packages::Nuget::PackageMetadataPresenter.new(find_package),
                   with: ::API::Entities::Nuget::PackageMetadata
@@ -89,6 +93,7 @@ module API
                 ]
                 tags %w[nuget_packages]
               end
+              route_setting :authorization, permissions: :search_nuget_package, boundary_type: boundary_type
               get format: :json, urgency: :low do
                 track_package_event(
                   'search_package',

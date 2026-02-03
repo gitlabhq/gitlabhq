@@ -39,9 +39,9 @@ RSpec.describe Banzai::ReferenceParser::DesignParser, feature_category: :design_
 
       subject(:visible_nodes) do
         nodes = [link,
-                 other_project_link,
-                 public_link,
-                 public_but_confidential_link]
+          other_project_link,
+          public_link,
+          public_but_confidential_link]
 
         instance.nodes_visible_to_user(user, nodes)
       end

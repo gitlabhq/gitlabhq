@@ -40,13 +40,13 @@ To update your fork from the command line:
    1. If your fork doesn't have a remote pointing to the original repository, use one of these examples
       to configure a remote called upstream:
 
-       ```shell
-       # Set any repository as your upstream after editing <upstream_url>
-       git remote add upstream <upstream_url>
+      ```shell
+      # Set any repository as your upstream after editing <upstream_url>
+      git remote add upstream <upstream_url>
 
-       # Set the main GitLab repository as your upstream
-       git remote add upstream https://gitlab.com/gitlab-org/gitlab.git
-       ```
+      # Set the main GitLab repository as your upstream
+      git remote add upstream https://gitlab.com/gitlab-org/gitlab.git
+      ```
 
 1. Update your fork:
 
@@ -57,11 +57,8 @@ To update your fork from the command line:
       git checkout main
       ```
 
-      {{< alert type="note" >}}
-
-      If Git identifies unstaged changes, [commit or stash](commit.md) them before continuing.
-
-      {{< /alert >}}
+      > [!note]
+      > If Git identifies unstaged changes, [commit or stash](commit.md) them before continuing.
 
    1. Fetch the changes from the upstream repository:
 

@@ -181,6 +181,16 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
           expect(diff_file.rendered).to be_nil
         end
       end
+
+      context 'when notebook parsing fails' do
+        it 'returns nil' do
+          rendered_diff_file = instance_double(Gitlab::Diff::Rendered::Notebook::DiffFile)
+          allow(Gitlab::Diff::Rendered::Notebook::DiffFile).to receive(:new).and_return(rendered_diff_file)
+          allow(rendered_diff_file).to receive(:rendered).and_return(nil)
+
+          expect(diff_file.rendered).to be_nil
+        end
+      end
     end
   end
 

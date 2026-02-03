@@ -42,7 +42,7 @@ Use this API to [import repositories from external sources](../user/import/_inde
 
 {{< /history >}}
 
-Import your projects from GitHub to GitLab using the API.
+Imports a repository from GitHub to GitLab.
 
 Prerequisites:
 
@@ -122,7 +122,7 @@ token:
 
 ### Cancel GitHub project import
 
-Cancel an in-progress GitHub project import using the API.
+Cancels an in-progress GitHub project import.
 
 ```plaintext
 POST /import/github/cancel
@@ -165,8 +165,8 @@ Returns the following status codes:
 
 ### Import GitHub gists into GitLab snippets
 
-You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
-GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
+Imports personal GitHub gists into GitLab snippets.
+You can import gists with up to 10 files. GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.
 
 If any gists couldn't be imported, an email is sent with a list of gists that were not imported.
 
@@ -197,7 +197,7 @@ Returns the following status codes:
 
 ## Import repository from Bitbucket Server
 
-Import your projects from Bitbucket Server to GitLab using the API.
+Imports a repository from Bitbucket Server to GitLab.
 
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
 You must specify a `target_namespace` if you want to import the repository to a GitLab group.
@@ -246,7 +246,7 @@ curl --request POST \
 
 {{< /history >}}
 
-Import your projects from Bitbucket Cloud to GitLab using by the API.
+Imports a repository from Bitbucket Cloud to GitLab.
 
 Prerequisites:
 

@@ -90,7 +90,7 @@ module API
       unless sudo?
         token = validate_and_save_access_token!(scopes: scopes_registered_for_endpoint)
 
-        if token
+        if token && authorize_granular_token?
           result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
             boundary: boundary_for_endpoint, permissions: permissions_for_endpoint, token: token
           ).execute
@@ -1112,15 +1112,15 @@ module API
       (respond_to?(:route_setting) && route_setting(:authorization)) || {}
     end
 
-    def permissions_for_endpoint
-      return unless access_token.try(:granular?)
+    def authorize_granular_token?
+      access_token.try(:granular?) && !authorization_settings[:skip_granular_token_authorization]
+    end
 
+    def permissions_for_endpoint
       Array(authorization_settings[:permissions])
     end
 
     def boundary_for_endpoint
-      return unless access_token.try(:granular?)
-
       if authorization_settings[:boundary] && authorization_settings[:boundary].respond_to?(:call)
         boundary_object = instance_exec(&authorization_settings[:boundary])
         ::Authz::Boundary.for(boundary_object) if boundary_object

@@ -4,9 +4,12 @@ description: Grants the ability to read packages
 permissions:
   - download_helm_chart
   - download_maven_package_file
+  - download_nuget_package
   - download_pypi_package
+  - read_nuget_package
   - read_package
   - read_pypi_package
+  - search_nuget_package
 boundaries:
   - instance
   - group

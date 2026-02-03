@@ -55,6 +55,10 @@ module API
       end
     end
 
+    def self.boundary_type
+      :group
+    end
+
     params do
       requires :id, types: [Integer, String], desc: 'The group ID or full group path.',
         regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX

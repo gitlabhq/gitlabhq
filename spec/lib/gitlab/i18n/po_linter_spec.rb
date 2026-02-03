@@ -359,9 +359,9 @@ RSpec.describe Gitlab::I18n::PoLinter do
       errors = []
 
       expected_errors = ['<%d hello %{world} %s> is missing: [%{hello}]',
-                         '<%d hello %{world} %s> is using unknown variables: [%{world}]',
-                         'is combining multiple unnamed variables',
-                         'is combining named variables with unnamed variables']
+        '<%d hello %{world} %s> is using unknown variables: [%{world}]',
+        'is combining multiple unnamed variables',
+        'is combining named variables with unnamed variables']
 
       linter.validate_variables_in_message(errors, '%d %{hello} world %s', '%d hello %{world} %s')
 

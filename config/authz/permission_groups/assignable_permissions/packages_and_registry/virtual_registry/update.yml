@@ -4,3 +4,4 @@ boundaries:
   - instance
 permissions:
   - update_maven_virtual_registry_upstream
+  - update_maven_virtual_registry

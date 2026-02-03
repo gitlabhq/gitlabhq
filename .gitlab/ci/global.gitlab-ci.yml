@@ -126,7 +126,7 @@
 
 .es7-services:
   services:
-    - name: elasticsearch:7.17.6
+    - name: elasticsearch:7.17.28
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
 .use-pg16-es7-ee:

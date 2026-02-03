@@ -90,12 +90,9 @@ To configure your project settings in GitLab:
    in the **Jira issues** section:
    1. Select the **View Jira issues** checkbox.
 
-      {{< alert type="warning" >}}
-
-      When you enable this setting, all users with access to your GitLab project
-      can view all issues from the Jira projects you've specified.
-
-      {{< /alert >}}
+      > [!warning]
+      > When you enable this setting, all users with access to your GitLab project
+      > can view all issues from the Jira projects you've specified.
 
    1. Enter one or more Jira project keys.
       Leave blank to include all available keys.
@@ -103,11 +100,8 @@ To configure your project settings in GitLab:
    in the **Jira issues for vulnerabilities** section:
    1. Select the **Create Jira issues for vulnerabilities** checkbox.
 
-      {{< alert type="note" >}}
-
-      You can enable this setting only for individual projects and groups.
-
-      {{< /alert >}}
+      > [!note]
+      > You can enable this setting only for individual projects and groups.
 
    1. Enter a Jira project key.
    1. Select **Fetch issue types for this project key** ({{< icon name="retry" >}}),

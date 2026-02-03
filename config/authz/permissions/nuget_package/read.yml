@@ -1,0 +1,6 @@
+---
+name: read_nuget_package
+description: Grants the ability to read NuGet packages
+boundaries:
+  - group
+  - project

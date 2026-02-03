@@ -83,23 +83,6 @@ module Ci
           .with_source(@source_project)
       end
 
-      def bulk_add_projects!(target_projects, user:, policies: [])
-        now = Time.zone.now
-
-        projects = target_projects.map do |target_project|
-          Ci::JobToken::ProjectScopeLink.new(
-            source_project_id: @source_project.id,
-            target_project: target_project,
-            added_by: user,
-            job_token_policies: policies,
-            direction: @direction,
-            created_at: now
-          )
-        end
-
-        Ci::JobToken::ProjectScopeLink.bulk_insert!(projects)
-      end
-
       def bulk_add_groups!(target_groups, user:, policies: [])
         now = Time.zone.now
 

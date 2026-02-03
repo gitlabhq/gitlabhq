@@ -173,6 +173,22 @@ RSpec.describe Gitlab::Diff::Rendered::Notebook::DiffFile, feature_category: :ml
     end
   end
 
+  describe '#rendered' do
+    context 'when notebook_diff is present' do
+      it 'returns self' do
+        expect(nb_file.rendered).to eq(nb_file)
+      end
+    end
+
+    context 'when notebook_diff is nil' do
+      it 'returns nil' do
+        allow(nb_file).to receive(:notebook_diff).and_return(nil)
+
+        expect(nb_file.rendered).to be_nil
+      end
+    end
+  end
+
   describe '#rendered?' do
     it { expect(nb_file.rendered?).to be_truthy }
   end

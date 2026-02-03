@@ -130,8 +130,8 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
 
       it 'returns modified paths' do
         expect(subject.modified_paths).to eq ['bar/branch-test.txt',
-                                              'files/js/commit.coffee',
-                                              'with space/README.md']
+          'files/js/commit.coffee',
+          'with space/README.md']
       end
     end
 
@@ -160,36 +160,36 @@ RSpec.describe Gitlab::Git::Push, feature_category: :source_code_management do
           status: :ADDED,
           commit_id: ""
         ),
-        Gitlab::Git::ChangedPath.new(
-          new_blob_id: "85bc2f9753afd5f4fc5d7c75f74f8d526f26b4f3",
-          new_mode: "100644",
-          old_blob_id: "0000000000000000000000000000000000000000",
-          old_mode: "0",
-          old_path: "files/js/commit.coffee",
-          path: "files/js/commit.coffee",
-          status: :ADDED,
-          commit_id: ""
-        ),
-        Gitlab::Git::ChangedPath.new(
-          new_blob_id: "0000000000000000000000000000000000000000",
-          new_mode: "0",
-          old_blob_id: "5f53439ca4b009096571d3c8bc3d09d30e7431b3",
-          old_mode: "100644",
-          old_path: "files/js/commit.js.coffee",
-          path: "files/js/commit.js.coffee",
-          status: :DELETED,
-          commit_id: ""
-        ),
-        Gitlab::Git::ChangedPath.new(
-          new_blob_id: "8c3014aceae45386c3c026a7ea4a1f68660d51d6",
-          new_mode: "100644",
-          old_blob_id: "0000000000000000000000000000000000000000",
-          old_mode: "0",
-          old_path: "with space/README.md",
-          path: "with space/README.md",
-          status: :ADDED,
-          commit_id: ""
-        )].as_json
+          Gitlab::Git::ChangedPath.new(
+            new_blob_id: "85bc2f9753afd5f4fc5d7c75f74f8d526f26b4f3",
+            new_mode: "100644",
+            old_blob_id: "0000000000000000000000000000000000000000",
+            old_mode: "0",
+            old_path: "files/js/commit.coffee",
+            path: "files/js/commit.coffee",
+            status: :ADDED,
+            commit_id: ""
+          ),
+          Gitlab::Git::ChangedPath.new(
+            new_blob_id: "0000000000000000000000000000000000000000",
+            new_mode: "0",
+            old_blob_id: "5f53439ca4b009096571d3c8bc3d09d30e7431b3",
+            old_mode: "100644",
+            old_path: "files/js/commit.js.coffee",
+            path: "files/js/commit.js.coffee",
+            status: :DELETED,
+            commit_id: ""
+          ),
+          Gitlab::Git::ChangedPath.new(
+            new_blob_id: "8c3014aceae45386c3c026a7ea4a1f68660d51d6",
+            new_mode: "100644",
+            old_blob_id: "0000000000000000000000000000000000000000",
+            old_mode: "0",
+            old_path: "with space/README.md",
+            path: "with space/README.md",
+            status: :ADDED,
+            commit_id: ""
+          )].as_json
       end
     end
 

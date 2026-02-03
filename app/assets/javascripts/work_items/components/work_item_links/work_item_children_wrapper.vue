@@ -172,11 +172,11 @@ export default {
     shouldAutoExpandOnDrag(workItemTypeName = '') {
       const workItemTypeConfig = this.getWorkItemTypeConfiguration(workItemTypeName);
 
-      if (!workItemTypeConfig) return false;
-
-      const hierarchyWidget = workItemTypeConfig.widgetDefinitions.find(
+      const hierarchyWidget = workItemTypeConfig?.widgetDefinitions.find(
         ({ type }) => type === WIDGET_TYPE_HIERARCHY,
       );
+
+      // the work item config is not available right now and hence need fallback implementation
 
       return (
         hierarchyWidget?.autoExpandTreeOnMove ||

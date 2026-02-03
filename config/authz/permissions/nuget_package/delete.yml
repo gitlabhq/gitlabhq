@@ -1,0 +1,5 @@
+---
+name: delete_nuget_package
+description: Grants the ability to delete NuGet packages
+boundaries:
+  - project

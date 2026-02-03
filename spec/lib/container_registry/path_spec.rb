@@ -19,8 +19,8 @@ RSpec.describe ContainerRegistry::Path do
 
       it 'return all project path like node in reverse order' do
         expect(subject.nodes).to eq %w[path/to/some/project
-                                       path/to/some
-                                       path/to]
+          path/to/some
+          path/to]
       end
     end
 

@@ -19,8 +19,8 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchModelLoader, feature_category: :ap
     it 'only queries once per model' do
       expect do
         [described_class.new(User, other_user.id).find,
-         described_class.new(User, user.id).find,
-         described_class.new(Issue, issue.id).find].map(&:sync)
+          described_class.new(User, user.id).find,
+          described_class.new(Issue, issue.id).find].map(&:sync)
       end.not_to exceed_query_limit(2)
     end
 

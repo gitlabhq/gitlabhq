@@ -69,7 +69,7 @@ This text appears in all projects' runner settings.
 
 To add instance runner details:
 
-1. Enter text in the **Instance runner details** field. You can use Markdown formatting.
+1. Enter text in the **Instance runner details** text box. You can use Markdown formatting.
 1. Select **Save changes**.
 
 To view the rendered details:
@@ -123,7 +123,7 @@ For GitLab.com limits, see [Artifacts maximum size](../../user/gitlab_com/_index
 
 To change the maximum artifact size for an instance:
 
-1. Enter a value in the **Maximum artifacts size (MB)** field.
+1. Enter a value in the **Maximum artifacts size (MB)** text box.
 1. Select **Save changes**.
 
 To change the maximum artifact size for a group or project:
@@ -148,7 +148,7 @@ see the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md
 
 To set the default expiration time for job artifacts:
 
-1. Enter a value in the **Default artifacts expiration** field.
+1. Enter a value in the **Default artifacts expiration** text box.
 1. Select **Save changes**.
 
 #### Keep artifacts from latest successful pipelines
@@ -204,7 +204,7 @@ For GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#ci
 
 To set up job archiving:
 
-1. Enter a value in the **Archive pipelines** field.
+1. Enter a value in the **Archive pipelines** text box.
 1. Select **Save changes**.
 
 #### Allow pipeline variables by default
@@ -258,7 +258,7 @@ When a pipeline exceeds this limit, it fails with an error.
 
 To set the maximum number of included files per pipeline:
 
-1. Enter a value in the **Maximum includes** field.
+1. Enter a value in the **Maximum includes** text box.
 1. Select **Save changes**.
 
 #### Limit downstream pipeline trigger rate
@@ -303,7 +303,7 @@ Existing projects continue to use their current CI/CD configuration file path.
 
 To set a custom default CI/CD configuration file path:
 
-1. Enter a value in the **Default CI/CD configuration file** field.
+1. Enter a value in the **Default CI/CD configuration file** text box.
 1. Select **Save changes**.
 
 Individual projects can override this instance default by

@@ -45,14 +45,11 @@ you to use.
      `https://gitlab.example.com/users/auth`. Leaving this
      field empty results in an `Invalid redirect_uri` message.
 
-     {{< alert type="warning" >}}
-
-     To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-     attack, append `/users/auth` to the end of your Bitbucket authorization callback URL. You must
-     include this authorization endpoint to authenticate with Bitbucket and import data from Bitbucket
-     repositories.
-
-     {{< /alert >}}
+     > [!warning]
+     > To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
+     > attack, append `/users/auth` to the end of your Bitbucket authorization callback URL. You must
+     > include this authorization endpoint to authenticate with Bitbucket and import data from Bitbucket
+     > repositories.
 
    - **URL**: The URL to your GitLab installation, such as `https://gitlab.example.com`.
 

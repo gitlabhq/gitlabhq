@@ -802,15 +802,14 @@ HA setup becomes cost effective only at 10k users or above.
 
 ### Database schema migrations on GitLab 18.0.0 and earlier
 
-{{< alert type="warning" >}}
-On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
-
-```plaintext
-Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
-```
-
-Without running all migrations, the ClickHouse integration will not work.
-{{< /alert >}}
+> [!warning]
+> On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
+>
+> ```plaintext
+> Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
+> ```
+>
+> Without running all migrations, the ClickHouse integration will not work.
 
 To work around this issue and run the migrations:
 

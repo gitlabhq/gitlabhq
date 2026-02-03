@@ -64,19 +64,21 @@ RSpec.describe NotifyHelper, feature_category: :shared do
   end
 
   describe '#work_item_type_for' do
-    where(:work_item, :expected_type) do
-      build(:issue)              | 'issue'
-      build(:issue, :task)       | 'issue'
-      build(:issue, :test_case)  | 'issue'
-      build(:issue, :key_result) | 'issue'
-      build(:issue, :objective)  | 'issue'
-      build(:issue, :ticket)     | 'issue'
-      build(:incident)           | 'issue'
-      build(:issue, :epic)       | 'epic'
+    where(:work_item, :expected_type, :for_ee?) do
+      lazy { build(:issue) }              | 'issue' | false
+      lazy { build(:issue, :task) }       | 'issue' | false
+      lazy { build(:issue, :test_case) }  | 'issue' | true
+      lazy { build(:issue, :key_result) } | 'issue' | true
+      lazy { build(:issue, :objective) }  | 'issue' | true
+      lazy { build(:issue, :ticket) }     | 'issue' | false
+      lazy { build(:incident) }           | 'issue' | false
+      lazy { build(:issue, :epic) }       | 'epic'  | true
     end
 
     with_them do
       it do
+        skip if !Gitlab.ee? && for_ee?
+
         expect(helper.work_item_type_for(work_item)).to eq(expected_type)
       end
     end
