@@ -12,7 +12,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 429, message: 'Too many requests' }
         ]
-        tags ['webhooks']
+        tags ['hooks']
       end
       route_setting :authorization, permissions: :resend_webhook_event, boundary_type: configuration[:boundary_type]
       post ":hook_id/events/:hook_log_id/resend" do

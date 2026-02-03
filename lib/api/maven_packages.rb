@@ -97,7 +97,7 @@ module API
         { code: 403, message: 'Forbidden' },
         { code: 404, message: 'Not Found' }
       ]
-      tags %w[maven_packages]
+      tags %w[packages]
     end
     params do
       use :path_and_file_name
@@ -151,7 +151,7 @@ module API
         { code: 403, message: 'Forbidden' },
         { code: 404, message: 'Not Found' }
       ]
-      tags %w[maven_packages]
+      tags %w[packages]
     end
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
@@ -199,7 +199,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[maven_packages]
+        tags %w[packages]
       end
       params do
         use :path_and_file_name
@@ -235,7 +235,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[maven_packages]
+        tags %w[packages]
       end
       params do
         requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
@@ -264,7 +264,7 @@ module API
           { code: 404, message: 'Not Found' },
           { code: 422, message: 'Unprocessable Entity' }
         ]
-        tags %w[maven_packages]
+        tags %w[packages]
       end
       params do
         requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }

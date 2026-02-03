@@ -4,7 +4,6 @@ module API
     feature_category :integrations
 
     INTEGRATIONS_TAGS = %w[integrations].freeze
-
     integrations = Helpers::IntegrationsHelpers.integrations
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 

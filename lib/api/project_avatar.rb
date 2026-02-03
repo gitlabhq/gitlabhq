@@ -10,7 +10,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download a project avatar' do
         detail 'This feature was introduced in GitLab 16.9'
-        tags %w[project_avatar]
+        tags %w[avatars]
         success code: 200
       end
 

@@ -34,7 +34,7 @@ module API
           { code: 404, message: 'Project Not Found' }
         ]
         is_array true
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         use :pagination
@@ -72,7 +72,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'
@@ -94,7 +94,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         use :pagination
@@ -131,7 +131,7 @@ module API
           { code: 403, message: 'Forbidden' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[project_packages]
+        tags %w[packages]
       end
       params do
         requires :package_id, type: Integer, desc: 'The ID of a package'

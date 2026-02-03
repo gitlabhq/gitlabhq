@@ -23,7 +23,7 @@ module API
 
         desc 'Create a to-do item on an issuable' do
           success Entities::Todo
-          tags %w[todos]
+          tags %w[to-dos]
         end
         params do
           requires type_id_str, type: Integer, desc: 'The internal ID of an issuable'
@@ -95,7 +95,7 @@ module API
 
       desc 'Get a list of to-do items' do
         success Entities::Todo
-        tags %w[todos]
+        tags %w[to-dos]
       end
       params do
         use :pagination, :todo_filters
@@ -114,7 +114,7 @@ module API
 
       desc 'Mark a to-do item as done' do
         success Entities::Todo
-        tags %w[todos]
+        tags %w[to-dos]
       end
       params do
         requires :id, type: Integer, desc: 'The ID of to-do item'
@@ -128,7 +128,7 @@ module API
       end
 
       desc 'Mark all to-do items as done' do
-        tags %w[todos]
+        tags %w[to-dos]
       end
       post '/mark_as_done' do
         todos = find_todos

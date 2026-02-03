@@ -81,7 +81,7 @@ The following modes are supported:
 ### Change the process mode
 
 To change the process mode of a resource group, you must use the API and
-send a request to [edit an existing resource group](../../api/resource_groups.md#edit-an-existing-resource-group)
+send a request to [edit an existing resource group](../../api/resource_groups.md#update-a-resource-group)
 by specifying the `process_mode`:
 
 - `unordered`

@@ -14,7 +14,9 @@ title: Resource group API
 
 Use this API to interact with [resource groups](../ci/resource_groups/_index.md).
 
-## Get all resource groups for a project
+## List all resource groups
+
+Lists all resource groups for a specified project.
 
 ```plaintext
 GET /projects/:id/resource_groups
@@ -44,7 +46,9 @@ Example of response
 ]
 ```
 
-## Get a specific resource group
+## Retrieve a resource group
+
+Retrieves a specified resource group for a project.
 
 ```plaintext
 GET /projects/:id/resource_groups/:key
@@ -73,13 +77,15 @@ Example of response
 }
 ```
 
-## Get current job for a specific resource group
+## Retrieve current job for a resource group
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572135) in GitLab 18.6.
 
 {{< /history >}}
+
+Retrieves the current job for a specified resource group in a project.
 
 ```plaintext
 GET /projects/:id/resource_groups/:key/current_job
@@ -269,7 +275,7 @@ Example of response
 ]
 ```
 
-## Edit an existing resource group
+## Update a resource group
 
 Updates an existing resource group's properties.
 

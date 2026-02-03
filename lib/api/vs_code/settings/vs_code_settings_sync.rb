@@ -106,7 +106,7 @@ module API
                 { code: 400, message: 'Bad request' },
                 { code: 401, message: '401 Unauthorized' }
               ]
-              tags %w[vscode_settings]
+              tags %w[vscode]
             end
             params do
               requires :resource_name, type: String, desc: 'Name of the resource such as settings',

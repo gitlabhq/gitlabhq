@@ -5,7 +5,6 @@ module API
     before { authenticated_as_admin! }
 
     features_tags = %w[features]
-
     feature_category :feature_flags
     urgency :low
 

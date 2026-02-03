@@ -20,7 +20,7 @@ module API
         { code: 422, message: 'Unprocessable entity' },
         { code: 503, message: 'Service unavailable' }
       ]
-      tags ['project_import_bitbucket']
+      tags ['project_import']
     end
 
     params do

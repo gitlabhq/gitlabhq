@@ -14,7 +14,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 403, message: 'Forbidden' }
         ]
-        tags ['webhooks']
+        tags ['hooks']
       end
       params do
         optional :status,

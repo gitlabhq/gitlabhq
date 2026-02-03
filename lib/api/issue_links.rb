@@ -6,8 +6,7 @@ module API
 
     before { authenticate! }
 
-    ISSUE_LINKS_TAGS = %w[issue_links].freeze
-
+    ISSUE_LINKS_TAGS = %w[issues].freeze
     feature_category :team_planning
     urgency :low
 

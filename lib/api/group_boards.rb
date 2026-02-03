@@ -26,7 +26,7 @@ module API
         desc 'Get all group boards' do
           detail 'This feature was introduced in 10.6'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :pagination
@@ -40,7 +40,7 @@ module API
         desc 'Find a group board' do
           detail 'This feature was introduced in 10.6'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
         route_setting :authorization, permissions: :read_issue_board, boundary_type: :group
         get '/:board_id' do
@@ -51,7 +51,7 @@ module API
         desc 'Update a group board' do
           detail 'This feature was introduced in 11.0'
           success Entities::Board
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :update_params
@@ -71,7 +71,7 @@ module API
         desc 'Get the lists of a group board' do
           detail 'Does not include backlog and closed lists. This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :pagination
@@ -85,7 +85,7 @@ module API
         desc 'Get a list of a group board' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a list'
@@ -99,7 +99,7 @@ module API
         desc 'Create a new board list' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           use :list_creation_params
@@ -114,7 +114,7 @@ module API
         desc 'Moves a board list to a new position' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id,  type: Integer, desc: 'The ID of a list'
@@ -132,7 +132,7 @@ module API
         desc 'Delete a board list' do
           detail 'This feature was introduced in 10.6'
           success Entities::List
-          tags ['group_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a board list'

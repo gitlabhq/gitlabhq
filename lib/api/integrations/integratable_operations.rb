@@ -4,7 +4,6 @@ module API
   class Integrations
     class IntegratableOperations < Grape::API # rubocop:disable API/Base -- subclassing from Grape::API is required for mounting in the main API.
       INTEGRATIONS_TAGS = %w[integrations].freeze
-
       before do
         render_api_error!('400 Integration not available', 400) if disallowed_integration_at_group_level?(params[:slug])
       end

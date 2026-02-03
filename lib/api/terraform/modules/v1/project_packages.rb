@@ -88,7 +88,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
               params do
                 use :terraform_get
@@ -111,7 +111,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not found' }
                   ]
-                  tags %w[terraform_registry]
+                  tags %w[terraform]
                 end
                 params do
                   use :terraform_get
@@ -134,7 +134,7 @@ module API
                     failure [
                       { code: 403, message: 'Forbidden' }
                     ]
-                    tags %w[terraform_registry]
+                    tags %w[terraform]
                   end
 
                   route_setting :authorization, permissions: :authorize_terraform_module, boundary_type: :project
@@ -152,7 +152,7 @@ module API
                       { code: 404, message: 'Not found' }
                     ]
                     consumes %w[multipart/form-data]
-                    tags %w[terraform_registry]
+                    tags %w[terraform]
                   end
 
                   params do

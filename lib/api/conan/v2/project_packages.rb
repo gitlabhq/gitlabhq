@@ -85,7 +85,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
@@ -108,7 +108,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[conan_packages]
+                  tags %w[packages]
                 end
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
@@ -132,7 +132,7 @@ module API
                       { code: 403, message: 'Forbidden' },
                       { code: 404, message: 'Not Found' }
                     ]
-                    tags %w[conan_packages]
+                    tags %w[packages]
                   end
 
                   route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -173,7 +173,7 @@ module API
                         { code: 403, message: 'Forbidden' },
                         { code: 404, message: 'Not Found' }
                       ]
-                      tags %w[conan_packages]
+                      tags %w[packages]
                     end
                     route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                     route_setting :authorization, job_token_policies: :read_packages,
@@ -201,7 +201,7 @@ module API
                           { code: 403, message: 'Forbidden' },
                           { code: 404, message: 'Not Found' }
                         ]
-                        tags %w[conan_packages]
+                        tags %w[packages]
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
@@ -219,7 +219,7 @@ module API
                           { code: 403, message: 'Forbidden' },
                           { code: 404, message: 'Not Found' }
                         ]
-                        tags %w[conan_packages]
+                        tags %w[packages]
                       end
 
                       params do
@@ -244,7 +244,7 @@ module API
                           { code: 403, message: 'Forbidden' },
                           { code: 404, message: 'Not Found' }
                         ]
-                        tags %w[conan_packages]
+                        tags %w[packages]
                       end
 
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -265,7 +265,7 @@ module API
                       { code: 403, message: 'Forbidden' },
                       { code: 404, message: 'Not Found' }
                     ]
-                    tags %w[conan_packages]
+                    tags %w[packages]
                   end
 
                   route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -297,7 +297,7 @@ module API
                           { code: 403, message: 'Forbidden' },
                           { code: 404, message: 'Not Found' }
                         ]
-                        tags %w[conan_packages]
+                        tags %w[packages]
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
@@ -320,7 +320,7 @@ module API
                           { code: 403, message: 'Forbidden' },
                           { code: 404, message: 'Not Found' }
                         ]
-                        tags %w[conan_packages]
+                        tags %w[packages]
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
@@ -352,7 +352,7 @@ module API
                             { code: 403, message: 'Forbidden' },
                             { code: 404, message: 'Not Found' }
                           ]
-                          tags %w[conan_packages]
+                          tags %w[packages]
                         end
 
                         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
@@ -385,7 +385,7 @@ module API
                               { code: 403, message: 'Forbidden' },
                               { code: 404, message: 'Not Found' }
                             ]
-                            tags %w[conan_packages]
+                            tags %w[packages]
                           end
                           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                           route_setting :authorization, job_token_policies: :read_packages,
@@ -417,7 +417,7 @@ module API
                                 { code: 403, message: 'Forbidden' },
                                 { code: 404, message: 'Not Found' }
                               ]
-                              tags %w[conan_packages]
+                              tags %w[packages]
                             end
                             route_setting :authentication, job_token_allowed: true,
                               basic_auth_personal_access_token: true
@@ -436,7 +436,7 @@ module API
                                 { code: 403, message: 'Forbidden' },
                                 { code: 404, message: 'Not Found' }
                               ]
-                              tags %w[conan_packages]
+                              tags %w[packages]
                             end
 
                             params do
@@ -462,7 +462,7 @@ module API
                                 { code: 403, message: 'Forbidden' },
                                 { code: 404, message: 'Not Found' }
                               ]
-                              tags %w[conan_packages]
+                              tags %w[packages]
                             end
 
                             route_setting :authentication, job_token_allowed: true,

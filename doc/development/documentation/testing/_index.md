@@ -411,20 +411,24 @@ with the linting rules we use.
 
 To match the versions of `markdownlint-cli2` and `vale` used in the GitLab projects, refer to:
 
-- For projects managed with `asdf`, the `.tool-versions` file in the project. For example, the
-  [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
+- For projects managed with `mise`, the `.tool-versions` or `mise.toml` file in the project. For example:
+  - The [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
+  - The [`mise.toml` file in the `gitlab-operator` project](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/mise.toml).
 - The [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab-ci.yml)
   when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
 Versions set in these two locations should be the same.
 
-| Tool                | Version  | Command                                   | Additional information |
-|---------------------|----------|-------------------------------------------|------------------------|
-| `markdownlint-cli2` | Latest   | `yarn global add markdownlint-cli2`       | None.                  |
-| `markdownlint-cli2` | Specific | `yarn global add markdownlint-cli2@0.8.1` | The `@` indicates a specific version, and this example updates the tool to version `0.8.1`. |
-| Vale (using `asdf`) | Specific | `asdf install`                            | Installs the version of Vale set in `.tool-versions` file in a project. |
-| Vale (other)        | Specific | Not applicable.                           | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
-| Vale (using `brew`) | Latest   | `brew update && brew upgrade vale`        | This command is for macOS only. |
+| Tool                              | Version  | Command                                    | Additional information |
+|:----------------------------------|:---------|:-------------------------------------------|:-----------------------|
+| `markdownlint-cli2` (with `yarn`) | Latest   | `yarn global add markdownlint-cli2`        | None.                  |
+| `markdownlint-cli2` (with `mise`) | Latest   | `mise use -g markdownlint-cli2`            | Overridden by project-specific configuration. |
+| `markdownlint-cli2` (with `yarn`) | Specific | `yarn global add markdownlint-cli2@0.20.0` | The `@` indicates a specific version, and this example updates the tool to version `0.20.0`. |
+| `markdownlint-cli2` (with `mise`) | Specific | `mise install`                             | Installs the version of `markdownlint-cli2` set in the `.tool-versions` or `mise.toml` file in a project. |
+| Vale (with `mise`)                | Specific | `mise install`                             | Installs the version of Vale set in the `.tool-versions` or `mise.toml` file in a project. |
+| Vale (with `mise`)                | Latest   | `mise use -g vale`                         | Overridden by project-specific configuration. |
+| Vale (other)                      | Specific | Not applicable.                            | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |
+| Vale (with `brew`)                | Latest   | `brew update && brew upgrade vale`         | This command is for macOS only. |
 
 ## Supported projects
 

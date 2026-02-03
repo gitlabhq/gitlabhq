@@ -14,7 +14,7 @@ module API
     end
 
     desc 'Get the current appearance' do
-      tags ['appearance']
+      tags ['instance']
       success Entities::Appearance
     end
     route_setting :authorization, permissions: :read_application_appearance, boundary_type: :instance
@@ -23,7 +23,7 @@ module API
     end
 
     desc 'Modify appearance' do
-      tags ['appearance']
+      tags ['instance']
       success Entities::Appearance
       consumes ['multipart/form-data']
     end

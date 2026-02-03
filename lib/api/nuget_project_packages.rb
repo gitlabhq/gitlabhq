@@ -243,7 +243,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
             route_setting :authorization, permissions: :read_nuget_package, boundary_type: :project
             get 'index', format: :json, urgency: :low do
@@ -259,7 +259,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
             params do
               requires :package_version, type: String, desc: 'The NuGet package version',
@@ -312,7 +312,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
 
           params do
@@ -331,7 +331,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
           put 'authorize', urgency: :low do
@@ -348,7 +348,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           params do
             use :file_params
@@ -366,7 +366,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
           put 'symbolpackage/authorize', urgency: :low do
@@ -381,7 +381,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[nuget_packages]
+            tags %w[packages]
           end
           params do
             requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
@@ -416,7 +416,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
 
             params do
@@ -435,7 +435,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
 
             route_setting :authorization, permissions: :authorize_nuget_package, boundary_type: :project
@@ -461,7 +461,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
 
         params do
@@ -482,7 +482,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
 
         params do
@@ -504,7 +504,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[nuget_packages]
+          tags %w[packages]
         end
         params do
           requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',

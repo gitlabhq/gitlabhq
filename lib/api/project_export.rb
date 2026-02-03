@@ -26,7 +26,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
         end
         route_setting :authorization, permissions: :read_project_export, boundary_type: :project
         get ':id/export' do
@@ -42,7 +42,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
           produces %w[application/octet-stream application/json]
         end
         route_setting :authorization, permissions: :download_project_export, boundary_type: :project
@@ -71,7 +71,7 @@ module API
             { code: 429, message: 'Too many requests' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
         end
         params do
           optional :description, type: String, desc: 'Override the project description'
@@ -130,7 +130,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
         end
         params do
           optional :batched, type: Boolean, desc: 'Whether to export in batches'
@@ -166,7 +166,7 @@ module API
             { code: 500, message: 'Internal Server Error' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
           produces %w[application/octet-stream application/gzip application/json]
         end
         params do
@@ -226,7 +226,7 @@ module API
             { code: 404, message: 'Not found' },
             { code: 503, message: 'Service unavailable' }
           ]
-          tags ['project_export']
+          tags ['project_import']
         end
         params do
           optional :relation, type: String, desc: 'Project relation name'

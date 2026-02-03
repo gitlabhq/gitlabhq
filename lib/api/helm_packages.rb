@@ -57,7 +57,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' }
           ]
-          tags %w[helm_packages]
+          tags %w[packages]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -97,7 +97,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[helm_packages]
+          tags %w[packages]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -126,7 +126,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[helm_packages]
+          tags %w[packages]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }
@@ -149,7 +149,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[helm_packages]
+          tags %w[packages]
         end
         params do
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex, documentation: { example: 'stable' }

@@ -20,7 +20,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[pages]
+        tags %w[gitlab_pages]
       end
       route_setting :authorization, permissions: :delete_page, boundary_type: :project
       delete ':id/pages' do
@@ -38,7 +38,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[pages]
+        tags %w[gitlab_pages]
       end
       params do
         optional :pages_unique_domain_enabled, type: Boolean, desc: 'Whether to use unique domain'
@@ -74,7 +74,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[pages]
+        tags %w[gitlab_pages]
       end
       route_setting :authorization, permissions: :read_page, boundary_type: :project
       get ':id/pages' do

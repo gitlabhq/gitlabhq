@@ -6,8 +6,7 @@ module API
 
     helpers ::API::Helpers::NotesHelpers
 
-    resource_milestone_events_tags = %w[resource_milestone_events]
-
+    resource_milestone_events_tags = %w[resource_events]
     before { authenticate! }
 
     {

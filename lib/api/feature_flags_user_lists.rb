@@ -4,8 +4,7 @@ module API
   class FeatureFlagsUserLists < ::API::Base
     include PaginationParams
 
-    feature_flags_user_lists_tags = %w[feature_flags_user_lists]
-
+    feature_flags_user_lists_tags = %w[feature_flags]
     error_formatter :json, ->(message, _backtrace, _options, _env, _original_exception) {
       message.is_a?(String) ? { message: message }.to_json : message.to_json
     }

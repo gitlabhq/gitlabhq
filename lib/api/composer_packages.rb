@@ -77,7 +77,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[composer_packages]
+        tags %w[packages]
       end
       route_setting :authentication, job_token_allowed: :basic_auth, basic_auth_personal_access_token: true, deploy_token_allowed: true
       route_setting :authorization, skip_job_token_policies: true, permissions: :read_composer_package, boundary_type: :group
@@ -92,7 +92,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[composer_packages]
+        tags %w[packages]
       end
       params do
         requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
@@ -110,7 +110,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[composer_packages]
+        tags %w[packages]
       end
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
@@ -130,7 +130,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not Found' }
         ]
-        tags %w[composer_packages]
+        tags %w[packages]
       end
       params do
         requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
@@ -164,7 +164,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[composer_packages]
+          tags %w[packages]
         end
         params do
           optional :branch, type: String, desc: 'The name of the branch', documentation: { example: 'release' }
@@ -199,7 +199,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[composer_packages]
+          tags %w[packages]
         end
         params do
           requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }

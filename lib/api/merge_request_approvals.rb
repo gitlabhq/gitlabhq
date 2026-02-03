@@ -108,7 +108,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
-          tags %w[merge_requests merge_request_approvals]
+          tags %w[merge_request_approvals]
         end
         route_setting :authorization, permissions: :reset_approvals_merge_request, boundary_type: :project
         put 'reset_approvals', urgency: :low do

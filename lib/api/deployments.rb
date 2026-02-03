@@ -5,8 +5,7 @@ module API
   class Deployments < ::API::Base
     include PaginationParams
 
-    deployments_tags = %w[deployments]
-
+    deployments_tags = %w[deploy_resources]
     before { authenticate! }
 
     feature_category :continuous_delivery

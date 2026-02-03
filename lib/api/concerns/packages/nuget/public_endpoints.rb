@@ -24,7 +24,7 @@ module API
               failure [
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
             route_setting :authorization, skip_granular_token_authorization: true
             get 'index', format: :json, urgency: :default do
@@ -44,7 +44,7 @@ module API
               failure [
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[nuget_packages]
+              tags %w[packages]
             end
 
             namespace :symbolfiles do
@@ -65,7 +65,7 @@ module API
                   desc: 'The SHA256 checksums of the symbol file',
                   required: true
                 }
-                tags %w[nuget_packages]
+                tags %w[packages]
               end
               params do
                 requires :file_name, allow_blank: false, type: String, desc: 'The symbol file name',
@@ -120,7 +120,7 @@ module API
               desc 'The NuGet V2 Feed Package $metadata endpoint' do
                 detail 'This feature was introduced in GitLab 16.3'
                 success code: 200
-                tags %w[nuget_packages]
+                tags %w[packages]
               end
 
               route_setting :authorization, skip_granular_token_authorization: true

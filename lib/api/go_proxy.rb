@@ -4,8 +4,7 @@ module API
     helpers Gitlab::Golang
     helpers ::API::Helpers::PackagesHelpers
 
-    GO_PROXY_TAGS = %w[go_proxy].freeze
-
+    GO_PROXY_TAGS = %w[packages].freeze
     feature_category :package_registry
     urgency :low
 

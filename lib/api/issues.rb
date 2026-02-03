@@ -118,7 +118,7 @@ module API
 
     desc "Get currently authenticated user's issues statistics" do
       success code: 200
-      tags ['issue_statistics']
+      tags ['issues']
     end
     params do
       use :issues_stats_params
@@ -554,7 +554,7 @@ module API
 
       desc 'List participants for an issue' do
         success Entities::UserBasic
-        tags ['issue_participants']
+        tags ['issues']
       end
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'

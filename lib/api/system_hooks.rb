@@ -4,8 +4,7 @@ module API
   class SystemHooks < ::API::Base
     include PaginationParams
 
-    system_hooks_tags = %w[system_hooks]
-
+    system_hooks_tags = %w[hooks]
     feature_category :webhooks
 
     before do

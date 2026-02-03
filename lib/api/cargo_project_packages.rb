@@ -52,7 +52,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' }
           ]
-          tags %w[cargo_packages]
+          tags %w[packages]
         end
 
         get 'config.json' do

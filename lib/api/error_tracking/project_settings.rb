@@ -4,8 +4,7 @@ module API
   class ErrorTracking::ProjectSettings < ::API::Base
     before { authenticate! }
 
-    ERROR_TRACKING_PROJECT_SETTINGS_TAGS = %w[error_tracking_project_settings].freeze
-
+    ERROR_TRACKING_PROJECT_SETTINGS_TAGS = %w[error_tracking].freeze
     feature_category :observability
     urgency :low
 

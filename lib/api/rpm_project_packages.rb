@@ -33,7 +33,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[rpm_packages]
+          tags %w[packages]
         end
         params do
           requires :file_name, type: String, desc: 'Repository metadata file name'
@@ -56,7 +56,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[rpm_packages]
+          tags %w[packages]
         end
         params do
           requires :package_file_id, type: Integer, desc: 'RPM package file id'
@@ -81,7 +81,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[rpm_packages]
+          tags %w[packages]
         end
         post do
           authorize_create_package!(authorized_user_project)
@@ -112,7 +112,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[rpm_packages]
+          tags %w[packages]
         end
         post 'authorize' do
           not_found!

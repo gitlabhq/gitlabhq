@@ -16,7 +16,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of project milestones' do
         success Entities::Milestone
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         use :list_params
@@ -30,7 +30,7 @@ module API
 
       desc 'Get a single project milestone' do
         success Entities::Milestone
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
@@ -44,7 +44,7 @@ module API
 
       desc 'Create a new project milestone' do
         success Entities::Milestone
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         requires :title, type: String, desc: 'The title of the milestone'
@@ -59,7 +59,7 @@ module API
 
       desc 'Update an existing project milestone' do
         success Entities::Milestone
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         use :update_params
@@ -72,7 +72,7 @@ module API
       end
 
       desc 'Remove a project milestone' do
-        tags ['project_milestones']
+        tags ['milestones']
         success code: 204
       end
       route_setting :authorization, permissions: :delete_milestone, boundary_type: :project
@@ -87,7 +87,7 @@ module API
 
       desc 'Get all issues for a single project milestone' do
         success Entities::IssueBasic
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
@@ -103,7 +103,7 @@ module API
       desc 'Get all merge requests for a single project milestone' do
         detail 'This feature was introduced in GitLab 9.'
         success Entities::MergeRequestBasic
-        tags ['project_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
@@ -118,7 +118,7 @@ module API
 
       desc 'Promote a milestone to group milestone' do
         detail 'This feature was introduced in GitLab 11.9'
-        tags ['group_milestones']
+        tags ['milestones']
       end
       route_setting :authorization, permissions: :promote_milestone, boundary_type: :project
       post ':id/milestones/:milestone_id/promote' do

@@ -338,7 +338,7 @@ sudo gitlab-rake gitlab:clickhouse:migrate
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-Migrations are executed automatically using the GitLab-Migrations chart.
+Migrations are executed automatically with the [GitLab-Migrations chart](https://docs.gitlab.com/charts/charts/gitlab/migrations/).
 
 Alternatively, you can run migrations by executing the following command in the Toolbox pod:
 

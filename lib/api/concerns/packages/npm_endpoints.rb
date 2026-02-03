@@ -75,7 +75,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[npm_packages]
+              tags %w[packages]
             end
             route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
               authenticate_non_public: true
@@ -112,7 +112,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[npm_packages]
+                tags %w[packages]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               route_setting :authorization, job_token_policies: :admin_packages
@@ -150,7 +150,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[npm_packages]
+                tags %w[packages]
               end
               route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
               route_setting :authorization, job_token_policies: :admin_packages
@@ -192,7 +192,7 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           route_setting :authorization, job_token_policies: :read_packages,
@@ -213,7 +213,7 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             is_array true
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           route_setting :authorization, job_token_policies: :read_packages,

@@ -26,7 +26,7 @@ module API
         desc 'Get all project boards' do
           detail 'This feature was introduced in 8.13'
           success Entities::Board
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           use :pagination
@@ -40,7 +40,7 @@ module API
         desc 'Find a project board' do
           detail 'This feature was introduced in 10.4'
           success Entities::Board
-          tags ['project_boards']
+          tags ['boards']
         end
         route_setting :authorization, permissions: :read_issue_board, boundary_type: :project
         get '/:board_id' do
@@ -51,7 +51,7 @@ module API
         desc 'Create a project board' do
           detail 'This feature was introduced in 10.4'
           success Entities::Board
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           requires :name, type: String, desc: 'The board name'
@@ -66,7 +66,7 @@ module API
         desc 'Update a project board' do
           detail 'This feature was introduced in 11.0'
           success Entities::Board
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           use :update_params
@@ -81,7 +81,7 @@ module API
         desc 'Delete a project board' do
           detail 'This feature was introduced in 10.4'
           success Entities::Board
-          tags ['project_boards']
+          tags ['boards']
         end
         route_setting :authorization, permissions: :delete_issue_board, boundary_type: :project
         delete '/:board_id' do
@@ -98,7 +98,7 @@ module API
         desc 'Get the lists of a project board' do
           detail 'Does not include `done` list. This feature was introduced in 8.13'
           success Entities::List
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           use :pagination
@@ -112,7 +112,7 @@ module API
         desc 'Get a list of a project board' do
           detail 'This feature was introduced in 8.13'
           success Entities::List
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a list'
@@ -126,7 +126,7 @@ module API
         desc 'Create a new board list' do
           detail 'This feature was introduced in 8.13'
           success Entities::List
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           use :list_creation_params
@@ -141,7 +141,7 @@ module API
         desc 'Moves a board list to a new position' do
           detail 'This feature was introduced in 8.13'
           success Entities::List
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           requires :list_id,  type: Integer, desc: 'The ID of a list'
@@ -159,7 +159,7 @@ module API
         desc 'Delete a board list' do
           detail 'This feature was introduced in 8.13'
           success Entities::List
-          tags ['project_boards']
+          tags ['boards']
         end
         params do
           requires :list_id, type: Integer, desc: 'The ID of a board list'

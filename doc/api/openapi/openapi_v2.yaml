@@ -39,12 +39,18 @@ tags:
   description: Operations about audit_events
 - name: group
   description: Operations about groups
-- name: group_ssh_certificates
-  description: Operations about group_ssh_certificates
+- name: keys
+  description: Operations about keys
 - name: runners
   description: Operations about runners
-- name: group_avatar
-  description: Operations about group_avatars
+- name: packages
+  description: Operations about packages
+- name: deploy_resources
+  description: Operations about deploy_resources
+- name: avatars
+  description: Operations about avatars
+- name: group_import_and_export
+  description: Operations about group_import_and_exports
 - name: invitations
   description: Operations about invitations
 - name: members
@@ -73,56 +79,54 @@ tags:
   description: Operations about pipeline_schedules
 - name: ci_triggers
   description: Operations about ci_triggers
-- name: cargo_packages
-  description: Operations about cargo_packages
 - name: commits
   description: Operations about commits
 - name: commit_statuses
   description: Operations about commit_statuses
 - name: draft_notes
   description: Operations about draft_notes
+- name: error_tracking
+  description: Operations about error_trackings
 - name: files
   description: Operations about files
 - name: issues
   description: Operations about issues
-- name: issue_participants
-  description: Operations about issue_participants
 - name: metric_images
   description: Operations about metric_images
 - name: merge_request_approvals
   description: Operations about merge_request_approvals
-- name: pages
-  description: Operations about pages
-- name: pages_domains
-  description: Operations about pages_domains
-- name: project_avatar
-  description: Operations about project_avatars
-- name: project_events
-  description: Operations about project_events
-- name: webhooks
-  description: Operations about webhooks
+- name: gitlab_pages
+  description: Operations about gitlab_pages
+- name: events
+  description: Operations about events
+- name: hooks
+  description: Operations about hooks
 - name: projects_job_token_scope
   description: Operations about projects_job_token_scopes
 - name: project_snapshots
   description: Operations about project_snapshots
-- name: project_snippets
-  description: Operations about project_snippets
+- name: snippets
+  description: Operations about snippets
 - name: project_templates
   description: Operations about project_templates
-- name: project_protected_branches
-  description: Operations about project_protected_branches
+- name: protected_branches
+  description: Operations about protected_branches
 - name: protected_tags
   description: Operations about protected_tags
 - name: remote_mirrors
   description: Operations about remote_mirrors
 - name: repositories
   description: Operations about repositories
+- name: resource_events
+  description: Operations about resource_events
 - name: submodules
   description: Operations about submodules
 - name: attestations
   description: Operations about attestations
 - name: tags
   description: Operations about tags
+- name: terraform
+  description: Operations about terraforms
 - name: batched_background_migrations
   description: Operations about batched_background_migrations
 - name: database_dictionary
@@ -133,22 +137,16 @@ tags:
   description: Operations about broadcast_messages
 - name: applications
   description: Operations about applications
-- name: avatars
-  description: Operations about avatars
-- name: bulk_imports
-  description: Operations about bulk_imports
+- name: imports
+  description: Operations about imports
 - name: agents
   description: Operations about agents
 - name: ci_runners
   description: Operations about ci_runners
 - name: jobs
   description: Operations about jobs
-- name: events
-  description: Operations about events
 - name: glql
   description: Operations about glqls
-- name: ssh_keys
-  description: Operations about ssh_keys
 - name: markdown
   description: Operations about markdowns
 - name: namespaces
@@ -157,10 +155,8 @@ tags:
   description: Operations about offline_exports
 - name: organizations
   description: Operations about organizations
-- name: snippets
-  description: Operations about snippets
-- name: hooks
-  description: Operations about hooks
+- name: unleash
+  description: Operations about unleashes
 - name: usage_data
   description: Operations about usage_data
 - name: metrics
@@ -169,14 +165,8 @@ tags:
   description: Operations about users
 - name: user
   description: Operations about users
-- name: appearance
-  description: Operations about appearances
-- name: application_statistics
-  description: Operations about application_statistics
-- name: imports
-  description: Operations about imports
-- name: issue_statistics
-  description: Operations about issue_statistics
+- name: instance
+  description: Operations about instances
 - name: project_topics
   description: Operations about project_topics
 - name: web_commits
@@ -2565,7 +2555,7 @@ paths:
         '404':
           description: 404 Not Found
       tags:
-      - group_ssh_certificates
+      - keys
       operationId: getApiV4GroupsIdSshCertificates
     post:
       summary: Add a Groups::SshCertificate.
@@ -2599,7 +2589,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - group_ssh_certificates
+      - keys
       operationId: postApiV4GroupsIdSshCertificates
   "/api/v4/groups/{id}/ssh_certificates/{ssh_certificates_id}":
     delete:
@@ -2630,7 +2620,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - group_ssh_certificates
+      - keys
       operationId: deleteApiV4GroupsIdSshCertificatesSshCertificatesId
   "/api/v4/groups/{id}/runners":
     get:
@@ -2774,7 +2764,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionReleaseGpg
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/Release":
     get:
@@ -2806,7 +2796,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionRelease
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/InRelease":
     get:
@@ -2838,7 +2828,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionInrelease
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/debian-installer/binary-{architecture}/Packages":
     get:
@@ -2884,7 +2874,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentDebianInstallerBinaryArchitecturePackages
   ? "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/debian-installer/binary-{architecture}/by-hash/SHA256/{file_sha256}"
   : get:
@@ -2935,7 +2925,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentDebianInstallerBinaryArchitectureByHashSha256FileSha256
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/source/Sources":
     get:
@@ -2975,7 +2965,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentSourceSources
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/source/by-hash/SHA256/{file_sha256}":
     get:
@@ -3020,7 +3010,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentSourceByHashSha256FileSha256
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/binary-{architecture}/Packages":
     get:
@@ -3066,7 +3056,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentBinaryArchitecturePackages
   "/api/v4/groups/{id}/-/packages/debian/dists/*distribution/{component}/binary-{architecture}/by-hash/SHA256/{file_sha256}":
     get:
@@ -3117,7 +3107,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianDists*distributionComponentBinaryArchitectureByHashSha256FileSha256
   "/api/v4/groups/{id}/-/packages/debian/pool/{distribution}/{project_id}/{letter}/{package_name}/{package_version}/{file_name}":
     get:
@@ -3177,7 +3167,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesDebianPoolDistributionProjectIdLetterPackageNamePackageVersionFileName
   "/api/v4/groups/{id}/dependency_proxy/cache":
     delete:
@@ -3251,7 +3241,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: getApiV4GroupsIdDeployTokens
     post:
       summary: Create a group deploy token
@@ -3286,7 +3276,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: postApiV4GroupsIdDeployTokens
   "/api/v4/groups/{id}/deploy_tokens/{token_id}":
     get:
@@ -3319,7 +3309,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: getApiV4GroupsIdDeployTokensTokenId
     delete:
       summary: Delete a group deploy token
@@ -3349,7 +3339,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: deleteApiV4GroupsIdDeployTokensTokenId
   "/api/v4/groups/{id}/avatar":
     get:
@@ -3367,7 +3357,7 @@ paths:
         '200':
           description: Download the group avatar
       tags:
-      - group_avatar
+      - avatars
       operationId: getApiV4GroupsIdAvatar
   "/api/v4/groups/{id}/clusters":
     get:
@@ -3622,7 +3612,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: postApiV4GroupsIdDebianDistributions
     get:
       summary: Get a list of Debian Distributions
@@ -3723,7 +3713,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4GroupsIdDebianDistributions
   "/api/v4/groups/{id}/-/debian_distributions/{codename}":
     get:
@@ -3755,7 +3745,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4GroupsIdDebianDistributionsCodename
     put:
       summary: Update a Debian Distribution
@@ -3795,7 +3785,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: putApiV4GroupsIdDebianDistributionsCodename
     delete:
       summary: Delete a Debian Distribution
@@ -3880,7 +3870,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: deleteApiV4GroupsIdDebianDistributionsCodename
   "/api/v4/groups/{id}/-/debian_distributions/{codename}/key.asc":
     get:
@@ -3912,7 +3902,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4GroupsIdDebianDistributionsCodenameKeyAsc
   "/api/v4/groups/{id}/export/download":
     get:
@@ -3941,7 +3931,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_export
+      - group_import_and_export
       operationId: getApiV4GroupsIdExportDownload
   "/api/v4/groups/{id}/export":
     post:
@@ -3971,7 +3961,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_export
+      - group_import_and_export
       operationId: postApiV4GroupsIdExport
   "/api/v4/groups/{id}/export_relations":
     post:
@@ -4004,7 +3994,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_export
+      - group_import_and_export
       operationId: postApiV4GroupsIdExportRelations
   "/api/v4/groups/{id}/export_relations/download":
     get:
@@ -4047,7 +4037,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_export
+      - group_import_and_export
       operationId: getApiV4GroupsIdExportRelationsDownload
   "/api/v4/groups/{id}/export_relations/status":
     get:
@@ -4082,7 +4072,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_export
+      - group_import_and_export
       operationId: getApiV4GroupsIdExportRelationsStatus
   "/api/v4/groups/import/authorize":
     post:
@@ -4096,7 +4086,7 @@ paths:
         '201':
           description: Workhorse authorize the group import upload
       tags:
-      - group_import
+      - group_import_and_export
       operationId: postApiV4GroupsImportAuthorize
   "/api/v4/groups/import":
     post:
@@ -4148,7 +4138,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - group_import
+      - group_import_and_export
       operationId: postApiV4GroupsImport
   "/api/v4/groups/{id}/packages":
     get:
@@ -4267,7 +4257,7 @@ paths:
         '404':
           description: Group Not Found
       tags:
-      - group_packages
+      - packages
       operationId: getApiV4GroupsIdPackages
   "/api/v4/groups/{id}/placeholder_reassignments":
     get:
@@ -7422,7 +7412,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - maven_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesMaven*pathFileName
   "/api/v4/groups/{id}/members":
     get:
@@ -8450,7 +8440,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNpmPackage*packageNameDistTags
   "/api/v4/groups/{id}/-/packages/npm/-/package/*package_name/dist-tags/{tag}":
     put:
@@ -8489,7 +8479,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: putApiV4GroupsIdPackagesNpmPackage*packageNameDistTagsTag
     delete:
       summary: Deletes the given tag
@@ -8524,7 +8514,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: deleteApiV4GroupsIdPackagesNpmPackage*packageNameDistTagsTag
   "/api/v4/groups/{id}/-/packages/npm/-/npm/v1/security/advisories/bulk":
     post:
@@ -8552,7 +8542,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4GroupsIdPackagesNpmNpmV1SecurityAdvisoriesBulk
   "/api/v4/groups/{id}/-/packages/npm/-/npm/v1/security/audits/quick":
     post:
@@ -8580,7 +8570,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4GroupsIdPackagesNpmNpmV1SecurityAuditsQuick
   "/api/v4/groups/{id}/-/packages/npm/*package_name":
     get:
@@ -8616,7 +8606,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNpm*packageName
   "/api/v4/groups/{id}/-/packages/nuget/index":
     get:
@@ -8639,7 +8629,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetIndex
   "/api/v4/groups/{id}/-/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name":
     get:
@@ -8685,7 +8675,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetSymbolfiles*fileName*signature*sameFileName
   "/api/v4/groups/{id}/-/packages/nuget/v2":
     get:
@@ -8706,7 +8696,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetV2
   "/api/v4/groups/{id}/-/packages/nuget/v2/$metadata":
     get:
@@ -8725,7 +8715,7 @@ paths:
         '200':
           description: The NuGet V2 Feed Package $metadata endpoint
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetV2$metadata
   "/api/v4/groups/{id}/-/packages/nuget/metadata/*package_name/index":
     get:
@@ -8758,7 +8748,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetMetadata*packageNameIndex
   "/api/v4/groups/{id}/-/packages/nuget/metadata/*package_name/*package_version":
     get:
@@ -8797,7 +8787,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetMetadata*packageName*packageVersion
   "/api/v4/groups/{id}/-/packages/nuget/query":
     get:
@@ -8852,7 +8842,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesNugetQuery
   "/api/v4/groups/{id}/-/packages/pypi/files/{sha256}/*file_identifier":
     get:
@@ -8889,7 +8879,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesPypiFilesSha256*fileIdentifier
   "/api/v4/groups/{id}/-/packages/pypi/simple":
     get:
@@ -8914,7 +8904,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesPypiSimple
   "/api/v4/groups/{id}/-/packages/pypi/simple/*package_name":
     get:
@@ -8945,7 +8935,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4GroupsIdPackagesPypiSimple*packageName
   "/api/v4/groups/{id}/releases":
     get:
@@ -9134,7 +9124,6 @@ paths:
           description: Search on GitLab within a group
       tags:
       - search
-      - groups
       operationId: getApiV4GroupsId(-)search
   "/api/v4/groups/{id}/wikis":
     get:
@@ -14135,7 +14124,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - cargo_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesCargoConfigJson
   "/api/v4/projects/{id}/repository/commits":
     get:
@@ -14847,7 +14836,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesComposer
   "/api/v4/projects/{id}/packages/composer/archives/*package_name":
     get:
@@ -14883,7 +14872,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesComposerArchives*packageName
   "/api/v4/projects/{id}/packages/conan/v1/users/authenticate":
     get:
@@ -14905,7 +14894,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1UsersAuthenticate
   "/api/v4/projects/{id}/packages/conan/v1/users/check_credentials":
     get:
@@ -14927,7 +14916,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1UsersCheckCredentials
   "/api/v4/projects/{id}/packages/conan/v1/conans/search":
     get:
@@ -14961,7 +14950,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansSearch
   "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
     get:
@@ -15011,7 +15000,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/projects/{id}/packages/conan/v1/ping":
     get:
@@ -15031,7 +15020,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1Ping
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}"
   : get:
@@ -15087,7 +15076,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReference
   "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}":
     get:
@@ -15137,7 +15126,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannel
     delete:
       summary: Delete Package
@@ -15184,7 +15173,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannel
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/digest"
   : get:
@@ -15240,7 +15229,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceDigest
   "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/digest":
     get:
@@ -15290,7 +15279,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelDigest
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/download_urls"
   : get:
@@ -15346,7 +15335,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceDownloadUrls
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/download_urls"
   : get:
@@ -15396,7 +15385,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelDownloadUrls
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/upload_urls"
   : post:
@@ -15454,7 +15443,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceUploadUrls
   "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/upload_urls":
     post:
@@ -15506,7 +15495,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelUploadUrls
   ? "/api/v4/projects/{id}/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/export/{file_name}"
   : get:
@@ -15573,7 +15562,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName
     put:
       summary: Upload recipe package files
@@ -15648,7 +15637,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName
   ? "/api/v4/projects/{id}/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/export/{file_name}/authorize"
   : put:
@@ -15719,7 +15708,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileNameAuthorize
   ? "/api/v4/projects/{id}/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/package/{conan_package_reference}/{package_revision}/{file_name}"
   : get:
@@ -15796,7 +15785,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileName
     put:
       summary: Upload package files
@@ -15883,7 +15872,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileName
   ? "/api/v4/projects/{id}/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/package/{conan_package_reference}/{package_revision}/{file_name}/authorize"
   : put:
@@ -15966,7 +15955,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileNameAuthorize
   "/api/v4/projects/{id}/packages/conan/v2/users/authenticate":
     get:
@@ -15988,7 +15977,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2UsersAuthenticate
   "/api/v4/projects/{id}/packages/conan/v2/users/check_credentials":
     get:
@@ -16010,7 +15999,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2UsersCheckCredentials
   "/api/v4/projects/{id}/packages/conan/v2/conans/search":
     get:
@@ -16044,7 +16033,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansSearch
   "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
     get:
@@ -16094,7 +16083,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/latest":
     get:
@@ -16146,7 +16135,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelLatest
   "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions":
     get:
@@ -16198,7 +16187,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisions
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}"
   : delete:
@@ -16254,7 +16243,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevision
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files"
   : get:
@@ -16312,7 +16301,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFiles
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}"
   : get:
@@ -16381,7 +16370,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
     put:
       summary: Upload recipe package files
@@ -16456,7 +16445,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}/authorize"
   : put:
@@ -16527,7 +16516,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileNameAuthorize
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/search"
   : get:
@@ -16583,7 +16572,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionSearch
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/latest"
   : get:
@@ -16647,7 +16636,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceLatest
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions"
   : get:
@@ -16711,7 +16700,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisions
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}"
   : delete:
@@ -16779,7 +16768,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevision
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files"
   : get:
@@ -16849,7 +16838,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFiles
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files/{file_name}"
   : get:
@@ -16930,7 +16919,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
     put:
       summary: Upload package files
@@ -17017,7 +17006,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files/{file_name}/authorize"
   : put:
@@ -17100,7 +17089,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileNameAuthorize
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/Release.gpg":
     get:
@@ -17132,7 +17121,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionReleaseGpg
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/Release":
     get:
@@ -17164,7 +17153,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionRelease
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/InRelease":
     get:
@@ -17196,7 +17185,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionInrelease
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/debian-installer/binary-{architecture}/Packages":
     get:
@@ -17242,7 +17231,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentDebianInstallerBinaryArchitecturePackages
   ? "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/debian-installer/binary-{architecture}/by-hash/SHA256/{file_sha256}"
   : get:
@@ -17293,7 +17282,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentDebianInstallerBinaryArchitectureByHashSha256FileSha256
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/source/Sources":
     get:
@@ -17333,7 +17322,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentSourceSources
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/source/by-hash/SHA256/{file_sha256}":
     get:
@@ -17378,7 +17367,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentSourceByHashSha256FileSha256
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/binary-{architecture}/Packages":
     get:
@@ -17424,7 +17413,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentBinary-ArchitecturePackages
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/{component}/binary-{architecture}/by-hash/SHA256/{file_sha256}":
     get:
@@ -17475,7 +17464,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianDists*distributionComponentBinaryArchitectureByHashSha256FileSha256
   "/api/v4/projects/{id}/packages/debian/pool/{distribution}/{letter}/{package_name}/{package_version}/{file_name}":
     get:
@@ -17529,7 +17518,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesDebianPoolDistributionLetterPackageNamePackageVersionFileName
   "/api/v4/projects/{id}/packages/debian/{file_name}":
     put:
@@ -17568,7 +17557,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesDebianFileName
   "/api/v4/projects/{id}/packages/debian/{file_name}/authorize":
     put:
@@ -17607,7 +17596,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesDebianFileNameAuthorize
   "/api/v4/projects/{id}/deploy_keys":
     get:
@@ -17650,7 +17639,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeployKeys
     post:
       summary: Add deploy key
@@ -17685,7 +17674,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: postApiV4ProjectsIdDeployKeys
   "/api/v4/projects/{id}/deploy_keys/{key_id}":
     get:
@@ -17716,7 +17705,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeployKeysKeyId
     put:
       summary: Update deploy key
@@ -17757,7 +17746,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: putApiV4ProjectsIdDeployKeysKeyId
     delete:
       summary: Delete deploy key
@@ -17786,7 +17775,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: deleteApiV4ProjectsIdDeployKeysKeyId
   "/api/v4/projects/{id}/deploy_keys/{key_id}/enable":
     post:
@@ -17821,7 +17810,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: postApiV4ProjectsIdDeployKeysKeyIdEnable
   "/api/v4/projects/{id}/deploy_tokens":
     get:
@@ -17872,7 +17861,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeployTokens
     post:
       summary: Create a project deploy token
@@ -17906,7 +17895,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: postApiV4ProjectsIdDeployTokens
   "/api/v4/projects/{id}/deploy_tokens/{token_id}":
     get:
@@ -17938,7 +17927,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeployTokensTokenId
     delete:
       summary: Delete a project deploy token
@@ -17966,7 +17955,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: deleteApiV4ProjectsIdDeployTokensTokenId
   "/api/v4/projects/{id}/deployments":
     get:
@@ -18082,7 +18071,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deployments
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeployments
     post:
       summary: Create a deployment
@@ -18115,7 +18104,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deployments
+      - deploy_resources
       operationId: postApiV4ProjectsIdDeployments
   "/api/v4/projects/{id}/deployments/{deployment_id}":
     get:
@@ -18146,7 +18135,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deployments
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeploymentsDeploymentId
     put:
       summary: Update a deployment
@@ -18186,7 +18175,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deployments
+      - deploy_resources
       operationId: putApiV4ProjectsIdDeploymentsDeploymentId
     delete:
       summary: Delete a specific deployment
@@ -18217,7 +18206,7 @@ paths:
           description: '"Cannot destroy running deployment" or "Deployment currently
             deployed to environment"'
       tags:
-      - deployments
+      - deploy_resources
       operationId: deleteApiV4ProjectsIdDeploymentsDeploymentId
   "/api/v4/projects/{id}/deployments/{deployment_id}/merge_requests":
     get:
@@ -18591,7 +18580,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - deployments
+      - deploy_resources
       operationId: getApiV4ProjectsIdDeploymentsDeploymentIdMergeRequests
   "/api/v4/projects/{id}/deployments/{deployment_id}/approval":
     post:
@@ -18625,7 +18614,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Deployments_Approval"
       tags:
-      - deployments
+      - deploy_resources
       operationId: postApiV4ProjectsIdDeploymentsDeploymentIdApproval
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/draft_notes":
     get:
@@ -19216,7 +19205,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_ErrorTracking_ClientKey"
       tags:
-      - error_tracking_client_keys
+      - error_tracking
       operationId: getApiV4ProjectsIdErrorTrackingClientKeys
     post:
       summary: Create a client key
@@ -19239,7 +19228,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_ErrorTracking_ClientKey"
       tags:
-      - error_tracking_client_keys
+      - error_tracking
       operationId: postApiV4ProjectsIdErrorTrackingClientKeys
   "/api/v4/projects/{id}/error_tracking/client_keys/{key_id}":
     delete:
@@ -19268,7 +19257,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - error_tracking_client_keys
+      - error_tracking
       operationId: deleteApiV4ProjectsIdErrorTrackingClientKeysKeyId
   "/api/v4/projects/{id}/error_tracking/settings":
     get:
@@ -19290,7 +19279,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_ErrorTracking_ProjectSetting"
       tags:
-      - error_tracking_project_settings
+      - error_tracking
       operationId: getApiV4ProjectsIdErrorTrackingSettings
     patch:
       summary: Enable or disable the Error Tracking project settings
@@ -19324,7 +19313,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - error_tracking_project_settings
+      - error_tracking
       operationId: patchApiV4ProjectsIdErrorTrackingSettings
     put:
       summary: Update Error Tracking project settings. Available in GitLab 15.10 and
@@ -19360,7 +19349,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - error_tracking_project_settings
+      - error_tracking
       operationId: putApiV4ProjectsIdErrorTrackingSettings
   "/api/v4/projects/{id}/feature_flags":
     get:
@@ -19587,7 +19576,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - feature_flags_user_lists
+      - feature_flags
       operationId: getApiV4ProjectsIdFeatureFlagsUserLists
     post:
       summary: Create a feature flag user list
@@ -19620,7 +19609,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - feature_flags_user_lists
+      - feature_flags
       operationId: postApiV4ProjectsIdFeatureFlagsUserLists
   "/api/v4/projects/{id}/feature_flags_user_lists/{iid}":
     get:
@@ -19650,7 +19639,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - feature_flags_user_lists
+      - feature_flags
       operationId: getApiV4ProjectsIdFeatureFlagsUserListsIid
     put:
       summary: Update a feature flag user list
@@ -19688,7 +19677,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - feature_flags_user_lists
+      - feature_flags
       operationId: putApiV4ProjectsIdFeatureFlagsUserListsIid
     delete:
       summary: Delete feature flag user list
@@ -19717,7 +19706,7 @@ paths:
         '409':
           description: Conflict
       tags:
-      - feature_flags_user_lists
+      - feature_flags
       operationId: deleteApiV4ProjectsIdFeatureFlagsUserListsIid
   "/api/v4/projects/{id}/repository/files/{file_path}/blame":
     head:
@@ -20217,7 +20206,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - generic_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesGenericPackageName*packageVersion(*path)FileNameAuthorize
   "/api/v4/projects/{id}/packages/generic/{package_name}/*package_version/(*path/){file_name}":
     put:
@@ -20262,7 +20251,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - generic_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesGenericPackageName*packageVersion(*path)FileName
     get:
       summary: Download package file
@@ -20305,7 +20294,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - generic_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesGenericPackageName*packageVersion(*path)FileName
   "/api/v4/projects/{id}/packages/go/*module_name/@v/list":
     get:
@@ -20329,7 +20318,7 @@ paths:
         '200':
           description: List
       tags:
-      - go_proxy
+      - packages
       operationId: getApiV4ProjectsIdPackagesGo*moduleName@vList
   "/api/v4/projects/{id}/packages/go/*module_name/@v/{module_version}.info":
     get:
@@ -20361,7 +20350,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_GoModuleVersion"
       tags:
-      - go_proxy
+      - packages
       operationId: getApiV4ProjectsIdPackagesGo*moduleName@vModuleVersionInfo
   "/api/v4/projects/{id}/packages/go/*module_name/@v/{module_version}.mod":
     get:
@@ -20391,7 +20380,7 @@ paths:
         '200':
           description: Download module file
       tags:
-      - go_proxy
+      - packages
       operationId: getApiV4ProjectsIdPackagesGo*moduleName@vModuleVersionMod
   "/api/v4/projects/{id}/packages/go/*module_name/@v/{module_version}.zip":
     get:
@@ -20421,7 +20410,7 @@ paths:
         '200':
           description: Download module source
       tags:
-      - go_proxy
+      - packages
       operationId: getApiV4ProjectsIdPackagesGo*moduleName@vModuleVersionZip
   "/api/v4/projects/{id}/packages/helm/{channel}/index.yaml":
     get:
@@ -20450,7 +20439,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - helm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesHelmChannelIndexYaml
   "/api/v4/projects/{id}/packages/helm/{channel}/charts/{file_name}.tgz":
     get:
@@ -20487,7 +20476,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - helm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesHelmChannelChartsFileNameTgz
   "/api/v4/projects/{id}/packages/helm/api/{channel}/charts/authorize":
     post:
@@ -20520,7 +20509,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - helm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesHelmApiChannelChartsAuthorize
   "/api/v4/projects/{id}/packages/helm/api/{channel}/charts":
     post:
@@ -20558,7 +20547,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - helm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesHelmApiChannelCharts
   "/api/v4/projects/{id}/services":
     get:
@@ -24861,7 +24850,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - issue_links
+      - issues
       operationId: getApiV4ProjectsIdIssuesIssueIidLinks
     post:
       summary: Create an issue link
@@ -24899,7 +24888,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - issue_links
+      - issues
       operationId: postApiV4ProjectsIdIssuesIssueIidLinks
   "/api/v4/projects/{id}/issues/{issue_iid}/links/{issue_link_id}":
     get:
@@ -24936,7 +24925,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - issue_links
+      - issues
       operationId: getApiV4ProjectsIdIssuesIssueIidLinksIssueLinkId
     delete:
       summary: Delete an issue link
@@ -24971,7 +24960,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - issue_links
+      - issues
       operationId: deleteApiV4ProjectsIdIssuesIssueIidLinksIssueLinkId
   "/api/v4/projects/{id}/issues/{issue_iid}/time_estimate":
     post:
@@ -26009,7 +25998,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_UserBasic"
       tags:
-      - issue_participants
+      - issues
       operationId: getApiV4ProjectsIdIssuesIssueIidParticipants
   "/api/v4/projects/{id}/issues/{issue_iid}/user_agent_detail":
     get:
@@ -26514,7 +26503,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - maven_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesMaven*pathFileName
     put:
       summary: Upload the maven package file
@@ -26554,7 +26543,7 @@ paths:
         '422':
           description: Unprocessable Entity
       tags:
-      - maven_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesMaven*pathFileName
   "/api/v4/projects/{id}/packages/maven/*path/{file_name}/authorize":
     put:
@@ -26593,7 +26582,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - maven_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesMaven*pathFileNameAuthorize
   "/api/v4/projects/{id}/members":
     get:
@@ -28372,7 +28361,6 @@ paths:
         '404':
           description: Not found
       tags:
-      - merge_requests
       - merge_request_approvals
       operationId: putApiV4ProjectsIdMergeRequestsMergeRequestIidResetApprovals
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/approval_state":
@@ -28641,7 +28629,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNpmPackage*packageNameDistTags
   "/api/v4/projects/{id}/packages/npm/-/package/*package_name/dist-tags/{tag}":
     put:
@@ -28680,7 +28668,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNpmPackage*packageNameDistTagsTag
     delete:
       summary: Deletes the given tag
@@ -28715,7 +28703,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesNpmPackage*packageNameDistTagsTag
   "/api/v4/projects/{id}/packages/npm/-/npm/v1/security/advisories/bulk":
     post:
@@ -28743,7 +28731,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesNpmNpmV1SecurityAdvisoriesBulk
   "/api/v4/projects/{id}/packages/npm/-/npm/v1/security/audits/quick":
     post:
@@ -28771,7 +28759,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesNpmNpmV1SecurityAuditsQuick
   "/api/v4/projects/{id}/packages/npm/*package_name/-/*file_name":
     get:
@@ -28803,7 +28791,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNpm*packageName-*fileName
   "/api/v4/projects/{id}/packages/npm/{package_name}":
     put:
@@ -28842,7 +28830,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNpmPackageName
   "/api/v4/projects/{id}/packages/npm/*package_name":
     get:
@@ -28878,7 +28866,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNpm*packageName
   "/api/v4/projects/{id}/packages/nuget/index":
     get:
@@ -28900,7 +28888,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetIndex
   "/api/v4/projects/{id}/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name":
     get:
@@ -28945,7 +28933,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetSymbolfiles*fileName*signature*sameFileName
   "/api/v4/projects/{id}/packages/nuget/v2":
     get:
@@ -28965,7 +28953,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetV2
     put:
       summary: The NuGet V2 Feed Package Publish endpoint
@@ -28997,7 +28985,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNugetV2
   "/api/v4/projects/{id}/packages/nuget/v2/$metadata":
     get:
@@ -29015,7 +29003,7 @@ paths:
         '200':
           description: The NuGet V2 Feed Package $metadata endpoint
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetV2$metadata
   "/api/v4/projects/{id}/packages/nuget/metadata/*package_name/index":
     get:
@@ -29047,7 +29035,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetMetadata*packageNameIndex
   "/api/v4/projects/{id}/packages/nuget/metadata/*package_name/*package_version":
     get:
@@ -29085,7 +29073,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetMetadata*packageName*packageVersion
   "/api/v4/projects/{id}/packages/nuget/query":
     get:
@@ -29139,7 +29127,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetQuery
   "/api/v4/projects/{id}/packages/nuget/download/*package_name/index":
     get:
@@ -29171,7 +29159,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetDownload*packageNameIndex
   "/api/v4/projects/{id}/packages/nuget/download/*package_name/*package_version/*package_filename":
     get:
@@ -29213,7 +29201,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesNugetDownload*packageName*packageVersion*packageFilename
   "/api/v4/projects/{id}/packages/nuget":
     put:
@@ -29246,7 +29234,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNuget
   "/api/v4/projects/{id}/packages/nuget/authorize":
     put:
@@ -29272,7 +29260,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNugetAuthorize
   "/api/v4/projects/{id}/packages/nuget/symbolpackage":
     put:
@@ -29305,7 +29293,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNugetSymbolpackage
   "/api/v4/projects/{id}/packages/nuget/symbolpackage/authorize":
     put:
@@ -29331,7 +29319,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNugetSymbolpackageAuthorize
   "/api/v4/projects/{id}/packages/nuget/*package_name/*package_version":
     delete:
@@ -29367,7 +29355,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesNuget*packageName*packageVersion
   "/api/v4/projects/{id}/packages/nuget/v2/authorize":
     put:
@@ -29393,7 +29381,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - nuget_packages
+      - packages
       operationId: putApiV4ProjectsIdPackagesNugetV2Authorize
   "/api/v4/projects/{project_id}/packages/nuget/v2/FindPackagesById\\(\\)":
     get:
@@ -29421,7 +29409,7 @@ paths:
         '400':
           description: Bad Request
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsProjectIdPackagesNugetV2Findpackagesbyid\(\)
   "/api/v4/projects/{project_id}/packages/nuget/v2/Packages\\(\\)":
     get:
@@ -29449,7 +29437,7 @@ paths:
         '400':
           description: Bad Request
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsProjectIdPackagesNugetV2Packages\(\)
   "/api/v4/projects/{project_id}/packages/nuget/v2/Packages\\(Id='*package_name',Version='*package_version'\\)":
     get:
@@ -29483,7 +29471,7 @@ paths:
         '400':
           description: Bad Request
       tags:
-      - nuget_packages
+      - packages
       operationId: getApiV4ProjectsProjectIdPackagesNugetV2Packages\(id='*packageName',version='*packageVersion'\)
   "/api/v4/projects/{id}/packages/{package_id}/package_files":
     get:
@@ -29546,7 +29534,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_PackageFile"
       tags:
-      - package_files
+      - packages
       operationId: getApiV4ProjectsIdPackagesPackageIdPackageFiles
   "/api/v4/projects/{id}/packages/{package_id}/package_files/{package_file_id}":
     delete:
@@ -29580,7 +29568,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - package_files
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesPackageIdPackageFilesPackageFileId
   "/api/v4/projects/{id}/packages/{package_id}/package_files/{package_file_id}/download":
     get:
@@ -29616,7 +29604,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - package_files
+      - packages
       operationId: getApiV4ProjectsIdPackagesPackageIdPackageFilesPackageFileIdDownload
   "/api/v4/projects/{id}/pages":
     delete:
@@ -29640,7 +29628,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pages
+      - gitlab_pages
       operationId: deleteApiV4ProjectsIdPages
     patch:
       summary: Update pages settings
@@ -29670,7 +29658,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pages
+      - gitlab_pages
       operationId: patchApiV4ProjectsIdPages
     get:
       summary: Get pages settings
@@ -29693,7 +29681,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pages
+      - gitlab_pages
       operationId: getApiV4ProjectsIdPages
   "/api/v4/projects/{id}/pages/domains":
     get:
@@ -29731,7 +29719,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: getApiV4ProjectsIdPagesDomains
     post:
       description: Create a new pages domain
@@ -29757,7 +29745,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: postApiV4ProjectsIdPagesDomains
   "/api/v4/projects/{id}/pages/domains/{domain}":
     get:
@@ -29782,7 +29770,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: getApiV4ProjectsIdPagesDomainsDomain
     put:
       description: Updates a pages domain
@@ -29811,7 +29799,7 @@ paths:
         '200':
           description: Updates a pages domain
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: putApiV4ProjectsIdPagesDomainsDomain
     delete:
       description: Delete a pages domain
@@ -29833,7 +29821,7 @@ paths:
         '204':
           description: Delete a pages domain
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: deleteApiV4ProjectsIdPagesDomainsDomain
   "/api/v4/projects/{id}/pages/domains/{domain}/verify":
     put:
@@ -29860,7 +29848,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomain"
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: putApiV4ProjectsIdPagesDomainsDomainVerify
   "/api/v4/projects/{id}/avatar":
     get:
@@ -29878,7 +29866,7 @@ paths:
         '200':
           description: Download a project avatar
       tags:
-      - project_avatar
+      - avatars
       operationId: getApiV4ProjectsIdAvatar
   "/api/v4/projects/{id}/clusters":
     get:
@@ -30623,7 +30611,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: postApiV4ProjectsIdDebianDistributions
     get:
       summary: Get a list of Debian Distributions
@@ -30724,7 +30712,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4ProjectsIdDebianDistributions
   "/api/v4/projects/{id}/debian_distributions/{codename}":
     get:
@@ -30756,7 +30744,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4ProjectsIdDebianDistributionsCodename
     put:
       summary: Update a Debian Distribution
@@ -30796,7 +30784,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: putApiV4ProjectsIdDebianDistributionsCodename
     delete:
       summary: Delete a Debian Distribution
@@ -30881,7 +30869,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: deleteApiV4ProjectsIdDebianDistributionsCodename
   "/api/v4/projects/{id}/debian_distributions/{codename}/key.asc":
     get:
@@ -30913,7 +30901,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - debian_distribution
+      - packages
       operationId: getApiV4ProjectsIdDebianDistributionsCodenameKeyAsc
   "/api/v4/projects/{id}/events":
     get:
@@ -30989,7 +30977,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Event"
       tags:
-      - project_events
+      - events
       operationId: getApiV4ProjectsIdEvents
   "/api/v4/projects/{id}/export":
     get:
@@ -31017,7 +31005,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: getApiV4ProjectsIdExport
     post:
       summary: Start export
@@ -31053,7 +31041,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: postApiV4ProjectsIdExport
   "/api/v4/projects/{id}/export/download":
     get:
@@ -31080,7 +31068,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: getApiV4ProjectsIdExportDownload
   "/api/v4/projects/{id}/export_relations":
     post:
@@ -31115,7 +31103,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: postApiV4ProjectsIdExportRelations
   "/api/v4/projects/{id}/export_relations/download":
     get:
@@ -31163,7 +31151,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: getApiV4ProjectsIdExportRelationsDownload
   "/api/v4/projects/{id}/export_relations/status":
     get:
@@ -31198,7 +31186,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_export
+      - project_import
       operationId: getApiV4ProjectsIdExportRelationsStatus
   "/api/v4/projects/{id}/hooks/{hook_id}/url_variables/{key}":
     put:
@@ -31360,7 +31348,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_ProjectHook"
       tags:
-      - project_hooks
+      - hooks
       operationId: getApiV4ProjectsIdHooks
     post:
       summary: Add project hook
@@ -31392,7 +31380,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - project_hooks
+      - hooks
       operationId: postApiV4ProjectsIdHooks
   "/api/v4/projects/{id}/hooks/{hook_id}":
     get:
@@ -31420,7 +31408,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_hooks
+      - hooks
       operationId: getApiV4ProjectsIdHooksHookId
     put:
       summary: Edit project hook
@@ -31458,7 +31446,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - project_hooks
+      - hooks
       operationId: putApiV4ProjectsIdHooksHookId
     delete:
       summary: Delete a project hook
@@ -31482,7 +31470,7 @@ paths:
         '204':
           description: Not found
       tags:
-      - project_hooks
+      - hooks
       operationId: deleteApiV4ProjectsIdHooksHookId
   "/api/v4/projects/{id}/hooks/{hook_id}/events":
     get:
@@ -31603,7 +31591,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - webhooks
+      - hooks
       operationId: getApiV4ProjectsIdHooksHookIdEvents
   "/api/v4/projects/{id}/hooks/{hook_id}/test/{trigger}":
     post:
@@ -31660,7 +31648,7 @@ paths:
         '429':
           description: Too many requests
       tags:
-      - webhooks
+      - hooks
       operationId: postApiV4ProjectsIdHooksHookIdTestTrigger
   "/api/v4/projects/{id}/hooks/{hook_id}/events/{hook_log_id}/resend":
     post:
@@ -31696,7 +31684,7 @@ paths:
         '429':
           description: Too many requests
       tags:
-      - webhooks
+      - hooks
       operationId: postApiV4ProjectsIdHooksHookIdEventsHookLogIdResend
   "/api/v4/projects/import/authorize":
     post:
@@ -34252,7 +34240,7 @@ paths:
         '404':
           description: Project Not Found
       tags:
-      - project_packages
+      - packages
       operationId: getApiV4ProjectsIdPackages
   "/api/v4/projects/{id}/packages/{package_id}":
     get:
@@ -34282,7 +34270,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - project_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesPackageId
     delete:
       summary: Delete a project package
@@ -34309,7 +34297,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - project_packages
+      - packages
       operationId: deleteApiV4ProjectsIdPackagesPackageId
   "/api/v4/projects/{id}/packages/{package_id}/pipelines":
     get:
@@ -34364,7 +34352,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - project_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesPackageIdPipelines
   "/api/v4/projects/{id}/packages/protection/rules":
     get:
@@ -34564,7 +34552,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: getApiV4ProjectsIdSnippets
     post:
       description: Create a new project snippet
@@ -34595,7 +34583,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - project_snippets
+      - snippets
       operationId: postApiV4ProjectsIdSnippets
   "/api/v4/projects/{id}/snippets/{snippet_id}":
     get:
@@ -34622,7 +34610,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: getApiV4ProjectsIdSnippetsSnippetId
     put:
       description: Update an existing project snippet
@@ -34659,7 +34647,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - project_snippets
+      - snippets
       operationId: putApiV4ProjectsIdSnippetsSnippetId
     delete:
       description: Delete a project snippet
@@ -34685,7 +34673,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: deleteApiV4ProjectsIdSnippetsSnippetId
   "/api/v4/projects/{id}/snippets/{snippet_id}/raw":
     get:
@@ -34712,7 +34700,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: getApiV4ProjectsIdSnippetsSnippetIdRaw
   "/api/v4/projects/{id}/snippets/{snippet_id}/files/{ref}/{file_path}/raw":
     get:
@@ -34748,7 +34736,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: getApiV4ProjectsIdSnippetsSnippetIdFilesRefFilePathRaw
   "/api/v4/projects/{id}/snippets/{snippet_id}/user_agent_detail":
     get:
@@ -34775,7 +34763,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - project_snippets
+      - snippets
       operationId: getApiV4ProjectsIdSnippetsSnippetIdUserAgentDetail
   "/api/v4/projects/{id}/statistics":
     get:
@@ -36558,7 +36546,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - project_protected_branches
+      - protected_branches
       operationId: getApiV4ProjectsIdProtectedBranches
     post:
       description: Protect a single branch
@@ -36592,7 +36580,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - project_protected_branches
+      - protected_branches
       operationId: postApiV4ProjectsIdProtectedBranches
   "/api/v4/projects/{id}/protected_branches/{name}":
     get:
@@ -36622,7 +36610,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - project_protected_branches
+      - protected_branches
       operationId: getApiV4ProjectsIdProtectedBranchesName
     patch:
       description: Update a protected branch
@@ -36662,7 +36650,7 @@ paths:
         '400':
           description: 400 Bad request
       tags:
-      - project_protected_branches
+      - protected_branches
       operationId: patchApiV4ProjectsIdProtectedBranchesName
     delete:
       description: Unprotect a single branch
@@ -36689,7 +36677,7 @@ paths:
         '401':
           description: 401 Unauthorized
       tags:
-      - project_protected_branches
+      - protected_branches
       operationId: deleteApiV4ProjectsIdProtectedBranchesName
   "/api/v4/projects/{id}/protected_tags":
     get:
@@ -36858,7 +36846,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesPypiFilesSha256*fileIdentifier
   "/api/v4/projects/{id}/packages/pypi/simple":
     get:
@@ -36882,7 +36870,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesPypiSimple
   "/api/v4/projects/{id}/packages/pypi/simple/*package_name":
     get:
@@ -36912,7 +36900,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesPypiSimple*packageName
   "/api/v4/projects/{id}/packages/pypi":
     post:
@@ -36947,7 +36935,7 @@ paths:
         '422':
           description: Unprocessable Entity
       tags:
-      - pypi_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesPypi
   "/api/v4/projects/{id}/packages/pypi/authorize":
     post:
@@ -36973,7 +36961,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - pypi_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesPypiAuthorize
   "/api/v4/projects/{id}/releases":
     get:
@@ -37341,7 +37329,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - release_links
+      - releases
       operationId: getApiV4ProjectsIdReleasesTagNameAssetsLinks
     post:
       summary: Create a release link
@@ -37377,7 +37365,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - release_links
+      - releases
       operationId: postApiV4ProjectsIdReleasesTagNameAssetsLinks
   "/api/v4/projects/{id}/releases/{tag_name}/assets/links/{link_id}":
     get:
@@ -37413,7 +37401,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - release_links
+      - releases
       operationId: getApiV4ProjectsIdReleasesTagNameAssetsLinksLinkId
     put:
       summary: Update a release link
@@ -37455,7 +37443,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - release_links
+      - releases
       operationId: putApiV4ProjectsIdReleasesTagNameAssetsLinksLinkId
     delete:
       summary: Delete a release link
@@ -37486,7 +37474,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - release_links
+      - releases
       operationId: deleteApiV4ProjectsIdReleasesTagNameAssetsLinksLinkId
   "/api/v4/projects/{id}/remote_mirrors":
     get:
@@ -38218,7 +38206,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_ResourceMilestoneEvent"
       tags:
-      - resource_milestone_events
+      - resource_events
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceMilestoneEvents
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_milestone_events/{event_id}":
     get:
@@ -38251,7 +38239,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - resource_milestone_events
+      - resource_events
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceMilestoneEventsEventId
   "/api/v4/projects/{id}/merge_requests/{eventable_id}/resource_milestone_events":
     get:
@@ -38295,7 +38283,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_ResourceMilestoneEvent"
       tags:
-      - resource_milestone_events
+      - resource_events
       operationId: getApiV4ProjectsIdMergeRequestsEventableIdResourceMilestoneEvents
   "/api/v4/projects/{id}/merge_requests/{eventable_id}/resource_milestone_events/{event_id}":
     get:
@@ -38328,7 +38316,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - resource_milestone_events
+      - resource_events
       operationId: getApiV4ProjectsIdMergeRequestsEventableIdResourceMilestoneEventsEventId
   "/api/v4/projects/{id}/packages/rpm/repodata/*file_name":
     get:
@@ -38357,7 +38345,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rpm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRpmRepodata*fileName
   "/api/v4/projects/{id}/packages/rpm/*package_file_id/*file_name":
     get:
@@ -38392,7 +38380,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rpm_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRpm*packageFileId*fileName
   "/api/v4/projects/{id}/packages/rpm":
     post:
@@ -38420,7 +38408,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rpm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesRpm
   "/api/v4/projects/{id}/packages/rpm/authorize":
     post:
@@ -38446,7 +38434,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rpm_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesRpmAuthorize
   "/api/v4/projects/{id}/packages/rubygems/{file_name}":
     get:
@@ -38474,7 +38462,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rubygem_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRubygemsFileName
   "/api/v4/projects/{id}/packages/rubygems/quick/Marshal.4.8/{file_name}":
     get:
@@ -38502,7 +38490,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rubygem_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRubygemsQuickMarshal48FileName
   "/api/v4/projects/{id}/packages/rubygems/gems/{file_name}":
     get:
@@ -38532,7 +38520,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rubygem_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRubygemsGemsFileName
   "/api/v4/projects/{id}/packages/rubygems/api/v1/gems/authorize":
     post:
@@ -38557,7 +38545,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - rubygem_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesRubygemsApiV1GemsAuthorize
   "/api/v4/projects/{id}/packages/rubygems/api/v1/gems":
     post:
@@ -38589,7 +38577,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rubygem_packages
+      - packages
       operationId: postApiV4ProjectsIdPackagesRubygemsApiV1Gems
   "/api/v4/projects/{id}/packages/rubygems/api/v1/dependencies":
     get:
@@ -38621,7 +38609,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - rubygem_packages
+      - packages
       operationId: getApiV4ProjectsIdPackagesRubygemsApiV1Dependencies
   "/api/v4/projects/{id}/(-/)search":
     get:
@@ -38705,7 +38693,6 @@ paths:
           description: Search on GitLab within a project
       tags:
       - search
-      - projects
       operationId: getApiV4ProjectsId(-)search
   "/api/v4/projects/{id}/repository/submodules/{submodule}":
     put:
@@ -39029,7 +39016,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem
   "/api/v4/projects/{id}/packages/terraform/modules/{module_name}/{module_system}/*module_version":
     get:
@@ -39077,7 +39064,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem*moduleVersion
   "/api/v4/projects/{id}/packages/terraform/modules/{module_name}/{module_system}/*module_version/file/authorize":
     put:
@@ -39116,7 +39103,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - terraform_registry
+      - terraform
       operationId: putApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem*moduleVersionFileAuthorize
   "/api/v4/projects/{id}/packages/terraform/modules/{module_name}/{module_system}/*module_version/file":
     put:
@@ -39166,7 +39153,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: putApiV4ProjectsIdPackagesTerraformModulesModuleNameModuleSystem*moduleVersionFile
   "/api/v4/projects/{id}/terraform/state/{name}":
     get:
@@ -39202,7 +39189,7 @@ paths:
         '422':
           description: Validation failure
       tags:
-      - terraform_state
+      - terraform
       operationId: getApiV4ProjectsIdTerraformStateName
     post:
       summary: Add a new Terraform state or update an existing one
@@ -39239,7 +39226,7 @@ paths:
         '413':
           description: Request Entity Too Large
       tags:
-      - terraform_state
+      - terraform
       operationId: postApiV4ProjectsIdTerraformStateName
     delete:
       summary: Delete a Terraform state of a certain name
@@ -39267,7 +39254,7 @@ paths:
         '422':
           description: Validation failure
       tags:
-      - terraform_state
+      - terraform
       operationId: deleteApiV4ProjectsIdTerraformStateName
   "/api/v4/projects/{id}/terraform/state/{name}/authorize":
     post:
@@ -39300,7 +39287,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - terraform_state
+      - terraform
       operationId: postApiV4ProjectsIdTerraformStateNameAuthorize
   "/api/v4/projects/{id}/terraform/state/{name}/lock":
     post:
@@ -39338,7 +39325,7 @@ paths:
         '422':
           description: Validation failure
       tags:
-      - terraform_state
+      - terraform
       operationId: postApiV4ProjectsIdTerraformStateNameLock
     delete:
       summary: Unlock a Terraform state of a certain name
@@ -39373,7 +39360,7 @@ paths:
         '422':
           description: Validation failure
       tags:
-      - terraform_state
+      - terraform
       operationId: deleteApiV4ProjectsIdTerraformStateNameLock
   "/api/v4/projects/{id}/terraform/state/{name}/versions/{serial}":
     get:
@@ -39408,7 +39395,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_state
+      - terraform
       operationId: getApiV4ProjectsIdTerraformStateNameVersionsSerial
     delete:
       summary: Delete a Terraform state version
@@ -39439,7 +39426,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_state
+      - terraform
       operationId: deleteApiV4ProjectsIdTerraformStateNameVersionsSerial
   "/api/v4/projects/{id}/wikis":
     get:
@@ -40407,7 +40394,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: postApiV4BulkImports
     get:
       summary: List all GitLab Migrations
@@ -40467,7 +40454,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImports
   "/api/v4/bulk_imports/entities":
     get:
@@ -40528,7 +40515,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImportsEntities
   "/api/v4/bulk_imports/{import_id}":
     get:
@@ -40555,7 +40542,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImportsImportId
   "/api/v4/bulk_imports/{import_id}/entities":
     get:
@@ -40612,7 +40599,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImportsImportIdEntities
   "/api/v4/bulk_imports/{import_id}/entities/{entity_id}":
     get:
@@ -40645,7 +40632,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImportsImportIdEntitiesEntityId
   "/api/v4/bulk_imports/{import_id}/entities/{entity_id}/failures":
     get:
@@ -40678,7 +40665,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: getApiV4BulkImportsImportIdEntitiesEntityIdFailures
   "/api/v4/bulk_imports/{import_id}/cancel":
     post:
@@ -40709,7 +40696,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - bulk_imports
+      - imports
       operationId: postApiV4BulkImportsImportIdCancel
   "/api/v4/job":
     get:
@@ -41610,7 +41597,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: getApiV4GroupIdPackagesComposerPackages
   "/api/v4/group/{id}/-/packages/composer/p/{sha}":
     get:
@@ -41638,7 +41625,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: getApiV4GroupIdPackagesComposerPSha
   "/api/v4/group/{id}/-/packages/composer/p2/*package_name":
     get:
@@ -41668,7 +41655,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: getApiV4GroupIdPackagesComposerP2*packageName
   "/api/v4/group/{id}/-/packages/composer/*package_name":
     get:
@@ -41697,7 +41684,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - composer_packages
+      - packages
       operationId: getApiV4GroupIdPackagesComposer*packageName
   "/api/v4/packages/conan/v1/users/authenticate":
     get:
@@ -41713,7 +41700,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1UsersAuthenticate
   "/api/v4/packages/conan/v1/users/check_credentials":
     get:
@@ -41729,7 +41716,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1UsersCheckCredentials
   "/api/v4/packages/conan/v1/conans/search":
     get:
@@ -41758,7 +41745,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansSearch
   "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
     get:
@@ -41803,7 +41790,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/packages/conan/v1/ping":
     get:
@@ -41817,7 +41804,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1Ping
   ? "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}"
   : get:
@@ -41868,7 +41855,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReference
   "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}":
     get:
@@ -41913,7 +41900,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannel
     delete:
       summary: Delete Package
@@ -41955,7 +41942,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: deleteApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannel
   ? "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/digest"
   : get:
@@ -42006,7 +41993,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceDigest
   "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/digest":
     get:
@@ -42051,7 +42038,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelDigest
   ? "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/download_urls"
   : get:
@@ -42102,7 +42089,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceDownloadUrls
   "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/download_urls":
     get:
@@ -42147,7 +42134,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelDownloadUrls
   ? "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}/upload_urls"
   : post:
@@ -42200,7 +42187,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: postApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelPackagesConanPackageReferenceUploadUrls
   "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/upload_urls":
     post:
@@ -42247,7 +42234,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: postApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelUploadUrls
   ? "/api/v4/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/export/{file_name}"
   : get:
@@ -42309,7 +42296,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName
     put:
       summary: Upload recipe package files
@@ -42379,7 +42366,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName
   ? "/api/v4/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/export/{file_name}/authorize"
   : put:
@@ -42445,7 +42432,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileNameAuthorize
   ? "/api/v4/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/package/{conan_package_reference}/{package_revision}/{file_name}"
   : get:
@@ -42517,7 +42504,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: getApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileName
     put:
       summary: Upload package files
@@ -42599,7 +42586,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileName
   ? "/api/v4/packages/conan/v1/files/{package_name}/{package_version}/{package_username}/{package_channel}/{recipe_revision}/package/{conan_package_reference}/{package_revision}/{file_name}/authorize"
   : put:
@@ -42677,7 +42664,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - conan_packages
+      - packages
       operationId: putApiV4PackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileNameAuthorize
   "/api/v4/packages/maven/*path/{file_name}":
     get:
@@ -42708,7 +42695,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - maven_packages
+      - packages
       operationId: getApiV4PackagesMaven*pathFileName
   "/api/v4/packages/npm/-/package/*package_name/dist-tags":
     get:
@@ -42736,7 +42723,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4PackagesNpmPackage*packageNameDistTags
   "/api/v4/packages/npm/-/package/*package_name/dist-tags/{tag}":
     put:
@@ -42770,7 +42757,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: putApiV4PackagesNpmPackage*packageNameDistTagsTag
     delete:
       summary: Deletes the given tag
@@ -42800,7 +42787,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: deleteApiV4PackagesNpmPackage*packageNameDistTagsTag
   "/api/v4/packages/npm/-/npm/v1/security/advisories/bulk":
     post:
@@ -42822,7 +42809,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4PackagesNpmNpmV1SecurityAdvisoriesBulk
   "/api/v4/packages/npm/-/npm/v1/security/audits/quick":
     post:
@@ -42844,7 +42831,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: postApiV4PackagesNpmNpmV1SecurityAuditsQuick
   "/api/v4/packages/npm/*package_name":
     get:
@@ -42875,7 +42862,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - npm_packages
+      - packages
       operationId: getApiV4PackagesNpm*packageName
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}/versions":
     get:
@@ -42909,7 +42896,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystemVersions
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}/download":
     get:
@@ -42941,7 +42928,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystemDownload
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}":
     get:
@@ -42975,7 +42962,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystem
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}/*module_version/download":
     get:
@@ -43012,7 +42999,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystem*moduleVersionDownload
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}/*module_version/file":
     get:
@@ -43051,7 +43038,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystem*moduleVersionFile
   "/api/v4/packages/terraform/modules/v1/{module_namespace}/{module_name}/{module_system}/*module_version":
     get:
@@ -43090,7 +43077,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - terraform_registry
+      - terraform
       operationId: getApiV4PackagesTerraformModulesV1ModuleNamespaceModuleNameModuleSystem*moduleVersion
   "/api/v4/container_registry_event/events":
     post:
@@ -43108,7 +43095,7 @@ paths:
         '401':
           description: Invalid Token
       tags:
-      - container_registry_event
+      - container_registry
       operationId: postApiV4ContainerRegistryEventEvents
   "/api/v4/registry/repositories/{id}":
     get:
@@ -44712,7 +44699,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_SSHKeyWithUser"
       tags:
-      - ssh_keys
+      - keys
       operationId: getApiV4KeysId
   "/api/v4/keys":
     get:
@@ -44735,7 +44722,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_UserWithAdmin"
       tags:
-      - ssh_keys
+      - keys
       operationId: getApiV4Keys
   "/api/v4/markdown":
     post:
@@ -45549,7 +45536,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PagesDomainBasic"
       tags:
-      - pages_domains
+      - gitlab_pages
       operationId: getApiV4PagesDomains
   "/api/v4/personal_access_tokens/self":
     get:
@@ -46443,7 +46430,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_Hook"
       tags:
-      - system_hooks
+      - hooks
       operationId: getApiV4Hooks
     post:
       summary: Add new system hook
@@ -46470,7 +46457,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - system_hooks
+      - hooks
       operationId: postApiV4Hooks
   "/api/v4/hooks/{hook_id}":
     get:
@@ -46493,7 +46480,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - system_hooks
+      - hooks
       operationId: getApiV4HooksHookId
     put:
       summary: Edit system hook
@@ -46526,7 +46513,7 @@ paths:
         '422':
           description: Unprocessable entity
       tags:
-      - system_hooks
+      - hooks
       operationId: putApiV4HooksHookId
     post:
       produces:
@@ -46566,7 +46553,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Hook"
       tags:
-      - system_hooks
+      - hooks
       operationId: deleteApiV4HooksHookId
   "/api/v4/feature_flags/unleash/{project_id}":
     get:
@@ -46619,7 +46606,7 @@ paths:
         '200':
           description: Get a list of features (deprecated, v2 client support)
       tags:
-      - unleash_api
+      - unleash
       operationId: getApiV4FeatureFlagsUnleashProjectIdFeatures
   "/api/v4/feature_flags/unleash/{project_id}/client/features":
     get:
@@ -46646,7 +46633,7 @@ paths:
         '200':
           description: Get a list of features
       tags:
-      - unleash_api
+      - unleash
       operationId: getApiV4FeatureFlagsUnleashProjectIdClientFeatures
   "/api/v4/feature_flags/unleash/{project_id}/client/register":
     post:
@@ -46787,7 +46774,6 @@ paths:
         '404':
           description: Not found
       tags:
-      - usage_data
       - metrics
       operationId: getApiV4UsageDataMetricDefinitions
   "/api/v4/usage_data/service_ping":
@@ -46985,7 +46971,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Appearance"
       tags:
-      - appearance
+      - instance
       operationId: getApiV4ApplicationAppearance
     put:
       description: Modify appearance
@@ -47085,7 +47071,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Appearance"
       tags:
-      - appearance
+      - instance
       operationId: putApiV4ApplicationAppearance
   "/api/v4/application/statistics":
     get:
@@ -47098,7 +47084,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_ApplicationStatistics"
       tags:
-      - application_statistics
+      - instance
       operationId: getApiV4ApplicationStatistics
   "/api/v4/discover-cert-based-clusters":
     get:
@@ -47167,7 +47153,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: getApiV4DeployKeys
     post:
       summary: Create a deploy key
@@ -47195,7 +47181,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - deploy_keys
+      - deploy_resources
       operationId: postApiV4DeployKeys
   "/api/v4/deploy_tokens":
     get:
@@ -47239,7 +47225,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - deploy_tokens
+      - deploy_resources
       operationId: getApiV4DeployTokens
   "/api/v4/import/bitbucket":
     post:
@@ -47271,7 +47257,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_import_bitbucket
+      - project_import
       operationId: postApiV4ImportBitbucket
   "/api/v4/import/bitbucket_server":
     post:
@@ -47303,7 +47289,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_import_bitbucket
+      - project_import
       operationId: postApiV4ImportBitbucketServer
   "/api/v4/import/github":
     post:
@@ -47335,7 +47321,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_import_github
+      - project_import
       operationId: postApiV4ImportGithub
   "/api/v4/import/github/cancel":
     post:
@@ -47367,7 +47353,7 @@ paths:
         '503':
           description: Service unavailable
       tags:
-      - project_import_github
+      - project_import
       operationId: postApiV4ImportGithubCancel
   "/api/v4/import/github/gists":
     post:
@@ -47654,7 +47640,7 @@ paths:
         '200':
           description: Get currently authenticated user's issues statistics
       tags:
-      - issue_statistics
+      - issues
       operationId: getApiV4IssuesStatistics
   "/api/v4/metadata":
     get:

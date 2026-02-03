@@ -4,8 +4,7 @@ module API
   class ProjectHooks < ::API::Base
     include PaginationParams
 
-    project_hooks_tags = %w[project_hooks]
-
+    project_hooks_tags = %w[hooks]
     before { authenticate! }
     before do
       ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook

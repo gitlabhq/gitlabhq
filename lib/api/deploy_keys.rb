@@ -4,8 +4,7 @@ module API
   class DeployKeys < ::API::Base
     include PaginationParams
 
-    deploy_keys_tags = %w[deploy_keys]
-
+    deploy_keys_tags = %w[deploy_resources]
     before do
       authenticate!
       set_current_organization

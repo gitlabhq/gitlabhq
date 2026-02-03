@@ -34,7 +34,7 @@ module API
           { code: 404, message: 'Group Not Found' }
         ]
         is_array true
-        tags %w[group_packages]
+        tags %w[packages]
       end
       params do
         use :pagination

@@ -5,7 +5,6 @@ module API
     include PaginationParams
 
     freeze_periods_tags = %w[freeze_periods]
-
     before { authenticate! }
 
     feature_category :continuous_delivery

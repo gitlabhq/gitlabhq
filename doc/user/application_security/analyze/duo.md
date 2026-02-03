@@ -36,6 +36,10 @@ GitLab Duo Vulnerability Explanation can help you with a vulnerability by using 
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
+GitLab Duo can also automatically analyze critical and high severity SAST vulnerabilities to
+identify potential false positives. For more information, see
+[SAST false positive detection](../vulnerabilities/false_positive_detection.md).
+
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Prerequisites:
@@ -72,35 +76,3 @@ The following data is shared with third-party AI APIs:
 - Vulnerability title (which might contain the filename, depending on which scanner is used).
 - Vulnerability identifiers.
 - Filename.
-
-## SAST false positive detection
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-GitLab Duo automatically analyzes critical and high severity SAST vulnerabilities to identify
-potential false positives. This reduces noise in your vulnerability report by flagging findings that
-are likely not actual security risks.
-
-For each analyzed vulnerability, GitLab Duo provides:
-
-- A confidence score indicating the likelihood of the assessment
-- An explanation of why the finding might or might not be a true positive
-- Visual indicators that a vulnerability has been identified as a potential false positive in the vulnerability report
-
-For more information, see [SAST false positive detection](../vulnerabilities/false_positive_detection.md).

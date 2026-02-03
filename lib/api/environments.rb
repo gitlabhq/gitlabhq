@@ -6,7 +6,6 @@ module API
     include PaginationParams
 
     environments_tags = %w[environments]
-
     before { authenticate! }
 
     feature_category :continuous_delivery

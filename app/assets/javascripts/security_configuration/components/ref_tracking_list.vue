@@ -50,10 +50,10 @@ export default {
         };
       },
       update(data) {
-        return data.project.securityTrackedRefs.nodes || [];
+        return data.project?.securityTrackedRefs?.nodes || [];
       },
       result({ data }) {
-        if (data) {
+        if (data?.project?.securityTrackedRefs) {
           const { pageInfo, count } = data.project.securityTrackedRefs;
 
           this.pageInfo = pageInfo;

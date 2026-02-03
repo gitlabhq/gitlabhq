@@ -6,7 +6,6 @@ module API
       before { authenticated_as_admin! }
 
       PLAN_LIMITS_TAGS = %w[plan_limits].freeze
-
       feature_category :plan_provisioning
 
       helpers do

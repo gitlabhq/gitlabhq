@@ -528,7 +528,7 @@ module API
 
       desc 'Get the project-level Deploy keys that a specified user can access to.' do
         success Entities::DeployKey
-        tags ['deploy_keys']
+        tags ['deploy_resources']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -554,7 +554,7 @@ module API
 
       desc 'Add an SSH key to a specified user. Available only for admins.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
@@ -583,7 +583,7 @@ module API
 
       desc 'Get the SSH keys of a specified user.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -602,7 +602,7 @@ module API
 
       desc 'Get a SSH key of a specified user.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -623,7 +623,7 @@ module API
 
       desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -649,7 +649,7 @@ module API
       desc 'Add a GPG key to a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -675,7 +675,7 @@ module API
       desc 'Get the GPG keys of a specified user.' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -696,7 +696,7 @@ module API
       desc 'Get a specific GPG key for a given user.' do
         detail 'This feature was added in GitLab 13.5'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -719,7 +719,7 @@ module API
 
       desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -744,7 +744,7 @@ module API
 
       desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -1247,7 +1247,7 @@ module API
 
       desc "Get the currently authenticated user's SSH keys" do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         use :pagination
@@ -1261,7 +1261,7 @@ module API
 
       desc 'Get a single key owned by currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1278,7 +1278,7 @@ module API
 
       desc 'Add a new SSH key to the currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key, type: String, desc: 'The new SSH key'
@@ -1300,7 +1300,7 @@ module API
 
       desc 'Delete an SSH key from the currently authenticated user' do
         success Entities::SSHKey
-        tags ['ssh_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
@@ -1321,7 +1321,7 @@ module API
       desc "Get the currently authenticated user's GPG keys" do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         use :pagination
@@ -1334,7 +1334,7 @@ module API
       desc 'Get a single GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1352,7 +1352,7 @@ module API
       desc 'Add a new GPG key to the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
         success Entities::GpgKey
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key, type: String, desc: 'The new GPG key'
@@ -1370,7 +1370,7 @@ module API
 
       desc 'Revoke a GPG key owned by currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the GPG key'
@@ -1388,7 +1388,7 @@ module API
 
       desc 'Delete a GPG key from the currently authenticated user' do
         detail 'This feature was added in GitLab 10.0'
-        tags ['gpg_keys']
+        tags ['keys']
       end
       params do
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'

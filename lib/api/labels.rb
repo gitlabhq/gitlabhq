@@ -24,7 +24,7 @@ module API
     resource :projects, requirements: LABEL_ENDPOINT_REQUIREMENTS do
       desc 'Get all labels of the project' do
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         optional :with_counts, type: Boolean, default: false,
@@ -46,7 +46,7 @@ module API
       desc 'Get a single label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         optional :include_ancestor_groups, type: Boolean, default: true,
@@ -58,7 +58,7 @@ module API
 
       desc 'Create a new label' do
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         use :label_create_params
@@ -71,7 +71,7 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was deprecated in GitLab 12.4.'
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         optional :label_id, type: Integer, desc: 'The ID of the label to be updated'
@@ -86,7 +86,7 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was deprecated in GitLab 12.4.'
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         optional :label_id, type: Integer, desc: 'The ID of the label to be deleted'
@@ -100,7 +100,7 @@ module API
       desc 'Promote a label to a group label' do
         detail 'This feature was added in GitLab 12.3 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be promoted'
@@ -112,7 +112,7 @@ module API
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be updated'
@@ -125,7 +125,7 @@ module API
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::ProjectLabel
-        tags ['project_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be deleted'
@@ -137,7 +137,7 @@ module API
       desc 'Promote a label to a group label' do
         detail 'This feature was added in GitLab 12.4.'
         success Entities::GroupLabel
-        tags ['group_labels']
+        tags ['labels']
       end
       params do
         requires :name, type: String, desc: 'The name or id of the label to be promoted'

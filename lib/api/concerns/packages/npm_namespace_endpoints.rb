@@ -52,7 +52,7 @@ module API
               { code: 403, message: 'Forbidden' },
               { code: 404, message: 'Not Found' }
             ]
-            tags %w[npm_packages]
+            tags %w[packages]
           end
           params do
             use :package_name

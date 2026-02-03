@@ -83,6 +83,8 @@ The following integrations have been tested by GitLab and are available:
 
 - [Claude Code](https://code.claude.com/docs/en/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
+- [Amazon Q](https://aws.amazon.com/q/)
+- [Gemini](https://gemini.google.com/)
 
 Before you can create an agent and integrate it with an external AI model
 provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
@@ -90,17 +92,48 @@ provider, you must meet the [prerequisites for the GitLab Duo Agent Platform](..
 Managed external agents use GitLab-managed credentials and can be enabled in groups
 without additional agent configuration necessary.
 
-The following agents are available in the AI Catalog:
+Required steps to enable and use managed agents:
 
-- [Claude Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337)
-- [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/)
-
-Required steps to enable and use Claude or Codex:
-
-1. Access the agent in the AI Catalog. Search for `claude` or `codex`, or use the direct URL.
+1. Access the agent in the AI Catalog. Search for the agent name, or use the direct URL.
 1. [Enable the agent in a top-level group](#enable-the-agent-in-a-top-level-group).
 1. [Enable the agent in a project](#enable-in-a-project).
 1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
+
+### GitLab-managed external agents
+
+The following agents are provided by GitLab and use GitLab-managed credentials:
+
+- [Claude Agent on GitLab.com](https://gitlab.com/explore/ai-catalog/agents/2337/)
+- [Codex Agent on GitLab.com](https://gitlab.com/explore/ai-catalog/agents/2334/)
+
+### Amazon Q Developer
+
+The [Amazon Q Developer Agent](https://gitlab.com/explore/ai-catalog/agents/2332/) does not use
+GitLab-managed credentials. To use this agent, you must provide your own credentials.
+This agent is available only on GitLab.com.
+
+To use the Amazon Q Developer Agent:
+
+- Add the following environment variables to the CI/CD settings of your project:
+
+  - `AWS_ACCESS_KEY_ID`
+  - `AWS_SECRET_ACCESS_KEY`
+  - `AWS_REGION_NAME`
+  - `AMAZON_Q_SIGV4`
+
+### Develop with Gemini
+
+The [Develop with Gemini Agent](https://gitlab.com/explore/ai-catalog/agents/2331/) does not use the GitLab-managed credentials.
+To use this agent, you must provide your own credentials.
+This agent is available only on GitLab.com.
+
+To use the Develop with Gemini Agent:
+
+- Add the following environment variables to the CI/CD settings of your project:
+
+  - `GOOGLE_CREDENTIALS` - Add the location of the Google credentials JSON file. For details, see [`GOOGLE_APPLICATION_CREDENTIALS` environment variable](https://docs.cloud.google.com/docs/authentication/application-default-credentials#GAC).
+  - `GOOGLE_CLOUD_PROJECT`
+  - `GOOGLE_CLOUD_LOCATION`
 
 ## Prerequisites
 

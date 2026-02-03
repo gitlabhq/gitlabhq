@@ -22,7 +22,7 @@ module API
         { code: 422, message: 'Unprocessable entity' },
         { code: 503, message: 'Service unavailable' }
       ]
-      tags ['project_import_github']
+      tags ['project_import']
     end
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
@@ -59,7 +59,7 @@ module API
         { code: 404, message: 'Not found' },
         { code: 503, message: 'Service unavailable' }
       ]
-      tags ['project_import_github']
+      tags ['project_import']
     end
     params do
       requires :project_id, type: Integer, desc: 'ID of importing project to be canceled'

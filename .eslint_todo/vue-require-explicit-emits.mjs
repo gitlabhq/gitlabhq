@@ -340,7 +340,6 @@ export default {
     'app/assets/javascripts/packages_and_registries/settings/project/components/expiration_toggle.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/packages_protection_rule_form.vue',
-    'app/assets/javascripts/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue',
     'app/assets/javascripts/packages_and_registries/shared/components/delete_package_modal.vue',
     'app/assets/javascripts/packages_and_registries/shared/components/persisted_pagination.vue',
     'app/assets/javascripts/packages_and_registries/shared/components/persisted_search.vue',

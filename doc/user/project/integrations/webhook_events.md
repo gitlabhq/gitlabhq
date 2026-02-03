@@ -906,6 +906,8 @@ Merge request events can be triggered even if the `changes` field is empty.
 Webhook receivers should always inspect the content of the `changes` field for the
 actual changes in a merge request.
 
+### Payload structure
+
 The JSON structure of the webhook payload is consistent across all action types.
 The differences are in which fields contain data and whether conditional fields such as `oldrev`,
 `system`, and `system_action` are present.
@@ -923,6 +925,135 @@ The available values for `object_attributes.action` in the payload are:
 - `unapproved`: A previously approved merge request loses its approved status,
   either manually or by the system.
 - `merge`: A merge request is merged.
+
+The merge request webhook payload contains these top-level fields:
+
+| Field               | Type   | Description |
+|---------------------|--------|-------------|
+| `object_kind`       | String | `"merge_request"` |
+| `event_type`        | String | `"merge_request"` |
+| `user`              | Object | User who triggered the event. |
+| `project`           | Object | The target project. |
+| `object_attributes` | Object | Merge request data. |
+| `changes`           | Object | Contains changed attributes during the action. |
+| `assignees`         | Array  | Currently assigned users. |
+| `reviewers`         | Array  | Currently assigned reviewers. |
+| `labels`            | Array  | Label objects. |
+| `repository`        | Object | Deprecated. Use `project` instead. Repository information. |
+
+### Deprecated fields
+
+The following fields are deprecated and included for backward compatibility only. Use the recommended alternatives instead:
+
+| Deprecated field                     | Recommended alternative |
+|--------------------------------------|-------------------------|
+| `object_attributes.assignee_id`      | `object_attributes.assignee_ids` |
+| `object_attributes.work_in_progress` | `object_attributes.draft` |
+| `project.http_url`                   | `project.git_http_url`  |
+| `project.homepage`                   | `project.web_url`       |
+| `project.ssh_url`                    | `project.git_ssh_url`   |
+| `project.url`                        | `project.git_ssh_url` or `project.git_http_url` |
+| `repository`                         | `project`               |
+
+### `object_attributes` field
+
+The `object_attributes` field contains the current state of the merge request.
+It includes the following fields:
+
+| Field                           | Type    | Description |
+|---------------------------------|---------|-------------|
+| `action`                        | String  | The action that triggered the webhook. For example, `open`, `update`, or `merge`. |
+| `approval_rules`                | Array   | Array of approval rule objects (EE only). |
+| `assignee_ids`                  | Array   | Array of assignee IDs. |
+| `author_id`                     | Integer | The ID of the merge request author. |
+| `blocking_discussions_resolved` | Boolean | Whether blocking discussions are resolved. |
+| `created_at`                    | String  | When the merge request was created. |
+| `description`                   | String  | The merge request description. |
+| `detailed_merge_status`         | String  | Detailed merge status information. For a list of potential values, see [merge status](../../../api/merge_requests.md#merge-status). |
+| `draft`                         | Boolean | Whether the merge request is a draft. |
+| `first_contribution`            | Boolean | Whether this is the author's first contribution. |
+| `head_pipeline_id`              | Integer | The ID of the head pipeline. |
+| `human_time_change`             | String  | Human-readable time change. |
+| `human_time_estimate`           | String  | Human-readable time estimate. |
+| `human_total_time_spent`        | String  | Human-readable total time spent. |
+| `id`                            | Integer | The merge request ID. |
+| `iid`                           | Integer | The internal ID of the merge request. |
+| `labels`                        | Array   | Array of label objects. |
+| `last_commit`                   | Object  | The last commit object with details. |
+| `last_edited_at`                | String  | When the merge request was last edited. |
+| `last_edited_by_id`             | Integer | The ID of the user who last edited it. |
+| `merge_commit_sha`              | String  | The SHA of the merge commit. |
+| `merge_error`                   | String  | Any merge error message. |
+| `merge_params`                  | Object  | Merge parameters. |
+| `merge_status`                  | String  | Status of the merge request. |
+| `merge_user_id`                 | Integer | The ID of the user who merged it. |
+| `merge_when_pipeline_succeeds`  | Boolean | Whether auto-merge is enabled. |
+| `milestone_id`                  | Integer | The ID of the milestone. |
+| `oldrev`                        | String  | The old commit SHA (only present for push-related events). |
+| `prepared_at`                   | String  | Timestamp of when the merge request was prepared. This field populates one time, only after all the [preparation steps](../../../api/merge_requests.md#preparation-steps) complete, and is not updated if more changes are added. |
+| `reviewer_ids`                  | Array   | Array of reviewer IDs. |
+| `source_branch`                 | String  | The source branch name. |
+| `source`                        | Object  | Source project details. For example, name and description. |
+| `source_project_id`             | Integer | The ID of the source project. |
+| `state_id`                      | Integer | The state ID (`1`: opened, `2`: closed, `3`: merged, `4`:locked). |
+| `state`                         | String  | The state of the merge request (`opened`, `closed`, `merged`, `locked`). |
+| `system_action`                 | String  | The system action (only present if `system` is `true`). |
+| `system`                        | Boolean | Whether the event was system-initiated. |
+| `target_branch`                 | String  | The target branch name. |
+| `target`                        | Object  | Target project details. For example, name and description. |
+| `target_project_id`             | Integer | The ID of the target project. |
+| `time_change`                   | Integer | Change in time spent in seconds. |
+| `time_estimate`                 | Integer | The time estimate in seconds. |
+| `title`                         | String  | The merge request title. |
+| `total_time_spent`              | Integer | Total time spent in seconds. |
+| `updated_at`                    | String  | When the merge request was last updated. |
+| `updated_by_id`                 | Integer | The ID of the user who last updated it. |
+| `url`                           | String  | The URL to the merge request. |
+
+### `changes` field
+
+The `changes` field contains only the fields that were modified during the action.
+Not all fields from `object_attributes` appear in `changes`.
+
+Each changed field follows this format:
+
+```json
+{
+  "field_name": {
+    "previous": "old_value",
+    "current": "new_value"
+  }
+}
+```
+
+#### Attributes
+
+- `assignees`
+- `blocking_discussions_resolved`
+- `description`
+- `draft`
+- `head_pipeline_id`
+- `labels`
+- `last_edited_at`
+- `last_edited_by_id`
+- `merge_commit_sha`
+- `merge_error`
+- `merge_params`
+- `merge_status`
+- `merge_user_id`
+- `merge_when_pipeline_succeeds`
+- `milestone_id`
+- `prepared_at`
+- `reviewer_ids`
+- `reviewers`
+- `state_id`
+- `target_branch`
+- `time_change`
+- `time_estimate`
+- `title`
+- `total_time_spent`
+- `updated_at`
+- `updated_by_id`
 
 ### Merge request action-specific fields
 
@@ -1057,7 +1188,9 @@ Request header:
 X-Gitlab-Event: Merge Request Hook
 ```
 
-The following example shows a complete merge request webhook payload for an `open` action:
+The following example is a complete merge request webhook payload for an `open` action.
+Deprecated fields are omitted for clarity. For a list of deprecated fields and their
+recommended alternatives, see [Deprecated fields](#deprecated-fields).
 
 ```json
 {
@@ -1082,14 +1215,9 @@ The following example shows a complete merge request webhook payload for an `ope
     "visibility_level": 0,
     "path_with_namespace": "flightjs/flight-management",
     "default_branch": "main",
-    "ci_config_path": null,
-    "homepage": "http://gitlab.example.com/flightjs/flight-management",
-    "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-    "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-    "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
+    "ci_config_path": null
   },
   "object_attributes": {
-    "assignee_id": 1,
     "author_id": 1,
     "created_at": "2026-01-16 05:56:22 UTC",
     "description": "This merge request adds input validation to the booking form.",
@@ -1167,11 +1295,7 @@ The following example shows a complete merge request webhook payload for an `ope
       "visibility_level": 0,
       "path_with_namespace": "flightjs/flight-management",
       "default_branch": "main",
-      "ci_config_path": null,
-      "homepage": "http://gitlab.example.com/flightjs/flight-management",
-      "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-      "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-      "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
+      "ci_config_path": null
     },
     "state": "opened",
     "system": false,
@@ -1187,16 +1311,11 @@ The following example shows a complete merge request webhook payload for an `ope
       "visibility_level": 0,
       "path_with_namespace": "flightjs/flight-management",
       "default_branch": "main",
-      "ci_config_path": null,
-      "homepage": "http://gitlab.example.com/flightjs/flight-management",
-      "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-      "ssh_url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-      "http_url": "http://gitlab.example.com/flightjs/flight-management.git"
+      "ci_config_path": null
     },
     "time_change": 0,
     "total_time_spent": 0,
     "url": "http://gitlab.example.com/flightjs/flight-management/-/merge_requests/16",
-    "work_in_progress": false,
     "approval_rules": [
       {
         "id": 4,
@@ -1253,12 +1372,6 @@ The following example shows a complete merge request webhook payload for an `ope
       "previous": null,
       "current": "2026-01-16 05:56:25 UTC"
     }
-  },
-  "repository": {
-    "name": "Flight Management",
-    "url": "ssh://git@gitlab.example.com:flightjs/flight-management.git",
-    "description": "Flight management application for tracking aircraft status.",
-    "homepage": "http://gitlab.example.com/flightjs/flight-management"
   },
   "assignees": [
     {

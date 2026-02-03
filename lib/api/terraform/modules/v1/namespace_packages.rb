@@ -107,7 +107,7 @@ module API
                 { code: 403, message: 'Forbidden' }
               ]
               is_array true
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
             route_setting :authorization, permissions: :read_terraform_module,
               boundary_type: :group, boundary_param: :module_namespace
@@ -123,7 +123,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not found' }
               ]
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
             route_setting :authorization, permissions: :download_terraform_module,
               boundary_type: :group, boundary_param: :module_namespace
@@ -154,7 +154,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not found' }
               ]
-              tags %w[terraform_registry]
+              tags %w[terraform]
             end
             route_setting :authorization, permissions: :read_terraform_module,
               boundary_type: :group, boundary_param: :module_namespace
@@ -183,7 +183,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
               route_setting :authorization, permissions: :download_terraform_module,
                 boundary_type: :group, boundary_param: :module_namespace
@@ -220,7 +220,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not found' }
                   ]
-                  tags %w[terraform_registry]
+                  tags %w[terraform]
                 end
                 route_setting :authorization, permissions: :download_terraform_module,
                   boundary_type: :group, boundary_param: :module_namespace
@@ -248,7 +248,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not found' }
                 ]
-                tags %w[terraform_registry]
+                tags %w[terraform]
               end
               route_setting :authorization, permissions: :read_terraform_module,
                 boundary_type: :group, boundary_param: :module_namespace

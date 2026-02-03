@@ -72,7 +72,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do
@@ -103,7 +103,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do
@@ -130,7 +130,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do
@@ -152,7 +152,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do
@@ -179,7 +179,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do
@@ -211,7 +211,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_distribution]
+              tags %w[packages]
             end
 
             params do

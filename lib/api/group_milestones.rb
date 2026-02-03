@@ -16,7 +16,7 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of group milestones' do
         success Entities::Milestone
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         use :list_params
@@ -30,7 +30,7 @@ module API
 
       desc 'Get a single group milestone' do
         success Entities::Milestone
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'
@@ -44,7 +44,7 @@ module API
 
       desc 'Create a new group milestone' do
         success Entities::Milestone
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         requires :title, type: String, desc: 'The title of the milestone'
@@ -59,7 +59,7 @@ module API
 
       desc 'Update an existing group milestone' do
         success Entities::Milestone
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         use :update_params
@@ -73,7 +73,7 @@ module API
 
       desc 'Remove a project milestone' do
         success code: 204, message: '204 No Content'
-        tags ['group_milestones']
+        tags ['milestones']
       end
       route_setting :authorization, permissions: :delete_milestone, boundary_type: :group
       delete ":id/milestones/:milestone_id" do
@@ -87,7 +87,7 @@ module API
 
       desc 'Get all issues for a single group milestone' do
         success Entities::IssueBasic
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'
@@ -101,7 +101,7 @@ module API
       desc 'Get all merge requests for a single group milestone' do
         detail 'This feature was introduced in GitLab 9.'
         success Entities::MergeRequestBasic
-        tags ['group_milestones']
+        tags ['milestones']
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a group milestone'

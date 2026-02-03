@@ -17,9 +17,13 @@ description: Automatic detection and filtering of false positives in SAST findin
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) feature [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 When a static application security testing (SAST) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
 
@@ -98,9 +102,12 @@ The confidence score estimates how likely the GitLab Duo assessment is to be cor
 
 ## Dismissing false positives
 
-When the GitLab Duo analysis identifies a vulnerability as a false positive, you have two options:
+When the GitLab Duo analysis identifies a vulnerability as a false positive, you have the following options:
 
-### Option 1: Dismiss the vulnerability
+- Dismiss the vulnerability
+- Remove the false positive flag
+
+### Dismiss the vulnerability
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
@@ -113,7 +120,7 @@ When the GitLab Duo analysis identifies a vulnerability as a false positive, you
 
 The vulnerability is marked as dismissed and does not appear in future scans unless it is reintroduced.
 
-### Option 2: Remove the false positive flag
+### Remove the false positive flag
 
 If you want to remove the false positive assessment and keep the vulnerability:
 

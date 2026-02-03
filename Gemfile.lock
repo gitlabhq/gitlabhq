@@ -687,7 +687,7 @@ GEM
       excon (~> 1.0)
       formatador (>= 0.2, < 2.0)
       mime-types
-    fog-google (1.29.1)
+    fog-google (1.27.0)
       addressable (>= 2.7.0)
       fog-core (~> 2.5)
       fog-json (~> 1.2)
@@ -2181,7 +2181,7 @@ DEPENDENCIES
   fog-aliyun (~> 0.4)
   fog-aws (~> 3.26)
   fog-core (~> 2.5)
-  fog-google (~> 1.29)
+  fog-google (~> 1.27.0)
   fog-local (~> 0.8)
   fugit (~> 1.11.1)
   gdk-toogle (~> 0.9, >= 0.9.5)

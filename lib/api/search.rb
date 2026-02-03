@@ -214,7 +214,7 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Search on GitLab within a group' do
         detail 'This feature was introduced in GitLab 10.5.'
-        tags %w[search groups]
+        tags %w[search]
       end
 
       params do
@@ -242,7 +242,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Search on GitLab within a project' do
         detail 'This feature was introduced in GitLab 10.5.'
-        tags %w[search projects]
+        tags %w[search]
       end
 
       params do

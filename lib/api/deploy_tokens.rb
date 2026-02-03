@@ -4,8 +4,7 @@ module API
   class DeployTokens < ::API::Base
     include PaginationParams
 
-    deploy_tokens_tags = %w[deploy_tokens]
-
+    deploy_tokens_tags = %w[deploy_resources]
     feature_category :continuous_delivery
     urgency :low
 

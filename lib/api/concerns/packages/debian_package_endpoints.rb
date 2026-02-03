@@ -106,7 +106,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
 
             get 'Release.gpg' do
@@ -124,7 +124,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
 
             get 'Release' do
@@ -143,7 +143,7 @@ module API
                 { code: 403, message: 'Forbidden' },
                 { code: 404, message: 'Not Found' }
               ]
-              tags %w[debian_packages]
+              tags %w[packages]
             end
 
             get 'InRelease' do
@@ -175,7 +175,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'Packages' do
@@ -196,7 +196,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'by-hash/SHA256/:file_sha256' do
@@ -219,7 +219,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'Sources' do
@@ -240,7 +240,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'by-hash/SHA256/:file_sha256' do
@@ -267,7 +267,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'Packages' do
@@ -288,7 +288,7 @@ module API
                     { code: 403, message: 'Forbidden' },
                     { code: 404, message: 'Not Found' }
                   ]
-                  tags %w[debian_packages]
+                  tags %w[packages]
                 end
 
                 get 'by-hash/SHA256/:file_sha256' do

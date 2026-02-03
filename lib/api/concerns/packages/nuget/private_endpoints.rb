@@ -40,7 +40,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[nuget_packages]
+                tags %w[packages]
               end
               route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
               get 'index', format: :json, urgency: :low do
@@ -56,7 +56,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[nuget_packages]
+                tags %w[packages]
               end
               params do
                 requires :package_version, type: String, desc: 'The NuGet package version',
@@ -91,7 +91,7 @@ module API
                   { code: 403, message: 'Forbidden' },
                   { code: 404, message: 'Not Found' }
                 ]
-                tags %w[nuget_packages]
+                tags %w[packages]
               end
               route_setting :authorization, permissions: :search_nuget_package, boundary_type: boundary_type
               get format: :json, urgency: :low do

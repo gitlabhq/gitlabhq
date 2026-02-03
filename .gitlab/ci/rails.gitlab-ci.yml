@@ -357,21 +357,29 @@ rspec unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
     - .rails:rules:clickhouse-changes
+  rules:
+    - when: never
 
 rspec-ee unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
     - .rails:rules:ee-only-clickhouse-changes
+  rules:
+    - when: never
 
 rspec unit clickhouse24:
   extends:
     - .rspec-base-pg16-clickhouse24
     - .rails:rules:clickhouse-changes
+  rules:
+    - when: never
 
 rspec-ee unit clickhouse24:
   extends:
     - .rspec-base-pg16-clickhouse24
     - .rails:rules:ee-only-clickhouse-changes
+  rules:
+    - when: never
 
 rspec unit clickhouse25:
   extends:

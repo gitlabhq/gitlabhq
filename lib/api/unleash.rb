@@ -4,8 +4,7 @@ module API
   class Unleash < ::API::Base
     include PaginationParams
 
-    unleash_tags = %w[unleash_api]
-
+    unleash_tags = %w[unleash]
     feature_category :feature_flags
 
     namespace :feature_flags do

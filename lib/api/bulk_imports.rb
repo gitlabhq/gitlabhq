@@ -51,7 +51,7 @@ module API
           { code: 422, message: 'Unprocessable entity' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         requires :configuration, type: Hash, desc: 'The source GitLab instance configuration' do
@@ -131,7 +131,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         use :pagination
@@ -154,7 +154,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         use :pagination
@@ -181,7 +181,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -200,7 +200,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -221,7 +221,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -240,7 +240,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
@@ -260,7 +260,7 @@ module API
           { code: 404, message: 'Not found' },
           { code: 503, message: 'Service unavailable' }
         ]
-        tags %w[bulk_imports]
+        tags %w[imports]
       end
 
       params do
