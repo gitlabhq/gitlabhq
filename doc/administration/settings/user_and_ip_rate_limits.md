@@ -27,11 +27,8 @@ The following limits are disabled by default:
 > By default, all Git operations are first tried unauthenticated. Because of this, HTTP Git operations
 > may trigger the rate limits configured for unauthenticated requests.
 
-{{< alert type="note" >}}
-
 The rate limits for API requests don't affect requests made by the frontend, as these are always
 counted as web traffic.
-{{< /alert >}}
 
 ## Prerequisites
 

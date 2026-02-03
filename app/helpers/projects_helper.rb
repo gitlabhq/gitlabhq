@@ -423,11 +423,6 @@ module ProjectsHelper
     nil
   end
 
-  def show_terraform_banner?(project)
-    Feature.enabled?(:show_terraform_banner, type: :ops) &&
-      project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
-  end
-
   def show_lfs_misconfiguration_banner?(project)
     return false unless project.repository && project.lfs_enabled?
 

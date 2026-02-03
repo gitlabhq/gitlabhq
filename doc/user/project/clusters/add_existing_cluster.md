@@ -162,12 +162,9 @@ To add a Kubernetes cluster to your project, group, or instance:
          kubectl apply -f gitlab-admin-service-account.yaml --username=admin --password=<password>
          ```
 
-         {{< alert type="note" >}}
-
-         Basic Authentication can be turned on and the password credentials
-         can be obtained using the Google Cloud Console.
-
-         {{< /alert >}}
+         > [!note]
+         > Basic Authentication can be turned on and the password credentials
+         > can be obtained using the Google Cloud Console.
 
          Output:
 

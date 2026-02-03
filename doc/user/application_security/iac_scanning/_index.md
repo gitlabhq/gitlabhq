@@ -123,14 +123,11 @@ Supported configuration formats:
 - AWS CloudFormation
 - Azure Resource Manager
 
-  {{< alert type="note" >}}
-
-  IaC scanning can analyze Azure Resource Manager templates in JSON format.
-  If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
-  you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
-  convert your Bicep files into JSON before IaC scanning can analyze them.
-
-  {{< /alert >}}
+  > [!note]
+  > IaC scanning can analyze Azure Resource Manager templates in JSON format.
+  > If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
+  > you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
+  > convert your Bicep files into JSON before IaC scanning can analyze them.
 
 - Dockerfile
 - Google Deployment Manager

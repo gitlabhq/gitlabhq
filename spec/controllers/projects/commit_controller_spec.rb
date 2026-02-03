@@ -161,6 +161,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:commit) { merge_request.commits.first }
 
+      before do
+        stub_feature_flags(rapid_diffs_on_commit_show: false)
+      end
+
       it 'prepare diff notes in the context of the merge request' do
         go(id: commit.id, merge_request_iid: merge_request.iid)
 
@@ -656,6 +660,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
   end
 
   describe '#append_info_to_payload' do
+    before do
+      stub_feature_flags(rapid_diffs_on_commit_show: false)
+    end
+
     it 'appends diffs_files_count for logging' do
       expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
         method.call(payload)

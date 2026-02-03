@@ -612,16 +612,12 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-> [!note]
-> If you find that the environment's Sidekiq job processing is slow with long queues
-> you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-
-{{< alert type="note" >}}
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
 Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
-{{< /alert >}}
 
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
@@ -1105,16 +1101,13 @@ documentation for setup instructions including guidance on what GitLab secrets t
 between Kubernetes and the backend components.
 
 > [!note]
-> This is an **advanced** setup. Running services in Kubernetes is well known
-> to be complex. **This setup is only recommended** if you have strong working
-> knowledge and experience in Kubernetes. The rest of this
-> section assumes this.
-
-{{< alert type="note" >}}
-
-The 2,000 reference architecture is not a highly-available setup. To achieve HA,
-you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
-{{< /alert >}}
+>
+> - This is an **advanced** setup. Running services in Kubernetes is well known
+>   to be complex. **This setup is only recommended** if you have strong working
+>   knowledge and experience in Kubernetes. The rest of this
+>   section assumes this.
+> - The 2,000 reference architecture is not a highly-available setup. To achieve HA,
+>   you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 
 For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 

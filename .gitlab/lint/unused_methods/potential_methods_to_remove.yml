@@ -101,8 +101,6 @@ ee/app/models/members/member_role.rb:
 - customizable_permissions_exempt_from_consuming_seat
 ee/app/models/namespaces/storage/root_size.rb:
 - remaining_storage_size
-ee/app/models/package_metadata/advisory.rb:
-- from_dependency_scanning?
 ee/app/models/project_security_setting.rb:
 - set_validity_checks!
 ee/app/models/search/zoekt.rb:

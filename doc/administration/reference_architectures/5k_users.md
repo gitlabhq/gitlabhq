@@ -835,13 +835,14 @@ topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_st
 start the failover procedure.
 
 > [!note]
-> Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
-
-{{< alert type="note" >}}
-
-Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
-{{< /alert >}}
+>
+> - Redis clusters must each be deployed in an odd number of 3 nodes or more.
+>   This is to ensure Redis Sentinel can take votes as part of a quorum. This does
+>   not apply when configuring Redis externally, such as a cloud provider service.
+> - Redis is primarily single threaded and doesn't significantly benefit from an
+>   increase in CPU cores. For this size of architecture it's strongly recommended
+>   having separate Cache and Persistent instances as specified to achieve optimum performance.
+>   Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/latest/operate/rc/security/) documentation for more
@@ -1592,23 +1593,17 @@ Sidekiq requires connections to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-> [!note]
-> [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
-> examples include the Object storage configuration.
+[Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
+examples include the Object storage configuration.
 
-{{< alert type="note" >}}
-
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
-{{< /alert >}}
-
-{{< alert type="note" >}}
+If you find that the environment's Sidekiq job processing is slow with long queues
+you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
 Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
-{{< /alert >}}
+
+The following Sidekiq nodes are used as an example:
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2

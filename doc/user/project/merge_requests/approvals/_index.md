@@ -30,12 +30,9 @@ You can configure approvals to be optional or required, depending on your projec
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
   - Configure [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
 
-    {{< alert type="note" >}}
-
-    Support for group merge request approval settings is tracked in
-    [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
-
-    {{< /alert >}}
+    > [!note]
+    > Support for group merge request approval settings is tracked in
+    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
 ## Configure approval rules
 

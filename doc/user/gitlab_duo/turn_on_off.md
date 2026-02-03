@@ -22,7 +22,7 @@ title: Control GitLab Duo availability
 
 {{< /history >}}
 
-GitLab Duo is on by default when you [have a subscription](../../subscriptions/subscription-add-ons.md).
+GitLab Duo is on by default.
 
 You can turn GitLab Duo on or off:
 
@@ -144,8 +144,9 @@ When GitLab Duo Agent Platform is turned off, related settings for flows and
 
 ## Turn GitLab Duo on or off
 
-GitLab Duo is on by default when you [have a subscription](../../subscriptions/subscription-add-ons.md).
-You can choose to change its availability for different groups and projects.
+GitLab Duo is on by default.
+
+You can choose to change the availability of GitLab Duo for different groups and projects.
 
 ### On GitLab.com
 

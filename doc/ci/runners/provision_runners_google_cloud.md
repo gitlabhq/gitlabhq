@@ -67,5 +67,11 @@ To create a group or project runner and provision it on Google Cloud:
       The script uses the [GitLab Runner Infrastructure Toolkit](https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md)
       (GRIT) to provision the infrastructure on the Google Cloud project to execute your runner manager.
 
+      > [!warning]
+      > By default, the runner is configured with settings that might cause VM instances to run continuously, even when no CI/CD jobs are active.
+      > To control autoscaling behavior and reduce costs, locate the runner configuration file on your manager instance and edit the
+      > [`[runners.machine]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runnersmachine-section)
+      > to adjust parameters like `IdleCount`, `IdleTime`, and instance limits.
+
 After you execute the scripts, a runner manager connects with the runner authentication token. The runner manager might
 take up to one minute to show as online and start receiving jobs.

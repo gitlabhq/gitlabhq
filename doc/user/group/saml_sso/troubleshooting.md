@@ -230,20 +230,17 @@ openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 
 Replace `<certificate.crt>` with the name of the certificate file.
 
-{{< alert type="note" >}}
-
-In GitLab 17.11 and later, the fingerprint algorithm is
-[automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
-based on fingerprint length.
-
-In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
-To use a SHA256 fingerprint, you must specify the algorithm:
-
-```ruby
-idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
-```
-
-{{< /alert >}}
+> [!note]
+> In GitLab 17.11 and later, the fingerprint algorithm is
+> [automatically detected](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184530)
+> based on fingerprint length.
+>
+> In GitLab 17.10 and earlier, SHA1 is the default fingerprint algorithm.
+> To use a SHA256 fingerprint, you must specify the algorithm:
+>
+> ```ruby
+> idp_cert_fingerprint_algorithm: "http://www.w3.org/2001/04/xmlenc#sha256"
+> ```
 
 ## SSO Certificate updates
 

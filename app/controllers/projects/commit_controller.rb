@@ -21,7 +21,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_environment,
     only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines]
-  before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files, :discussions, :create_discussions]
+  before_action :define_note_vars, only: [:diff_for_path, :diff_files, :discussions, :create_discussions]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
@@ -43,6 +43,7 @@ class Projects::CommitController < Projects::ApplicationController
           @files_changed_count = @commit.stats.files
           render action: :rapid_diffs
         else
+          define_note_vars
           @ref = commit_params_safe[:id]
           render locals: { pagination_params: pagination_params }
         end
@@ -366,7 +367,7 @@ class Projects::CommitController < Projects::ApplicationController
   def append_info_to_payload(payload)
     super
 
-    return unless action_name == 'show' && @diffs.present?
+    return unless !rapid_diffs_enabled? && action_name == 'show' && @diffs.present?
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size

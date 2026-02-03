@@ -142,15 +142,12 @@ Project items that are migrated to the destination GitLab instance include:
 - Uploads
 - Vulnerability reports
 
-  {{< alert type="note" >}}
-
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501466) in GitLab 17.7.
-  Vulnerability reports are migrated without their status.
-  For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
-  For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
-  see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
-
-  {{< /alert >}}
+  > [!note]
+  > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501466) in GitLab 17.7.
+  > Vulnerability reports are migrated without their status.
+  > For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
+  > For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
+  > see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
 
 - Wikis
 
@@ -222,11 +219,8 @@ Some project items are excluded from migration because they:
   - Remote mirrors
   - Wiki comments
 
-    {{< alert type="note" >}}
-
-    Approval rules related to project settings are imported.
-
-    {{< /alert >}}
+    > [!note]
+    > Approval rules related to project settings are imported.
 
 - Do not contain recoverable data:
   - Merge requests with no diff or source information

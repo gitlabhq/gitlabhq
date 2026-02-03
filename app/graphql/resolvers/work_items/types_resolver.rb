@@ -21,10 +21,13 @@ module Resolvers
       def resolve_with_lookahead(name: nil, only_available: false)
         context.scoped_set!(:resource_parent, object)
 
-        ::WorkItems::TypesFinder
+        result = ::WorkItems::TypesFinder
           .new(container: object)
           .execute(name: name, only_available: only_available)
-          .then { |types| apply_lookahead(types) }
+
+        result = result.then { |types| apply_lookahead(types) } unless result.is_a?(Array)
+
+        result
       end
 
       private

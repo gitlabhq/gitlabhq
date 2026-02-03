@@ -186,22 +186,15 @@ follow these steps to avoid unnecessary data loss:
      sudo systemctl disable gitlab-runsvdir
      ```
 
-     {{< alert type="note" >}}
-
-     (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
-     started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
-     It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
-
-     {{< /alert >}}
-
-     {{< alert type="note" >}}
-
-     (**Ubuntu 14.04 LTS**) If you are using an older version of Ubuntu
-     or any other distribution based on the Upstart init system, you can prevent GitLab
-     from starting if the machine reboots as `root` with
-     `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
-
-     {{< /alert >}}
+     > [!note]
+     >
+     > - In CentOS 6 or older, it is challenging to prevent GitLab from being
+     >   started if the machine reboots isn't available (see [issue 3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
+     >   It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
+     > - If you are using an older version of Ubuntu like 14.04 LTS
+     >   or any other distribution based on the Upstart init system, you can prevent GitLab
+     >   from starting if the machine reboots as `root` with
+     >   `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
 
    - If you do not have SSH access to the **primary** site, take the machine offline and
      prevent it from rebooting. Because there are many ways you may prefer to accomplish

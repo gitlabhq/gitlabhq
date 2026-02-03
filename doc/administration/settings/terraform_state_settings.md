@@ -43,12 +43,9 @@ To configure Terraform state encryption:
 1. Select or clear the **Turn on Terraform state encryption** checkbox.
 1. Select **Save changes**.
 
-{{< alert type="warning" >}}
-
-When you turn off encryption, the change affects only new Terraform state files.
-Existing encrypted files remain encrypted and continue to work as expected.
-
-{{< /alert >}}
+> [!warning]
+> When you turn off encryption, the change affects only new Terraform state files.
+> Existing encrypted files remain encrypted and continue to work as expected.
 
 ## Terraform state storage limits
 

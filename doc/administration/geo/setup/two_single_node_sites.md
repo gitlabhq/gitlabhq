@@ -171,13 +171,10 @@ Prerequisites:
       private addresses (which correspond to "internal address" for Google Cloud Platform) for
       `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
-      {{< alert type="note" >}}
-
-      If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
-      `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
-      Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
-
-      {{< /alert >}}
+      > [!note]
+      > If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
+      > `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
+      > Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
@@ -415,11 +412,8 @@ To replicate the database:
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name.
 
-   {{< alert type="note" >}}
    Replication slot names must only contain lowercase letters,
    numbers, and the underscore character.
-
-   {{< /alert >}}
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 

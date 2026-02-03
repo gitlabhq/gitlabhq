@@ -278,22 +278,16 @@ then make the following modifications:
    registry['gid'] = 9002
    ```
 
-{{< alert type="note" >}}
-`postgresql['sql_user_password'] = 'md5 digest of secret'`
-If you had set up PostgreSQL cluster using the Linux package and had set
-`postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
-mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
-contains the plaintext passwords. These configurations are used to let the Rails
-nodes connect to the databases.
+> [!warning]
+> If you had set up PostgreSQL cluster using the Linux package and had set
+> `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
+> mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
+> contains the plaintext passwords. These configurations are used to let the Rails
+> nodes connect to the databases.
 
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
- Ensure that the current node's IP is listed in
+Ensure that the current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
-{{< /alert >}}
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 

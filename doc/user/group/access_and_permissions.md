@@ -87,29 +87,26 @@ address. This top-level group setting applies to:
 Administrators can combine restricted access by IP address with
 [globally-allowed IP addresses](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
-{{< alert type="warning" >}}
-
-IP restriction requires proper configuration of the `X-Forwarded-For` header. To limit the risk
-of IP spoofing, you must overwrite, and not append, any `X-Forwarded-For` headers sent by clients.
-
-For deployments without an upstream proxy or load balancer, configure the server that receives direct
-requests from users to preserve the original client IP address and overwrite any `X-Forwarded-For` headers.
-In NGINX, for example, modify your configuration file to include:
-
-```plaintext
-proxy_set_header X-Forwarded-For $remote_addr;
-```
-
-For deployments with an upstream proxy or load balancer, configure the proxy or load balancer to
-preserve the original client IP address and overwrite any `X-Forwarded-For` headers. This approach ensures that
-GitLab receives the full chain of IPs, starting from the original client, and can correctly evaluate
-the IP restrictions. In NGINX, for example, modify your configuration file to include:
-
-```plaintext
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-```
-
-{{< /alert >}}
+> [!warning]
+> IP restriction requires proper configuration of the `X-Forwarded-For` header. To limit the risk
+> of IP spoofing, you must overwrite, and not append, any `X-Forwarded-For` headers sent by clients.
+>
+> For deployments without an upstream proxy or load balancer, configure the server that receives direct
+> requests from users to preserve the original client IP address and overwrite any `X-Forwarded-For` headers.
+> In NGINX, for example, modify your configuration file to include:
+>
+> ```plaintext
+> proxy_set_header X-Forwarded-For $remote_addr;
+> ```
+>
+> For deployments with an upstream proxy or load balancer, configure the proxy or load balancer to
+> preserve the original client IP address and overwrite any `X-Forwarded-For` headers. This approach ensures that
+> GitLab receives the full chain of IPs, starting from the original client, and can correctly evaluate
+> the IP restrictions. In NGINX, for example, modify your configuration file to include:
+>
+> ```plaintext
+> proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+> ```
 
 To restrict group access by IP address:
 

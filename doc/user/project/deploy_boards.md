@@ -86,15 +86,12 @@ To display the deploy boards for a specific [environment](../../ci/environments/
 
 1. Have a Kubernetes cluster up and running.
 
-   {{< alert type="note" >}}
-
-   If you're using OpenShift, ensure that you're using the `Deployment` resource
-   instead of `DeploymentConfiguration`. Otherwise, the deploy boards don't render
-   correctly. For more information, read the
-   [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
-   and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
-
-   {{< /alert >}}
+   > [!note]
+   > If you're using OpenShift, ensure that you're using the `Deployment` resource
+   > instead of `DeploymentConfiguration`. Otherwise, the deploy boards don't render
+   > correctly. For more information, read the
+   > [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
+   > and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
 1. [Configure GitLab Runner](../../ci/runners/_index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes/) executor.

@@ -289,6 +289,8 @@ The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 NGINX proxies all requests to the daemon. Pages daemon doesn't listen to the
 public internet.
 
+Only one wildcard can be assigned to an instance.
+
 Prerequisites:
 
 - You've configured [wildcard DNS](#dns-configuration).
@@ -320,15 +322,10 @@ Prerequisites:
 The resulting URL scheme is `https://<namespace>.example.io/<project_slug>`.
 
 > [!warning]
-> Only one wildcard can be assigned to an instance.
-
-{{< alert type="warning" >}}
-
-GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
-Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
-then run `gitlab-ctl reconfigure`. For more information, read
-[GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
-{{< /alert >}}
+> GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+> Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+> then run `gitlab-ctl reconfigure`. For more information, read
+> [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 ### Single-domain sites with TLS support
 
@@ -376,15 +373,12 @@ Prerequisites:
    [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
    to use the HTTPS protocol.
 
-   {{< alert type="warning" >}}
-
-   GitLab Pages does not update the OAuth application, and
-   the default `auth_redirect_uri` is updated to `https://example.io/projects/auth`.
-   Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
-   then run `gitlab-ctl reconfigure`. For more information, see
-   [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
-
-   {{< /alert >}}
+   > [!note]
+   > GitLab Pages does not update the OAuth application, and
+   > the default `auth_redirect_uri` is updated to `https://example.io/projects/auth`.
+   > Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
+   > then run `gitlab-ctl reconfigure`. For more information, see
+   > [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 

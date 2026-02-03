@@ -779,45 +779,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#show_terraform_banner?' do
-    let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
-    let_it_be(:hcl) { create(:programming_language, name: 'HCL') }
-
-    subject { helper.show_terraform_banner?(project) }
-
-    before do
-      create(:repository_language, project: project, programming_language: language, share: 1)
-    end
-
-    context 'the project does not contain terraform files' do
-      let(:language) { ruby }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'the project contains terraform files' do
-      let(:language) { hcl }
-
-      it { is_expected.to be_truthy }
-
-      context 'the project already has a terraform state' do
-        before do
-          create(:terraform_state, project: project)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'the :show_terraform_banner feature flag is disabled' do
-        before do
-          stub_feature_flags(show_terraform_banner: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe '#show_lfs_misconfiguration_banner?' do
     before do
       allow(project).to receive(:lfs_enabled?).and_return(true)

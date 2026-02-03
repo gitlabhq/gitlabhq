@@ -677,14 +677,11 @@ use a template from:
 - The default CI/CD templates.
 - A custom template stored in an [instance template repository](instance_template_repository.md).
 
-  {{< alert type="note" >}}
-
-  When you use a configuration defined in an instance template repository,
-  nested [`include:`](../../ci/yaml/_index.md#include) keywords
-  (including `include:file`, `include:local`, `include:remote`, and `include:template`)
-  [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
-
-  {{< /alert >}}
+  > [!note]
+  > When you use a configuration defined in an instance template repository,
+  > nested [`include:`](../../ci/yaml/_index.md#include) keywords
+  > (including `include:file`, `include:local`, `include:remote`, and `include:template`)
+  > [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration

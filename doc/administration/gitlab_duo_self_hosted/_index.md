@@ -117,23 +117,13 @@ For more information, see:
 
 ### Hybrid AI Gateway and model configuration
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
-- Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595) in GitLab 18.9.
+- Generally available in GitLab 18.9. Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595).
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 In this hybrid configuration, you deploy your own AI Gateway and self-hosted models for most features, but configure specific features to use GitLab AI vendor models. When a feature is configured to use a GitLab AI vendor model, requests for that feature are sent to the GitLab-hosted AI Gateway instead of your self-hosted AI Gateway.
 
@@ -144,7 +134,7 @@ This option provides flexibility by allowing you to:
 
 > [!warning]
 > When features are configured to use GitLab AI vendor models:
-> 
+>
 > - All calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 > - Internet connectivity is required for these features.
 > - This is not a fully self-hosted or isolated configuration.
@@ -163,7 +153,7 @@ When you select a specific GitLab managed model, all requests for that feature u
 
 > [!note]
 > When you configure a feature to use GitLab managed models:
-> 
+>
 > - Calls to those features use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 > - Internet connectivity is required for these features.
 > - The configuration is not fully self-hosted or isolated.

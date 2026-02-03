@@ -87,19 +87,16 @@ If absolute peaks are rare anomalies, sizing for sustained load may be appropria
 
 Adjust time ranges in queries based on retention (change `[7d]` to `[30d]` if longer history available).
 
-{{< alert type="note" >}}
-
-For high-activity environments, `max_over_time` or `quantile_over_time` queries may time out.
-If this occurs, remove the outer aggregation function and visualize the inner query with a graph.
-For example, for API traffic peak, use:
-
-```prometheus
-sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))
-```
-
-Then visually identify the peak values from the graphed results over your monitoring period.
-
-{{< /alert >}}
+> [!note]
+> For high-activity environments, `max_over_time` or `quantile_over_time` queries may time out.
+> If this occurs, remove the outer aggregation function and visualize the inner query with a graph.
+> For example, for API traffic peak, use:
+>
+> ```prometheus
+> sum(rate(gitlab_transaction_duration_seconds_count{controller=~"Grape", action!~".*/internal/.*"}[1m]))
+> ```
+>
+> Then visually identify the peak values from the graphed results over your monitoring period.
 
 #### Query absolute peaks
 

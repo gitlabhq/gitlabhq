@@ -278,20 +278,17 @@ of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab De
 In GitLab 18.7 and earlier, you can disable the `github_user_mapping` feature flag to use the alternative user
 contribution mapping method for imports.
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
-for:
-
-- Migrations to GitLab.com.
-- Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
-
-Problems that are found in this mapping method are unlikely to be fixed. Use the
-[post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
-
-For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
-
-{{< /alert >}}
+> [!flag]
+> The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable
+> for:
+>
+> - Migrations to GitLab.com.
+> - Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
+>
+> Problems that are found in this mapping method are unlikely to be fixed. Use the
+> [post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+>
+> For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
 
 Requirements:
 

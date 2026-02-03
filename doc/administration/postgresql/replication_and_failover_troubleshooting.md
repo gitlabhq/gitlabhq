@@ -303,14 +303,11 @@ the current state of PostgreSQL on this node is discarded:
    sudo rm -rf data
    ```
 
-   {{< alert type="warning" >}}
-
-   Take care with this step to avoid data loss.
-   This step can be also achieved by renaming `data/`:
-   make sure there's enough free disk for a new copy of the primary database,
-   and remove the extra directory when the replica is fixed.
-
-   {{< /alert >}}
+   > [!warning]
+   > Take care with this step to avoid data loss.
+   > This step can be also achieved by renaming `data/`:
+   > make sure there's enough free disk for a new copy of the primary database,
+   > and remove the extra directory when the replica is fixed.
 
 1. With PostgreSQL not running, the nodes file now gets created successfully:
 

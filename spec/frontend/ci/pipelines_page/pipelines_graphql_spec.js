@@ -144,6 +144,7 @@ describe('Pipelines app', () => {
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findPipelineKeyCollapsibleBox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findExternalConfigEmptyState = () => wrapper.findComponent(ExternalConfigEmptyState);
+  const findEmptyStateTab = () => wrapper.findByTestId('empty-state-tab');
 
   const triggerNextPage = async () => {
     findPagination().vm.$emit('next');
@@ -218,7 +219,7 @@ describe('Pipelines app', () => {
       expect(findEmptyState().props('title')).toBe('There are currently no finished pipelines.');
     });
 
-    it('shows no ci empty state when there are no pipelines', async () => {
+    it('shows no ci empty state when there are no pipelines and hasGitlabCi is false', async () => {
       createComponent({
         requestHandlers: [[getPipelinesQuery, emptyHandler]],
       });
@@ -230,6 +231,24 @@ describe('Pipelines app', () => {
       expect(findFilteredSearch().exists()).toBe(false);
       expect(findTabs().exists()).toBe(false);
       expect(findNavControls().exists()).toBe(false);
+    });
+
+    it('shows tab empty state when there are no pipelines and hasGitlabCi is true', async () => {
+      createComponent({
+        requestHandlers: [[getPipelinesQuery, emptyHandler]],
+        provide: {
+          hasGitlabCi: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findEmptyStateTab().exists()).toBe(true);
+      expect(findTabs().exists()).toBe(true);
+      expect(findNavControls().exists()).toBe(true);
+      expect(findTable().exists()).toBe(false);
+      expect(findFilteredSearch().exists()).toBe(true);
+      expect(findNoCiEmptyState().exists()).toBe(false);
     });
 
     it('does not render external config empty state', async () => {

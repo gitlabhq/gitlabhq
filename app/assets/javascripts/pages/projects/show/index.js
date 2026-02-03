@@ -4,7 +4,6 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl from '~/namespaces/leave_by_url';
-import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
@@ -47,7 +46,6 @@ addShortcutsExtension(ShortcutsNavigation);
 
 initUploadFileTrigger();
 initClustersDeprecationAlert();
-initTerraformNotification();
 initReadMore();
 initAmbiguousRefModal();
 initHomePanel();

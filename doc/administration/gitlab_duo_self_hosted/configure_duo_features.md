@@ -112,7 +112,7 @@ To access the Agent Platform service from your GitLab instance:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service. 
+1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
    - The URL is typically the same as the **Local AI Gateway URL** but on gRPC port :50052.
    - Do not include a URL prefix such as `http://` or `https://`.
 
@@ -218,25 +218,13 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 
 ### Configure a feature to use a GitLab AI vendor model
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
-- Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595) in GitLab 18.9.
+- Generally available in GitLab 18.9. Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595).
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI Gateway and models.
 

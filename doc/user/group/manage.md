@@ -76,13 +76,10 @@ To change your group path (group URL):
 > It is not possible to rename a namespace if it contains a
 > project with [Container Registry](../packages/container_registry/_index.md) tags,
 > because the project cannot be moved.
-
-{{< alert type="warning" >}}
-
-To ensure that groups with thousands of subgroups get processed correctly, you should test the path change in a test environment.
-Consider increasing the [Puma worker timeout](../../administration/operations/puma.md#change-the-worker-timeout) temporarily.
-For more information about our solution to mitigate this timeout risk, see [issue 432065](https://gitlab.com/gitlab-org/gitlab/-/issues/432065).
-{{< /alert >}}
+>
+> To ensure that groups with thousands of subgroups get processed correctly, you should test the path change in a test environment.
+> Consider increasing the [Puma worker timeout](../../administration/operations/puma.md#change-the-worker-timeout) temporarily.
+> For more information about our solution to mitigate this timeout risk, see [issue 432065](https://gitlab.com/gitlab-org/gitlab/-/issues/432065).
 
 ## Change the default branch protection of a group
 

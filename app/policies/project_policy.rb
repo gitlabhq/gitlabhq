@@ -513,6 +513,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_design
   end
 
+  rule { can?(:security_manager_access) }.policy do
+    enable :access_security_and_compliance
+  end
+
   # We define `:public_user_access` separately because there are cases in gitlab-ee
   # where we enable or prevent it based on other coditions.
   rule { (~anonymous & public_project) | internal_access }.policy do
@@ -631,6 +635,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:developer_access) }.policy do
     enable :create_package
     enable :admin_issue_board
+    enable :access_security_and_compliance
     enable :admin_merge_request
     enable :update_merge_request
     enable :reopen_merge_request
@@ -1222,10 +1227,6 @@ class ProjectPolicy < BasePolicy
 
   rule { security_and_compliance_disabled }.policy do
     prevent :access_security_and_compliance
-  end
-
-  rule { can?(:developer_access) }.policy do
-    enable :access_security_and_compliance
   end
 
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do

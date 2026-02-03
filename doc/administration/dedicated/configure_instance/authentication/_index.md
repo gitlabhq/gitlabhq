@@ -27,7 +27,7 @@ Administrators use Switchboard to manage instances, users, and configuration.
 Switchboard supports these authentication methods:
 
 - Single sign-on (SSO) with SAML or OIDC
-- Standard GitLab.com accounts
+- Email and password
 
 ### Configure Switchboard SSO
 

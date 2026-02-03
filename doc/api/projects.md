@@ -26,12 +26,10 @@ The Projects API contains endpoints that:
 - Transfer projects between namespaces
 - Manage deployment and container registry settings
 
-## Permissions
+## Prerequisites
 
-Users with:
-
-- Any [default role](../user/permissions.md#roles) on a project can read the project's properties.
-- The Owner or Maintainer role on a project can also edit the project's properties.
+- Any [default role](../user/permissions.md#roles) on a project to read the project's properties.
+- The Owner or Maintainer role on a project to edit the project's properties.
 
 ## Project visibility level
 
@@ -47,6 +45,50 @@ For more information, see [Project visibility](../user/public_access.md).
 
 The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
 
+## Project feature visibility level
+
+You can control the availability of project settings when you create or edit a project.
+For example, to disable `forking_access_level` for an existing project:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"forking_access_level": "disabled"}' \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>"
+```
+
+Each setting can be defined independently and accepts the following values:
+
+- `disabled`: Disable the feature.
+- `private`: Enable and set the feature to **Only project members**.
+- `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Available only for `pages_access_level`.
+
+For more information, see [Change the visibility of individual features in a project](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project).
+
+| Attribute                              | Type   | Required | Description |
+|:---------------------------------------|:-------|:---------|:------------|
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
+| `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
+| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
+| `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
+| `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
+| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
+| `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
+
 ## Deprecated attributes
 
 These attributes are deprecated and could be removed in a future version of the REST API.
@@ -54,9 +96,19 @@ Use the alternative attributes instead.
 
 | Deprecated attribute     | Alternative |
 |:-------------------------|:------------|
-| `tag_list`               | `topics` attribute |
-| `marked_for_deletion_at` | `marked_for_deletion_on`. Premium and Ultimate tier only. |
-| `approvals_before_merge` | [Merge request approvals API](merge_request_approvals.md). Premium and Ultimate tier only. |
+| `tag_list`               | Use `topics` instead. |
+| `marked_for_deletion_at` | Use `marked_for_deletion_on` instead. Premium and Ultimate only. |
+| `approvals_before_merge` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/353097) in GitLab 16.0. Use the [Merge request approvals API](merge_request_approvals.md) instead. Premium and Ultimate only. |
+| `packages_enabled` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/454759) in GitLab 17.10. Use `package_registry_access_level` instead. |
+| `container_registry_enabled` | Use `container_registry_access_level` instead. |
+| `public_builds` | Use `public_jobs` instead. |
+| `emails_disabled` | Use `emails_enabled` instead. |
+| `issues_enabled` | Use `issues_access_level` instead. |
+| `jobs_enabled` | Use `builds_access_level` instead. |
+| `merge_requests_enabled` | Use `merge_request_access_level` instead. |
+| `snippets_enabled` | Use `snippets_access_level` instead. |
+| `wiki_enabled` | Use `wiki_access_level` instead. |
+| `restrict_user_defined_variables` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7. Use `ci_pipeline_variables_minimum_override_role` instead. |
 
 ## Get a single project
 
@@ -1510,36 +1562,6 @@ Supported general project attributes:
 | `warn_about_potentially_unwanted_characters`       | boolean | No                             | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean | No                             | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
-[Project feature visibility](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project)
-settings with access control options can be one of:
-
-- `disabled`: Disable the feature.
-- `private`: Enable and set the feature to **Only project members**.
-- `enabled`: Enable and set the feature to **Everyone with access**.
-- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
-
-| Attribute                              | Type   | Required | Description |
-|:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
-| `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
-| `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
-| `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
-| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
-| `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
-
 Example request:
 
 ```shell
@@ -1549,6 +1571,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
         "namespace_id": "42", "initialize_with_readme": "true"}' \
      --url "https://gitlab.example.com/api/v4/projects/"
 ```
+
+To set the visibility level of individual project features,
+see [Project feature visibility level](#project-feature-visibility-level).
 
 ### Create a project for a user
 
@@ -1640,35 +1665,8 @@ Supported general project attributes:
 | `warn_about_potentially_unwanted_characters`       | boolean | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
-[Project feature visibility](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project)
-settings with access control options can be one of:
-
-- `disabled`: Disable the feature.
-- `private`: Enable and set the feature to **Only project members**.
-- `enabled`: Enable and set the feature to **Everyone with access**.
-- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
-
-| Attribute                              | Type   | Required | Description |
-|:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
-| `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
-| `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
-| `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
-| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
-| `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
+To set the visibility level of individual project features,
+see [Project feature visibility level](#project-feature-visibility-level).
 
 ### Edit a project
 
@@ -1787,37 +1785,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
      --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
 ```
 
-[Project feature visibility](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project)
-settings with access control options can be one of:
-
-- `disabled`: Disable the feature.
-- `private`: Enable and set the feature to **Only project members**.
-- `enabled`: Enable and set the feature to **Everyone with access**.
-- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
-
-Supported project visibility attributes:
-
-| Attribute                              | Type   | Required | Description |
-|:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
-| `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
-| `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
-| `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
-| `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
-| `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
-| `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
+To set the visibility level of individual project features,
+see [Project feature visibility level](#project-feature-visibility-level).
 
 ### Import members
 
@@ -2374,12 +2343,6 @@ Example response:
 
 #### List groups available for project transfer
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
-
-{{< /history >}}
-
 Retrieve a list of groups to which the user can transfer a project.
 
 ```plaintext
@@ -2499,12 +2462,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 ### Remove a project avatar
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
-
-{{< /history >}}
 
 To remove a project avatar, use a blank value for the `avatar` attribute.
 

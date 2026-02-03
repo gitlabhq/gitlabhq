@@ -4123,7 +4123,7 @@ msgstr ""
 msgid "AccessTokens|Disable access tokens"
 msgstr ""
 
-msgid "AccessTokens|Disable personal, group, project and impersonation tokens. Does not affect personal access tokens for service accounts."
+msgid "AccessTokens|Disables personal, group, project and impersonation access tokens. This setting also disables personal access tokens for service accounts."
 msgstr ""
 
 msgid "AccessTokens|Enable DPoP"
@@ -16564,6 +16564,9 @@ msgstr ""
 msgid "CodeSuggestionsAcceptanceByIdeChart|Failed to load metrics for: %{ideNames}"
 msgstr ""
 
+msgid "CodeSuggestionsAcceptanceByLanguageChart|Failed to load code suggestions data by language."
+msgstr ""
+
 msgid "CodeSuggestionsAcceptanceByLanguageChart|Failed to load metrics for: %{languages}"
 msgstr ""
 
@@ -25780,9 +25783,6 @@ msgstr ""
 msgid "DuoAgentPlatform|%{agentName} %{date}"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{formattedName} created"
-msgstr ""
-
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
@@ -25817,9 +25817,6 @@ msgid "DuoAgentPlatform|Error occurred when starting the flow."
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow"
-msgstr ""
-
-msgid "DuoAgentPlatform|Flow started successfully."
 msgstr ""
 
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
@@ -68144,15 +68141,6 @@ msgid "Terraform in GitLab"
 msgstr ""
 
 msgid "Terraform modules"
-msgstr ""
-
-msgid "TerraformBanner|Learn more about GitLab's Backend State"
-msgstr ""
-
-msgid "TerraformBanner|The GitLab managed Terraform state backend can store your Terraform state easily and securely, and spares you from setting up additional remote resources. Its features include: versioning, encryption of the state file both in transit and at rest, locking, and remote Terraform plan/apply execution."
-msgstr ""
-
-msgid "TerraformBanner|Using Terraform? Try the GitLab Managed Terraform State"
 msgstr ""
 
 msgid "TerraformLimits|Maximum file size (in bytes) of Terraform state files. Set to 0 for no limit."

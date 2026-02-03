@@ -182,11 +182,8 @@ To configure Slack notifications:
    - For each checkbox you select, enter the names of the Slack channels you want to receive notifications.
      You can enter up to 10 channel names separated by commas (for example, `#channel-one, #channel-two`).
 
-     {{< alert type="note" >}}
-
-    If the Slack channel is private, you must [add the GitLab for Slack app to the channel](#receive-notifications-to-a-private-channel).
-
-     {{< /alert >}}
+     > [!note]
+     > If the Slack channel is private, you must [add the GitLab for Slack app to the channel](#receive-notifications-to-a-private-channel).
 
 1. Optional. In the **Notification settings** section:
    - Select the **Notify only broken pipelines** checkbox

@@ -1552,7 +1552,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesContainerCacheEntry"
+                "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesContainerCacheRemoteEntry"
         '400':
           description: Bad Request
         '401':
@@ -1614,12 +1614,12 @@ paths:
       parameters:
       - name: id
         required: true
-        description: The base64 encoded upstream id and relative path of the cache
-          entry
+        description: 'The base64 encoded cache entry identifier (format: "group_id
+          iid")'
         schema:
           type: string
         in: query
-        example: Zm9vL2Jhci9teXBrZy5wb20=
+        example: MTIzNCA1Njc4
   "/api/v4/groups/{id}/-/virtual_registries/container/upstreams":
     get:
       operationId: getApiV4GroupsIdDashVirtualRegistriesContainerUpstreams
@@ -89770,35 +89770,47 @@ components:
           type: string
         registry_upstreams:
           "$ref": "#/components/schemas/APIEntitiesVirtualRegistriesPackagesMavenRegistryUpstream"
-    APIEntitiesVirtualRegistriesContainerCacheEntry:
+    APIEntitiesVirtualRegistriesContainerCacheRemoteEntry:
       type: object
       properties:
         id:
           type: string
+          example: MjMgNTAw
         group_id:
-          type: string
+          type: integer
+          example: 1
         upstream_id:
-          type: string
+          type: integer
+          example: 1
         upstream_checked_at:
-          type: string
+          type: DateTime
         file_sha1:
           type: string
+          example: 4e1243bd22c66e76c2ba9eddc1f91394e57f9f83
         size:
-          type: string
+          type: integer
+          example: 1
         relative_path:
           type: string
+          example: library/alpine/manifests/latest
         upstream_etag:
           type: string
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c
         content_type:
           type: string
+          example: application/octet-stream
         created_at:
-          type: string
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
         updated_at:
-          type: string
+          type: DateTime
+          example: '2025-12-16T13:25:30.029Z'
         downloads_count:
-          type: string
+          type: integer
+          example: 1
         downloaded_at:
-          type: string
+          type: DateTime
+          example: '2025-11-11T13:25:29.935Z'
     APIEntitiesVirtualRegistriesContainerUpstream:
       type: object
       properties:

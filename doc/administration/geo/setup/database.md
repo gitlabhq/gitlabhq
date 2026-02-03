@@ -374,15 +374,12 @@ The following guide assumes that:
    gitlab-rake gitlab:tcp_check[<primary_site_ip>,5432]
    ```
 
-   {{< alert type="note" >}}
-
-   If this step fails, you may be using the wrong IP address, or a firewall may
-   be preventing access to the site. Check the IP address, paying close
-   attention to the difference between public and private addresses. Ensure
-   that, if a firewall is present, the **secondary** site is permitted to connect to the
-   **primary** site on port 5432.
-
-   {{< /alert >}}
+   > [!note]
+   > If this step fails, you may be using the wrong IP address, or a firewall may
+   > be preventing access to the site. Check the IP address, paying close
+   > attention to the difference between public and private addresses. Ensure
+   > that, if a firewall is present, the **secondary** site is permitted to connect to the
+   > **primary** site on port 5432.
 
 1. Create a file `server.crt` in the **secondary** site, with the content you got on the last step of the **primary** site's setup:
 
@@ -420,14 +417,11 @@ The following guide assumes that:
       -h <primary_site_ip>
    ```
 
-   {{< alert type="note" >}}
-
-   If you are using manually generated certificates and want to use
-   `sslmode=verify-full` to benefit from the full hostname verification,
-   replace `verify-ca` with `verify-full` when
-   running the command.
-
-   {{< /alert >}}
+   > [!note]
+   > If you are using manually generated certificates and want to use
+   > `sslmode=verify-full` to benefit from the full hostname verification,
+   > replace `verify-ca` with `verify-full` when
+   > running the command.
 
    When prompted, enter the plaintext password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
@@ -533,15 +527,12 @@ changed any defaults, configure the script accordingly (replacing any directorie
       --sslmode=verify-ca
    ```
 
-   {{< alert type="note" >}}
-
-   If you have generated custom PostgreSQL certificates, you need to use
-   `--sslmode=verify-full` (or omit the `sslmode` line entirely), to benefit from the extra
-   validation of the full host name in the certificate CN / SAN for additional security.
-   Otherwise, using the automatically created certificate with `verify-full` fails,
-   as it has a generic `PostgreSQL` CN which doesn't match the `--host` value in this command.
-
-   {{< /alert >}}
+   > [!note]
+   > If you have generated custom PostgreSQL certificates, you need to use
+   > `--sslmode=verify-full` (or omit the `sslmode` line entirely), to benefit from the extra
+   > validation of the full host name in the certificate CN / SAN for additional security.
+   > Otherwise, using the automatically created certificate with `verify-full` fails,
+   > as it has a generic `PostgreSQL` CN which doesn't match the `--host` value in this command.
 
    This command also takes a number of additional options. You can use `--help`
    to list them all, but here are some tips:

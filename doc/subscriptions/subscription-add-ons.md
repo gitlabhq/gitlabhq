@@ -63,11 +63,6 @@ GitLab will provide 30 days prior notice before enforcement of these limits take
 At that time, organization administrators will have tools to monitor and manage consumption and will be able
 to purchase additional capacity.
 
-| Feature          | Requests per user per month |
-|------------------|-----------------------------|
-| Code Suggestions | 2,000                       |
-| GitLab Duo Chat  | 100                         |
-
 Limits do not apply to GitLab Duo Pro or Enterprise.
 
 ## GitLab Duo Pro and Enterprise

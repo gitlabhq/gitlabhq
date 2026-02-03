@@ -13,3 +13,6 @@ tiers:
 additional_properties:
   label:
     description: "`terraform_banner`"
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221338
+milestone_removed: '18.9'

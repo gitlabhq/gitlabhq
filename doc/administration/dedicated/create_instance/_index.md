@@ -79,16 +79,13 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Tenant summary** page, review the tenant configuration details.
 
-   {{< alert type="note" >}}
-
-   Review these settings carefully. You can't change them later:
-
-   - Security keys and AWS KMS keys (BYOK) configuration
-   - AWS regions (primary, secondary, backup)
-   - Total repository capacity (you can increase storage but cannot reduce it)
-   - Tenant name and URL (unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains))
-
-   {{< /alert >}}
+   > [!note]
+   > Review these settings carefully. You can't change them later:
+   >
+   > - Security keys and AWS KMS keys (BYOK) configuration
+   > - AWS regions (primary, secondary, backup)
+   > - Total repository capacity (you can increase storage but cannot reduce it)
+   > - Tenant name and URL (unless you [configure a custom domain](../configure_instance/network_security.md#custom-domains))
 
    After you confirm that the information you've provided in the previous steps is accurate, select **Create tenant**.
 

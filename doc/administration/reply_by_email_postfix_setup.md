@@ -279,11 +279,8 @@ Courier, which we install later to add IMAP authentication, requires mailboxes t
       quit
       ```
 
-      {{< alert type="note" >}}
-
-      The `.` is a literal period on its own line.
-
-      {{< /alert >}}
+      > [!note]
+      > The `.` is a literal period on its own line.
 
    1. Check if the `incoming` user received the email:
 

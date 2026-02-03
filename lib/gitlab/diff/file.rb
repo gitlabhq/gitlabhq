@@ -492,7 +492,7 @@ module Gitlab
         if max_blob_size.present?
           Blob.lazy(repository, sha, path, blob_size_limit: max_blob_size)
         else
-          Blob.lazy(repository, sha, path)
+          Blob.lazy(repository, sha, path, blob_size_limit: Gitlab::Highlight.file_size_limit)
         end
       end
 

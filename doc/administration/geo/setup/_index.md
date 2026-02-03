@@ -18,11 +18,8 @@ title: Setting up Geo
   - One GitLab site serves as the Geo **primary** site. Use the [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up. You can use different reference architecture sizes for each Geo site. If you already have a working GitLab instance that is in-use, it can be used as a **primary** site.
   - The second GitLab site serves as the Geo **secondary** site. Use the [GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up. It's a good idea to sign in and test it. However, be aware that **all of the data on the secondary are lost** as part of the process of replicating from the **primary** site.
 
-    {{< alert type="note" >}}
-
-    Geo supports multiple secondaries. You can follow the same steps and make any changes accordingly.
-
-    {{< /alert >}}
+    > [!note]
+    > Geo supports multiple secondaries. You can follow the same steps and make any changes accordingly.
 
 - Administrator access for both sites. Many configuration tasks require root access to the sites and access to the **Admin** area in the GitLab UI.
 - Ensure the **primary** site has a [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) subscription to unlock Geo. You only need one license for all the sites.

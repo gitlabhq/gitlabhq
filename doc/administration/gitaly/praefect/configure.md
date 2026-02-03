@@ -635,14 +635,11 @@ Updates to example must be made at:
    so we use `default` here as well. This cluster has three Gitaly nodes `gitaly-1`,
    `gitaly-2`, and `gitaly-3`, which are intended to be replicas of each other.
 
-   {{< alert type="warning" >}}
-
-   If you have data on an already existing storage called
-   `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
-   afterwards.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you have data on an already existing storage called
+   > `default`, you should configure the virtual storage with another name and
+   > [migrate the data to the Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
+   > afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
    Praefect when communicating with Gitaly nodes in the cluster. This token is

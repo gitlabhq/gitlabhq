@@ -112,7 +112,7 @@ export default {
         v-show="fileTreeBrowserIsVisible"
         :enable-sticky-height="!isCompact"
         :style="{ '--tree-width': `${treeWidth}px` }"
-        class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
+        class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4 @md/panel:gl-pl-0"
         :class="visibilityClasses"
       >
         <panel-resizer

@@ -507,11 +507,10 @@ Prerequisites:
 - The TOTP secret must be base32 encoded and made available using `DAST_AUTH_OTP_KEY`.
 - The application must accept standard TOTP codes (typically 6-digit codes that refresh every 30 seconds).
 
-{{< alert type="warning" >}}
-To prevent security risks, do not define `DAST_AUTH_OTP_KEY` in the YAML job definition file.
-Instead, create it as a masked CI/CD variable using the GitLab UI.
-For more information, see [custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project).
-{{< /alert >}}
+> [!warning]
+> To prevent security risks, do not define `DAST_AUTH_OTP_KEY` in the YAML job definition file.
+> Instead, create it as a masked CI/CD variable using the GitLab UI.
+> For more information, see [custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project).
 
 Usage:
 
@@ -829,11 +828,10 @@ doc.actionFormInput("id:username", process.env.DAST_AUTH_USERNAME)
 doc.actionFormInput("id:password", process.env.DAST_AUTH_PASSWORD)
 ```
 
-{{< alert type="warning" >}}
-To prevent security risks, do not define sensitive information in the YAML job definition file.
-Instead, create them as masked CI/CD variables using the GitLab UI.
-For more information, see [custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project).
-{{< /alert >}}
+> [!warning]
+> To prevent security risks, do not define sensitive information in the YAML job definition file.
+> Instead, create them as masked CI/CD variables using the GitLab UI.
+> For more information, see [custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project).
 
 ## Debugging
 

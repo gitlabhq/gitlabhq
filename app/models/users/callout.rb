@@ -39,7 +39,7 @@ module Users
       trial_status_reminder_d3: 35,              # EE-only
       security_configuration_devops_alert: 36,   # EE-only
       profile_personal_access_token_expiry: 37,  # EE-only
-      terraform_notification_dismissed: 38,
+      # 38 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221338
       security_newsletter_callout: 39,
       verification_reminder: 40, # EE-only
       ci_deprecation_warning_for_types_keyword: 41,

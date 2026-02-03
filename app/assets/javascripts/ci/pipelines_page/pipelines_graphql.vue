@@ -675,6 +675,7 @@ export default {
         v-else-if="showEmptyTab"
         :svg-path="$options.noPipelinesSvgPath"
         :title="emptyTabMessage"
+        data-testid="empty-state-tab"
       />
 
       <!-- Pipelines table -->

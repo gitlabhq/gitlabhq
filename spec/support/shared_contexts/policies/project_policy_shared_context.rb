@@ -114,7 +114,10 @@ RSpec.shared_context 'ProjectPolicy context' do
   end
 
   let(:base_security_manager_permissions) do
-    %i[security_manager_access]
+    %i[
+      security_manager_access
+      access_security_and_compliance
+    ]
   end
 
   let(:team_member_reporter_permissions) do
@@ -126,6 +129,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:developer_permissions) do
     %i[
+      access_security_and_compliance
       admin_merge_request
       admin_tag
       cancel_build

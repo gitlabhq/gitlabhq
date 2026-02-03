@@ -65,12 +65,9 @@ If you are new to dependency scanning, follow these steps to enable it for your 
   - [Package metadata](../../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)
     for all PURL types to be scanned must be synchronized in the GitLab instance.
 
-    {{< alert type="note" >}}
-
-    If this data is not available in the GitLab instance, dependency scanning cannot identify
-    vulnerabilities.
-
-    {{< /alert >}}
+    > [!note]
+    > If this data is not available in the GitLab instance, dependency scanning cannot identify
+    > vulnerabilities.
 
 To enable dependency scanning:
 

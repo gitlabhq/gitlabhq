@@ -120,23 +120,13 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 ## GitLab AI vendor models
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta) feature, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
 - Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595) in GitLab 18.9.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 GitLab AI vendor models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
 

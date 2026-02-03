@@ -130,6 +130,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
     emptyStateIllustrationPath,
     pipelineEditorPath,
     projectPipelinesEtagPath,
+    hasGitlabCi,
   } = el.dataset;
 
   return new Vue({
@@ -153,6 +154,7 @@ export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
       canCreatePipeline: parseBoolean(canCreatePipeline),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
       usesExternalConfig: parseBoolean(usesExternalConfig),
+      hasGitlabCi: parseBoolean(hasGitlabCi),
       emptyStateIllustrationPath,
       pipelineEditorPath,
       projectPipelinesEtagPath,

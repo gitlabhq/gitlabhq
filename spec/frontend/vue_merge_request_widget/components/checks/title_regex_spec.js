@@ -11,6 +11,8 @@ Vue.use(VueApollo);
 
 const TEST_PROJECT_PATH = 'gitlab-org/gitlab';
 const TEST_PROJECT_ID = 'gid://gitlab/Project/1';
+const DEFAULT_CHECK = { status: 'FAILED', identifier: 'title_regex' };
+const DEFAULT_MR = { targetProjectFullPath: TEST_PROJECT_PATH };
 
 describe('MergeChecksTitleRegex component', () => {
   let wrapper;
@@ -24,11 +26,13 @@ describe('MergeChecksTitleRegex component', () => {
       },
     },
   });
+  const createDefaultTitleRegexQueryHandler = () =>
+    jest.fn().mockResolvedValue(createTitleRegexQueryResponse());
 
   const createComponent = async ({
-    check = { status: 'FAILED', identifier: 'title_regex' },
-    mr = { targetProjectFullPath: TEST_PROJECT_PATH },
-    titleRegexQueryHandler = jest.fn().mockResolvedValue(createTitleRegexQueryResponse()),
+    check = DEFAULT_CHECK,
+    mr = DEFAULT_MR,
+    titleRegexQueryHandler = createDefaultTitleRegexQueryHandler(),
   } = {}) => {
     const apolloProvider = createMockApollo([[titleRegexQuery, titleRegexQueryHandler]]);
 
@@ -62,11 +66,12 @@ describe('MergeChecksTitleRegex component', () => {
     expect(titleRegexQueryHandler).toHaveBeenCalledWith({ projectPath: TEST_PROJECT_PATH });
   });
 
-  it.each([
-    ['renders description when present', 'MR title must match: ^feat|fix|chore:', true],
-    ['does not render description when null', null, false],
-    ['does not render description when empty', '', false],
-  ])('%s', async (_, description, shouldExist) => {
+  it.each`
+    scenario                                    | description                                | shouldExist
+    ${'renders description when present'}       | ${'MR title must match: ^feat|fix|chore:'} | ${true}
+    ${'does not render description when null'}  | ${null}                                    | ${false}
+    ${'does not render description when empty'} | ${''}                                      | ${false}
+  `('$scenario', async ({ description, shouldExist }) => {
     await createComponent({
       titleRegexQueryHandler: jest
         .fn()
@@ -75,6 +80,7 @@ describe('MergeChecksTitleRegex component', () => {
 
     const descriptionEl = wrapper.find('.gl-text-subtle');
     expect(descriptionEl.exists()).toBe(shouldExist);
+
     if (shouldExist) {
       expect(descriptionEl.text()).toBe(description);
     }

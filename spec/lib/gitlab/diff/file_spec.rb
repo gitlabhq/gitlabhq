@@ -350,6 +350,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       expect(old_data).to include('raise "System commands must be given as an array of strings"')
       expect(data).to include('raise RuntimeError, "System commands must be given as an array of strings"')
     end
+
+    context 'when max_blob_size is nil' do
+      let(:max_blob_size) { nil }
+
+      it 'uses highlight limit' do
+        items = [
+          [diff_file.new_content_sha, diff_file.new_path], [diff_file.old_content_sha, diff_file.old_path]
+        ]
+
+        expect(project.repository)
+          .to receive(:blobs_at).with(items, blob_size_limit: Gitlab::Highlight.file_size_limit).and_call_original
+
+        diff_file.old_blob
+        diff_file.new_blob
+      end
+    end
   end
 
   describe '#diffable?' do

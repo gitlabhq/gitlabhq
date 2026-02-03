@@ -211,14 +211,11 @@ suggestions in a single commit.
 1. Optional. To remove a suggestion, select **Remove from batch**.
 1. After you add your desired suggestions, select **Apply suggestions**.
 
-   {{< alert type="warning" >}}
-
-   If you apply a batch of suggestions containing changes from multiple authors,
-   the resulting commit credits you as the author. If you configure your project
-   to [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits), you are no longer an eligible
-   approver for this merge request.
-
-   {{< /alert >}}
+   > [!warning]
+   > If you apply a batch of suggestions containing changes from multiple authors,
+   > the resulting commit credits you as the author. If you configure your project
+   > to [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits), you are no longer an eligible
+   > approver for this merge request.
 
 1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
    to describe your change. If you don't specify one, it uses
