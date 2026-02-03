@@ -27,11 +27,6 @@ module Observability
         return
       end
 
-      if group.observability_group_o11y_setting.present?
-        log_completion(:skipped, group_id)
-        return
-      end
-
       client = O11yProvisioningClient.new
       result = client.provision_group(group, user)
 
@@ -46,7 +41,7 @@ module Observability
     private
 
     def handle_successful_api_call(group, settings_params, group_id, user_id, user)
-      setting = group.build_observability_group_o11y_setting
+      setting = group.observability_group_o11y_setting || group.build_observability_group_o11y_setting
       result = ::Observability::GroupO11ySettingsUpdateService.new.execute(setting, settings_params)
 
       if result.success?

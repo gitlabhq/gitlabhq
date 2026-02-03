@@ -31,12 +31,12 @@ module Types
 
         field :resource_name,
           GraphQL::Types::String,
-          null: true,
+          null: false,
           description: 'Display name of the resource.'
 
         field :resource_description, # rubocop: disable GraphQL/ExtractType -- no value for now
           GraphQL::Types::String,
-          null: true,
+          null: false,
           description: 'Description of the resource.'
 
         field :category,
@@ -46,12 +46,12 @@ module Types
 
         field :category_name,
           GraphQL::Types::String,
-          null: true,
+          null: false,
           description: 'Display name of the permission category.'
 
         field :boundaries,
           [Types::Authz::AccessTokens::BoundaryEnum],
-          null: true,
+          null: false,
           description: 'List of resource types that the permission can be applied to.'
       end
       # rubocop:enable Graphql/AuthorizeTypes

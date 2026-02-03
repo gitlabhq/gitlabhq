@@ -23,7 +23,7 @@ For help developing custom feature flags, see
 
 <!-- markdownlint-disable MD044 -->
 <!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
+<!-- See https://docs.gitlab.com/development/documentation/testing/markdownlint/#disable-markdownlint-tests -->
 
 <div class="d-none">
   <strong>If you don't see the feature flag tables below, view them at <a href="https://docs.gitlab.com/administration/feature_flags/list/">docs.gitlab.com</a>.</strong>

@@ -47,7 +47,7 @@ in case a Geo site has to be rebuilt.
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```

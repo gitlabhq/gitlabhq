@@ -102,7 +102,7 @@ When you add or update a feature, you must update the documentation as well.
    documentation site. In this case, the setting is described on this documentation page:
 
    ```plaintext
-   https://docs.gitlab.com/ee/user/profile/preferences.html
+   https://docs.gitlab.com/user/profile/preferences/
    ```
 
 1. The URL shows you the location of the file in the `/doc` directory.

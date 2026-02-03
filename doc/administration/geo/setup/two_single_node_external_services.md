@@ -44,7 +44,7 @@ Prerequisites:
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -306,7 +306,7 @@ Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-l
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<secondary_site_name_here>'
    ```

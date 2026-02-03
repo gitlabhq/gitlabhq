@@ -63,6 +63,9 @@ default:
 .if-rails-next-schedule: &if-rails-next-schedule
   if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-triggered-by-aigw-project: &if-triggered-by-aigw-project
+  if: '$CI_PIPELINE_SOURCE == "pipeline" && $TRIGGERED_BY_AI_GATEWAY_PROJECT == "true"'
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
@@ -73,6 +76,10 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
+    - <<: *if-triggered-by-aigw-project
+      variables:
+        <<: *default-ruby-variables
+        PIPELINE_NAME: 'AIGW Rails Test Pipeline'
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
       variables:

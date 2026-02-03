@@ -103,6 +103,28 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           result = service.execute
           expect(result).to be_success
         end
+
+        it 'creates a temporary observability setting for the group when issue creation succeeds' do
+          allow(Observability::CreateGroupO11ySettingWorker).to receive(:perform_async)
+
+          expect { service.execute }.to change { group.reload.observability_group_o11y_setting }.from(nil)
+
+          setting = group.observability_group_o11y_setting
+          expect(setting.o11y_service_url).to eq("https://#{group.id}.gitlab-o11y.com")
+          expect(setting.o11y_service_name).to eq(group.id.to_s)
+          expect(setting.o11y_service_user_email).to eq("#{group.id}@gitlab-o11y.com")
+          expect(setting.o11y_service_password).to match(/\A[a-f0-9]{32}\z/)
+          expect(setting.o11y_service_post_message_encryption_key).to match(/\A[a-f0-9]{64}\z/)
+        end
+
+        it 'does not create a temporary observability setting when one already exists' do
+          allow(Observability::CreateGroupO11ySettingWorker).to receive(:perform_async)
+          existing_setting = create(:observability_group_o11y_setting, group: group)
+
+          expect(::Observability::GroupO11ySettingsUpdateService).not_to receive(:new)
+          expect { service.execute }.not_to change { ::Observability::GroupO11ySetting.count }
+          expect(group.reload.observability_group_o11y_setting).to eq(existing_setting)
+        end
       end
 
       context 'with system dependencies unavailable' do

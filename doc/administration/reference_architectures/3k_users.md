@@ -1445,7 +1445,7 @@ On each node:
       },
       # Gitaly Pack-objects cache
       # Recommended to be enabled for improved performance but can notably increase disk I/O
-      # Refer to https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#pack-objects-cache for more info
+      # Refer to https://docs.gitlab.com/administration/gitaly/configure_gitaly/#pack-objects-cache for more info
       pack_objects_cache: {
          # ...
          enabled: true,

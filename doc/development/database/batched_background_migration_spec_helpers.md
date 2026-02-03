@@ -2,7 +2,7 @@
 stage: Data Stores
 group: Database
 title: Batched Background Migration Spec Helpers
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 ---
 
 The versioned spec helper library for batched background migrations

@@ -97,7 +97,7 @@ To change the Rouge highlighting limit:
    gitlab:
      extra:
        ## Maximum file size for syntax highlighting
-       ## https://docs.gitlab.com/ee/user/project/highlighting.html
+       ## https://docs.gitlab.com/user/project/repository/files/highlighting/#configure-maximum-file-size-for-highlighting
        maximum_text_highlight_size_kilobytes: 512
    ```
 

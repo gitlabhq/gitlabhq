@@ -186,5 +186,19 @@ These issues might result in higher false negative rates for projects using mode
 
 ## Offline environment
 
-To use the dependency scanning component in an offline environment, you must first
-[mirror the component project](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed).
+To run static reachability analysis in an [offline environment](../offline_deployments/_index.md),
+you must do an initial setup and perform ongoing maintenance.
+
+Initial setup:
+
+- Complete the offline environment requirements for
+  [dependency scanning (SBOM)](dependency_scanning_sbom/_index.md#offline-support).
+
+Ongoing maintenance:
+
+- Update the local dependency scanning (SBOM) image whenever new versions are released.
+
+For Python and Java packages, static reachability analysis uses metadata to map package names from
+SBOMs to their corresponding code import paths. This metadata is contained in the dependency
+scanning analyzer's image. Outdated metadata may result in incomplete or inaccurate reachability
+analysis.

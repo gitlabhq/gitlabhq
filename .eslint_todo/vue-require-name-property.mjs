@@ -1307,7 +1307,6 @@ export default {
     'ee/app/assets/javascripts/ai/duo_agents_platform/components/common/activity_logs.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/project/project_agents_platform_index.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/namespace/user/user_agents_platform_index.vue',
-    'ee/app/assets/javascripts/ai/duo_agents_platform/nested_route_app.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/show/components/agent_activity_logs.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/show/components/agent_flow_header.vue',
     'ee/app/assets/javascripts/ai/duo_agents_platform/pages/show/components/agent_flow_info.vue',

@@ -33,7 +33,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
       listen_addr: '0.0.0.0:8075',
       auth: {
          ## Set up the Gitaly token as a form of authentication because you are accessing Gitaly over the network
-         ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
+         ## https://docs.gitlab.com/administration/gitaly/configure_gitaly/#about-the-gitaly-token
          token: 'abc123secret',
       },
    }
@@ -226,7 +226,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
    'lowercase_usernames' => false,
 
    # Enterprise Edition only
-   # https://docs.gitlab.com/ee/administration/auth/ldap/ldap_synchronization.html
+   # https://docs.gitlab.com/administration/auth/ldap/ldap_synchronization/
    'group_base' => '',
    'admin_group' => '',
    'external_groups' => [],

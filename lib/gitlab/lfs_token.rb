@@ -103,7 +103,7 @@ module Gitlab
         return true if token_container.blank? || container.blank?
 
         token_container == container_gid
-      rescue JWT::DecodeError
+      rescue JWT::DecodeError, TypeError
         false
       end
 

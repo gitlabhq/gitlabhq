@@ -144,6 +144,36 @@ To enable automatic reviews for all projects:
 
 Settings cascade from application to group to project. More specific settings override broader ones.
 
+## Troubleshooting
+
+### `Error DCR4000`
+
+You might get an error that states
+`Code Review Flow is not enabled. Contact your group administrator to enable the foundational flow in the top-level group. Error code: DCR4000`.
+
+This error occurs when either [foundational flows](_index.md) or Code Review Flow are turned off.
+
+Contact your administrator and ask them to turn on Code Review Flow for your top-level group.
+
+### `Error DCR4001`
+
+You might get an error that states
+`Code Review Flow is enabled but the service account needs to be verified. Contact your administrator. Error code: DCR4001`.
+
+This error occurs when Code Review Flow is turned on, but the service account for the top-level group
+is not ready or is still being created.
+
+Wait a few minutes for the service account to activate, then try again. If the error persists, contact your administrator.
+
+### `Error DCR5000`
+
+You might get an error that states
+`Something went wrong while starting Code Review Flow. Please try again later. Error code: DCR5000`.
+
+This error occurs when GitLab Duo Agent Platform is unable to start Code Review Flow due to an internal error.
+
+Try to restart the review. If the error persists, contact your administrator.
+
 ## Related topics
 
 - [GitLab Duo in merge requests](../../../../user/project/merge_requests/duo_in_merge_requests.md)

@@ -52863,6 +52863,8 @@ CREATE TRIGGER project_type_ci_runner_machines_loose_fk_trigger AFTER DELETE ON 
 
 CREATE TRIGGER project_type_ci_runners_loose_fk_trigger AFTER DELETE ON project_type_ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runners');
 
+CREATE TRIGGER project_wiki_repositories_loose_fk_trigger AFTER DELETE ON project_wiki_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -55576,9 +55578,6 @@ ALTER TABLE ONLY sbom_graph_paths
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_c4feab64ff FOREIGN KEY (sharding_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY wiki_repository_states
-    ADD CONSTRAINT fk_c558ca51b8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -57726,9 +57725,6 @@ ALTER TABLE ONLY ci_pipeline_artifacts
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT fk_rails_aa1b2961b1 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY wiki_repository_states
-    ADD CONSTRAINT fk_rails_aa2f8a61ba FOREIGN KEY (project_wiki_repository_id) REFERENCES project_wiki_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_workload_variable_inclusions
     ADD CONSTRAINT fk_rails_aad487c58d FOREIGN KEY (partition_id, workload_id) REFERENCES p_ci_workloads(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

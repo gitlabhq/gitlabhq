@@ -95,7 +95,9 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
                   'group_id' => group.id,
                   'email' => user.email,
                   'password' => match(/\A[a-f0-9]{32}\z/),
-                  'encryption_key' => match(/\A[a-f0-9]{64}\z/)
+                  'encryption_key' => match(/\A[a-f0-9]{64}\z/),
+                  'user_name' => user.name,
+                  'group_path' => group.full_path
                 )
               )
             )
@@ -214,18 +216,6 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
         end
 
         include_examples 'does not create observability setting'
-      end
-
-      context 'when group already has observability setting' do
-        let!(:existing_setting) { create(:observability_group_o11y_setting, group: group) }
-
-        include_examples 'does not create observability setting'
-
-        it 'does not make an API request when setting already exists' do
-          perform
-
-          expect(WebMock).not_to have_requested(:post, Observability::O11yProvisioningClient::PROVISIONER_API)
-        end
       end
 
       context 'when database save fails after successful API call' do

@@ -288,7 +288,7 @@ that you are using.
      # a network connection instead of the default /var/run/docker.sock socket.
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+     # https://docs.gitlab.com/ci/services/#accessing-the-services
      #
      DOCKER_HOST: tcp://docker:2375
      #

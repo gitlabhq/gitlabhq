@@ -45,7 +45,7 @@ repository to be imported manually. Administrators can manually import the repos
    # Optional: If your import had certain optional stages selected or a timeout strategy
    # set, you can reset them here. Below is an example.
    # The params follow the format documented in the API:
-   # https://docs.gitlab.com/ee/api/import.html#import-repository-from-github
+   # https://docs.gitlab.com/api/import/#import-repository-from-github
    Gitlab::GithubImport::Settings
    .new(project)
    .write(

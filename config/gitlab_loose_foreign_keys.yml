@@ -1185,3 +1185,10 @@ vulnerability_user_mentions:
   - table: notes
     column: note_id
     on_delete: async_delete
+wiki_repository_states:
+  - table: project_wiki_repositories
+    column: project_wiki_repository_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete

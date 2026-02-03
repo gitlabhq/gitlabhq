@@ -393,21 +393,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       let(:controller_action) { :index }
       let(:params_with_name) { { name: 'some project' } }
 
-      it 'assigns the correct all_user_projects' do
-        get :index
-        all_user_projects = assigns(:all_user_projects)
-
-        expect(all_user_projects.count).to eq(2)
-      end
-
-      it 'assigns the correct all_starred_projects' do
-        get :index
-        all_starred_projects = assigns(:all_starred_projects)
-
-        expect(all_starred_projects.count).to eq(1)
-        expect(all_starred_projects).to include(project2)
-      end
-
       context 'when disable_anonymous_project_search is enabled' do
         before do
           stub_feature_flags(disable_anonymous_project_search: true)

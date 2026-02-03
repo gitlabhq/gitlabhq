@@ -92,7 +92,6 @@ class Explore::ProjectsController < Explore::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def topics
-    load_project_counts
     load_topics
   end
 
@@ -115,14 +114,7 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   private
 
-  def load_project_counts
-    @all_user_projects = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
-    @all_starred_projects = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
-  end
-
   def load_projects
-    load_project_counts
-
     finder_params = {
       minimum_search_length: MIN_SEARCH_LENGTH,
       not_aimed_for_deletion: true,
@@ -176,7 +168,6 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def page_out_of_bounds(error)
-    load_project_counts
     @max_page_number = error.message
 
     respond_to do |format|

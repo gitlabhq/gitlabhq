@@ -173,6 +173,15 @@ we would have to calculate the condition twice - since they are for different us
 then the result of the condition is cached globally only based on the subject - so it is not
 calculated repeatedly for different users. Similarly, `scope: :user` caches only based on the user.
 
+You can use the `:global` scope when the condition is universally true:
+
+```ruby
+  condition(:earth_exists, scope: :global) { Planet::Earth.exists? }
+```
+
+For more information about scopes, see the gem's
+[caching documentation](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/caching.md#cache-sharing-scopes).
+
 > [!warning]
 > If you use a `:scope` option when the condition actually uses data from both user and subject
 > (including a simple anonymous check!) your result is cached at too global of a scope and

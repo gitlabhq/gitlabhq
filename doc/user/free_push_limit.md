@@ -28,7 +28,7 @@ remote: GitLab: You are attempting to check in one or more files which exceed th
 - 257cc5642cb1a054f08cc83f2d943e56fd3ebe99 (123 MiB)
 - 5716ca5987cbf97d6bb54920bea6adde242d87e6 (396 MiB)
 
-Please refer to https://docs.gitlab.com/ee/user/free_user_limit.html for further information.
+Please refer to https://docs.gitlab.com/user/free_user_limit/ for further information.
 To https://gitlab.com/group/my-project.git
  ! [remote rejected] main -> main (pre-receive hook declined)
 error: failed to push some refs to 'https://gitlab.com/group/my-project.git'

@@ -80,7 +80,7 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 
@@ -236,7 +236,7 @@ then make the following modifications:
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 
@@ -342,7 +342,7 @@ application nodes documented previously, with some changes to run only the `side
 
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
 

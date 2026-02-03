@@ -26269,7 +26269,7 @@ msgstr ""
 msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service account needs to be verified. Contact your administrator."
 msgstr ""
 
-msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the Code Review foundational flow in the top-level group."
+msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the foundational flow in the top-level group."
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Something went wrong and the review request was stopped. Please request a new review."
@@ -26282,6 +26282,9 @@ msgid "DuoCodeReview|:warning: Something went wrong while I was processing the r
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Something went wrong while requesting a review from GitLab Duo. Please request a new review."
+msgstr ""
+
+msgid "DuoCodeReview|:warning: Something went wrong while starting Code Review Flow. Please try again later."
 msgstr ""
 
 msgid "DuoCodeReview|:wave: There's nothing for me to review."
@@ -75600,6 +75603,9 @@ msgid "VirtualRegistry|Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Registry"
+msgstr ""
+
+msgid "VirtualRegistry|Registry %{name} was successfully created."
 msgstr ""
 
 msgid "VirtualRegistry|Registry cache cleared successfully."

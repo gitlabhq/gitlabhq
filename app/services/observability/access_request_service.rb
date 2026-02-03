@@ -35,6 +35,7 @@ module Observability
       ).execute
 
       if result.success?
+        create_temporary_group_o11y_setting(group)
         Observability::CreateGroupO11ySettingWorker.perform_async(current_user.id, group.id)
         success(issue: result[:issue])
       else
@@ -106,6 +107,22 @@ module Observability
       else
         group.projects.first
       end
+    end
+
+    def create_temporary_group_o11y_setting(group)
+      return if group.observability_group_o11y_setting.present?
+
+      setting = group.build_observability_group_o11y_setting
+      ::Observability::GroupO11ySettingsUpdateService.new.execute(setting, settings_params)
+    end
+
+    def settings_params
+      {
+        o11y_service_name: group.id.to_s,
+        o11y_service_user_email: "#{group.id}@gitlab-o11y.com",
+        o11y_service_password: SecureRandom.hex(16),
+        o11y_service_post_message_encryption_key: SecureRandom.hex(32)
+      }
     end
   end
 end

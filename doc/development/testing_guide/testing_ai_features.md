@@ -36,6 +36,47 @@ Use [frontend feature tests](testing_levels.md#frontend-feature-tests) to valida
 
 - GitLab Duo Chat: [`ee/spec/features/duo_chat_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/57d17110ef8f137ec8c1507e8d1a60ec194d6876/ee/spec/features/duo_chat_spec.rb)
 
+## DAP feature tests in core feature pages
+
+To test that DAP features are functional in a core feature page **and** core features are functional with DAP components,
+use the following shared context and examples in a feature spec:
+
+- Include the shared context `include_context 'with duo features enabled and agentic chat available for group on SaaS'`
+  to load DAP components in a feature page by default.
+- Include the shared examples `it_behaves_like 'user can use agentic chat'` to test DAP features in a feature page.
+
+For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the following scenario:
+
+- Epic board is functional on a page that loads DAP components in the sidebar.
+- DAP feature is functional in a page where the epic board is rendered.
+  1. User visits a core feature page and open Duo Agentic Chat from the sidebar.
+  1. User asks a question in the chat.
+  1. Frontend JS/Vue initiates websocket connection with Workhorse (This Workhorse instance runs locally in the test environment).
+  1. Frontend JS/Vue sends a gRPC request to DWS through Workhorse (This DWS instance runs locally in the test environment).
+     LLM responses are mocked for explicit assertions therefore test failures are reproducible.
+
+### Run DAP feature tests when making a change in AI Gateway 
+
+These feature tests run when we make a change to AI Gateway repository as well, to verify that an MR does not accidentally break DAP features e.g.
+
+1. A developer opens an MR in AI Gateway project.
+1. A pipeline runs for the MR, which triggers downstream pipeline in GitLab project against `aigw/test-branch` test branch.
+   This branch points the same SHA with master.
+1. If a pipeline fails, the developer should investigate if the proposed change doesn't accidentally introduce regressions.
+
+NOTE:
+
+- `aigw/test-branch` branch is unprotected by default for allowing AIGW & DWS maintainers to trigger downstream pipelines in GitLab project.
+
+### Run a feature spec locally with your DWS/AIGW change
+
+1. Run `gdk start` to start services including DWS.
+1. Open terminal at `<gdk-root>/gitlab` and use one of the following options:
+   - Run `export TEST_AI_GATEWAY_REPO_BRANCH=<your-remote-feature-branch>` and delete `<gitlab-rails-root>/tmp/tests/gitlab-ai-gateway/` cache dir, _OR_
+   - Run `export TEST_DUO_WORKFLOW_SERVICE_ENABLED="false" && export TEST_DUO_WORKFLOW_SERVICE_PORT=<your-local-dws-port>`.
+     This allows the feature tests to request to your local DWS instance (make sure that `PORT` env var matches in DWS side)
+1. Run a feature spec e.g. `bundle exec rspec ee/spec/features/epic_boards/epic_boards_spec.rb`.
+
 ## End-to-End testing
 
 Use [end-to-end tests](end_to_end/_index.md) sparingly to verify AI features work with real provider responses. Key considerations:

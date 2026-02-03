@@ -70328,6 +70328,26 @@ definitions:
         type: string
       packages_nuget_symbols_verification_failed_count:
         type: string
+      supply_chain_attestations_count:
+        type: string
+      supply_chain_attestations_checksum_total_count:
+        type: string
+      supply_chain_attestations_checksummed_count:
+        type: string
+      supply_chain_attestations_checksum_failed_count:
+        type: string
+      supply_chain_attestations_synced_count:
+        type: string
+      supply_chain_attestations_failed_count:
+        type: string
+      supply_chain_attestations_registry_count:
+        type: string
+      supply_chain_attestations_verification_total_count:
+        type: string
+      supply_chain_attestations_verified_count:
+        type: string
+      supply_chain_attestations_verification_failed_count:
+        type: string
       git_fetch_event_count_weekly:
         type: string
       git_push_event_count_weekly:
@@ -70411,6 +70431,10 @@ definitions:
       packages_nuget_symbols_synced_in_percentage:
         type: string
       packages_nuget_symbols_verified_in_percentage:
+        type: string
+      supply_chain_attestations_synced_in_percentage:
+        type: string
+      supply_chain_attestations_verified_in_percentage:
         type: string
       repositories_count:
         type: string

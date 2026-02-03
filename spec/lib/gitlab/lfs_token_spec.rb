@@ -103,6 +103,16 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
         end
       end
 
+      context "because it has a malformed JWT header" do
+        it 'returns false' do
+          encoded_header = Base64.urlsafe_encode64('["not","a","hash"]', padding: false)
+          encoded_payload = Base64.urlsafe_encode64('{}', padding: false)
+          malformed_token = "#{encoded_header}.#{encoded_payload}"
+
+          expect(lfs_token.token_valid?(malformed_token)).to be false
+        end
+      end
+
       context "because it's been fiddled with" do
         it 'returns false' do
           fiddled_token = lfs_token.token.tap { |token| token[0] = 'E' }

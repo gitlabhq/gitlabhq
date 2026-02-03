@@ -521,7 +521,7 @@ the setting to **Only this project and any groups and projects in the allowlist*
 
 To help identify projects that need access to your project by authenticating with a CI/CD job token, in GitLab 17.6 we also introduced a method to [track job token authentications](https://about.gitlab.com/releases/2024/11/21/gitlab-17-6-released/#track-cicd-job-token-authentications) to your projects. You can use that data to populate your CI/CI job token allowlist.
 
-In GitLab 17.10, we introduced [migration tooling](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/ee/update/deprecations.html#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
+From GitLab 17.10 to 18.6, you can use [migration tooling](https://archives.docs.gitlab.com/18.6/ci/jobs/ci_job_token/#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/update/deprecations/?removal_milestone=18.0#cicd-job-token-authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
 This migration tool will be removed in GitLab 18.6.
 
@@ -753,7 +753,7 @@ For GitLab Self-Managed and GitLab Dedicated administrators, you can configure a
 - Removal in GitLab 18.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/472213).
 
-On GitLab.com, starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html) are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit, only the policy's first 10 `scan` actions are run.
+On GitLab.com, starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/user/application_security/policies/scan_execution_policies/) are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit, only the policy's first 10 `scan` actions are run.
 
 On GitLab Self-Managed and GitLab Dedicated instances, you can configure a custom limit with the `scan_execution_policies_action_limit` application setting. Limits for these instances default to zero actions. We recommend configuring a limit of 10 actions.
 
@@ -4545,7 +4545,7 @@ from GitLab 18.0. The feature will be completely removed in GitLab 19.0.
 
 Coverage-guided fuzz testing integrated several open-source fuzzers into GitLab.
 If you are impacted, you can integrate your open-source fuzzers as standalone applications,
-or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/ee/user/application_security/sast/gitlab_advanced_sast.html).
+or migrate to another security feature like [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/).
 
 ### Dependency scanning for JavaScript vendored libraries
 

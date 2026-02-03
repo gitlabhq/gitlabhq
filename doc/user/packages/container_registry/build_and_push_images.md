@@ -184,7 +184,7 @@ stages:
   - deploy
 
 variables:
-  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  # Use TLS https://docs.gitlab.com/ci/docker/using_docker_build/#use-docker-in-docker
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG

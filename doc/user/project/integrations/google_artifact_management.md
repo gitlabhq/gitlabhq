@@ -156,7 +156,7 @@ pull-image:
     # The following two variables ensure that the DinD service starts in TLS
     # mode and that the Docker CLI is properly configured to communicate with
     # the API. More details about the importance of this can be found at
-    # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-the-docker-executor-with-docker-in-docker
+    # https://docs.gitlab.com/ci/docker/using_docker_build/#use-the-docker-executor-with-docker-in-docker
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
