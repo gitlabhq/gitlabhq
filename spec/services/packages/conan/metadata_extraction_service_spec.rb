@@ -5,14 +5,8 @@ require 'spec_helper'
 RSpec.describe Packages::Conan::MetadataExtractionService, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
-  # We use `let` instead of `let_it_be` for these fixtures because multiple contexts
-  # modify `package_file.file` in their `before` blocks. With `let_it_be`, these
-  # in-memory modifications persist across examples, causing test pollution.
-  # For example, if "with invalid conaninfo.txt" tests run before "with database error"
-  # tests, the package_file still contains the invalid fixture, causing wrong errors.
-  # Using `let` ensures each example gets a fresh package_file instance.
-  let(:package_reference) { create(:conan_package_reference, info: {}) }
-  let(:package_file) do
+  let_it_be(:package_reference, refind: true) { create(:conan_package_reference, info: {}) }
+  let_it_be(:package_file, refind: true) do
     create(:conan_package_file, :conan_package_info, conan_package_reference: package_reference)
   end
 
@@ -53,9 +47,10 @@ RSpec.describe Packages::Conan::MetadataExtractionService, feature_category: :pa
 
       with_them do
         before do
-          allow(package_reference).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(package_reference))
-          allow(package_reference).to receive_message_chain(:errors,
-            :full_messages).and_return([database_error_message])
+          allow_next_found_instance_of(Packages::Conan::PackageReference) do |instance|
+            allow(instance).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(instance))
+            allow(instance).to receive_message_chain(:errors, :full_messages).and_return([database_error_message])
+          end
         end
 
         it 'raises ExtractionError and does not update package reference info' do

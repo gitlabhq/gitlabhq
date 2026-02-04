@@ -10,7 +10,7 @@ GitLabの機能とその機能がある場所を知ることで、すぐに使�
 
 | トピック | 説明 | 初心者向け |
 |-------|-------------|--------------------|
-| [GitLab with Git Essentials（GitLabとGitの基本）](https://university.gitlab.com/courses/gitlab-with-git-essentials-s2)  |  この自主学習コースでGitとGitLabの基本を学びましょう。 | {{< icon name="star" >}} |
+| [GitLab with Git Essentials（GitLabとGitの基本）](https://university.gitlab.com/courses/gitlab-with-git-essentials-s2-jp)  |  この自主学習コースでGitとGitLabの基本を学びましょう。 | {{< icon name="star" >}} |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[30日間のトライアルを開始する方法](https://www.youtube.com/watch?v=dIlBLrXbfrM&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=63) （3分01秒） | 30日間のUltimateプラントライアルを開始して、最初のプロジェクトを作成する方法を説明します。 | {{< icon name="star" >}} |
 | [左側のサイドバーを使用してGitLab内を移動する](left_sidebar/_index.md) |  GitLabのUIを操作してみましょう。 | {{< icon name="star" >}} |
 | [パーソナルホームページを使用する](personal_homepage/_index.md) |  GitLab全体でのアクティビティーを追跡するために、個人用ホームページを使用する方法を説明します。 | |

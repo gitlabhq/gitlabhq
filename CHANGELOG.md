@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.3 (2026-02-04)
+
+### Fixed (13 changes)
+
+- [Send the uuid for usage quota when it is a trial for SM](https://gitlab.com/gitlab-org/gitlab/-/commit/80a4a71dd77e44459341f746faf923ff46e37397) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221982)) **GitLab Enterprise Edition**
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/5a93d93ceddc12ef98d833717b184bab079e1774) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221762))
+- [Fix JWT token expiration when memoized before timeout is set](https://gitlab.com/gitlab-org/gitlab/-/commit/a61df840beac37dde7e4d12b4ace6f6f9088fbc4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221379))
+- [Fix encoding error in related branches work item widget](https://gitlab.com/gitlab-org/gitlab/-/commit/6089657a222498a6126448ffa6879d6a0fad9cd2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221365))
+- [Disable Sidekiq retries for ClickHouse pipeline/build sync workers](https://gitlab.com/gitlab-org/gitlab/-/commit/8948eee503609004a0706c444f605dc5676d8356) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221356))
+- [Disable async_insert in build and pipeline sync operations](https://gitlab.com/gitlab-org/gitlab/-/commit/07b691e621a09c1b1a3c19ab8d726199ac94bb85) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221299))
+- [Add work item support to missing chat integrations](https://gitlab.com/gitlab-org/gitlab/-/commit/6e3ce968eea0aee05025e70c5044feede332b98c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221178))
+- [Only check optional ActionCable Redis instance if necessary](https://gitlab.com/gitlab-org/gitlab/-/commit/d6eeb7d175d53bca608ee29d639c9160fb661044) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220695))
+- [Fixes preserving external author on work item move and clone](https://gitlab.com/gitlab-org/gitlab/-/commit/f4dff41724c940ac233cbdf7a5fd485e54c2b181) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220160))
+- [Refactor Redis TLS options parsing to fix ActionCable configuration](https://gitlab.com/gitlab-org/gitlab/-/commit/bac23007c9ac7c5fc8fda53fc19184589c4721cf) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219997))
+- [Open SD issues and tickets on boards in legacy view instead of drawer](https://gitlab.com/gitlab-org/gitlab/-/commit/6b1759e5611f4ae7dc05503e8d87dc1322a29c26) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219758))
+- [Add info on UI for new Ticket work item type](https://gitlab.com/gitlab-org/gitlab/-/commit/d6d54c09c9dfe877d763994e2a201f6ffe9c66e4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219750))
+- [Fix enforced_scans sync with inject_policy](https://gitlab.com/gitlab-org/gitlab/-/commit/234ded0747283dfa0085af28d7b818a211093c75) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219609)) **GitLab Enterprise Edition**
+
+### Changed (5 changes)
+
+- [Remove duo_workflow Feature Flag](https://gitlab.com/gitlab-org/gitlab/-/commit/84c562165a30eef1c8b6be1c2289acfa379d716a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220973)) **GitLab Enterprise Edition**
+- [Adds work items to custom email notifications](https://gitlab.com/gitlab-org/gitlab/-/commit/7e017ccf9df05e642203f7e71c3a099144856298) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219926))
+- [Display work item type names in chat notifications](https://gitlab.com/gitlab-org/gitlab/-/commit/7f5d87a43ea3c4b9c7daf6b7efba69005c754cac) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221046))
+- [Remove duo_workflow_in_ci Feature Flag](https://gitlab.com/gitlab-org/gitlab/-/commit/7512dade12309120492cb0657a0f742e52ea6722) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220885)) **GitLab Enterprise Edition**
+- [Zoekt searchable should check for online nodes](https://gitlab.com/gitlab-org/gitlab/-/commit/4263ac3e947e703ee65c4eab61ceedb0903635b2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220967)) **GitLab Enterprise Edition**
+
 ## 18.8.2 (2026-01-20)
 
 ### Added (1 change)

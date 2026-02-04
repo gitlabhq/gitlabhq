@@ -42,9 +42,10 @@
 
 ## Localization files that do not need `*` rule approval,
 ## but still require an approval from a Localization team DRI for each file.
-/doc-locale/ @gitlab-com/localization/maintainers
-/argo_translation.yml @gitlab-com/localization/maintainers
-/doc-locale/.markdownlint/ @gitlab-com/localization/maintainers
+/doc-locale/ @gitlab-com/localization/maintainers/tech-docs
+/doc-locale/ja-jp/ @gitlab-com/localization/maintainers/tech-docs @gitlab-com/localization/maintainers/japanese
+/argo_translation.yml @gitlab-com/localization/maintainers/tech-docs
+/doc-locale/.markdownlint/ @gitlab-com/localization/maintainers/tech-docs
 
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah
 

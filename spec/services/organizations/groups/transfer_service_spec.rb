@@ -809,20 +809,14 @@ RSpec.describe Organizations::Groups::TransferService, :aggregate_failures, feat
         service.execute
       end
 
-      it 'rolls back all organization ID changes due to transaction failure' do
-        service.execute
-
-        expect(group.reload.organization_id).to eq(old_organization.id)
-        expect(subgroup.reload.organization_id).to eq(old_organization.id)
-        expect(nested_subgroup.reload.organization_id).to eq(old_organization.id)
-
-        expect(project.reload.organization_id).to eq(old_organization.id)
-        expect(subgroup_project.reload.organization_id).to eq(old_organization.id)
-        expect(nested_project.reload.organization_id).to eq(old_organization.id)
-
-        expect(project.project_namespace.reload.organization_id).to eq(old_organization.id)
-        expect(subgroup_project.project_namespace.reload.organization_id).to eq(old_organization.id)
-        expect(nested_project.project_namespace.reload.organization_id).to eq(old_organization.id)
+      it_behaves_like 'rolls back organization_id updates' do
+        let(:records) do
+          [
+            group, subgroup, nested_subgroup,
+            project, subgroup_project, nested_project,
+            project.project_namespace, subgroup_project.project_namespace, nested_project.project_namespace
+          ]
+        end
       end
 
       context 'with visibility level changes that would have been made' do

@@ -198,4 +198,42 @@ RSpec.describe WorkItems::SavedViews::SavedView, feature_category: :portfolio_ma
       expect { saved_view.unsubscribe_other_users!(user: user) }.not_to exceed_query_limit(control)
     end
   end
+
+  describe '#allow_possible_spam?' do
+    subject { saved_view.allow_possible_spam?(user) }
+
+    context 'when saved view is public and namespace is public' do
+      before do
+        saved_view.private = false
+        namespace.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when saved view is private' do
+      before do
+        saved_view.private = true
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when namespace is private' do
+      before do
+        saved_view.private = false
+        namespace.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when global setting allows possible spam' do
+      before do
+        stub_application_setting(allow_possible_spam: true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
 end

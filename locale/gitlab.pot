@@ -810,8 +810,10 @@ msgid_plural "%{count} projects have access"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{count} registries is the maximum allowed per group."
-msgstr ""
+msgid "%{count} registry is the maximum allowed per top-level group."
+msgid_plural "%{count} registries is the maximum allowed per top-level group."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
@@ -25879,12 +25881,6 @@ msgstr ""
 msgid "DuoAgenticChat|Select default namespace"
 msgstr ""
 
-msgid "DuoAgenticChat|Start a Free Trial"
-msgstr ""
-
-msgid "DuoAgenticChat|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} to collaborate with agents and automate workflows across your development process."
-msgstr ""
-
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
@@ -25897,9 +25893,6 @@ msgstr ""
 msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
 msgstr ""
 
-msgid "DuoAgenticChat|Try GitLab Duo Agent Platform"
-msgstr ""
-
 msgid "DuoAgenticChat|Turn off Agentic mode"
 msgstr ""
 
@@ -25907,6 +25900,9 @@ msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Access required"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Action"
@@ -25958,6 +25954,9 @@ msgid "DuoAgentsPlatform|Configuration path"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Configuration source"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Convert to gitlab ci"
@@ -26036,6 +26035,9 @@ msgid "DuoAgentsPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Full view"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Get access to GitLab Duo"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Get issue"
@@ -26137,6 +26139,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Start a Free Trial"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} to collaborate with agents and automate workflows across your development process."
+msgstr ""
+
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
 msgstr ""
 
@@ -26164,7 +26172,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Unknown"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Who can grant you access"
 msgstr ""
 
 msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
@@ -26174,6 +26188,9 @@ msgid "DuoAgentsPlatform|Write file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
+msgstr ""
+
+msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platform in this %{namespaceType}. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
 msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."

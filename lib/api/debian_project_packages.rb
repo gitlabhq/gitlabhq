@@ -14,6 +14,10 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    def self.resource_type
+      :project
+    end
+
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
@@ -55,7 +59,7 @@ module API
           ]
           tags %w[packages]
         end
-
+        route_setting :authorization, permissions: :download_debian_package, boundary_type: :project
         get 'pool/:distribution/:letter/:package_name/:package_version/:file_name', requirements: PACKAGE_FILE_REQUIREMENTS do
           present_distribution_package_file!(project_or_group)
         end
@@ -88,6 +92,7 @@ module API
               requires :file_name, type: String, desc: 'The filename', regexp: { value: Gitlab::Regex.debian_direct_upload_filename_regex, message: 'Only debs, udebs and ddebs can be directly added to a distribution' }
             end
           end
+          route_setting :authorization, permissions: :upload_debian_package, boundary_type: :project
           put do
             authorize_upload!(project_or_group)
             bad_request!('File is too large') if project_or_group.actual_limits.exceeded?(:debian_max_file_size, params[:file].size)

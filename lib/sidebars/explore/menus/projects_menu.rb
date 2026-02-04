@@ -6,7 +6,7 @@ module Sidebars
       class ProjectsMenu < ::Sidebars::Menu
         override :link
         def link
-          starred_explore_projects_path
+          explore_projects_path
         end
 
         override :title
@@ -32,7 +32,8 @@ module Sidebars
               explore_root_path,
               starred_explore_projects_path,
               trending_explore_projects_path,
-              explore_projects_path
+              explore_projects_path,
+              active_explore_projects_path
             ]
           }
         end

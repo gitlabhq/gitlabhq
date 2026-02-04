@@ -39,10 +39,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     describe 'GET #trending.json' do
       render_views
 
-      it 'redirects to most starred projects with json format', :aggregate_failures do
+      it 'redirects to active projects with json format', :aggregate_failures do
         get :trending, format: :json
 
-        expect(response).to redirect_to(starred_explore_projects_path(format: :json))
+        expect(response).to redirect_to(active_explore_projects_path(format: :json))
         expect(response).to have_gitlab_http_status(:found)
       end
 
@@ -91,10 +91,10 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
 
     describe 'GET #trending' do
-      it 'redirects to most starred projects' do
+      it 'redirects to active projects' do
         get :trending
 
-        expect(response).to redirect_to(starred_explore_projects_path)
+        expect(response).to redirect_to(active_explore_projects_path)
       end
 
       context 'when `retire_trending_projects` flag is disabled' do

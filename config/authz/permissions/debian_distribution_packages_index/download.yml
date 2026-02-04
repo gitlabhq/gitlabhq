@@ -1,0 +1,6 @@
+---
+name: download_debian_distribution_packages_index
+description: Grants the ability to download Debian distribution packages index files
+boundaries:
+  - group
+  - project

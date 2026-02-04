@@ -32,6 +32,7 @@ module WorkItems
         json_schema: { filename: 'work_item_user_preference_display_settings', size_limit: 8.kilobytes }
 
       attr_spammable :name, spam_title: true
+      attr_spammable :description, spam_description: true
 
       enum :sort, ::WorkItems::SortingKeys.all.keys
 
@@ -67,6 +68,14 @@ module WorkItems
           attribute_name: 'id',
           order_expression: SavedView.arel_table[:id].desc
         )
+      end
+
+      # Limit spam checks to public saved views in public namespaces
+      def allow_possible_spam?(*)
+        return true if Gitlab::CurrentSettings.allow_possible_spam
+        return true if private?
+
+        !namespace.public?
       end
 
       def unsubscribe_other_users!(user:)

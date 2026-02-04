@@ -946,22 +946,6 @@ into similar problems in the future (e.g. when new tables are created).
 
       private
 
-      def column_is_nullable?(table, column)
-        table_name, schema_name = table.to_s.split('.').reverse
-        schema_name ||= current_schema
-
-        # Check if table.column has not been defined with NOT NULL
-        check_sql = <<~SQL
-          SELECT c.is_nullable
-          FROM information_schema.columns c
-          WHERE c.table_schema = #{connection.quote(schema_name)}
-            AND c.table_name = #{connection.quote(table_name)}
-            AND c.column_name = #{connection.quote(column)}
-        SQL
-
-        connection.select_value(check_sql) == 'YES'
-      end
-
       def create_column_from(table, old, new, type: nil, batch_column_name: :id, type_cast_function: nil, limit: nil)
         old_col = column_for(table, old)
         new_type = type || old_col.type

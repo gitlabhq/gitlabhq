@@ -311,6 +311,22 @@ module Gitlab
 
         private
 
+        def column_is_nullable?(table, column)
+          table_name, schema_name = table.to_s.split('.').reverse
+          schema_name ||= current_schema
+
+          # Check if table.column has not been defined with NOT NULL
+          check_sql = <<~SQL
+            SELECT c.is_nullable
+            FROM information_schema.columns c
+            WHERE c.table_schema = #{connection.quote(schema_name)}
+              AND c.table_name = #{connection.quote(table_name)}
+              AND c.column_name = #{connection.quote(column)}
+          SQL
+
+          connection.select_value(check_sql) == 'YES'
+        end
+
         def validate_not_in_transaction!(method_name, modifier = nil)
           return unless transaction_open?
 

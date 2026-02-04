@@ -2,6 +2,9 @@
 name: read_package
 description: Grants the ability to read packages
 permissions:
+  - download_debian_package
+  - download_debian_distribution_release
+  - download_debian_distribution_packages_index
   - download_helm_chart
   - download_maven_package_file
   - download_nuget_package

@@ -156,9 +156,9 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
           TrendingProject.refresh!
         end
 
-        it 'redirects to most starred projects page' do
+        it 'redirects to active projects page' do
           visit trending_explore_projects_path
-          expect(page).to have_current_path(starred_explore_projects_path)
+          expect(page).to have_current_path(active_explore_projects_path)
         end
 
         context 'when `retire_trending_projects` flag is disabled' do

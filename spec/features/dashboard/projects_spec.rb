@@ -39,7 +39,7 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     visit dashboard_projects_path
     wait_for_requests
 
-    expect(page).to have_link("Explore projects", href: starred_explore_projects_path)
+    expect(page).to have_link("Explore projects", href: explore_projects_path)
   end
 
   context 'when user has access to the project' do

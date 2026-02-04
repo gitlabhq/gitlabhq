@@ -9,6 +9,7 @@ permissions:
   - upload_maven_package_file
   - upload_nuget_package
   - upload_pypi_package
+  - upload_debian_package
 boundaries:
   - group
   - project

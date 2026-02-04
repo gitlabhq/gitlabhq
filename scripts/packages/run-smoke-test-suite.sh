@@ -1,27 +1,25 @@
 #!/usr/bin/env bash
 #
-# Run the Remote Development smoke test suite.
+# Run the Packages smoke test suite.
 #
-# Usage: [ENV_VARS] ./scripts/remote_development/run-smoke-test-suite.sh [--help|-h]
+# Usage: [ENV_VARS] ./scripts/packages/run-smoke-test-suite.sh [--help|-h]
 #
 # Environment variables:
 #   ONLY_RUBOCOP=1        Run only rubocop
-#   ONLY_RSPEC_FP=1       Run only FP specs
 #   ONLY_RSPEC_FAST=1     Run only fast specs
 #   ONLY_JEST=1           Run only jest specs
 #   ONLY_RSPEC_NON_FAST=1 Run only non-fast specs
 #   ONLY_RSPEC_FEATURE=1  Run only feature specs
 #
 #   SKIP_RUBOCOP=1        Skip rubocop
-#   SKIP_RSPEC_FP=1       Skip FP specs
 #   SKIP_RSPEC_FAST=1     Skip fast specs
 #   SKIP_JEST=1           Skip jest specs
 #   SKIP_RSPEC_NON_FAST=1 Skip non-fast specs
 #   SKIP_RSPEC_FEATURE=1  Skip feature specs
 #
 # Examples:
-#   ONLY_RSPEC_FAST=1 ONLY_RSPEC_NON_FAST=1 ./scripts/remote_development/run-smoke-test-suite.sh
-#   SKIP_RSPEC_FEATURE=1 SKIP_JEST=1 ./scripts/remote_development/run-smoke-test-suite.sh
+#   ONLY_RSPEC_FAST=1 ONLY_RSPEC_NON_FAST=1 ./scripts/packages/run-smoke-test-suite.sh
+#   SKIP_RSPEC_FEATURE=1 SKIP_JEST=1 ./scripts/packages/run-smoke-test-suite.sh
 #
 # Note on Rubocop:
 #   By default, rubocop runs with REVEAL_RUBOCOP_TODO=1 and will fail even for violations
@@ -57,7 +55,7 @@ trap onexit_err ERR
 # Exit handling
 function onexit_err() {
   local exit_status=${1:-$?}
-  printf "\n❌❌❌ ${BRed}Remote Development smoke test failed!${Color_Off} ❌❌❌\n"
+  printf "\n❌❌❌ ${BRed}Packages smoke test failed!${Color_Off} ❌❌❌\n"
   if [ "${REVEAL_RUBOCOP_TODO:-1}" -ne 0 ]; then
     printf "\n${BRed}- If the failure was due to rubocop, try setting REVEAL_RUBOCOP_TODO=0 to ignore TODOs${Color_Off}\n"
   fi
@@ -71,7 +69,7 @@ function onexit_err() {
 function print_start_message {
   trap onexit_err ERR
 
-  printf "${BCyan}\nStarting Remote Development smoke test...${Color_Off}\n\n"
+  printf "${BCyan}\nStarting Packages smoke test...${Color_Off}\n\n"
 }
 
 function run_rubocop {
@@ -83,24 +81,14 @@ function run_rubocop {
 
   while IFS='' read -r file; do
     files_for_rubocop+=("$file")
-  done < <(git ls-files -- '**/remote_development/*.rb' '**/remote_development/**/*.rb' '**/gitlab/fp/*.rb' '**/gitlab/fp/**/*.rb' '*_rop_*.rb' '*railway_oriented_programming*.rb' '*_result_matchers*.rb')
+  done < <(git ls-files -- '**/packages/*.rb' '**/packages/**/*.rb')
+
+  if [ ${#files_for_rubocop[@]} -eq 0 ]; then
+    printf "No files found for rubocop, skipping.\n"
+    return
+  fi
 
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
-}
-
-function run_rspec_fp {
-  trap onexit_err ERR
-
-  printf "\n\n${BBlue}Running backend RSpec FP specs${Color_Off}\n\n"
-
-  files_for_rspec_fp=()
-
-  while IFS='' read -r file; do
-      files_for_rspec_fp+=("$file")
-  done < <(git ls-files -- '**/gitlab/fp/*_spec.rb' '**/gitlab/fp/**/*_spec.rb')
-
-
-  bin/rspec "${files_for_rspec_fp[@]}"
 }
 
 function run_rspec_fast {
@@ -112,7 +100,7 @@ function run_rspec_fast {
 
   while IFS='' read -r file; do
       files_for_rspec_fast+=("$file")
-  done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb')
+  done < <(git grep -l -E '^require .fast_spec_helper' -- '**/packages/*_spec.rb' '**/packages/**/*_spec.rb')
 
   if [ ${#files_for_rspec_fast[@]} -eq 0 ]; then
     printf "No fast specs found, skipping.\n"
@@ -133,8 +121,8 @@ function run_jest {
   printf "\n\n${BBlue}Running 'yarn check --integrity' and 'yarn install' if needed${Color_Off}\n\n"
   yarn check --integrity || yarn install
 
-  printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
-  yarn jest ee/spec/frontend/workspaces
+  printf "\n\n${BBlue}Running Packages frontend Jest specs${Color_Off}\n\n"
+  yarn jest spec/frontend/packages_and_registries ee/spec/frontend/packages
 }
 
 function run_rspec_non_fast {
@@ -150,17 +138,12 @@ function run_rspec_non_fast {
   # Running all fast and slow specs here ensures that we catch those cases.
   while IFS='' read -r file; do
       files_for_rspec_non_fast+=("$file")
-  done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  done < <(git ls-files -- '**/packages/*_spec.rb' '**/packages/**/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
-  files_for_rspec_non_fast+=(
-      "ee/spec/graphql/ee/resolvers/clusters/agents_resolver_spec.rb"
-      "ee/spec/graphql/types/query_type_spec.rb"
-      "ee/spec/graphql/ee/types/subscription_type_spec.rb"
-      "ee/spec/models/ee/clusters/agent_spec.rb"
-      "ee/spec/requests/api/internal/kubernetes_spec.rb"
-      "spec/graphql/types/subscription_type_spec.rb"
-      "spec/support_specs/matchers/result_matchers_spec.rb"
-  )
+  if [ ${#files_for_rspec_non_fast[@]} -eq 0 ]; then
+    printf "No non-fast specs found, skipping.\n"
+    return
+  fi
 
   printf "Running rspec non-fast command:\n\n"
   printf "bin/rspec --format documentation "
@@ -177,7 +160,12 @@ function run_rspec_feature {
   files_for_rspec_feature=()
   while IFS='' read -r file; do
       files_for_rspec_feature+=("$file")
-  done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+  done < <(git ls-files -- '**/packages/*_spec.rb' '**/packages/**/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+
+  if [ ${#files_for_rspec_feature[@]} -eq 0 ]; then
+    printf "No feature specs found, skipping.\n"
+    return
+  fi
 
   bin/rspec --format documentation -r spec_helper "${files_for_rspec_feature[@]}"
 }
@@ -197,7 +185,7 @@ function should_run {
   local skip_var="SKIP_${section}"
 
   # If any ONLY_* var is set, run only those sections; otherwise use SKIP_* behavior
-  if [ -n "${ONLY_RUBOCOP:-}${ONLY_RSPEC_FP:-}${ONLY_RSPEC_FAST:-}${ONLY_JEST:-}${ONLY_RSPEC_NON_FAST:-}${ONLY_RSPEC_FEATURE:-}" ]; then
+  if [ -n "${ONLY_RUBOCOP:-}${ONLY_RSPEC_FAST:-}${ONLY_JEST:-}${ONLY_RSPEC_NON_FAST:-}${ONLY_RSPEC_FEATURE:-}" ]; then
     [ -n "${!only_var:-}" ]
   else
     [ -z "${!skip_var:-}" ]
@@ -225,7 +213,6 @@ function main {
   should_run RUBOCOP && run_rubocop
 
   # Test sections are sorted roughly in increasing order of execution time, in order to get the fastest feedback on failures.
-  should_run RSPEC_FP && run_rspec_fp
   should_run RSPEC_FAST && run_rspec_fast
   should_run JEST && run_jest
   should_run RSPEC_NON_FAST && run_rspec_non_fast

@@ -6,6 +6,10 @@ module API
       project_id: %r{[0-9]+}
     ).freeze
 
+    def self.resource_type
+      :group
+    end
+
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group

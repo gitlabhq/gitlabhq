@@ -12,22 +12,43 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       it_behaves_like 'Debian packages GET request', :bad_request, /^distribution is invalid$/
     end
 
+    shared_examples 'granular token permissions authorizable' do |permission, expected_success_status: :success|
+      it_behaves_like 'authorizing granular token permissions', permission, expected_success_status: expected_success_status do
+        let(:container) { private_container }
+        let(:boundary_object) { container }
+        let(:headers) { basic_auth_header(user.username, pat.token) }
+        let(:request) do
+          get api(url), headers: headers, params: api_params
+        end
+
+        before do
+          private_container.add_developer(user)
+        end
+      end
+    end
+
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release.gpg' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/Release.gpg" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNATURE-----/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_release
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/Release" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Codename: fixture-distribution\n$/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_release
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/InRelease' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/InRelease" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_release
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do
@@ -36,6 +57,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete Packages file/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages.gz' do
@@ -51,6 +74,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/source/Sources' do
@@ -59,6 +84,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/Sources" }
 
       it_behaves_like 'Debian packages index endpoint', /^Description: This is an incomplete Sources file$/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256' do
@@ -68,6 +95,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/source/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
@@ -76,6 +105,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages index endpoint', /Description: This is an incomplete D-I Packages file/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages.gz' do
@@ -91,6 +122,8 @@ RSpec.describe API::DebianGroupPackages, feature_category: :package_registry do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{target_component_name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{target_sha256}" }
 
       it_behaves_like 'Debian packages index sha256 endpoint', /^Other SHA256$/
+
+      it_behaves_like 'granular token permissions authorizable', :download_debian_distribution_packages_index
     end
 
     describe 'GET groups/:id/-/packages/debian/pool/:codename/:project_id/:letter/:package_name/:package_version/:file_name' do
