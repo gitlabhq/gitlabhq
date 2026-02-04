@@ -248,6 +248,61 @@ describe('Repository last commit component', () => {
         pipelineId: 'gid://gitlab/Ci::Pipeline/200',
       });
     });
+
+    it('unsubscribes from old pipeline when pipeline ID changes', async () => {
+      const unsubscribeMock = jest.fn();
+
+      createComponent();
+
+      await waitForPromises();
+
+      // Mock the subscription object with unsubscribe method
+      wrapper.vm.pipelineSubscription = { unsubscribe: unsubscribeMock };
+
+      // Simulate a poll/refetch that returns a different pipeline ID
+      const newCommitData = createCommitData({
+        pipelineEdges: [
+          {
+            __typename: 'PipelineEdge',
+            node: {
+              __typename: 'Pipeline',
+              id: 'gid://gitlab/Ci::Pipeline/200',
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'id',
+                detailsPath: 'https://test.com/pipeline',
+                icon: 'status_running',
+                text: 'failed',
+              },
+            },
+          },
+        ],
+      });
+
+      mockResolver.mockResolvedValueOnce(newCommitData);
+
+      // Advance timers to trigger polling
+      jest.advanceTimersByTime(30000);
+      await waitForPromises();
+
+      // Should have unsubscribed from the old pipeline
+      expect(unsubscribeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('unsubscribes from pipeline on component destroy', async () => {
+      const unsubscribeMock = jest.fn();
+
+      createComponent();
+
+      await waitForPromises();
+
+      // Mock the subscription object with unsubscribe method
+      wrapper.vm.pipelineSubscription = { unsubscribe: unsubscribeMock };
+
+      wrapper.destroy();
+
+      expect(unsubscribeMock).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('polling', () => {

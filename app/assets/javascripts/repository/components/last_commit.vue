@@ -67,6 +67,9 @@ export default {
 
         // if current pipeline ID has changed due to polling we need to resubscribe
         if (this.subscribedPipelineId && this.subscribedPipelineId !== currentPipelineId) {
+          if (this.pipelineSubscription?.unsubscribe) {
+            this.pipelineSubscription.unsubscribe();
+          }
           this.isSubscribed = false;
         }
 
@@ -76,7 +79,7 @@ export default {
           this.isSubscribed = true;
           this.subscribedPipelineId = currentPipelineId;
 
-          this.$apollo.queries.commit.subscribeToMore({
+          this.pipelineSubscription = this.$apollo.queries.commit.subscribeToMore({
             document: pipelineStatusUpdatedSubscription,
             variables: {
               pipelineId: currentPipelineId,
@@ -137,6 +140,7 @@ export default {
       commit: null,
       isSubscribed: false,
       subscribedPipelineId: null,
+      pipelineSubscription: null,
     };
   },
   computed: {
@@ -157,6 +161,9 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off(FORK_UPDATED_EVENT, this.refetchLastCommit);
+    if (this.pipelineSubscription?.unsubscribe) {
+      this.pipelineSubscription.unsubscribe();
+    }
   },
   methods: {
     refetchLastCommit() {
