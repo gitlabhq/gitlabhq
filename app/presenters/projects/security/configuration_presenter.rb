@@ -34,6 +34,7 @@ module Projects
           vulnerability_training_docs_path: vulnerability_training_docs_path,
           upgrade_path: upgrade_path,
           group_full_path: group_full_path,
+          can_apply_profiles: can_apply_profiles?,
           can_read_attributes: can_read_attributes?,
           can_manage_attributes: can_manage_attributes?,
           group_manage_attributes_path: group_manage_attributes_path
@@ -137,6 +138,12 @@ module Projects
 
       def group_full_path
         root_group.full_path if root_group
+      end
+
+      def can_apply_profiles?
+        return false unless root_group
+
+        can?(current_user, :apply_security_scan_profiles, project)
       end
 
       def can_read_attributes?

@@ -47415,6 +47415,7 @@ Security configuration data for a project.
 | <a id="securityconfigurationautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Whether Auto DevOps is enabled for the project. |
 | <a id="securityconfigurationautodevopshelppagepath"></a>`autoDevopsHelpPagePath` | [`String`](#string) | Path to Auto DevOps help documentation. |
 | <a id="securityconfigurationautodevopspath"></a>`autoDevopsPath` | [`String`](#string) | Path to Auto DevOps settings. |
+| <a id="securityconfigurationcanapplyprofiles"></a>`canApplyProfiles` | [`Boolean!`](#boolean) | Whether the current user can apply security profiles. |
 | <a id="securityconfigurationcanenableautodevops"></a>`canEnableAutoDevops` | [`Boolean!`](#boolean) | Whether the current user can enable Auto DevOps. |
 | <a id="securityconfigurationcanenablespp"></a>`canEnableSpp` | [`Boolean!`](#boolean) | Whether the current user can enable secret push protection. |
 | <a id="securityconfigurationcanmanageattributes"></a>`canManageAttributes` | [`Boolean!`](#boolean) | Whether the current user can manage security attributes. |

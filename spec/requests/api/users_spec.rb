@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feature_category: :user_management do
+RSpec.describe API::Users, :aggregate_failures, feature_category: :user_management do
   include WorkhorseHelpers
   include PaginationHelpers
   include CryptoHelpers
@@ -1403,7 +1403,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe "POST /users", :with_current_organization do
+  describe "POST /users" do
     let(:path) { '/users' }
 
     it_behaves_like 'POST request permissions for admin mode' do
@@ -5400,7 +5400,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
+  describe 'POST /users/:user_id/personal_access_tokens' do
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
     let(:expires_at) { 3.days.from_now }
@@ -5475,7 +5475,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'POST /user/personal_access_tokens', :with_current_organization do
+  describe 'POST /user/personal_access_tokens' do
     using RSpec::Parameterized::TableSyntax
 
     let(:name) { 'new pat' }
@@ -5665,7 +5665,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 
-  describe 'POST /users/:user_id/impersonation_tokens', :with_current_organization do
+  describe 'POST /users/:user_id/impersonation_tokens' do
     let(:name) { 'my new pat' }
     let(:description) { 'my new pat description' }
     let(:expires_at) { '2016-12-28' }
@@ -6093,7 +6093,7 @@ RSpec.describe API::Users, '(API behavior when Current.organization is nil)', fe
   let_it_be(:pat_target_user_no_org_context) { create(:user, username: 'pattarget_no_org_test') }
 
   before do
-    allow(Current).to receive(:organization).and_return(nil)
+    stub_current_organization(nil)
   end
 
   describe 'POST /users (when Current.organization is nil)' do

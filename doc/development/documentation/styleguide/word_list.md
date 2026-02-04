@@ -2346,9 +2346,20 @@ Do not use **Reporter permissions**. A user who is assigned the Reporter role ha
 
 ## repository, project
 
-A GitLab project contains, among other things, a Git repository. Use **repository** when referring to the
-Git repository. Use **project** to refer to the GitLab user interface for managing and configuring the
-Git repository, wiki, and other features.
+A GitLab project contains, among other things, a Git repository.
+
+Use **repository** when referring to the Git data and Git-specific operations, such as commits,
+branches, tags, and actions like cloning, fetching, pushing, or pulling.
+
+Use **project** when referring to the GitLab user interface for managing the repository, wikis,
+issues, [forks](#fork), settings, and other features.
+
+For example:
+
+- Push your changes to the upstream repository.
+- Create a fork of the upstream project.
+- Rename the default branch in the repository.
+- Transfer the project to a different group.
 
 ## Repository Mirroring
 

@@ -49,6 +49,7 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     vulnerabilityTrainingDocsPath
     upgradePath
     groupFullPath
+    canApplyProfiles
     canReadAttributes
     canManageAttributes
     groupManageAttributesPath

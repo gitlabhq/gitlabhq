@@ -29,6 +29,7 @@ RSpec.describe Types::Security::ConfigurationType, feature_category: :security_a
       :vulnerability_training_docs_path,
       :upgrade_path,
       :group_full_path,
+      :can_apply_profiles,
       :can_read_attributes,
       :can_manage_attributes,
       :group_manage_attributes_path

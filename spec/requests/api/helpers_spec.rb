@@ -388,7 +388,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
     end
   end
 
-  describe '.set_current_organization' do
+  describe '.set_current_organization', :without_current_organization do
     context 'when user argument is omitted' do
       before do
         allow(self).to receive(:current_user).and_return(user)

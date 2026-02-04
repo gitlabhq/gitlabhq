@@ -81,6 +81,46 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         end
       end
 
+      context 'with scan profiles permissions' do
+        context 'when project has root group' do
+          let_it_be(:parent) { create(:group) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          where(:has_permission, :result) do
+            true  | true
+            false | false
+          end
+
+          with_them do
+            before do
+              allow_next_instance_of(described_class) do |presenter|
+                allow(presenter).to receive(:can?).and_return(false) # default stub for any other permission checks
+                allow(presenter).to receive(:can?).with(anything, :apply_security_scan_profiles, project).and_return(has_permission)
+              end
+            end
+
+            it 'returns expected permission result for can_apply_profiles' do
+              expect(html_data[:can_apply_profiles]).to eq(result)
+            end
+          end
+        end
+
+        context 'when project is under a user namespace' do
+          let_it_be(:parent) { create(:user_namespace) }
+          let_it_be(:project) { create(:project, namespace: parent) }
+
+          before do
+            allow_next_instance_of(described_class) do |presenter|
+              allow(presenter).to receive(:can?).and_return(true)
+            end
+          end
+
+          it 'always returns false' do
+            expect(html_data[:can_apply_profiles]).to be false
+          end
+        end
+      end
+
       context 'with attributes permissions' do
         context 'when project has root group' do
           let_it_be(:parent) { create(:group) }

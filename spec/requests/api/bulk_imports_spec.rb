@@ -245,7 +245,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         end
       end
 
-      context 'when entities do not specify a namespace', :with_current_organization do
+      context 'when entities do not specify a namespace' do
         let(:params) do
           {
             configuration: {

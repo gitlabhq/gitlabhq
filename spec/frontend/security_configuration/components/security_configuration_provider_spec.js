@@ -43,6 +43,7 @@ describe('SecurityConfigurationProvider', () => {
     vulnerabilityTrainingDocsPath: '/training',
     upgradePath: '/upgrade',
     groupFullPath: 'test',
+    canApplyProfiles: true,
     canReadAttributes: true,
     canManageAttributes: false,
     groupManageAttributesPath: '/attributes',

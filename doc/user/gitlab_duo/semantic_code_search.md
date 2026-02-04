@@ -35,10 +35,7 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
 ## Prerequisites
 
-- One of these configured:
-  - Access to the [GitLab AI Gateway](../../administration/gitlab_duo/gateway.md).
-  - A [self-hosted AI Gateway](../../install/install_ai_gateway.md) with access
-    to the Vertex AI `text-embedding-005` model for embedding generation.
+- Access to the GitLab-operated [AI Gateway](../../administration/gitlab_duo/gateway.md).
 - These features turned on:
   - For GitLab.com, experiment features for your top-level namespace.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.

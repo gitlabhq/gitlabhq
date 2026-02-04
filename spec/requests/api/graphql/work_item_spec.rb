@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_category: :team_planning do
+RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   include_context 'with work item request context'
 
   let_it_be(:user) { create(:user) }

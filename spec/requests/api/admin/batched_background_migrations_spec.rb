@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :database do
+RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organization, feature_category: :database do
   let(:admin) { create(:admin) }
 
   describe 'GET /admin/batched_background_migrations/:id' do

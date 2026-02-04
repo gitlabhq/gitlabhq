@@ -45,7 +45,9 @@ The `BulkProcessWorker` is a cron job that runs every minute and processes embed
 
 Currently, semantic search uses **Vertex AI's `text-embedding-005` model** for generating embeddings. The model configuration is defined in the collection classes (for example, `Ai::ActiveContext::Collections::Code`).
 
-Support for selecting different embedding models is planned in [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110). Once available, administrators will be able to choose from multiple embedding models based on their needs.
+Support for setting the embeddings model in a [Self-hosted AI Gateway](../../administration/gitlab_duo_self_hosted/_index.md)
+setup is planned in [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110). Once available, administrators
+in Self-Managed instances with a Self-hosted AI Gateway will be able to select their own embeddings model.
 
 ### Query execution
 

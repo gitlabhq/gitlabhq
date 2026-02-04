@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ImportBitbucket, :with_current_organization, feature_category: :importers do
+RSpec.describe API::ImportBitbucket, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 

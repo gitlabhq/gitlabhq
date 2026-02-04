@@ -161,6 +161,7 @@ export const provideMock = {
   licenseConfigurationSource: 'SBOM',
   canReadAttributes: false,
   canManageAttributes: false,
+  canApplyProfiles: true,
 };
 
 export const createTrackedRef = (overrides = {}) => ({

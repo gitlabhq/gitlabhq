@@ -302,7 +302,8 @@ Show me all labels in project gitlab-org/gitlab
 {{< /history >}}
 
 Searches for relevant code snippets in a GitLab project.
-For more information, see [semantic code search](../semantic_code_search.md).
+For more information, including setup and enablement,
+see [semantic code search](../semantic_code_search.md).
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|

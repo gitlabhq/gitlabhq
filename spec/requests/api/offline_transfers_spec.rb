@@ -18,7 +18,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     it_behaves_like '404 response'
   end
 
-  describe 'POST /offline_exports', :with_current_organization do
+  describe 'POST /offline_exports' do
     let(:bucket) { 'exports' }
     let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
     let(:entity_params) { [{ 'full_path' => 'group/subgroup' }, { 'full_path' => 'group/project' }] }

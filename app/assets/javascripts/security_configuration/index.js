@@ -43,6 +43,7 @@ export const initSecurityConfiguration = (el) => {
   // Legacy mode: use server-rendered data
   const {
     groupFullPath,
+    canApplyProfiles,
     canReadAttributes,
     canManageAttributes,
     groupManageAttributesPath,
@@ -68,6 +69,7 @@ export const initSecurityConfiguration = (el) => {
     provide: {
       projectFullPath,
       groupFullPath,
+      canApplyProfiles: parseBoolean(canApplyProfiles),
       canReadAttributes: parseBoolean(canReadAttributes),
       canManageAttributes: parseBoolean(canManageAttributes),
       groupManageAttributesPath,

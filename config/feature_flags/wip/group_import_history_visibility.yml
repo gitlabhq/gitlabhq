@@ -2,7 +2,7 @@
 name: group_import_history_visibility
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/534493
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187033
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588353
 milestone: '18.0'
 group: group::import
 type: wip

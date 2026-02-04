@@ -127,6 +127,11 @@ module Types
         null: true,
         description: 'Full path of the root ancestor group.'
 
+      field :can_apply_profiles,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether the current user can apply security profiles.'
+
       field :can_read_attributes,
         GraphQL::Types::Boolean,
         null: false,

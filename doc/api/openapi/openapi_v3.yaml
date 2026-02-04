@@ -27,6 +27,8 @@ tags:
   description: Operations related to advanced search rollout.
 - name: Agents
   description: Operations related to agents.
+- name: Ai catalog
+  description: Operations related to ai catalog.
 - name: Alert management
   description: Operations related to alert management.
 - name: Analytics
@@ -16034,6 +16036,22 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/admin/ai_catalog/seed_external_agents":
+    post:
+      operationId: postApiV4AdminAiCatalogSeedExternalAgents
+      summary: Hydrate database with GitLab-managed external agents
+      description: This feature is experimental.
+      tags:
+      - Ai catalog
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '422':
+          description: 422 Unprocessable Entity
   "/api/v4/admin/active_context/connections":
     get:
       operationId: getApiV4AdminActiveContextConnections

@@ -101,10 +101,37 @@ Required steps to enable and use managed agents:
 
 ### GitLab-managed external agents
 
+#### On GitLab.com
+
 The following agents are provided by GitLab and use GitLab-managed credentials:
 
 - [Claude Agent on GitLab.com](https://gitlab.com/explore/ai-catalog/agents/2337/)
 - [Codex Agent on GitLab.com](https://gitlab.com/explore/ai-catalog/agents/2334/)
+
+#### On GitLab Self-Managed and GitLab Dedicated
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221986) as an experiment in GitLab 18.8.
+
+{{< /history >}}
+
+GitLab Self-Managed and Dedicated administrators can seed the Claude Agent and Codex Agent to their GitLab instance using [a REST API endpoint](../../../api/admin/ai_catalog.md#seed-gitlab-managed-external-agents).
+
+To seed your instance:
+
+1. Have an administrator user create a [personal access token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) with the [`api` scope](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+   - **GitLab Self-Managed only**: Also select the `admin_mode` scope if [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled.
+1. Call [the REST API endpoint](../../../api/admin/ai_catalog.md#seed-gitlab-managed-external-agents) using the administrator's personal access token for authentication. When successful, the external agents become visible in the AI Catalog.
+1. [Revoke the personal access token](../../../user/profile/personal_access_tokens.md#revoke-a-personal-access-token) for security.
 
 ### Amazon Q Developer
 

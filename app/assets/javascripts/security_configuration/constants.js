@@ -193,6 +193,10 @@ export const SCAN_PROFILE_I18N = {
   errorDetaching: s__('SecurityProfiles|Error detaching profile. Please try again.'),
   successApplying: s__('SecurityProfiles|Profile applied successfully.'),
   successDetaching: s__('SecurityProfiles|Profile disabled successfully.'),
+  tooltipTitle: s__('SecurityProfiles|Action unavailable'),
+  accessLevelTooltipDescription: s__(
+    'SecurityProfiles|Only a project maintainer or owner can apply or disable profiles.',
+  ),
 };
 export const SCAN_PROFILE_STATUS_APPLIED = 'enabled';
 export const SCAN_PROFILE_STATUS_MIXED = 'mixed';
