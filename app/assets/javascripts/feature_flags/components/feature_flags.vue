@@ -243,7 +243,7 @@ export default {
             'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
           )
         "
-        @dismissAlert="clearAlert"
+        @dismiss-alert="clearAlert"
       >
         <feature-flags-table :feature-flags="featureFlags" @toggle-flag="toggleFeatureFlag" />
       </empty-state>

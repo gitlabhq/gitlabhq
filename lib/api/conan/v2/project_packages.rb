@@ -89,7 +89,8 @@ module API
                 end
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
                 get urgency: :low do
                   not_found!('Package') unless package
 
@@ -112,7 +113,8 @@ module API
                 end
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                 route_setting :authorization, job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
                 get urgency: :low do
                   not_found!('Package') unless package
 
@@ -136,7 +138,8 @@ module API
                   end
 
                   route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                  route_setting :authorization, job_token_policies: :admin_packages
+                  route_setting :authorization, job_token_policies: :admin_packages,
+                    permissions: :delete_conan_package, boundary_type: :project
 
                   delete urgency: :low do
                     authorize_destroy_package!(project)
@@ -177,7 +180,8 @@ module API
                     end
                     route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                     route_setting :authorization, job_token_policies: :read_packages,
-                      allow_public_access_for_enabled_project_features: :package_registry
+                      allow_public_access_for_enabled_project_features: :package_registry,
+                      permissions: :read_conan_package, boundary_type: :project
                     get urgency: :low do
                       not_found!('Package') unless package
 
@@ -205,7 +209,8 @@ module API
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
-                        allow_public_access_for_enabled_project_features: :package_registry
+                        allow_public_access_for_enabled_project_features: :package_registry,
+                        permissions: :read_conan_package, boundary_type: :project
                       get urgency: :low do
                         download_package_file(:recipe_file)
                       end
@@ -229,7 +234,8 @@ module API
                       end
 
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                      route_setting :authorization, job_token_policies: :admin_packages
+                      route_setting :authorization, job_token_policies: :admin_packages,
+                        permissions: :upload_conan_package, boundary_type: :project
 
                       put urgency: :low do
                         upload_package_file(:recipe_file)
@@ -248,7 +254,8 @@ module API
                       end
 
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                      route_setting :authorization, job_token_policies: :admin_packages
+                      route_setting :authorization, job_token_policies: :admin_packages,
+                        permissions: :authorize_conan_package, boundary_type: :project
 
                       put 'authorize', urgency: :low do
                         authorize_workhorse!(subject: project, maximum_size: project.actual_limits.conan_max_file_size)
@@ -269,8 +276,9 @@ module API
                   end
 
                   route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                  route_setting :authorization,  job_token_policies: :read_packages,
-                    allow_public_access_for_enabled_project_features: :package_registry
+                  route_setting :authorization, job_token_policies: :read_packages,
+                    allow_public_access_for_enabled_project_features: :package_registry,
+                    permissions: :read_conan_package, boundary_type: :project
 
                   get 'search', urgency: :low do
                     check_username_channel
@@ -301,7 +309,8 @@ module API
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
-                        allow_public_access_for_enabled_project_features: :package_registry
+                        allow_public_access_for_enabled_project_features: :package_registry,
+                        permissions: :read_conan_package, boundary_type: :project
                       get urgency: :low do
                         not_found!('Package') unless package
 
@@ -324,7 +333,8 @@ module API
                       end
                       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                       route_setting :authorization, job_token_policies: :read_packages,
-                        allow_public_access_for_enabled_project_features: :package_registry
+                        allow_public_access_for_enabled_project_features: :package_registry,
+                        permissions: :read_conan_package, boundary_type: :project
                       get urgency: :low do
                         not_found!('Package') unless package
 
@@ -356,7 +366,8 @@ module API
                         end
 
                         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                        route_setting :authorization, job_token_policies: :admin_packages
+                        route_setting :authorization, job_token_policies: :admin_packages,
+                          permissions: :delete_conan_package, boundary_type: :project
 
                         delete urgency: :low do
                           authorize_destroy_package!(project)
@@ -389,7 +400,8 @@ module API
                           end
                           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
                           route_setting :authorization, job_token_policies: :read_packages,
-                            allow_public_access_for_enabled_project_features: :package_registry
+                            allow_public_access_for_enabled_project_features: :package_registry,
+                            permissions: :read_conan_package, boundary_type: :project
                           get urgency: :low do
                             not_found!('Package') unless package
 
@@ -422,7 +434,8 @@ module API
                             route_setting :authentication, job_token_allowed: true,
                               basic_auth_personal_access_token: true
                             route_setting :authorization, job_token_policies: :read_packages,
-                              allow_public_access_for_enabled_project_features: :package_registry
+                              allow_public_access_for_enabled_project_features: :package_registry,
+                              permissions: :read_conan_package, boundary_type: :project
                             get urgency: :low do
                               download_package_file(:package_file)
                             end
@@ -447,7 +460,8 @@ module API
 
                             route_setting :authentication, job_token_allowed: true,
                               basic_auth_personal_access_token: true
-                            route_setting :authorization, job_token_policies: :admin_packages
+                            route_setting :authorization, job_token_policies: :admin_packages,
+                              permissions: :upload_conan_package, boundary_type: :project
 
                             put urgency: :low do
                               upload_package_file(:package_file)
@@ -467,7 +481,8 @@ module API
 
                             route_setting :authentication, job_token_allowed: true,
                               basic_auth_personal_access_token: true
-                            route_setting :authorization, job_token_policies: :admin_packages
+                            route_setting :authorization, job_token_policies: :admin_packages,
+                              permissions: :authorize_conan_package, boundary_type: :project
 
                             put 'authorize', urgency: :low do
                               authorize_workhorse!(subject: project,

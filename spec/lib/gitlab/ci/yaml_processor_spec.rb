@@ -2317,7 +2317,7 @@ module Gitlab
         end
 
         %w[on_success on_failure always].each do |when_state|
-          it "returns artifacts for when #{when_state}  defined" do
+          it "returns artifacts for when #{when_state} defined" do
             config = YAML.dump({
               rspec: {
                 script: "rspec",

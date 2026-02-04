@@ -101,7 +101,57 @@ GitLab Credits are consumed in the following order:
 
 ## Buy GitLab Credits
 
-To buy GitLab Credits, [contact the Sales team](https://about.gitlab.com/sales/).
+You can buy GitLab Credits for your Monthly Commitment Pool in Customers Portal.
+
+{{< tabs >}}
+
+{{< tab title="Customers Portal" >}}
+
+Prerequisites:
+
+- You must be a billing account manager.
+
+1. Sign in to [Customers Portal](https://customers.gitlab.com/).
+1. On the relevant subscription card, select **GitLab Credits dashboard**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. Enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab.com" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **GitLab Credits**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. In the Customers Portal form, enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- You must be an administrator.
+- Your instance must be able to synchronize your subscription data with GitLab.
+
+1. In the upper-right corner, select **Admin**.
+1. Select **GitLab Credits**.
+1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. In the Customers Portal form, enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Your GitLab Credits are displayed in the subscription card in Customers Portal, and in the GitLab Credits dashboard.
 
@@ -235,7 +285,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. In the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Credits**.
 
 {{< /tab >}}
@@ -247,7 +297,7 @@ Prerequisites:
 - You must be an administrator.
 - Your instance must be able to synchronize your subscription data with GitLab.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Credits**.
 
 {{< /tab >}}

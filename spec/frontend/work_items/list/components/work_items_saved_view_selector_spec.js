@@ -1,7 +1,13 @@
 import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import WorkItemsSavedViewSelector from '~/work_items/list/components/work_items_saved_view_selector.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const mockSavedView = {
   __typename: 'SavedView',
@@ -16,19 +22,19 @@ describe('WorkItemsSavedViewSelector', () => {
   let wrapper;
 
   const createComponent = ({
-    routeMock = {
-      params: { view_id: undefined },
-    },
+    routeMock = { params: { view_id: undefined } },
     savedView = mockSavedView,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemsSavedViewSelector, {
       propsData: {
         savedView,
-        fullPath: 'test-project-path',
-        sortKey: CREATED_DESC,
+        savedSort: CREATED_DESC,
       },
       mocks: {
         $route: routeMock,
+        $toast: {
+          show: jest.fn(),
+        },
       },
     });
   };
@@ -97,6 +103,41 @@ describe('WorkItemsSavedViewSelector', () => {
       const button = findButton();
       expect(button.exists()).toBe(true);
       expect(button.props('to')).toEqual({ name: 'savedView', params: { view_id: '1' } });
+    });
+  });
+
+  describe('copy view link', () => {
+    const mockLocationHref = 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/views/1';
+
+    beforeEach(() => {
+      copyToClipboard.mockReset();
+      Sentry.captureException.mockReset();
+      Object.defineProperty(window, 'location', {
+        value: { href: mockLocationHref },
+        writable: true,
+      });
+    });
+
+    it('copies current URL to clipboard and shows toast on success', async () => {
+      createComponent({ routeMock: { params: { view_id: '1' } } });
+      copyToClipboard.mockResolvedValue();
+
+      findCopyAction().vm.$emit('action');
+      await waitForPromises();
+
+      expect(copyToClipboard).toHaveBeenCalledWith(mockLocationHref);
+      expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Link to view copied to clipboard.');
+    });
+
+    it('captures exception when copy fails', async () => {
+      createComponent({ routeMock: { params: { view_id: '1' } } });
+      const error = new Error('Copy failed');
+      copyToClipboard.mockRejectedValue(error);
+
+      findCopyAction().vm.$emit('action');
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
   });
 });

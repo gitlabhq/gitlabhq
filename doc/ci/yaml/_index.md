@@ -1335,7 +1335,7 @@ deploy:
 
 **Related topics**:
 
-- [Use inputs from external files](../inputs/_index.md#use-inputs-from-external-files).
+- [Use inputs from external files](../inputs/_index.md#define-pipeline-inputs-in-external-files).
 
 ---
 

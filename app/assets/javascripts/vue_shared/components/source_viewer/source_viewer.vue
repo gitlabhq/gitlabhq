@@ -155,9 +155,17 @@ export default {
     this.selectLine();
   },
   created() {
-    this.handleAppear = debounce(this.handleChunkAppear, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.pendingChunks = new Set();
+    this.processPendingChunks = debounce(() => {
+      this.pendingChunks.forEach((index) => this.handleChunkAppear(index));
+      this.pendingChunks.clear();
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
+  },
+  beforeDestroy() {
+    this.pendingChunks.clear();
+    this.processPendingChunks.cancel?.();
   },
   methods: {
     async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
@@ -189,6 +197,7 @@ export default {
             toLine: chunk.startingFrom + chunk.totalLines,
             ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
           },
+          context: { batchKey: 'blameData' },
         });
 
         const blob = data?.project?.repository?.blobs?.nodes[0];
@@ -220,6 +229,16 @@ export default {
       });
 
       this.chunkOffsets = newOffsets;
+    },
+
+    handleAppear(chunkIndex) {
+      // Queue visible chunks to prevent skipping during rapid scrolling
+      this.pendingChunks.add(chunkIndex);
+      this.processPendingChunks();
+    },
+    handleDisappear(chunkIndex) {
+      // Prevent chunk from processing if it's not visible in the DOM
+      this.pendingChunks.delete(chunkIndex);
     },
   },
 };
@@ -263,6 +282,7 @@ export default {
           :blame-path="blob.blamePath"
           :blob-path="blob.path"
           @appear="() => handleAppear(index)"
+          @disappear="() => handleDisappear(index)"
         />
       </div>
     </div>

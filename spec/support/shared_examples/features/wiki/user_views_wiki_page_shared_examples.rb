@@ -162,7 +162,7 @@ RSpec.shared_examples 'User views a wiki page' do
         expect(page).to have_link('Inline', href: "#{diff_path}&view=inline")
         expect(page).to have_link('Side-by-side', href: "#{diff_path}&view=parallel")
         expect(page).to have_link("View page @ #{commit.short_id}", href: wiki_page_path(wiki, wiki_page, version_id: commit))
-        expect(page).to have_css('.diff-file[data-blob-diff-path="%s"]' % diff_path)
+        expect(page).to have_css(".diff-file[data-blob-diff-path=\"#{diff_path}\"]")
       end
 
       it 'links to the correct diffs' do

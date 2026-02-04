@@ -5,6 +5,8 @@ module Groups
     DestroyError = Class.new(StandardError)
 
     def async_execute
+      return UnauthorizedError unless authorize_group_deletion
+
       mark_deletion_in_progress
 
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
@@ -13,7 +15,15 @@ module Groups
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
-      authorize_group_deletion
+      unless authorize_group_deletion
+        group.cancel_deletion!(transition_user: current_user)
+        return UnauthorizedError
+      end
+
+      ServiceResponse.success(payload: { group: unsafe_execute })
+    end
+
+    def unsafe_execute
       mark_deletion_in_progress
 
       group.projects.includes(:project_feature).find_each do |project|
@@ -28,7 +38,7 @@ module Groups
 
       group.children.each do |group|
         # This needs to be synchronous since the namespace gets destroyed below
-        DestroyService.new(group, current_user).execute
+        DestroyService.new(group, current_user).unsafe_execute
       end
 
       group.chat_team&.remove_mattermost_team(current_user)
@@ -68,8 +78,9 @@ module Groups
     private
 
     def authorize_group_deletion
-      # TODO - add a policy check here https://gitlab.com/gitlab-org/gitlab/-/issues/353082
       raise DestroyError, "You can't delete this group because you're blocked." if current_user.blocked?
+
+      can?(current_user, :remove_group, group)
     end
 
     def mark_deletion_in_progress

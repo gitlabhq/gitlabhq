@@ -60,7 +60,7 @@ describe('feature_flags/components/feature_flags_tab.vue', () => {
     it('should emit a dismiss event for a dismissed alert', () => {
       alerts.at(0).vm.$emit('dismiss');
 
-      expect(wrapper.findComponent(EmptyState).emitted('dismissAlert')).toEqual([[0]]);
+      expect(wrapper.findComponent(EmptyState).emitted('dismiss-alert')).toEqual([[0]]);
     });
   });
 

@@ -1,7 +1,0 @@
----
-name: delete_protected_tag
-description: Grants the ability to delete protected tags
-permissions:
-  - delete_protected_tag
-boundaries:
-  - project

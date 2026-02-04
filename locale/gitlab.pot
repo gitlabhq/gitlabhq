@@ -30923,9 +30923,6 @@ msgstr ""
 msgid "Geo|Healthy"
 msgstr ""
 
-msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
-msgstr ""
-
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr ""
 
@@ -32274,9 +32271,6 @@ msgid "Give feedback"
 msgstr ""
 
 msgid "Give us feedback"
-msgstr ""
-
-msgid "Give us some feedback"
 msgstr ""
 
 msgid "Given access %{time_ago}"
@@ -37284,15 +37278,6 @@ msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group
 msgstr ""
 
 msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} with the following role: %{role}."
-msgstr ""
-
-msgid "InviteMembersBanner|Collaborate with your team"
-msgstr ""
-
-msgid "InviteMembersBanner|Invite your colleagues"
-msgstr ""
-
-msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr ""
 
 msgid "InviteMembersModal| To get more members, the owner of this top-level group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
@@ -54665,9 +54650,6 @@ msgstr ""
 msgid "Promotions|Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
-msgid "Promotions|Better Protected Branches"
-msgstr ""
-
 msgid "Promotions|Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress."
 msgstr ""
 
@@ -54695,9 +54677,6 @@ msgstr ""
 msgid "Promotions|Dismiss burndown charts promotion"
 msgstr ""
 
-msgid "Promotions|Dismiss repository features promotion"
-msgstr ""
-
 msgid "Promotions|Don't show me this again"
 msgstr ""
 
@@ -54710,9 +54689,6 @@ msgstr ""
 msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
-msgid "Promotions|Improve repositories with GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edition."
 msgstr ""
 
@@ -54720,18 +54696,6 @@ msgid "Promotions|Keep track of events in your project"
 msgstr ""
 
 msgid "Promotions|Not now, thanks!"
-msgstr ""
-
-msgid "Promotions|Push rules"
-msgstr ""
-
-msgid "Promotions|Push rules are defined per project so you can have different rules applied to different projects depends on your needs."
-msgstr ""
-
-msgid "Promotions|Repository Mirroring"
-msgstr ""
-
-msgid "Promotions|Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository."
 msgstr ""
 
 msgid "Promotions|See the other features in the %{subscription_link}"
@@ -54764,9 +54728,6 @@ msgstr ""
 msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
 msgstr ""
 
-msgid "Promotions|Upgrade your plan to improve repositories"
-msgstr ""
-
 msgid "Promotions|Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -54777,9 +54738,6 @@ msgid "Promotions|Weighting your issue"
 msgstr ""
 
 msgid "Promotions|When you have a lot of issues, it can be hard to get an overview. By adding a weight to your issues, you can get a better idea of the effort, cost, required time, or value of each, and so better manage them."
-msgstr ""
-
-msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
 msgid "Prompt cache"
@@ -78456,6 +78414,9 @@ msgstr ""
 msgid "WorkItem|Link items together to show that they're related."
 msgstr ""
 
+msgid "WorkItem|Link to view copied to clipboard."
+msgstr ""
+
 msgid "WorkItem|Linked item removed"
 msgstr ""
 
@@ -80751,9 +80712,6 @@ msgid "Your device was successfully set up! Give it a name and register it with 
 msgstr ""
 
 msgid "Your email"
-msgstr ""
-
-msgid "Your feedback is important to us 👋"
 msgstr ""
 
 msgid "Your file must contain a column named %{codeStart}title%{codeEnd}. A %{codeStart}description%{codeEnd} column is optional. The maximum file size allowed is 10 MB."

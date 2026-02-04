@@ -189,7 +189,9 @@ export default {
         filePath: this.filePath,
         lastCommitSha: this.lastCommitSha,
         fromMergeRequestIid: this.fromMergeRequestIid,
-        forkBranchName: this.canPushToBranch ? undefined : this.nextForkBranchName,
+        ...(this.glFeatures.blobEditRefactor && {
+          forkBranchName: this.canPushToBranch ? undefined : this.nextForkBranchName,
+        }),
       });
 
       try {

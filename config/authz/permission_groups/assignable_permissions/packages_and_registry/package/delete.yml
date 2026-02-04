@@ -2,7 +2,8 @@
 name: delete_package
 description: Grants the ability to delete packages
 permissions:
-  - delete_package
+  - delete_conan_package
   - delete_nuget_package
+  - delete_package
 boundaries:
   - project

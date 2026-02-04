@@ -115,7 +115,7 @@ export default {
      * @param {String} selected
      */
     selectEnvironment(selected) {
-      this.$emit('selectEnvironment', selected);
+      this.$emit('select-environment', selected);
       this.results = [];
       this.closeSuggestions();
     },
@@ -125,7 +125,7 @@ export default {
      * it emits an event with the filter value
      */
     createClicked() {
-      this.$emit('createClicked', this.environmentSearch);
+      this.$emit('create-clicked', this.environmentSearch);
       this.closeSuggestions();
     },
   },

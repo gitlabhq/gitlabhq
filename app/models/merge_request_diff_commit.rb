@@ -44,6 +44,11 @@ class MergeRequestDiffCommit < ApplicationRecord
   TRIM_USER_KEYS =
     %i[author_name author_email committer_name committer_email].freeze
 
+  # A list of columns we should NOT write to the merge_request_diff_commits table
+  # when deduplication of commit data is confirmed to be stable.
+  DEDUPLICATED_COLUMNS =
+    %i[commit_author_id committer_id authored_date committed_date sha message].freeze
+
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
@@ -167,6 +172,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       # At this point, we no longer need the `raw_sha` so we delete it from
       # the row that will be inserted into `merge_request_diff_commits` table.
       row.delete(:raw_sha)
+      DEDUPLICATED_COLUMNS.each { |column| row.delete(column) }
     end
 
     rows_without_metadata = rows.select { |row| row[:merge_request_commits_metadata_id].nil? }

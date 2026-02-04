@@ -1,5 +1,69 @@
 ---
 # Cop supports --autocorrect.
+#
+# ============================================================================
+# CONTRIBUTOR GUIDE: Fixing Gitlab/JsonSafeParse violations
+# ============================================================================
+#
+# Before working on files in this list, please read:
+# https://docs.gitlab.com/development/secure_coding_guidelines/#when-to-use-gitlabjsonparse
+#
+# DEFAULT: Prefer safe_parse for all cases, even for internal data.
+# The performance overhead is acceptable for the security benefit.
+#
+# DECISION TREE:
+#
+# 1. Identify the data source:
+#    - User input (HTTP requests, webhooks, uploads)         → Use safe_parse
+#    - External APIs or message queues                       → Use safe_parse
+#    - Internal cache written by GitLab (Redis, etc)         → Prefer safe_parse (see #2)
+#    - Internal configuration files                          → Prefer safe_parse (see #2)
+#
+# 2. For internal/trusted data, safe_parse is still recommended for defense-in-depth.
+#    Only use parse() if ALL of these are true:
+#    - Data could legitimately exceed safe_parse limits (see limits below)
+#    - You've profiled and confirmed unacceptable performance overhead
+#    - You've discussed with maintainers and documented the decision
+#
+#    When in doubt, choose safe_parse even if it's slower.
+#
+# 3. Choose your approach:
+#
+#    A) CHANGE TO safe_parse (for untrusted input or defense-in-depth):
+#       - Replace Gitlab::Json.parse → Gitlab::Json.safe_parse
+#       - Add a comment explaining why (data source, security benefit)
+#       - Remove file from this list
+#       - Submit your MR
+#
+#    B) KEEP parse (for trusted internal data):
+#       - Add disable comment with detailed explanation in the source file
+#       - Remove file from this list
+#       - Submit your MR
+#       - See example below
+#
+# EXAMPLE - Disable for trusted internal data:
+#
+#   # rubocop:disable Gitlab/JsonSafeParse -- This data is written and read by
+#   # GitLab itself via Redis cache. Using parse() instead of safe_parse()
+#   # because:
+#   #   1. Data source is trusted (internal cache, not user input)
+#   #   2. Data structure is controlled and validated at write time
+#   #   3. Performance matters in this frequently-called code path
+#   #
+#   # See: https://docs.gitlab.com/development/secure_coding_guidelines/#when-to-use-gitlabjsonparse
+#   data = Gitlab::Json.parse(redis_cached_value)
+#   # rubocop:enable Gitlab/JsonSafeParse
+#
+# SAFE_PARSE LIMITS:
+#
+# safe_parse enforces limits on nesting depth, array/hash sizes, and JSON size
+# to protect against DoS attacks. See the full limits table in the docs:
+# https://docs.gitlab.com/development/secure_coding_guidelines/#mitigation-1
+#
+# If your data might legitimately exceed these limits, you can customize them:
+#   Gitlab::Json.safe_parse(data, parse_limits: { max_depth: 50 })
+# ============================================================================
+
 Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:

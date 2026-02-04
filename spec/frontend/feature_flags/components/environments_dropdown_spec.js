@@ -104,7 +104,7 @@ describe('Feature flags > Environments dropdown', () => {
             .at(0);
           button.vm.$emit('click');
           await nextTick();
-          expect(wrapper.emitted('selectEnvironment')).toEqual([['production']]);
+          expect(wrapper.emitted('select-environment')).toEqual([['production']]);
         });
       });
 
@@ -138,7 +138,7 @@ describe('Feature flags > Environments dropdown', () => {
     it('emits create event', async () => {
       wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
       await nextTick();
-      expect(wrapper.emitted('createClicked')).toEqual([['production']]);
+      expect(wrapper.emitted('create-clicked')).toEqual([['production']]);
     });
   });
 });

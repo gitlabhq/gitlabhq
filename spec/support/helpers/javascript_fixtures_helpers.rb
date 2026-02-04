@@ -68,7 +68,7 @@ module JavaScriptFixturesHelpers
         query
       end
     else
-      raise "Could not find query file at #{path}, please check your query_path" % path
+      raise "Could not find query file at #{path}, please check your query_path"
     end
   end
 

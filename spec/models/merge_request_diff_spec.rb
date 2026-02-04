@@ -1445,11 +1445,11 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
   describe '#commit_shas' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be_with_refind(:diff_with_commits) do
+    let(:diff_with_commits) do
       create(:merge_request, source_project: project, target_project: project).merge_request_diff
     end
 
-    let_it_be(:shas_from_commits) do
+    let(:shas_from_commits) do
       diff_with_commits.merge_request.commits.map(&:sha)
     end
 
@@ -1506,15 +1506,17 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
     context 'when diff commits are not preloaded' do
       let(:query_options) { {} }
+      let(:dedup_enabled) { true }
 
       before do
+        stub_feature_flags(merge_request_diff_commits_dedup: dedup_enabled)
         allow(diff_with_commits.association(:merge_request_diff_commits)).to receive(:loaded?).and_return(false)
       end
 
       context 'when SHAs are available only in `merge_request_diff_commits` table' do
         before do
           diff_with_commits.merge_request_diff_commits.each do |commit|
-            commit.update!(merge_request_commits_metadata_id: nil)
+            commit.update!(merge_request_commits_metadata_id: nil, sha: commit.sha)
           end
         end
 
@@ -1525,7 +1527,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       context 'when SHAs are available across both tables' do
         before do
           diff_with_commits.merge_request_diff_commits.sample(10).each do |commit|
-            commit.update!(merge_request_commits_metadata_id: nil)
+            commit.update!(merge_request_commits_metadata_id: nil, sha: commit.sha)
           end
 
           diff_with_commits.merge_request_diff_commits
@@ -1538,9 +1540,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       context 'when merge_request_diff_commits_dedup feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
-        end
+        let(:dedup_enabled) { false }
 
         it_behaves_like 'result with commit SHAs'
         it_behaves_like 'query count verification'

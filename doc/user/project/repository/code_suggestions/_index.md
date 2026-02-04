@@ -2,8 +2,8 @@
 stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
-title: Code Suggestions
+description: Code Suggestions (Classic) helps you write code in GitLab more efficiently by using AI to suggest code as you type.
+title: Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -41,16 +41,18 @@ title: Code Suggestions
 
 {{< /history >}}
 
-Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
+Use GitLab Duo Code Suggestions (Classic) to write code more efficiently by using generative AI to suggest code while you're developing.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
   <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://youtu.be/ds7SG1wgcVM)
 
+Code Suggestions is also available as part of the [GitLab Duo Agent Platform](../../../duo_agent_platform/code_suggestions/_index.md).
+
 ## Prerequisites
 
-To use Code Suggestions:
+To use Code Suggestions (Classic):
 
 - If you have the GitLab Duo Core add-on, [turn on IDE features](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Set up Code Suggestions](set_up.md).

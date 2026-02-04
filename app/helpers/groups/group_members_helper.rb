@@ -87,7 +87,7 @@ module Groups::GroupMembersHelper
 
     group_links = group_group_links(group, include_relations)
     group_links = group_links.search(search, include_parents: true) if search
-    group_links = group_links.page(params[:page]) if Feature.enabled?(:paginate_group_members, group)
+    group_links = group_links.page(params[:page])
 
     {
       members: group_group_links_serialized(group, group_links),

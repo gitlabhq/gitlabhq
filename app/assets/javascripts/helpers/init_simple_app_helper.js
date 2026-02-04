@@ -7,16 +7,19 @@ import createDefaultClient from '~/lib/graphql';
  * @returns {undefined | VueApollo}
  */
 const getApolloProvider = (apolloProviderOption) => {
-  if (apolloProviderOption === true) {
+  if (apolloProviderOption) {
     Vue.use(VueApollo);
+    if (apolloProviderOption === true) {
+      return new VueApollo({
+        defaultClient: createDefaultClient(),
+      });
+    }
 
-    return new VueApollo({
-      defaultClient: createDefaultClient(),
-    });
-  }
-
-  if (apolloProviderOption instanceof VueApollo) {
-    return apolloProviderOption;
+    // Checking for `instanceof VueApollo` may fail when using aliases in Vue3 compat mode
+    // Check for a configured `defaultClient` instead
+    if (apolloProviderOption.defaultClient) {
+      return apolloProviderOption;
+    }
   }
 
   return undefined;
@@ -73,15 +76,16 @@ export const initSimpleApp = (
     return null;
   }
 
-  const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
+  const apolloProvider = getApolloProvider(withApolloProvider);
   const provide = {
     ...(element.dataset.provide ? JSON.parse(element.dataset.provide) : {}),
     ...additionalProvide,
   };
+  const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
 
   return new Vue({
     el: element,
-    apolloProvider: getApolloProvider(withApolloProvider),
+    apolloProvider,
     name,
     provide,
     render(h) {

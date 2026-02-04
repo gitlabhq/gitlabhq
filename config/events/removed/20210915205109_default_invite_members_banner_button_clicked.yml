@@ -13,3 +13,6 @@ tiers:
 additional_properties:
   label:
     description: "`invite_members_banner`"
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221239
+milestone_removed: '18.9'

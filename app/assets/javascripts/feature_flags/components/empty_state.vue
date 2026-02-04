@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     clearAlert(index) {
-      this.$emit('dismissAlert', index);
+      this.$emit('dismiss-alert', index);
     },
   },
 };

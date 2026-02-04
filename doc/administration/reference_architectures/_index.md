@@ -56,8 +56,7 @@ For quick RPS estimation, some potential options include:
   sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)
   ```
 
-- [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads)
-  from GitLab support.
+- [GitLab RPS Analyzer](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/gitlab-rps-analyzer).
 - Other monitoring solutions.
 - Load balancer statistics.
 

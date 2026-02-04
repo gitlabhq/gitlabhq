@@ -1244,6 +1244,17 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
       allow(diff_file).to receive(:removed_lines).and_return(2)
       expect(whitespace_only?).to eq(true)
     end
+
+    context 'when file is binary' do
+      before do
+        allow(diff_file).to receive(:text?).and_return(false)
+      end
+
+      it 'returns false without triggering syntax highlighting' do
+        expect(diff_file).not_to receive(:diff_lines_for_serializer)
+        expect(whitespace_only?).to be false
+      end
+    end
   end
 
   describe '#image_diff?' do

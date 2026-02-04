@@ -152,21 +152,6 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
 
         expect(subject[:group][:pagination].as_json).to include(expected)
       end
-
-      context 'when `paginate_group_members` flag is disabled' do
-        it 'does not set all pagination attributes' do
-          stub_feature_flags(paginate_group_members: false)
-
-          expected = {
-            current_page: nil,
-            per_page: nil,
-            total_items: 1,
-            param_name: :page
-          }.as_json
-
-          expect(subject[:group][:pagination].as_json).to include(expected)
-        end
-      end
     end
 
     context 'when pagination is not available' do

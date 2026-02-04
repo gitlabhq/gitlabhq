@@ -1,7 +1,10 @@
 ---
 key_path: counts.count_total_create_mr_web_ide
 description: Total count of created MRs from WebIDE
-product_group: acquisition
+product_group: activation
+product_categories:
+- web_ide
+- code_review_workflow
 performance_indicator_type: []
 value_type: number
 status: active

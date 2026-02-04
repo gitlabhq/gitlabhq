@@ -68,6 +68,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
         'description' => <<~DESC
           | Spec file | spec/models/user_spec.rb |
           spec/models/user_spec.rb:4
+          **Product Group:** development_analytics\n
         DESC
       }
     end
@@ -381,6 +382,7 @@ RSpec.describe Keeps::QuarantineTopFlakyTestFiles, feature_category: :tooling do
         'description' => <<~DESC
           | Spec file | qa/spec/models/user_spec.rb |
           qa/spec/models/user_spec.rb:4
+          **Product Group:** development_analytics\n
         DESC
       }
     end

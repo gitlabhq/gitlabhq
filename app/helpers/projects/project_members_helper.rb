@@ -21,16 +21,11 @@ module Projects::ProjectMembersHelper
   private
 
   def project_members_app_data(
-    project, members:, invited:, links:, access_requests:, include_relations:,
-    search:, pending_members_count: # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
+    project, members:, invited:, links:, access_requests:, pending_members_count: # rubocop:disable Lint/UnusedMethodArgument -- Argument used in EE
   )
     {
       user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
-      # rubocop:disable Style/MultilineTernaryOperator -- would be cleaned up as part of the feature flag rollout. Helps simplify diffs on removal.
-      group: Feature.enabled?(:paginate_group_members, project) ?
-        project_group_links_list_data(project, links) :
-        legacy_project_group_links_list_data(project, include_relations, search),
-      # rubocop:enable Style/MultilineTernaryOperator
+      group: project_group_links_list_data(project, links),
       invite: project_members_list_data(project, invited.nil? ? [] : invited),
       access_request: project_members_list_data(project, access_requests.nil? ? [] : access_requests),
       source_id: project.id,
@@ -83,33 +78,6 @@ module Projects::ProjectMembersHelper
     {
       members: members,
       pagination: members_pagination_data(links, { param_name: :page }),
-      member_path: project_group_link_path(project, ':id')
-    }
-  end
-
-  def legacy_project_group_links_list_data(project, include_relations, search)
-    members = []
-
-    if include_relations.include?(:direct)
-      project_group_links = project.project_group_links
-      project_group_links = project_group_links.search(search) if search
-      members += project_group_links_serialized(project, project_group_links)
-    end
-
-    if include_relations.include?(:inherited)
-      group_group_links = project.group_group_links.distinct_on_shared_with_group_id_with_group_access
-      group_group_links = group_group_links.search(search, include_parents: true) if search
-      members += group_group_links_serialized(project, group_group_links)
-    end
-
-    if project_group_links.present? && group_group_links.present?
-      members = members.sort_by { |m| -m.dig(:access_level, :integer_value).to_i }
-        .uniq { |m| m.dig(:shared_with_group, :id) }
-    end
-
-    {
-      members: members,
-      pagination: members_pagination_data(members),
       member_path: project_group_link_path(project, ':id')
     }
   end

@@ -16,7 +16,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @sort = pagination_params[:sort].presence || sort_value_name
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
-    @group_member_links = group_member_links if Feature.enabled?(:paginate_group_members, @project)
+    @group_member_links = group_member_links
 
     if can?(current_user, :admin_project_member, @project)
       @invited_members = present_members(invited_members)

@@ -578,7 +578,6 @@ RSpec/BeEq:
     - 'spec/helpers/recaptcha_helper_spec.rb'
     - 'spec/helpers/stat_anchors_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'
-    - 'spec/helpers/users/group_callouts_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
     - 'spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'spec/helpers/web_ide_button_helper_spec.rb'

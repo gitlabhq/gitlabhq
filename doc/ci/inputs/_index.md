@@ -561,7 +561,7 @@ trigger-job:
 
 {{< /tabs >}}
 
-## Use inputs from external files
+#### Define pipeline inputs in external files
 
 {{< history >}}
 
@@ -570,8 +570,8 @@ trigger-job:
 
 {{< /history >}}
 
-You can reuse input definitions across multiple CI/CD configurations by defining them in external files
-and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
+You can reuse pipeline input definitions across multiple CI/CD configurations by defining them in
+external files and including them a project's pipeline configuration with [`spec:include`](../yaml/_index.md#specinclude).
 
 Create a file with input definitions, for example in a file named `shared-inputs.yml`:
 
@@ -616,9 +616,9 @@ spec:
 ```
 
 > [!note]
-> You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
+> You cannot use `spec:include` for [CI/CD component](../components/_index.md#component-spec-section) inputs.
 
-### Override inputs from an external file
+#### Override inputs from an external file
 
 {{< history >}}
 

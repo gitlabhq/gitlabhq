@@ -4,9 +4,11 @@ require_relative 'formatter/graceful_formatter'
 
 module RuboCop
   class CopTodo
-    attr_accessor :grace_period
+    attr_accessor :grace_period, :header_section
 
     attr_reader :cop_name, :files, :offense_count
+
+    AUTO_CORRECT_MARKER = '# Cop supports --autocorrect.'
 
     def initialize(cop_name)
       @cop_name = cop_name
@@ -36,7 +38,8 @@ module RuboCop
     def to_yaml
       yaml = []
       yaml << '---'
-      yaml << '# Cop supports --autocorrect.' if autocorrectable?
+      yaml << AUTO_CORRECT_MARKER if autocorrectable?
+      yaml << header_section.sub("#{AUTO_CORRECT_MARKER}\n", '') if header_section && !header_section.empty?
       yaml << "#{cop_name}:"
 
       yaml << "  #{RuboCop::Formatter::GracefulFormatter.grace_period_key_value}" if grace_period

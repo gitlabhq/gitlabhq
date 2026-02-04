@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :group_callout, class: 'Users::GroupCallout' do
-    feature_name { :invite_members_banner }
+    feature_name { :preview_user_over_limit_free_plan_alert }
 
     user
     group

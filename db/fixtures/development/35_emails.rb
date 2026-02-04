@@ -15,26 +15,28 @@ class Gitlab::Seeder::Emails
     oss_email = "#{user.username}-oss@example.com"
     unverified_email = "#{user.username}-unverified@example.com"
 
-    Email.create!(
+    Email.find_or_create_by(
       user_id: user.id,
       email: unverified_email
     )
 
     [company_email, personal_email, oss_email].each_with_index do |email, index|
-      email_id = Email.create!(
+      email_record = Email.find_or_create_by(
         user_id: user.id,
-        email: email,
-        confirmed_at: DateTime.current
-      ).id
-      Users::NamespaceCommitEmail.create!(
+        email: email
+      ) do |e|
+        e.confirmed_at = DateTime.current
+      end
+
+      Users::NamespaceCommitEmail.find_or_create_by(
         user_id: user.id,
         namespace_id: group_namespace_ids[index],
-        email_id: email_id
+        email_id: email_record.id
       )
-      Users::NamespaceCommitEmail.create!(
+      Users::NamespaceCommitEmail.find_or_create_by(
         user_id: user.id,
         namespace_id: project_namespace_ids[index],
-        email_id: email_id
+        email_id: email_record.id
       )
       print '.'
     end
@@ -49,7 +51,7 @@ Gitlab::Seeder.quiet do
 
   User.first(3).each do |user|
     Gitlab::Seeder::Emails.new(user, group_namespace_ids, project_namespace_ids).seed!
-  rescue => e
+  rescue StandardError => e
     warn "\nError seeding e-mails: #{e}"
   end
 end

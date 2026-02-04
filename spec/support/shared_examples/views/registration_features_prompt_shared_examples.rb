@@ -8,7 +8,7 @@ RSpec.shared_examples 'renders registration features prompt' do |disabled_field|
       expect(rendered).to have_field(disabled_field, disabled: true)
     end
 
-    expect(rendered).to have_content(s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|use this feature') })
+    expect(rendered).to have_content(format(s_("RegistrationFeatures|Want to %{feature_title} for free?"), feature_title: s_('RegistrationFeatures|use this feature')))
     expect(rendered).to have_link(s_('RegistrationFeatures|Registration Features Program'))
   end
 end
@@ -21,7 +21,7 @@ RSpec.shared_examples 'does not render registration features prompt' do |disable
       expect(rendered).not_to have_field(disabled_field, disabled: true)
     end
 
-    expect(rendered).not_to have_content(s_("RegistrationFeatures|Want to %{feature_title} for free?") % { feature_title: s_('RegistrationFeatures|use this feature') })
+    expect(rendered).not_to have_content(format(s_("RegistrationFeatures|Want to %{feature_title} for free?"), feature_title: s_('RegistrationFeatures|use this feature')))
     expect(rendered).not_to have_link(s_('RegistrationFeatures|Registration Features Program'))
   end
 end

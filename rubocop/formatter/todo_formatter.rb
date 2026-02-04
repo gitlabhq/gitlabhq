@@ -24,6 +24,9 @@ module RuboCop
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/415330#caveats
       RETAIN_EXCLUSIONS = %r{\.haml$}
 
+      # Special config key used to store extracted header section temporarily.
+      HEADER_SECTION_KEY = Object.new
+
       class << self
         attr_accessor :base_directory
       end
@@ -83,6 +86,7 @@ module RuboCop
           todo = @todos[cop_name]
           excluded_files = config['Exclude'] || []
           todo.add_files(excluded_files.grep(RETAIN_EXCLUSIONS))
+          todo.header_section = config.delete(HEADER_SECTION_KEY)
         end
       end
 
@@ -115,8 +119,33 @@ module RuboCop
       def load_config_inspect_todo_dir
         @todo_dir.list_inspect.each_with_object({}) do |path, combined|
           config = YAML.load_file(path)
-          combined.update(config) if Hash === config
+          next unless Hash === config
+
+          cop_name = config.each_key.first
+          sub_config = config[cop_name]
+          next unless sub_config
+
+          sub_config[HEADER_SECTION_KEY] = extract_header_section(path, cop_name)
+          combined.update(config)
         end
+      end
+
+      def extract_header_section(path, cop_name)
+        lines = File.read(path)
+
+        from_index = lines.index("---\n")
+        to_index = lines.index("#{cop_name}:\n", from_index || 0)
+
+        raise "Failed to find `#{cop_name}:` in `#{path}`" unless to_index
+
+        # Skip from `---\n` if present
+        from_index = from_index ? from_index + 4 : 0
+        # Skip to cop name excluding the (optional) leading newline in `\nCop/Name:\n`.
+        to_index -= 2 if to_index > 0
+
+        return if from_index >= to_index
+
+        lines[from_index..to_index]
       end
     end
   end

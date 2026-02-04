@@ -294,18 +294,6 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
           expect(assigns(:group_member_links).limit_value).to be(20)
           expect(assigns(:group_member_links).total_count).to be(2)
         end
-
-        context 'when `paginate_group_members` flag is disabled' do
-          before do
-            stub_feature_flags(paginate_group_members: false)
-          end
-
-          it 'does not assign `group_member_links`' do
-            make_request
-
-            expect(assigns(:group_member_links)).to be_nil
-          end
-        end
       end
     end
 

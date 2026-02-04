@@ -1,0 +1,5 @@
+---
+name: delete_conan_package
+description: Grants the ability to delete Conan packages
+boundaries:
+  - project

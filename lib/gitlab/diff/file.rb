@@ -426,6 +426,8 @@ module Gitlab
       end
 
       def whitespace_only?
+        return false unless text?
+
         !collapsed? && diff_lines_for_serializer.nil? && (added_lines != 0 || removed_lines != 0)
       end
 

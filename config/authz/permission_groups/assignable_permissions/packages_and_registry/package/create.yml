@@ -2,9 +2,11 @@
 name: create_package
 description: Grants the ability to create packages
 permissions:
+  - authorize_conan_package
   - authorize_helm_chart
   - authorize_nuget_package
   - authorize_pypi_package
+  - upload_conan_package
   - upload_helm_chart
   - upload_maven_package_file
   - upload_nuget_package

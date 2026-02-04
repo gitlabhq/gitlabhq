@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_fail_arkose_challenge_during_registration_monthly
 description: Monthly count of unique users who fail arkose challenge during registration
 product_group: acquisition
+product_categories:
+- acquisition
 performance_indicator_type: []
 value_type: number
 status: active

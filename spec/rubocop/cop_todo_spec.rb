@@ -136,6 +136,31 @@ RSpec.describe RuboCop::CopTodo, feature_category: :tooling do
       end
     end
 
+    context 'with header section' do
+      let(:header_section) do
+        <<~HEADER
+
+          # This a code comment.
+
+          # But anything is retained, really.
+
+        HEADER
+      end
+
+      specify do
+        cop_todo.record('a.rb', 1)
+        cop_todo.header_section = header_section
+
+        expect(yaml).to eq(<<~YAML)
+          ---
+          #{header_section}
+          #{cop_name}:
+            Exclude:
+              - 'a.rb'
+        YAML
+      end
+    end
+
     context 'with multiple files' do
       before do
         cop_todo.record('a.rb', 0)

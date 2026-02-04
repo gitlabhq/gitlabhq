@@ -1395,7 +1395,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/time_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'
     - 'spec/helpers/tracking_helper_spec.rb'
-    - 'spec/helpers/users/group_callouts_helper_spec.rb'
     - 'spec/helpers/version_check_helper_spec.rb'
     - 'spec/helpers/webpack_helper_spec.rb'
     - 'spec/helpers/whats_new_helper_spec.rb'

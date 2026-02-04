@@ -1181,6 +1181,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when sha is only present in diff commit' do
         before do
+          commit.update!(sha: sha)
           commit.merge_request_commits_metadata.destroy!
         end
 
@@ -1195,10 +1196,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns empty requests' do
         latest_merge_request_diff = merge_request.merge_request_diffs.create!
-
+        commits_metadata = MergeRequest::CommitsMetadata.where(sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
         MergeRequestDiffCommit.where(
           merge_request_diff_id: latest_merge_request_diff,
-          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+          merge_request_commits_metadata: commits_metadata
         ).delete_all
 
         expect(by_commit_sha).to be_empty
@@ -4282,8 +4283,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#all_commit_shas' do
-    let_it_be_with_refind(:merge_request) { create(:merge_request, source_project: project) }
-    let_it_be(:shas_from_commits) do
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:shas_from_commits) do
       merge_request.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
     end
 
@@ -4359,7 +4360,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when `sha` data is distributed across both tables' do
       before do
         merge_request.merge_request_diffs.flat_map(&:merge_request_diff_commits).sample(10).map do |diff_commit|
-          diff_commit.update!(merge_request_commits_metadata_id: nil)
+          diff_commit.update!(merge_request_commits_metadata_id: nil, sha: diff_commit.sha)
         end
       end
 

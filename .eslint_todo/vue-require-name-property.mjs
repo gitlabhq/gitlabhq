@@ -443,7 +443,6 @@ export default {
     'app/assets/javascripts/groups/components/group_path_field.vue',
     'app/assets/javascripts/groups/components/groups.vue',
     'app/assets/javascripts/groups/components/groups_list_with_filtered_search_app.vue',
-    'app/assets/javascripts/groups/components/invite_members_banner.vue',
     'app/assets/javascripts/groups/components/item_actions.vue',
     'app/assets/javascripts/groups/components/item_stats.vue',
     'app/assets/javascripts/groups/components/item_stats_value.vue',

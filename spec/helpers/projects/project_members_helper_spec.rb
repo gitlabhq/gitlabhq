@@ -32,8 +32,6 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
             invited: present_members(invited),
             links: links,
             access_requests: present_members(access_requests),
-            include_relations: [:inherited, :direct],
-            search: nil,
             pending_members_count: nil
           )
         )
@@ -130,67 +128,6 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
         it 'sets `member_path` property' do
           expect(subject['group']['member_path']).to eq('/foo-group/foo-project/-/group_links/:id')
         end
-
-        # rubocop:disable RSpec/MultipleMemoizedHelpers -- tests have existed for a long time and
-        # this would be removed after the feature is rolled out.
-        context 'when `paginate_group_members` flag is disabled' do
-          before do
-            stub_feature_flags(paginate_group_members: false)
-          end
-
-          context 'inherited' do
-            let_it_be(:shared_with_group_1) { create(:group) }
-            let_it_be(:shared_with_group_2) { create(:group) }
-            let_it_be(:shared_with_group_3) { create(:group) }
-            let_it_be(:shared_with_group_4) { create(:group) }
-            let_it_be(:shared_with_group_5) { create(:group) }
-            let_it_be(:top_group) { create(:group) }
-            let_it_be(:sub_group) { create(:group, parent: top_group) }
-            let_it_be(:project) { create(:project, group: sub_group) }
-            let_it_be(:members) { create_list(:project_member, 2, project: project) }
-            let_it_be(:invited) { create_list(:project_member, 2, :invited, project: project) }
-            let_it_be(:access_requests) { create_list(:project_member, 2, :access_request, project: project) }
-            let_it_be(:group_link_1) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_1, group_access: Gitlab::Access::GUEST) }
-            let_it_be(:group_link_2) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_4, group_access: Gitlab::Access::GUEST) }
-            let_it_be(:group_link_3) { create(:group_group_link, shared_group: top_group, shared_with_group: shared_with_group_5, group_access: Gitlab::Access::DEVELOPER) }
-            let_it_be(:group_link_4) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_2, group_access: Gitlab::Access::DEVELOPER) }
-            let_it_be(:group_link_5) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_4, group_access: Gitlab::Access::DEVELOPER) }
-            let_it_be(:group_link_6) { create(:group_group_link, shared_group: sub_group, shared_with_group: shared_with_group_5, group_access: Gitlab::Access::GUEST) }
-            let_it_be(:group_link_7) { create(:project_group_link, project: project, group: shared_with_group_1, group_access: Gitlab::Access::DEVELOPER) }
-            let_it_be(:group_link_8) { create(:project_group_link, project: project, group: shared_with_group_2, group_access: Gitlab::Access::GUEST) }
-            let_it_be(:group_link_9) { create(:project_group_link, project: project, group: shared_with_group_3, group_access: Gitlab::Access::REPORTER) }
-
-            subject do
-              Gitlab::Json.parse(
-                helper.project_members_app_data_json(
-                  project,
-                  members: present_members(members_collection),
-                  invited: present_members(invited),
-                  links: links,
-                  access_requests: present_members(access_requests),
-                  include_relations: include_relations,
-                  search: nil,
-                  pending_members_count: nil
-                )
-              )
-            end
-
-            using RSpec::Parameterized::TableSyntax
-
-            where(:include_relations, :result) do
-              [:inherited, :direct] | lazy { [group_link_7, group_link_4, group_link_9, group_link_5, group_link_3].map(&:id) }
-              [:inherited] | lazy { [group_link_1, group_link_4, group_link_5, group_link_3].map(&:id) }
-              [:direct] | lazy { [group_link_7, group_link_8, group_link_9].map(&:id) }
-            end
-
-            with_them do
-              it 'returns correct group links' do
-                expect(subject['group']['members'].map { |link| link['id'] }).to match_array(result)
-              end
-            end
-          end
-        end
-        # rubocop:enable RSpec/MultipleMemoizedHelpers
       end
     end
   end

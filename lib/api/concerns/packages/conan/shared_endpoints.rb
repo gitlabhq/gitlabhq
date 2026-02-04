@@ -68,7 +68,9 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :authenticate_conan_package,
+                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
 
               get 'authenticate', urgency: :low do
                 unauthorized! unless token
@@ -87,7 +89,9 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :authenticate_conan_package,
+                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
 
               get 'check_credentials', urgency: :default do
                 :ok
@@ -113,7 +117,9 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
+              route_setting :authorization, skip_job_token_policies: true,
+                permissions: :search_conan_package,
+                boundaries: [{ boundary_type: :project }, { boundary_type: :instance }]
 
               get 'search', urgency: :low do
                 response = ::Packages::Conan::SearchService.new(
@@ -154,8 +160,9 @@ module API
                 end
 
                 route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-                route_setting :authorization,  job_token_policies: :read_packages,
-                  allow_public_access_for_enabled_project_features: :package_registry
+                route_setting :authorization, job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry,
+                  permissions: :read_conan_package, boundary_type: :project
 
                 get urgency: :low do
                   check_username_channel

@@ -215,6 +215,19 @@ describe('Source Viewer component', () => {
         expect(blameDataQueryHandlerSuccess).toHaveBeenCalledTimes(1);
       });
 
+      describe('chunk visibility queuing', () => {
+        it('does not fetch blame data when chunk disappears before processing', () => {
+          blameDataQueryHandlerSuccess.mockClear();
+
+          triggerChunkAppear(0);
+          findChunks().at(0).vm.$emit('disappear');
+
+          jest.runAllTimers();
+
+          expect(blameDataQueryHandlerSuccess).not.toHaveBeenCalled();
+        });
+      });
+
       it('requests blame information for overlapping chunk', async () => {
         await triggerChunkAppear(1);
 

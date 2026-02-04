@@ -1000,6 +1000,7 @@ This command supports the following options:
   - `--database DATABASE_NAME`: Connects to the given database:
     - `main`: Uses the main database (default).
     - `ci`: Uses the CI database.
+    - `sec`: Uses the Security database.
 - Environment selection:
   - `--dev`: Uses the `dev` environment.
   - `--staging`: Uses the `staging` environment.

@@ -278,6 +278,29 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when user does not have authorization to delete the group' do
+    let(:unauthorized_user) { create(:user) }
+
+    it 'returns an unauthorized error response and does not mark deletion in progress' do
+      expect(group).not_to be_member(unauthorized_user)
+
+      result = destroy_group(group, unauthorized_user, false)
+
+      expect(result).to eq(described_class::UnauthorizedError)
+      expect(group.reload).not_to be_deletion_in_progress
+      expect(group).not_to be_deletion_scheduled
+    end
+
+    it 'returns an unauthorized error response for async_execute' do
+      expect(group).not_to be_member(unauthorized_user)
+
+      result = destroy_group(group, unauthorized_user, true)
+
+      expect(result).to eq(described_class::UnauthorizedError)
+      expect(group.reload).not_to be_deletion_in_progress
+    end
+  end
+
   describe 'repository removal' do
     before do
       destroy_group(group, user, false)

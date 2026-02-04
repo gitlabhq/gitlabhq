@@ -35,7 +35,7 @@ describe('Chunk component', () => {
       expect(findIntersectionObserver().exists()).toBe(true);
     });
 
-    it('renders highlighted content if appear event is emitted', async () => {
+    it('emits appear event when intersection observer appears', async () => {
       createComponent({ isHighlighted: false });
       findIntersectionObserver().vm.$emit('appear');
 
@@ -43,6 +43,12 @@ describe('Chunk component', () => {
 
       expect(findContent().exists()).toBe(true);
       expect(wrapper.emitted('appear')).toHaveLength(1);
+    });
+
+    it('emits disappear event when intersection observer disappears', () => {
+      findIntersectionObserver().vm.$emit('disappear');
+
+      expect(wrapper.emitted('disappear')).toHaveLength(1);
     });
   });
 

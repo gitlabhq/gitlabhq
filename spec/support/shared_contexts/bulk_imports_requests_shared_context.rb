@@ -36,7 +36,7 @@ RSpec.shared_context 'bulk imports requests context' do |url|
         headers: page_response_headers
       )
 
-    stub_request(:get, "%{url}/api/v4/groups?min_access_level=50&page=1&per_page=20&private_token=demo-pat&search=&top_level_only=true" % { url: url })
+    stub_request(:get, format("%{url}/api/v4/groups?min_access_level=50&page=1&per_page=20&private_token=demo-pat&search=&top_level_only=true", url: url))
       .to_return(
         body: [{
           id: 2595438,

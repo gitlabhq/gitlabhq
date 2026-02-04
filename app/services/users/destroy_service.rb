@@ -64,7 +64,7 @@ module Users
       user.members.each_batch { |batch| batch.destroy_all } # rubocop:disable Cop/DestroyAll
 
       solo_owned_groups.each do |group|
-        Groups::DestroyService.new(group, current_user).execute
+        Groups::DestroyService.new(group, current_user).unsafe_execute
       end
 
       user.personal_projects.each do |project|

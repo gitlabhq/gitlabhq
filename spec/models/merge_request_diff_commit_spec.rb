@@ -137,12 +137,39 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       ]
     end
 
-    it 'inserts the commits into the database en masse' do
-      expect(ApplicationRecord).to receive(:legacy_bulk_insert)
-        .with(described_class.table_name, rows)
-
-      create_bulk(merge_request_diff_id)
+    let(:deduplicated_rows) do
+      rows.map do |row|
+        row.except(
+          :commit_author_id,
+          :committer_id,
+          :authored_date,
+          :committed_date,
+          :sha,
+          :message)
+      end
     end
+
+    let(:commits_metadata_rows) do
+      rows.map do |row|
+        row = row.except(:merge_request_commits_metadata_id)
+        row.merge(raw_sha: row.fetch(:sha).hex)
+      end
+    end
+
+    shared_examples 'inserts the commits into the database en masse' do
+      it 'inserts the commits into both diff_commits and commits_metadata' do
+        expect(MergeRequest::CommitsMetadata)
+          .to receive(:bulk_find_or_create)
+                .with(project.id, commits_metadata_rows).and_call_original
+
+        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
+                                       .with(described_class.table_name, deduplicated_rows)
+
+        create_bulk(merge_request_diff_id)
+      end
+    end
+
+    it_behaves_like 'inserts the commits into the database en masse'
 
     it 'creates diff commit users' do
       diff = create(:merge_request_diff, merge_request: merge_request)
@@ -163,14 +190,9 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         stub_feature_flags(merge_request_diff_commits_partition: false)
       end
 
-      it 'does not set `project_id` attribute' do
-        expected_attributes = rows.map { |row| row.except(:project_id) }
+      let(:rows) { super().map { |row| row.except(:project_id) } }
 
-        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
-          .with(described_class.table_name, expected_attributes)
-
-        create_bulk(merge_request_diff_id)
-      end
+      include_examples 'inserts the commits into the database en masse'
     end
 
     context 'for merge_request_commits_metadata' do
@@ -193,20 +215,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           expect(metadata.committed_date).to eq(row[:committed_date])
           expect(metadata.sha).to eq(commit.sha)
           expect(metadata.message).to eq(commit.message)
-          expect(metadata.trailers).to eq({})
           expect(metadata.project_id).to eq(project.id)
-        end
-      end
-
-      context 'when there are already existing commits metadata record for some SHAs' do
-        it 'does not create a new merge_request_commits_metadata record' do
-          # Call create_bulk to create bulk records and simulate existing records
-          # so calling it again for a new `MergeRequestDiff` shouldn't create
-          # new commit metadata records.
-          create_bulk(merge_request_diff_id)
-
-          expect { create_bulk(create(:merge_request_diff).id) }
-            .not_to change { MergeRequest::CommitsMetadata.count }
         end
       end
 
@@ -248,30 +257,36 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           expect(diff_commits[0].merge_request_commits_metadata_id).not_to be_nil
           expect(diff_commits[1].merge_request_commits_metadata_id).to be_nil
         end
-      end
 
-      context 'when merge_request_diff_commits_dedup is disabled' do
-        before do
-          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        context 'when there are already existing commits metadata record for some SHAs' do
+          it 'does not create a new merge_request_commits_metadata record' do
+            # Call create_bulk to create bulk records and simulate existing records
+            # so calling it again for a new `MergeRequestDiff` shouldn't create
+            # new commit metadata records.
+            create_bulk(merge_request_diff_id)
+
+            expect { create_bulk(create(:merge_request_diff).id) }
+              .not_to change { MergeRequest::CommitsMetadata.count }
+          end
         end
 
-        it 'does not create merge_request_commits_metadata records' do
-          expect { create_bulk(merge_request_diff_id) }.not_to change { MergeRequest::CommitsMetadata.count }
+        context 'when merge_request_diff_commits_dedup is disabled' do
+          before do
+            stub_feature_flags(merge_request_diff_commits_dedup: false)
+          end
+
+          it 'does not create merge_request_commits_metadata records' do
+            expect { create_bulk(merge_request_diff_id) }.not_to change { MergeRequest::CommitsMetadata.count }
+          end
         end
       end
     end
 
     context 'when "skip_commit_data: true"' do
       let(:skip_commit_data) { true }
+      let(:rows) { super().map { |row| row.merge(message: '') } }
 
-      it 'inserts the commits into the database en masse' do
-        rows_with_empty_messages = rows.map { |h| h.merge(message: '') }
-
-        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
-          .with(described_class.table_name, rows_with_empty_messages)
-
-        create_bulk(merge_request_diff_id)
-      end
+      include_examples 'inserts the commits into the database en masse'
     end
 
     context 'with dates larger than the DB limit' do
@@ -291,17 +306,12 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           merge_request_diff_id: merge_request_diff_id,
           relative_order: 0,
           sha: Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
-          trailers: {}.to_json,
           merge_request_commits_metadata_id: an_instance_of(Integer),
+          trailers: {}.to_json,
           project_id: an_instance_of(Integer)
         }]
-      end
 
-      it 'uses a sanitized date' do
-        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
-          .with(described_class.table_name, rows)
-
-        create_bulk(merge_request_diff_id)
+        include_examples 'inserts the commits into the database en masse'
       end
     end
 

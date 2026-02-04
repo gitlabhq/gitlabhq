@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/ExcessiveDocstringSpacing:
   Exclude:
-    - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/lib/gitlab/diff/formatters/text_formatter_spec.rb'
     - 'spec/lib/gitlab/git/repository_spec.rb'
     - 'spec/lib/gitlab/spamcheck/client_spec.rb'

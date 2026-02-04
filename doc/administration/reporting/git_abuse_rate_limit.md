@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
+description: Configure Git abuse rate limiting to automatically restrict and ban users who exceed defined repository download limits on a GitLab instance
 title: Git abuse rate limit (administration)
 ---
 

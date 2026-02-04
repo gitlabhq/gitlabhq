@@ -28,5 +28,3 @@
 - if can?(current_user, :admin_project, @project)
   = render 'shared/deploy_keys/index'
   = render "projects/maintenance/show"
-
-  = render_if_exists 'shared/promotions/promote_repository_features'

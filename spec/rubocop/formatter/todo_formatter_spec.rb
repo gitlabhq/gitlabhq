@@ -235,6 +235,66 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
         end
       end
     end
+
+    context 'with header section' do
+      let(:yaml) do
+        <<~YAML
+          ---
+          # Cop supports --autocorrect.
+
+          #
+          # Just a comment
+          #
+
+          A/Offense:
+            Exclude:
+              - 'a.rb'
+        YAML
+      end
+
+      before do
+        todo_dir.write('A/Offense', yaml)
+        todo_dir.inspect_all
+      end
+
+      it 'retains anything before offense name' do
+        run_formatter
+
+        expect(todo_yml('A/Offense')).to eq(<<~YAML)
+          ---
+
+          #
+          # Just a comment
+          #
+
+          A/Offense:
+            Exclude:
+              - 'a.rb'
+        YAML
+      end
+
+      context 'with sole definition' do
+        let(:yaml) do
+          <<~YAML
+
+            A/Offense:
+              Exclude:
+                - 'a.rb'
+          YAML
+        end
+
+        it 'retains anything before offense name' do
+          run_formatter
+
+          expect(todo_yml('A/Offense')).to eq(<<~YAML)
+            ---
+            A/Offense:
+              Exclude:
+                - 'a.rb'
+          YAML
+        end
+      end
+    end
   end
 
   context 'without offenses detected' do

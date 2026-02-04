@@ -146,6 +146,10 @@ module Gitlab
             row['merge_request_commits_metadata'] = merge_request_commits_metadata ||
               find_or_create_merge_request_commits_metadata(commit_metadata_attrs)
 
+            %w[committer commit_author authored_date committed_date sha message].each do |deduplicated_column|
+              row.delete(deduplicated_column)
+            end
+
             unless row['merge_request_commits_metadata'].present?
               Gitlab::ErrorTracking.track_exception(
                 MergeRequestDiffCommit::CouldNotCreateMetadataError.new,

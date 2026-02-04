@@ -15,7 +15,7 @@ module Users
       button_link: "https://about.gitlab.com/",
       content: "Add your message here.",
       variant: :promotion,
-      feature_id: :invite_members_banner
+      feature_id: :preview_user_over_limit_free_plan_alert
     )
       render(Users::GroupDismissibleBannerComponent.new(
         button_text: button_text,
@@ -38,7 +38,7 @@ module Users
         svg_path: "illustrations/devops-sm.svg",
         variant: :promotion,
         dismiss_options: {
-          feature_id: :invite_members_banner,
+          feature_id: :preview_user_over_limit_free_plan_alert,
           group: FactoryBot.build_stubbed(:group),
           user: FactoryBot.build_stubbed(:user)
         },

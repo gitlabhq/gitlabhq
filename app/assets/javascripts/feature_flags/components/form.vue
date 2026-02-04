@@ -129,7 +129,7 @@ export default {
         strategies: this.formStrategies,
       };
 
-      this.$emit('handleSubmit', flag);
+      this.$emit('handle-submit', flag);
     },
 
     onFormStrategyChange(strategy, index) {

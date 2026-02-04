@@ -2,8 +2,8 @@
 stage: AI-powered
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Troubleshooting tips for common problems in Code Suggestions.
-title: Troubleshooting Code Suggestions
+description: Troubleshooting tips for common problems in Code Suggestions (Classic).
+title: Troubleshooting Code Suggestions (Classic)
 ---
 
 {{< details >}}
@@ -21,7 +21,7 @@ title: Troubleshooting Code Suggestions
 
 {{< /history >}}
 
-When working with GitLab Duo Code Suggestions, you might encounter the following issues.
+When working with GitLab Duo Code Suggestions (Classic), you might encounter the following issues.
 
 You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your instance meets the requirements to run Code Suggestions.
 

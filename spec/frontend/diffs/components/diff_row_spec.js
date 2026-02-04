@@ -1,6 +1,7 @@
 import { getByTestId, fireEvent } from '@testing-library/dom';
 import { shallowMount } from '@vue/test-utils';
 import DiffRow from '~/diffs/components/diff_row.vue';
+import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
 import { mapParallel } from '~/diffs/components/diff_row_utils';
 import { findInteropAttributes } from '../find_interop_attributes';
 import { getDiffFileMock } from '../mock_data/diff_file';
@@ -10,8 +11,8 @@ describe('DiffRow', () => {
 
   const testLines = [
     {
-      left: { old_line: 1, discussions: [] },
-      right: { new_line: 1, discussions: [] },
+      left: { old_line: 1, line_code: 'abc_1_1', discussions: [] },
+      right: { new_line: 1, line_code: 'abc_1_1', discussions: [] },
       hasDiscussionsLeft: true,
       hasDiscussionsRight: true,
     },
@@ -271,5 +272,19 @@ describe('DiffRow', () => {
     wrapper = createWrapper({ props: { line: testLines[4], inline: false } });
 
     expect(wrapper.find('.add-diff-note').exists()).toBe(true);
+  });
+
+  it('re-emits toggle-line-discussions event', async () => {
+    wrapper = createWrapper({ props: { line: testLines[0], inline: false } });
+    const leftDiscussions = wrapper.findComponent(DiffGutterAvatars);
+
+    await leftDiscussions.vm.$emit('toggleLineDiscussions', {
+      lineCode: 'abc_1_1',
+      expanded: true,
+    });
+
+    expect(wrapper.emitted('toggle-line-discussions')[0]).toEqual([
+      { lineCode: 'abc_1_1', expanded: true },
+    ]);
   });
 });

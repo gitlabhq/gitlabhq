@@ -347,13 +347,16 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
       new_commit = described_class.build(MergeRequestDiffCommit, diff_commit_object_attrs)
 
       expect(new_commit.attributes).to include({
-        'committer_id' => committer.id,
-        'commit_author_id' => commit_author.id,
         'merge_request_diff_id' => merge_request_diff.id,
         'merge_request_commits_metadata_id' => commits_metadata.id,
-        'sha' => '123456',
         'relative_order' => 0,
-        'project_id' => project.id
+        'project_id' => project.id,
+        'committer_id' => nil,
+        'commit_author_id' => nil,
+        'sha' => nil,
+        'message' => nil,
+        'committed_date' => nil,
+        'authored_date' => nil
       })
     end
 
@@ -530,6 +533,18 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
           )
 
           expect(commit.merge_request_commits_metadata).to be_nil
+        end
+
+        it 'creates a new diff commit record including commit metadata attributes' do
+          commit = described_class.build(MergeRequestDiffCommit, commit_attrs)
+          expect(commit.attributes).to include({
+            'committer_id' => committer.id,
+            'commit_author_id' => commit_author.id,
+            'sha' => 'abc123',
+            'message' => 'This is a message',
+            'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
+            'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
+          })
         end
       end
 

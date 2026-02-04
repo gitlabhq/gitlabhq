@@ -10,7 +10,7 @@ module Users
 
     # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
-      invite_members_banner: 1,
+      # 1 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221239
       approaching_seat_count_threshold: 2, # EE-only
       namespace_storage_pre_enforcement_banner: 3, # EE-only
       ci_minutes_limit_alert_warning_stage: 4, # EE-only

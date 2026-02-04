@@ -33,7 +33,7 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
 
   context 'when the JSON in JIRA::HTTPError is unsafe' do
     config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure.md')
-    let(:docs_link_start) { '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url } }
+    let(:docs_link_start) { format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe, url: config_docs_link_url) }
 
     before do
       stub_client_and_raise(JIRA::HTTPError, 'Bad Request', body)
@@ -43,7 +43,7 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
       let(:body) { '{"errorMessages":' }
 
       it 'returns the default error message' do
-        error_message = 'An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+        error_message = format('An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration</a> and try again.', docs_link_start: docs_link_start)
         expect(subject.message).to eq(error_message)
       end
     end
@@ -52,7 +52,7 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
       let(:body) { '{"errorMessages":["<script>alert(true)</script>foo"]}' }
 
       it 'sanitizes it' do
-        error_message = 'An error occurred while requesting data from Jira: foo Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+        error_message = format('An error occurred while requesting data from Jira: foo Check your %{docs_link_start}Jira integration configuration</a> and try again.', docs_link_start: docs_link_start)
         expect(subject.message).to eq(error_message)
       end
     end

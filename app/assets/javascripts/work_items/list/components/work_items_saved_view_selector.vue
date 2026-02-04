@@ -8,6 +8,9 @@ import {
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import { s__ } from '~/locale';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 
 export default {
@@ -61,10 +64,13 @@ export default {
       // TODO: replace this with logic to duplicate a view
       return '';
     },
-    copyViewLink() {
-      // TODO: to replace this with copying logic, saved view link will look like so:
-      // http://127.0.0.1:3000/flightjs/Flight/-/work_items/saved_view/:id
-      return '';
+    async copyViewLink() {
+      try {
+        await copyToClipboard(window.location.href);
+        this.$toast.show(s__('WorkItem|Link to view copied to clipboard.'));
+      } catch (error) {
+        Sentry.captureException(error);
+      }
     },
     removeView() {
       this.$emit('remove-saved-view', this.savedView);

@@ -1,7 +1,9 @@
 ---
 name: protect_branch
-description: Grants the ability to protect a branch
+description: Grants the ability to protect branches
 boundaries:
   - project
+  - group
 permissions:
-  - protect_branch
+  - create_protected_branch
+  - delete_protected_branch

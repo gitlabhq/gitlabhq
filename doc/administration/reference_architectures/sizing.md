@@ -50,9 +50,9 @@ If you can't configure Prometheus monitoring:
 
 - [Compare current environment](#analyze-current-environment-and-validate-recommendations) specifications to the nearest
   reference architecture to estimate sizing.
-- Use the [`get-rps.rb` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb)
-  for basic peak RPS extraction from logs. Log analysis has significant limitations. It provides less reliable data than
-  metrics and not available for cloud-native GitLab.
+- Use the [GitLab RPS Analyzer](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/gitlab-rps-analyzer)
+  to assess reference architecture size using GitLabSOS or KubeSOS logs. Log analysis has significant limitations. It provides less reliable data than
+  metrics.
 
 If migrating from other platforms, the following PromQL queries cannot be applied without existing GitLab metrics.
 However, the general assessment methodology remains valid:
