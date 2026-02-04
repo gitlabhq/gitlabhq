@@ -47,6 +47,7 @@ class GroupsFinder < UnionFinder
     # are combined into a single query using UNION.
     groups = find_union(filtered_groups, Group)
     groups = groups.with_statistics if params[:with_statistics] == true
+    groups = groups.with_namespace_details
     sort(groups).with_route
   end
 

@@ -68,7 +68,9 @@ class ProjectsFinder < UnionFinder
     collection = Project.wrap_with_cte(collection) if use_cte
     collection = filter_projects(collection)
 
-    sort(collection).allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/427628")
+    sort(collection)
+      .with_project_namespace_details
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/427628")
   end
 
   private

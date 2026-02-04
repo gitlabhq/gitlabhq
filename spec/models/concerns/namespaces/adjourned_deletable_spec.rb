@@ -6,6 +6,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
   let(:model) do
     Class.new do
       include Namespaces::AdjournedDeletable
+      include Namespaces::Stateful
     end
   end
 
@@ -30,35 +31,73 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
   end
 
   describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
-    context 'when record responds to :marked_for_deletion_on' do
-      it 'returns marked_for_deletion_on' do
-        allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
+    context 'when record does not respond to namespace_details' do
+      it 'returns nil' do
+        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
+      end
+    end
 
+    context 'when deletion_scheduled_at is present in namespace_details.state_metadata' do
+      before do
+        allow(record).to receive(:namespace_details).and_return(
+          instance_double(Namespace::Detail, state_metadata: { 'deletion_scheduled_at' => Time.current.to_s })
+        )
+      end
+
+      it 'returns parsed deletion_scheduled_at' do
         expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
       end
     end
 
-    context 'when record does not respond to :marked_for_deletion_on' do
-      it 'returns nil' do
-        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
+    context 'when deletion_scheduled_at is not present in namespace_details.state_metadata' do
+      before do
+        allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
+      end
+
+      context 'when record responds to :marked_for_deletion_on' do
+        it 'returns marked_for_deletion_on' do
+          allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
+
+          expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
+        end
+      end
+
+      context 'when record does not respond to :marked_for_deletion_on' do
+        it 'returns nil' do
+          expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
+        end
       end
     end
   end
 
   describe '#self_deletion_scheduled?' do
-    context 'when self_deletion_scheduled_deletion_created_on is nil' do
-      it 'returns false' do
-        expect(record.self_deletion_scheduled?).to be(false)
+    context 'when self_deletion_scheduled_deletion_created_on_legacy is present' do
+      it 'returns true' do
+        allow(record).to receive(:self_deletion_scheduled_deletion_created_on_legacy).and_return(Time.current)
+
+        expect(record.self_deletion_scheduled?).to be(true)
       end
     end
 
-    context 'when self_deletion_scheduled_deletion_created_on is present' do
+    context 'when self_deletion_scheduled_deletion_created_on_legacy is nil' do
       before do
-        allow(record).to receive(:self_deletion_scheduled_deletion_created_on).and_return(Time.current)
+        allow(record).to receive(:self_deletion_scheduled_deletion_created_on_legacy).and_return(nil)
       end
 
-      it 'returns true' do
-        expect(record.self_deletion_scheduled?).to be(true)
+      context 'when deletion_scheduled? returns true' do
+        it 'returns true' do
+          allow(record).to receive(:deletion_scheduled?).and_return(true)
+
+          expect(record.self_deletion_scheduled?).to be(true)
+        end
+      end
+
+      context 'when deletion_scheduled? returns false' do
+        it 'returns false' do
+          allow(record).to receive(:deletion_scheduled?).and_return(false)
+
+          expect(record.self_deletion_scheduled?).to be(false)
+        end
       end
     end
   end

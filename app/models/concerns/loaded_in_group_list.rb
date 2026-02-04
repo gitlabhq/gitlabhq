@@ -24,7 +24,12 @@ module LoadedInGroupList
       with_route
         .with_namespace_details
         .with_counts(archived:, active:, options:)
-        .preload(:deletion_schedule, :namespace_settings, :namespace_settings_with_ancestors_inherited_settings)
+        .preload(
+          :deletion_schedule,
+          :namespace_settings,
+          :namespace_details,
+          :namespace_settings_with_ancestors_inherited_settings
+        )
     end
 
     private

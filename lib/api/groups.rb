@@ -261,8 +261,9 @@ module API
         render_api_error!("This group can't be removed because it is linked to a subscription.", :bad_request) if group.linked_to_subscription?
       end
 
-      # Overridden in EE
-      def check_query_limit; end
+      def check_query_limit
+        ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/586401', new_threshold: 101)
+      end
     end
 
     resource :groups do

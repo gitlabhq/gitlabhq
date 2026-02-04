@@ -34,7 +34,10 @@ class ContributedProjectsFinder
     collection = init_collection
     collection = filter_projects(collection)
 
-    collection.with_namespace.sort_by_attribute(params[:sort] || 'id_desc')
+    collection
+      .with_namespace
+      .with_project_namespace_details
+      .sort_by_attribute(params[:sort] || 'id_desc')
   end
 
   private

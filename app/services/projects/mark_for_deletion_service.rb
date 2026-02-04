@@ -17,10 +17,13 @@ module Projects
     end
 
     def execute_deletion
+      result = nil
+
       Project.transaction do
         transition_success = resource.schedule_deletion(transition_user: current_user)
         unless transition_success
-          next ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
+          result = ServiceResponse.error(message: resource.project_namespace.errors.full_messages.to_sentence)
+          raise ActiveRecord::Rollback
         end
 
         update_service_response = ::Projects::UpdateService.new(
@@ -28,8 +31,12 @@ module Projects
           current_user,
           update_service_params
         ).execute
-        ServiceResponse.from_legacy_hash(update_service_response)
+
+        result = ServiceResponse.from_legacy_hash(update_service_response)
+        raise ActiveRecord::Rollback if result.error?
       end
+
+      result
     end
 
     def update_service_params
