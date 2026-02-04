@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.5 (2026-02-04)
+
+### Fixed (4 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/4ad77a0ee07741aec7356f4ba47d7152d5dc5bc5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221764))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/fc38ffe0dc8d64821fa8a136fb5b7ff100925bc7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/af165a4c8db2b4f2e765bdc7d0710782419de5e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219978)) **GitLab Enterprise Edition**
+- [Fix MergeRequestDiff.verifiables scope](https://gitlab.com/gitlab-org/gitlab/-/commit/fd4e0fd5ed7bd6422f34bb18be3c7b66a748093a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219691)) **GitLab Enterprise Edition**
+
 ## 18.6.4 (2026-01-20)
 
 ### Fixed (6 changes)
