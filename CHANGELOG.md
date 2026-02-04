@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.7.3 (2026-02-04)
+
+### Fixed (5 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/895b313ed9c2eb0a200590082876b0f37974d919) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221763))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/bc5a9b0a43682ac093d94a33a8dcfd1cabc8d5d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Only check optional ActionCable Redis instance if necessary](https://gitlab.com/gitlab-org/gitlab/-/commit/2afd50a3035a22f5e50d67ec4f8fdafd7df7858f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220694))
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/d30364b35d16613f952d15f5935fd83aba67627f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219985)) **GitLab Enterprise Edition**
+- [Fix enforced_scans sync with inject_policy](https://gitlab.com/gitlab-org/gitlab/-/commit/163983623ec1c43aa775fec814fe695b46c15eeb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219610)) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Zoekt searchable should check for online nodes](https://gitlab.com/gitlab-org/gitlab/-/commit/9e83698effa0818f6cf4166f53d20c6bead18c36) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220966)) **GitLab Enterprise Edition**
+- [Remove duo_workflow_in_ci Feature Flag](https://gitlab.com/gitlab-org/gitlab/-/commit/743fe8f2d13d574e1feca5d9957117b464f35b6e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219831)) **GitLab Enterprise Edition**
+
 ## 18.7.2 (2026-01-20)
 
 ### Fixed (8 changes)
