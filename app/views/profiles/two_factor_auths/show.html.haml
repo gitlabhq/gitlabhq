@@ -35,7 +35,7 @@
       - if current_user.two_factor_enabled?
         .gl-w-full{ class: "@sm/panel:gl-w-auto" }
           .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
-    - if Feature.enabled?(:passkeys, current_user) && !current_user.two_factor_enabled? && @passkeys.present?
+    - if current_user.allow_passkey_authentication? && !current_user.two_factor_enabled? && @passkeys.present?
       = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mt-5' }) do |c|
         - c.with_body do
           = s_('ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below.')

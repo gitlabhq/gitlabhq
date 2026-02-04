@@ -10,7 +10,7 @@ title: セマンティックコード検索
 
 - プラン: Premium、Ultimate
 - アドオン: GitLab Duo Core、Pro、またはEnterprise
-- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed
 - ステータス: ベータ版
 
 {{< /details >}}
@@ -39,7 +39,7 @@ title: セマンティックコード検索
 - サポートされているベクターストアが設定されていること:
   - Elasticsearch 8.0以降。
   - OpenSearch 2.0以降。
-- 管理者アクセス。
+- 管理者アクセス権が必要です。
 
 ## セマンティックコード検索を有効にする {#enable-semantic-code-search}
 

@@ -7,7 +7,9 @@ RSpec.describe WebauthnRegistration, feature_category: :system_access do
   let_it_be(:webauthn_device) { create(:webauthn_registration, user: user) } # default second_factor
   let_it_be(:passkey) { create(:webauthn_registration, :passkey, user: user) }
   let_it_be(:second_factor_authenticator) { create(:webauthn_registration, :second_factor, user: user) }
-  let_it_be(:second_factor_authenticator2) { create(:webauthn_registration, :passkey_eligible, user: user) }
+  let_it_be(:passkey_eligible_second_factor_authenticator) do
+    create(:webauthn_registration, :passkey_eligible, user: user)
+  end
 
   describe 'relations' do
     it { is_expected.to belong_to(:user) }
@@ -51,8 +53,36 @@ RSpec.describe WebauthnRegistration, feature_category: :system_access do
     describe '.second_factor_authenticator' do
       it 'returns all second_factor_authenticators' do
         expect(described_class.second_factor_authenticator).to match_array(
-          [webauthn_device, second_factor_authenticator, second_factor_authenticator2]
+          [webauthn_device, second_factor_authenticator, passkey_eligible_second_factor_authenticator]
         )
+      end
+    end
+  end
+
+  describe '#passkey?' do
+    subject(:passkey?) { webauthn_registration.passkey? }
+
+    context 'when webauthn_registration is registered as passkey' do
+      let(:webauthn_registration) { passkey }
+
+      it 'returns true' do
+        expect(passkey?).to be(true)
+      end
+    end
+
+    context 'when webauthn_registration is registered as second factor authenticator' do
+      let(:webauthn_registration) { second_factor_authenticator }
+
+      it 'returns false' do
+        expect(passkey?).to be(false)
+      end
+    end
+
+    context 'when webauthn_registration is registered as passkey eligible second factor authenticator' do
+      let(:webauthn_registration) { passkey_eligible_second_factor_authenticator }
+
+      it 'returns false' do
+        expect(passkey?).to be(false)
       end
     end
   end

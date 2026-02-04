@@ -38,7 +38,6 @@ const i18n = {
   primaryTrainingDescription: s__(
     'SecurityTraining|Training from this partner takes precedence when more than one training partner is enabled.',
   ),
-  unavailableText: s__('SecurityConfiguration|Available with Ultimate'),
 };
 
 export default {
@@ -73,13 +72,6 @@ export default {
       },
     },
   },
-  props: {
-    securityTrainingEnabled: {
-      type: Boolean,
-      required: true,
-    },
-  },
-
   data() {
     return {
       errorMessage: '',
@@ -214,13 +206,12 @@ export default {
         :key="provider.id"
         class="gl-mb-6 gl-h-full"
       >
-        <gl-card class="gl-h-full" :body-class="{ 'gl-bg-subtle': !securityTrainingEnabled }">
+        <gl-card class="gl-h-full">
           <div class="gl-flex">
             <gl-toggle
               :value="provider.isEnabled"
               :label="__('Training mode')"
               label-position="hidden"
-              :disabled="!securityTrainingEnabled"
               data-testid="security-training-toggle"
               :data-qa-training-provider="provider.name"
               @change="toggleProvider(provider)"
@@ -234,18 +225,9 @@ export default {
               ></div>
             </div>
             <div class="gl-ml-3">
-              <div class="gl-flex gl-justify-between">
-                <h3 class="gl-m-0 gl-mb-2 gl-text-lg">
-                  {{ provider.name }}
-                </h3>
-                <span
-                  v-if="!securityTrainingEnabled"
-                  data-testid="unavailable-text"
-                  class="gl-text-subtle"
-                >
-                  {{ $options.i18n.unavailableText }}
-                </span>
-              </div>
+              <h3 class="gl-m-0 gl-mb-2 gl-text-lg">
+                {{ provider.name }}
+              </h3>
               <p>
                 {{ provider.description }}
                 <gl-link
@@ -259,7 +241,7 @@ export default {
               </p>
               <gl-form-radio
                 :checked="primaryProviderId"
-                :disabled="!securityTrainingEnabled || !provider.isEnabled"
+                :disabled="!provider.isEnabled"
                 :value="provider.id"
                 @change="setPrimaryProvider(provider)"
               >

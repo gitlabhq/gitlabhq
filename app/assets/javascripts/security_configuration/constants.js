@@ -165,7 +165,7 @@ export const i18n = {
   securityTrainingDoc: s__('SecurityConfiguration|Learn more about vulnerability training'),
   securityProfiles: s__('SecurityConfiguration|Profile-based scanner configuration'),
   securityProfilesDesc: s__(
-    'SecurityConfiguration|Define security settings once, reuse them everywhere. Update a profile and changes automatically apply to every project using it, ensuring consistent, predictable security coverage with minimal effort.',
+    'SecurityConfiguration|Define security settings once and reuse them everywhere. Update a profile and your changes automatically apply to every project that uses the profile, ensuring consistent, predictable security coverage with minimal effort.',
   ),
 };
 

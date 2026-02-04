@@ -17,9 +17,9 @@ Use this API to view and manage GitLab groups. For more information, see [groups
 
 Endpoint responses might vary based on the [permissions](../user/permissions.md) of the authenticated user in the group.
 
-## Get a single group
+## Retrieve a group
 
-Get all details of a group. This endpoint can be accessed without authentication
+Retrieve details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
 if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
 for the group too, if the user is an administrator or has the Owner role.
@@ -283,7 +283,7 @@ Example response:
 
 ### List all groups
 
-Get a list of visible groups for the authenticated user. When accessed without
+List visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -485,7 +485,7 @@ And to switch pages add:
 
 ### Search for a group
 
-Get all groups that match your string in their name or path.
+Search for groups that match a string in their name or path.
 
 ```plaintext
 GET /groups?search=foobar
@@ -506,7 +506,7 @@ GET /groups?search=foobar
 
 ### List projects
 
-Get a list of projects in this group. When accessed without authentication, only public projects are returned.
+List projects in a group. When accessed without authentication, only public projects are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -593,7 +593,7 @@ Example response:
 
 ### List shared projects
 
-Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.
+List projects shared to a group. When accessed without authentication, only public shared projects are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -839,7 +839,7 @@ Example response:
 
 {{< /details >}}
 
-Get a list of users provisioned by a given group. Does not include subgroups.
+List users provisioned by a group. Does not include subgroups.
 
 Requires at least the Maintainer role on the group.
 
@@ -909,7 +909,7 @@ Example response:
 
 ### List subgroups
 
-Get a list of visible direct subgroups in this group.
+List visible direct subgroups in a group.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -993,7 +993,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 ### List descendant groups
 
-Get a list of visible descendant groups of this group.
+List visible descendant groups of a group.
 When accessed without authentication, only public groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -1110,7 +1110,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 ### List shared groups
 
-Get a list of groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
+List groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
@@ -1188,7 +1188,7 @@ Example response:
 
 ### List invited groups
 
-Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+List invited groups in a group. When accessed without authentication, only public invited groups are returned.
 This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
@@ -1392,7 +1392,7 @@ DELETE /groups/:id
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `full_path`          | string            | Conditional       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
+| `full_path`          | string            | Conditional       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
 | `permanently_remove` | boolean/string    | No       | If `true`, immediately deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
 
 If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.
@@ -1430,7 +1430,7 @@ DELETE /groups/:id
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `full_path`          | string            | Yes       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
+| `full_path`          | string            | Yes       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
 | `permanently_remove` | boolean/string    | Yes       | If `true`, immediately deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
 
 If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.

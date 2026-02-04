@@ -23,6 +23,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import {
   CREATED_DESC,
@@ -88,7 +89,6 @@ import {
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { singleSavedView } from '~/work_items/graphql/resolvers';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -101,6 +101,7 @@ import {
   workItemUserPreferenceUpdateMutationResponse,
   workItemUserPreferenceUpdateMutationResponseWithErrors,
   workItemCountsOnlyResponse,
+  singleSavedView,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -148,6 +149,7 @@ const mockSavedViewsData = [
     subscribed: true,
     userPermissions: {
       updateSavedView: true,
+      deleteSavedView: true,
     },
   },
 ];
@@ -171,6 +173,8 @@ let router;
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
+
+useLocalStorageSpy();
 
 const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
 const workItemsSubChildQueryHandler = jest
@@ -2198,15 +2202,25 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
     });
 
     it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
-      findIssuableList().vm.$emit('sort', UPDATED_DESC);
+      findIssuableList().vm.$emit('sort', CREATED_DESC);
       await nextTick();
-      await waitForPromises();
 
       expect(findResetViewButton().exists()).toBe(true);
       expect(findUpdateViewButton().exists()).toBe(true);
     });
 
-    it('resets filters and hides action buttons', async () => {
+    it('renders "Save changes" and "Reset to defaults" buttons when display preferences change', async () => {
+      findWorkItemUserPreferences().vm.$emit('local-update', {
+        hiddenMetadataKeys: ['labels'],
+      });
+
+      await nextTick();
+
+      expect(findResetViewButton().exists()).toBe(true);
+      expect(findUpdateViewButton().exists()).toBe(true);
+    });
+
+    it('resets filters, hides action buttons and resets local storage draft', async () => {
       findIssuableList().vm.$emit('filter', [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
       ]);
@@ -2217,6 +2231,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
 
       expect(findResetViewButton().exists()).toBe(false);
       expect(findUpdateViewButton().exists()).toBe(false);
+      expect(localStorage.removeItem).toHaveBeenCalledWith('full/path-saved-view-3');
     });
 
     it('prompts for confirmation when clicking "Save changes"', async () => {
@@ -2239,6 +2254,30 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
           primaryBtnText: 'Save changes',
         }),
       );
+    });
+
+    it('persists unsaved changes to localStorage', async () => {
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'full/path-saved-view-3',
+        expect.stringContaining('"filterTokens"'),
+      );
+    });
+
+    it('persists unsaved data when navigating back to the saved view', async () => {
+      findIssuableList().vm.$emit('sort', CREATED_DESC);
+      await nextTick();
+
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
+      await nextTick();
+      await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '3' } });
+      await nextTick();
+
+      expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
     });
   });
 });

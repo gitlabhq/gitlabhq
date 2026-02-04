@@ -3,25 +3,56 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Configure large language models for GitLab Duo features.
-title: Agent Platform model selection
+title: Agent Platform AI models
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-Every GitLab Duo feature has a default large language model, chosen by GitLab.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. For some features, you can select a different model, which persists until you change it.
 
-GitLab can update this default model to optimize feature performance. Therefore, a feature's model might change without you taking any action.
+## Default models
 
-If you don't want to use the default model for each feature, or have specific requirements, you can choose from an array of other available supported models.
+This table lists the default model for each feature in the Agent Platform.
 
-If you select a specific model for a feature, the feature uses that model until you select another.
+| Feature | Model |
+|-------|--------------|
+| GitLab Duo Chat (Agentic) | Claude Haiku 4.5 |
+| All other agents | Claude Sonnet 4.5 Vertex |
+
+## Supported models
+
+This table lists the models you can select for features
+in the Agent Platform.
+
+> [!note]
+> The OpenAI models used in GitLab Duo Chat (Agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
+> Share your feedback about OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
+
+| Model | Agentic Chat | All other agents |
+|-------|--------------|------------------|
+| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
+| Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
+| GPT-5 | {{< yes >}} | {{< yes >}} |
+| GPT-5 Codex | {{< yes >}} | {{< yes >}} |
+| GPT-5 Mini | {{< yes >}} | {{< yes >}} |
+| GPT-5.2 | {{< yes >}} | {{< yes >}} |
 
 ## Select a model for a feature
+
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -55,37 +86,6 @@ To select a model for a feature:
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
 In the IDE, model selection for GitLab Duo Chat (Agentic) is applied only when the connection type is set to WebSocket.
-
-> [!note]
-> The OpenAI models used in GitLab Duo Chat (Agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
-> Please leave your feedback about using OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
-
-## Default models
-
-This table lists the default model for each feature in the Agent Platform.
-
-| Feature | Model |
-|-------|--------------|
-| GitLab Duo Chat (Agentic) | Claude Haiku 4.5 |
-| All other agents | Claude Sonnet 4.5 Vertex |
-
-## Supported models
-
-This table lists the models you can select for features
-in the Agent Platform.
-
-| Model | Agentic Chat | All other agents |
-|-------|--------------|------------------|
-| Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
-| Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
-| Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
-| Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
-| GPT-5 | {{< yes >}} | {{< yes >}} |
-| GPT-5 Codex | {{< yes >}} | {{< yes >}} |
-| GPT-5 Mini | {{< yes >}} | {{< yes >}} |
-| GPT-5.2 | {{< yes >}} | {{< yes >}} |
 
 ## Troubleshooting
 

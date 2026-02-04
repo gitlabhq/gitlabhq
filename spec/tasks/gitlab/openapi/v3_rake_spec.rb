@@ -9,6 +9,14 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
     Rake::Task.define_task(:enable_feature_flags)
   end
 
+  # Stub API and Grape constants before loading the rake tasks
+  # to prevent loading files that require the full Rails environment
+  before do
+    stub_const('Grape::API::Instance', Class.new)
+    stub_const('API::Base', Class.new)
+    stub_const('Grape::Entity', Class.new)
+  end
+
   let(:yaml_v3_doc_introduction) do
     <<~INTRO
     #############################################################################################
@@ -85,18 +93,6 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
   end
 
   shared_examples_for 'gitlab:openapi:v3:generate' do
-    # Stub API and Grape constants before loading the rake tasks
-    # to prevent loading files that require the full Rails environment
-    # rubocop:disable Lint/ConstantDefinitionInBlock, RSpec/LeakyConstantDeclaration -- required to prevent autoloading
-    module API
-      Base = Class.new
-    end
-
-    module Grape
-      Entity = Class.new
-    end
-    # rubocop:enable Lint/ConstantDefinitionInBlock, RSpec/LeakyConstantDeclaration
-
     include_context 'with openapi v3 generator setup'
 
     it 'generates the OpenAPI v3 documentation' do

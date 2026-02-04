@@ -10,6 +10,7 @@ mutation workItemSavedViewUpdate($input: WorkItemSavedViewUpdateInput!) {
       isPrivate: private
       userPermissions {
         updateSavedView
+        deleteSavedView
       }
     }
     errors

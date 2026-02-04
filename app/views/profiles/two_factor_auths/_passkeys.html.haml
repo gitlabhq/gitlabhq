@@ -4,7 +4,7 @@
   icon: 'key',
   count: @passkeys.length ) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path(entry_point: passkey_tracking_entry_point), size: :small, icon: 'passkey', disabled: !password_authentication_enabled_for_web?) do
+    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path(entry_point: passkey_tracking_entry_point), size: :small, icon: 'passkey', disabled: !current_user.allow_passkey_authentication?) do
       = s_('ProfilesAuthentication|Add passkey')
   - c.with_body do
     .table-holder
@@ -16,7 +16,7 @@
             %th= s_('ProfilesAuthentication|Last used')
             %th= _('Actions')
         %tbody
-          - if !password_authentication_enabled_for_web?
+          - if !current_user.allow_passkey_authentication?
             %tr
               %td{ colspan: 4 }
                 = render Pajamas::AlertComponent.new(title: s_('ProfilesAuthentication|Passkeys unavailable'),

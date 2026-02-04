@@ -25,6 +25,8 @@ inherited members, and invited users, with one of the following roles:
 - Maintainer
 - Owner
 
+On GitLab Self-Managed on the Premium tier, users who don't have access to a namespace are also billable.
+
 Billable users count toward the number of seats purchased in your subscription.
 The number of billable users changes when you block, deactivate, or add
 users to your instance or group during your current subscription period.

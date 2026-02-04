@@ -30,7 +30,7 @@ Configure the rate limit for each IP address and user for requests to the follow
 | Limit                                                           | Default | Interval |
 |-----------------------------------------------------------------|---------|----------|
 | [`GET /groups`](../../api/groups.md#list-groups)                | 200     | 1 minute |
-| [`GET /groups/:id`](../../api/groups.md#get-a-single-group)     | 400     | 1 minute |
+| [`GET /groups/:id`](../../api/groups.md#retrieve-a-group)     | 400     | 1 minute |
 | [`GET /groups/:id/groups/shared`](../../api/groups.md#list-shared-groups) | 0     | 1 minute |
 | [`GET /groups/:id/invited_groups`](../../api/groups.md#list-shared-groups) | 60     | 1 minute |
 | [`GET /groups/:id/projects`](../../api/groups.md#list-projects) | 600     | 1 minute |

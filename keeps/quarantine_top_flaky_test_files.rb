@@ -140,12 +140,17 @@ module Keeps
           file_lines[line] = add_quarantine_for_it_example(file_lines, line, flaky_test_file_issue)
         else
           puts "WARN: Can not auto-quarantine #{test}"
+          next
         end
 
         puts "INFO: File updated to quarantine #{test}"
       end
 
-      file_lines.join
+      updated_file_content = file_lines.join
+
+      return if full_file_content == updated_file_content
+
+      updated_file_content
     end
 
     def add_quarantine_for_shared_example(file_lines, line, flaky_test_file_issue)

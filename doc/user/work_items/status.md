@@ -187,7 +187,7 @@ Prerequisites:
 To set a status for a work item:
 
 1. Go to an issue or task.
-1. On the right sidebar, in the **Status** section, select **Edit**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. Select the desired status.
 1. Select any area outside the dropdown list.
 

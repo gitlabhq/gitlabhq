@@ -23,7 +23,7 @@ import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
 import PipelineSecretDetectionFeatureCard from './pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
-import TrainingProviderList from './training_provider_list.vue';
+import TrainingSection from './training_section.vue';
 import RefTrackingList from './ref_tracking_list.vue';
 
 export default {
@@ -48,7 +48,7 @@ export default {
     GlButton,
     GlExperimentBadge,
     UserCalloutDismisser,
-    TrainingProviderList,
+    TrainingSection,
     RefTrackingList,
     ScanProfileConfiguration: () =>
       import(
@@ -68,7 +68,7 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'vulnerabilityTrainingDocsPath', 'canReadAttributes'],
+  inject: ['projectFullPath', 'canReadAttributes'],
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -330,25 +330,7 @@ export default {
             <ref-tracking-list />
           </template>
         </section-layout>
-        <section-layout
-          stacked
-          :heading="$options.i18n.securityTraining"
-          data-testid="security-training-section"
-        >
-          <template #description>
-            <p>
-              {{ $options.i18n.securityTrainingDescription }}
-            </p>
-            <p>
-              <gl-link :href="vulnerabilityTrainingDocsPath">{{
-                $options.i18n.securityTrainingDoc
-              }}</gl-link>
-            </p>
-          </template>
-          <template #features>
-            <training-provider-list :security-training-enabled="securityTrainingEnabled" />
-          </template>
-        </section-layout>
+        <training-section :is-feature-available-on-current-tier="securityTrainingEnabled" />
         <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
       </gl-tab>
       <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">

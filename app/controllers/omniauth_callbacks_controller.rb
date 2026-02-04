@@ -152,9 +152,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def omniauth_flow(auth_module, identity_linker: nil)
-    if fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence
-      store_redirect_fragment(fragment)
-    end
+    fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence
+    store_redirect_fragment(fragment) if fragment
 
     store_redirect_to
 
@@ -425,10 +424,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def store_redirect_fragment(redirect_fragment)
     key = stored_location_key_for(:user)
     location = session[key]
-    if uri = parse_uri(location)
-      uri.fragment = verify_redirect_fragment(redirect_fragment)
-      store_location_for(:user, uri.to_s)
-    end
+    uri = parse_uri(location)
+
+    return unless uri
+
+    uri.fragment = verify_redirect_fragment(redirect_fragment)
+    store_location_for(:user, uri.to_s)
   end
 
   def handle_step_up_auth

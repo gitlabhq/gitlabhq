@@ -25,7 +25,8 @@ module Organizations
           # For User, Project, Group we explicitly want to skip these as they're going to be migrated in
           # another service.
 
-          ["User", "Project", "Group", "AbuseReport", "GitlabSubscriptions::AddOnPurchase", "Authz::AdminRole",
+          ["User", "Project", "Group", "AbuseReport", "GitlabSubscriptions::AddOnPurchase",
+            "GitlabSubscriptions::SeatAssignment", "GitlabSubscriptions::UserAddOnAssignment", "Authz::AdminRole",
             "MemberRole", "Ai::Catalog::ItemConsumer", "ProjectSnippet", "Snippet"]
         end
       end

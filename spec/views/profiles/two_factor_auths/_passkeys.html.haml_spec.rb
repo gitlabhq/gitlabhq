@@ -6,9 +6,13 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:passkey) { build_stubbed(:webauthn_registration, :passkey, user: user) }
 
-  context 'when password authentication is disabled' do
+  before do
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
+  context 'when passkey authentication is disabled for user' do
     before do
-      allow(view).to receive(:password_authentication_enabled_for_web?).and_return(false)
+      allow(user).to receive(:allow_passkey_authentication?).and_return(false)
       assign(:passkeys, [])
       render
     end
@@ -22,9 +26,9 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
     end
   end
 
-  context 'when password authentication is enabled' do
+  context 'when passkey authentication is enabled for user' do
     before do
-      allow(view).to receive(:password_authentication_enabled_for_web?).and_return(true)
+      allow(user).to receive(:allow_passkey_authentication?).and_return(true)
     end
 
     context 'when user has no passkeys' do
@@ -34,8 +38,6 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
       end
 
       it 'shows a passkey button with correct url' do
-        render
-
         expect(rendered).to have_link(s_('ProfilesAuthentication|Add passkey'),
           href: new_profile_passkey_path(entry_point: 1))
       end
@@ -47,7 +49,6 @@ RSpec.describe 'profiles/two_factor_auths/_passkeys.html.haml', feature_category
 
     context 'when user has passkeys' do
       before do
-        allow(view).to receive(:current_password_required?).and_return(false)
         assign(:passkeys, [passkey])
         render
       end

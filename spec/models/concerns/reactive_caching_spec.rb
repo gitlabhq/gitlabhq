@@ -39,6 +39,39 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
   end
 
+  let(:low_urgency_cache_class_test) do
+    Class.new do
+      include ReactiveCaching
+
+      self.reactive_cache_key = ->(thing) { ["foo", thing.id] }
+
+      self.reactive_cache_lifetime = 5.minutes
+      self.reactive_cache_refresh_interval = 15.seconds
+      self.reactive_cache_work_type = :no_dependency_low_urgency
+
+      attr_reader :id
+
+      def self.primary_key
+        :id
+      end
+
+      def initialize(id, &blk)
+        @id = id
+        @calculator = blk
+      end
+
+      def calculate_reactive_cache
+        @calculator.call
+      end
+
+      def result
+        with_reactive_cache do |data|
+          data
+        end
+      end
+    end
+  end
+
   let(:external_dependency_cache_class_test) do
     Class.new(cache_class_test) do
       self.reactive_cache_work_type = :external_dependency
@@ -101,6 +134,10 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         it_behaves_like 'reactive worker call', ExternalServiceReactiveCachingWorker do
           let(:test_class) { external_dependency_cache_class_test }
         end
+
+        it_behaves_like 'reactive worker call', ReactiveCaching::LowUrgencyWorker do
+          let(:test_class) { low_urgency_cache_class_test }
+        end
       end
     end
 
@@ -109,6 +146,10 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
       it_behaves_like 'reactive worker call', ReactiveCachingWorker do
         let(:test_class) { cache_class_test }
+      end
+
+      it_behaves_like 'reactive worker call', ReactiveCaching::LowUrgencyWorker do
+        let(:test_class) { low_urgency_cache_class_test }
       end
 
       it_behaves_like 'reactive worker call', ExternalServiceReactiveCachingWorker do
@@ -332,6 +373,57 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
             .not_to receive(:perform_in)
 
           expect { go! }.to raise_error("foo")
+        end
+      end
+    end
+
+    context 'when cache refresh is scheduled' do
+      before do
+        stub_reactive_cache(instance, 'preexisting')
+      end
+
+      context 'with no dependency cache class' do
+        it 'enqueues refresh with low urgency worker' do
+          # Instance uses base :no_dependency work_type
+          expect_reactive_cache_update_queued(instance)
+
+          instance.exclusively_update_reactive_cache!
+        end
+
+        context 'with low urgency cache class' do
+          let(:instance) { low_urgency_cache_class_test.new(666, &calculation) }
+
+          it 'enqueues refresh with low urgency worker' do
+            expect_reactive_cache_update_queued(instance)
+
+            instance.exclusively_update_reactive_cache!
+          end
+        end
+
+        context 'when feature flag low_urgency_reactive_caching_worker is disabled' do
+          before do
+            stub_feature_flags(low_urgency_reactive_caching_worker: false)
+          end
+
+          it 'enqueues refresh with default worker' do
+            expect_reactive_cache_update_queued(instance, worker_klass: ReactiveCachingWorker)
+
+            instance.exclusively_update_reactive_cache!
+          end
+        end
+      end
+
+      context 'with external dependency cache class' do
+        let(:instance) { external_dependency_cache_class_test.new(666, &calculation) }
+
+        before do
+          stub_reactive_cache(instance, 'preexisting')
+        end
+
+        it 'enqueues refresh with configured external dependency worker' do
+          expect_reactive_cache_update_queued(instance, worker_klass: ExternalServiceReactiveCachingWorker)
+
+          instance.exclusively_update_reactive_cache!
         end
       end
     end

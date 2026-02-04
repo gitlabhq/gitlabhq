@@ -20,6 +20,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       subscribed: true,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     },
     {
@@ -31,6 +32,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       subscribed: true,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     },
     {
@@ -42,6 +44,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       subscribed: true,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     },
   ];
@@ -49,6 +52,17 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const mockUnsubscribeResponse = {
     data: {
       unsubscribeFromSavedView: {
+        errors: [],
+        savedView: {
+          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
+        },
+      },
+    },
+  };
+
+  const mockDeleteResponse = {
+    data: {
+      workItemSavedViewDelete: {
         errors: [],
         savedView: {
           id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
@@ -100,8 +114,13 @@ describe('WorkItemsSavedViewsSelectors', () => {
       stubs: {
         WorkItemsSavedViewSelector: {
           props: ['savedView'],
-          template:
-            '<div data-testid="saved-view"><button data-testid="remove-btn" @click="$emit(\'remove-saved-view\', savedView)">{{ savedView.name }}</button></div>',
+          template: `
+            <div data-testid="saved-view">
+              <button data-testid="unsubscribe-btn" @click="$emit('unsubscribe-saved-view', savedView)">Unsubscribe</button>
+              <button data-testid="delete-btn" @click="$emit('delete-saved-view', savedView)">Delete</button>
+              {{ savedView.name }}
+            </div>
+          `,
         },
       },
     });
@@ -110,17 +129,21 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const findDefaultViewSelector = () => wrapper.findByTestId('saved-views-default-view-selector');
   const findVisibleViewSelectors = () => wrapper.findAllByTestId('visible-view-selector');
   const findOverflowDropdown = () => wrapper.findByTestId('saved-views-more-toggle');
-  const findRemoveBtnAt = (index) =>
-    findVisibleViewSelectors().at(index).find('[data-testid="remove-btn"]');
+  const findUnsubscribeBtnAt = (index) =>
+    findVisibleViewSelectors().at(index).find('[data-testid="unsubscribe-btn"]');
+  const findDeleteBtnAt = (index) =>
+    findVisibleViewSelectors().at(index).find('[data-testid="delete-btn"]');
 
   describe('default view selector', () => {
     it('renders the default view selector title', () => {
       createComponent();
+
       expect(findDefaultViewSelector().text()).toBe('All items');
     });
 
     it('emits reset-to-default-view when clicked', async () => {
       createComponent();
+
       await findDefaultViewSelector().trigger('click');
 
       expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
@@ -154,11 +177,11 @@ describe('WorkItemsSavedViewsSelectors', () => {
     });
   });
 
-  describe('remove saved view', () => {
-    it('calls unsubscribe mutation when remove-saved-view event is emitted', async () => {
+  describe('unsubscribe from saved view', () => {
+    it('calls unsubscribe mutation when unsubscribe-saved-view event is emitted', async () => {
       createComponent();
 
-      await findRemoveBtnAt(0).trigger('click');
+      await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
       expect(mutateMock).toHaveBeenCalledWith(
@@ -170,10 +193,10 @@ describe('WorkItemsSavedViewsSelectors', () => {
       );
     });
 
-    it('navigates to next view after successful removal', async () => {
+    it('navigates to next view after successful unsubscribe', async () => {
       createComponent();
 
-      await findRemoveBtnAt(0).trigger('click');
+      await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
       expect(routerPushMock).toHaveBeenCalledWith({
@@ -182,35 +205,35 @@ describe('WorkItemsSavedViewsSelectors', () => {
       });
     });
 
-    it('shows success toast after successful removal', async () => {
+    it('shows success toast after successful unsubscribe', async () => {
       createComponent();
 
-      await findRemoveBtnAt(0).trigger('click');
+      await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
       expect(toastShowMock).toHaveBeenCalledWith('View removed from your list');
     });
 
-    it('emits reset-to-default-view when removing the last view', async () => {
+    it('emits reset-to-default-view when unsubscribing from the last view', async () => {
       createComponent({
         mockSavedViews: [mockSavedViewsData[0]],
         visibleViews: [mockSavedViewsData[0]],
         overflowedViews: [],
       });
 
-      await findRemoveBtnAt(0).trigger('click');
+      await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
       expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
     });
 
-    it('emits error event when mutation fails', async () => {
+    it('emits error event when unsubscribe mutation fails', async () => {
       createComponent();
 
       const networkError = new Error('Network error');
       mutateMock.mockRejectedValueOnce(networkError);
 
-      await findRemoveBtnAt(0).trigger('click');
+      await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toHaveLength(1);
@@ -220,14 +243,101 @@ describe('WorkItemsSavedViewsSelectors', () => {
       ]);
     });
 
-    it('navigates to previous view when removing the last view in list', async () => {
+    it('navigates to previous view when unsubscribing from the last view in list', async () => {
       createComponent({
         mockSavedViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
         visibleViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
         overflowedViews: [],
       });
 
-      await findRemoveBtnAt(1).trigger('click');
+      await findUnsubscribeBtnAt(1).trigger('click');
+      await waitForPromises();
+
+      expect(routerPushMock).toHaveBeenCalledWith({
+        name: ROUTES.savedView,
+        params: { view_id: '1' },
+      });
+    });
+  });
+
+  describe('delete saved view', () => {
+    it('calls delete mutation when delete-saved-view event is emitted', async () => {
+      createComponent({ mutateResult: mockDeleteResponse });
+
+      await findDeleteBtnAt(0).trigger('click');
+      await waitForPromises();
+
+      expect(mutateMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              id: mockSavedViewsData[0].id,
+            },
+          },
+        }),
+      );
+    });
+
+    it('navigates to next view after successful delete', async () => {
+      createComponent({ mutateResult: mockDeleteResponse });
+
+      await findDeleteBtnAt(0).trigger('click');
+      await waitForPromises();
+
+      expect(routerPushMock).toHaveBeenCalledWith({
+        name: ROUTES.savedView,
+        params: { view_id: '2' },
+      });
+    });
+
+    it('shows success toast after successful delete', async () => {
+      createComponent({ mutateResult: mockDeleteResponse });
+
+      await findDeleteBtnAt(0).trigger('click');
+      await waitForPromises();
+
+      expect(toastShowMock).toHaveBeenCalledWith('View has been deleted');
+    });
+
+    it('emits reset-to-default-view when deleting the last view', async () => {
+      createComponent({
+        mockSavedViews: [mockSavedViewsData[0]],
+        visibleViews: [mockSavedViewsData[0]],
+        overflowedViews: [],
+        mutateResult: mockDeleteResponse,
+      });
+
+      await findDeleteBtnAt(0).trigger('click');
+      await waitForPromises();
+
+      expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
+    });
+
+    it('emits error event when delete mutation fails', async () => {
+      createComponent({ mutateResult: mockDeleteResponse });
+
+      const networkError = new Error('Network error');
+      mutateMock.mockRejectedValueOnce(networkError);
+
+      await findDeleteBtnAt(0).trigger('click');
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toHaveLength(1);
+      expect(wrapper.emitted('error')[0]).toEqual([
+        networkError,
+        'An error occurred while deleting the view. Please try again.',
+      ]);
+    });
+
+    it('navigates to previous view when deleting the last view in list', async () => {
+      createComponent({
+        mockSavedViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
+        visibleViews: [mockSavedViewsData[0], mockSavedViewsData[1]],
+        overflowedViews: [],
+        mutateResult: mockDeleteResponse,
+      });
+
+      await findDeleteBtnAt(1).trigger('click');
       await waitForPromises();
 
       expect(routerPushMock).toHaveBeenCalledWith({
@@ -240,6 +350,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
   describe('header slot', () => {
     it('renders the header-area slot content', () => {
       createComponent();
+
       expect(wrapper.findByTestId('header-area-slot').exists()).toBe(true);
     });
   });

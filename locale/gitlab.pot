@@ -8155,10 +8155,10 @@ msgstr ""
 msgid "Allow owners to manage default branch protection per group."
 msgstr ""
 
-msgid "Allow password authentication for Git over HTTP(S)"
+msgid "Allow password and passkey authentication for the web interface"
 msgstr ""
 
-msgid "Allow password authentication for the web interface"
+msgid "Allow password authentication for Git over HTTP(S)"
 msgstr ""
 
 msgid "Allow possible spam"
@@ -15194,7 +15194,7 @@ msgstr ""
 msgid "Clear this checkbox to use a personal access token or LDAP password instead."
 msgstr ""
 
-msgid "Clear this checkbox to use an external authentication provider instead."
+msgid "Clear this checkbox to use an external authentication provider instead. Disables passkeys for two-factor authentication."
 msgstr ""
 
 msgid "Clear uploads"
@@ -16047,9 +16047,6 @@ msgstr ""
 msgid "ClusterIntegration|Any project namespaces"
 msgstr ""
 
-msgid "ClusterIntegration|Apply for credit"
-msgstr ""
-
 msgid "ClusterIntegration|Authentication Error"
 msgstr ""
 
@@ -16122,9 +16119,6 @@ msgstr ""
 msgid "ClusterIntegration|Deploy each environment to its own namespace. Otherwise, environments within a project share a project-wide namespace. Note that anyone who can trigger a deployment of a namespace can read its secrets. If modified, existing environments will use their current namespaces until the cluster cache is cleared."
 msgstr ""
 
-msgid "ClusterIntegration|Did you know?"
-msgstr ""
-
 msgid "ClusterIntegration|Elastic Kubernetes Service"
 msgstr ""
 
@@ -16150,9 +16144,6 @@ msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
 msgid "ClusterIntegration|Environment scope is required."
-msgstr ""
-
-msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -16426,9 +16417,6 @@ msgid "ClusterIntegration|Your cluster API is unreachable. Please ensure your AP
 msgstr ""
 
 msgid "ClusterIntegration|Your project doesn't have any GitLab agents"
-msgstr ""
-
-msgid "ClusterIntegration|sign up"
 msgstr ""
 
 msgid "Clusters|An error occurred while loading clusters"
@@ -25351,7 +25339,7 @@ msgstr ""
 msgid "Disable inviting new members to group or project by group/project owners or project maintainers"
 msgstr ""
 
-msgid "Disable password authentication for users with an SSO identity"
+msgid "Disable password and passkey authentication for users with an SSO identity"
 msgstr ""
 
 msgid "Disable semantic search"
@@ -25863,16 +25851,19 @@ msgstr ""
 msgid "DuoAgenticChat|Invalid chat state provided"
 msgstr ""
 
-msgid "DuoAgenticChat|Need more credits? Contact your administrator."
-msgstr ""
-
-msgid "DuoAgenticChat|No GitLab Credits remain"
+msgid "DuoAgenticChat|Learn more"
 msgstr ""
 
 msgid "DuoAgenticChat|No GitLab Credits remain for this billing period. Turn off the %{agenticModeStart}Agentic mode%{agenticModeEnd} toggle or ask your administrator for more credits. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "DuoAgenticChat|No credits remain for this billing period. To continue collaborating with GitLab Duo, turn off the Agentic mode toggle. You can still get AI assistance, just without the advanced agentic features. %{linkStart}Learn more%{linkEnd}."
+msgid "DuoAgenticChat|No credits remain for this billing period"
+msgstr ""
+
+msgid "DuoAgenticChat|No credits remain on your trial"
+msgstr ""
+
+msgid "DuoAgenticChat|Purchase more credits"
 msgstr ""
 
 msgid "DuoAgenticChat|Return to Classic Chat"
@@ -25887,16 +25878,22 @@ msgstr ""
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
+msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, purchase more credits or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
+msgstr ""
+
+msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, upgrade to a paid subscription or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
+msgstr ""
+
 msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
 msgstr ""
 
 msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
 msgstr ""
 
-msgid "DuoAgenticChat|Turn off Agentic mode"
+msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
 msgstr ""
 
-msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
+msgid "DuoAgenticChat|Upgrade to Premium"
 msgstr ""
 
 msgid "DuoAgentsPlatform|AI Catalog"
@@ -26142,7 +26139,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Start a Free Trial"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} to collaborate with agents and automate workflows across your development process."
+msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} now to accelerate your software delivery. Automate tasks with AI agents, from searching projects to creating commits."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
@@ -27128,7 +27125,7 @@ msgstr ""
 msgid "EmailOTP|Enhanced authentication coming soon"
 msgstr ""
 
-msgid "EmailOTP|On %{date}, GitLab will begin requiring email one-time passcodes for your account. To avoid being locked out, make sure you can access your primary email address before this date."
+msgid "EmailOTP|On %{date}, GitLab will begin requiring email one-time passcodes for your account. To avoid being locked out, make sure you can access your primary email address (%{strong_open}%{email}%{strong_close}) and have verified any secondary email addresses before this date."
 msgstr ""
 
 msgid "EmailOTP|Review email addresses"
@@ -27491,7 +27488,7 @@ msgstr ""
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
 msgstr ""
 
-msgid "Ensure users with SSO identities cannot sign in with password even when password authentication is enabled."
+msgid "Ensure users with SSO identities cannot sign in with password or passkey even when password authentication is enabled."
 msgstr ""
 
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
@@ -33641,7 +33638,10 @@ msgstr ""
 msgid "GroupSAML|Default membership role"
 msgstr ""
 
-msgid "GroupSAML|Disable password authentication for enterprise users"
+msgid "GroupSAML|Disable password and passkey authentication for enterprise users"
+msgstr ""
+
+msgid "GroupSAML|Disables passkeys for two-factor authentication."
 msgstr ""
 
 msgid "GroupSAML|Enable SAML authentication for this group"
@@ -60848,13 +60848,16 @@ msgstr ""
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
 msgstr ""
 
-msgid "SecurityConfiguration|Define security settings once, reuse them everywhere. Update a profile and changes automatically apply to every project using it, ensuring consistent, predictable security coverage with minimal effort."
+msgid "SecurityConfiguration|Define security settings once and reuse them everywhere. Update a profile and your changes automatically apply to every project that uses the profile, ensuring consistent, predictable security coverage with minimal effort."
 msgstr ""
 
 msgid "SecurityConfiguration|Enable %{feature}"
 msgstr ""
 
 msgid "SecurityConfiguration|Enable Auto DevOps"
+msgstr ""
+
+msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities."
 msgstr ""
 
 msgid "SecurityConfiguration|Enable security training to help your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability. Please note that security training is not accessible in an environment that is offline."
@@ -63104,6 +63107,9 @@ msgstr ""
 msgid "SecurityProfiles|Apply profile to enable"
 msgstr ""
 
+msgid "SecurityProfiles|Configure once. Apply everywhere. Profiles make it easier to configure and manage your security tools at scale. Secret push protection is the first type of scan supported by this new feature."
+msgstr ""
+
 msgid "SecurityProfiles|Disable"
 msgstr ""
 
@@ -63117,6 +63123,18 @@ msgid "SecurityProfiles|Error detaching profile. Please try again."
 msgstr ""
 
 msgid "SecurityProfiles|Error loading profiles. Please try again."
+msgstr ""
+
+msgid "SecurityProfiles|Got it!"
+msgstr ""
+
+msgid "SecurityProfiles|Introducing Security Configuration Profiles"
+msgstr ""
+
+msgid "SecurityProfiles|Learn more"
+msgstr ""
+
+msgid "SecurityProfiles|New feature"
 msgstr ""
 
 msgid "SecurityProfiles|No profile applied"
@@ -63144,6 +63162,9 @@ msgid "SecurityProfiles|Profiles define scanner configuration and can be applied
 msgstr ""
 
 msgid "SecurityProfiles|Secret Push Protection"
+msgstr ""
+
+msgid "SecurityProfiles|Security configuration illustration"
 msgstr ""
 
 msgid "SecurityProfiles|You are about to disable %{scannerName} for this project. Are you sure you want to proceed?"
@@ -72714,6 +72735,9 @@ msgstr ""
 msgid "Unverified"
 msgstr ""
 
+msgid "Unverified accounts are deleted after %{cut_off_days} days."
+msgstr ""
+
 msgid "Unverified signature"
 msgstr ""
 
@@ -77875,6 +77899,9 @@ msgstr ""
 msgid "WorkItem|An error occurred updating the RSS link. Please refresh the page to try again."
 msgstr ""
 
+msgid "WorkItem|An error occurred while deleting the view. Please try again."
+msgstr ""
+
 msgid "WorkItem|An error occurred while exporting issues."
 msgstr ""
 
@@ -77951,6 +77978,9 @@ msgid "WorkItem|Are you sure you want to close this blocked %{workItemType}?"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
+msgstr ""
+
+msgid "WorkItem|Are you sure you want to delete this view?"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to remove this lifecycle? This action cannot be undone."
@@ -78152,6 +78182,9 @@ msgid "WorkItem|Delete this %{workItemType} and release all child items? This ac
 msgstr ""
 
 msgid "WorkItem|Delete view"
+msgstr ""
+
+msgid "WorkItem|Deleting a view removes it from this %{type} and from anyone who had access to it. This action cannot be undone."
 msgstr ""
 
 msgid "WorkItem|Description"
@@ -79131,6 +79164,9 @@ msgid "WorkItem|Use work items (also known as tickets or stories on other platfo
 msgstr ""
 
 msgid "WorkItem|View current version"
+msgstr ""
+
+msgid "WorkItem|View has been deleted"
 msgstr ""
 
 msgid "WorkItem|View has been saved."

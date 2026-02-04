@@ -1289,6 +1289,9 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default:
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port). TLS connections are also supported using the system certificate pool (eg: tls://host:port).
+        # For DNS-based load balancing with TLS, use: dns+tls://[authority_host]:[authority_port]/[host]:[port]
+        # The host:port portion will be used as the TLS server name for SNI.
+        # Example: dns+tls://1.1.1.1/gitaly.example.com:8075
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings

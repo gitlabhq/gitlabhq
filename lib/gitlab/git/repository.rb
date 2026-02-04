@@ -442,19 +442,7 @@ module Gitlab
         options = process_count_commits_options(options.dup)
 
         wrapped_gitaly_errors do
-          if options[:left_right]
-            from = options[:from]
-            to = options[:to]
-
-            right_count = gitaly_commit_client
-              .commit_count("#{from}..#{to}", options)
-            left_count = gitaly_commit_client
-              .commit_count("#{to}..#{from}", options)
-
-            [left_count, right_count]
-          else
-            gitaly_commit_client.commit_count(options[:ref], options)
-          end
+          gitaly_commit_client.commit_count(options[:ref], options)
         end
       end
 
@@ -1323,19 +1311,9 @@ module Gitlab
 
       def process_count_commits_options(options)
         if options[:from] || options[:to]
-          ref =
-            if options[:left_right] # Compare with merge-base for left-right
-              "#{options[:from]}...#{options[:to]}"
-            else
-              "#{options[:from]}..#{options[:to]}"
-            end
+          ref = "#{options[:from]}..#{options[:to]}"
 
           options.merge(ref: ref)
-
-        elsif options[:ref] && options[:left_right]
-          from, to = options[:ref].match(/\A([^\.]*)\.{2,3}([^\.]*)\z/)[1..2]
-
-          options.merge(from: from, to: to)
         else
           options
         end

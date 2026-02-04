@@ -1,0 +1,9 @@
+---
+# Cop supports --autocorrect.
+API/DeprecatedInDescription:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/ci/minutes.rb'
+    - 'ee/lib/api/gitlab_subscriptions/add_on_purchases.rb'
+    - 'ee/lib/api/gitlab_subscriptions/subscriptions.rb'
+    - 'lib/api/unleash.rb'

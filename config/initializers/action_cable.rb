@@ -58,5 +58,6 @@ ActionCable::SubscriptionAdapter::Redis.redis_connector = ->(config) do
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install
+Gitlab::ActionCable::InstrumentationCallback.install
 Gitlab::Database::LoadBalancing::ActionCableCallbacks.install
 Gitlab::ActionCable::IpAddressStateCallback.install

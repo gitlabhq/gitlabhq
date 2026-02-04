@@ -279,7 +279,7 @@ They are also visible in the work item board.
 To assign or unassign a milestone:
 
 1. View an issue, an epic, or a merge request.
-1. On the right sidebar, next to **Milestones**, select **Edit**.
+1. In the right sidebar, next to **Milestones**, select **Edit**.
 1. In the **Assign milestone** list, search for a milestone by typing its name.
    You can select from both project and group milestones.
 1. Select the milestone you want to assign.

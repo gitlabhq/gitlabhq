@@ -11,6 +11,7 @@ query savedViews($fullPath: ID!, $subscribedOnly: Boolean) {
         isPrivate: private
         userPermissions {
           updateSavedView
+          deleteSavedView
         }
       }
     }

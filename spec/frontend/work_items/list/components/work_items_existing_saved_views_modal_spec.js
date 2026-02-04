@@ -23,6 +23,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       subscribed: true,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     },
     {
@@ -34,6 +35,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       subscribed: false,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     },
   ];

@@ -77,9 +77,11 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
           end
 
           it 'allows a passkey to be used for 2FA' do
-            expect(user).to receive(:get_all_webauthn_credential_ids)
+            allow_next_instance_of(User) do |instance|
+              expect(instance).to receive(:get_all_webauthn_credential_ids)
+            end
 
-            controller.send(:setup_webauthn_authentication, user)
+            authenticate_2fa_with_passkeys
           end
 
           context 'when authenticated with a passkey' do
@@ -102,21 +104,37 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
             end
           end
 
-          context 'when the :passkeys Feature Flag is disabled' do
+          context 'when passkey authentication is disabled for user' do
             before do
-              stub_feature_flags(passkeys: false)
+              allow_next_found_instance_of(User) do |instance|
+                allow(instance).to receive(:allow_passkey_authentication?).and_return(false)
+              end
             end
 
             it 'does not allow passkeys to be used for 2FA' do
-              expect(user).not_to receive(:get_all_webauthn_credential_ids)
+              allow_next_instance_of(User) do |instance|
+                expect(instance).not_to receive(:get_all_webauthn_credential_ids)
+              end
 
-              controller.send(:setup_webauthn_authentication, user)
+              authenticate_2fa_with_passkeys
             end
 
             it 'does not call a passkey interval event' do
               expect(controller).not_to receive(:track_passkey_internal_event)
 
               authenticate_2fa_with_passkeys
+            end
+
+            it 'does not authenticate the user' do
+              authenticate_2fa_with_passkeys
+
+              expect(controller.current_user_mode.admin_mode?).to be_falsy
+            end
+
+            it 'returns generic error message' do
+              authenticate_2fa_with_passkeys
+
+              expect(flash[:alert]).to eq(_('Failed to connect to your device. Try again.'))
             end
           end
         end

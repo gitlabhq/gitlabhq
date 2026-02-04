@@ -24,6 +24,10 @@ module Authn
 
         raise WebAuthn::Error unless verify_passkey(@stored_passkey_credential, passkey_credential, @challenge, encoder)
 
+        @user = find_matching_user_with_passkey(@stored_passkey_credential)
+
+        raise WebAuthn::Error unless @user.allow_passkey_authentication?
+
         @stored_passkey_credential.update!(
           counter: passkey_credential.sign_count,
           last_used_at: Time.current
@@ -31,7 +35,7 @@ module Authn
 
         ServiceResponse.success(
           message: _('Passkey successfully authenticated.'),
-          payload: find_matching_user_with_passkey(@stored_passkey_credential)
+          payload: @user
         )
 
       rescue JSON::ParserError

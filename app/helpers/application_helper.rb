@@ -244,7 +244,7 @@ module ApplicationHelper
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url(path: '/get-help/')
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || 'https://support.gitlab.com'
   end
 
   def instance_review_permitted?

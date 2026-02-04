@@ -477,7 +477,6 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
             "Ai::UsageEvent",
             "Analytics::CustomDashboards::DashboardVersion",
             "Dependencies::DependencyListExport",
-            "GitlabSubscriptions::SeatAssignment",
             "LDAPKey",
             "RemoteDevelopment::OrganizationClusterAgentMapping",
             "Vulnerabilities::Export"
@@ -492,6 +491,8 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
               'Group',
               'AbuseReport',
               'GitlabSubscriptions::AddOnPurchase',
+              'GitlabSubscriptions::SeatAssignment',
+              'GitlabSubscriptions::UserAddOnAssignment',
               'Authz::AdminRole',
               'MemberRole',
               'Ai::Catalog::ItemConsumer',

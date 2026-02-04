@@ -439,9 +439,7 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
 
       # We need to use fog mocks as using google_application_default
       # will trigger network requests which we don't want in this spec.
-      # In turn, using fog mocks will don't use a specific storage endpoint,
-      # hence the storage_url with the empty host.
-      let(:storage_url) { 'https:///uploads/' }
+      let(:storage_url) { 'https://storage.googleapis.com/uploads/' }
 
       before do
         Fog.mock!

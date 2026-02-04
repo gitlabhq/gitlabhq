@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe SessionsController, type: :request, feature_category: :system_access do
+  include Authn::WebauthnSpecHelpers
+  include SessionHelpers
+
   describe '#destroy' do
     let_it_be(:user) { create(:user) }
     let(:expected_context) do
@@ -90,8 +93,8 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
       end
     end
 
-    def perform_request
-      post users_passkeys_sign_in_path
+    def perform_request(params: {})
+      post users_passkeys_sign_in_path, params: params
     end
 
     context 'when :passkeys feature flag is off' do
@@ -111,6 +114,47 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
         end
 
         it_behaves_like 'does not call handle_passwordless_flow'
+      end
+    end
+
+    context 'for passkey authentication', :clean_gitlab_redis_sessions do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:passkey) { create_passkey(user) }
+
+      let(:device_response) { device_response_after_authentication(user, passkey) }
+      let(:params) { { device_response: device_response } }
+
+      before do
+        stub_session(session_data: { challenge: challenge })
+      end
+
+      it 'authenticates the user', :aggregate_failures do
+        perform_request(params: params)
+
+        expect(response).to redirect_to(root_path)
+        expect(request.env['warden']).to be_authenticated
+        expect(request.env['warden'].user).to eq user
+      end
+
+      context 'when passkey authentication is disabled for user' do
+        before do
+          allow_next_found_instance_of(User) do |instance|
+            allow(instance).to receive(:allow_passkey_authentication?).and_return(false)
+          end
+        end
+
+        it 'does not authenticate the user', :aggregate_failures do
+          perform_request(params: params)
+
+          expect(request.env['warden']).not_to be_authenticated
+          expect(request.env['warden'].user).to be_nil
+        end
+
+        it 'returns generic error message' do
+          perform_request(params: params)
+
+          expect(flash[:alert]).to eq(_('Failed to connect to your device. Try again.'))
+        end
       end
     end
   end

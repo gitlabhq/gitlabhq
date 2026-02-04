@@ -1450,20 +1450,30 @@ class User < ApplicationRecord
     second_factor_webauthn_registrations.any?
   end
 
+  def allow_passkey_authentication?
+    return false if Feature.disabled?(:passkeys, self)
+    return false if disable_password_authentication_for_sso_users?
+
+    Gitlab::CurrentSettings.password_authentication_enabled_for_web?
+  end
+
   def passkeys_enabled?
     passkeys.any?
   end
 
   def passkey_via_2fa_enabled?
-    Feature.enabled?(:passkeys, self) && self.two_factor_enabled? && self.passkeys_enabled?
+    allow_passkey_authentication? && two_factor_enabled? && passkeys_enabled?
   end
 
-  # This predicate allows either passkeys or second_factor_webauthn_registrations
+  # This method allows either passkeys or second_factor_webauthn_registrations
   # to be used as a 2FA method without breaking existing 2FA implementations.
   #
-  # Once passkeys are fully rolled out with adequate recovery options,
-  # #two_factor_webauthn_enabled? will become
-  # second_factor_webauthn_registrations.any? || passkeys_enabled?
+  # Once passkeys enable two-factor authentication for the user
+  # `passkey_via_2fa_enabled?` method will become `allow_passkey_authentication? && passkeys_enabled?`
+  #  and
+  # `two_factor_webauthn_enabled?` method will become `second_factor_webauthn_registrations.any? || passkey_via_2fa_enabled?`
+  #  and
+  #  this method will be removed in favor of `two_factor_webauthn_enabled?` method.
   def can_use_existing_webauthn_authenticator_for_2fa?
     two_factor_webauthn_enabled? || passkey_via_2fa_enabled?
   end

@@ -323,8 +323,8 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when alternate support url is not specified' do
-      it 'builds the support url from the promo_url' do
-        expect(helper.support_url).to eq(promo_url(path: '/get-help/'))
+      it 'builds the support url from the default support url' do
+        expect(helper.support_url).to eq("https://support.gitlab.com")
       end
     end
   end

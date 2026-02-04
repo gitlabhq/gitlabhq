@@ -3264,15 +3264,44 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#allow_passkey_authentication?' do
+    subject(:allow_passkey_authentication?) { user.allow_passkey_authentication? }
+
+    let_it_be(:user) { create(:user) }
+
+    it { is_expected.to be_truthy }
+
+    context 'when :passkeys feature flag is disabled' do
+      before do
+        stub_feature_flags(passkeys: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    it_behaves_like 'OmniAuth user password authentication'
+
+    context 'when the password authentication for web interface is disabled' do
+      before do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#passkey_via_2fa_enabled?' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:two_factor_enabled?, :passkeys_enabled?, :passkeys_ff_enabled?, :expected) do
+    where(:allow_passkey_authentication?, :two_factor_enabled?, :passkeys_enabled?, :expected) do
+      false | false | false | false
       false | false | true  | false
-      true  | false | true  | false
+      false | true  | false | false
+      false | true  | true  | false
       true  | false | false | false
-      true  | true  | true  | true
+      true  | false | true  | false
       true  | true  | false | false
+      true  | true  | true  | true
     end
 
     with_them do
@@ -3281,8 +3310,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
 
       before do
+        allow(user).to receive(:allow_passkey_authentication?).and_return(allow_passkey_authentication?)
         create(:webauthn_registration, :passkey, user: user) if passkeys_enabled?
-        stub_feature_flags(passkeys: passkeys_ff_enabled?)
       end
 
       it 'returns the expected value' do

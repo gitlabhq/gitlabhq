@@ -34580,6 +34580,7 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupautocompleteusersincludeserviceaccountsfortriggerevents"></a>`includeServiceAccountsForTriggerEvents` {{< icon name="warning-solid" >}} | [`[AiFlowTriggerEventType!]`](#aiflowtriggereventtype) | **Introduced** in GitLab 18.9. **Status**: Experiment. Which flow triggers events associated to the service accounts to include. |
 | <a id="groupautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Group.availableSecurityScanProfiles`
@@ -43453,6 +43454,7 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectautocompleteusersincludeserviceaccountsfortriggerevents"></a>`includeServiceAccountsForTriggerEvents` {{< icon name="warning-solid" >}} | [`[AiFlowTriggerEventType!]`](#aiflowtriggereventtype) | **Introduced** in GitLab 18.9. **Status**: Experiment. Which flow triggers events associated to the service accounts to include. |
 | <a id="projectautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
 
 ##### `Project.availableDeployKeys`
@@ -52149,6 +52151,17 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeaturessummarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Summarize new merge request feature setting. |
 | <a id="aifeaturessummarize_review"></a>`SUMMARIZE_REVIEW` | Summarize review feature setting. |
 
+### `AiFlowTriggerEventType`
+
+Possible event types for flow triggers.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiflowtriggereventtypeassign"></a>`ASSIGN` | Flow trigger assign event. |
+| <a id="aiflowtriggereventtypeassign_reviewer"></a>`ASSIGN_REVIEWER` | Flow trigger assign_reviewer event. |
+| <a id="aiflowtriggereventtypemention"></a>`MENTION` | Flow trigger mention event. |
+| <a id="aiflowtriggereventtypepipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
+
 ### `AiMessageRole`
 
 Possible message roles for AI features.
@@ -55960,7 +55973,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumfile_tree_browser_popover"></a>`FILE_TREE_BROWSER_POPOVER` | Callout feature name for file_tree_browser_popover. |
 | <a id="usercalloutfeaturenameenumfocused_vulnerability_reporting"></a>`FOCUSED_VULNERABILITY_REPORTING` | Callout feature name for focused_vulnerability_reporting. |
-| <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
 | <a id="usercalloutfeaturenameenumgeo_enable_hashed_storage"></a>`GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |
 | <a id="usercalloutfeaturenameenumgeo_migrate_hashed_storage"></a>`GEO_MIGRATE_HASHED_STORAGE` | Callout feature name for geo_migrate_hashed_storage. |
 | <a id="usercalloutfeaturenameenumgke_cluster_integration"></a>`GKE_CLUSTER_INTEGRATION` | Callout feature name for gke_cluster_integration. |
@@ -55994,6 +56006,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_policy_protected_branch_modification"></a>`SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
+| <a id="usercalloutfeaturenameenumsecurity_scanner_profiles_announcement"></a>`SECURITY_SCANNER_PROFILES_ANNOUNCEMENT` | Callout feature name for security_scanner_profiles_announcement. |
 | <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |

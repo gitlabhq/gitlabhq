@@ -330,7 +330,7 @@ To change the status of a task:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your task to view it.
-1. On the right sidebar, in the **Status** section, select **Edit**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
 The task's status updates immediately.

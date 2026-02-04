@@ -1,0 +1,10 @@
+# @feature_category: portfolio_management
+
+mutation workItemSavedViewDelete($input: WorkItemSavedViewDeleteInput!) {
+  workItemSavedViewDelete(input: $input) {
+    savedView {
+      id
+    }
+    errors
+  }
+}

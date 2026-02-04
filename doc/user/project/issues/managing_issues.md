@@ -635,7 +635,7 @@ To add an issue to an [iteration](../../group/iterations/_index.md):
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
-1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. In the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this issue to.
 1. Select any area outside the dropdown list.
 
@@ -847,7 +847,7 @@ To change the assignee on an issue:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
-1. On the right sidebar, in the **Assignees** section, select **Edit**.
+1. In the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
 1. Select any area outside the dropdown list.
 
@@ -893,7 +893,7 @@ To edit health status of an issue:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
-1. On the right sidebar, in the **Health status** section, select **Edit**.
+1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:
 
    - On track
@@ -949,7 +949,7 @@ To change the status of an issue:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**, then select your issue to view it.
-1. On the right sidebar, in the **Status** section, select **Edit**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
 The issue's status updates immediately.

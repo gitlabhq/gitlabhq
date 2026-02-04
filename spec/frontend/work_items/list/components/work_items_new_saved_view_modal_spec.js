@@ -31,6 +31,7 @@ describe('WorkItemsNewSavedViewModal', () => {
           displaySettings: {},
           userPermissions: {
             updateSavedView: true,
+            deleteSavedView: true,
           },
         },
       },
@@ -51,6 +52,7 @@ describe('WorkItemsNewSavedViewModal', () => {
           displaySettings: {},
           userPermissions: {
             updateSavedView: true,
+            deleteSavedView: true,
           },
         },
       },
@@ -238,6 +240,7 @@ describe('WorkItemsNewSavedViewModal', () => {
       subscribed: true,
       userPermissions: {
         updateSavedView: true,
+        deleteSavedView: true,
       },
     };
 

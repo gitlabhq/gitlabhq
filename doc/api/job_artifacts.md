@@ -16,7 +16,7 @@ Use this API to download, keep, and delete [job artifacts](../ci/jobs/job_artifa
 
 ## Download job artifacts by job ID
 
-Download a job's artifacts archive using the job ID.
+Download a job's artifacts archive using a job ID.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -62,7 +62,7 @@ artifact_download:
 
 {{< /history >}}
 
-Download a job's artifacts archive from the latest successful pipeline using the reference name.
+Download a job's artifacts archive from the latest successful pipeline using a reference name.
 When `search_recent_successful_pipelines=true`, the search includes up to 100 recent successful pipelines for the specified reference.
 
 The latest successful pipeline is determined based on creation time.
@@ -130,7 +130,7 @@ curl --location \
 
 ## Download a single artifact file by job ID
 
-Download a single file from a job's artifacts using the job ID.
+Download a single file from a job's artifacts using a job ID.
 The file is extracted from the archive and streamed to the client.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
@@ -167,7 +167,7 @@ curl --location \
 
 {{< /history >}}
 
-Lists all files and directories in the artifacts archive of a specified job.
+List all files and directories in the artifacts archive of a specified job.
 This operation reads the artifact metadata without extracting the full archive,
 making it efficient for browsing large archives.
 
@@ -253,7 +253,7 @@ list_artifacts:
 ## Download a single artifact file by reference name
 
 Download a single file from a job's artifacts in the latest successful pipeline
-using the reference name. The file is extracted from the archive and streamed to the client with the `plain/text` content type.
+using a reference name. The file is extracted from the archive and streamed to the client with the `plain/text` content type.
 
 For [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines),
 artifacts are searched in hierarchical order from parent to child. If both parent and child pipelines

@@ -439,6 +439,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'PropagateIntegrationWorker' => 3,
         'PurgeDependencyProxyCacheWorker' => 3,
         'ReactiveCachingWorker' => 3,
+        'ReactiveCaching::LowUrgencyWorker' => 3,
         'RebaseWorker' => 3,
         'RefreshLicenseComplianceChecksWorker' => 3,
         'Releases::CreateEvidenceWorker' => 3,

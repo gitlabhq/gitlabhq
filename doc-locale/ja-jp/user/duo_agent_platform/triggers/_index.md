@@ -8,7 +8,6 @@ title: トリガー
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- アドオン: GitLab Duo Core、Pro、またはEnterprise
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
@@ -21,11 +20,7 @@ title: トリガー
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
-
-{{< /alert >}}
+> [!flag] この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
 
 トリガーは、フローがいつ実行されるかを決定します。
 

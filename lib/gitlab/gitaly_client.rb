@@ -71,8 +71,8 @@ module Gitlab
       }
     end
 
-    def self.channel_args
-      {
+    def self.channel_args(storage = nil)
+      args = {
         # These keepalive values match the go Gitaly client
         # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
         'grpc.keepalive_time_ms': 20000,
@@ -195,11 +195,44 @@ module Gitlab
           ]
         }.to_json
       }
+
+      # Add TLS-specific channel arguments if storage is provided and TLS is enabled
+      if storage
+        uri = URI(address(storage))
+
+        # For dns+tls:// scheme, extract hostname for SNI override
+        # This ensures proper certificate validation during TLS handshake when using DNS resolution
+        # Extract hostname from different URI formats:
+        # - dns+tls:///gitaly.example.com:8075 -> path is /gitaly.example.com:8075
+        # - dns+tls://1.1.1.1/gitaly.example.com:8075 -> path is /gitaly.example.com:8075
+        # - dns+tls:localhost:9876 -> opaque is localhost:9876
+        if uri.scheme == 'dns+tls'
+          host_port = if uri.opaque.present?
+                        uri.opaque
+                      elsif uri.path.present? && uri.path != '/'
+                        uri.path.sub(%r{^/}, '')
+                      end
+
+          if host_port.present?
+            target = URI.parse("//#{host_port}")
+            server_name = target.host
+            args['grpc.ssl_target_name_override'] = server_name if server_name.present?
+          end
+        end
+      end
+
+      args
     end
     private_class_method :channel_args
 
     def self.stub_creds(storage)
-      if URI(address(storage)).scheme == 'tls'
+      uri = URI(address(storage))
+
+      # Check if TLS is enabled via URI scheme
+      # Supported TLS schemes:
+      # - tls://host:port
+      # - dns+tls://authority/host:port or dns+tls:///host:port
+      if uri.scheme == 'tls' || uri.scheme == 'dns+tls'
         GRPC::Core::ChannelCredentials.new ::Gitlab::X509::Certificate.ca_certs_bundle
       else
         :this_channel_is_insecure
@@ -215,7 +248,7 @@ module Gitlab
     end
 
     def self.stub_address(storage)
-      address(storage).sub(%r{^tcp://|^tls://}, '')
+      address(storage).sub(%r{^tcp://|^tls://}, '').sub(%r{^dns\+tls:}, 'dns:')
     end
 
     # Cache gRPC servers by storage. All the client stubs in the same process can share the underlying connection to the
@@ -224,7 +257,7 @@ module Gitlab
     def self.create_channel(storage)
       @channels ||= {}
       @channels[storage] ||= GRPC::ClientStub.setup_channel(
-        nil, stub_address(storage), stub_creds(storage), channel_args
+        nil, stub_address(storage), stub_creds(storage), channel_args(storage)
       )
     end
 
@@ -249,8 +282,8 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless %w[tcp unix tls dns].include?(URI(address).scheme)
-        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls' or 'dns'"
+      unless %w[tcp unix tls dns dns+tls].include?(URI(address).scheme)
+        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls' or 'dns' or 'dns+tls'"
       end
 
       address

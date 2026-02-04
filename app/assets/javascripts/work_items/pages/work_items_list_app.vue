@@ -275,15 +275,14 @@ export default {
       subscribedSavedViews: [],
       filterTokens: [],
       initialViewTokens: [],
-      filtersChanged: false,
       isInitialLoadComplete: false,
       pageInfo: {},
       pageParams: {},
       pageSize: DEFAULT_PAGE_SIZE,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
-      initialSortKey: null,
-      sortChanged: false,
+      initialSortKey: CREATED_DESC,
+      initialViewSortKey: null,
       initialPreferences: null,
       state: STATUS_OPEN,
       workItemsFull: [],
@@ -296,6 +295,7 @@ export default {
       namespaceId: null,
       displaySettings: {},
       localDisplaySettings: {},
+      initialViewDisplaySettings: {},
       workItemTypes: [],
       isLoggedIn: isLoggedIn(),
       isSortKeyInitialized: !this.isLoggedIn,
@@ -337,7 +337,7 @@ export default {
           this.showIssueRepositioningMessage();
           sortKey = this.state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
         }
-        this.sortKey = sortKey;
+        if (!this.isSavedView) this.sortKey = sortKey;
         this.isSortKeyInitialized = true;
       },
       skip() {
@@ -493,6 +493,7 @@ export default {
       },
       result({ data }) {
         try {
+          const draft = localStorage.getItem(this.savedViewDraftStorageKey);
           const savedView = data?.namespace?.savedViews?.nodes[0];
           if (!savedView) {
             throw new Error(
@@ -505,11 +506,18 @@ export default {
             convertTypeTokens: true,
           });
           const availableTokenTypes = this.searchTokens.map((token) => token.type);
-          this.filterTokens = tokens.filter((token) => availableTokenTypes.includes(token.type));
+
           this.initialViewTokens = tokens;
-          const sortKey = savedView?.sort;
-          this.sortKey = sortKey;
-          this.localDisplaySettings = savedView.displaySettings;
+          this.initialViewSortKey = savedView?.sort;
+          this.initialViewDisplaySettings = savedView.displaySettings;
+
+          if (draft) {
+            this.restoreViewDraft();
+          } else {
+            this.filterTokens = tokens.filter((token) => availableTokenTypes.includes(token.type));
+            this.sortKey = savedView?.sort;
+            this.localDisplaySettings = savedView.displaySettings;
+          }
         } catch (error) {
           Sentry.captureException(error);
         }
@@ -1035,8 +1043,34 @@ export default {
       const currentPreferences = {
         hiddenMetadataKeys: this.displaySettingsSoT.namespacePreferences?.hiddenMetadataKeys ?? [],
       };
+      const viewPreferences = {
+        hiddenMetadataKeys:
+          this.initialViewDisplaySettings.namespacePreferences?.hiddenMetadataKeys ?? [],
+      };
+      const comparePreferences = this.isSavedView ? viewPreferences : this.initialPreferences;
 
-      return !isEqual(currentPreferences, this.initialPreferences);
+      return !isEqual(currentPreferences, comparePreferences);
+    },
+    filtersChanged() {
+      const filteredTokens = this.filterTokens
+        .filter((token) => {
+          if (token.type === 'filtered-search-term') {
+            return Boolean(token.value?.data);
+          }
+
+          return true;
+        })
+        .map(({ id, ...rest }) => rest);
+
+      const compareFilters = !this.isSavedView
+        ? this.allItemsDefaultFilterTokens
+        : this.initialViewTokens;
+
+      return !isEqual(filteredTokens, compareFilters);
+    },
+    sortChanged() {
+      const compareSort = !this.isSavedView ? this.initialSortKey : this.initialViewSortKey;
+      return this.sortKey !== compareSort;
     },
     allItemsDefaultFilterTokens() {
       return [
@@ -1051,6 +1085,16 @@ export default {
     },
     viewConfigChanged() {
       return this.filtersChanged || this.sortChanged || this.preferencesChanged;
+    },
+    savedViewDraftStorageKey() {
+      return `${this.rootPageFullPath}-saved-view-${this.$route.params.view_id}`;
+    },
+    viewDraftData() {
+      return {
+        filterTokens: this.filterTokens,
+        sortKey: this.sortKey,
+        displaySettings: this.localDisplaySettings,
+      };
     },
   },
   watch: {
@@ -1074,6 +1118,7 @@ export default {
       } else {
         this.activeItem = null;
       }
+      if (this.isSavedView) this.restoreViewDraft();
     },
     isGroup(value) {
       if (this.isPlanningViewsEnabled && value) {
@@ -1090,11 +1135,6 @@ export default {
         });
       }
     },
-    sortKey(newKey) {
-      if (!this.initialSortKey) {
-        this.initialSortKey = newKey;
-      }
-    },
     displaySettings: {
       immediate: true,
       handler(value) {
@@ -1108,6 +1148,21 @@ export default {
         }
       },
     },
+    filterTokens: {
+      deep: true,
+      handler() {
+        this.persistDraft();
+      },
+    },
+    sortKey() {
+      this.persistDraft();
+    },
+    localDisplaySettings: {
+      deep: true,
+      handler() {
+        this.persistDraft();
+      },
+    },
   },
   created() {
     if (this.isSavedView) {
@@ -1115,7 +1170,6 @@ export default {
     } else {
       this.updateData(getParameterByName(PARAM_SORT));
       this.addStateToken();
-      this.filtersChanged = !isEqual(this.filterTokens, this.allItemsDefaultFilterTokens);
     }
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
@@ -1227,23 +1281,6 @@ export default {
       this.updateRouterQueryParams();
     },
     handleFilter(tokens) {
-      const filteredTokens = tokens
-        .filter((token) => {
-          if (token.type === 'filtered-search-term') {
-            return Boolean(token.value?.data);
-          }
-
-          return true;
-        })
-        .map(({ id, ...rest }) => rest);
-
-      // If user is on "All tabs" we compare against default filters, but
-      // if user is on a saved view we compare against initial filters from DB
-      const compareFilters = !this.isSavedView
-        ? this.allItemsDefaultFilterTokens
-        : this.initialViewTokens;
-      this.filtersChanged = !isEqual(filteredTokens, compareFilters);
-
       this.filterTokens = tokens;
       this.hasStateToken = this.checkIfStateTokenExists();
       this.updateState(tokens);
@@ -1305,7 +1342,6 @@ export default {
         return;
       }
 
-      this.sortChanged = sortKey !== this.initialSortKey;
       this.sortKey = sortKey;
       this.pageParams = getInitialPageParams(this.pageSize);
 
@@ -1462,7 +1498,6 @@ export default {
           },
         });
       }
-      this.initialViewTokens = this.filterTokens;
     },
     checkIfStateTokenExists() {
       return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
@@ -1631,24 +1666,36 @@ export default {
 
       // TODO: add update view mutation at integration
     },
-    async resetToDefaults() {
-      // Resetting view's filters to initial state
+    async resetToViewDefaults() {
       this.filterTokens = [...this.initialViewTokens];
-      this.filtersChanged = false;
+      this.sortKey = this.initialViewSortKey;
+      this.localDisplaySettings = this.initialViewDisplaySettings;
+    },
+    restoreViewDraft() {
+      const draft = localStorage.getItem(this.savedViewDraftStorageKey);
+      if (!draft) return;
 
-      // Resetting view's sort to initial state
-      if (this.initialSortKey) {
-        this.sortKey = this.initialSortKey;
-        this.sortChanged = false;
-      }
+      const parsedData = JSON.parse(draft);
 
-      // TODO: Add resetting preferences to defaults
+      this.filterTokens = parsedData.filterTokens;
+      this.sortKey = parsedData.sortKey;
+      this.localDisplaySettings = parsedData.displaySettings;
     },
     handleError(error, message) {
       Sentry.captureException(error);
 
       // if custom message is provided, use it
       if (message) this.error = message;
+    },
+    persistDraft() {
+      if (!this.isSavedView) return;
+
+      if (!this.viewConfigChanged) {
+        localStorage.removeItem(this.savedViewDraftStorageKey);
+        return;
+      }
+
+      localStorage.setItem(this.savedViewDraftStorageKey, JSON.stringify(this.viewDraftData));
     },
   },
   constants: {
@@ -1922,7 +1969,7 @@ export default {
                     class="!gl-text-sm"
                     variant="link"
                     data-testid="reset-view-button"
-                    @click="resetToDefaults"
+                    @click="resetToViewDefaults"
                   >
                     {{ s__('WorkItem|Reset to defaults') }}
                   </gl-button>

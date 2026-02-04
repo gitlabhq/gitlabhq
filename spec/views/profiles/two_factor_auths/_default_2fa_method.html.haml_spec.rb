@@ -11,7 +11,7 @@ RSpec.describe 'profiles/two_factor_auths/_default_2fa_method.html.haml', featur
     allow(view).to receive(:current_user).and_return(user)
   end
 
-  context 'when the user has a passkey' do
+  context 'when the user has a passkey and a 2FA method' do
     before do
       assign(:passkeys, [passkey])
     end
@@ -20,6 +20,18 @@ RSpec.describe 'profiles/two_factor_auths/_default_2fa_method.html.haml', featur
       render
 
       expect(rendered).to have_css('.gl-badge', text: s_('ProfilesAuthentication|Passkey'))
+    end
+
+    context 'when passkey authentication is disabled for user' do
+      before do
+        allow(user).to receive(:allow_passkey_authentication?).and_return(false)
+      end
+
+      it 'displays an OTP badge as default 2FA method' do
+        render
+
+        expect(rendered).to have_css('.gl-badge', text: s_('ProfilesAuthentication|One-time password authenticator'))
+      end
     end
   end
 
@@ -40,6 +52,28 @@ RSpec.describe 'profiles/two_factor_auths/_default_2fa_method.html.haml', featur
       render
 
       expect(rendered).to have_css('.gl-badge', text: s_('ProfilesAuthentication|One-time password authenticator'))
+    end
+
+    context 'when :passkeys feature flag is disabled' do
+      before do
+        stub_feature_flags(passkeys: false)
+      end
+
+      it 'does not display default 2FA method badge' do
+        render
+
+        expect(rendered).to eq("")
+      end
+    end
+  end
+
+  context 'when the user does not have a 2FA method' do
+    let_it_be(:user) { build_stubbed(:user) }
+
+    it 'does not display default 2FA method badge' do
+      render
+
+      expect(rendered).to eq("")
     end
   end
 end

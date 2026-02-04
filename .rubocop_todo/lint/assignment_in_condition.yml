@@ -3,7 +3,6 @@
 Lint/AssignmentInCondition:
   Exclude:
     - 'app/controllers/concerns/verifies_with_email.rb'
-    - 'app/controllers/omniauth_callbacks_controller.rb'
     - 'app/controllers/projects/commit_controller.rb'
     - 'app/controllers/projects/merge_requests/diffs_controller.rb'
     - 'app/controllers/projects/settings/integrations_controller.rb'

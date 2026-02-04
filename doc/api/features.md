@@ -124,21 +124,19 @@ percentage of time.
 POST /features/:name
 ```
 
-Supported attributes:
-
 | Attribute       | Type           | Required | Description                                                                                                                                                                                      |
-|:----------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name`          | string         | Yes      | Name of the feature to create or update                                                                                                                                                          |
-| `value`         | integer or string | Yes      | `true` or `false` to enable/disable, or an integer for percentage of time                                                                                                                        |
-| `key`           | string         | No       | `percentage_of_actors` or `percentage_of_time` (default)                                                                                                                                         |
-| `feature_group` | string         | No       | A Feature group name                                                                                                                                                                             |
-| `user`          | string         | No       | A GitLab username or comma-separated multiple usernames                                                                                                                                          |
-| `group`         | string         | No       | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths                                                                                                         |
-| `namespace`     | string         | No       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
-| `project`       | string         | No       | A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths                                                                                                 |
-| `repository`    | string         | No       | A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, , `snippets/21.git`, to name a few. Use comma to separate multiple repository paths              |
-| `runner`        | string         | No       | A runner ID, or comma-separated list of runner IDs                                                                                                                                               |
-| `force`         | boolean        | No       | Skip feature flag validation checks, such as a YAML definition                                                                                                                                   |
+|-----------------|----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`          | string         | yes      | Name of the feature to create or update                                                                                                                                                          |
+| `value`         | integer or string | yes      | `true` or `false` to enable/disable, or an integer for percentage of time                                                                                                                        |
+| `key`           | string         | no       | `percentage_of_actors` or `percentage_of_time` (default)                                                                                                                                         |
+| `feature_group` | string         | no       | A Feature group name                                                                                                                                                                             |
+| `user`          | string         | no       | A GitLab username or comma-separated multiple usernames                                                                                                                                          |
+| `group`         | string         | no       | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths                                                                                                         |
+| `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |
+| `project`       | string         | no       | A projects path, for example `gitlab-org/gitlab-foss`, or comma-separated multiple project paths                                                                                                 |
+| `repository`    | string         | no       | A repository path, for example `gitlab-org/gitlab-test.git`, `gitlab-org/gitlab-test.wiki.git`, , `snippets/21.git`, to name a few. Use comma to separate multiple repository paths              |
+| `runner`        | string         | no       | A runner ID, or comma-separated list of runner IDs                                                                                                                                               |
+| `force`         | boolean        | no       | Skip feature flag validation checks, such as a YAML definition                                                                                                                                   |
 
 You can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, a `namespace`, a `project`, a `repository`, and a `runner` in a single API call.
@@ -216,7 +214,7 @@ Example response:
 
 Rolls out the `my_user_feature` to `42%` of actors.
 
-## Delete a feature flag
+## Delete a feature
 
 Delete a feature flag gate. Returns the same response whether the feature flag exists or not.
 

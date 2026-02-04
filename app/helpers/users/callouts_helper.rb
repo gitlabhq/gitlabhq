@@ -3,7 +3,6 @@
 module Users
   module CalloutsHelper
     GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
-    GCP_SIGNUP_OFFER = 'gcp_signup_offer'
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
     TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
@@ -29,10 +28,6 @@ module Users
       active_nav_link?(controller: sidebar_operations_paths) &&
         can?(current_user, :create_cluster, project) &&
         !user_dismissed?(GKE_CLUSTER_INTEGRATION)
-    end
-
-    def show_gcp_signup_offer?
-      !user_dismissed?(GCP_SIGNUP_OFFER)
     end
 
     def render_dashboard_ultimate_trial(user); end

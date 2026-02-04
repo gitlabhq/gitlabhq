@@ -1,0 +1,10 @@
+---
+name: low_urgency_reactive_caching_worker
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/585506
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218033
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588302
+milestone: '18.9'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

@@ -158,7 +158,7 @@ export default {
                 id: NEW_SAVED_VIEWS_GID,
                 ...commonSavedViewResponse,
                 subscribed: true,
-                userPermissions: { updateSavedView: true },
+                userPermissions: { updateSavedView: true, deleteSavedView: true },
               },
         },
       };

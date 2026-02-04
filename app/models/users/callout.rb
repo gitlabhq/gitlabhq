@@ -9,7 +9,7 @@ module Users
     # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
       gke_cluster_integration: 1,
-      gcp_signup_offer: 2,
+      # 2 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221007
       cluster_security_warning: 3,
       ultimate_trial: 4,                         # EE-only
       geo_enable_hashed_storage: 5,              # EE-only
@@ -123,7 +123,8 @@ module Users
       # 119 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221219
       vulnerability_report_limited_experience: 120, # EE-only
       file_tree_browser_popover: 121,
-      virtual_registry_permission_change_alert: 122 # EE-only
+      virtual_registry_permission_change_alert: 122, # EE-only
+      security_scanner_profiles_announcement: 123 # EE-only
     }
 
     validates :feature_name,

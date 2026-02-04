@@ -7,10 +7,11 @@ import {
   GlButton,
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { __, s__, sprintf } from '~/locale';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ROUTES } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
-import { s__ } from '~/locale';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 
 export default {
@@ -23,6 +24,7 @@ export default {
     GlButton,
     WorkItemsNewSavedViewModal,
   },
+  inject: ['isGroup'],
   props: {
     savedView: {
       type: Object,
@@ -37,7 +39,7 @@ export default {
       required: true,
     },
   },
-  emits: ['remove-saved-view'],
+  emits: ['unsubscribe-saved-view', 'delete-saved-view'],
   data() {
     return {
       isNewViewModalVisible: false,
@@ -54,6 +56,9 @@ export default {
     },
     canUpdateSavedView() {
       return this.savedView?.userPermissions?.updateSavedView;
+    },
+    canDeleteSavedView() {
+      return this.savedView?.userPermissions?.deleteSavedView;
     },
   },
   methods: {
@@ -72,12 +77,29 @@ export default {
         Sentry.captureException(error);
       }
     },
-    removeView() {
-      this.$emit('remove-saved-view', this.savedView);
+    unsubscribeView() {
+      this.$emit('unsubscribe-saved-view', this.savedView);
     },
-    deleteView() {
-      // TODO: to replace with logic to delete view.
-      return '';
+    async deleteView() {
+      const title = s__('WorkItem|Are you sure you want to delete this view?');
+      const namespaceType = this.isGroup ? __('group') : __('project');
+      const message = sprintf(
+        s__(
+          'WorkItem|Deleting a view removes it from this %{type} and from anyone who had access to it. This action cannot be undone.',
+        ),
+        { type: namespaceType },
+      );
+
+      const confirmed = await confirmAction(null, {
+        title,
+        modalHtmlMessage: `<span>${message}</span>`,
+        primaryBtnVariant: 'danger',
+        primaryBtnText: s__('WorkItem|Delete view'),
+      });
+
+      if (confirmed) {
+        this.$emit('delete-saved-view', this.savedView);
+      }
     },
   },
 };
@@ -118,7 +140,7 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <gl-disclosure-dropdown-item data-testid="unsubscribe-action" @action="removeView">
+      <gl-disclosure-dropdown-item data-testid="unsubscribe-action" @action="unsubscribeView">
         <template #list-item>
           <gl-icon name="close" class="gl-mr-2" variant="subtle" />
           {{ s__('WorkItem|Remove from list') }}
@@ -127,6 +149,7 @@ export default {
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
+          v-if="canDeleteSavedView"
           data-testid="delete-action"
           variant="danger"
           @action="deleteView"

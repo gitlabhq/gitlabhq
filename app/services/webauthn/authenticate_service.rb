@@ -22,6 +22,8 @@ module Webauthn
 
       raise WebAuthn::Error unless verify_webauthn(stored_webauthn_credential, webauthn_credential, @challenge, encoder)
 
+      raise WebAuthn::Error if stored_webauthn_credential.passkey? && !@user.allow_passkey_authentication?
+
       stored_webauthn_credential.update!(
         counter: webauthn_credential.sign_count,
         last_used_at: Time.current
@@ -41,7 +43,7 @@ module Webauthn
       )
     rescue WebAuthn::Error => err
       ServiceResponse.error(
-        message: webauthn_human_readable_errors(err.class.name)
+        message: webauthn_human_readable_errors(err.class.name, passkey: stored_webauthn_credential.passkey?)
       )
     end
 
@@ -71,16 +73,7 @@ module Webauthn
     end
 
     def stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
-      if Feature.enabled?(:passkeys, @user)
-        credential = @user.passkeys.find_by_credential_xid(encoded_raw_id) ||
-          @user.second_factor_webauthn_registrations.find_by_credential_xid(encoded_raw_id)
-
-        raise(ActiveRecord::RecordNotFound) unless credential
-
-        credential
-      else
-        @user.second_factor_webauthn_registrations.find_by_credential_xid!(encoded_raw_id)
-      end
+      @user.webauthn_registrations.find_by_credential_xid!(encoded_raw_id)
     end
 
     ##

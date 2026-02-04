@@ -128,6 +128,28 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(described_class.stub_address('default')).to eq('localhost:9876')
       end
     end
+
+    where(:address, :expected_stub_address) do
+      [
+        ['unix:tmp/gitaly.sock', 'unix:tmp/gitaly.sock'],
+        ['tcp://localhost:9876', 'localhost:9876'],
+        ['tls://localhost:9876', 'localhost:9876'],
+        ['dns:///localhost:9876', 'dns:///localhost:9876'],
+        ['dns:localhost:9876', 'dns:localhost:9876'],
+        ['dns://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876'],
+        ['dns+tls:///localhost:9876', 'dns:///localhost:9876'],
+        ['dns+tls:localhost:9876', 'dns:localhost:9876'],
+        ['dns+tls://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876']
+      ]
+    end
+
+    with_them do
+      it 'returns the expected stub address' do
+        stub_repos_storages address
+
+        expect(described_class.stub_address('default')).to eq(expected_stub_address)
+      end
+    end
   end
 
   describe '.stub_creds' do
@@ -181,6 +203,32 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         described_class.stub_creds('default')
       end.to raise_error(/unsupported Gitaly address/i)
     end
+
+    context 'with dns+tls scheme variations' do
+      it 'returns Credentials object with dns+tls:/// (no authority)' do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => 'dns+tls:///localhost:9876' }
+        })
+
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+
+      it 'returns Credentials object with dns+tls://authority/host:port' do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => 'dns+tls://1.1.1.1/gitaly.example.com:8075' }
+        })
+
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+
+      it 'returns Credentials object with dns+tls:host:port (short form)' do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => 'dns+tls:localhost:9876' }
+        })
+
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+    end
   end
 
   describe '.create_channel' do
@@ -191,7 +239,10 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         ['default', 'tls://localhost:9876', 'dns:///localhost:9876'],
         ['default', 'dns:///localhost:9876', 'dns:///localhost:9876'],
         ['default', 'dns:localhost:9876', 'dns:localhost:9876'],
-        ['default', 'dns://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876']
+        ['default', 'dns://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876'],
+        ['default', 'dns+tls:///localhost:9876', 'dns:///localhost:9876'],
+        ['default', 'dns+tls:localhost:9876', 'dns:localhost:9876'],
+        ['default', 'dns+tls://1.1.1.1/localhost:9876', 'dns://1.1.1.1/localhost:9876']
       ]
     end
 
@@ -1059,6 +1110,204 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
           backoffMultiplier: 2,
           retryableStatusCodes: %w[UNAVAILABLE ABORTED]
         )
+      end
+    end
+  end
+
+  describe '.channel_args' do
+    context 'when called without a storage argument' do
+      it 'returns base channel arguments without TLS settings' do
+        args = described_class.send(:channel_args)
+
+        expect(args).to include('grpc.keepalive_time_ms': 20000)
+        expect(args).to include('grpc.keepalive_permit_without_calls': 1)
+        expect(args).to have_key(:'grpc.service_config')
+        expect(args).not_to have_key('grpc.ssl_target_name_override')
+      end
+    end
+
+    context 'when called with a storage using dns+tls:// scheme' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls:///gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'adds SNI override with the hostname' do
+        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+      end
+    end
+
+    context 'when called with a storage using dns+tls:// scheme with authority' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls://1.1.1.1/gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'adds SNI override with the host from the path' do
+        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+      end
+    end
+
+    context 'when called with a storage using dns+tls: scheme (short form)' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls:gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'adds SNI override with the hostname from opaque' do
+        expect(described_class.send(:channel_args, 'default')).to include('grpc.ssl_target_name_override' => 'gitaly.example.com')
+      end
+    end
+
+    context 'when called with a storage using tls:// scheme' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'tls://gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'does not add SNI override without dns scheme' do
+        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+      end
+    end
+
+    context 'when called with a storage using tcp:// scheme' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'tcp://gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'does not add SNI override' do
+        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+      end
+    end
+
+    context 'when called with a storage using dns+tls:// scheme with empty path' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls://1.1.1.1/'
+          }
+        })
+      end
+
+      it 'does not add SNI override when path is only a slash' do
+        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+      end
+    end
+
+    context 'when called with a storage using dns+tls:// scheme with only port in path' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls:///:8075'
+          }
+        })
+      end
+
+      it 'does not add SNI override when hostname is blank' do
+        expect(described_class.send(:channel_args, 'default')).not_to have_key('grpc.ssl_target_name_override')
+      end
+    end
+  end
+
+  describe 'TLS integration' do
+    context 'when creating a channel with dns+tls:// scheme' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls:///gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'creates a channel with TLS credentials' do
+        channel = described_class.create_channel('default')
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+    end
+
+    context 'when creating a channel with dns+tls:// scheme with authority' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls://1.1.1.1/gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'creates a channel with TLS credentials' do
+        channel = described_class.create_channel('default')
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+    end
+
+    context 'when creating a channel with dns+tls: scheme (short form)' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'dns+tls:gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'creates a channel with TLS credentials' do
+        channel = described_class.create_channel('default')
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+    end
+
+    context 'when creating a channel with tls:// scheme and no explicit config' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'tls://gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'creates a channel with TLS credentials' do
+        channel = described_class.create_channel('default')
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+      end
+    end
+
+    context 'when creating a channel without TLS' do
+      before do
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => {
+            'gitaly_address' => 'tcp://gitaly.example.com:8075'
+          }
+        })
+      end
+
+      it 'creates a channel with insecure credentials' do
+        channel = described_class.create_channel('default')
+
+        expect(channel).to be_a(GRPC::Core::Channel)
+        expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
       end
     end
   end

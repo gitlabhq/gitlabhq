@@ -1567,22 +1567,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
           expect(repository.count_commits(options)).to eq(29)
         end
-
-        context 'with option :left_right' do
-          it 'returns the number of commits for master..feature' do
-            options = { from: 'master', to: 'feature', left_right: true }
-
-            expect(repository.count_commits(options)).to eq([29, 1])
-          end
-
-          context 'with max_count' do
-            it 'returns the number of commits' do
-              options = { from: 'feature', to: 'master', left_right: true, max_count: 1 }
-
-              expect(repository.count_commits(options)).to eq([1, 1])
-            end
-          end
-        end
       end
 
       context 'with max_count' do

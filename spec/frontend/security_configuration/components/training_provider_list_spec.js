@@ -95,17 +95,13 @@ describe('TrainingProviderList component', () => {
     apolloProvider = createMockApollo(mergedHandlers);
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(TrainingProviderList, {
       provide: {
         projectFullPath: testProjectPath,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
-      },
-      propsData: {
-        securityTrainingEnabled: true,
-        ...props,
       },
       apolloProvider,
     });
@@ -122,7 +118,6 @@ describe('TrainingProviderList component', () => {
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findErrorAlert = () => wrapper.findComponent(GlAlert);
   const findLogos = () => wrapper.findAllByTestId('provider-logo');
-  const findUnavailableTexts = () => wrapper.findAllByTestId('unavailable-text');
 
   const toggleFirstProvider = () => findFirstToggle().vm.$emit('change', testProviderIds[0]);
 
@@ -327,41 +322,6 @@ describe('TrainingProviderList component', () => {
             property: firstProviderId,
           },
         );
-      });
-    });
-
-    describe('non ultimate users', () => {
-      beforeEach(async () => {
-        createComponent({
-          securityTrainingEnabled: false,
-        });
-        await waitForQueryToBeLoaded();
-      });
-
-      it('displays unavailable text', () => {
-        findUnavailableTexts().wrappers.forEach((unavailableText) => {
-          expect(unavailableText.text()).toBe(TrainingProviderList.i18n.unavailableText);
-        });
-      });
-
-      it('has disabled state for toggle', () => {
-        findToggles().wrappers.forEach((toggle) => {
-          expect(toggle.props('disabled')).toBe(true);
-        });
-      });
-
-      it('has disabled state for radio', () => {
-        findPrimaryProviderRadios().wrappers.forEach((radio) => {
-          expect(radio.attributes('disabled')).toBeDefined();
-        });
-      });
-
-      it('adds backgrounds color', () => {
-        findCards().wrappers.forEach((card) => {
-          expect(card.props('bodyClass')).toMatchObject({
-            'gl-bg-subtle': true,
-          });
-        });
       });
     });
   });
