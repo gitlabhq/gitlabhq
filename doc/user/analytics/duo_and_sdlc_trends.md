@@ -229,7 +229,7 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 
 Prerequisites:
 
-- [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
+- [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. On the top bar, select **Search or go to** and find your project or group.

@@ -66,7 +66,7 @@ The following table lists:
 
 | Feature                                                                                                                                | GitLab version          | Status              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
-| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                           | GitLab 17.9 and later   | Generally available |
+| [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)                                                           | GitLab 17.9 and later   | Generally available |
 | [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
 | [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9 and later   | Generally available |
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |

@@ -2,6 +2,9 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_search_blob_result_blame_line_weekly
 description: Weekly count of unique users who clicked on blame line in the multimatch results page
 product_group: global_search
+product_categories:
+- global_search
+- code_search
 performance_indicator_type: []
 value_type: number
 status: active

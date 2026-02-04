@@ -53,7 +53,7 @@ module WorkItems
               true
             end
 
-            def configurable
+            def configurable?
               false
             end
           end

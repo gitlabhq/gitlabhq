@@ -931,15 +931,13 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
       context 'filtering by item type' do
         let_it_be(:incident_item) { create(factory, :incident, project: project1) }
-        let_it_be(:objective) { create(factory, :objective, project: project1) }
-        let_it_be(:key_result) { create(factory, :key_result, project: project1) }
 
         context 'no type given' do
           let(:params) { { issue_types: [] } }
 
           it 'returns all items' do
             expect(items)
-              .to contain_exactly(incident_item, item1, item2, item3, item4, item5, objective, key_result)
+              .to contain_exactly(incident_item, item1, item2, item3, item4, item5)
           end
         end
 
@@ -952,17 +950,25 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'objective type' do
+          # As this is spec that runs only in CE and objective type is not available, we should move it to EE
+          let!(:objective) { create(factory, :objective, project: project1) }
           let(:params) { { issue_types: ['objective'] } }
 
-          it 'returns incident items' do
+          it 'returns objective items' do
+            skip unless Gitlab.ee?
+
             expect(items).to contain_exactly(objective)
           end
         end
 
         context 'key_result type' do
+          # As this is spec that runs only in CE and available type is not available, we should move it to EE
+          let!(:key_result) { create(factory, :key_result, project: project1) }
           let(:params) { { issue_types: ['key_result'] } }
 
-          it 'returns incident items' do
+          it 'returns key_result items' do
+            skip unless Gitlab.ee?
+
             expect(items).to contain_exactly(key_result)
           end
         end

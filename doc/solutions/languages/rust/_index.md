@@ -20,7 +20,7 @@ Unless otherwise noted, all of this content applies to both GitLab.com and GitLa
 
 ## Rust SCM
 
-- [GitLab Duo Code Suggestions](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) `[GitLab Built]`
+- [GitLab Duo Code Suggestions](../../../user/duo_agent_platform/code_suggestions/supported_extensions.md#supported-languages-by-ide) and [Code Suggestions (Classic)](../../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) `[GitLab Built]`
 
 ## Rust CI
 

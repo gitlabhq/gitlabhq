@@ -22,7 +22,7 @@ are available on GitLab Self-Managed only.
 
 | Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q |
 |---------|----------|---------|----------------|--------------------------|
-| [Code Suggestions](../project/repository/code_suggestions/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md) | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Code Explanation](../gitlab_duo_chat/examples.md#explain-selected-code) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) in IDEs | {{< yes >}} | {{< yes >}} | {{< yes >}} | {{< yes >}} |

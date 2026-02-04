@@ -145,6 +145,23 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
             end.not_to exceed_query_limit(control).with_threshold(28)
           end
         end
+
+        it 'calls SystemDefined::WidgetDefinition.available_widgets' do
+          expect(::WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
+            .to receive(:available_widgets).and_call_original
+
+          service_result
+        end
+
+        context 'when work_item_system_defined_type flag is disabled' do
+          it 'returns WidgetDefinition' do
+            stub_feature_flags(work_item_system_defined_type: false)
+
+            expect(::WorkItems::WidgetDefinition).to receive(:available_widgets).and_call_original
+
+            service_result
+          end
+        end
       end
 
       context 'when the user cannot update the work item' do

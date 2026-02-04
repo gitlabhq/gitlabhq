@@ -38,7 +38,8 @@ The following context is available to GitLab Duo Chat (Classic).
 - Content in the file you're viewing or editing, including code before and after your cursor.
 - When using Chat in the GitLab UI, the current page title and URL.
 - The `/refactor`, `/fix`, `/tests`, and `/explain` slash commands have access to the latest
-  [Repository X-Ray report](../project/repository/code_suggestions/repository_xray.md).
+  Repository X-Ray report from [Code Suggestions](../duo_agent_platform/code_suggestions/repository_xray.md)
+  or [Code Suggestions (Classic)](../project/repository/code_suggestions/repository_xray.md).
 
 #### Based on location
 
@@ -149,14 +150,14 @@ The following context is available to Code Suggestions.
   - These files provide GitLab Duo with information about the standards and practices in your project.
   - Close files if you do not want them used for context.
   - The most recently opened or changed files are prioritized for context.
-  - Code completion is aware of all [supported languages](../project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide).
+  - Code completion is aware of all languages supported by [Code Suggestions](../duo_agent_platform/code_suggestions/supported_extensions.md#supported-languages-by-ide) and [Code Suggestions (Classic)](../project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide).
   - Code generation is aware of files in these languages only:
     Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 - Files imported in the file you're viewing or editing. Optional, and off by default.
   - These files provide GitLab Duo with information about the classes and methods in your file.
   - Supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 - Code selected in your editor.
-- [Repository X-Ray files](../project/repository/code_suggestions/repository_xray.md).
+- Repository X-Ray files from [Code Suggestions](../duo_agent_platform/code_suggestions/repository_xray.md) or [Code Suggestions (Classic)](../project/repository/code_suggestions/repository_xray.md).
 
 > [!note]
 > Secrets and sensitive values that match known formats are redacted before

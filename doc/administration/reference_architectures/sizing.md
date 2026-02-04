@@ -50,9 +50,8 @@ If you can't configure Prometheus monitoring:
 
 - [Compare current environment](#analyze-current-environment-and-validate-recommendations) specifications to the nearest
   reference architecture to estimate sizing.
-- Use the [GitLab RPS Analyzer](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/gitlab-rps-analyzer)
-  to assess reference architecture size using GitLabSOS or KubeSOS logs. Log analysis has significant limitations. It provides less reliable data than
-  metrics.
+- Use [GitLab RPS Analyzer](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/gitlab-rps-analyzer#gitlab-rps-analyzer)
+  to assess reference architecture size using GitLabSOS or KubeSOS logs. Note however, that this is less reliable than metrics.
 
 If migrating from other platforms, the following PromQL queries cannot be applied without existing GitLab metrics.
 However, the general assessment methodology remains valid:
@@ -223,7 +222,7 @@ General guidelines:
 - Beyond 15%, start with the peak-based RA, then monitor and adjust if metrics support downsizing.
   - Example 1: Peak is 110 RPS, Large RA handles "up to 100 RPS" → 10% over → Large should suffice (Reference architectures have built-in headroom)
   - Example 2: Peak is 150 RPS, Large RA handles "up to 100 RPS" → 50% over → Use X-Large (up to 200 RPS)
-  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while majority of time load is <50 RPS. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
+  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while load is <50 RPS most of the time. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
 
 For environments under 40 RPS and where high availability (HA) is a requirement, consult the
 [high availability section](_index.md#high-availability-ha) to identify whether switching to the 60 RPS / 3,000 user
@@ -552,7 +551,7 @@ Collect comprehensive environment data to establish the current state:
   - Node count and specifications for each component.
   - Custom configurations or deviations.
 
-### Identify nearest reference architecture
+### Identify the nearest reference architecture
 
 1. Compare the current environment to [available reference architectures](_index.md). Consider the following:
 

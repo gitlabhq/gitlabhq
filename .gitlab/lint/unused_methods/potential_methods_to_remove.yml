@@ -307,11 +307,7 @@ ee/app/models/ai/duo_code_review.rb:
 - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:
 - any_group_with_ai_available?
-ee/app/models/work_items/types_framework/system_defined/definitions/epic.rb:
-- support_roadmap_view?
 app/models/ci/stage.rb:
 - update_legacy_status
 app/models/work_items/types_framework/custom/type.rb:
 - icon_name_with_prefix
-app/models/work_items/types_framework/system_defined/definitions/issue.rb:
-- support_move_action?

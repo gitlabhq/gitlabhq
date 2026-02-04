@@ -12,7 +12,7 @@ integrates GitLab with Visual Studio for Windows.
 GitLab for Visual Studio supports:
 
 - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md)
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)
 - [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)
 
 To install and configure the extension, see [Install and set up](setup.md).

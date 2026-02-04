@@ -5,11 +5,17 @@ module Issues
     # @param object [Issue, Project, Group]
     # @param issue_type [String, Symbol]
     def create_issue_type_allowed?(object, issue_type)
-      # TODO: Extract the namespace out of the object and pass it to the provider. Object can be many things.
-      # See https://gitlab.com/groups/gitlab-org/-/work_items/20287
-
-      ::WorkItems::TypesFramework::Provider.new(object).type_exists?(issue_type) &&
+      ::WorkItems::TypesFramework::Provider.new(extract_namespace(object)).type_exists?(issue_type) &&
         can?(current_user, :"create_#{issue_type}", object)
+    end
+
+    def extract_namespace(object)
+      case object
+      when Group, Project
+        object
+      when Issue
+        object.namespace
+      end
     end
   end
 end

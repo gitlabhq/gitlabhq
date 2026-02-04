@@ -170,7 +170,8 @@ prerequisites:
 - For GitLab Duo Chat (Agentic) and GitLab Duo Code Suggestions, you meet the additional
   prerequisites:
   - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-vs-code)
-  - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
+  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites).
 
 ### Code security
 

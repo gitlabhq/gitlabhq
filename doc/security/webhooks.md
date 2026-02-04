@@ -209,4 +209,4 @@ This error can occur when outbound requests to the GitLab cloud server are not a
 1. Select **Save Changes**.
 1. After GitLab has access to the [cloud server](../user/gitlab_duo/_index.md), [manually synchronize your license](../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)
 
-For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).
+For more information, see the troubleshooting documentation for [Code Suggestions](../user/duo_agent_platform/code_suggestions/troubleshooting.md) or [Code Suggestions (Classic)](../user/project/repository/code_suggestions/troubleshooting.md).

@@ -48,7 +48,7 @@ module WorkItems
     end
 
     def all_widget_keys
-      @all_widget_keys ||= ::WorkItems::WidgetDefinition.available_widgets.map(&:api_symbol)
+      @all_widget_keys ||= widget_definition_class.available_widgets.map(&:api_symbol)
     end
 
     def extract_supported_widget_params(work_item_type, attributes, resource_parent)
@@ -61,6 +61,14 @@ module WorkItems
 
       widget_params.transform_values do |input|
         input.is_a?(Array) ? input.map(&:to_h) : input.to_h
+      end
+    end
+
+    def widget_definition_class
+      if Feature.enabled?(:work_item_system_defined_type, :instance)
+        ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+      else
+        ::WorkItems::WidgetDefinition
       end
     end
   end

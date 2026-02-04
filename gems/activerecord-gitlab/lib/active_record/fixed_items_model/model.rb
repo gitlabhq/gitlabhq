@@ -190,6 +190,42 @@ module ActiveRecord
           super # Falls back to Object#hash for unsaved records
         end
       end
+
+      def marked_for_destruction?
+        false
+      end
+
+      def persisted?
+        true
+      end
+
+      def new_record?
+        false
+      end
+
+      def destroyed?
+        false
+      end
+
+      def _destroy
+        false
+      end
+
+      def _destroy=(value)
+        # No-op
+      end
+
+      def readonly?
+        true
+      end
+
+      def changed?
+        false
+      end
+
+      def errors
+        @errors ||= ActiveModel::Errors.new(self)
+      end
     end
   end
 end

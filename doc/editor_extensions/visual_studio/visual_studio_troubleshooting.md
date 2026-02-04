@@ -29,7 +29,8 @@ If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual St
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- [Troubleshooting Code Suggestions for Visual Studio](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
+- Troubleshooting [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
+- Troubleshooting [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
 
 ## View more logs
 

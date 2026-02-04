@@ -97,8 +97,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     let(:scope) { 'all' }
 
     context 'when user has access to child item' do
-      let_it_be(:child_item1) { create(:work_item, project: project1) }
-      let_it_be(:parent_item1) { create(:work_item, :epic, project: project1) }
+      let_it_be(:child_item1) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item1) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item1.id] } }
 
@@ -113,8 +113,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
     context 'when filtering by parent item from different project' do
       let_it_be(:another_project) { create(:project) }
-      let_it_be(:child_item2) { create(:work_item, project: project1) }
-      let_it_be(:parent_item2) { create(:work_item, :epic, project: another_project) }
+      let_it_be(:child_item2) { create(:work_item, :task, project: project1) }
+      let_it_be(:parent_item2) { create(:work_item, :issue, project: another_project) }
 
       let(:params) { { work_item_parent_ids: [parent_item2.id] } }
 
@@ -128,11 +128,11 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when filtering by multiple parent items' do
-      let_it_be(:child_item3) { create(:work_item, project: project1) }
-      let_it_be(:child_item4) { create(:work_item, project: project1) }
+      let_it_be(:child_item3) { create(:work_item, :task, project: project1) }
+      let_it_be(:child_item4) { create(:work_item, :task, project: project1) }
 
-      let_it_be(:parent_item3) { create(:work_item, :epic, project: project1) }
-      let_it_be(:parent_item4) { create(:work_item, :epic, project: project1) }
+      let_it_be(:parent_item3) { create(:work_item, :issue, project: project1) }
+      let_it_be(:parent_item4) { create(:work_item, :issue, project: project1) }
 
       let(:params) { { work_item_parent_ids: [parent_item3.id, parent_item4.id] } }
 
@@ -147,8 +147,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
     end
 
     context 'when user does not have access to child items' do
-      let_it_be(:confidential_work_item) { create(:work_item, confidential: true, project: project1) }
-      let_it_be(:parent_item5) { create(:work_item, :epic, confidential: true, project: project1) }
+      let_it_be(:confidential_work_item) { create(:work_item, :task, confidential: true, project: project1) }
+      let_it_be(:parent_item5) { create(:work_item, :issue, confidential: true, project: project1) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [parent_item5.id] } }
@@ -164,8 +164,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
     context 'when user does not have access to child and parent items' do
       let_it_be(:private_project) { create(:project, :private) }
-      let_it_be(:private_work_item) { create(:work_item, project: private_project) }
-      let_it_be(:private_parent_item) { create(:work_item, :epic, project: private_project) }
+      let_it_be(:private_work_item) { create(:work_item, :task, project: private_project) }
+      let_it_be(:private_parent_item) { create(:work_item, :issue, project: private_project) }
 
       let(:search_user) { user2 }
       let(:params) { { work_item_parent_ids: [private_parent_item.id] } }
@@ -176,23 +176,6 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
       it 'does not return those items' do
         expect(items).to be_empty
-      end
-    end
-
-    context 'when using include_descendant_work_items filter' do
-      let_it_be(:parent_item) { create(:work_item, :epic) }
-      let_it_be(:child_item_1) { create(:work_item, :issue, project: project1) }
-      let_it_be(:child_item_2) { create(:work_item, :task, project: project1) }
-
-      let(:params) { { work_item_parent_ids: [parent_item.id], include_descendant_work_items: true } }
-
-      before do
-        create(:parent_link, work_item_parent: parent_item, work_item: child_item_1)
-        create(:parent_link, work_item_parent: child_item_1, work_item: child_item_2)
-      end
-
-      it 'includes descendant work items regardless of the work item types' do
-        expect(items).to include(child_item_1, child_item_2)
       end
     end
   end
@@ -277,6 +260,33 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
 
       it 'returns no issues' do
         expect(items).to be_empty
+      end
+    end
+  end
+
+  describe '#widget_definition_class' do
+    subject(:finder) { described_class.new(user, params) }
+
+    context 'with group params' do
+      let(:params) { { group_id: group.id } }
+
+      it 'returns SystemDefined::WidgetDefinition' do
+        expect(finder.send(:widget_definition_class))
+          .to eq(WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
+      end
+    end
+
+    context 'when work_item_system_defined_type feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_system_defined_type: false)
+      end
+
+      context 'with group params' do
+        let(:params) { { group_id: group.id } }
+
+        it 'returns legacy WidgetDefinition' do
+          expect(finder.send(:widget_definition_class)).to eq(WorkItems::WidgetDefinition)
+        end
       end
     end
   end

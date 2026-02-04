@@ -10,4 +10,19 @@ RSpec.describe GitlabSchema.types['WorkItemWidgetType'] do
       'DESCRIPTION' => :description
     )
   end
+
+  describe '#widget_definition_class' do
+    it 'returns SystemDefined::WidgetDefinition' do
+      expect(described_class.widget_definition_class)
+        .to eq(::WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
+    end
+
+    context 'when work_item_system_defined_type flag is disabled' do
+      it 'returns WidgetDefinition' do
+        stub_feature_flags(work_item_system_defined_type: false)
+
+        expect(described_class.widget_definition_class).to eq(::WorkItems::WidgetDefinition)
+      end
+    end
+  end
 end

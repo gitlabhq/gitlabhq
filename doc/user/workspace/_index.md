@@ -606,7 +606,7 @@ This process is transparent and doesn't affect your development workflow.
 - [Create a workspace](configuration.md#create-a-workspace)
 - [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
-- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md)
 - [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
 - [GraphQL API reference](../../api/graphql/reference/_index.md)
 - [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)

@@ -52,8 +52,16 @@ module WorkItems
       ensure_state_filter_for_index(items_within_hierarchy)
     end
 
+    def widget_definition_class
+      if Feature.enabled?(:work_item_system_defined_type, :instance)
+        WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+      else
+        WorkItems::WidgetDefinition
+      end
+    end
+
     def by_widgets(items)
-      WorkItems::WidgetDefinition.available_widgets.each do |widget_class|
+      widget_definition_class.available_widgets.each do |widget_class|
         widget_filter = widget_filter_for(widget_class)
 
         next unless widget_filter

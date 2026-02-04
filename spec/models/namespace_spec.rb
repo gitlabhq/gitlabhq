@@ -992,7 +992,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:archived).to(:namespace_settings).allow_nil }
-    it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
+    it { is_expected.to delegate_method(:creator).to(:namespace_details) }
+    it { is_expected.to delegate_method(:creator=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:description).to(:namespace_details) }
     it { is_expected.to delegate_method(:description=).to(:namespace_details).with_arguments(:args) }

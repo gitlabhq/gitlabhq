@@ -6,7 +6,7 @@ RSpec.describe Resolvers::WorkItems::UserPreferenceResolver, feature_category: :
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:work_item_type) { WorkItems::Type.default_by_type(:issue) }
+  let_it_be(:work_item_type) { build(:work_item_system_defined_type, :issue) }
 
   let(:args) do
     {
@@ -63,7 +63,7 @@ RSpec.describe Resolvers::WorkItems::UserPreferenceResolver, feature_category: :
       create(
         :work_item_user_preference,
         namespace: namespace,
-        work_item_type: work_item_type,
+        work_item_type_id: work_item_type.id,
         user: current_user
       )
     end
@@ -78,7 +78,7 @@ RSpec.describe Resolvers::WorkItems::UserPreferenceResolver, feature_category: :
       create(
         :work_item_user_preference,
         namespace: namespace.project_namespace,
-        work_item_type: work_item_type,
+        work_item_type_id: work_item_type.id,
         user: current_user
       )
     end

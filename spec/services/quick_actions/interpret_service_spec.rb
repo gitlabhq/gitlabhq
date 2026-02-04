@@ -4539,8 +4539,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe '/add_child command' do
-      let_it_be(:child) { create(:work_item, :issue, project: project) }
-      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:child_ref) { child.to_reference(project) }
 
       let(:command) { "/add_child #{child_ref}" }
@@ -4576,7 +4576,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'command is available'
 
         context 'when work item type does not support children' do
-          let_it_be(:work_item) { build(:work_item, :key_result, project: project) }
+          # Task type does not have children.
+          let_it_be(:work_item) { build(:work_item, :task, project: project) }
 
           it_behaves_like 'command is not available'
         end
@@ -4590,8 +4591,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe '/remove child command' do
-      let_it_be(:child) { create(:work_item, :objective, project: project) }
-      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :task, project: project) }
+      let_it_be(:work_item) { create(:work_item, :issue, project: project) }
       let_it_be(:child_ref) { child.to_reference(project) }
 
       let(:command) { "/remove_child #{child_ref}" }

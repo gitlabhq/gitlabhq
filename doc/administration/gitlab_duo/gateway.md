@@ -54,7 +54,7 @@ The following factors influence where data is routed:
 The IDE communicates directly with the AI Gateway by default, bypassing the GitLab monolith.
 This direct connection improves routing efficiency.
 
-To change this behavior, [configure direct and indirect connections](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
+To change this behavior, configure direct and indirect connections for [Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md#direct-and-indirect-connections) or [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
 
 ### Tracing requests to specific regions
 

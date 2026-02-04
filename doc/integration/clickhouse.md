@@ -866,3 +866,17 @@ DB::Exception: gitlab: Not enough privileges.
 ```
 
 After granting the permission, the migration can be safely retried (ideally, wait 1-2 hours until the distributed migration lock clears).
+
+### ClickHouse CI job data materialized view data inconsistencies
+
+In GitLab 18.5 and earlier, duplicate data could be inserted into ClickHouse tables
+(such as `ci_finished_pipelines` and `ci_finished_builds`) when Sidekiq workers
+retried after network timeouts. This issue caused materialized views to display incorrect
+aggregated metrics in analytics dashboards, including the runner fleet dashboard.
+
+This issue was fixed in GitLab 18.9 and backported to 18.6, 18.7, and 18.8.
+To resolve this issue, upgrade to GitLab 18.6 or later.
+
+If you have existing duplicate data, a fix to rebuild the affected materialized views is planned
+for GitLab 18.10 in [issue 586319](https://gitlab.com/gitlab-org/gitlab/-/issues/586319).
+For assistance, contact GitLab Support.

@@ -8,7 +8,6 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:epic_type) { create(:work_item_type, :epic, namespace: group) }
   let_it_be(:issue_type) { create(:work_item_type, :issue, namespace: group) }
   let_it_be(:task_type) { create(:work_item_type, :task, namespace: group) }
 
@@ -32,25 +31,6 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
 
   where(:union, :work_item_types, :widgets) do
     [
-      [
-        false,
-        lazy { [epic_type] },
-        %w[
-          ASSIGNEES
-          AWARD_EMOJI
-          CURRENT_USER_TODOS
-          DESCRIPTION
-          HIERARCHY
-          LABELS
-          LINKED_ITEMS
-          MILESTONE
-          NOTES
-          NOTIFICATIONS
-          PARTICIPANTS
-          START_AND_DUE_DATE
-          TIME_TRACKING
-        ]
-      ],
       [
         false,
         lazy { [issue_type] },
@@ -100,74 +80,14 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
       ],
       [
         false,
-        lazy { [epic_type, issue_type] },
-        %w[
-          ASSIGNEES
-          AWARD_EMOJI
-          CURRENT_USER_TODOS
-          DESCRIPTION
-          HIERARCHY
-          LABELS
-          LINKED_ITEMS
-          MILESTONE
-          NOTES
-          NOTIFICATIONS
-          PARTICIPANTS
-          START_AND_DUE_DATE
-          TIME_TRACKING
-        ]
-      ],
-      [
-        false,
-        lazy { [epic_type, issue_type, task_type] },
-        %w[
-          ASSIGNEES
-          AWARD_EMOJI
-          CURRENT_USER_TODOS
-          DESCRIPTION
-          HIERARCHY
-          LABELS
-          LINKED_ITEMS
-          MILESTONE
-          NOTES
-          NOTIFICATIONS
-          PARTICIPANTS
-          START_AND_DUE_DATE
-          TIME_TRACKING
-        ]
-      ],
-      [
-        true,
-        lazy { [epic_type] },
-        %w[
-          ASSIGNEES
-          AWARD_EMOJI
-          CURRENT_USER_TODOS
-          DESCRIPTION
-          HIERARCHY
-          LABELS
-          LINKED_ITEMS
-          MILESTONE
-          NOTES
-          NOTIFICATIONS
-          PARTICIPANTS
-          START_AND_DUE_DATE
-          TIME_TRACKING
-        ]
-      ],
-      [
-        true,
-        lazy { [epic_type, issue_type] },
+        lazy { [issue_type, task_type] },
         %w[
           ASSIGNEES
           AWARD_EMOJI
           CRM_CONTACTS
           CURRENT_USER_TODOS
           DESCRIPTION
-          DESIGNS
           DEVELOPMENT
-          EMAIL_PARTICIPANTS
-          ERROR_TRACKING
           HIERARCHY
           LABELS
           LINKED_ITEMS
@@ -182,7 +102,7 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
       ],
       [
         true,
-        lazy { [epic_type, issue_type, task_type] },
+        lazy { [issue_type, task_type] },
         %w[
           ASSIGNEES
           AWARD_EMOJI

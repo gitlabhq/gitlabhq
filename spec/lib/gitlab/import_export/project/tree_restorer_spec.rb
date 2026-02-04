@@ -183,19 +183,20 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           task_issue2 = Issue.find_by(title: 'task by both attributes')
           incident_issue = Issue.find_by(title: 'incident by work_item_type')
           issue_with_invalid_type = Issue.find_by(title: 'invalid issue type')
-          issue_type = WorkItems::Type.default_by_type(:issue)
-          task_type = WorkItems::Type.default_by_type(:task)
+          issue_type = build(:work_item_system_defined_type, :issue)
+          task_type = build(:work_item_system_defined_type, :task)
+          incident_type = build(:work_item_system_defined_type, :incident)
 
-          expect(task_issue1.work_item_type).to eq(task_type)
-          expect(task_issue2.work_item_type).to eq(task_type)
-          expect(incident_issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
-          expect(issue_with_invalid_type.work_item_type).to eq(issue_type)
+          expect(task_issue1.work_item_type_id).to eq(task_type.id)
+          expect(task_issue2.work_item_type_id).to eq(task_type.id)
+          expect(incident_issue.work_item_type_id).to eq(incident_type.id)
+          expect(issue_with_invalid_type.work_item_type_id).to eq(issue_type.id)
 
-          other_issue_types = Issue.preload(:work_item_type).where.not(
+          other_issue_types = Issue.where.not(
             id: [task_issue1.id, task_issue2.id, incident_issue.id, issue_with_invalid_type]
-          ).map(&:work_item_type)
+          ).pluck(:work_item_type_id)
 
-          expect(other_issue_types).to all(eq(issue_type))
+          expect(other_issue_types).to all(eq(issue_type.id))
         end
 
         it 'preserves updated_at on issues' do

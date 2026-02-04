@@ -97,6 +97,8 @@ export default {
     'downloadArtifacts',
     'isBinary',
     'rootRef',
+    'showNoSshKeyMessage',
+    'userSettingsSshKeysPath',
   ],
   provide() {
     return {
@@ -457,6 +459,8 @@ export default {
               :gitpod-url="gitpodUrl"
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
+              :show-no-ssh-key-message="showNoSshKeyMessage"
+              :user-settings-ssh-keys-path="userSettingsSshKeysPath"
               :project-id="projectId"
               :project-path="projectPath"
               :git-ref="currentRef"

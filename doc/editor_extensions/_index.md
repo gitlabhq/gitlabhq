@@ -41,7 +41,7 @@ an integrated GitLab workflow experience.
 
 ### GitLab Duo Code Suggestions
 
-[GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/_index.md) provide AI-assisted coding capabilities:
+[GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../user/project/repository/code_suggestions/_index.md) provide AI-assisted coding capabilities:
 
 - Code completion: Suggests completions to the current line you are typing.
   Use it to complete one or a few lines of code.

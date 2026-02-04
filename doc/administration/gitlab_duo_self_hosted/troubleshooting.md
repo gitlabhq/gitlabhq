@@ -39,7 +39,7 @@ Before you begin troubleshooting, you should:
 For more information on troubleshooting GitLab Duo, see:
 
 - [Troubleshooting GitLab Duo](../../user/gitlab_duo/troubleshooting.md).
-- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
+- [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
 - [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
 
 ## Use debugging scripts

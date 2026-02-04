@@ -6,7 +6,15 @@ module Types
     class FeaturesType < BaseObject
       graphql_name 'WorkItemFeatures'
 
-      ::WorkItems::WidgetDefinition.widget_classes.each do |widget_class|
+      def self.widget_definition_class
+        if Feature.enabled?(:work_item_system_defined_type, :instance)
+          ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+        else
+          ::WorkItems::WidgetDefinition
+        end
+      end
+
+      widget_definition_class.widget_classes.each do |widget_class|
         widget_type = widget_class.type
 
         field widget_type,

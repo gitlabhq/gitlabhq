@@ -911,8 +911,74 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         xcode_url: 'xcode://example.com/project.git',
         download_links: helper.send(:archive_download_links, project, ref, "#{project.path}-#{ref.tr('/', '-')}").to_json,
         web_ide_button_options: helper.web_ide_button_data({ blob: blob }).merge(helper.fork_modal_options(project, blob)).to_json,
-        web_ide_button_default_branch: project.default_branch_or_main
+        web_ide_button_default_branch: project.default_branch_or_main,
+        show_no_ssh_key_message: '',
+        user_settings_ssh_keys_path: user_settings_ssh_keys_path
       })
+    end
+
+    context 'when SSH is disabled' do
+      before do
+        allow(helper).to receive(:ssh_enabled?).and_return(false)
+      end
+
+      it 'returns empty strings for SSH-related fields' do
+        result = helper.vue_blob_header_app_data(project, blob, ref)
+
+        expect(result[:ssh_url]).to eq('')
+        expect(result[:show_no_ssh_key_message]).to eq('')
+        expect(result[:user_settings_ssh_keys_path]).to eq('')
+      end
+    end
+
+    context 'when HTTP is disabled' do
+      before do
+        allow(helper).to receive(:http_enabled?).and_return(false)
+      end
+
+      it 'returns empty string for http_url' do
+        result = helper.vue_blob_header_app_data(project, blob, ref)
+
+        expect(result[:http_url]).to eq('')
+      end
+    end
+
+    context 'when Xcode link should not be shown' do
+      before do
+        allow(helper).to receive(:show_xcode_link?).with(project).and_return(false)
+      end
+
+      it 'returns empty string for xcode_url' do
+        result = helper.vue_blob_header_app_data(project, blob, ref)
+
+        expect(result[:xcode_url]).to eq('')
+      end
+    end
+
+    context 'when user has no SSH key' do
+      before do
+        allow(helper).to receive(:ssh_enabled?).and_return(true)
+        allow(helper).to receive(:show_no_ssh_key_message?).with(project).and_return(true)
+      end
+
+      it 'returns "true" for show_no_ssh_key_message' do
+        result = helper.vue_blob_header_app_data(project, blob, ref)
+
+        expect(result[:show_no_ssh_key_message]).to eq('true')
+      end
+    end
+
+    context 'when user has SSH key' do
+      before do
+        allow(helper).to receive(:ssh_enabled?).and_return(true)
+        allow(helper).to receive(:show_no_ssh_key_message?).with(project).and_return(false)
+      end
+
+      it 'returns "false" for show_no_ssh_key_message' do
+        result = helper.vue_blob_header_app_data(project, blob, ref)
+
+        expect(result[:show_no_ssh_key_message]).to eq('false')
+      end
     end
 
     it 'returns download links for all supported archive formats' do

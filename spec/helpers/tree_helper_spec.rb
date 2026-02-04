@@ -340,7 +340,8 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     it 'returns a hash with the expected keys' do
       expected_keys = [
         :ssh_url, :http_url, :xcode_url,
-        :ide_data, :directory_download_links
+        :ide_data, :directory_download_links,
+        :show_no_ssh_key_message, :user_settings_ssh_keys_path
       ]
       expect(subject.keys).to match_array(expected_keys)
     end

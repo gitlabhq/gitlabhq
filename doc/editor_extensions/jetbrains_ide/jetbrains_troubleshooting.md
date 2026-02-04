@@ -29,7 +29,8 @@ If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in your IDE:
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- [Troubleshooting Code Suggestions for JetBrains IDEs](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
+- [Troubleshooting GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
+- [Troubleshooting GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
 
 ## Enable debug mode
 

@@ -95,9 +95,9 @@ If you use self-signed certificates to connect to your GitLab instance, read the
 | `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
 | `gitlab.duoAgentPlatform.defaultNamespace` | Not applicable | The default group or namespace path for GitLab Duo Agent Platform when the extension can't get GitLab project details. |
-| `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of [officially supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for GitLab Duo Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code Suggestions quality for the added languages might not be optimal. |
+| `gitlab.duoCodeSuggestions.additionalLanguages` | Not applicable | (Experimental.) To expand the list of officially supported languages for GitLab Duo Code Suggestions, provide an array of the [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers). Code Suggestions quality for the added languages might not be optimal. |
 | `gitlab.duoCodeSuggestions.enabled` | true | When `true`, enables Code Suggestions for AI-assisted suggestions. |
-| `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages-by-ide) for which to enable Code Suggestions. By default, all supported languages are enabled. |
+| `gitlab.duoCodeSuggestions.enabledSupportedLanguages` | Not applicable | The supported languages for which to enable Code Suggestions. By default, all supported languages are enabled. |
 | `gitlab.duoCodeSuggestions.openTabsContext` | true | When `true`, enables sending of context across open tabs to improve Code Suggestions. |
 | `gitlab.keybindingHints.enabled` | true | Enables keybinding hints for GitLab Duo. |
 | `gitlab.pipelineGitRemoteName` | null | The name of the Git remote name corresponding to the GitLab repository with your pipelines. When `null` or empty, then the extension uses the same remote as for the non-pipeline features. |
@@ -110,3 +110,8 @@ The `duoFeaturesEnabledForProject` setting is unavailable if:
 - The project is not set up in the extension.
 - The project is on a different GitLab instance than your current account.
 - The file or folder you are working with isn't part of any GitLab project you have access to.
+
+## Related topics
+
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md)
+- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)

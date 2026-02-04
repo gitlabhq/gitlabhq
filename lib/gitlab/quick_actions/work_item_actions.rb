@@ -93,7 +93,8 @@ module Gitlab
       private
 
       def update_type(type_name, command)
-        new_type = ::WorkItems::TypesFramework::Provider.new(work_item_parent).find_by_name(type_name.titleize)
+        new_type = ::WorkItems::TypesFramework::Provider.new(quick_action_target.namespace)
+          .find_by_name(type_name.titleize)
         error_message = command == :type ? validate_type(new_type) : validate_promote_to(new_type)
         return error_message if error_message.present?
 

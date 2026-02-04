@@ -325,7 +325,9 @@ module BlobHelper
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       download_links: archive_download_links(project, ref, archive_prefix).to_json,
       web_ide_button_options: web_ide_button_data({ blob: blob }).merge(fork_modal_options(project, blob)).to_json,
-      web_ide_button_default_branch: project.default_branch_or_main
+      web_ide_button_default_branch: project.default_branch_or_main,
+      show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
     }
   end
 

@@ -2,6 +2,9 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_clipboard_button_in_multimatch_file_header_weekly
 description: Weekly count of unique users who clicked copy to clipboard button in header of multimatch result
 product_group: global_search
+product_categories:
+- global_search
+- code_search
 performance_indicator_type: []
 value_type: number
 status: active

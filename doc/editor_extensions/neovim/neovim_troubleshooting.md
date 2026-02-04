@@ -8,15 +8,12 @@ title: Troubleshooting Neovim
 
 When troubleshooting the GitLab plugin for Neovim, you should confirm that the issue occurs
 in isolation from other Neovim plugins and settings. First, run the Neovim [testing steps](#test-your-neovim-configuration),
-then the [troubleshooting steps for GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md).
+then the troubleshooting steps for [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md) or [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md).
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues/?sort=created_date&state=opened&first_page_size=100)
 in the Neovim plugin's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues/new).
-
-For troubleshooting the extension for GitLab Duo Code Suggestions,
-see [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#neovim-troubleshooting).
 
 ## Test your Neovim configuration
 

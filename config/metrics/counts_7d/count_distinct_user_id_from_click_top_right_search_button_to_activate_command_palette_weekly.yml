@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_top_right_search_button_to_activate_command_palette_weekly
 description: Weekly count of unique users who clicked the top right search button
 product_group: global_search
+product_categories:
+- global_search
 performance_indicator_type: []
 value_type: number
 status: active

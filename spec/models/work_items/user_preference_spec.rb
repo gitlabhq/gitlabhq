@@ -39,10 +39,10 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
       end
 
       it 'is not valid when the sorting value is not available for an existign work item type' do
-        work_item_type = WorkItems::Type.default_by_type(:incident)
+        work_item_type = build(:work_item_system_defined_type, :incident)
         preferences = described_class.new(
           namespace: namespace,
-          work_item_type: work_item_type,
+          work_item_type_id: work_item_type.id,
           sort: sorting_value
         )
 

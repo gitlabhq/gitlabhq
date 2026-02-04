@@ -246,8 +246,6 @@ export default {
     'ee/app/assets/javascripts/boards/components/epics_swimlanes.vue',
     'ee/app/assets/javascripts/boards/components/issues_lane_list.vue',
     'ee/app/assets/javascripts/boards/components/labels_select.vue',
-    'ee/app/assets/javascripts/ci/merge_trains/components/merge_trains_table.vue',
-    'ee/app/assets/javascripts/ci/merge_trains/merge_trains_app.vue',
     'ee/app/assets/javascripts/ci/pipeline_details/tabs/pipeline_tabs.vue',
     'ee/app/assets/javascripts/ci/pipeline_subscriptions/components/pipeline_subscriptions_table.vue',
     'ee/app/assets/javascripts/ci/pipeline_subscriptions/pipeline_subscriptions_app.vue',

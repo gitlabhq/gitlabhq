@@ -29,7 +29,7 @@ The Value Streams Dashboard includes panels that visualize the following metrics
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/_index.md)
 - [Vulnerabilities](../application_security/vulnerability_report/_index.md)
-- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
+- [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md)
 
 With the Value Streams Dashboard, you can:
 

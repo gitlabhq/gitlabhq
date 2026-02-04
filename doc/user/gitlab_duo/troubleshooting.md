@@ -12,7 +12,7 @@ to determine if your instance meets the requirements to use GitLab Duo.
 
 For more information on troubleshooting GitLab Duo, see:
 
-- [Troubleshooting Code Suggestions](../project/repository/code_suggestions/troubleshooting.md).
+- [Troubleshooting Code Suggestions (Classic)](../project/repository/code_suggestions/troubleshooting.md).
 - [GitLab Duo Chat troubleshooting](../gitlab_duo_chat/troubleshooting.md).
 - [Troubleshooting GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 

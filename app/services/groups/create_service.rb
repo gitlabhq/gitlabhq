@@ -58,6 +58,7 @@ module Groups
 
       @group.import_export_uploads << params[:import_export_upload] if params[:import_export_upload]
       @group.build_namespace_settings
+      @group.creator = current_user
       handle_namespace_settings
     end
 
@@ -68,7 +69,6 @@ module Groups
         Group.transaction do
           if @group.save
             @group.add_owner(current_user)
-            @group.add_creator(current_user)
             Integration.create_from_default_integrations(@group, :group_id)
           end
         end

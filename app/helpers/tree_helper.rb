@@ -165,7 +165,9 @@ module TreeHelper
       download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix, ref_type).to_json : [],
       download_artifacts: pipeline &&
         (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
-      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
+      show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
     }
   end
 
@@ -220,7 +222,9 @@ module TreeHelper
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
-      directory_download_links: download_links
+      directory_download_links: download_links,
+      show_no_ssh_key_message: ssh_enabled? ? show_no_ssh_key_message?(project).to_s : '',
+      user_settings_ssh_keys_path: ssh_enabled? ? user_settings_ssh_keys_path : ''
     }
   end
 end

@@ -2,6 +2,9 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_zoekt_include_forks_on_search_results_page_weekly
 description: Weekly count of unique users clicked include forks filter on zoekt search rezult page
 product_group: global_search
+product_categories:
+- global_search
+- code_search
 performance_indicator_type: []
 value_type: number
 status: active

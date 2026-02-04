@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_select_source_branch_exclude_filter_on_merge_request_page_weekly
 description: Weekly count of unique users who selected source branch exlude option
 product_group: global_search
+product_categories:
+- global_search
 performance_indicator_type: []
 value_type: number
 status: active

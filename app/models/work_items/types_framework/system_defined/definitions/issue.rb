@@ -55,7 +55,7 @@ module WorkItems
               { 'epic' => :epics }
             end
 
-            def support_move_action?
+            def supports_move_action?
               true
             end
           end

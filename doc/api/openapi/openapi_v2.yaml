@@ -38711,6 +38711,7 @@ paths:
           description: Search on GitLab within a project
       tags:
       - search
+      - projects
       operationId: getApiV4ProjectsId(-)search
   "/api/v4/projects/{id}/repository/submodules/{submodule}":
     put:

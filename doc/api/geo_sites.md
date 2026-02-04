@@ -24,9 +24,9 @@ Prerequisites:
 
 - You must be an administrator.
 
-## Create a new Geo site
+## Create a Geo site
 
-Creates a new Geo site.
+Creates a Geo site.
 
 ```plaintext
 POST /geo_sites
@@ -86,7 +86,9 @@ Example response:
 }
 ```
 
-## Retrieve configuration about all Geo sites
+## List all Geo sites
+
+Lists all Geo sites.
 
 ```plaintext
 GET /geo_sites
@@ -151,7 +153,9 @@ Example response:
 ]
 ```
 
-## Retrieve configuration about a specific Geo site
+## Retrieve a Geo site
+
+Retrieves a specified Geo site.
 
 ```plaintext
 GET /geo_sites/:id
@@ -189,9 +193,9 @@ Example response:
 }
 ```
 
-## Edit a Geo site
+## Update a Geo site
 
-Updates settings of an existing Geo site.
+Updates a specified Geo site.
 
 ```plaintext
 PUT /geo_sites/:id
@@ -244,7 +248,7 @@ Example response:
 
 ## Delete a Geo site
 
-Removes the Geo site.
+Deletes a Geo site.
 
 ```plaintext
 DELETE /geo_sites/:id
@@ -292,7 +296,9 @@ Example response:
 }
 ```
 
-## Retrieve status about all Geo sites
+## List all Geo site statuses
+
+Lists all Geo site statuses.
 
 ```plaintext
 GET /geo_sites/status
@@ -791,7 +797,9 @@ Example response:
 ]
 ```
 
-## Retrieve status about a specific Geo site
+## Retrieve a Geo site status
+
+Retrieves a specified Geo site status.
 
 ```plaintext
 GET /geo_sites/:id/status

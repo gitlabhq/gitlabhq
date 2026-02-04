@@ -74,7 +74,8 @@ setup steps for each feature:
 
 - [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md#use-gitlab-duo-chat-in-jetbrains-ides)
 - [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-jetbrains-ides)
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/set_up.md)
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
+- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
 
 ## Set the default namespace
 

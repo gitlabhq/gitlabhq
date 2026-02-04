@@ -283,6 +283,8 @@ export const headerAppInjected = {
   ],
   isBinary: false,
   rootRef: 'main',
+  showNoSshKeyMessage: false,
+  userSettingsSshKeysPath: null,
 };
 
 export const FILE_SIZE_3MB = 3000000;

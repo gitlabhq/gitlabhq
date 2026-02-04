@@ -15,7 +15,7 @@ After you [install and configure](setup.md) the extension, you can access the fo
 - [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): On the right tool window bar, select **GitLab Duo Chat**
   ({{< icon name="duo-chat" >}}). Or select some code and then, in the floating toolbar, select
   **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
+- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
   The icon will change based on the feature status.
 
 ## Use with remote development
@@ -122,7 +122,6 @@ built-in error reporting tool:
 ## Related topics
 
 - [Security considerations for editor extensions](../security_considerations.md)
-- [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 - [JetBrains troubleshooting](jetbrains_troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)
 - [Open issues for this plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/)

@@ -82,6 +82,7 @@ describe('WorkItemAttributesWrapper component', () => {
       },
       provide: {
         hasSubepicsFeature: true,
+        getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ widgetDefinitions: [] }),
       },
       stubs: {
         WorkItemWeight: true,
