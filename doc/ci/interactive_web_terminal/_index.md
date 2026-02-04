@@ -53,15 +53,12 @@ Support for fixing these limitations is tracked in the following issues:
 > [!note]
 > Not all executors are
 > [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
-
-{{< alert type="note" >}}
-
-The `docker` executor does not keep running
-after the build script is finished. At that point, the terminal automatically
-disconnects and does not wait for the user to finish. Follow
-[this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
-improving this behavior.
-{{< /alert >}}
+>
+> The `docker` executor does not keep running
+> after the build script is finished. At that point, the terminal automatically
+> disconnects and does not wait for the user to finish. Follow
+> [this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3605) for updates on
+> improving this behavior.
 
 Sometimes, when a job is running, things don't go as you expect. It
 would be helpful if one can have a shell to aid debugging. When a job runs,

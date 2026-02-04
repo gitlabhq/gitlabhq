@@ -363,7 +363,10 @@ To reserve a gem name, follow the steps to [Create and publish a Ruby gem](#crea
 
 ### Account creation
 
-In case you are considering the creation of an account on RubyGems.org for the purpose of your work at GitLab, make sure to use your corporate email account.
+If you are creating an account on RubyGems.org for the purposes of your work at GitLab, you should:
+
+- Use your corporate email account (`@gitlab.com`).
+- Set up two-factor authentication using a Web Authentication device such as a YubiKey or device passkey.
 
 ### Maintainer and Account Changes
 

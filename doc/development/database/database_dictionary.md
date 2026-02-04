@@ -48,6 +48,8 @@ table_size: small
 | `notes`                         | String        | no          | Use for comments, as Psych cannot parse YAML comments. |
 | `table_size`                    | String        | yes         | Classification of current table size on GitLab.com[^1]. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
 | `organization_transfer_support` | String        | conditional | Required when `sharding_key` includes `organization_id`. See [Organization transfer support](#organization-transfer-support). |
+| `sharding_key`                  | Hash          | conditional | Identifies the column used to relate the table to an organization. Only set when the column has a `NOT NULL` constraint. See [Sharding key fields](#sharding-key-fields). |
+| `desired_sharding_key`          | Hash          | conditional | Identifies the intended sharding key column when it exists but doesn't have a `NOT NULL` constraint yet. See [Sharding key fields](#sharding-key-fields). |
 
 [^1] New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
 
@@ -152,6 +154,15 @@ When dropping a view, you should:
    - `gitlab_geo` view: `ee/db/geo/docs/deleted_views/`
 1. Add the fields `removed_by_url` and `removed_in_milestone` to the dictionary file.
 1. Include this change in the commit with the migration that drops the view.
+
+## Sharding key fields
+
+The `sharding_key` and `desired_sharding_key` fields track the progress of adding sharding keys to tables. These fields are used for tracking purposes and enable tooling to assist with the sharding process.
+
+- **`sharding_key`**: Use this field only when the sharding key column has a `NOT NULL` constraint enforced in the database. This indicates the table is fully sharded and ready for organization isolation.
+- **`desired_sharding_key`**: Use this field when the sharding key column exists but doesn't have a `NOT NULL` constraint yet (for example, during the backfill process). Tooling is available to make backfilling easier when a table has this field set. Once the backfill is complete and the `NOT NULL` constraint is added, replace `desired_sharding_key` with `sharding_key`.
+
+For detailed instructions on adding sharding keys to tables, see the [sharding guidelines](../organization/sharding/_index.md).
 
 ## Organization transfer support
 

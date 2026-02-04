@@ -46,9 +46,11 @@ module BulkImports
     # @param params [Hash] optional parameters
     # @option params [Integer] :offline_export_id ID of offline export to which export is related
     def perform(user_id, portable_id, portable_class, relation, batched, params = {})
-      user = User.find(user_id)
+      @user = User.find(user_id)
       portable = self.class.portable(portable_id, portable_class)
       config = BulkImports::FileTransfer.config_for(portable)
+      @params = params
+
       log_extra_metadata_on_done(:relation, relation)
 
       if Gitlab::Utils.to_boolean(batched) && config.batchable_relation?(relation)
@@ -60,13 +62,21 @@ module BulkImports
           jid,
           offline_export_id: params['offline_export_id']
         ).execute
-      elsif config.user_contributions_relation?(relation)
+      elsif config.user_contributions_relation?(relation) && export_user_contributions?
         log_extra_metadata_on_done(:batched, false)
         UserContributionsExportWorker.perform_async(portable_id, portable_class, user_id)
       else
         log_extra_metadata_on_done(:batched, false)
         RelationExportService.new(user, portable, relation, jid, offline_export_id: params['offline_export_id']).execute
       end
+    end
+
+    private
+
+    attr_reader :params, :user
+
+    def export_user_contributions?
+      params['offline_export_id'].present? && Feature.enabled?(:offline_transfer_exports, user)
     end
   end
 end

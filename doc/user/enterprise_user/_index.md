@@ -70,12 +70,9 @@ To add a custom domain for a group:
      - If you want to provide your own SSL/TLS certificate, select
        **Manually enter certificate information**. You can also add a certificate and key later.
 
-       {{< alert type="note" >}}
-
-       A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
-       if you are not using GitLab Pages.
-
-       {{< /alert >}}
+       > [!note]
+       > A valid certificate is not required for domain verification. You can ignore self-signed certificate warnings
+       > if you are not using GitLab Pages.
 
 1. Select **Add Domain**.
    GitLab saves the domain information.

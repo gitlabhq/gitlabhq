@@ -1474,16 +1474,16 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.154.0.tgz#22be1979b50e2e536d5af3372987f0b8365627ce"
   integrity sha512-SZKYHbdpshUDCkKrjf9F56CpH0m8Fp0mf/YVnh/7gA0hXCznGJRgfsPPnTbH7ZY1kNXrzcnu1mSuCDOmPg7V/g==
 
-"@gitlab/ui@128.1.0":
-  version "128.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-128.1.0.tgz#62cb1449e924437bcd7684eef3e33e6a1a1fa61a"
-  integrity sha512-NpYFTAzGUAHEkB/PJipPL0/0+lwM3lr98WCOILszLSkelErX0Dl/O9ct0XJZte3inxQp/2k771Q0BnbOsI1FCQ==
+"@gitlab/ui@128.7.0":
+  version "128.7.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-128.7.0.tgz#625ddd3da22c965cbb341b2b26a2a28969fbe981"
+  integrity sha512-+LSsKJQom+XQrHWJJHkFgKQRgAOYJCpslcnZCq5WAuuxiAHE4IKfU2pGSrlTinhvT12yfxKUHSz+/Ng4k71nzQ==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"
     gridstack "^12.4.2"
     iframe-resizer "^4.4.5"
-    lodash "^4.17.21"
+    lodash "^4.17.23"
     popper.js "^1.16.1"
     portal-vue "2.1.7"
     vue-functional-data-merge "^3.1.0"
@@ -10360,10 +10360,10 @@ lodash.truncate@^4.4.2:
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
 
-lodash@^4.0.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+lodash@^4.0.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.23, lodash@^4.7.0:
+  version "4.17.23"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
+  integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
@@ -12268,10 +12268,10 @@ prosemirror-keymap@^1.0.0, prosemirror-keymap@^1.2.2:
     prosemirror-state "^1.0.0"
     w3c-keyname "^2.2.0"
 
-prosemirror-markdown@1.13.2, prosemirror-markdown@^1.13.1:
-  version "1.13.2"
-  resolved "https://registry.yarnpkg.com/prosemirror-markdown/-/prosemirror-markdown-1.13.2.tgz#863eb3fd5f57a444e4378174622b562735b1c503"
-  integrity sha512-FPD9rHPdA9fqzNmIIDhhnYQ6WgNoSWX9StUZ8LEKapaXU9i6XgykaHKhp6XMyXlOWetmaFgGDS/nu/w9/vUc5g==
+prosemirror-markdown@1.13.3, prosemirror-markdown@^1.13.1:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/prosemirror-markdown/-/prosemirror-markdown-1.13.3.tgz#cf38e98f10c432b906bfcc7179c2e3ab58f49362"
+  integrity sha512-3E+Et6cdXIH0EgN2tGYQ+EBT7N4kMiZFsW+hzx+aPtOmADDHWCdd2uUQb7yklJrfUYUOjEEu22BiN6UFgPe4cQ==
   dependencies:
     "@types/markdown-it" "^14.0.0"
     markdown-it "^14.0.0"

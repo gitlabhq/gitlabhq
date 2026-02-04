@@ -784,15 +784,12 @@ and is maintained by users verified by GitLab or the instance administrator:
   creates an [internal request issue (GitLab team members only)](https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request)
   on behalf of the verified partner.
 
-  {{< alert type="warning" >}}
-
-  GitLab Partner-created components are provided **as-is**, without warranty of any kind.
-  An end user's use of a GitLab Partner-created component is at their own risk and
-  GitLab shall have no indemnification obligations nor any liability of any type
-  with respect to the end user's use of the component. The end user's use of such content
-  and any liability related thereto shall be between the publisher of the content and the end user.
-
-  {{< /alert >}}
+  > [!warning]
+  > GitLab Partner-created components are provided **as-is**, without warranty of any kind.
+  > An end user's use of a GitLab Partner-created component is at their own risk and
+  > GitLab shall have no indemnification obligations nor any liability of any type
+  > with respect to the end user's use of the component. The end user's use of such content
+  > and any liability related thereto shall be between the publisher of the content and the end user.
 
 - Verified creator ({{< icon name="check-sm" >}}): Components created and maintained by
   a user verified by an administrator.

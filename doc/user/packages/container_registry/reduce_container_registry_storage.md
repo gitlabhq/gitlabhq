@@ -187,19 +187,16 @@ The cleanup policy:
 > On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
 > the container registry after the policy runs. The next time the policy runs, the remaining tags are included.
 > It may take multiple runs to delete all tags.
-
-{{< alert type="warning" >}}
-
-GitLab Self-Managed instances support third-party container registries that comply with the
-[Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
-specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
-workaround to delete tags when interacting with third-party container registries. Refer to
-issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
-for more information. Due to possible implementation variations, this workaround is not guaranteed
-to work with all third-party registries in the same predictable way. If you use the GitLab Container
-Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
-this case, you can expect cleanup policies to be consistent and predictable.
-{{< /alert >}}
+>
+> GitLab Self-Managed instances support third-party container registries that comply with the
+> [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
+> specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
+> workaround to delete tags when interacting with third-party container registries. Refer to
+> issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
+> for more information. Due to possible implementation variations, this workaround is not guaranteed
+> to work with all third-party registries in the same predictable way. If you use the GitLab Container
+> Registry, this workaround is not required because GitLab implemented a special tag delete operation. In
+> this case, you can expect cleanup policies to be consistent and predictable.
 
 #### Example cleanup policy workflow
 

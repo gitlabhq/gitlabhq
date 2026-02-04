@@ -257,12 +257,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 > to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## List all group issues
 
@@ -466,12 +463,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## List all project issues
 
@@ -693,12 +687,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## Retrieve an issue
 
@@ -867,12 +858,9 @@ property:
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 > to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated, and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated, and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## Retrieve a project issue
 
@@ -1034,12 +1022,9 @@ property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## Create an issue
 
@@ -1197,12 +1182,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ### Rate limits
 
@@ -1584,12 +1566,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ## Clone an issue
 
@@ -1851,12 +1830,9 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 > [!warning]
 > The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
-{{< alert type="warning" >}}
-
-The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
-Use `iid` of the `epic` attribute instead.
-{{< /alert >}}
+>
+> The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
+> Use `iid` of the `epic` attribute instead.
 
 ### Unsubscribe from an issue
 

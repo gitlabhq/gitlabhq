@@ -20,13 +20,13 @@
                 .gl-p-8
                   .gl-text-center.gl-mb-8
                     %h2.gl-text-size-h2.gl-font-bold.gl-mb-6
-                      = s_('Observability|Enterprise-grade observability for GitLab')
+                      = s_('Observability|GitLab Observability')
 
                     %p.gl-text-lg.gl-line-height-24.gl-mb-6
                       = s_('Observability|GitLab Observability is an open source, OpenTelemetry-native observability platform that unifies logs, metrics, and traces in a single application. Monitor application performance with APM dashboards, visualize distributed traces across microservices, manage centralized logs with powerful querying, and set up intelligent alerts.')
 
                     %p.gl-text-lg.gl-line-height-24.gl-text-subtle.gl-mb-8
-                      = s_('Observability|Built on ClickHouse for superior performance, GitLab Observability makes enterprise-grade observability accessible within GitLab.')
+                      = s_('Observability|Built on ClickHouse for superior performance, GitLab Observability makes observability accessible within GitLab.')
 
                   .gl-text-center.gl-mb-8
                     .gl-flex.gl-justify-center.gl-gap-4
@@ -83,40 +83,44 @@
                       %p.gl-text-sm.gl-line-height-20
                         = s_('Observability|Native Kubernetes monitoring with pod-level metrics and cluster health insights')
 
-            = render Pajamas::AlertComponent.new(variant: :info, title: s_('Observability|What you get'), dismissible: false, alert_options: { class: 'gl-mb-8' }) do |c|
+            = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
+              - c.with_header do
+                %h2.gl-text-size-h2.gl-font-bold.gl-text-center.gl-m-0
+                  = s_('Observability|What you get')
               - c.with_body do
-                .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-2" }
-                  .gl-flex.gl-items-start.gl-gap-4
-                    = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
-                    .gl-flex.gl-flex-col
-                      %strong.gl-mb-2
-                        = s_('Observability|OpenTelemetry native')
-                      %span.gl-text-sm.gl-text-subtle
-                        = s_('Observability|Built on industry-standard OpenTelemetry for seamless integration')
+                .gl-p-6
+                  .gl-grid.gl-grid-cols-1.gl-gap-6.gl-text-center{ class: "@md/panel:gl-grid-cols-2" }
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|OpenTelemetry native')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Built on industry-standard OpenTelemetry for seamless integration')
 
-                  .gl-flex.gl-items-start.gl-gap-4
-                    = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
-                    .gl-flex.gl-flex-col
-                      %strong.gl-mb-2
-                        = s_('Observability|ClickHouse performance')
-                      %span.gl-text-sm.gl-text-subtle
-                        = s_('Observability|Superior query performance and data compression with ClickHouse backend')
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|ClickHouse performance')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Superior query performance and data compression with ClickHouse backend')
 
-                  .gl-flex.gl-items-start.gl-gap-4
-                    = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
-                    .gl-flex.gl-flex-col
-                      %strong.gl-mb-2
-                        = s_('Observability|Unified platform')
-                      %span.gl-text-sm.gl-text-subtle
-                        = s_('Observability|Single pane of glass for logs, metrics, and traces within GitLab')
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|Unified platform')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Single pane of glass for logs, metrics, and traces within GitLab')
 
-                  .gl-flex.gl-items-start.gl-gap-4
-                    = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
-                    .gl-flex.gl-flex-col
-                      %strong.gl-mb-2
-                        = s_('Observability|Enterprise ready')
-                      %span.gl-text-sm.gl-text-subtle
-                        = s_('Observability|Scalable architecture designed for enterprise workloads')
+                    .gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('check', css_class: 'gl-text-success', size: 16)
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-mb-2
+                          = s_('Observability|Drive the roadmap')
+                        %span.gl-text-sm.gl-text-subtle
+                          = s_('Observability|Shape the roadmap with direct feedback channels to our development team')
 
             = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-8' }) do |c|
               - c.with_header do
@@ -150,41 +154,44 @@
                       %p.gl-text-sm.gl-text-subtle
                         = s_('Observability|Dive deep into your data with comprehensive analytics, custom visualizations, and intelligent insights for better decision-making.')
 
-          = render Pajamas::AlertComponent.new(variant: :warning, title: s_('Observability|Important information'), dismissible: false) do |c|
+          = render Pajamas::CardComponent.new do |c|
+            - c.with_header do
+              %h2.gl-text-size-h2.gl-font-bold.gl-text-center.gl-m-0
+                = s_('Observability|Important information')
             - c.with_body do
-              .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-3" }
-                - if @group.observability_group_o11y_setting.present? && @group.observability_group_o11y_setting.provisioning?
-                  .gl-flex.gl-items-center.gl-gap-3
-                    = sprite_icon('timer', css_class: 'observability-important-information-icon')
-                    .gl-flex.gl-flex-col
+              .gl-p-6
+                .gl-flex.gl-text-center
+                  - if !@group.observability_group_o11y_setting.present? || @group.observability_group_o11y_setting.provisioning?
+                    .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                      = sprite_icon('timer', css_class: 'observability-important-information-icon')
+                      .gl-flex.gl-flex-col.gl-items-center
+                        %strong.gl-text-sm
+                          = s_('Observability|Provisioning time')
+                        %span.gl-text-sm.gl-text-subtle
+                          = (s_('Observability|Up to %{minutes} minutes') % { minutes: Observability::O11yToken::SETUP_BUFFER_MINUTES }).html_safe
+
+                  .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                    = sprite_icon('work-item-test-case', css_class: 'observability-important-information-icon')
+                    .gl-flex.gl-flex-col.gl-items-center
                       %strong.gl-text-sm
-                        = s_('Observability|Provisioning time')
+                        = s_('Observability|Beta release')
                       %span.gl-text-sm.gl-text-subtle
-                        = s_('Observability|Up to 5 minutes')
+                        = s_('Observability|Experimental functionality')
 
-                .gl-flex.gl-items-center.gl-gap-3
-                  = sprite_icon('work-item-test-case', css_class: 'observability-important-information-icon')
-                  .gl-flex.gl-flex-col
-                    %strong.gl-text-sm
-                      = s_('Observability|Beta release')
-                    %span.gl-text-sm.gl-text-subtle
-                      = s_('Observability|Experimental functionality')
+                  .gl-flex-1.gl-flex.gl-flex-col.gl-items-center.gl-gap-3
+                    = sprite_icon('check', css_class: 'observability-important-information-icon')
+                    .gl-flex.gl-flex-col.gl-items-center
+                      %strong.gl-text-sm
+                        = s_('Observability|No cost')
+                      %span.gl-text-sm.gl-text-subtle
+                        = s_('Observability|Free during beta period')
 
-                .gl-flex.gl-items-center.gl-gap-3
-                  = sprite_icon('check', css_class: 'observability-important-information-icon')
-                  .gl-flex.gl-flex-col
-                    %strong.gl-text-sm
-                      = s_('Observability|No cost')
-                    %span.gl-text-sm.gl-text-subtle
-                      = s_('Observability|Free during beta period')
-
-              .gl-mt-6.gl-pt-6.gl-border-t.gl-border-subtle
-                .gl-flex.gl-items-center.gl-gap-3
+                .gl-mt-6.gl-pt-6.gl-border-t.gl-border-subtle.gl-text-center
                   %span.gl-text-sm
                     = sprite_icon('book', css_class: 'observability-important-information-icon gl-mr-2')
                     - help_page_link = link_to('', help_page_path('operations/observability.md'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-text-link gl-font-medium')
                     = safe_format(s_('Observability|View the %{help_page_link_start}Observability documentation%{help_page_link_end} for:'), tag_pair(help_page_link, :help_page_link_start, :help_page_link_end))
-                    %ul.gl-text-sm.gl-mt-2
+                    %ul.gl-text-sm.gl-mt-2.gl-list-none.gl-p-0
                       %li= s_('Observability|Feature overview and capabilities')
                       %li= s_('Observability|Dashboard templates and use cases')
                       %li= s_('Observability|Troubleshooting tips')

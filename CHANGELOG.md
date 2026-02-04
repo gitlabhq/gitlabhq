@@ -514,6 +514,21 @@ entry.
 - [Fix 20 rubocop violations for Layout/ArrayAlignment](https://gitlab.com/gitlab-org/gitlab/-/commit/d7277a5392e541ddbfd436e762c6abd6411d2d77) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200147))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ac7c5c8ba97b3dd4fe6cda9c3deea0be0dfeea5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214950))
 
+## 18.7.3 (2026-02-04)
+
+### Fixed (5 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/895b313ed9c2eb0a200590082876b0f37974d919) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221763))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/bc5a9b0a43682ac093d94a33a8dcfd1cabc8d5d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Only check optional ActionCable Redis instance if necessary](https://gitlab.com/gitlab-org/gitlab/-/commit/2afd50a3035a22f5e50d67ec4f8fdafd7df7858f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220694))
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/d30364b35d16613f952d15f5935fd83aba67627f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219985)) **GitLab Enterprise Edition**
+- [Fix enforced_scans sync with inject_policy](https://gitlab.com/gitlab-org/gitlab/-/commit/163983623ec1c43aa775fec814fe695b46c15eeb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219610)) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Zoekt searchable should check for online nodes](https://gitlab.com/gitlab-org/gitlab/-/commit/9e83698effa0818f6cf4166f53d20c6bead18c36) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220966)) **GitLab Enterprise Edition**
+- [Remove duo_workflow_in_ci Feature Flag](https://gitlab.com/gitlab-org/gitlab/-/commit/743fe8f2d13d574e1feca5d9957117b464f35b6e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219831)) **GitLab Enterprise Edition**
+
 ## 18.7.2 (2026-01-20)
 
 ### Fixed (8 changes)
@@ -1268,6 +1283,15 @@ entry.
 - [Change the urgency of Ci::CreateDownstreamPipelineWorker](https://gitlab.com/gitlab-org/gitlab/-/commit/3c9c6c78e20c58b0543652be65eb3d9c675f7c4b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212782))
 - [Remove destroy_fork_network_on_archive feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/9ce139e5d9330c2bf3da3dcb2275df64ac672602) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212714))
 - [Loose Foreign Keys Cleanup Workers should use sticky connections](https://gitlab.com/gitlab-org/gitlab/-/commit/99ae4f5fca9bbcd8e156002c3dca8c6e259cd7e0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212600))
+
+## 18.6.5 (2026-02-04)
+
+### Fixed (4 changes)
+
+- [Unsubscribe from pipeline status updates when pipeline ID changes](https://gitlab.com/gitlab-org/gitlab/-/commit/4ad77a0ee07741aec7356f4ba47d7152d5dc5bc5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221764))
+- [Prevent sending duplicate Duo Pro/Enterprise welcome email](https://gitlab.com/gitlab-org/gitlab/-/commit/fc38ffe0dc8d64821fa8a136fb5b7ff100925bc7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215291)) **GitLab Enterprise Edition**
+- [Pass user id to workflow service](https://gitlab.com/gitlab-org/gitlab/-/commit/af165a4c8db2b4f2e765bdc7d0710782419de5e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219978)) **GitLab Enterprise Edition**
+- [Fix MergeRequestDiff.verifiables scope](https://gitlab.com/gitlab-org/gitlab/-/commit/fd4e0fd5ed7bd6422f34bb18be3c7b66a748093a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219691)) **GitLab Enterprise Edition**
 
 ## 18.6.4 (2026-01-20)
 

@@ -296,21 +296,17 @@ To install the Helm chart for the GitLab workspaces proxy:
 
 1. Install and upgrade the chart:
 
-   {{< alert type="warning" >}}
-
-   Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive
-   information through command line arguments. For more information, see the
-   [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
-
-   Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies
-   on a wildcard domain. For more information, see the
-   [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
-
-   You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.
-
-   {{< /alert >}}
-
-   > [!note]
+   > [!warning]
+   > Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive
+   > information through command line arguments. For more information, see the
+   > [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
+   >
+   > Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies
+   > on a wildcard domain. For more information, see the
+   > [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
+   >
+   > You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.
+   >
    > Before chart version 0.1.16, the Helm chart installation created secrets automatically.
    > If you're upgrading from a version earlier than 0.1.16,
    > [create the required Kubernetes secrets](#create-kubernetes-secrets) before running the upgrade command.

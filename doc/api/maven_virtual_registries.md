@@ -413,15 +413,13 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 | `password` | string | No | The password of the upstream registry. |
 | `username` | string | No | The username of the upstream registry. |
 
-{{< alert type="note" >}}
-
-You must include both the `username` and `password` in the request, or not at all. If not set, a public (anonymous) request is used to access the upstream.
-
-You cannot add two upstreams with the same URL and credentials (`username` and `password`) to the same top-level group. Instead, you can either:
-
-- Set different credentials for each upstream with the same URL.
-- [Associate an upstream](#associate-an-upstream-with-a-registry) with multiple virtual registries.
-{{< /alert >}}
+> [!note]
+> You must include both the `username` and `password` in the request, or not at all. If not set, a public (anonymous) request is used to access the upstream.
+>
+> You cannot add two upstreams with the same URL and credentials (`username` and `password`) to the same top-level group. Instead, you can either:
+>
+> - Set different credentials for each upstream with the same URL.
+> - [Associate an upstream](#associate-an-upstream-with-a-registry) with multiple virtual registries.
 
 Example request:
 

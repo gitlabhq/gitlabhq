@@ -65,14 +65,11 @@ To manually configure a GitLab OpenTofu Report artifact:
      - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
    ```
 
-   {{< alert type="note" >}}
-
-   In distributions that use Bash (for example, Ubuntu), `alias` statements are not
-   expanded in non-interactive mode. If your pipelines fail with the error
-   `convert_report: command not found`, alias expansion can be activated explicitly
-   by adding a `shopt` command to your script:
-
-   {{< /alert >}}
+   > [!note]
+   > In distributions that use Bash (for example, Ubuntu), `alias` statements are not
+   > expanded in non-interactive mode. If your pipelines fail with the error
+   > `convert_report: command not found`, alias expansion can be activated explicitly
+   > by adding a `shopt` command to your script:
 
    ```yaml
    before_script:

@@ -106,7 +106,7 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           o11y_service_url: 'https://o11y.example.com',
           o11y_service_user_email: 'test@example.com',
           o11y_service_password: 'password123',
-          created_at: 5.minutes.ago
+          created_at: 10.minutes.ago
         )
       end
 
@@ -122,7 +122,7 @@ RSpec.describe Observability::O11yToken, feature_category: :observability do
           o11y_service_url: 'https://o11y.example.com',
           o11y_service_user_email: 'test@example.com',
           o11y_service_password: 'password123',
-          created_at: 10.minutes.ago
+          created_at: 11.minutes.ago
         )
       end
 

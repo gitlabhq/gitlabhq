@@ -458,11 +458,8 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      }
      ```
 
-     {{< alert type="note" >}}
-
-     If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
-
-     {{< /alert >}}
+     > [!note]
+     > If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
 
    - Or, if you're running self-managed runners,
      add the previous JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.

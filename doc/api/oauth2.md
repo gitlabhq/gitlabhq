@@ -415,22 +415,16 @@ A sample application that implements the client side device flow can be found at
 > [!note]
 > Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.3) for a
 > detailed flow description.
-
-{{< alert type="note" >}}
-
-Resource owner password credentials are disabled for users with
-[two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
-and [enterprise users](../user/enterprise_user/_index.md)
-with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
-These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
-instead.
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
-checkbox is selected for the GitLab instance to support the password credentials flow.
-{{< /alert >}}
+>
+> Resource owner password credentials are disabled for users with
+> [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
+> and [enterprise users](../user/enterprise_user/_index.md)
+> with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
+> These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
+> instead.
+>
+> Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
+> checkbox is selected for the GitLab instance to support the password credentials flow.
 
 In this flow, a token is requested in exchange for the resource owner credentials
 (username and password).

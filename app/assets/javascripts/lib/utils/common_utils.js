@@ -729,15 +729,6 @@ export const hasCiConfigExtension = (path) => {
 };
 
 /**
- * Checks if an element with position:sticky is stuck
- *
- * @param el
- * @returns {boolean}
- */
-export const isElementStuck = (el) =>
-  el.getBoundingClientRect().top <= parseInt(getComputedStyle(el).top, 10);
-
-/**
  * Force fluid layout for a single component. Useful when using VueRouter to avoid
  * Rails-based layout changes persisting unintentionally.
  */

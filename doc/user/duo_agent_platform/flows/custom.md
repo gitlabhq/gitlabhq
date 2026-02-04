@@ -183,13 +183,11 @@ To use a flow:
    For example, if you enable a flow called `Security scanner` in the `GitLab Duo` group, the service account user is `ai-security-scanner-gitlab-duo`.
 1. After the flow has completed the task, you see a confirmation, and either a ready-to-merge change or an inline comment.
 
-{{< alert type="warning" >}}
-The service account can access all projects that both:
-
-- You have access to.
-- The flow has been added to.
-
-{{< /alert >}}
+> [!warning]
+> The service account can access all projects that both:
+>
+> - You have access to.
+> - The flow has been added to.
 
 ## Duplicate a flow
 

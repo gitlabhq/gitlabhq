@@ -57,14 +57,18 @@
 
       - gitlab_observability_export_variable = configuration_settings.group.variables.by_key('GITLAB_OBSERVABILITY_EXPORT').first
       - if gitlab_observability_export_variable.present?
-        = render Pajamas::AlertComponent.new(variant: :success, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
-          - c.with_body do
-            = s_('Observability|Observability for CI/CD is enabled! Your CI/CD pipelines are automatically configured to export telemetry data, giving you comprehensive insights into your build and deployment processes.')
+        .gl-bg-subtle.gl-border.gl-border-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
+          .gl-flex.gl-items-start.gl-gap-3
+            = sprite_icon('check-circle-filled', css_class: 'gl-text-success gl-mt-1', size: 16)
+            %span
+              = s_('Observability|Observability for CI/CD is enabled! Your CI/CD pipelines are automatically configured to export telemetry data, giving you comprehensive insights into your build and deployment processes.')
       - else
-        = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
-          - c.with_body do
-            - ci_cd_settings_link = link_to('', group_settings_ci_cd_path(configuration_settings.group, anchor: 'ci-variables'), target: '_blank', rel: 'noopener noreferrer')
-            = safe_format(s_('Observability|To enable Observability for CI/CD, set the %{variable_name} CI/CD variable in your group\'s %{settings_link_start}CI/CD settings%{settings_link_end} to a comma-separated list of data types to export: metrics, logs, and/or traces (e.g., %{metrics_logs} or %{all_data_types}).'), tag_pair(ci_cd_settings_link, :settings_link_start, :settings_link_end), variable_name: '<code>GITLAB_OBSERVABILITY_EXPORT</code>'.html_safe, metrics_logs: '<code>metrics,logs</code>'.html_safe, all_data_types: '<code>metrics,logs,traces</code>'.html_safe)
+        .gl-bg-subtle.gl-border.gl-border-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
+          .gl-flex.gl-items-start.gl-gap-3
+            = sprite_icon('information-o', css_class: 'gl-text-blue-500 gl-mt-1', size: 16)
+            %span
+              - ci_cd_settings_link = link_to('', group_settings_ci_cd_path(configuration_settings.group, anchor: 'ci-variables'), target: '_blank', rel: 'noopener noreferrer')
+              = safe_format(s_('Observability|To enable Observability for CI/CD, set the %{variable_name} CI/CD variable in your group\'s %{settings_link_start}CI/CD settings%{settings_link_end} to a comma-separated list of data types to export: metrics, logs, and/or traces (e.g., %{metrics_logs} or %{all_data_types}).'), tag_pair(ci_cd_settings_link, :settings_link_start, :settings_link_end), variable_name: '<code>GITLAB_OBSERVABILITY_EXPORT</code>'.html_safe, metrics_logs: '<code>metrics,logs</code>'.html_safe, all_data_types: '<code>metrics,logs,traces</code>'.html_safe)
 
       %p
         = s_('Observability|If you encounter any connectivity issues or require additional configuration assistance, please contact your system administrator with the endpoint details provided above.')

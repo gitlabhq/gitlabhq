@@ -10,8 +10,6 @@ import { hasDiff } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { clearDraft } from '~/lib/utils/autosave';
-import { isElementStuck } from '~/lib/utils/common_utils';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
@@ -22,6 +20,7 @@ import { fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -356,20 +355,17 @@ export default {
     },
     handleToggle({ viaUserInteraction = false } = {}) {
       const collapsingNow = !this.isCollapsed;
-      const contentElement = this.$el.querySelector(`#${fileContentsId(this.file)}`);
 
       this.setFileCollapsedByUser({
         filePath: this.file.file_path,
         collapsed: collapsingNow,
       });
 
-      if (
-        collapsingNow &&
-        viaUserInteraction &&
-        contentElement &&
-        isElementStuck(this.$refs.header.$el)
-      ) {
-        scrollToElement(contentElement, { behavior: 'auto' });
+      if (collapsingNow && viaUserInteraction) {
+        this.$nextTick(async () => {
+          this.$el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          await scrollPastCoveringElements(this.$el);
+        });
       }
 
       if (!this.hasDiff && !collapsingNow && this.file?.viewer?.expandable) {

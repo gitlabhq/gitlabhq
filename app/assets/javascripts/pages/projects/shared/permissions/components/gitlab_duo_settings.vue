@@ -86,6 +86,11 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoSastVrWorkflowEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     experimentFeaturesEnabled: {
       type: Boolean,
       required: false,
@@ -105,6 +110,7 @@ export default {
       duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
       duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
       duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
+      duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
     };
   },
   computed: {
@@ -159,6 +165,7 @@ export default {
         this.duoSastFpDetectionCascadingSettings?.lockedByApplicationSetting
       );
     },
+
     showDuoContextExclusion() {
       return this.glFeatures.useDuoContextExclusion;
     },
@@ -343,6 +350,26 @@ export default {
             label-position="hidden"
             name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"
             data-testid="duo-sast-fp-detection-enabled"
+          />
+        </project-setting-row>
+        <project-setting-row
+          v-if="glFeatures.enableVulnerabilityResolution"
+          :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
+          class="gl-mt-5"
+          :help-text="
+            s__(
+              'DuoSAST|Use vulnerability resolution workflow for vulnerabilities on the default branch',
+            )
+          "
+        >
+          <gl-toggle
+            v-model="duoSastVrWorkflowEnabled"
+            class="gl-mt-2"
+            :disabled="duoFeaturesLocked || !duoEnabled"
+            :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_sast_vr_workflow_enabled]"
+            data-testid="duo-sast-vr-workflow-enabled"
           />
         </project-setting-row>
       </div>
