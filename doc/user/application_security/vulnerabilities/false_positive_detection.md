@@ -64,6 +64,7 @@ To use false positive detection, you must have:
 
 - A GitLab Duo add-on subscription (GitLab Duo Core, Pro, or Enterprise).
 - [GitLab Duo enabled](../../gitlab_duo/turn_on_off.md) in your project or group.
+- [A default GitLab Duo namespace set](../../profile/preferences.md#set-a-default-gitlab-duo-namespace) in your user preferences.
 - GitLab 18.7 or later.
 
 ### Enable false positive detection

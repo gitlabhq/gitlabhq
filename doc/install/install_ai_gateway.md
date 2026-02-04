@@ -84,8 +84,8 @@ Newer features are available from nightly builds, but backwards compatibility is
 
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
-1. Ensure that ports `5052` and `50052` are forwarded to the container from the host. 
-   Port 5052 handles HTTP communication for the AI Gateway. Port 50052 handles gRPC 
+1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
+   Port `5052` handles HTTP communication for the AI Gateway. Port `50052` handles gRPC
    communication for the GitLab Duo Agent Platform Service.
 1. For GitLab instances that use an offline license, in the AIGW container,
    set `-e DUO_WORKFLOW_AUTH__OIDC_CUSTOMER_PORTAL_URL=` (empty string).
@@ -296,8 +296,10 @@ grpc-proxy:
 
   gitlab-ai-gateway:
     image: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
+    ports:
+      - "50052:50052" # Agent Platform gRPC exposed to the host
     expose:
-      - "5052"
+      - "5052" # Only exposed internally to the proxy network
     environment:
       - AIGW_GITLAB_URL=<your_gitlab_instance>
       - AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/
@@ -564,7 +566,7 @@ Use Prometheus to gather metrics about your AI Gateway usage and performance.
 
 To set up Prometheus metrics:
 
-1. Set the required environment variables and open port **8082**:
+1. Set the required environment variables and open port `8082`:
 
    ```shell
    -e AIGW_FASTAPI__METRICS_HOST=0.0.0.0
@@ -575,7 +577,7 @@ To set up Prometheus metrics:
 
 To set up Prometheus metrics on the GitLab Duo Workflow service:
 
-1. Set the required environment variables and open port **8083**:
+1. Set the required environment variables and open port `8083`:
 
    ```shell
    -e PROMETHEUS_METRICS__ADDR=0.0.0.0

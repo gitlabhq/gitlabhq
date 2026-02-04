@@ -13,7 +13,7 @@ module ActiveContext
             host: options[:host],
             port: options[:port],
             database: options[:database],
-            user: options[:username],
+            user: options[:user],
             password: options[:password],
             connect_timeout: options.fetch(:connect_timeout, DEFAULT_CONNECT_TIMEOUT),
             pool: options.fetch(:pool_size, DEFAULT_POOL_SIZE),

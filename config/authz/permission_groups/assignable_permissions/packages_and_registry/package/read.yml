@@ -6,6 +6,7 @@ permissions:
   - download_debian_distribution_packages_index
   - download_debian_distribution_release
   - download_debian_package
+  - download_generic_package
   - download_helm_chart
   - download_maven_package_file
   - download_nuget_package

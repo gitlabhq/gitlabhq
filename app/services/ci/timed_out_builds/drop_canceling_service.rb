@@ -11,7 +11,7 @@ module Ci
         Gitlab::AppLogger.info "#{self.class}: Cleaning timed-out canceling builds"
 
         Ci::Partition.find_each do |partition|
-          drop(timed_out_canceling_builds(partition), failure_reason: :job_execution_timeout)
+          drop(timed_out_canceling_builds(partition), failure_reason: :job_execution_server_timeout)
         end
       end
 

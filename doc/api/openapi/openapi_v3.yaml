@@ -82897,6 +82897,11 @@ paths:
                     required:
                     - key
                     - value
+                job_inputs:
+                  type: object
+                  description: Input values for the job
+                  example:
+                    environment: production
   "/api/v4/job":
     get:
       operationId: getApiV4Job

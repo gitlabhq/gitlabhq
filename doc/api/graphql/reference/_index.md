@@ -9187,6 +9187,7 @@ Input type: `JobPlayInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjobplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjobplayid"></a>`id` | [`CiProcessableID!`](#ciprocessableid) | ID of the job to mutate. |
+| <a id="mutationjobplayinputs"></a>`inputs` | [`[CiInputsInput!]`](#ciinputsinput) | Inputs to use when playing the job. |
 | <a id="mutationjobplayvariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables to use when playing a manual job. |
 
 #### Fields
@@ -34089,6 +34090,16 @@ Describes the overage of consumables for the subscription.
 | <a id="gitlabsubscriptionoveragedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily overage usage. |
 | <a id="gitlabsubscriptionoverageisallowed"></a>`isAllowed` | [`Boolean`](#boolean) | Whether GitLab Credits overage is allowed for the subscription. |
 
+### `GitlabSubscriptionPaidTierTrial`
+
+Describes paid tier trial information for the subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionpaidtiertrialisactive"></a>`isActive` | [`Boolean!`](#boolean) | Indicates whether the subscription is currently in a paid tier trial for GitLab Credits. |
+
 ### `GitlabSubscriptionUsage`
 
 Describes the usage of consumables under the subscription.
@@ -34107,6 +34118,7 @@ Describes the usage of consumables under the subscription.
 | <a id="gitlabsubscriptionusagemonthlywaiver"></a>`monthlyWaiver` | [`GitlabSubscriptionMonthlyWaiver`](#gitlabsubscriptionmonthlywaiver) | Monthly waiver usage for the subscription. |
 | <a id="gitlabsubscriptionusageoverage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
 | <a id="gitlabsubscriptionusageoveragetermsaccepted"></a>`overageTermsAccepted` | [`Boolean!`](#boolean) | Indicates whether overage terms have been accepted for the subscription. |
+| <a id="gitlabsubscriptionusagepaidtiertrial"></a>`paidTierTrial` | [`GitlabSubscriptionPaidTierTrial!`](#gitlabsubscriptionpaidtiertrial) | Paid tier trial data for the subscription. |
 | <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
 | <a id="gitlabsubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusagesubscriptionportalusagedashboardurl"></a>`subscriptionPortalUsageDashboardUrl` | [`String`](#string) | Full URL to the GitLab Credits usage dashboard in the Customer Portal. |
@@ -52683,6 +52695,7 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereasoninsufficient_upstream_permissions"></a>`INSUFFICIENT_UPSTREAM_PERMISSIONS` | A job that failed due to insufficient upstream permissions. |
 | <a id="cijobfailurereasoninvalid_bridge_trigger"></a>`INVALID_BRIDGE_TRIGGER` | A job that failed due to invalid bridge trigger. |
 | <a id="cijobfailurereasonip_restriction_failure"></a>`IP_RESTRICTION_FAILURE` | A job that failed due to ip restriction failure. |
+| <a id="cijobfailurereasonjob_execution_server_timeout"></a>`JOB_EXECUTION_SERVER_TIMEOUT` | A job that failed due to job execution server timeout. |
 | <a id="cijobfailurereasonjob_execution_timeout"></a>`JOB_EXECUTION_TIMEOUT` | A job that failed due to job execution timeout. |
 | <a id="cijobfailurereasonjob_router_failure"></a>`JOB_ROUTER_FAILURE` | A job that failed due to job router failure. |
 | <a id="cijobfailurereasonjob_token_expired"></a>`JOB_TOKEN_EXPIRED` | A job that failed due to job token expired. |

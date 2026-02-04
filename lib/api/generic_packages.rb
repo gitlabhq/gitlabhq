@@ -40,7 +40,8 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :admin_packages
+          route_setting :authorization, permissions: :authorize_generic_package, boundary_type: :project,
+            job_token_policies: :admin_packages
 
           params do
             requires :package_name, type: String, desc: 'Package name', regexp: Gitlab::Regex.generic_package_name_regex, file_path: true
@@ -83,7 +84,8 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :admin_packages
+          route_setting :authorization, permissions: :upload_generic_package, boundary_type: :project,
+            job_token_policies: :admin_packages
 
           put do
             project = authorized_user_project
@@ -137,7 +139,8 @@ module API
           end
 
           route_setting :authentication, job_token_allowed: %i[request basic_auth], basic_auth_personal_access_token: true, deploy_token_allowed: true
-          route_setting :authorization, job_token_policies: :read_packages,
+          route_setting :authorization, permissions: :download_generic_package, boundary_type: :project,
+            job_token_policies: :read_packages,
             allow_public_access_for_enabled_project_features: :package_registry
 
           get do

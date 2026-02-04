@@ -791,24 +791,20 @@ To view the activity feed in Atom format, select the
 
 ## Display GitLab Credits user data
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - Namespace setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
-  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`.
+  [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
 
 Prerequisites:
 

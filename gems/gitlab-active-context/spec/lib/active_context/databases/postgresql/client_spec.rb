@@ -7,7 +7,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       host: 'localhost',
       port: 5432,
       database: 'test_db',
-      username: 'user',
+      user: 'user',
       password: 'pass',
       pool_size: 2,
       pool_timeout: 1

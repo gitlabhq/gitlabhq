@@ -466,6 +466,15 @@ module Ci
         end
       end
 
+      before_transition canceling: [:canceled] do |build, transition|
+        failure_reason = transition.args.first&.to_sym
+        if failure_reason == :job_execution_server_timeout
+          # If job was stuck or timed-out, only bill the set timeout.
+          build.failure_reason = failure_reason
+          build.finished_at = build.started_at + build.timeout.seconds
+        end
+      end
+
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription
@@ -651,8 +660,13 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def play(current_user, job_variables_attributes = nil)
-      Ci::PlayBuildService.new(current_user: current_user, build: self, variables: job_variables_attributes).execute
+    def play(current_user, job_variables_attributes = nil, job_inputs = {})
+      Ci::PlayBuildService.new(
+        current_user: current_user,
+        build: self,
+        variables: job_variables_attributes,
+        inputs: job_inputs
+      ).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
 

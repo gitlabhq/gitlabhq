@@ -186,6 +186,14 @@ module NavbarStructureHelper
       _('Model experiments')
     ]
   end
+
+  def insert_work_items_settings_nav
+    insert_after_sub_nav_item(
+      _('CI/CD'),
+      within: _('Settings'),
+      new_sub_nav_item_name: s_('WorkItem|Work items')
+    )
+  end
 end
 
 NavbarStructureHelper.prepend_mod

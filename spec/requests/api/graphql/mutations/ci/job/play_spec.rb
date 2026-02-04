@@ -82,6 +82,93 @@ RSpec.describe 'JobPlay', feature_category: :continuous_integration do
         )
       end
     end
+
+    context 'when given inputs' do
+      let_it_be(:job) do
+        create(:ci_build, :playable, pipeline: pipeline, name: 'build', options: {
+          inputs: {
+            environment: { type: 'string' },
+            version: { type: 'string', default: '1.0' }
+          }
+        })
+      end
+
+      let(:variables) do
+        {
+          id: job.to_global_id.to_s,
+          inputs: [
+            { name: 'environment', value: 'production' }
+          ]
+        }
+      end
+
+      it 'applies those inputs to the job' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(job.reload.inputs.map(&:name)).to contain_exactly('environment')
+        expect(job.reload.inputs.find_by(name: 'environment').value).to eq('production')
+      end
+    end
+
+    context 'when given invalid inputs' do
+      let_it_be(:job) do
+        create(:ci_build, :playable, pipeline: pipeline, name: 'build', options: {
+          inputs: {
+            environment: { type: 'string' }
+          }
+        })
+      end
+
+      let(:variables) do
+        {
+          id: job.to_global_id.to_s,
+          inputs: [
+            { name: 'unknown_input', value: 'value' }
+          ]
+        }
+      end
+
+      it 'returns an error and does not play the job' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to include(match(/Unknown input/))
+        expect(mutation_response['job']).to be_nil
+        expect(job.reload).to be_manual
+      end
+    end
+
+    context 'when inputs feature flag is disabled' do
+      let_it_be(:job) do
+        create(:ci_build, :playable, pipeline: pipeline, name: 'build', options: {
+          inputs: {
+            environment: { type: 'string' }
+          }
+        })
+      end
+
+      let(:variables) do
+        {
+          id: job.to_global_id.to_s,
+          inputs: [
+            { name: 'environment', value: 'production' }
+          ]
+        }
+      end
+
+      before do
+        stub_feature_flags(ci_job_inputs: false)
+      end
+
+      it 'returns an error' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to include('The inputs argument is not available')
+        expect(mutation_response['job']).to be_nil
+      end
+    end
   end
 
   context 'with a bridge' do

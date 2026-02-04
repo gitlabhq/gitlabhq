@@ -236,6 +236,8 @@ module API
             requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
             requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
           end
+          optional :job_inputs,
+            type: Hash, desc: 'Input values for the job', documentation: { example: { environment: 'production' } }
         end
 
         route_setting :authorization, permissions: :play_job, boundary_type: :project
@@ -248,7 +250,10 @@ module API
 
           bad_request!("Unplayable Job") unless job.playable?
 
-          result = job.play(current_user, params[:job_variables_attributes])
+          result = job.play(current_user, params[:job_variables_attributes], params[:job_inputs] || {})
+
+          bad_request!(result.message) if result.error?
+
           job = result.payload[:job]
 
           status 200

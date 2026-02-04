@@ -7,7 +7,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Adapter do
       host: 'localhost',
       port: 5432,
       database: 'test_db',
-      username: 'user',
+      user: 'user',
       password: 'pass'
     }
   end

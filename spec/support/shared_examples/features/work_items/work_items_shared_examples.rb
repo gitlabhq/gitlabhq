@@ -22,7 +22,7 @@ RSpec.shared_examples 'work items toggle status button' do
   end
 end
 
-RSpec.shared_examples 'work items comments' do |type|
+RSpec.shared_examples 'work items comments' do
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
 
@@ -109,8 +109,7 @@ RSpec.shared_examples 'work items comments' do |type|
 
     context 'when a widget is enabled' do
       before do
-        WorkItems::Type.default_by_type(type).widget_definitions
-          .find_by_widget_type(:assignees).update!(disabled: false)
+        stub_all_work_item_widgets(assignees: false)
       end
 
       it 'autocompletes quick action for the enabled widget' do
@@ -124,8 +123,7 @@ RSpec.shared_examples 'work items comments' do |type|
 
     context 'when a widget is disabled' do
       before do
-        WorkItems::Type.default_by_type(type).widget_definitions
-          .find_by_widget_type(:assignees).update!(disabled: true)
+        stub_all_work_item_widgets(assignees: false)
       end
 
       it 'does not autocomplete quick action for the disabled widget' do

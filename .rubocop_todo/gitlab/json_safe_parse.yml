@@ -318,7 +318,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/ci/parsers/codequality/code_climate.rb'
     - 'lib/gitlab/ci/parsers/terraform/tfplan.rb'
     - 'lib/gitlab/consul/internal.rb'
-    - 'lib/gitlab/dependency_linker/json_linker.rb'
     - 'lib/gitlab/diff/highlight_cache.rb'
     - 'lib/gitlab/graphql/pagination/click_house_connection.rb'
     - 'lib/gitlab/import_export/json/ndjson_reader.rb'

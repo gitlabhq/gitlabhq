@@ -1,0 +1,5 @@
+---
+name: authorize_generic_package
+description: Grants the ability to authorize generic package uploads
+boundaries:
+  - project

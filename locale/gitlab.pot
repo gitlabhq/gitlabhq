@@ -26205,9 +26205,6 @@ msgstr ""
 msgid "DuoChat|Agentic"
 msgstr ""
 
-msgid "DuoChat|Agentic mode (Beta)"
-msgstr ""
-
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
@@ -30698,9 +30695,6 @@ msgstr ""
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
-msgid "Geo|%{titlePlural} checksum progress"
-msgstr ""
-
 msgid "Geo|%{titlePlural} synced"
 msgstr ""
 
@@ -31080,6 +31074,9 @@ msgid "Geo|Pipeline Artifacts"
 msgstr ""
 
 msgid "Geo|Primary"
+msgstr ""
+
+msgid "Geo|Primary checksum progress"
 msgstr ""
 
 msgid "Geo|Primary site"
@@ -54689,9 +54686,6 @@ msgstr ""
 msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
-msgid "Promotions|Improve search with Advanced Search and GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Promotions|Keep track of events in your project"
 msgstr ""
 
@@ -54704,9 +54698,6 @@ msgstr ""
 msgid "Promotions|Start GitLab Ultimate trial"
 msgstr ""
 
-msgid "Promotions|The Advanced Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr ""
-
 msgid "Promotions|This feature is locked."
 msgstr ""
 
@@ -54714,9 +54705,6 @@ msgid "Promotions|Try it for free"
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
-msgstr ""
-
-msgid "Promotions|Upgrade your plan to activate Advanced Search."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate Group Webhooks."
@@ -77615,6 +77603,9 @@ msgid "Withdraw Access Request"
 msgstr ""
 
 msgid "Withdraw access request"
+msgstr ""
+
+msgid "Work Item Settings"
 msgstr ""
 
 msgid "Work Item type %{gid} was not found"

@@ -407,24 +407,20 @@ To prevent invitations:
 
 ## Display GitLab Credits user data
 
-{{< history >}}
-
-- Instance setting to allow the display of user data
-  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
-  [with a flag](../feature_flags/_index.md) named `usage_billing_dev`.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
 {{< details >}}
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< history >}}
+
+- Instance setting to allow the display of user data
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
+  [with a flag](../feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+
+{{< /history >}}
 
 Prerequisites:
 

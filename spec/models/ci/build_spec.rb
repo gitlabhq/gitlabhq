@@ -4640,6 +4640,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe "state transition: canceling => canceled", :freeze_time do
+    let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+    let(:timeout) { 1000 }
+    let(:build) { create(:ci_build, :canceling, pipeline: pipeline, timeout: timeout) }
+
+    context 'when failure reason is job_execution_server_timeout' do
+      it 'overwrites finished_at' do
+        build.drop!(:job_execution_server_timeout)
+        expect(build.reload.finished_at).to eq(build.started_at + timeout.seconds)
+      end
+    end
+
+    context 'when the failure reason is not job_execution_server_timeout' do
+      it 'does not overwrite finished_at' do
+        build.drop!(:script_failure)
+        expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
+      end
+    end
+
+    context 'when no args are provided' do
+      it 'does not overwrite finished_at' do
+        build.drop!
+        expect(build.reload.finished_at).not_to eq(build.started_at + timeout.seconds)
+      end
+    end
+  end
+
   describe '#has_valid_build_dependencies?' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do

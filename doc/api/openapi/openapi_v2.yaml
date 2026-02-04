@@ -54801,6 +54801,11 @@ definitions:
           required:
           - key
           - value
+      job_inputs:
+        type: object
+        description: Input values for the job
+        example:
+          environment: production
     description: Trigger an actionable job (manual, delayed, etc)
   API_Entities_Ci_JobBasic:
     type: object

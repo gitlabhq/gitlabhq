@@ -1,0 +1,5 @@
+---
+name: upload_generic_package
+description: Grants the ability to upload generic packages
+boundaries:
+  - project
