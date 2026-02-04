@@ -21,19 +21,12 @@ import {
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
-import {
-  updateNewWorkItemCache,
-  workItemBulkEdit,
-  allSavedViews,
-  allSubscribedSavedViews,
-  singleSavedView,
-} from '~/work_items/graphql/resolvers';
+import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
 export const currentAssignees = makeVar({});
 export const availableStatuses = makeVar({});
-export const savedViewsVar = makeVar([...allSavedViews]);
 
 export const config = {
   typeDefs,
@@ -77,23 +70,6 @@ export const config = {
           workItems: {
             merge(existing = {}, incoming = {}) {
               return { ...existing, ...incoming };
-            },
-          },
-          savedViews: {
-            read(existing, { args }) {
-              const { subscribedOnly, id } = args;
-
-              if (id) {
-                return { nodes: singleSavedView };
-              }
-
-              // Do not reset the cache data, just load what is written in the cache
-              if (existing) return existing;
-
-              const views = savedViewsVar();
-              const nodes = subscribedOnly ? allSubscribedSavedViews : views;
-
-              return { nodes };
             },
           },
         },
@@ -512,19 +488,6 @@ export const resolvers = {
       };
 
       cache.writeQuery({ query: activeDiscussionQuery, data });
-    },
-    unsubscribeFromSavedView: (_, { id }) => {
-      const currentViews = savedViewsVar();
-      savedViewsVar(currentViews.filter((view) => view.id !== id));
-
-      return {
-        errors: [],
-        savedView: {
-          id,
-          __typename: 'WorkItemsSavedView',
-        },
-        __typename: 'UnsubscribeFromSavedViewPayload',
-      };
     },
   },
 };

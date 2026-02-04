@@ -165,6 +165,15 @@ is not ready or is still being created.
 
 Wait a few minutes for the service account to activate, then try again. If the error persists, contact your administrator.
 
+### `Error DCR4002`
+
+You might get an error that states
+`No GitLab Credits remain for this billing period. To continue using Code Review Flow, contact your administrator. Error code: DCR4002`.
+
+This error occurs when you have used all of your allocated GitLab Credits for the current billing period.
+
+Contact your administrator to purchase additional credits or wait for your credits to reset at the start of the next billing period.
+
 ### `Error DCR5000`
 
 You might get an error that states

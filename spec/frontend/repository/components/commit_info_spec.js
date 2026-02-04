@@ -24,14 +24,11 @@ const findUserAvatarImages = () => wrapper.findAllComponents(UserAvatarImage);
 const findTimeagoTooltips = () => wrapper.findAllComponents(TimeagoTooltip);
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
-const findViewPreviousBlameButtons = () => wrapper.findAllByTestId('view-previous-blame-button');
 
-const createComponent = async ({ commitMock = {}, previousPath, projectPath, span = 3 } = {}) => {
+const createComponent = async ({ commitMock = {}, span = 3 } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
     propsData: {
       commit: { ...commit, ...commitMock },
-      previousPath,
-      projectPath,
       span,
     },
     stubs: { GlSprintf },
@@ -105,45 +102,6 @@ describe('Repository last commit component', () => {
       expect(findCommitRowDescription().classes('!gl-block')).toBe(true);
       expect(findTextExpander().classes('open')).toBe(true);
       expect(findTextExpander().props('selected')).toBe(true);
-    });
-  });
-
-  describe('inline blame button', () => {
-    it('renders blame button when previousPath, parentSha, and projectPath are provided', async () => {
-      await createComponent({
-        commitMock: { ...commit, parentSha: 'abc123' },
-        previousPath: 'old/file.js',
-        projectPath: 'gitlab-org/gitlab',
-      });
-
-      const blameButtons = findViewPreviousBlameButtons();
-      expect(blameButtons).toHaveLength(1);
-      expect(blameButtons.at(0).attributes('href')).toBe(
-        '/gitlab-org/gitlab/-/blob/abc123/old/file.js?blame=1',
-      );
-    });
-
-    it.each([
-      [
-        'previousPath',
-        { commitMock: { ...commit, parentSha: 'abc123' }, projectPath: 'gitlab-org/gitlab' },
-      ],
-      [
-        'parentSha',
-        {
-          commitMock: { ...commit },
-          previousPath: 'old/file.js',
-          projectPath: 'gitlab-org/gitlab',
-        },
-      ],
-      [
-        'projectPath',
-        { commitMock: { ...commit, parentSha: 'abc123' }, previousPath: 'old/file.js' },
-      ],
-    ])('does not render blame button when %s is missing', async (_, props) => {
-      await createComponent(props);
-
-      expect(findViewPreviousBlameButtons()).toHaveLength(0);
     });
   });
 

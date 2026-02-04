@@ -23,7 +23,7 @@ import {
   deriveSortKey,
   getDefaultWorkItemTypes,
   getFilterTokens,
-  getFilterTokensFromObject,
+  getSavedViewFilterTokens,
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
@@ -363,7 +363,7 @@ export default {
         return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading;
+        return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
       },
       result({ data }) {
         this.namespaceId = data?.namespace?.id;
@@ -390,7 +390,7 @@ export default {
         return data?.namespace?.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams) || this.metadataLoading;
+        return isEmpty(this.pageParams) || this.metadataLoading || this.savedViewNotFound;
       },
       result({ data }) {
         this.handleListDataResults(data);
@@ -432,7 +432,8 @@ export default {
         return (
           (this.isPlanningViewsEnabled && !this.isServiceDeskList) ||
           isEmpty(this.pageParams) ||
-          this.metadataLoading
+          this.metadataLoading ||
+          this.savedViewNotFound
         );
       },
       error(error) {
@@ -481,7 +482,7 @@ export default {
       variables() {
         return {
           fullPath: this.rootPageFullPath,
-          id: convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id),
+          id: this.savedViewId,
         };
       },
       skip() {
@@ -491,17 +492,27 @@ export default {
         return data?.namespace?.savedViews?.nodes[0];
       },
       result({ data }) {
-        const savedView = data?.namespace?.savedViews?.nodes[0];
-        const tokens = getFilterTokensFromObject(savedView?.filters, {
-          includeStateToken: true,
-          hasCustomFieldsFeature: this.hasCustomFieldsFeature,
-          convertTypeTokens: true,
-        });
-        this.filterTokens = tokens;
-        this.initialViewTokens = tokens;
-        const sortKey = savedView?.sort;
-        this.sortKey = sortKey;
-        this.localDisplaySettings = savedView.displaySettings;
+        try {
+          const savedView = data?.namespace?.savedViews?.nodes[0];
+          if (!savedView) {
+            throw new Error(
+              `Unable to find saved view with id ${this.savedViewId} in ${this.rootPageFullPath}`,
+            );
+          }
+          const tokens = getSavedViewFilterTokens(savedView?.filters, {
+            includeStateToken: true,
+            hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+            convertTypeTokens: true,
+          });
+          const availableTokenTypes = this.searchTokens.map((token) => token.type);
+          this.filterTokens = tokens.filter((token) => availableTokenTypes.includes(token.type));
+          this.initialViewTokens = tokens;
+          const sortKey = savedView?.sort;
+          this.sortKey = sortKey;
+          this.localDisplaySettings = savedView.displaySettings;
+        } catch (error) {
+          Sentry.captureException(error);
+        }
       },
       error(error) {
         Sentry.captureException(error);
@@ -527,6 +538,12 @@ export default {
     },
   },
   computed: {
+    savedViewId() {
+      return convertToGraphQLId('WorkItems::SavedViews::SavedView', this.$route.params.view_id);
+    },
+    savedViewNotFound() {
+      return this.isSavedView && !this.savedView;
+    },
     displaySettingsSoT() {
       return this.isSavedView ? this.localDisplaySettings : this.displaySettings;
     },

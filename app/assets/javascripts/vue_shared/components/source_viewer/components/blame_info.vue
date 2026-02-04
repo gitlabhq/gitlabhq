@@ -1,7 +1,7 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import CommitInfo from '~/repository/components/commit_info.vue';
+import BlameCommitInfo from './blame_commit_info.vue';
 
 export default {
   name: 'BlameInfo',
@@ -18,7 +18,7 @@ export default {
     'blame-commit-age-9': 'var(--gl-color-data-blue-50)',
   },
   components: {
-    CommitInfo,
+    BlameCommitInfo,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -111,7 +111,7 @@ export default {
       </template>
 
       <template v-if="blameInfo.length">
-        <commit-info
+        <blame-commit-info
           v-for="(blame, index) in blameInfo"
           :key="index"
           :class="{ 'gl-border-t': blame.blameOffset !== '0px' }"

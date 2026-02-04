@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CommitInfo from '~/repository/components/commit_info.vue';
+import BlameCommitInfo from '~/vue_shared/components/source_viewer/components/blame_commit_info.vue';
 import BlameInfo from '~/vue_shared/components/source_viewer/components/blame_info.vue';
 import { BLAME_DATA_MOCK } from '../mock_data';
 
@@ -17,44 +17,41 @@ describe('BlameInfo component', () => {
     });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
-  const findCommitInfoComponents = () => wrapper.findAllComponents(CommitInfo);
-
+  const findBlameCommitInfoComponents = () => wrapper.findAllComponents(BlameCommitInfo);
   const findBlameWrappers = () => wrapper.findAll('.blame-commit-wrapper');
 
-  it('renders a CommitInfo component for each blame entry', () => {
-    expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
+  beforeEach(() => createComponent());
+
+  it('renders a BlameCommitInfo component for each blame entry', () => {
+    expect(findBlameCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
   });
 
   it.each(BLAME_DATA_MOCK)(
-    'sets the correct data and positioning for the commitInfo',
+    'sets the correct data and positioning for blame entry at index $index',
     ({ commit, index, blameOffset, previousPath }) => {
-      const commitInfoComponent = findCommitInfoComponents().at(index);
+      const blameCommitInfo = findBlameCommitInfoComponents().at(index);
 
-      expect(commitInfoComponent.props('commit')).toEqual(commit);
-      expect(commitInfoComponent.props('previousPath')).toBe(previousPath);
-      expect(commitInfoComponent.props('projectPath')).toBe('gitlab-org/gitlab');
-      expect(commitInfoComponent.element.style.top).toBe(blameOffset);
+      expect(blameCommitInfo.props('commit')).toEqual(commit);
+      expect(blameCommitInfo.props('previousPath')).toBe(previousPath);
+      expect(blameCommitInfo.props('projectPath')).toBe('gitlab-org/gitlab');
+      expect(blameCommitInfo.element.style.top).toBe(blameOffset);
     },
   );
 
   describe('blame age indicator', () => {
-    it('renders an indicator per each commitInfo component', () => {
-      expect(findBlameWrappers()).toHaveLength(findCommitInfoComponents().length);
+    it('renders an indicator per each BlameCommitInfo component', () => {
+      expect(findBlameWrappers()).toHaveLength(findBlameCommitInfoComponents().length);
     });
 
     it.each(BLAME_DATA_MOCK.map((_, index) => [index]))(
-      'sets the position to the same value as commitInfo component at index %i',
+      'sets the position to the same value as BlameCommitInfo component at index %i',
       (index) => {
         const blameWrapperTop = findBlameWrappers()
           .at(index)
           .element.style.getPropertyValue('--blame-indicator-top');
-        const commitInfoTop = findCommitInfoComponents().at(index).element.style.top;
+        const blameCommitInfoTop = findBlameCommitInfoComponents().at(index).element.style.top;
 
-        expect(blameWrapperTop).toBe(commitInfoTop);
+        expect(blameWrapperTop).toBe(blameCommitInfoTop);
         expect(blameWrapperTop).toBe(BLAME_DATA_MOCK[index].blameOffset);
       },
     );
@@ -87,9 +84,7 @@ describe('BlameInfo component', () => {
         await wrapper.setProps({ blameInfo: extendedBlameData });
         await nextTick();
 
-        const wrappers = findBlameWrappers();
-
-        expect(wrappers).toHaveLength(4);
+        expect(findBlameWrappers()).toHaveLength(4);
       });
     });
   });

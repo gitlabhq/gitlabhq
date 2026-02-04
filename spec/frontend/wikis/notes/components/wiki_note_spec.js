@@ -13,6 +13,7 @@ import AwardsList from '~/vue_shared/components/awards_list.vue';
 import * as autosave from '~/lib/utils/autosave';
 import * as confirmViaGLModal from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import * as alert from '~/alert';
+import * as urlUtility from '~/lib/utils/url_utility';
 import {
   noteableType,
   currentUserData,
@@ -68,7 +69,12 @@ describe('WikiNote', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue('');
     wrapper = createWrapper({ note });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('renders correctly by default', () => {
@@ -529,6 +535,51 @@ describe('WikiNote', () => {
           expect(Sentry.captureException).toHaveBeenCalledWith('error');
         });
       });
+    });
+  });
+
+  describe('comment highlighting when navigating from todo list', () => {
+    const findNoteParent = () => wrapper.findByTestId('wiki-note-parent');
+
+    beforeEach(() => {
+      wrapper = createWrapper({ note });
+    });
+
+    afterEach(() => {
+      window.location.hash = '';
+    });
+
+    it('applies gl-bg-feedback-info class when note is targeted', () => {
+      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue('note_1524');
+      wrapper = createWrapper({ note });
+
+      const noteParent = findNoteParent();
+      expect(noteParent.classes()).toContain('gl-bg-feedback-info');
+    });
+
+    it('does not apply gl-bg-feedback-info class when note is not targeted', () => {
+      jest.spyOn(urlUtility, 'getLocationHash').mockReturnValue('note_9999');
+
+      const noteParent = findNoteParent();
+      expect(noteParent.classes()).not.toContain('gl-bg-feedback-info');
+    });
+
+    it('updates highlighting when hash changes', async () => {
+      jest
+        .spyOn(urlUtility, 'getLocationHash')
+        .mockImplementation(() => window.location.hash?.replace(/^#/, '') || '');
+      window.location.hash = '';
+
+      let noteParent = findNoteParent();
+      expect(noteParent.classes()).not.toContain('gl-bg-feedback-info');
+
+      window.location.hash = 'note_1524';
+      window.dispatchEvent(new Event('hashchange'));
+
+      await nextTick();
+
+      noteParent = findNoteParent();
+      expect(noteParent.classes()).toContain('gl-bg-feedback-info');
     });
   });
 });

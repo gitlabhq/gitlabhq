@@ -38,26 +38,33 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
   ];
 
-  const createComponent = async ({ props, mockSavedViews = mockSavedViewsData } = {}) => {
-    const apolloProvider = createMockApollo();
-
-    // TODO: to be removed when actual API is integrated
-    apolloProvider.defaultClient.writeQuery({
-      query: getNamespaceSavedViewsQuery,
-      variables: {
-        fullPath: 'test-project-path',
-        subscribedOnly: false,
-      },
-      data: {
-        namespace: {
-          id: 'namespace',
-          savedViews: {
-            __typename: 'SavedViewConnection',
-            nodes: mockSavedViews,
-          },
+  const savedViewsHandler = jest.fn().mockResolvedValue({
+    data: {
+      namespace: {
+        __typename: 'Namespace',
+        id: 'namespace',
+        savedViews: {
+          __typename: 'SavedViewConnection',
+          nodes: mockSavedViewsData,
         },
       },
-    });
+    },
+  });
+
+  const emptySavedViewsHandler = jest.fn().mockResolvedValue({
+    data: {
+      namespace: {
+        savedViews: {
+          nodes: [],
+        },
+      },
+    },
+  });
+
+  const simulatedErrorHandler = jest.fn().mockRejectedValue(new Error('this is fine'));
+
+  const createComponent = async ({ props, mockSavedViewsHandler = savedViewsHandler } = {}) => {
+    const apolloProvider = createMockApollo([[getNamespaceSavedViewsQuery, mockSavedViewsHandler]]);
 
     wrapper = shallowMountExtended(WorkItemsExistingSavedViewsModal, {
       apolloProvider,
@@ -88,24 +95,8 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     await createComponent();
   });
 
-  it('shows loading icon while saved views are loading', async () => {
-    const apolloProvider = createMockApollo();
-
-    wrapper = shallowMountExtended(WorkItemsExistingSavedViewsModal, {
-      apolloProvider,
-      propsData: {
-        show: true,
-        fullPath: 'test-project-path',
-      },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
-      stubs: {
-        GlModal,
-      },
-    });
-
-    await nextTick();
+  it('shows loading icon while saved views are loading', () => {
+    createComponent();
     expect(findLoadingIcon().exists()).toBe(true);
   });
 
@@ -139,8 +130,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       });
     });
 
-    it('shows "Added" and check icon only for subscribed views', () => {
+    it('shows "Added" and check icon only for subscribed views', async () => {
       createComponent();
+      await waitForPromises();
 
       expect(wrapper.text()).toContain('Added');
       expect(findSubscribedIcons()).toHaveLength(1);
@@ -170,7 +162,32 @@ describe('WorkItemsExistingSavedViewsModal', () => {
 
   describe('when there are no saved views available', () => {
     beforeEach(() => {
-      createComponent({ mockSavedViews: [] });
+      createComponent({
+        mockSavedViewsHandler: emptySavedViewsHandler,
+      });
+    });
+
+    it('disables the search input', () => {
+      expect(findSearch().props('disabled')).toBe(true);
+    });
+
+    it('renders empty state and redirects to New View Modal', async () => {
+      expect(wrapper.text()).toContain('No views currently exist');
+      expect(findNewViewButton().exists()).toBe(true);
+
+      findNewViewButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.emitted('hide')).toEqual([[false]]);
+      expect(wrapper.emitted('show-new-view-modal')).toEqual([[]]);
+    });
+  });
+
+  describe('when there is an error', () => {
+    beforeEach(() => {
+      createComponent({
+        mockSavedViewsHandler: simulatedErrorHandler,
+      });
     });
 
     it('disables the search input', () => {

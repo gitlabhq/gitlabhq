@@ -2330,7 +2330,6 @@ RSpec/ContextWording:
     - 'spec/services/merge_requests/create_service_spec.rb'
     - 'spec/services/merge_requests/export_csv_service_spec.rb'
     - 'spec/services/merge_requests/get_urls_service_spec.rb'
-    - 'spec/services/merge_requests/link_lfs_objects_service_spec.rb'
     - 'spec/services/merge_requests/merge_orchestration_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'
     - 'spec/services/merge_requests/merge_to_ref_service_spec.rb'

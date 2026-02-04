@@ -86,7 +86,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
-      click_button('Open sidebar') if page.has_button?('Open sidebar', wait: 1)
+      click_button('Open sidebar')
 
       click_link("Home")
 

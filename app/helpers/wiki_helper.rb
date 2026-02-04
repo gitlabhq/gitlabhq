@@ -18,11 +18,14 @@ module WikiHelper
   end
 
   def wiki_sidebar_toggle_button
+    css_classes = 'js-sidebar-wiki-toggle-open wiki-sidebar-toggle toggle-action-open gl-mr-2'
+    css_classes += ' @lg/panel:gl-hidden' if Feature.enabled?(:wiki_floating_sidebar_toggle, @wiki.container)
+
     render Pajamas::ButtonComponent.new(
       category: :tertiary,
-      icon: 'list-bulleted',
+      icon: Feature.enabled?(:wiki_floating_sidebar_toggle, @wiki.container) ? 'sidebar' : 'list-bulleted',
       button_options: {
-        class: 'wiki-sidebar-header-toggle js-sidebar-wiki-toggle-open gl-mr-2',
+        class: css_classes,
         "aria-label": _('Toggle sidebar')
       })
   end

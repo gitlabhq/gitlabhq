@@ -541,7 +541,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/integrations/slack_options/user_search_handler.rb'
     - 'app/services/issuable_base_service.rb'
     - 'app/services/issuable_links/create_service.rb'
-    - 'app/services/issues/build_service.rb'
     - 'app/services/issues/referenced_merge_requests_service.rb'
     - 'app/services/issues/relative_position_rebalancing_service.rb'
     - 'app/services/issues/set_crm_contacts_service.rb'

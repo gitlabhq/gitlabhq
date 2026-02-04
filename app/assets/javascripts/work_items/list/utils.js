@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { camelCase } from 'lodash';
 import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -16,6 +17,7 @@ import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_RELEASE,
@@ -26,6 +28,7 @@ import {
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_PARENT,
+  TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -84,6 +87,7 @@ import {
   MERGED_AT_DESC,
   START_DATE_ASC,
   START_DATE_DESC,
+  savedViewFilters,
 } from '~/work_items/list/constants';
 
 /**
@@ -320,17 +324,6 @@ const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
 
-const getOperatorFromApiParamKey = (tokenType, apiParamKey) => {
-  const apiParam = Object.entries(filtersMap[tokenType][API_PARAM]);
-  const result = apiParam.find(([, filterObj]) => {
-    return filterObj.includes(apiParamKey);
-  });
-  if (result[0] === NORMAL_FILTER) {
-    return OPERATOR_IS;
-  }
-  return result[0];
-};
-
 export const convertMultipleIsTypeTokensToOr = (tokens) => {
   const typeIsTokenIndices = [];
   tokens.forEach((token, index) => {
@@ -379,25 +372,104 @@ export const getFilterTokens = (locationSearch, options = {}) => {
   return tokens;
 };
 
-export const getFilterTokensFromObject = (filterObject, options = {}) => {
+const trueYesFalseNo = (value) => {
+  if (value) {
+    return 'yes';
+  }
+  return 'no';
+};
+
+const convertToTokenValue = (token, baseValue) => {
+  switch (token) {
+    case TOKEN_TYPE_CONFIDENTIAL:
+      return trueYesFalseNo(baseValue);
+    case TOKEN_TYPE_SUBSCRIBED:
+    case TOKEN_TYPE_TYPE:
+      return baseValue.toUpperCase();
+    case TOKEN_TYPE_HEALTH:
+      return camelCase(baseValue);
+    case TOKEN_TYPE_STATUS:
+      return baseValue.name;
+    default:
+      return baseValue;
+  }
+};
+
+/**
+ * Takes a saved view filters field and converts it
+ * into a list of 'token' objects.
+ */
+export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const tokens = Object.entries(filterObject)
     .filter(
       ([key]) =>
-        apiParamKeys.includes(key) && (options.includeStateToken || key !== TOKEN_TYPE_STATE),
+        (apiParamKeys.includes(key) || ['not', 'or'].includes(key)) &&
+        (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
-    .map(([key, data]) => {
-      const type = getTokenTypeFromApiParamKey(key);
-      const operator = getOperatorFromApiParamKey(type, key);
+    .reduce((acc, [key, value]) => {
+      if (key === 'in') {
+        return acc;
+      }
+      if (key === 'not') {
+        /**
+         * 'not' filters are a sub-object of the main filters
+         * object, so they need to be mapped separately.
+         */
+        Object.entries(value).forEach(([apiParamKey, data]) => {
+          const type = getTokenTypeFromApiParamKey(apiParamKey);
+          if (type) {
+            acc.push({ type, data, operator: OPERATOR_NOT });
+          }
+        });
+        return acc;
+      }
+      if (key === 'or') {
+        /**
+         * 'or' filters are a sub-object of the main filters
+         * object, so they need to be mapped separately.
+         */
+        Object.entries(value).forEach(([apiParamKey, data]) => {
+          const type = getTokenTypeFromApiParamKey(apiParamKey);
+          if (type) {
+            acc.push({ type, data, operator: OPERATOR_OR });
+          }
+        });
+        return acc;
+      }
+      const { operator, type } = savedViewFilters[key];
+      acc.push({ type, data: value, operator });
+      return acc;
+    }, [])
+    .map(({ type, data, operator }) => {
+      if (Array.isArray(data)) {
+        /**
+         * Some filters are returned from the api as arrays
+         * in the case that we're using the 'is' operator, we
+         * should select the first and only item in that array.
+         *
+         * heath status returns an array for a single value with
+         * the 'not' operator too.
+         */
+        if (operator === OPERATOR_IS || (operator === OPERATOR_NOT && type === TOKEN_TYPE_HEALTH)) {
+          return {
+            type,
+            value: { data: convertToTokenValue(type, data[0]), operator },
+          };
+        }
+        return {
+          type,
+          value: { data: data.map((datum) => convertToTokenValue(type, datum)), operator },
+        };
+      }
       return {
         type,
-        value: { data, operator },
+        value: { data: convertToTokenValue(type, data), operator },
       };
     });
   if (options.convertTypeTokens) {
     const hasTypeToken = tokens.some((token) => token.type === TOKEN_TYPE_TYPE);
     if (hasTypeToken) return convertMultipleIsTypeTokensToOr(tokens);
   }
-
   return tokens;
 };
 
@@ -453,6 +525,14 @@ export const isIterationCadenceIdParam = (type, data) => {
 
 export const isParentIdParam = (type) => {
   return type === TOKEN_TYPE_PARENT;
+};
+
+export const isSubscribedParam = (type) => {
+  return type === TOKEN_TYPE_SUBSCRIBED;
+};
+
+export const isHealthStatusParam = (type) => {
+  return type === TOKEN_TYPE_HEALTH;
 };
 
 const getFilterType = ({ type, value: { data, operator } }) => {
@@ -575,6 +655,10 @@ export const convertToApiParams = (filterTokens) => {
           includeDescendantWorkItems: true,
         });
       }
+    } else if (isSubscribedParam(token.type)) {
+      obj.set(apiField, data.toUpperCase());
+    } else if (isHealthStatusParam(token.type)) {
+      obj.set(apiField, ['NONE', 'ANY'].includes(data) ? data : camelCase(data));
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }

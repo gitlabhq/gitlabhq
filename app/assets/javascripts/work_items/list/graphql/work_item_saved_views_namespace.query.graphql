@@ -1,6 +1,6 @@
 # @feature_category: portfolio_management
 query savedViews($fullPath: ID!, $subscribedOnly: Boolean) {
-  namespace(fullPath: $fullPath) @client {
+  namespace(fullPath: $fullPath) {
     id
     savedViews(subscribedOnly: $subscribedOnly) {
       nodes {

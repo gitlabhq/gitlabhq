@@ -15,7 +15,7 @@ import BlameInfo from './components/blame_info.vue';
 import {
   calculateBlameOffset,
   shouldRender,
-  toggleBlameClasses,
+  toggleBlameLineBorders,
   hasBlameDataForChunk,
 } from './utils';
 import blameDataQuery from './queries/blame_data.query.graphql';
@@ -113,7 +113,7 @@ export default {
     },
     showBlame: {
       async handler(isVisible) {
-        toggleBlameClasses(this.blameData, isVisible);
+        toggleBlameLineBorders(this.blameData, isVisible);
 
         if (isVisible) {
           this.isBlameLoading = true;
@@ -134,7 +134,7 @@ export default {
     blameData: {
       async handler(blameData) {
         if (!this.showBlame) return;
-        toggleBlameClasses(blameData, true);
+        toggleBlameLineBorders(blameData, true);
 
         if (blameData.length > 0) {
           this.isBlameLoading = false;

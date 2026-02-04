@@ -54,7 +54,6 @@ Gitlab/UsersInternalOrganization:
     - 'spec/controllers/admin/users_controller_spec.rb'
     - 'spec/factories/usage_data.rb'
     - 'spec/finders/members/invite_users_finder_spec.rb'
-    - 'spec/mailers/notify_spec.rb'
     - 'spec/models/todo_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/policies/issue_policy_spec.rb'

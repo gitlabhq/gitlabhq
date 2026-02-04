@@ -3,7 +3,6 @@
 Gitlab/JsonSafeParse:
   Details: grace period
   Exclude:
-    - 'app/models/blob_viewer/dependency_manager.rb'
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/diff_positionable_note.rb'
     - 'app/models/concerns/redis_cacheable.rb'
@@ -16,7 +15,6 @@ Gitlab/JsonSafeParse:
     - 'app/services/ide/schemas_config_service.rb'
     - 'app/services/jira/requests/base.rb'
     - 'app/services/mcp/tools/api_service.rb'
-    - 'app/services/mcp/tools/api_tool.rb'
     - 'app/services/packages/composer/composer_json_service.rb'
     - 'app/services/packages/npm/check_manifest_coherence_service.rb'
     - 'app/services/packages/npm/process_temporary_package_file_service.rb'
@@ -46,9 +44,7 @@ Gitlab/JsonSafeParse:
     - 'ee/app/services/alert_management/extract_alert_payload_fields_service.rb'
     - 'ee/app/services/arkose/status_service.rb'
     - 'ee/app/services/geo/base_batch_bulk_update_service.rb'
-    - 'ee/app/services/geo/container_repository_sync.rb'
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
-    - 'ee/app/services/product_analytics/cube_data_query_service.rb'
     - 'ee/app/services/sbom/ingestion/vulnerability_data.rb'
     - 'ee/app/services/search/zoekt/provisioning_service.rb'
     - 'ee/app/services/search/zoekt/rollout_service.rb'
@@ -64,7 +60,6 @@ Gitlab/JsonSafeParse:
     - 'ee/lib/ai/context/dependencies/config_files/php_composer_lock.rb'
     - 'ee/lib/ai/duo_workflow/duo_workflow_service/client.rb'
     - 'ee/lib/analytics/ai_user_metrics_database_write_buffer.rb'
-    - 'ee/lib/analytics/database_write_buffer.rb'
     - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
     - 'ee/lib/audit_events/strategies/base_amazon_s3_destination_strategy.rb'
     - 'ee/lib/audit_events/strategies/base_google_cloud_logging_destination_strategy.rb'
@@ -261,8 +256,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/consul/internal.rb'
     - 'lib/gitlab/dependency_linker/json_linker.rb'
     - 'lib/gitlab/diff/highlight_cache.rb'
-    - 'lib/gitlab/event_store/event.rb'
-    - 'lib/gitlab/github_import/events_cache.rb'
     - 'lib/gitlab/graphql/pagination/click_house_connection.rb'
     - 'lib/gitlab/import_export/json/ndjson_reader.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'
@@ -273,7 +266,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/pagination/keyset/paginator.rb'
     - 'lib/gitlab/performance_bar/stats.rb'
     - 'lib/gitlab/prometheus_client.rb'
-    - 'lib/gitlab/redis/cursor_store.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/sidekiq_middleware/concurrency_limit/queue_manager.rb'
     - 'lib/gitlab/sidekiq_middleware/concurrency_limit/worker_execution_tracker.rb'
@@ -488,5 +480,3 @@ Gitlab/JsonSafeParse:
     - 'spec/workers/database/collation_checker_worker_spec.rb'
     - 'spec/workers/database/schema_checker_worker_spec.rb'
     - 'spec/workers/packages/npm/process_temporary_package_file_worker_spec.rb'
-
-    

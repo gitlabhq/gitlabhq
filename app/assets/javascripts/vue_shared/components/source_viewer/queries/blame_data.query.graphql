@@ -24,6 +24,7 @@ query getBlameData(
                 id
                 authorName
                 titleHtml
+                title
                 message
                 authoredDate
                 authorGravatar

@@ -91,7 +91,7 @@ We will use a Feature Flag to control the rollout. If there are any concerns (se
 _Add details here about where to make announcements when the model is ready for rollout to external users._
 
 /confidential
-/label "group::code creation"
+/label "group::ai coding"
 /label "devops::create"
 /label "section::dev"
 /label "type::feature"

@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SourceViewer utils toggleBlameClasses adds classes 1`] = `
+exports[`SourceViewer utils toggleBlameLineBorders adds classes 1`] = `
 <div
   class="content"
 >
   <div
-    class="!gl-pt-3 gl-border-gray-500 gl-border-t"
+    class="-gl-mt-px gl-border-gray-500 gl-border-t"
   >
     <div
       id="reference-0"
@@ -25,19 +25,19 @@ exports[`SourceViewer utils toggleBlameClasses adds classes 1`] = `
   </div>
   <div>
     <div
-      class="!gl-pt-3"
+      class="-gl-mt-px gl-border-gray-500 gl-border-t"
       id="reference-3"
     >
       Content 1
     </div>
     <div
-      class="!gl-pt-3 gl-border-gray-500 gl-border-t"
+      class="-gl-mt-px gl-border-gray-500 gl-border-t"
       id="reference-4"
     >
       Content 2
     </div>
     <div
-      class="!gl-pt-3 gl-border-gray-500 gl-border-t"
+      class="-gl-mt-px gl-border-gray-500 gl-border-t"
       id="reference-5"
     >
       Content 3
@@ -46,7 +46,7 @@ exports[`SourceViewer utils toggleBlameClasses adds classes 1`] = `
 </div>
 `;
 
-exports[`SourceViewer utils toggleBlameClasses removes classes 1`] = `
+exports[`SourceViewer utils toggleBlameLineBorders removes classes 1`] = `
 <div
   class="content"
 >

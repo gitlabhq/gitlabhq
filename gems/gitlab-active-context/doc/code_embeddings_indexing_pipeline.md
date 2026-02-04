@@ -37,7 +37,12 @@ curl -H 'Content-Type: application/json' -XPUT "http://localhost:9200/gitlab_act
 
 ### Create and Activate Connection
 
-**Note**: If you already have an Elasticsearch connection for advanced search, you can reuse it by setting `use_advanced_search_config` to `true`:
+For detailed connection setup including Elasticsearch, OpenSearch and PostgreSQL
+options, see [create a connection](getting_started.md#create-a-connection).
+
+For quick Elasticsearch setup, if you already have an Elasticsearch connection
+for advanced search, you can reuse it by setting `use_advanced_search_config` to
+`true`:
 
 ```ruby
 connection = Ai::ActiveContext::Connection.create!(

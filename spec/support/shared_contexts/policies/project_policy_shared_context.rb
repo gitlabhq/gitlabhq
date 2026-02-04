@@ -117,6 +117,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       security_manager_access
       access_security_and_compliance
+      read_security_configuration
     ]
   end
 
@@ -149,6 +150,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_pod_logs
       read_resource_group
       read_terraform_state
+      read_security_configuration
       resolve_note
       update_build
       update_container_image

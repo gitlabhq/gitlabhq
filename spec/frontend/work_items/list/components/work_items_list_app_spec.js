@@ -32,7 +32,7 @@ import {
 } from '~/work_items/list/constants';
 import getUserWorkItemsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
-import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -152,6 +152,19 @@ const mockSavedViewsData = [
   },
 ];
 
+const emptySavedViewsResult = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: [],
+      },
+    },
+  },
+};
+
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
 let router;
@@ -186,6 +199,18 @@ const namespaceSavedViewHandler = jest.fn().mockResolvedValue({
       savedViews: {
         __typename: 'SavedViewConnection',
         nodes: singleSavedView,
+      },
+    },
+  },
+});
+const subscribedSavedViewsHandler = jest.fn().mockResolvedValue({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'namespace',
+      savedViews: {
+        __typename: 'SavedViewConnection',
+        nodes: mockSavedViewsData,
       },
     },
   },
@@ -229,6 +254,7 @@ const mountComponent = ({
   countsOnlyHandler = defaultCountsOnlyHandler,
   mockPreferencesHandler = mockPreferencesQueryHandler,
   userPreferenceMutationResponse = userPreferenceMutationHandler,
+  savedViewHandler = namespaceSavedViewHandler,
   workItemPlanningView = false,
   workItemsSavedViewsEnabled = false,
   props = {},
@@ -266,28 +292,10 @@ const mountComponent = ({
     [updateWorkItemListUserPreference, userPreferenceMutationResponse],
     [hasWorkItemsQuery, hasWorkItemsHandler],
     [getWorkItemsCountOnlyQuery, countsOnlyHandler],
-    [namespaceSavedViewQuery, namespaceSavedViewHandler],
+    [namespaceSavedViewQuery, savedViewHandler],
+    [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
     ...additionalHandlers,
   ]);
-
-  // TODO: to be removed when actual API is integrated
-  apolloProvider.defaultClient.writeQuery({
-    query: getSubsribedSavedViewsQuery,
-    variables: {
-      fullPath: 'full/path',
-      subscribedOnly: false,
-    },
-    data: {
-      namespace: {
-        __typename: 'Namespace',
-        id: 'namespace',
-        savedViews: {
-          __typename: 'SavedViewConnection',
-          nodes: mockSavedViewsData,
-        },
-      },
-    },
-  });
 
   wrapper = shallowMountExtended(WorkItemsListApp, {
     router,
@@ -2133,6 +2141,51 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       await waitForPromises();
     });
 
+    it('displays error alert when saved views selector component emits error', async () => {
+      const testError = new Error('Test error');
+      const errorMessage = 'An error occurred while removing the view. Please try again.';
+
+      findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
+      await nextTick();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(testError);
+      expect(findGlAlert().exists()).toBe(true);
+      expect(findGlAlert().text()).toContain(errorMessage);
+    });
+
+    it('fetches the saved view based on route parameter', () => {
+      expect(namespaceSavedViewHandler).toHaveBeenCalledWith({
+        fullPath: 'full/path',
+        id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
+      });
+    });
+
+    it('captures error alert when saved view cannot be found', async () => {
+      const error = new Error(
+        'Unable to find saved view with id gid://gitlab/WorkItems::SavedViews::SavedView/3 in full/path',
+      );
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        savedViewHandler: jest.fn().mockResolvedValue(emptySavedViewsResult),
+      });
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
+    it('captures error alert when saved view cannot be fetched', async () => {
+      const error = new Error('Network error');
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        savedViewHandler: jest.fn().mockRejectedValue(error),
+      });
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+
     it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
       findIssuableList().vm.$emit('filter', [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
@@ -2412,23 +2465,6 @@ describe('when service desk list', () => {
       await waitForPromises();
 
       expect(document.title).toBe('Service Desk · Test · GitLab');
-    });
-  });
-
-  describe('error handling from saved views', () => {
-    it('displays error alert when saved views component emits error', async () => {
-      mountComponent({ workItemPlanningView: true, workItemsSavedViewsEnabled: true });
-      await waitForPromises();
-
-      const testError = new Error('Test error');
-      const errorMessage = 'An error occurred while removing the view. Please try again.';
-
-      findWorkItemsSavedViewsSelectors().vm.$emit('error', testError, errorMessage);
-      await nextTick();
-
-      expect(Sentry.captureException).toHaveBeenCalledWith(testError);
-      expect(findGlAlert().exists()).toBe(true);
-      expect(findGlAlert().text()).toContain(errorMessage);
     });
   });
 });

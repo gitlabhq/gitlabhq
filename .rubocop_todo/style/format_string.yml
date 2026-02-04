@@ -3,7 +3,6 @@
 Style/FormatString:
   Exclude:
     - 'app/helpers/emails_helper.rb'
-    - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'
     - 'app/helpers/import_helper.rb'
     - 'app/helpers/issuables_helper.rb'
@@ -13,7 +12,6 @@ Style/FormatString:
     - 'app/helpers/projects/project_members_helper.rb'
     - 'app/helpers/projects_helper.rb'
     - 'app/helpers/registrations_helper.rb'
-    - 'app/helpers/search_helper.rb'
     - 'app/helpers/ssh_keys_helper.rb'
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'

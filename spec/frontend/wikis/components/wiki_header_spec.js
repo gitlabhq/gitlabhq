@@ -257,4 +257,18 @@ describe('wikis/components/wiki_header', () => {
       expect(mutateSpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('wikiFloatingSidebarToggle feature flag', () => {
+    it('hides the toggle component on large screens when the FF is enabled', () => {
+      buildWrapper({ glFeatures: { wikiFloatingSidebarToggle: true } });
+
+      expect(findSidebarToggle().classes()).toContain('@lg/panel:gl-hidden');
+    });
+
+    it('does not hide the toggle component on large screens when the FF is disabled', () => {
+      buildWrapper({ glFeatures: { wikiFloatingSidebarToggle: false } });
+
+      expect(findSidebarToggle().classes()).not.toContain('@lg/panel:gl-hidden');
+    });
+  });
 });

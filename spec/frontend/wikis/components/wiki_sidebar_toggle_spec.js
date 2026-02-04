@@ -14,41 +14,61 @@ jest.mock('~/wikis/utils/sidebar_toggle', () => ({
 describe('WikiSidebarToggle', () => {
   let wrapper;
 
-  const createComponent = (props = { action: 'open' }) => {
+  const createComponent = (props = { action: 'open' }, provide = {}) => {
     wrapper = shallowMountExtended(WikiSidebarToggle, {
       propsData: props,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      provide,
     });
   };
 
   const getGlButton = () => wrapper.getComponent(GlButton);
 
   describe.each`
-    action     | icon                        | title
-    ${'open'}  | ${'list-bulleted'}          | ${'Open sidebar'}
-    ${'close'} | ${'chevron-double-lg-left'} | ${'Close sidebar'}
-  `('when action=$action', ({ action, icon, title }) => {
-    beforeEach(() => {
-      createComponent({ action });
-    });
+    action     | wikiFloatingSidebarToggle | icon                        | buttonCategory | title              | cssClass
+    ${'open'}  | ${false}                  | ${'list-bulleted'}          | ${'tertiary'}  | ${'Open sidebar'}  | ${'toggle-action-open'}
+    ${'close'} | ${false}                  | ${'chevron-double-lg-left'} | ${'tertiary'}  | ${'Close sidebar'} | ${'toggle-action-close'}
+    ${'open'}  | ${true}                   | ${'sidebar'}                | ${'secondary'} | ${'Open sidebar'}  | ${'toggle-action-open'}
+    ${'close'} | ${true}                   | ${'chevron-double-lg-left'} | ${'tertiary'}  | ${'Close sidebar'} | ${'toggle-action-close'}
+  `(
+    'when action=$action and feature wikiFloatingSidebarToggle=$wikiFloatingSidebarToggle',
+    ({ action, wikiFloatingSidebarToggle, icon, title, buttonCategory, cssClass }) => {
+      beforeEach(() => {
+        createComponent(
+          { action },
+          {
+            glFeatures: { wikiFloatingSidebarToggle },
+          },
+        );
+      });
 
-    it('shows the correct icon', () => {
-      expect(getGlButton().props('icon')).toBe(icon);
-    });
+      it('shows the correct icon', () => {
+        expect(getGlButton().props('icon')).toBe(icon);
+      });
 
-    it('calls the correct handler', async () => {
-      getGlButton().vm.$emit('click');
-      await nextTick();
+      it('calls the correct handler', async () => {
+        getGlButton().vm.$emit('click');
+        await nextTick();
 
-      expect(toggleWikiSidebar).toHaveBeenCalledTimes(1);
-    });
+        expect(toggleWikiSidebar).toHaveBeenCalledTimes(1);
+      });
 
-    it('has the correct title', () => {
-      expect(getGlButton().attributes('title')).toBe(title);
-    });
-  });
+      it('has the correct title', () => {
+        expect(getGlButton().attributes('title')).toBe(title);
+      });
+
+      it('button has the correct category', () => {
+        expect(getGlButton().props('category')).toBe(buttonCategory);
+      });
+
+      it('has the correct CSS class', () => {
+        expect(getGlButton().classes()).toContain('wiki-sidebar-toggle');
+        expect(getGlButton().classes()).toContain(cssClass);
+      });
+    },
+  );
 
   describe.each(['open', 'close'])("when action prop is valid ('%s')", (action) => {
     it('does not throw an error', () => {

@@ -94,13 +94,13 @@ empty for anonymous users. The group page has a visibility level icon.
 Users cannot create a subgroup or project with a higher visibility level than that of
 the immediate parent group.
 
-## View groups
+## Explore groups
 
 To explore all public or internal groups:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my groups**.
-1. In the upper right, select **Explore groups**.
+1. From the dropdown, select **Explore**.
+1. On the left sidebar, select **Groups**.
 
 ## View groups you are a member of
 
@@ -114,7 +114,7 @@ To explore all public or internal groups:
 To view groups where you have direct or indirect membership:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my groups**.
+1. From the dropdown, select **View all my groups**.
 
 This page shows groups that you are a member of through:
 
@@ -125,8 +125,9 @@ This page shows groups that you are a member of through:
 
 {{< history >}}
 
-- **Inactive** tab [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `your_work_groups_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/542790) in GitLab 18.3. Feature flag `your_work_groups_vue` removed.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13781) **Inactive** tab on the **Explore groups** page in GitLab 18.8 [with a flag](../../administration/feature_flags/_index.md) named `explore_groups_vue`. Disabled by default.
 
 {{< /history >}}
 
@@ -134,8 +135,10 @@ A group is inactive when it is either pending deletion or it has been archived.
 
 To view all inactive groups:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **View all my groups**.
+1. On the top bar, select **Search or go to**.
+1. From the dropdown, select either:
+   - **View all my groups** to filter groups you are a member of.
+   - **Explore** to filter public or internal groups.
 1. Select the **Inactive** tab.
 
 Each inactive group in the list displays a badge to indicate that the group is either
@@ -372,7 +375,7 @@ As a user, you can request to be a member of a group, if an administrator allows
 
 1. On the top bar, select **Search or go to** > **View all my groups**.
 1. In the upper right, select **Explore groups**.
-1. In the **Search by name** text box, enter the name of the group you want to join.
+1. In the **Search** text box, enter the name of the group you want to join.
 1. In the search results, select the name of the group.
 1. On the group page, under the group name, select **Request Access**.
 

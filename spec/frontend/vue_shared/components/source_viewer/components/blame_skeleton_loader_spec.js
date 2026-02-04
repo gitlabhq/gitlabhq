@@ -9,20 +9,22 @@ describe('BlameSkeletonLoader component', () => {
   };
 
   const findSkeletonLoader = () => wrapper.findByTestId('blame-skeleton-loader');
+  const findSkeletonBar = () => wrapper.findByTestId('blame-skeleton-bar');
+  const findSkeletonDate = () => wrapper.findByTestId('blame-skeleton-date');
   const findSkeletonAvatar = () => wrapper.findByTestId('blame-skeleton-avatar');
-  const findSkeletonLines = () => wrapper.findAllByTestId('blame-skeleton-line');
+  const findSkeletonTitle = () => wrapper.findByTestId('blame-skeleton-title');
+
+  beforeEach(() => createComponent());
 
   it('renders skeleton loader elements', () => {
-    createComponent();
-
     expect(findSkeletonLoader().exists()).toBe(true);
+    expect(findSkeletonBar().exists()).toBe(true);
+    expect(findSkeletonDate().exists()).toBe(true);
     expect(findSkeletonAvatar().exists()).toBe(true);
-    expect(findSkeletonLines()).toHaveLength(3);
+    expect(findSkeletonTitle().exists()).toBe(true);
   });
 
   it('has accessible loading state', () => {
-    createComponent();
-
     expect(findSkeletonLoader().attributes()).toMatchObject({
       role: 'status',
       'aria-busy': 'true',

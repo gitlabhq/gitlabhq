@@ -14693,9 +14693,6 @@ msgstr ""
 msgid "CiCatalog|This catalog contains third-party content. Use of this content is subject to the relevant content provider's terms of use. GitLab does not control and has no liability for third-party content."
 msgstr ""
 
-msgid "CiCatalog|This component project can only be viewed by project members."
-msgstr ""
-
 msgid "CiCatalog|This project is no longer a CI/CD Catalog project."
 msgstr ""
 
@@ -22158,9 +22155,6 @@ msgstr ""
 msgid "DORA4Metrics|Time to restore service (median days)"
 msgstr ""
 
-msgid "DORA4Metrics|To help us improve the Value Stream Management Dashboard, please share feedback about your experience in this %{linkStart}survey%{linkEnd}."
-msgstr ""
-
 msgid "DORA4Metrics|To see usage overview, you must %{linkStart}enable background aggregation%{linkEnd}."
 msgstr ""
 
@@ -26240,6 +26234,9 @@ msgid "DuoCodeReview|:warning: Code Review Flow is enabled but the service accou
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Code Review Flow is not enabled. Contact your group administrator to enable the foundational flow in the top-level group."
+msgstr ""
+
+msgid "DuoCodeReview|:warning: No GitLab Credits remain for this billing period. To continue using Code Review Flow, contact your administrator."
 msgstr ""
 
 msgid "DuoCodeReview|:warning: Something went wrong and the review request was stopped. Please request a new review."

@@ -128,10 +128,10 @@ describe('Source Viewer component', () => {
     describe('DOM updates', () => {
       it('adds the necessary classes to the DOM', async () => {
         setHTMLFixture(SOURCE_CODE_CONTENT_MOCK);
-        jest.spyOn(utils, 'toggleBlameClasses');
+        jest.spyOn(utils, 'toggleBlameLineBorders');
         createComponent();
         await triggerChunkAppear();
-        expect(utils.toggleBlameClasses).toHaveBeenCalledWith(blameInfo, true);
+        expect(utils.toggleBlameLineBorders).toHaveBeenCalledWith(blameInfo, true);
       });
     });
 

@@ -2,7 +2,7 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import {
   calculateBlameOffset,
   shouldRender,
-  toggleBlameClasses,
+  toggleBlameLineBorders,
   hasBlameDataForChunk,
 } from '~/vue_shared/components/source_viewer/utils';
 import { SOURCE_CODE_CONTENT_MOCK, BLAME_DATA_MOCK } from './mock_data';
@@ -36,14 +36,14 @@ describe('SourceViewer utils', () => {
     });
   });
 
-  describe('toggleBlameClasses', () => {
+  describe('toggleBlameLineBorders', () => {
     it('adds classes', () => {
-      toggleBlameClasses(BLAME_DATA_MOCK, true);
+      toggleBlameLineBorders(BLAME_DATA_MOCK, true);
       expect(findContent()).toMatchSnapshot();
     });
 
     it('removes classes', () => {
-      toggleBlameClasses(BLAME_DATA_MOCK, false);
+      toggleBlameLineBorders(BLAME_DATA_MOCK, false);
       expect(findContent()).toMatchSnapshot();
     });
   });

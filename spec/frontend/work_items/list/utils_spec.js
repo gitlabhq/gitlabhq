@@ -10,6 +10,8 @@ import {
   locationSearchWithWildcardValues,
   urlParams,
   urlParamsWithWildcardValues,
+  savedViewFiltersObject,
+  savedViewFilterTokens,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -24,6 +26,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
+  getSavedViewFilterTokens,
 } from 'ee_else_ce/work_items/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -229,5 +232,11 @@ describe('groupMultiSelectFilterTokens', () => {
         { type: 'label', multiSelect: true },
       ]),
     ).toEqual(groupedFilteredTokens);
+  });
+});
+
+describe('getSavedViewFilterTokens', () => {
+  it('returns valid filter tokens given a saved view filters object', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersObject)).toEqual(savedViewFilterTokens);
   });
 });

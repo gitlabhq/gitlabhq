@@ -515,6 +515,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:security_manager_access) }.policy do
     enable :access_security_and_compliance
+    enable :read_security_configuration
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -661,6 +662,7 @@ class ProjectPolicy < BasePolicy
     enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
     enable :read_cluster_agent
     enable :create_release
+    enable :read_security_configuration
     enable :update_release
     enable :destroy_release
     enable :publish_catalog_version
@@ -1123,10 +1125,6 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_merge_request) }.policy do
     enable :read_vulnerability_merge_request_link
-  end
-
-  rule { can?(:developer_access) }.policy do
-    enable :read_security_configuration
   end
 
   rule { can?(:guest_access) & can?(:download_code) }.policy do

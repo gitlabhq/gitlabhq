@@ -230,6 +230,27 @@ Returns [`String`](#string).
 | <a id="queryaicatalogagentflowconfigagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID!`](#aicatalogitemversionid) | Global ID of the agent version to use. |
 | <a id="queryaicatalogagentflowconfigflowconfigtype"></a>`flowConfigType` | [`AiCatalogFlowConfigType!`](#aicatalogflowconfigtype) | Type of flow configuration to generate. |
 
+### `Query.aiCatalogAvailableFlowsForProject`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+AI Catalog flows available to enable for a project.
+
+Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogavailableflowsforprojectprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project ID to retrieve available AI Catalog flows for. |
+
 ### `Query.aiCatalogBuiltInTools`
 
 {{< details >}}

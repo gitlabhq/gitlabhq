@@ -20,6 +20,7 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                     blameOffset: '0px',
                     commit: {
                       id: 'gid://gitlab/CommitPresenter/13b0aca4142d1d55931577f69289a792f216f805',
+                      title: 'Upload New File',
                       titleHtml: 'Upload New File',
                       message: 'Upload New File',
                       authoredDate: '2022-10-31T10:38:30+00:00',
