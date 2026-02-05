@@ -33409,6 +33409,16 @@ Describes the overage of consumables for the subscription.
 | <a id="gitlabsubscriptionoveragedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily overage usage. |
 | <a id="gitlabsubscriptionoverageisallowed"></a>`isAllowed` | [`Boolean`](#boolean) | Whether GitLab Credits overage is allowed for the subscription. |
 
+### `GitlabSubscriptionPaidTierTrial`
+
+Describes paid tier trial information for the subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionpaidtiertrialisactive"></a>`isActive` | [`Boolean!`](#boolean) | Indicates whether the subscription is currently in a paid tier trial for GitLab Credits. |
+
 ### `GitlabSubscriptionUsage`
 
 Describes the usage of consumables under the subscription.
@@ -33427,6 +33437,7 @@ Describes the usage of consumables under the subscription.
 | <a id="gitlabsubscriptionusagemonthlywaiver"></a>`monthlyWaiver` | [`GitlabSubscriptionMonthlyWaiver`](#gitlabsubscriptionmonthlywaiver) | Monthly waiver usage for the subscription. |
 | <a id="gitlabsubscriptionusageoverage"></a>`overage` | [`GitlabSubscriptionOverage`](#gitlabsubscriptionoverage) | Overage statistics. |
 | <a id="gitlabsubscriptionusageoveragetermsaccepted"></a>`overageTermsAccepted` | [`Boolean!`](#boolean) | Indicates whether overage terms have been accepted for the subscription. |
+| <a id="gitlabsubscriptionusagepaidtiertrial"></a>`paidTierTrial` | [`GitlabSubscriptionPaidTierTrial!`](#gitlabsubscriptionpaidtiertrial) | Paid tier trial data for the subscription. |
 | <a id="gitlabsubscriptionusagepurchasecreditspath"></a>`purchaseCreditsPath` | [`String`](#string) | URL to purchase GitLab Credits. |
 | <a id="gitlabsubscriptionusagestartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Start date of the period covered by the usage data. |
 | <a id="gitlabsubscriptionusagesubscriptionportalusagedashboardurl"></a>`subscriptionPortalUsageDashboardUrl` | [`String`](#string) | Full URL to the GitLab Credits usage dashboard in the Customer Portal. |
