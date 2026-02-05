@@ -127,14 +127,11 @@ flowchart
 
 1. Persist the cached `Import::SourceUserPlaceholderReference`s asynchronously using the `LoadPlaceholderReferencesWorker`. This worker uses `Import::PlaceholderReferences::LoadService` to persist the placeholder references. It's best to periodically call this worker throughout the import, e.g., at the end of a stage, as well as at the end of the import.
 
-   {{< alert type="note" >}}
-
-   Placeholder user references are cached before loading to avoid too many concurrent writes on the
-   `import_source_user_placeholder_references` table. If a database record references a placeholder
-   user's ID but a placeholder reference is not persisted for some reason, the contribution cannot
-   be reassigned and the placeholder user may not be deleted.
-
-   {{< /alert >}}
+   > [!note]
+   > Placeholder user references are cached before loading to avoid too many concurrent writes on the
+   > `import_source_user_placeholder_references` table. If a database record references a placeholder
+   > user's ID but a placeholder reference is not persisted for some reason, the contribution cannot
+   > be reassigned and the placeholder user may not be deleted.
 
 1. Delay finishing the import until all cached placeholder references have been loaded.
 

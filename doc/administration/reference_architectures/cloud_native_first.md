@@ -15,11 +15,8 @@ title: 'Reference architecture: Cloud Native First (Beta)'
 
 Cloud Native First Reference Architectures are designed for modern cloud-native deployment patterns with four standardized sizes (S/M/L/XL) based on workload characteristics. These architectures deploy all GitLab components in Kubernetes, while PostgreSQL, Redis, and Object Storage use external third-party solutions including managed services or on-premises options.
 
-{{< alert type="note" >}}
-
-These architectures are in [beta](../../policy/development_stages_support.md#beta). We encourage feedback and will continue refining specifications based on production usage data.
-
-{{< /alert >}}
+> [!note]
+> These architectures are in [beta](../../policy/development_stages_support.md#beta). We encourage feedback and will continue refining specifications based on production usage data.
 
 ## Architecture overview
 
@@ -71,13 +68,10 @@ sidekiq -[#ff8dd1,norank]--> database
 - **Gitaly** - Manages Git repositories using StatefulSets with persistent volumes
 - **Supporting services** - NGINX Ingress, Toolbox, and monitoring components
 
-{{< alert type="note" >}}
-
-Gitaly on Kubernetes is deployed as Gitaly (non-Cluster) only. Each Gitaly pod is a single point of failure for the repositories it serves. Gitaly Cluster (Praefect) is not supported in Kubernetes.
-
-If you require Gitaly high availability with automatic failover, consider [Cloud Native Hybrid architectures](_index.md#cloud-native-hybrid), which deploy Gitaly Cluster on virtual machines while running stateless components in Kubernetes. For Gitaly on Kubernetes requirements and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#requirements).
-
-{{< /alert >}}
+> [!note]
+> Gitaly on Kubernetes is deployed as Gitaly (non-Cluster) only. Each Gitaly pod is a single point of failure for the repositories it serves. Gitaly Cluster (Praefect) is not supported in Kubernetes.
+>
+> If you require Gitaly high availability with automatic failover, consider [Cloud Native Hybrid architectures](_index.md#cloud-native-hybrid), which deploy Gitaly Cluster on virtual machines while running stateless components in Kubernetes. For Gitaly on Kubernetes requirements and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#requirements).
 
 **External services:**
 
@@ -465,11 +459,8 @@ Key configuration areas for Cloud Native First architectures:
 
 For architecture-specific replica counts and resource values, refer to the specifications in each size section above.
 
-{{< alert type="note" >}}
-
-Cloud Native First architectures are in Beta. Specific Helm Chart configuration examples will be added to the Charts repository as the feature progresses toward General Availability. Use the specifications in each architecture size section above to construct your Helm values configuration.
-
-{{< /alert >}}
+> [!note]
+> Cloud Native First architectures are in Beta. Specific Helm Chart configuration examples will be added to the Charts repository as the feature progresses toward General Availability. Use the specifications in each architecture size section above to construct your Helm values configuration.
 
 ## Next steps
 
@@ -496,8 +487,5 @@ See [Advanced scaling](#advanced-scaling) for component-specific adjustment guid
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-{{< alert type="note" >}}
-
-Additional capacity may be required for optional features. See the feature-specific documentation for requirements.
-
-{{< /alert >}}
+> [!note]
+> Additional capacity may be required for optional features. See the feature-specific documentation for requirements.

@@ -74,12 +74,9 @@ The steps required are:
          examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
-     {{< alert type="note" >}}
-
-     Depending on the size of the table, a background migration for cleanup could be required in the next release.
-     See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
-
-     {{< /alert >}}
+     > [!note]
+     > Depending on the size of the table, a background migration for cleanup could be required in the next release.
+     > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
 
 1. Release `N.M+1` (next release)
 
@@ -362,12 +359,9 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-     {{< alert type="note" >}}
-
-     `prepare_partitioned_async_check_constraint_validation` only validates the existing `NOT VALID` check constraint asynchronously for all the partitions.
-     It doesn't create or validate the check constraint for the partitioned table.
-
-     {{< /alert >}}
+     > [!note]
+     > `prepare_partitioned_async_check_constraint_validation` only validates the existing `NOT VALID` check constraint asynchronously for all the partitions.
+     > It doesn't create or validate the check constraint for the partitioned table.
 
 1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
    - Use [Database Lab](database_lab.md) to check if the validation was successful.

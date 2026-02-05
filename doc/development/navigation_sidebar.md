@@ -26,15 +26,11 @@ page's navigation items in the sidebar.
 > [!note]
 > Only one instance of this component on a given page is supported. This is to
 > avoid ordering issues and cluttering the sidebar.
-
-{{< alert type="note" >}}
-
-You can use arbitrary content. You should implement nav items by subclassing `::Sidebars::Panel`.
-If you must use Vue to render nav items (for example, if you need to use Vue Router) you can make an exception.
-However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
-{{< /alert >}}
-
-> [!note]
+>
+> You can use arbitrary content. You should implement nav items by subclassing `::Sidebars::Panel`.
+> If you must use Vue to render nav items (for example, if you need to use Vue Router) you can make an exception.
+> However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
+>
 > Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.
 
 ## Snowplow Tracking

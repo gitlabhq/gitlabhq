@@ -321,6 +321,42 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#diff_refs' do
+    subject { diff_with_commits }
+
+    it 'returns diff refs' do
+      diff_refs = subject.diff_refs
+
+      expect(diff_refs).to be_a(Gitlab::Diff::DiffRefs)
+      expect(diff_refs.base_sha).to eq(subject.base_commit_sha)
+      expect(diff_refs.head_sha).to eq(subject.head_commit_sha)
+      expect(diff_refs.start_sha).to eq(subject.start_commit_sha)
+    end
+  end
+
+  describe '#diff_stats' do
+    subject { diff_with_commits }
+
+    it 'returns diff stats' do
+      stats = subject.diff_stats
+
+      expect(stats).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(stats.count).to be > 0
+    end
+
+    it 'calls repository.diff_stats with correct parameters' do
+      expect(subject.project.repository).to receive(:diff_stats).with(subject.diff_refs.base_sha, subject.diff_refs.head_sha).and_call_original
+
+      subject.diff_stats
+    end
+
+    it 'returns nil when diff_refs is nil' do
+      allow(subject).to receive(:diff_refs).and_return(nil)
+
+      expect(subject.diff_stats).to be_nil
+    end
+  end
+
   describe '.ids_for_external_storage_migration' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be(:outdated) { merge_request.merge_request_diff }

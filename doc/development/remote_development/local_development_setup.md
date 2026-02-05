@@ -319,13 +319,10 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
                 image: "registry.gitlab.com/gitlab-org/workspaces/gitlab-workspaces-docs/ubuntu:04@sha256:07590ca30ebde8a5339c3479404953e43ee70e7e9e0c2ede2770684010ddf7fe"
       ```
 
-      {{< alert type="note" >}}
-
-      The SHA256 is required to ensure the pulled container is the AMD64 architecture container.
-      The GitLab VS Code fork for Workspaces does not support other architectures yet.
-      To track this, see [issue 392693](https://gitlab.com/gitlab-org/gitlab/-/issues/392693).
-
-      {{< /alert >}}
+      > [!note]
+      > The SHA256 is required to ensure the pulled container is the AMD64 architecture container.
+      > The GitLab VS Code fork for Workspaces does not support other architectures yet.
+      > To track this, see [issue 392693](https://gitlab.com/gitlab-org/gitlab/-/issues/392693).
 
 1. Create a new workspace:
 
@@ -333,12 +330,9 @@ If you chose the GitLab Workspaces Proxy mode, complete these additional steps:
    1. Select **New Workspace**.
    1. Choose the project with your devfile (or search for `shell` to find GitLab Shell).
 
-      {{< alert type="note" >}}
-
-      If you get an error about a missing agent configuration, check your `agentk` debug logs to ensure
-      that your `agentk` successfully connects and reads your agent configuration file.
-
-      {{< /alert >}}
+      > [!note]
+      > If you get an error about a missing agent configuration, check your `agentk` debug logs to ensure
+      > that your `agentk` successfully connects and reads your agent configuration file.
 
    1. Choose your cluster agent.
    1. If you skipped the devfile step, select **Use GitLab default devfile**.

@@ -82,7 +82,10 @@ module RapidDiffs
     private
 
     def diffs_count
-      @diffs_count ||= resource.diffs_for_streaming.diff_files.count
+      @diffs_count ||= begin
+        count = resource.diff_stats&.count
+        count || resource.diffs_for_streaming.diff_files.count
+      end
     end
 
     def linked_file_params

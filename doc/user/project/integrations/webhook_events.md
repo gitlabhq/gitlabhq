@@ -2644,8 +2644,13 @@ These events trigger:
 
 - One day before the token expires
 - Seven days before the token expires
-- 30 days before the token expires, if the feature is enabled.
-- 60 days before the token expires, if the feature is enabled.
+- 30 days before the token expires (requires configuration)
+- 60 days before the token expires (requires configuration)
+
+For information on configuring the 30-day and 60-day notifications, see:
+
+- [Add additional webhook triggers for project access token expiration](../settings/_index.md#add-additional-webhook-triggers-for-project-access-token-expiration).
+- [Add additional webhook triggers for group access token expiration](../../group/manage.md#add-additional-webhook-triggers-for-group-access-token-expiration).
 
 The available values for `event_name` in the payload are:
 

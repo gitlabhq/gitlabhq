@@ -26,15 +26,12 @@ The main steps are:
         For more details on these fields, refer to the section in the GraphQL API documentation on
         [Resolve mutations detected as spam](../../api/graphql/_index.md#resolve-mutations-detected-as-spam).
 
-   {{< alert type="note" >}}
-
-   If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
-   above, you can ignore the field details, because they are handled
-   automatically. They become relevant if you attempt to use the GraphQL API directly to
-   process a failed check for potential spam, and resubmit the request with a solved
-   CAPTCHA response.
-
-   {{< /alert >}}
+   > [!note]
+   > If you use the standard ApolloLink or Axios interceptor CAPTCHA support described
+   > above, you can ignore the field details, because they are handled
+   > automatically. They become relevant if you attempt to use the GraphQL API directly to
+   > process a failed check for potential spam, and resubmit the request with a solved
+   > CAPTCHA response.
 
 For example:
 

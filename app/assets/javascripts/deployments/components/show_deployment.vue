@@ -23,8 +23,6 @@ export default {
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
-    ApprovalsEmptyState: () =>
-      import('ee_else_ce/deployments/components/approvals_empty_state.vue'),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName', 'graphqlEtagKey'],
   apollo: {
@@ -135,7 +133,6 @@ export default {
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
         />
-        <approvals-empty-state v-if="!isLoading" :approval-summary="deployment.approvalSummary" />
       </div>
       <deployment-aside
         v-if="!hasError"

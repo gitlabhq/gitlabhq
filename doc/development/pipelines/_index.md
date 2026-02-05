@@ -414,17 +414,14 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 as-if-jh pipeline grabs files from the respective branch, rather than from the
 default branch `main-jh`.
 
+For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
+
 > [!note]
-> For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
-
-{{< alert type="note" >}}
-
-While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
-[GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
-it does not include any corresponding JH branch beside the default `main-jh`.
-This is why when we want to fetch corresponding JH branch we should fetch it
-from the main mirror, rather than the validation project.
-{{< /alert >}}
+> While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
+> [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
+> it does not include any corresponding JH branch beside the default `main-jh`.
+> This is why when we want to fetch corresponding JH branch we should fetch it
+> from the main mirror, rather than the validation project.
 
 #### How as-if-JH pipeline was configured
 

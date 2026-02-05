@@ -1306,14 +1306,11 @@ background migration.
    end
    ```
 
-   {{< alert type="note" >}}
-
-   Job classes inherit from `BatchedMigrationJob` to ensure they are
-   correctly handled by the batched migration framework. Any subclass of
-   `BatchedMigrationJob` is initialized with the necessary arguments to
-   execute the batch, and a connection to the tracking database.
-
-   {{< /alert >}}
+   > [!note]
+   > Job classes inherit from `BatchedMigrationJob` to ensure they are
+   > correctly handled by the batched migration framework. Any subclass of
+   > `BatchedMigrationJob` is initialized with the necessary arguments to
+   > execute the batch, and a connection to the tracking database.
 
 1. Create a database migration that adds a new trigger to the database. Example:
 
@@ -1384,16 +1381,13 @@ background migration.
     finalized_by: # version of the migration that ensured this bbm
    ```
 
-   {{< alert type="note" >}}
-
-   When queuing a batched background migration, you need to restrict
-   the schema to the database where you make the actual changes.
-   In this case, we are updating `routes` records, so we set
-   `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`. If, however,
-   you need to perform a CI data migration, you would set
-   `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
-
-   {{< /alert >}}
+   > [!note]
+   > When queuing a batched background migration, you need to restrict
+   > the schema to the database where you make the actual changes.
+   > In this case, we are updating `routes` records, so we set
+   > `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`. If, however,
+   > you need to perform a CI data migration, you would set
+   > `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
    After deployment, our application:
    - Continues using the data as before.

@@ -20,6 +20,7 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
 
   before do
     allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
+    allow(commit).to receive(:diff_stats).and_return(nil)
   end
 
   describe '#diffs_slice' do
@@ -86,6 +87,33 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
         end
 
         it { is_expected.to be_nil }
+      end
+
+      context 'when diff_stats is available' do
+        let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
+
+        before do
+          allow(commit).to receive(:diff_stats).and_return(stats)
+        end
+
+        it 'uses stats count without calling diffs_for_streaming' do
+          expect(commit).not_to receive(:diffs_for_streaming)
+
+          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
+        end
+      end
+
+      context 'when diff_stats returns nil' do
+        before do
+          allow(commit).to receive(:diff_stats).and_return(nil)
+          allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
+        end
+
+        it 'falls back to diffs_for_streaming' do
+          expect(commit).to receive(:diffs_for_streaming)
+
+          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
+        end
       end
     end
 

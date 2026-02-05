@@ -171,26 +171,19 @@ You can define a devfile in the following locations, relative to your project's 
 
 ### Validation rules
 
-- `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
-- The devfile must have at least one component.
 - The devfile size must not exceed 3 MB.
-- For `components`:
-  - Names must not start with `gl-`.
-  - Only `container` and `volume` are supported.
-- For `commands`:
-  - IDs must not start with `gl-`.
-  - Only `exec` and `apply` command types are supported.
-  - For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.
-  - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
-- For `events`:
-  - Names must not start with `gl-`.
-  - Only `preStart` and `postStart` are supported.
-  - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
-- `parent`, `projects`, and `starterProjects` are not supported.
-- For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
-- For `attributes`:
-  - `pod-overrides` must not be set at the root level or in `components`.
-  - `container-overrides` must not be set in `components`.
+
+| Property        | Explicit Rule                                                                                                                                                                                                                                                                                                          |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `schemaVersion` | Must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).                                                                                                                                                                                                                                                       |
+| `components`    | - The devfile must have at least one component.<br/>- Names must not start with `gl-`.<br/>- Only `container` and `volume` are supported.<br/>- `mountSources` and `sourceMapping` are not supported.                                                                                                                  |
+| `commands`      | - IDs must not start with `gl-`.<br/>- Only `exec` and `apply` command types are supported.<br/>- For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.<br/>- When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`. |
+| `events`        | - Names must not start with `gl-`.<br/>- Only `preStart` and `postStart` are supported.<br/>- The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.                                                                        |
+| `parent`        | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `projects`           | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `starterProjects`     | Is not supported.                                                                                                                                                                                                                                                                                                      |
+| `variables`  | Keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.                                                                                                                                                                                                                                                                |
+| `attributes`       | - `pod-overrides` must not be set at the root level or in `components`.<br/>- `container-overrides` must not be set in `components`.                                                                                                                                                                                   |
 
 ### `container` component type
 
@@ -408,7 +401,7 @@ These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
 > [!note]
 > GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
 > This image cannot be overridden.
-> 
+>
 > If you use a private container registry for your other images, GitLab fetches these
 > specific images from the GitLab registry. This requirement may impact environments with strict network
 > controls, such as offline environments.

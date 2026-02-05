@@ -40,24 +40,18 @@ class MyModel < ApplicationRecord
 end
 ```
 
-{{< alert type="note" >}}
 Until recently, we used `attr_encrypted` instead of `ActiveRecord::Encryption`. We are in the process of
 migrating all columns to use the new Rails-native encryption framework (see [epic 15420](https://gitlab.com/groups/gitlab-org/-/epics/15420)).
 For guidance on migrating existing `attr_encrypted` attributes, see [Migrating from `attr_encrypted` to `ActiveRecord::Encryption`](#migrating-from-attr_encrypted-to-activerecordencryption).
-{{< /alert >}}
 
-{{< alert type="note" >}}
 Despite there being precedent, application secrets should not be stored as an `ApplicationSetting`.
 This can lead to the entire application malfunctioning if this secret fails to decode. To reduce
 coupling to other features, isolate secrets into dedicated tables.
-{{< /alert >}}
 
-{{< alert type="note" >}}
 In some cases, it can be undesirable to store secrets in the database. For example, if the secret is needed
 to bootstrap the Rails application, it may have to access the database in an initializer, which can lead to
 initialization races as the database connection itself may not yet be ready. In this case, store the secret
 as an operational secret instead.
-{{< /alert >}}
 
 ### Migrating from `attr_encrypted` to `ActiveRecord::Encryption`
 

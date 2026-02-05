@@ -142,12 +142,9 @@ Adding text limits to existing database columns requires multiple steps split in
    - Add a post-deployment migration to add the limit to the text column with `validate: false`.
    - Add a post-deployment migration to fix the existing records.
 
-     {{< alert type="note" >}}
-
-     Depending on the size of the table, a background migration for cleanup could be required in the next release.
-     See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
-
-     {{< /alert >}}
+     > [!note]
+     > Depending on the size of the table, a background migration for cleanup could be required in the next release.
+     > See [text limit constraints on large tables](strings_and_the_text_data_type.md#text-limit-constraints-on-large-tables) for more information.
 
    - Create an issue for the next milestone to validate the text limit.
 

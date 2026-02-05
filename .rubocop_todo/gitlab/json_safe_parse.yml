@@ -295,7 +295,7 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/workers/click_house/rebuild_materialized_view_cron_worker_spec.rb'
     - 'ee/spec/workers/product_analytics/move_funnels_worker_spec.rb'
     - 'ee/spec/workers/vulnerabilities/archival/schedule_worker_spec.rb'
-    - 'keeps/helpers/ai_editor.rb'
+    - 'keeps/delete_old_feature_flags.rb'
     - 'lib/api/helpers/internal_helpers.rb'
     - 'lib/banzai/filter/json_table_filter.rb'
     - 'lib/bulk_imports/common/pipelines/lfs_objects_pipeline.rb'

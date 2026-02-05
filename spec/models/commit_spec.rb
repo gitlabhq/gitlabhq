@@ -117,6 +117,28 @@ RSpec.describe Commit, feature_category: :source_code_management do
     end
   end
 
+  describe '#diff_stats' do
+    it 'returns diff stats' do
+      stats = commit.diff_stats
+
+      expect(stats).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(stats.count).to be > 0
+    end
+
+    it 'calls repository.diff_stats with correct parameters' do
+      expect(project.repository)
+        .to receive(:diff_stats).with(commit.diff_refs.base_sha, commit.diff_refs.head_sha).and_call_original
+
+      commit.diff_stats
+    end
+
+    it 'returns nil when diff_refs is nil' do
+      allow(commit).to receive(:diff_refs).and_return(nil)
+
+      expect(commit.diff_stats).to be_nil
+    end
+  end
+
   describe '#author', :request_store do
     it 'looks up the author in a case-insensitive way' do
       user = create(:user, email: commit.author_email.upcase)

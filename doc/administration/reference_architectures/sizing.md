@@ -295,11 +295,8 @@ Use the RPS extraction queries from [Extract peak traffic metrics](#extract-peak
 1. Identify if any type significantly exceeds typical proportions
 1. If atypical, see [Identify component adjustments](#identify-component-adjustments) for scaling guidance
 
-{{< alert type="note" >}}
-
-Small variations (5-10 RPS difference in any category) do not require architecture changes. Monitor actual component saturation metrics (CPU, memory, queue depths) from production rather than making decisions based solely on RPS comparisons. Components under 70% sustained utilization generally have sufficient capacity regardless of minor RPS variations.
-
-{{< /alert >}}
+> [!note]
+> Small variations (5-10 RPS difference in any category) do not require architecture changes. Monitor actual component saturation metrics (CPU, memory, queue depths) from production rather than making decisions based solely on RPS comparisons. Components under 70% sustained utilization generally have sufficient capacity regardless of minor RPS variations.
 
 ## Identify component adjustments
 

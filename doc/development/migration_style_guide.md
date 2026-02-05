@@ -63,11 +63,8 @@ work it needs to perform and how long it takes to complete:
    - Creating a new table, example: `create_table`.
    - Adding a new column to an existing table, example: `add_column`.
 
-    {{< alert type="note" >}}
-
-    Post-deployment migration is often abbreviated as PDM.
-
-    {{< /alert >}}
+    > [!note]
+    > Post-deployment migration is often abbreviated as PDM.
 
 1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
@@ -104,11 +101,8 @@ estimated to keep migration duration to a minimum.
 > [!note]
 > Keep in mind that all durations should be measured against GitLab.com.
 
-{{< alert type="note" >}}
-
 The result of a [database migration pipeline](database/database_migration_pipeline.md)
 includes the timing information for migrations.
-{{< /alert >}}
 
 | Migration Type             | Recommended Duration | Notes |
 |----------------------------|----------------------|-------|
@@ -362,13 +356,10 @@ You should always read `disable_ddl_transaction!` as meaning:
 > Even if you don't use an explicit PostgreSQL transaction `.transaction` (or `BEGIN; COMMIT;`),
 > every SQL statement is still executed as a transaction.
 > See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/16/tutorial-transactions.html).
-
-{{< alert type="note" >}}
-
-In GitLab, we've sometimes referred to
-the migrations that used `disable_ddl_transaction!` as non-transactional migrations.
-It just meant the migrations were not executed as _single_ transactions.
-{{< /alert >}}
+>
+> In GitLab, we've sometimes referred to
+> the migrations that used `disable_ddl_transaction!` as non-transactional migrations.
+> It just meant the migrations were not executed as _single_ transactions.
 
 When should you use `disable_ddl_transaction!`? In most cases,
 the existing RuboCop rules or migration helpers can detect if you should be

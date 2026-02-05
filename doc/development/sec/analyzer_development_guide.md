@@ -618,11 +618,8 @@ In order to push images to this location:
 
    1. [`CI/CD` environment variables](../../ci/variables/_index.md)
 
-      {{< alert type="note" >}}
-
-      It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
-
-      {{< /alert >}}
+      > [!note]
+      > It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
 
       | Key                     | Value                                                                       |
       |-------------------------|-----------------------------------------------------------------------------|

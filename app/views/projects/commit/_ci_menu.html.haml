@@ -2,7 +2,7 @@
   = gl_tabs_nav({ class: 'commit-ci-menu gl-flex gl-grow'}) do
     = gl_tab_link_to project_commit_path(@project, @commit.id) do
       = _('Changes')
-      = gl_tab_counter_badge(@files_changed_count || @diffs.size)
+      = gl_tab_counter_badge(@commit.diff_stats ? @commit.diff_stats.real_size : (@commit.stats.files || @diffs.size))
     = gl_tab_link_to pipelines_project_commit_path(@project, @commit.id) do
       = _('Pipelines')
       = gl_tab_counter_badge(@commit.pipelines.size, { class: 'js-pipelines-mr-count' })

@@ -45,6 +45,7 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
 
     before do
       allow(compare).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
+      allow(compare).to receive(:diff_stats).and_return(nil)
     end
 
     describe '#diffs_stream_url' do
@@ -81,6 +82,31 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
         end
 
         it { is_expected.to be_nil }
+      end
+
+      context 'when diff_stats is available' do
+        let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
+
+        before do
+          allow(compare).to receive(:diff_stats).and_return(stats)
+        end
+
+        it 'uses stats count without calling diffs_for_streaming' do
+          expect(compare).not_to receive(:diffs_for_streaming)
+
+          expect(url).to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}")
+        end
+      end
+
+      context 'when diff_stats returns nil' do
+        it 'falls back to diffs_for_streaming' do
+          allow(compare).to receive(:diff_stats).and_return(nil)
+          allow(compare).to receive_message_chain(:diffs_for_streaming, :diff_files,
+            :count).and_return(diffs_count)
+
+          expect(presenter.diffs_stream_url)
+            .to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}")
+        end
       end
     end
 

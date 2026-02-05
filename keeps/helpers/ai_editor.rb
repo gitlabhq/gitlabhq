@@ -49,7 +49,7 @@ module Keeps
             return false
           end
 
-          data = Gitlab::Json.parse(response.body)
+          data = Gitlab::Json.safe_parse(response.body)
           text = data.dig('content', 0, 'text')
 
           if text.nil?

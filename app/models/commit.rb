@@ -366,6 +366,13 @@ class Commit
     )
   end
 
+  def diff_stats
+    return unless diff_refs
+
+    container.repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+  end
+  strong_memoize_attr(:diff_stats)
+
   def has_signature?
     signature_type && signature_type != :NONE
   end

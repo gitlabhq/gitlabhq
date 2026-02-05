@@ -40,7 +40,6 @@ class Projects::CommitController < Projects::ApplicationController
       format.html do
         if rapid_diffs_enabled? && !rapid_diffs_force_disabled?
           @js_action_name = 'rapid_diffs'
-          @files_changed_count = @commit.stats.files
           render action: :rapid_diffs
         else
           define_note_vars

@@ -406,12 +406,6 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
     end
-
-    it 'assigns files_changed_count' do
-      send_request
-
-      expect(assigns(:files_changed_count)).to eq(commit.stats.files)
-    end
   end
 
   describe 'GET #diff_files_metadata' do

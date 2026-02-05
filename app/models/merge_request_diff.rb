@@ -467,6 +467,13 @@ class MergeRequestDiff < ApplicationRecord
     )
   end
 
+  def diff_stats
+    return unless diff_refs
+
+    repository.diff_stats(diff_refs.base_sha, diff_refs.head_sha)
+  end
+  strong_memoize_attr(:diff_stats)
+
   # MRs created before 8.4 don't store their true diff refs (start and base),
   # but we need to get a commit SHA for the "View file @ ..." link by a file,
   # so we use an approximation of the diff refs if we can't get the actual one.

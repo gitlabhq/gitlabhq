@@ -10,7 +10,6 @@ import ShowDeployment from '~/deployments/components/show_deployment.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentDeployBlock from '~/deployments/components/deployment_deploy_block.vue';
 import DeploymentAside from '~/deployments/components/deployment_aside.vue';
-import ApprovalsEmptyState from 'ee_else_ce/deployments/components/approvals_empty_state.vue';
 import deploymentQuery from '~/deployments/graphql/queries/deployment.query.graphql';
 import environmentQuery from '~/deployments/graphql/queries/environment.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -62,7 +61,6 @@ describe('~/deployments/components/show_deployment.vue', () => {
 
   const findHeader = () => wrapper.findComponent(DeploymentHeader);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findApprovalsEmptyState = () => wrapper.findComponent(ApprovalsEmptyState);
 
   describe('errors', () => {
     it('shows an error message when the deployment query fails', async () => {
@@ -104,10 +102,6 @@ describe('~/deployments/components/show_deployment.vue', () => {
     it('shows the aside component in a loading state', () => {
       expect(wrapper.findComponent(DeploymentAside).props('loading')).toBe(true);
     });
-
-    it("doesn't show the approvals empty state", () => {
-      expect(findApprovalsEmptyState().exists()).toBe(false);
-    });
   });
 
   describe('page', () => {
@@ -134,10 +128,6 @@ describe('~/deployments/components/show_deployment.vue', () => {
       expect(wrapper.findComponent(DeploymentDeployBlock).props()).toEqual({
         deployment: mockDeploymentFixture.data.project.deployment,
       });
-    });
-
-    it('shows the approvals empty state', () => {
-      expect(findApprovalsEmptyState().exists()).toBe(true);
     });
   });
 
