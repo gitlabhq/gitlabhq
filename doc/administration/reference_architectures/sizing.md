@@ -358,7 +358,7 @@ Based on the workload pattern identified earlier, different components require s
 
 | Workload type              | When to apply                                                                                                                                                                                | Components to scale |
 |:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------|
-| Database-intensive         | <ul><li>Heavy API usage for non-Git traffic (webhooks, issues, groups, and projects)</li><li>Known [extensive automation or integration workloads](_index.md#additional-workloads)</li></ul> | <ul><li>Increase Rails resources</li><li>[Database scaling](#database-scaling)</li><ul> |
+| Database-intensive         | <ul><li>Heavy API usage for non-Git traffic (webhooks, issues, groups, and projects)</li><li>Known [extensive automation or integration workloads](_index.md#additional-workloads)</li></ul> | <ul><li>Increase Rails resources</li><li>[Database scaling](#database-scaling)</li></ul> |
 | Sidekiq/Gitaly-intensive** | <ul><li>Heavy Git operations, CI/CD jobs, security scanning, import operations, and Git server hooks</li><li>Known CI/CD-heavy usage patterns</li></ul>                                      | <ul><li>Increase Sidekiq specifications</li><li>Gitaly vertical scaling</li><li>[Database scaling](#database-scaling)</li><li>Advanced: Configure specific [job classes](../sidekiq/processing_specific_job_classes.md)</li></ul> |
 
 #### Scaling guidance

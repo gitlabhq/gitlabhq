@@ -26,6 +26,8 @@ module Ci
         .new(project: project, current_user: current_user)
         .close_all(pipeline)
 
+      pipeline.update(finished_at: nil)
+
       start_pipeline(pipeline)
 
       ServiceResponse.success

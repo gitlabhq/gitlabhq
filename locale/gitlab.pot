@@ -8932,6 +8932,9 @@ msgstr ""
 msgid "An error occurred while updating the notification settings. Please try again."
 msgstr ""
 
+msgid "An error occurred while updating the settings."
+msgstr ""
+
 msgid "An error occurred while updating your settings."
 msgstr ""
 
@@ -11560,6 +11563,9 @@ msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI
 msgstr ""
 
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
+msgstr ""
+
+msgid "BillingPlans|Start a free trial of GitLab Ultimate"
 msgstr ""
 
 msgid "BillingPlans|Start an Ultimate trial to try the complete set of features from GitLab."
@@ -54635,9 +54641,6 @@ msgstr ""
 msgid "Promotions|Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
-msgid "Promotions|Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress."
-msgstr ""
-
 msgid "Promotions|Buy EE"
 msgstr ""
 
@@ -54659,9 +54662,6 @@ msgstr ""
 msgid "Promotions|Dismiss Service Desk promotion"
 msgstr ""
 
-msgid "Promotions|Dismiss burndown charts promotion"
-msgstr ""
-
 msgid "Promotions|Don't show me this again"
 msgstr ""
 
@@ -54669,9 +54669,6 @@ msgid "Promotions|Epics let you manage your portfolio of projects more efficient
 msgstr ""
 
 msgid "Promotions|Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Promotions|Improve milestones with Burndown Charts."
 msgstr ""
 
 msgid "Promotions|Keep track of events in your project"
@@ -54699,9 +54696,6 @@ msgid "Promotions|Upgrade your plan to activate Group Webhooks."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to activate audit events."
-msgstr ""
-
-msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
 msgstr ""
 
 msgid "Promotions|Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
@@ -59200,7 +59194,7 @@ msgstr ""
 msgid "ScanProfiles|Scan triggers"
 msgstr ""
 
-msgid "ScanProfiles|Secret push protection profile"
+msgid "ScanProfiles|Secret detection profile"
 msgstr ""
 
 msgid "ScanProfiles|View documentation"
@@ -63167,7 +63161,7 @@ msgstr ""
 msgid "SecurityProfiles|Profiles define scanner configuration and can be applied to multiple projects"
 msgstr ""
 
-msgid "SecurityProfiles|Secret Push Protection"
+msgid "SecurityProfiles|Secret Detection"
 msgstr ""
 
 msgid "SecurityProfiles|Security configuration illustration"
@@ -71929,6 +71923,9 @@ msgstr ""
 msgid "TrialWidget|See upgrade options"
 msgstr ""
 
+msgid "TrialWidget|Ultimate with GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "TrialWidget|Ultimate with GitLab Duo Enterprise"
 msgstr ""
 
@@ -73010,6 +73007,9 @@ msgstr ""
 msgid "UsageBilling|Contact sales"
 msgstr ""
 
+msgid "UsageBilling|Continue after your evaluation"
+msgstr ""
+
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
@@ -73031,6 +73031,9 @@ msgstr ""
 msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn how to enable it%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Explore GitLab Duo"
+msgstr ""
+
 msgid "UsageBilling|GitLab Credits"
 msgstr ""
 
@@ -73047,6 +73050,9 @@ msgid "UsageBilling|GitLab Credits dashboard"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits usage"
+msgstr ""
+
+msgid "UsageBilling|Go to Customers Portal"
 msgstr ""
 
 msgid "UsageBilling|Have questions?"
@@ -73067,7 +73073,13 @@ msgstr ""
 msgid "UsageBilling|Last event transaction at:"
 msgstr ""
 
+msgid "UsageBilling|Learn about GitLab Credits"
+msgstr ""
+
 msgid "UsageBilling|Learn more about %{helpLinkStart}GitLab Credit pricing%{helpLinkEnd}."
+msgstr ""
+
+msgid "UsageBilling|Learn more about GitLab Duo"
 msgstr ""
 
 msgid "UsageBilling|Learn more about the upgrade process and Credits pricing options by talking to sales."
@@ -73088,6 +73100,9 @@ msgstr ""
 msgid "UsageBilling|Monthly commitment limit"
 msgstr ""
 
+msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs."
+msgstr ""
+
 msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
@@ -73106,6 +73121,9 @@ msgstr ""
 msgid "UsageBilling|Purchase monthly commitment"
 msgstr ""
 
+msgid "UsageBilling|Read the documentation"
+msgstr ""
+
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
@@ -73113,6 +73131,12 @@ msgid "UsageBilling|This dashboard may not display all current subscription data
 msgstr ""
 
 msgid "UsageBilling|Total credits used"
+msgstr ""
+
+msgid "UsageBilling|Try the GitLab Duo Agent Platform and agentic chat to delegate routine tasks like code refactoring, security scans, and research to AI-powered assistants."
+msgstr ""
+
+msgid "UsageBilling|Understand how credits are consumed by different features, explore your billing and commitment options, and learn how to monitor your members' usage."
 msgstr ""
 
 msgid "UsageBilling|Unlock more discounts for your GitLab usage. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
@@ -73138,7 +73162,13 @@ msgid_plural "UsageBilling|Used this month, resets in %{days} days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "UsageBilling|You are currently using temporary evaluation credits to access GitLab Duo features. Your subscription's included credits for users will be available after your evaluation ends. If you have access to the %{linkStart}Customers Portal%{linkEnd}, you can view your usage breakdown, remaining balance, and some usage details."
+msgstr ""
+
 msgid "UsageBilling|You won't be billed for this usage until you accept the on-demand billing terms."
+msgstr ""
+
+msgid "UsageBilling|Your GitLab evaluation credits are active"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

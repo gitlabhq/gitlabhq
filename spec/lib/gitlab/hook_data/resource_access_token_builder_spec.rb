@@ -18,6 +18,7 @@ RSpec.describe Gitlab::HookData::ResourceAccessTokenBuilder, feature_category: :
           id
           name
           expires_at
+          last_used_at
         ]
       )
     end

@@ -7,7 +7,10 @@ module Ci
     include ::Gitlab::LoopHelpers
 
     idempotent!
-    data_consistency :sticky
+    # rubocop:disable SidekiqLoadBalancing/WorkerDataConsistency -- LP_DEAD doesn't exist on replicas
+    # causing timeout for the queries. Switch back to :sticky once the worker is caught-up
+    data_consistency :always
+    # rubocop:enable SidekiqLoadBalancing/WorkerDataConsistency
     feature_category :job_artifacts
 
     BATCH_SIZE = 100

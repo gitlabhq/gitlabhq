@@ -29,6 +29,13 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
     end
 
+    it 'clears the finished_at timestamp' do
+      pipeline.update!(finished_at: 1.hour.ago)
+
+      expect { service.execute(pipeline) }
+        .to change { pipeline.reload.finished_at }.to(nil)
+    end
+
     context 'when there are already retried jobs present' do
       before do
         create_build('rspec', :canceled, build_stage, retried: true)

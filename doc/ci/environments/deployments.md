@@ -47,7 +47,7 @@ deploy_prod:
 
 The `when: manual` action:
 
-- Exposes the **Run** ({{< icon name="play" >}}) button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
+- Exposes the **Run** ({{< icon name="play" >}}) button for the job in the GitLab UI, with the text **Can be manually deployed to `<environment>`**.
 - Means the `deploy_prod` job must be triggered manually.
 
 You can find **Run** ({{< icon name="play" >}}) in the pipelines, environments, deployments, and jobs views.

@@ -27,6 +27,7 @@ import {
   groupEpicsWithMilestonesQueryResponse,
   mockFullWorkItemTypeConfiguration,
   mockMilestone,
+  availableObjectivesResponseWithoutParent,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -383,6 +384,66 @@ describe('WorkItemParent component', () => {
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
         { text: 'Objective _linked_ items 104', value: 'gid://gitlab/WorkItem/705' },
       ]);
+    });
+
+    it('includes parent in dropdown list when not in search results', async () => {
+      const customSearchHandler = jest
+        .fn()
+        .mockResolvedValue(availableObjectivesResponseWithoutParent);
+
+      createComponent({
+        parent: mockParentWidgetResponse,
+        searchQueryHandler: customSearchHandler,
+      });
+
+      showDropdown();
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toEqual([
+        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
+        { text: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
+      ]);
+    });
+
+    it('does not duplicate parent when already in search results', async () => {
+      const customSearchHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
+
+      createComponent({
+        parent: mockParentWidgetResponse,
+        searchQueryHandler: customSearchHandler,
+      });
+
+      showDropdown();
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toEqual([
+        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: 'Objective 103', value: 'gid://gitlab/WorkItem/712' },
+        { text: 'Objective 102', value: 'gid://gitlab/WorkItem/711' },
+      ]);
+    });
+
+    it('does not include parent when it does not match search term', async () => {
+      const customSearchHandler = jest
+        .fn()
+        .mockResolvedValue(availableObjectivesResponseWithoutParent);
+
+      createComponent({
+        parent: mockParentWidgetResponse,
+        searchQueryHandler: customSearchHandler,
+      });
+
+      showDropdown();
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('searchStarted', 'Objective 102');
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')).not.toContainEqual({
+        text: 'Objective 101',
+        value: 'gid://gitlab/WorkItem/716',
+      });
     });
   });
 

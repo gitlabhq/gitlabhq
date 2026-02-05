@@ -7993,6 +7993,31 @@ Input type: `GroupSecretCreateInput`
 | <a id="mutationgroupsecretcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationgroupsecretcreategroupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Group secret. |
 
+### `Mutation.groupSecretUpdate`
+
+Input type: `GroupSecretUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretupdatedescription"></a>`description` | [`String`](#string) | New description of the group secret. |
+| <a id="mutationgroupsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environment that can access the secret. |
+| <a id="mutationgroupsecretupdategrouppath"></a>`groupPath` | [`ID!`](#id) | Group of the secret. |
+| <a id="mutationgroupsecretupdatemetadatacas"></a>`metadataCas` | [`Int!`](#int) | This should match the current metadata version of the group secret being updated. |
+| <a id="mutationgroupsecretupdatename"></a>`name` | [`String!`](#string) | Name of the group secret to update. |
+| <a id="mutationgroupsecretupdateprotected"></a>`protected` | [`Boolean`](#boolean) | Whether the secret is only accessible from protected branches. |
+| <a id="mutationgroupsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the group secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupsecretupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationgroupsecretupdategroupsecret"></a>`groupSecret` | [`GroupSecret`](#groupsecret) | Updated group secret. |
+
 ### `Mutation.groupSecretsManagerDeprovision`
 
 Input type: `GroupSecretsManagerDeprovisionInput`
@@ -43236,6 +43261,7 @@ Project-level settings for product analytics provider.
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilitystatistic"></a>`vulnerabilityStatistic` | [`VulnerabilityStatisticType`](#vulnerabilitystatistictype) | Counts for each vulnerability severity in the project. |
+| <a id="projectwebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.9. **Status**: Experiment. Indicates whether web-based commit signing is enabled for the project. |
 | <a id="projectwebpath"></a>`webPath` | [`String!`](#string) | Web path of the project. |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |

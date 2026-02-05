@@ -1,0 +1,9 @@
+---
+name: ref_cache_with_rebuild_queue
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/586458
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221497
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/586463
+milestone: '18.9'
+type: wip
+group: group::source code
+default_enabled: false

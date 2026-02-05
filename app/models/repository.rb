@@ -1458,7 +1458,11 @@ class Repository
   end
 
   def redis_set_cache
-    @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
+    @redis_set_cache ||= if Feature.enabled?(:ref_cache_with_rebuild_queue, project)
+                           Gitlab::Repositories::RebuildableSetCache.new(self)
+                         else
+                           Gitlab::RepositorySetCache.new(self)
+                         end
   end
 
   def redis_hash_cache

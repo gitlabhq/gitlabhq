@@ -4108,6 +4108,21 @@ export const mockParentWidgetResponse = {
   __typename: 'WorkItem',
 };
 
+export const availableObjectivesResponseWithoutParent = {
+  data: {
+    namespace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: availableObjectivesResponse.data.namespace.workItems.nodes.filter(
+          (item) => item.id !== mockParentWidgetResponse.id,
+        ),
+        __typename: 'WorkItemConnection',
+      },
+    },
+  },
+};
+
 export const mockAncestorWidgetResponse = {
   data: {
     workItemUpdate: {

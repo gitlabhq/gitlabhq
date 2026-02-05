@@ -172,7 +172,7 @@ export const i18n = {
 export const SCAN_PROFILE_TYPE_SECRET_DETECTION = 'SECRET_DETECTION';
 export const SCAN_PROFILE_CATEGORIES = {
   [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
-    name: s__('SecurityProfiles|Secret Push Protection'),
+    name: s__('SecurityProfiles|Secret Detection'),
     label: 'SD',
     tooltip: s__('SecurityProfiles|Prevents secrets from being pushed to your repository'),
   },

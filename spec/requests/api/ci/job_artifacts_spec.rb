@@ -896,6 +896,64 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           it_behaves_like 'not found'
         end
       end
+
+      context 'when search_recent_successful_pipelines parameter is used' do
+        let(:ref_name) { project.default_branch }
+
+        before do
+          pipeline.reload
+          pipeline.update!(ref: ref_name, sha: project.commit(ref_name).sha, status: :success)
+          job.reload
+          stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_search_recent_successful_pipelines: false)
+          end
+
+          it 'returns 404 when search_recent_successful_pipelines is true' do
+            get_artifact_file(artifact, ref_name, job.name, search_recent_successful_pipelines: true)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+
+          it 'works normally when search_recent_successful_pipelines is false' do
+            get_artifact_file(artifact, ref_name, job.name, search_recent_successful_pipelines: false)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        it 'returns artifact file when build exists within search limit', :sidekiq_might_not_need_inline do
+          older_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+            created_at: 2.days.ago)
+          create(:ci_build, :success, :artifacts, name: 'test-job', pipeline: older_pipeline)
+
+          get_artifact_file(artifact, ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers.to_h).to include(
+            'Content-Type' => 'application/json',
+            'Gitlab-Workhorse-Send-Data' => /artifacts-entry/
+          )
+        end
+
+        it 'returns 404 when job exists beyond search limit' do
+          old_pipeline = create(:ci_pipeline, :success, project: project, ref: ref_name,
+            created_at: 5.days.ago)
+          create(:ci_build, :success, :artifacts, name: 'old-job', pipeline: old_pipeline)
+
+          2.times do
+            create(:ci_pipeline, :success, project: project, ref: ref_name,
+              created_at: 1.day.ago)
+          end
+
+          get_artifact_file(artifact, ref_name, 'old-job', search_recent_successful_pipelines: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     context 'when job does not have artifacts' do
@@ -906,10 +964,30 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+
+      context 'when search_recent_successful_pipelines parameter is used' do
+        let(:artifact) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
+        let(:ref_name) { project.default_branch }
+
+        before do
+          pipeline.reload
+          pipeline.update!(ref: ref_name, sha: project.commit(ref_name).sha, status: :success)
+          stub_const('Ci::Build::MAX_PIPELINES_TO_SEARCH', 2)
+        end
+
+        it 'returns 404 when build has no artifacts in recent pipelines' do
+          create(:ci_build, :success, name: 'test-job', pipeline: pipeline)
+
+          get_artifact_file(artifact, ref_name, 'test-job', search_recent_successful_pipelines: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
-    def get_artifact_file(artifact_path, ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user), params: { job: job_name }
+    def get_artifact_file(artifact_path, ref = pipeline.ref, job_name = job.name, search_recent_successful_pipelines: false)
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user),
+        params: { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines }
     end
   end
 

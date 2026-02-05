@@ -85605,6 +85605,13 @@ paths:
         schema:
           type: string
         in: query
+      - name: search_recent_successful_pipelines
+        required: false
+        description: Search across recent successful pipelines instead of just the
+          latest one.
+        schema:
+          type: boolean
+        in: query
   "/api/v4/projects/{id}/jobs/{job_id}/artifacts":
     get:
       operationId: getApiV4ProjectsIdJobsJobIdArtifacts

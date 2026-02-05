@@ -2795,6 +2795,7 @@
     - <<: *if-schedule-pipeline
       when: manual
 
+# These rules should match .rails:rules:rspec-coverage to ensure undercoverage runs whenever coverage data is generated
 .rails:rules:rspec-undercoverage:
   rules:
     - <<: *if-not-ee
@@ -2808,7 +2809,7 @@
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
     - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
-      changes: *backend-patterns
+      changes: *code-backstage-patterns
 
 .rails:rules:rspec-merge-auto-explain-logs:
   rules:

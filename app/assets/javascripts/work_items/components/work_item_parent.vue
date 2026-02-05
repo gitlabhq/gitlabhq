@@ -113,6 +113,16 @@ export default {
     availableWorkItems() {
       return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
     },
+    shouldAddParent() {
+      if (!this.parent) return false;
+
+      const parentInList = this.availableWorkItems.some(({ id }) => id === this.parent.id);
+      if (parentInList) return false;
+
+      if (!this.searchTerm) return true;
+
+      return this.parent.title?.toLowerCase().includes(this.searchTerm.toLowerCase());
+    },
     listboxText() {
       return (
         this.workItems.find(({ value }) => this.localSelectedItem === value)?.text ||
@@ -121,7 +131,11 @@ export default {
       );
     },
     workItems() {
-      return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
+      const items = this.shouldAddParent
+        ? [this.parent, ...this.availableWorkItems]
+        : this.availableWorkItems;
+
+      return (items || []).map(({ id, title }) => ({ text: title, value: id }));
     },
     parentWebUrl() {
       return this.parent?.webUrl;

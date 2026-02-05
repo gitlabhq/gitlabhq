@@ -4952,6 +4952,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it { is_expected.to be_nil }
   end
 
+  describe '#redis_set_cache' do
+    subject(:redis_set_cache) { repository.send(:redis_set_cache) }
+
+    it { is_expected.to be_kind_of(Gitlab::Repositories::RebuildableSetCache) }
+
+    context 'when ref_cache_with_rebuild_queue is disabled' do
+      before do
+        stub_feature_flags(ref_cache_with_rebuild_queue: false)
+      end
+
+      it { is_expected.to be_kind_of(Gitlab::RepositorySetCache) }
+    end
+  end
+
   describe '#squash' do
     let(:merge_request) { build(:merge_request, source_project: project) }
 
