@@ -1946,7 +1946,6 @@
 - './ee/spec/services/elastic/index_projects_by_range_service_spec.rb'
 - './ee/spec/services/ee/emails/create_service_spec.rb'
 - './ee/spec/services/ee/emails/destroy_service_spec.rb'
-- './ee/spec/services/epic_issues/update_service_spec.rb'
 - './ee/spec/services/epics/transfer_service_spec.rb'
 - './ee/spec/services/epics/update_dates_service_spec.rb'
 - './ee/spec/services/external_status_checks/create_service_spec.rb'

@@ -1,0 +1,4 @@
+name: delete_maven_virtual_registry_upstream_cache_entry
+description: Grants the ability to delete Maven virtual registry upstream cache entries
+boundaries:
+  - group

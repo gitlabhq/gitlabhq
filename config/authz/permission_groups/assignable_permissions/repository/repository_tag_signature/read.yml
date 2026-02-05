@@ -1,7 +1,0 @@
----
-name: read_repository_tag_signature
-description: Grants the ability to read repository tag signatures
-permissions:
-  - read_repository_tag_signature
-boundaries:
-  - project

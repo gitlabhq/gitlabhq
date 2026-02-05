@@ -68,6 +68,7 @@ module Gitlab
     class MoveCiBuildsMetadata < BatchedMigrationJob
       # Each job definition is unique by these attributes.
       DEFS_UNIQ_ATTRS = [:project_id, :partition_id, :checksum].freeze
+      DEFS_BATCH_SIZE = 100
 
       feature_category :continuous_integration
       operation_name :create_job_definition_from_builds_metadata
@@ -385,9 +386,9 @@ module Gitlab
         end
 
         def insert_missing(definitions)
-          attributes = definitions.map { |d| d.attributes.compact }
-
-          definition_model.insert_all(attributes, unique_by: DEFS_UNIQ_ATTRS)
+          definitions
+            .map { |d| d.attributes.compact }
+            .each_slice(DEFS_BATCH_SIZE) { |attrs| definition_model.insert_all(attrs, unique_by: DEFS_UNIQ_ATTRS) }
         end
       end
 

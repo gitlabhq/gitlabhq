@@ -26,6 +26,7 @@ where each usage action consumes a number of credits.
 [GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo (Classic) features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
 
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
+You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
 
 GitLab provides three ways to obtain credits:
 
@@ -197,7 +198,6 @@ For premium models with optimized integration:
 ### Features
 
 The following table lists the number of requests you can make with one GitLab Credit for features that use a fixed model.
-You are billed for features that are generally available.
 
 | Feature | Requests with one credit |
 |---------|---------------------------|

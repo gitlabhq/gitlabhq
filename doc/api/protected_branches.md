@@ -186,9 +186,9 @@ The following example response includes:
 ]
 ```
 
-## Get a single protected branch or wildcard protected branch
+## Retrieve a protected branch or wildcard protected branch
 
-Get a single protected branch or wildcard protected branch.
+Retrieves a specified protected branch or wildcard protected branch.
 
 ```plaintext
 GET /projects/:id/protected_branches/:name

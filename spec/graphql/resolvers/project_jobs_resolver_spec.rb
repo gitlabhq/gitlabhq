@@ -146,6 +146,28 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
 
       it { is_expected.to be_nil }
     end
+
+    context 'when filtering by pipeline_iid' do
+      let(:resolved_jobs) { resolve_jobs }
+
+      let_it_be(:current_user) { create(:user, developer_of: project) }
+
+      let(:args) { { pipeline_iid: pipeline.iid } }
+
+      it 'returns only jobs belonging to the specified pipeline IID' do
+        expect(resolve_jobs).to contain_exactly(successful_build, successful_build_two, failed_build, pending_build)
+      end
+
+      context 'when filtering by non-existent pipeline_iid' do
+        let(:resolved_jobs) { {} }
+
+        let(:args) { { pipeline_iid: 'non-existent-iid' } }
+
+        it 'returns no jobs' do
+          expect(resolved_jobs).to be_empty
+        end
+      end
+    end
   end
 
   private

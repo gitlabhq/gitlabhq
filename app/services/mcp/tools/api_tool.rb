@@ -67,6 +67,14 @@ module Mcp
         process_response(status, Array(body)[0])
       end
 
+      def annotations
+        return settings[:annotations] if settings[:annotations].present?
+
+        auto_annotations = {}
+        auto_annotations[:readOnlyHint] = true if route.request_method == 'GET'
+        auto_annotations
+      end
+
       private
 
       def parse_type(type)

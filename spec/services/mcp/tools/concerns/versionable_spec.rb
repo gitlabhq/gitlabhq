@@ -283,6 +283,80 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
     end
   end
 
+  describe '#annotations' do
+    it 'returns empty hash when annotations not defined in metadata' do
+      instance = test_class.new(version: '1.0.0')
+      expect(instance.annotations).to eq({})
+    end
+
+    context 'when annotations are defined in version metadata' do
+      let(:test_class_with_annotations) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            description: 'Read-only tool',
+            input_schema: { type: 'object', properties: {} },
+            annotations: { readOnlyHint: true }
+          }
+
+          register_version '2.0.0', {
+            description: 'Write tool',
+            input_schema: { type: 'object', properties: {} }
+            # No annotations
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+        end
+      end
+
+      it 'returns annotations for version with annotations' do
+        instance = test_class_with_annotations.new(version: '1.0.0')
+        expect(instance.annotations).to eq({ readOnlyHint: true })
+      end
+
+      it 'returns empty hash for version without annotations' do
+        instance = test_class_with_annotations.new(version: '2.0.0')
+        expect(instance.annotations).to eq({})
+      end
+    end
+
+    context 'with multiple MCP spec-compliant annotations' do
+      let(:test_class_multiple_annotations) do
+        Class.new do
+          include Mcp::Tools::Concerns::Versionable
+
+          register_version '1.0.0', {
+            description: 'Tool with multiple annotations',
+            input_schema: { type: 'object', properties: {} },
+            annotations: {
+              readOnlyHint: true,
+              destructiveHint: false,
+              idempotentHint: true,
+              openWorldHint: false
+            }
+          }
+
+          def initialize(version: nil)
+            initialize_version(version)
+          end
+        end
+      end
+
+      it 'returns multiple MCP spec-compliant annotations' do
+        instance = test_class_multiple_annotations.new(version: '1.0.0')
+        expect(instance.annotations).to eq({
+          readOnlyHint: true,
+          destructiveHint: false,
+          idempotentHint: true,
+          openWorldHint: false
+        })
+      end
+    end
+  end
+
   describe '#graphql_operation' do
     context 'when graphql_operation is defined in version metadata' do
       let(:graphql_class) do

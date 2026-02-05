@@ -6546,25 +6546,69 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '.by_ref' do
-    subject(:with_ref) { described_class.with_ref(ref) }
+  describe '.with_pipeline_iid' do
+    let_it_be(:project) { create(:project, :repository) }
 
-    let_it_be(:build2) do
-      create(:ci_build, pipeline: pipeline, yaml_variables: [])
+    let_it_be(:pipeline) do
+      create(:ci_pipeline,
+        project: project,
+        iid: 10,
+        sha: project.commit.id,
+        ref: project.default_branch,
+        status: 'success'
+      )
     end
 
-    context 'when matching ref exists' do
-      let(:ref) { project.default_branch }
-
-      it 'returns the matching build' do
-        is_expected.to contain_exactly(build, build2)
-      end
+    let_it_be(:build) do
+      create(:ci_build,
+        project: project,
+        commit_id: pipeline.id,
+        partition_id: pipeline.partition_id,
+        pipeline: pipeline
+      )
     end
 
-    context 'when matching ref does not exist' do
-      let(:ref) { 'nonexistent_ref' }
+    let_it_be(:other_pipeline) do
+      create(:ci_pipeline,
+        project: project,
+        iid: pipeline.iid + 1,
+        sha: project.commit.id,
+        ref: project.default_branch,
+        status: 'success'
+      )
+    end
 
-      it { is_expected.to be_empty }
+    let_it_be(:other_build) do
+      create(:ci_build,
+        project: project,
+        commit_id: other_pipeline.id,
+        partition_id: other_pipeline.partition_id,
+        pipeline: other_pipeline
+      )
+    end
+
+    it 'returns builds for the pipeline with the given IID' do
+      result = described_class.with_pipeline_iid(project.id, pipeline.iid)
+
+      expect(result).to contain_exactly(build)
+    end
+
+    it 'does not return builds from other pipelines' do
+      result = described_class.with_pipeline_iid(project.id, pipeline.iid)
+
+      expect(result).not_to include(other_build)
+    end
+
+    it 'returns builds for the other pipeline with its IID' do
+      result = described_class.with_pipeline_iid(project.id, other_pipeline.iid)
+
+      expect(result).to contain_exactly(other_build)
+    end
+
+    it 'returns an empty result for a nonexistent IID' do
+      result = described_class.with_pipeline_iid(project.id, -1)
+
+      expect(result).to be_empty
     end
   end
 end

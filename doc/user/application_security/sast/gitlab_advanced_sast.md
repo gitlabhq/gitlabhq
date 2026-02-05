@@ -169,7 +169,8 @@ Exclude paths to optimize performance and focus on relevant repository content.
 
 List excluded paths in the [`SAST_EXCLUDED_PATHS`](_index.md#vulnerability-filters) CI/CD variable.
 
-When excluding paths, be selective to avoid hiding vulnerabilities. Common candidates are:
+When excluding paths, be selective to avoid hiding vulnerabilities. Common candidates include the
+following:
 
 - Database migrations
 - Unit tests
@@ -336,10 +337,10 @@ scanning is enabled, only the changes in a merge request are scanned.
 
 {{< /history >}}
 
-GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
+GitLab Advanced SAST supports the following languages:
 
 - C# (up to and including 13.0)
-- C/C++<sup>1</sup>
+- C/C++
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
@@ -347,19 +348,22 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 - Python
 - Ruby
 
-**Footnotes**:
-
-1. GitLab Advanced SAST CPP requires additional configuration (such as a compilation
-   database) to be used with GitLab Advanced SAST. For details, see
-   [C/C++ configuration](cpp_advanced_sast.md). GitLab Advanced SAST CPP does not exclude Semgrep
-   for C/C++ projects; both analyzers run in parallel with different rule sets.
+GitLab Advanced SAST CPP requires additional configuration (such as a compilation database) to be
+used with GitLab Advanced SAST. For details, see [C/C++ configuration](cpp_advanced_sast.md). GitLab
+Advanced SAST CPP does not exclude Semgrep for C/C++ projects; both analyzers run in parallel with
+different rule sets.
 
 ### PHP known issues
 
-When analyzing PHP code, GitLab Advanced SAST has the following limitations:
+When analyzing PHP code, GitLab Advanced SAST has the following known issues:
 
-- **Dynamic file inclusion**: Dynamic file inclusion statements (`include`, `include_once`, `require`, `require_once`) using variables for file paths are not supported in this release. Only static file inclusion paths are supported for cross-file analysis. See [issue 527341](https://gitlab.com/gitlab-org/gitlab/-/issues/527341).
-- **Case sensitivity**: PHP's case-insensitive nature for function names, class names, and method names is not fully supported in cross-file analysis. See [issue 526528](https://gitlab.com/gitlab-org/gitlab/-/issues/526528).
+- Dynamic file inclusion: Dynamic file inclusion statements (`include`, `include_once`, `require`,
+  `require_once`) using variables for file paths are not supported in this release. Only static file
+  inclusion paths are supported for cross-file analysis. See
+  [issue 527341](https://gitlab.com/gitlab-org/gitlab/-/issues/527341).
+- Case sensitivity: PHP's case-insensitive nature for function names, class names, and method names
+  is not fully supported in cross-file analysis. See
+  [issue 526528](https://gitlab.com/gitlab-org/gitlab/-/issues/526528).
 
 ## Configuration
 

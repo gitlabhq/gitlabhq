@@ -256,6 +256,9 @@ module Ci
     scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
     scope :with_token_present, -> { where.not(token_encrypted: nil) }
     scope :with_ref, ->(ref) { joins(:pipeline).where(pipeline: { ref: ref }) }
+    scope :with_pipeline_iid, ->(project_id, iid) do
+      joins(:pipeline).where(pipeline: { project_id: project_id, iid: iid })
+    end
 
     add_authentication_token_field :token,
       encrypted: :required,

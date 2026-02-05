@@ -16,7 +16,7 @@ title: ClickHouse
 
 [ClickHouse](https://clickhouse.com) is an open-source column-oriented database management system. It can efficiently filter, aggregate, and query across large data sets.
 
-GitLab uses Clickhouse as a secondary data store to enable advanced analytics features such as GitLab Duo, SDLC trends, and CI Analytics. GitLab only stores data that supports these features in Clickhouse.
+GitLab uses ClickHouse as a secondary data store to enable advanced analytics features such as GitLab Duo, SDLC trends, and CI Analytics. GitLab only stores data that supports these features in ClickHouse.
 
 You should use [ClickHouse Cloud](https://clickhouse.com/cloud) to connect ClickHouse to GitLab.
 

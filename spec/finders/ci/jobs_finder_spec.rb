@@ -465,4 +465,37 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
       end
     end
   end
+
+  context 'when filtering by pipeline iid' do
+    let_it_be(:pipeline_with_iid_1) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline_with_iid_2) { create(:ci_pipeline, project: project) }
+
+    let_it_be(:job_in_pipeline_1) { create(:ci_build, pipeline: pipeline_with_iid_1, project: project) }
+    let_it_be(:job_in_pipeline_2) { create(:ci_build, pipeline: pipeline_with_iid_2, project: project) }
+
+    subject do
+      described_class.new(current_user: user, project: project, params: params).execute
+    end
+
+    before do
+      project.add_maintainer(user)
+    end
+
+    context 'when pipeline_iid param is present' do
+      let(:params) { { pipeline_iid: pipeline_with_iid_1.iid } }
+
+      it 'returns only jobs with the specified pipeline iid' do
+        expect(subject).to contain_exactly(job_in_pipeline_1)
+        expect(subject).not_to include(job_in_pipeline_2)
+      end
+    end
+
+    context 'when pipeline_iid param is absent' do
+      let(:params) { {} }
+
+      it 'returns all jobs for the project' do
+        expect(subject).to include(job_in_pipeline_1, job_in_pipeline_2)
+      end
+    end
+  end
 end

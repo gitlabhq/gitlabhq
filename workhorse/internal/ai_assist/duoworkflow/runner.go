@@ -42,7 +42,7 @@ var ClientCapabilities = []string{
 }
 
 var errFailedToAcquireLockError = errors.New("handleWebSocketMessages: failed to acquire lock")
-var errUsageQuotaExceededError = errors.New("handleWebSocketMessages: usage quota exceeded")
+var errUsageQuotaExceededError = errors.New("handleAgentMessages: usage quota exceeded")
 
 var normalClosureErrCodes = []int{websocket.CloseGoingAway, websocket.CloseNormalClosure}
 
@@ -206,13 +206,15 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 		if err != nil {
 			if err == io.EOF {
 				errCh <- nil // Expected error when a workflow ends
-			} else {
-				// Check if this is a RESOURCE_EXHAUSTED error indicating quota exceeded
-				if r.isUsageQuotaExceededError(err) {
-					err = errUsageQuotaExceededError
-				}
-				errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
+				return
 			}
+
+			if r.isUsageQuotaExceededError(err) {
+				errCh <- errUsageQuotaExceededError
+				return
+			}
+
+			errCh <- fmt.Errorf("handleAgentMessages: failed to read a gRPC message: %w", err)
 			return
 		}
 

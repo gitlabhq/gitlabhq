@@ -320,7 +320,7 @@ RSpec.describe API::API, feature_category: :system_access do
               'correlation_id' => an_instance_of(String),
               'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
               'meta.remote_ip' => an_instance_of(String),
-              'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+              'meta.client_id' => a_string_matching(%r{\A(ip|user)/.+}),
               'meta.auth_fail_reason' => "token_expired",
               'meta.auth_fail_token_id' => "PersonalAccessToken/#{token.id}",
               'meta.feature_category' => 'team_planning',

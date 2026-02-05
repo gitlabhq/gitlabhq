@@ -18513,9 +18513,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Ensures fewer administrators are assigned to the project than total members."
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Ensures fuzz testing is configured and running in the project's default branch pipeline."
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Ensures inactive users are reviewed and removed."
 msgstr ""
 
@@ -18640,9 +18637,6 @@ msgid "ComplianceStandardsAdherence|Framework"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Frameworks"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Fuzz testing running"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|GitLab license level Ultimate"
@@ -18976,12 +18970,6 @@ msgid "ComplianceStandardsAdherence|Set up container scanning in your pipeline t
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up error tracking to monitor and address application errors."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Set up fuzz testing"
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Set up fuzz testing in your pipeline to identify edge cases and potential crashes."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up license compliance scanning to identify potentially problematic open source licenses."
@@ -28076,9 +28064,6 @@ msgstr ""
 msgid "Epic events"
 msgstr ""
 
-msgid "Epic issue not found for given params"
-msgstr ""
-
 msgid "Epic not found for given params"
 msgstr ""
 
@@ -30544,9 +30529,6 @@ msgid "Full name is required"
 msgstr ""
 
 msgid "Full name is too long (maximum is 255 characters)"
-msgstr ""
-
-msgid "Fuzz testing"
 msgstr ""
 
 msgid "GCP region configured"
@@ -36728,9 +36710,6 @@ msgstr ""
 msgid "Insufficient permissions to assign this member"
 msgstr ""
 
-msgid "Insufficient permissions to update relation"
-msgstr ""
-
 msgid "Integration"
 msgstr ""
 
@@ -37179,9 +37158,6 @@ msgid "Invalid login or password"
 msgstr ""
 
 msgid "Invalid name %{input} was given for this default stage, allowed names: %{names}"
-msgstr ""
-
-msgid "Invalid name for the compliance control %{name}"
 msgstr ""
 
 msgid "Invalid passkey data received. Try creating a new passkey."
@@ -75480,6 +75456,9 @@ msgid "VirtualRegistry|Failed to fetch registry details."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch upstream summary."
+msgstr ""
+
+msgid "VirtualRegistry|Failed to fetch upstreams. Please try again."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to remove upstream. Try again."

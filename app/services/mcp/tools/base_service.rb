@@ -35,13 +35,18 @@ module Mcp
       end
 
       def to_h
-        tool_hash = {
+        result = {
           name: name,
           description: description,
           inputSchema: input_schema
         }
-        tool_hash[:icons] = [icons.first] if icons.present?
-        tool_hash
+
+        result[:icons] = [icons.first] if icons.present?
+
+        tool_annotations = annotations
+        result[:annotations] = tool_annotations if tool_annotations.present?
+
+        result
       end
 
       def icons
@@ -52,6 +57,13 @@ module Mcp
       # Tools should override this method if they need to check for specific conditions.
       def available?
         true
+      end
+
+      # Returns tool annotations (e.g., readOnly flag for governance controls).
+      # Tools should override this method to provide custom annotations.
+      # Returns empty hash by default, which will be omitted from to_h output.
+      def annotations
+        {}
       end
 
       protected

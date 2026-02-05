@@ -110,9 +110,9 @@ Example response:
 ]
 ```
 
-## Get a single snippet
+## Retrieve a snippet
 
-Get a single snippet.
+Retrieves a specified snippet.
 
 ```plaintext
 GET /snippets/:id
@@ -241,9 +241,9 @@ Example response:
 Hello World snippet
 ```
 
-## Create new snippet
+## Create a snippet
 
-Create a new snippet.
+Creates a new snippet.
 
 > [!note]
 > User must have permission to create new snippets.

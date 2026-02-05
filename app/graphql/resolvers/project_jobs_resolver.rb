@@ -32,6 +32,10 @@ module Resolvers
       required: false,
       description: 'Filter jobs by kind.'
 
+    argument :pipeline_iid, GraphQL::Types::String,
+      required: false,
+      description: 'Filter jobs by the internal pipeline ID (iid).'
+
     alias_method :project, :object
 
     def resolve_with_lookahead(**args)
@@ -44,7 +48,7 @@ module Resolvers
       jobs = ::Ci::JobsFinder.new(
         current_user: current_user, project: project, params: {
           scope: args[:statuses], with_artifacts: args[:with_artifacts],
-          skip_ordering: filter_by_sources
+          skip_ordering: filter_by_sources, pipeline_iid: args[:pipeline_iid]
         }, type: args[:kind] || ::Ci::Build
       ).execute
 

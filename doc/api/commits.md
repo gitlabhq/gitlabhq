@@ -293,9 +293,9 @@ curl --request POST \
      --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
-## Get a single commit
+## Retrieve a commit
 
-Get a specific commit identified by the commit hash or name of a branch or tag.
+Retrieves a specified commit identified by the commit hash or name of a branch or tag.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha
@@ -369,9 +369,9 @@ Example response:
 }
 ```
 
-## Get references a commit is pushed to
+## List all references a commit is pushed to
 
-Get all references (from branches or tags) a commit is pushed to.
+Lists all references (from branches or tags) a commit is pushed to.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
 ```plaintext
@@ -649,7 +649,7 @@ responds with `200 OK`:
 In the event of a failure, an error displays that is identical to a failure without
 dry run.
 
-## Get commit diff
+## Retrieve commit diff
 
 {{< history >}}
 
@@ -657,7 +657,7 @@ dry run.
 
 {{< /history >}}
 
-Get the diff of a commit in a project.
+Retrieves the diff of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/diff
@@ -730,9 +730,9 @@ Example response:
 ]
 ```
 
-## Get commit comments
+## List all commit comments
 
-Get the comments of a commit in a project.
+Lists all the comments of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/comments
@@ -777,7 +777,7 @@ Example response:
 
 ## Post comment to commit
 
-Adds a comment to a commit.
+Creates a comment on a commit.
 
 To post a comment in a particular line of a particular file, you must specify
 the full commit SHA, the `path`, the `line`, and `line_type` should be `new`.
@@ -851,9 +851,9 @@ Example response:
 }
 ```
 
-## Get commit discussions
+## List all commit discussions
 
-Get the discussions of a commit in a project.
+Lists all the discussions of a commit in a project.
 
 ```plaintext
 GET /projects/:id/repository/commits/:sha/discussions
@@ -1223,9 +1223,9 @@ Example response:
 ]
 ```
 
-## Get commit signature
+## Retrieve commit signature
 
-Get the [signature from a commit](../user/project/repository/signed_commits/_index.md),
+Retrieves the [signature from a commit](../user/project/repository/signed_commits/_index.md),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext

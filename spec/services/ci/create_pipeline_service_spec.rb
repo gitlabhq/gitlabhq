@@ -52,43 +52,65 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
     # rubocop:enable Metrics/ParameterLists
 
     context 'performance' do
-      it_behaves_like 'pipelines are created without N+1 SQL queries' do
-        let(:config1) do
-          <<~YAML
-            job1:
-              stage: build
-              script: exit 0
+      let(:config1) do
+        <<~YAML
+          job1:
+            stage: build
+            script: exit 0
 
-            job2:
-              stage: test
-              script: exit 0
-          YAML
+          job2:
+            stage: test
+            script: exit 0
+        YAML
+      end
+
+      let(:config2) do
+        <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+
+          job3:
+            stage: deploy
+            script: exit 0
+        YAML
+      end
+
+      let(:accepted_n_plus_ones) do
+        1 + # INSERT INTO "ci_stages"
+          1 + # INSERT INTO "ci_builds"
+          1 + # INSERT INTO "p_ci_job_definition_instances"
+          1 # INSERT INTO "p_ci_build_sources"
+      end
+
+      before do
+        # warm up
+        stub_ci_pipeline_yaml_file(config1)
+        execute_service
+        stub_ci_pipeline_yaml_file(config2)
+        execute_service
+      end
+
+      it 'avoids N+1 queries', :aggregate_failures, :request_store, :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          stub_ci_pipeline_yaml_file(config1)
+
+          pipeline = execute_service.payload
+
+          expect(pipeline).to be_created_successfully
         end
 
-        let(:config2) do
-          <<~YAML
-            job1:
-              stage: build
-              script: exit 0
+        expect do
+          stub_ci_pipeline_yaml_file(config2)
 
-            job2:
-              stage: test
-              script: exit 0
+          pipeline = execute_service.payload
 
-            job3:
-              stage: deploy
-              script: exit 0
-          YAML
-        end
-
-        let(:accepted_n_plus_ones) do
-          1 + # SELECT "ci_instance_variables"
-            1 + # INSERT INTO "ci_stages"
-            1 + # SELECT "ci_builds".* FROM "ci_builds"
-            1 + # INSERT INTO "ci_builds"
-            1 + # INSERT INTO "ci_builds_metadata"
-            1   # SELECT "taggings".* FROM "taggings"
-        end
+          expect(pipeline).to be_created_successfully
+        end.to issue_same_number_of_queries_as(control).with_threshold(accepted_n_plus_ones)
       end
     end
 

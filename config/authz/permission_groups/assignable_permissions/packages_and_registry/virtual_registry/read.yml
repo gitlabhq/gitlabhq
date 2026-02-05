@@ -8,3 +8,4 @@ permissions:
   - read_maven_virtual_registry_upstream
   - test_maven_virtual_registry_upstream
   - read_maven_virtual_registry
+  - read_maven_virtual_registry_upstream_cache_entry

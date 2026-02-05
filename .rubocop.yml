@@ -894,6 +894,12 @@ API/ParameterDescription:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/ParameterDocumentation:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/ParameterType:
   Enabled: true
   Include:

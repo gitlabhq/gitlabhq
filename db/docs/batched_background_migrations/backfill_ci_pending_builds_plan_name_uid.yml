@@ -1,0 +1,7 @@
+---
+migration_job_name: BackfillCiPendingBuildsPlanNameUid
+description: Backfill plan_name_uid column in ci_pending_builds table from plan_id
+feature_category: continuous_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217075
+milestone: '18.9'
+queued_migration_version: 20260115115020

@@ -200,6 +200,10 @@ module Ci
       result = job_definition&.config&.dig(job_definition_key) || temp_job_definition&.config&.dig(job_definition_key)
       return result if result
 
+      # New builds are created with a `temp_job_definition`, so we know it's not stored in metadata.
+      # We return from this point because the `metadata` lookup raises N+1 queries in `after_commit` callbacks.
+      return default_value if temp_job_definition
+
       metadata&.read_attribute(metadata_key) || default_value
     end
   end

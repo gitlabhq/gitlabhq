@@ -324,6 +324,112 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
     end
   end
 
+  describe '#annotations' do
+    context 'with GET request method' do
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test GET endpoint',
+          params: route_params,
+          request_method: 'GET',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'returns readOnlyHint annotation' do
+        expect(api_tool.annotations).to eq({ readOnlyHint: true })
+      end
+    end
+
+    context 'with POST request method' do
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test POST endpoint',
+          params: route_params,
+          request_method: 'POST',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'returns empty annotations' do
+        expect(api_tool.annotations).to eq({})
+      end
+    end
+
+    context 'with PUT request method' do
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test PUT endpoint',
+          params: route_params,
+          request_method: 'PUT',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'returns empty annotations' do
+        expect(api_tool.annotations).to eq({})
+      end
+    end
+
+    context 'with DELETE request method' do
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test DELETE endpoint',
+          params: route_params,
+          request_method: 'DELETE',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'returns empty annotations' do
+        expect(api_tool.annotations).to eq({})
+      end
+    end
+
+    context 'with explicit annotations in settings' do
+      let(:mcp_settings) do
+        {
+          params: [:param1, :param2],
+          annotations: { readOnlyHint: true, destructiveHint: false }
+        }
+      end
+
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test endpoint with explicit annotations',
+          params: route_params,
+          request_method: 'POST',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'returns explicit annotations overriding auto-detection' do
+        expect(api_tool.annotations).to eq({ readOnlyHint: true, destructiveHint: false })
+      end
+    end
+
+    context 'with explicit empty annotations in settings' do
+      let(:mcp_settings) do
+        {
+          params: [:param1, :param2],
+          annotations: {}
+        }
+      end
+
+      let(:route) do
+        instance_double(Grape::Router::Route,
+          app: app,
+          description: 'Test GET endpoint with empty explicit annotations',
+          params: route_params,
+          request_method: 'GET',
+          exec: [200, {}, ['{"success": true}']])
+      end
+
+      it 'uses auto-detection when explicit annotations are empty' do
+        expect(api_tool.annotations).to eq({ readOnlyHint: true })
+      end
+    end
+  end
+
   describe 'edge cases and error handling' do
     let(:request) { instance_double(Rack::Request, env: { 'grape.routing_args' => {} }) }
     let(:params) { { arguments: { param1: 'test' } } }

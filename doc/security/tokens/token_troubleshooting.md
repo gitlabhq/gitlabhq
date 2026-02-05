@@ -60,6 +60,7 @@ entry:
 ```
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
+From GitLab 18.9, `meta.user` will also be populated with any username associated with the token used for the failed request.
 
 To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#retrieve-a-personal-access-token).
 You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).

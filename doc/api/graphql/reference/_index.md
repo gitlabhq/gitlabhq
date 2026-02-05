@@ -44473,6 +44473,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectjobskind"></a>`kind` | [`CiJobKind`](#cijobkind) | Filter jobs by kind. |
 | <a id="projectjobsname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Filter jobs by name. |
+| <a id="projectjobspipelineiid"></a>`pipelineIid` | [`String`](#string) | Filter jobs by the internal pipeline ID (iid). |
 | <a id="projectjobssources"></a>`sources` {{< icon name="warning-solid" >}} | [`[CiJobSource!]`](#cijobsource) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter jobs by source. |
 | <a id="projectjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 | <a id="projectjobswithartifacts"></a>`withArtifacts` | [`Boolean`](#boolean) | Filter by artifacts presence. |

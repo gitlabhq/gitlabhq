@@ -140,12 +140,49 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
+    it 'validates read-only tools have readOnlyHint annotation' do
+      post_list_tools
+
+      tools = json_response['result']['tools']
+
+      read_only_tools = %w[
+        get_mcp_server_version get_issue get_merge_request
+        get_merge_request_commits get_merge_request_diffs
+        get_merge_request_pipelines get_pipeline_jobs
+        get_workitem_notes search
+      ]
+
+      read_only_tools.each do |tool_name|
+        tool = tools.find { |t| t['name'] == tool_name }
+        expect(tool).to be_present, "Expected #{tool_name} to be in tools list"
+        expect(tool['annotations']).to be_present, "Expected #{tool_name} to have annotations"
+        expect(tool['annotations']['readOnlyHint']).to(
+          be(true), "Expected #{tool_name} to have readOnlyHint annotation set to true"
+        )
+      end
+    end
+
+    it 'validates write tools have no annotations' do
+      post_list_tools
+
+      tools = json_response['result']['tools']
+
+      write_tools = %w[create_issue create_merge_request create_workitem_note]
+
+      write_tools.each do |tool_name|
+        tool = tools.find { |t| t['name'] == tool_name }
+        expect(tool).to be_present, "Expected #{tool_name} to be in tools list"
+        expect(tool).not_to have_key('annotations'),
+          "Expected #{tool_name} to have no annotations field"
+      end
+    end
+
     context 'when running CE', unless: Gitlab.ee? do
       before do
         post_list_tools
       end
 
-      it 'returns get_pipeline_jobs tool with correct structure' do
+      it 'returns get_pipeline_jobs tool with correct structure including annotations' do
         tools = json_response['result']['tools']
         pipeline_jobs_tool = tools.find { |tool| tool['name'] == 'get_pipeline_jobs' }
 
@@ -174,11 +211,14 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
             },
             'required' => %w[id pipeline_id],
             'additionalProperties' => false
+          },
+          'annotations' => {
+            'readOnlyHint' => true
           }
         )
       end
 
-      it 'returns get_issue tool with correct structure' do
+      it 'returns get_issue tool with correct structure including annotations' do
         tools = json_response['result']['tools']
         get_issue_tool = tools.find { |tool| tool['name'] == 'get_issue' }
 
@@ -199,6 +239,9 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
             },
             'required' => %w[id issue_iid],
             'additionalProperties' => false
+          },
+          'annotations' => {
+            'readOnlyHint' => true
           }
         )
       end
@@ -357,7 +400,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         )
       end
 
-      it 'returns get_mcp_server_version tool with correct structure' do
+      it 'returns get_mcp_server_version tool with correct structure including annotations' do
         tools = json_response['result']['tools']
         version_tool = tools.find { |tool| tool['name'] == 'get_mcp_server_version' }
 
@@ -368,6 +411,9 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
             'type' => 'object',
             'properties' => {},
             'required' => []
+          },
+          'annotations' => {
+            'readOnlyHint' => true
           }
         )
       end

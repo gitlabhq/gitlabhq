@@ -65,7 +65,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
 
       it_behaves_like 'rejecting container registry protection rules request when enough permissions'
 
-      it_behaves_like 'authorizing granular token permissions', :read_container_registry_protection_rule do
+      it_behaves_like 'authorizing granular token permissions', :read_container_repository_protection_rule do
         let(:boundary_object) { project }
         let(:user) { maintainer }
         let(:request) do
@@ -163,7 +163,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
 
       it_behaves_like 'rejecting container registry protection rules request when enough permissions'
 
-      it_behaves_like 'authorizing granular token permissions', :create_container_registry_protection_rule do
+      it_behaves_like 'authorizing granular token permissions', :create_container_repository_protection_rule do
         let(:boundary_object) { project }
         let(:user) { api_user }
         let(:request) do
@@ -291,7 +291,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
       it_behaves_like 'rejecting protection rules request when handling rule ids'
       it_behaves_like 'rejecting container registry protection rules request when enough permissions'
 
-      it_behaves_like 'authorizing granular token permissions', :update_container_registry_protection_rule do
+      it_behaves_like 'authorizing granular token permissions', :update_container_repository_protection_rule do
         let(:boundary_object) { project }
         let(:user) { api_user }
         let(:request) do
@@ -330,7 +330,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
       it_behaves_like 'rejecting protection rules request when handling rule ids'
       it_behaves_like 'rejecting container registry protection rules request when enough permissions'
 
-      it_behaves_like 'authorizing granular token permissions', :delete_container_registry_protection_rule do
+      it_behaves_like 'authorizing granular token permissions', :delete_container_repository_protection_rule do
         let(:boundary_object) { project }
         let(:user) { api_user }
         let(:request) do

@@ -1043,6 +1043,35 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
       end
     end
 
+    context 'when batching job definitions' do
+      before do
+        stub_const("#{described_class}::DEFS_BATCH_SIZE", 2)
+      end
+
+      let(:definitions_creator) do
+        described_class::BulkJobDefinitionsCreator.new(migration, definitions)
+      end
+
+      let(:definitions) do
+        [
+          migration.definition_model.new(project_id: 1, partition_id: 101, config: {}, checksum: 1),
+          migration.definition_model.new(project_id: 2, partition_id: 101, config: {}, checksum: 2),
+          migration.definition_model.new(project_id: 3, partition_id: 101, config: {}, checksum: 3)
+        ]
+      end
+
+      it 'inserts into batches' do
+        recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          expect { definitions_creator.execute }
+            .to change { migration.definition_model.count }
+            .by(definitions.size)
+        end
+
+        insert_queries = recorder.log.select { |q| q.start_with?('INSERT INTO "p_ci_job_definitions"') }
+        expect(insert_queries.count).to eq(2)
+      end
+    end
+
     def find_definition(job)
       instance = definition_instances_table.find_by(job_id: job.id)
       definitions_table.find(instance.job_definition_id)

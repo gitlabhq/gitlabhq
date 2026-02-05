@@ -54,6 +54,11 @@ module Mcp
         }
       end
 
+      override :annotations
+      def annotations
+        { readOnlyHint: true }
+      end
+
       private
 
       def properties

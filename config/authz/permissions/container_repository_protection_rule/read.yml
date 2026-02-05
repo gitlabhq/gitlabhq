@@ -1,0 +1,5 @@
+---
+name: read_container_repository_protection_rule
+description: Grants the ability to read container repository protection rules
+boundaries:
+  - project

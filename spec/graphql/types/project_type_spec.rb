@@ -600,7 +600,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
     it do
       is_expected.to have_graphql_arguments(:statuses, :with_artifacts, :name, :sources,
-        :after, :before, :first, :last, :kind)
+        :after, :before, :first, :last, :kind, :pipeline_iid)
     end
   end
 

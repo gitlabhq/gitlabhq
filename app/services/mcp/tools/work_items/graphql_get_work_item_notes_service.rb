@@ -49,6 +49,9 @@ module Mcp
                 maximum: 100
               }
             }
+          },
+          annotations: {
+            readOnlyHint: true
           }
         }
 

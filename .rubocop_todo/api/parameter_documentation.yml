@@ -1,0 +1,16 @@
+---
+API/ParameterDocumentation:
+  Details: grace period
+  Exclude:
+    - 'ee/lib/api/admin/search/zoekt.rb'
+    - 'ee/lib/api/group_repository_storage_moves.rb'
+    - 'ee/lib/api/vulnerability_flags.rb'
+    - 'lib/api/admin/broadcast_messages.rb'
+    - 'lib/api/environments.rb'
+    - 'lib/api/files.rb'
+    - 'lib/api/group_import.rb'
+    - 'lib/api/groups.rb'
+    - 'lib/api/import_github.rb'
+    - 'lib/api/project_repository_storage_moves.rb'
+    - 'lib/api/snippet_repository_storage_moves.rb'
+    - 'lib/api/topics.rb'

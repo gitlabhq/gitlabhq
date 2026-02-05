@@ -36,17 +36,8 @@ To turn on composite identity:
 1. On the left sidebar, select **GitLab Duo**.
 1. Under **GitLab Duo Agent Platform composite identity**, select **Turn on composite identity**.
 
-## Allow outbound connections from the GitLab instance
+## Allow outbound connections from the GitLab instance to GitLab Duo
 
- Check both your outbound and inbound settings:
-
-- Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
-  These hosts are protected by Cloudflare. Update your firewall settings to allow traffic to
-  all IP addresses in the [list of IP ranges Cloudflare publishes](https://www.cloudflare.com/ips/).
-- To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
-  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
-- In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
 - GitLab application nodes must connect to the GitLab Duo Workflow at `https://duo-workflow-svc.runway.gitlab.net` with HTTP/2. The application and service communicate with gRPC.
 - For GitLab Duo Agent Platform features your firewalls and HTTP/S proxy servers must allow outbound
   connections to `duo-workflow-svc.runway.gitlab.net` on port `443` with `https://` and support for
@@ -139,7 +130,7 @@ These tests are performed:
 | Test                      | Description |
 |---------------------------|-------------|
 | AI Gateway                | GitLab Duo Self-Hosted models only. Tests whether the AI Gateway URL is configured as an environment variable. This connectivity is required for self-hosted model deployments that use the AI Gateway. |
-| Network                   | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](#allow-outbound-connections-from-the-gitlab-instance). |
+| Network                   | Tests whether your instance can connect to `customers.gitlab.com` and `cloud.gitlab.com`.<br><br>If your instance cannot connect to either destination, ensure that your firewall or proxy server settings [allow connection](#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo). |
 | Synchronization           | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
 | Code Suggestions          | GitLab Duo Self-Hosted models only. Tests whether Code Suggestions is available: <br>- Your license includes access to Code Suggestions.<br>- You have the necessary permissions to use the feature. |
 | GitLab Duo Agent Platform | Tests whether the backend service is operational and accessible. This service is required for agentic features like the Agent Platform and GitLab Duo Chat (Agentic). |

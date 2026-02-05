@@ -486,6 +486,12 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 			wsBlockCh:      make(chan bool),
 			expectedErrMsg: "",
 		},
+		{
+			name:           "workflow usage quota exceeded error",
+			wfRecvError:    status.Error(codes.ResourceExhausted, "USAGE_QUOTA_EXCEEDED: consumer has exceeded their quota"),
+			wsBlockCh:      make(chan bool),
+			expectedErrMsg: "handleAgentMessages: usage quota exceeded",
+		},
 	}
 
 	for _, tt := range tests {

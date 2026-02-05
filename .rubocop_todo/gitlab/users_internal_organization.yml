@@ -1,6 +1,5 @@
 ---
 Gitlab/UsersInternalOrganization:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/homepage_data.rb'
     - 'app/helpers/merge_requests_helper.rb'

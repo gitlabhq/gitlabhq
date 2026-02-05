@@ -282,6 +282,7 @@ module Gitlab
 
       def save_auth_failure_in_application_context(access_token, cause, requested_scopes)
         Gitlab::ApplicationContext.push(
+          user: access_token.user,
           auth_fail_reason: cause.to_s,
           auth_fail_token_id: "#{access_token.class}/#{access_token.id}",
           auth_fail_requested_scopes: requested_scopes.join(' ')

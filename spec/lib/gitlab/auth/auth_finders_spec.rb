@@ -1229,6 +1229,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_expired')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq("api read_api")
+          expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
         end
 
         it 'returns Gitlab::Auth::RevokedError if token revoked', :aggregate_failures do
@@ -1239,6 +1240,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_revoked')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
+          expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
         end
 
         it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope', :aggregate_failures do
@@ -1247,6 +1249,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('insufficient_scope')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq('sudo')
+          expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
         end
       end
     end
@@ -1265,6 +1268,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('impersonation_disabled')
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
+          expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
         end
       end
     end

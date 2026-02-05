@@ -3653,6 +3653,209 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/projects/{id}/service_accounts":
+    post:
+      operationId: postApiV4ProjectsIdServiceAccounts
+      summary: Create a service account user
+      description: Create a service account user for a project
+      tags:
+      - Service accounts
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesServiceAccount"
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 Project not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                username:
+                  type: string
+                  description: Username of the user
+                email:
+                  type: string
+                  description: Custom email address for the user
+    get:
+      operationId: getApiV4ProjectsIdServiceAccounts
+      summary: Get list of service account users
+      description: Get list of service account users for a project
+      tags:
+      - Service accounts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesServiceAccount"
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 Project not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+      - name: order_by
+        required: false
+        description: Attribute to sort by
+        schema:
+          type: string
+          enum:
+          - id
+          - username
+        in: query
+      - name: sort
+        required: false
+        description: Order of sorting
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        in: query
+  "/api/v4/projects/{id}/service_accounts/{user_id}":
+    delete:
+      operationId: deleteApiV4ProjectsIdServiceAccountsUserId
+      summary: Delete a service account user
+      description: Delete a service account user. Available only for project owners/maintainers
+        and admins.
+      tags:
+      - Service accounts
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 Project not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: user_id
+        required: true
+        description: The ID of the service account user
+        schema:
+          type: integer
+        in: path
+      - name: hard_delete
+        required: false
+        description: Whether to remove a user's contributions
+        schema:
+          type: boolean
+        in: query
+    patch:
+      operationId: patchApiV4ProjectsIdServiceAccountsUserId
+      summary: Update a service account user
+      description: Update a service account user
+      tags:
+      - Service accounts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesServiceAccount"
+        '400':
+          description: 400 Bad request
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+        '404':
+          description: 404 User not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: user_id
+        required: true
+        description: The ID of the service account user
+        schema:
+          type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the user
+                username:
+                  type: string
+                  description: Username of the user
+                email:
+                  type: string
+                  description: Custom email address for the user
   "/api/v4/groups/{id}/service_accounts":
     post:
       operationId: postApiV4GroupsIdServiceAccounts

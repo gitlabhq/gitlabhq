@@ -20,8 +20,12 @@ module API
               description: tool.description,
               inputSchema: tool.input_schema
             }
-            # Return single icon to prevent clients from displaying both light/dark themes simultaneously
+
             tool_data[:icons] = [tool.icons.first] if tool.try(:icons).present?
+
+            annotations = tool.try(:annotations)
+            tool_data[:annotations] = annotations if annotations.present?
+
             tool_data
           end
 

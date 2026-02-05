@@ -15,6 +15,7 @@ Chat interactively and get immediate feedback.
 | Topic | Description | Good for beginners | Try it out |
 |-------|-------------|--------------------|------------|
 | [Getting started](https://about.gitlab.com/blog/getting-started-with-gitlab-duo-agentic-chat/) | Get set up to use Agentic Chat and try out some common use cases. | {{< icon name="star" >}} | [Explore the interface](https://gitlab.navattic.com/duo-agentic-chat) |
+| [Manage issues with GitLab Duo Chat](duo_chat_issues/_index.md) | Get familiar with the GitLab Duo Chat interface, and try out some issue management tasks. | {{< icon name="star" >}} | |
 | [Use GitLab Duo to make a web application](../user/gitlab_duo/tutorials/fix_code_python_shop.md) | Use Chat and Code Suggestions to build a Python web application. | {{< icon name="star" >}} | |
 | [Use GitLab Duo to fix a web application](../user/gitlab_duo/tutorials/duo_python_fix_errors.md) | Write and run test cases for your web application, and implement error handling and data validation. | | |
 

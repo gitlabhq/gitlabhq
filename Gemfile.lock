@@ -1996,7 +1996,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    undercover (0.7.4)
+    undercover (0.8.3)
       base64
       bigdecimal
       imagen (>= 0.2.0)
@@ -2449,7 +2449,7 @@ DEPENDENCIES
   truncato (~> 0.7.13)
   tty-prompt (~> 0.23)
   typhoeus (~> 1.4.0)
-  undercover (~> 0.7.0)
+  undercover (~> 0.8.0)
   unicode-emoji (~> 4.0)
   unleash (~> 3.2.2)
   uri (~> 1.1.1)
