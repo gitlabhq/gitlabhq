@@ -89,7 +89,7 @@ Git LFS is enabled by default for both GitLab Self-Managed and GitLab SaaS.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To enable or disable Git LFS for your project:
 

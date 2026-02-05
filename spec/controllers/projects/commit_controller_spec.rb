@@ -658,24 +658,4 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       end
     end
   end
-
-  describe '#append_info_to_payload' do
-    before do
-      stub_feature_flags(rapid_diffs_on_commit_show: false)
-    end
-
-    it 'appends diffs_files_count for logging' do
-      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
-        method.call(payload)
-
-        expect(payload[:metadata]['meta.diffs_files_count']).to eq(commit.diffs.size)
-      end
-
-      get :show, params: {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: commit.id
-      }
-    end
-  end
 end

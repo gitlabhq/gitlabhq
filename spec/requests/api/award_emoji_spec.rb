@@ -4,13 +4,16 @@ require 'spec_helper'
 
 RSpec.describe API::AwardEmoji, feature_category: :shared do
   let_it_be_with_reload(:project) { create(:project, :private) }
-  let_it_be(:user)        { create(:user) }
-  let_it_be(:issue)       { create(:issue, project: project) }
-  let_it_be(:award_emoji) { create(:award_emoji, awardable: issue, user: user) }
-  let_it_be(:note)        { create(:note, project: project, noteable: issue) }
+  let_it_be(:user)          { create(:user) }
+  let_it_be(:issue)         { create(:issue, project: project) }
+  let_it_be(:snippet)       { create(:project_snippet, :public, project: project) }
+  let_it_be(:award_emoji)   { create(:award_emoji, awardable: issue, user: user) }
+  let_it_be(:note)          { create(:note, project: project, noteable: issue) }
+  let_it_be(:snippet_note)  { create(:note, project: project, noteable: snippet) }
 
-  let!(:merge_request)    { create(:merge_request, source_project: project, target_project: project) }
-  let!(:downvote)         { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
+  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let(:mr_note) { create(:note, project: project, noteable: merge_request) }
+  let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
 
   before do
     project.add_maintainer(user)
@@ -87,11 +90,20 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
       it_behaves_like 'unauthenticated request to public awardable'
       it_behaves_like 'request with insufficient permissions', :get
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'on a merge request' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji" }
+
       it "returns an array of award_emoji" do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -109,7 +121,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
           end
 
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-            get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji"), params: { per_page: 50 }
+            get api(request_path), params: { per_page: 50 }
           end
 
           custom_emoji[5...-1].each do |emoji|
@@ -117,40 +129,83 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
           end
 
           expect do
-            get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji"), params: { per_page: 50 }
+            get api(request_path), params: { per_page: 50 }
           end.not_to exceed_all_query_limit(control)
+        end
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
         end
       end
     end
 
     context 'on a snippet' do
-      let(:snippet) { create(:project_snippet, :public, project: project) }
-      let!(:award)  { create(:award_emoji, awardable: snippet) }
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji" }
 
       it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_an Array
-        expect(json_response.first['name']).to eq(award.name)
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
       end
     end
   end
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji' do
-    let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
-    let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
+    context 'on issue notes' do
+      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
 
-    it 'returns an array of award emoji' do
-      get api(request_path, user)
+      it 'returns an array of award emoji' do
+        get api(request_path, user)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to be_an Array
-      expect(json_response.first['name']).to eq(rocket.name)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(rocket.name)
+      end
+
+      it_behaves_like 'unauthenticated request to public awardable'
+      it_behaves_like 'request with insufficient permissions', :get
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
     end
 
-    it_behaves_like 'unauthenticated request to public awardable'
-    it_behaves_like 'request with insufficient permissions', :get
+    context 'on merge request notes' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'on snippet notes' do
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji/:award_id" do
@@ -174,86 +229,142 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
       it_behaves_like 'unauthenticated request to public awardable'
       it_behaves_like 'request with insufficient permissions', :get
+
+      it_behaves_like 'authorizing granular token permissions', :read_issue_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'on a merge request' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}" }
+
       it 'returns the award emoji' do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(downvote.name)
         expect(json_response['awardable_id']).to eq(merge_request.id)
         expect(json_response['awardable_type']).to eq("MergeRequest")
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
     end
 
     context 'on a snippet' do
-      let(:snippet) { create(:project_snippet, :public, project: project) }
-      let!(:award)  { create(:award_emoji, awardable: snippet) }
+      let!(:snippet_award) { create(:award_emoji, awardable: snippet) }
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{snippet_award.id}" }
 
       it 'returns the awarded emoji' do
-        get api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user)
+        get api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['name']).to eq(award.name)
+        expect(json_response['name']).to eq(snippet_award.name)
         expect(json_response['awardable_id']).to eq(snippet.id)
         expect(json_response['awardable_type']).to eq("Snippet")
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
       end
     end
   end
 
   describe 'GET /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji/:award_id' do
-    let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
-    let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
+    context 'on issue notes' do
+      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket') }
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
 
-    it 'returns an award emoji' do
-      get api(request_path, user)
+      it 'returns an award emoji' do
+        get api(request_path, user)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).not_to be_an Array
-      expect(json_response['name']).to eq(rocket.name)
-    end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to be_an Array
+        expect(json_response['name']).to eq(rocket.name)
+      end
 
-    context 'when a confidential note' do
-      subject(:perform_request) { get api(request_path, current_user) }
+      context 'when a confidential note' do
+        subject(:perform_request) { get api(request_path, current_user) }
 
-      let_it_be(:group) { create(:group) }
-      let_it_be(:project) { create(:project, :public, namespace: group) }
-      let_it_be(:issue) { create(:issue, project: project) }
-      let_it_be(:note) { create(:note, :confidential, project: project, noteable: issue, author: user) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, :public, namespace: group) }
+        let_it_be(:issue) { create(:issue, project: project) }
+        let_it_be(:note) { create(:note, :confidential, project: project, noteable: issue, author: user) }
 
-      context 'with sufficient persmissions' do
-        let(:current_user) { user }
+        context 'with sufficient persmissions' do
+          let(:current_user) { user }
 
-        it 'returns an award emoji' do
-          perform_request
+          it 'returns an award emoji' do
+            perform_request
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['name']).to eq(rocket.name)
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['name']).to eq(rocket.name)
+          end
+        end
+
+        context 'with insufficient permissions' do
+          let(:current_user) { nil }
+
+          it 'returns 404' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 
-      context 'with insufficient permissions' do
-        let(:current_user) { nil }
+      it_behaves_like 'unauthenticated request to public awardable'
+      it_behaves_like 'request with insufficient permissions', :get
 
-        it 'returns 404' do
-          perform_request
-
-          expect(response).to have_gitlab_http_status(:not_found)
+      it_behaves_like 'authorizing granular token permissions', :read_issue_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
         end
       end
     end
 
-    it_behaves_like 'unauthenticated request to public awardable'
-    it_behaves_like 'request with insufficient permissions', :get
+    context 'on merge request notes' do
+      let!(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket') }
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji/#{rocket.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_merge_request_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'on snippet notes' do
+      let!(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket') }
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji/#{rocket.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :read_snippet_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          get api(request_path, personal_access_token: pat)
+        end
+      end
+    end
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/award_emoji" do
-    let(:issue2) { create(:issue, project: project, author: user) }
-
     context "on an issue" do
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji" }
+
       it "creates a new award emoji" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'blowfish' }
+        post api(request_path, user), params: { name: 'blowfish' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('blowfish')
@@ -263,99 +374,152 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       it 'marks Todos on the Issue as done' do
         todo = create(:todo, target: issue, project: project, user: user)
 
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: '8ball' }
+        post api(request_path, user), params: { name: '8ball' }
 
         expect(todo.reload).to be_done
       end
 
       it "returns a 400 bad request error if the name is not given" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user)
+        post api(request_path, user)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it "normalizes +1 as thumbsup award" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: '+1' }
+        post api(request_path, user), params: { name: '+1' }
 
         expect(issue.award_emoji.last.name).to eq(AwardEmoji::THUMBS_UP)
       end
 
       context 'when the emoji already has been awarded' do
         it 'returns a 404 status code' do
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: AwardEmoji::THUMBS_UP }
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: AwardEmoji::THUMBS_UP }
+          post api(request_path, user), params: { name: AwardEmoji::THUMBS_UP }
+          post api(request_path, user), params: { name: AwardEmoji::THUMBS_UP }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response["message"]).to match("has already been taken")
         end
       end
+
+      it_behaves_like 'authorizing granular token permissions', :create_issue_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'blowfish' }
+        end
+      end
+    end
+
+    context 'on a merge request' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji" }
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'blowfish' }
+        end
+      end
     end
 
     context 'on a snippet' do
-      it 'creates a new award emoji' do
-        snippet = create(:project_snippet, :public, project: project)
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji" }
 
-        post api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user), params: { name: 'blowfish' }
+      it 'creates a new award emoji' do
+        post api(request_path, user), params: { name: 'blowfish' }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['name']).to eq('blowfish')
         expect(json_response['user']['username']).to eq(user.username)
       end
-    end
 
-    it_behaves_like 'request with insufficient permissions', :post do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji" }
-      let(:request_params) { { name: 'blowfish' } }
+      it_behaves_like 'authorizing granular token permissions', :create_snippet_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'blowfish' }
+        end
+      end
     end
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji" do
-    let(:note2)  { create(:note, project: project, noteable: issue, author: user) }
+    context 'on issue notes' do
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
+      let(:note2) { create(:note, project: project, noteable: issue, author: user) }
 
-    it 'creates a new award emoji' do
-      expect do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
-      end.to change { note.award_emoji.count }.from(0).to(1)
+      it 'creates a new award emoji' do
+        expect do
+          post api(request_path, user), params: { name: 'rocket' }
+        end.to change { note.award_emoji.count }.from(0).to(1)
 
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['user']['username']).to eq(user.username)
-    end
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['user']['username']).to eq(user.username)
+      end
 
-    it 'marks Todos on the Noteable as done' do
-      todo = create(:todo, target: note2.noteable, project: project, user: user)
+      it 'marks Todos on the Noteable as done' do
+        todo = create(:todo, target: note2.noteable, project: project, user: user)
 
-      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
+        post api(request_path, user), params: { name: 'rocket' }
 
-      expect(todo.reload).to be_done
-    end
+        expect(todo.reload).to be_done
+      end
 
-    it "normalizes +1 as thumbsup award" do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: '+1' }
+      it "normalizes +1 as thumbsup award" do
+        post api(request_path, user), params: { name: '+1' }
 
-      expect(note.award_emoji.last.name).to eq(AwardEmoji::THUMBS_UP)
-    end
+        expect(note.award_emoji.last.name).to eq(AwardEmoji::THUMBS_UP)
+      end
 
-    context 'when the emoji already has been awarded' do
-      it 'returns a 404 status code' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
+      context 'when the emoji already has been awarded' do
+        it 'returns a 404 status code' do
+          post api(request_path, user), params: { name: 'rocket' }
+          post api(request_path, user), params: { name: 'rocket' }
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(json_response["message"]).to match("has already been taken")
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response["message"]).to match("has already been taken")
+        end
+      end
+
+      it_behaves_like 'request with insufficient permissions', :post do
+        let(:request_params) { { name: 'rocket' } }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_issue_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'rocket' }
+        end
       end
     end
 
-    it_behaves_like 'request with insufficient permissions', :post do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji" }
-      let(:request_params) { { name: 'rocket' } }
+    context 'on merge request notes' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji" }
+
+      it_behaves_like 'authorizing granular token permissions', :create_merge_request_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'rocket' }
+        end
+      end
+    end
+
+    context 'on snippet notes' do
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji" }
+
+      it_behaves_like 'authorizing granular token permissions', :create_snippet_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          post api(request_path, personal_access_token: pat), params: { name: 'rocket' }
+        end
+      end
     end
   end
 
   describe 'DELETE /projects/:id/awardable/:awardable_id/award_emoji/:award_id' do
     context 'when the awardable is an Issue' do
+      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}" }
+
       it 'deletes the award' do
         expect do
-          delete api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}", user)
+          delete api(request_path, user)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { issue.award_emoji.count }.from(1).to(0)
@@ -368,14 +532,23 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}", user) }
+        let(:request) { api(request_path, user) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_issue_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
       end
     end
 
     context 'when the awardable is a Merge Request' do
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}" }
+
       it 'deletes the award' do
         expect do
-          delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}", user)
+          delete api(request_path, user)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { merge_request.award_emoji.count }.from(1).to(0)
@@ -388,49 +561,91 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji/#{downvote.id}", user) }
+        let(:request) { api(request_path, user) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_merge_request_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
       end
     end
 
     context 'when the awardable is a Snippet' do
-      let(:snippet) { create(:project_snippet, :public, project: project) }
-      let!(:award)  { create(:award_emoji, awardable: snippet, user: user) }
+      let!(:snippet_award) { create(:award_emoji, awardable: snippet, user: user) }
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{snippet_award.id}" }
 
       it 'deletes the award' do
         expect do
-          delete api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user)
+          delete api(request_path, user)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end.to change { snippet.award_emoji.count }.from(1).to(0)
       end
 
       it_behaves_like '412 response' do
-        let(:request) { api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user) }
+        let(:request) { api(request_path, user) }
       end
-    end
 
-    it_behaves_like 'request with insufficient permissions', :delete do
-      let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/award_emoji/#{award_emoji.id}" }
+      it_behaves_like 'authorizing granular token permissions', :delete_snippet_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
+      end
     end
   end
 
   describe 'DELETE /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji/:award_id' do
-    let!(:rocket)  { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
-
-    it 'deletes the award' do
-      expect do
-        delete api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}", user)
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end.to change { note.award_emoji.count }.from(1).to(0)
-    end
-
-    it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}", user) }
-    end
-
-    it_behaves_like 'request with insufficient permissions', :delete do
+    context 'on issue notes' do
+      let!(:rocket) { create(:award_emoji, awardable: note, name: 'rocket', user: user) }
       let(:request_path) { "/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji/#{rocket.id}" }
+
+      it 'deletes the award' do
+        expect do
+          delete api(request_path, user)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end.to change { note.award_emoji.count }.from(1).to(0)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api(request_path, user) }
+      end
+
+      it_behaves_like 'request with insufficient permissions', :delete
+
+      it_behaves_like 'authorizing granular token permissions', :delete_issue_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'on merge request notes' do
+      let!(:rocket) { create(:award_emoji, awardable: mr_note, name: 'rocket', user: user) }
+      let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{mr_note.id}/award_emoji/#{rocket.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :delete_merge_request_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
+      end
+    end
+
+    context 'on snippet notes' do
+      let!(:rocket) { create(:award_emoji, awardable: snippet_note, name: 'rocket', user: user) }
+      let(:request_path) { "/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}/award_emoji/#{rocket.id}" }
+
+      it_behaves_like 'authorizing granular token permissions', :delete_snippet_note_award_emoji do
+        let(:boundary_object) { project }
+        let(:request) do
+          delete api(request_path, personal_access_token: pat)
+        end
+      end
     end
   end
 end

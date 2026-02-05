@@ -2,6 +2,7 @@
 stage: AI-powered
 group: Workflow Catalog
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: REST API to manage the AI Catalog.
 title: AI Catalog admin API
 ---
 
@@ -26,7 +27,7 @@ Status: Experiment
 
 {{< /history >}}
 
-Seed the AI Catalog with [GitLab-managed external agents](../../user/duo_agent_platform/agents/external.md#gitlab-managed-external-agents) (Claude Agent and Codex Agent).
+Use this API to seed the AI Catalog with [GitLab-managed external agents](../../user/duo_agent_platform/agents/external.md#gitlab-managed-external-agents).
 
 This feature is an [experiment](../../policy/development_stages_support.md) and may change or be removed in future releases.
 

@@ -1,0 +1,5 @@
+---
+name: delete_merge_request_context_commit
+description: Grants the ability to delete merge request context commits
+boundaries:
+  - project

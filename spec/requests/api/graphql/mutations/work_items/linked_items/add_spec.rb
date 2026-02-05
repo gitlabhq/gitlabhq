@@ -104,20 +104,6 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
         end
       end
 
-      context 'when type cannot be linked' do
-        let_it_be(:req) { create(:work_item, :requirement, project: project) }
-
-        let(:input) { { 'id' => work_item.to_global_id.to_s, 'workItemsIds' => [req.to_global_id.to_s] } }
-
-        it 'returns an error message' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(mutation_response["errors"]).to eq([
-            "#{req.to_reference} cannot be added: issues cannot be related to requirements"
-          ])
-        end
-      end
-
       context 'when there are more than the max allowed items to link' do
         let(:max_work_items) { Mutations::WorkItems::LinkedItems::Base::MAX_WORK_ITEMS }
         let(:ids_to_link) { (0..max_work_items).map { |i| "gid://gitlab/WorkItem/#{i}" } }

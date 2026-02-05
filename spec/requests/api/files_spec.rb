@@ -328,6 +328,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like 'repository files' do
           let(:current_user) { user }
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_repository_file do
+          let(:boundary_object) { project }
+          let(:request) do
+            head api(route(file_path), personal_access_token: pat), params: params
+          end
+        end
       end
 
       context 'and user is a guest' do
@@ -575,6 +582,14 @@ RSpec.describe API::Files, feature_category: :source_code_management do
             it_behaves_like 'returns non-executable file attributes as json' do
               let(:api_user) { inherited_developer }
             end
+
+            it_behaves_like 'authorizing granular token permissions', :read_repository_file do
+              let(:boundary_object) { project }
+              let(:user) { inherited_developer }
+              let(:request) do
+                get api(route(file_path), personal_access_token: pat), params: params
+              end
+            end
           end
         end
       end
@@ -813,6 +828,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         it_behaves_like 'repository blame files' do
           let(:current_user) { user }
         end
+
+        it_behaves_like 'authorizing granular token permissions', :read_repository_file_blame do
+          let(:boundary_object) { project }
+          let(:request) do
+            head api(route(file_path) + '/blame', personal_access_token: pat), params: params
+          end
+        end
       end
 
       context 'and user is a guest' do
@@ -905,6 +927,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
                 end
               end
             end
+          end
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_repository_file do
+          let(:boundary_object) { project }
+          let(:request) do
+            head api(route(file_path) + '/raw', personal_access_token: pat), params: params
           end
         end
       end
@@ -1072,6 +1101,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       context 'and user is a developer' do
         it_behaves_like 'repository raw files' do
           let(:current_user) { user }
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_repository_file do
+          let(:boundary_object) { project }
+          let(:request) do
+            get api(route(file_path) + '/raw', personal_access_token: pat), params: params
+          end
         end
       end
 
@@ -1284,6 +1320,14 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           context 'and user is a developer' do
             it_behaves_like 'creates a new file in the project repo' do
               let(:current_user) { inherited_developer }
+            end
+
+            it_behaves_like 'authorizing granular token permissions', :create_repository_file do
+              let(:boundary_object) { project }
+              let(:user) { inherited_developer }
+              let(:request) do
+                workhorse_body_upload(api(route(file_path), personal_access_token: pat), params)
+              end
             end
           end
         end
@@ -1534,6 +1578,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response['message']).to eq('403 Forbidden - You are not allowed to push into this branch')
       end
+
+      it_behaves_like 'authorizing granular token permissions', :update_repository_file do
+        let(:boundary_object) { project }
+        let(:request) do
+          workhorse_body_upload(api(route(file_path), personal_access_token: pat), params)
+        end
+      end
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers
@@ -1570,6 +1621,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
           delete api(route(file_path), user), params: params
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :delete_repository_file do
+          let(:boundary_object) { project }
+          let(:request) do
+            delete api(route(file_path), personal_access_token: pat), params: params
+          end
         end
       end
 

@@ -1,0 +1,5 @@
+---
+name: read_merge_request_reviewer
+description: Grants the ability to read merge request reviewers
+boundaries:
+  - project

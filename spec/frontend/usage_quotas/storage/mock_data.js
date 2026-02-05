@@ -67,4 +67,21 @@ export const MOCK_REPOSITORY_HEALTH_DETAILS = {
     packedSize: 2000,
     looseCount: 42,
   },
+  commitGraph: {
+    hasBloomFilters: true,
+    hasGenerationData: true,
+    hasGenerationDataOverflow: false,
+    commitGraphChainLength: 5,
+  },
+  bitmap: {
+    hasHashCache: true,
+    hasLookupTable: false,
+  },
+  multiPackIndexBitmap: {
+    hasHashCache: false,
+    hasLookupTable: true,
+  },
+  multiPackIndex: {
+    packfileCount: 12,
+  },
 };

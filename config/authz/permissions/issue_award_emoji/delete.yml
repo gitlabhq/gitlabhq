@@ -1,0 +1,5 @@
+---
+name: delete_issue_award_emoji
+description: Grants the ability to delete award emoji reactions on issues
+boundaries:
+  - project

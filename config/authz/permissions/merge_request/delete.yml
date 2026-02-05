@@ -1,0 +1,5 @@
+---
+name: delete_merge_request
+description: Grants the ability to delete merge requests
+boundaries:
+  - project

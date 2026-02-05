@@ -370,9 +370,9 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2"
 ```
 
-## Snippet content
+## Retrieve snippet content
 
-Returns the raw project snippet as plain text.
+Retrieves the raw project snippet as plain text.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/raw
@@ -392,9 +392,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/snippets/2/raw"
 ```
 
-## Snippet repository file content
+## Retrieve snippet repository file content
 
-Returns the raw file content as plain text.
+Retrieves the raw file content as plain text.
 
 ```plaintext
 GET /projects/:id/snippets/:snippet_id/files/:ref/:file_path/raw

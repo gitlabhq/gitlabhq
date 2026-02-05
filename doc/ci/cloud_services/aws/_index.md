@@ -162,8 +162,10 @@ accessible, enabling OpenID Connect configuration for the instance:
    1. Edit `/etc/gitlab/gitlab.rb`:
 
       ```ruby
-      gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+      gitlab_rails['ci_id_tokens_issuer_url'] = '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -183,8 +185,10 @@ accessible, enabling OpenID Connect configuration for the instance:
       global:
         appConfig:
           ciIdTokens:
-            issuerUrl: 'public_url_with_openid_configuration_and_keys'
+            issuerUrl: '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and apply the new values:
 
@@ -204,8 +208,10 @@ accessible, enabling OpenID Connect configuration for the instance:
         gitlab:
           environment:
             GITLAB_OMNIBUS_CONFIG: |
-              gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+              gitlab_rails['ci_id_tokens_issuer_url'] = '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and restart GitLab:
 
@@ -222,8 +228,10 @@ accessible, enabling OpenID Connect configuration for the instance:
       ```yaml
        production: &base
          ci_id_tokens:
-           issuer_url: 'public_url_with_openid_configuration_and_keys'
+           issuer_url: '<public_url_with_openid_configuration_and_keys>'
       ```
+
+      Replace `<public_url_with_openid_configuration_and_keys>` with a URL like `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`.
 
    1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#self-compiled-installations)
       for the changes to take effect.

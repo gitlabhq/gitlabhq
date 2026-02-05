@@ -16,7 +16,7 @@ To protect against the risk of data loss and exposure, GitLab administrators can
 
 ## Secure webhooks and integrations
 
-Users with at least the Maintainer role can set up [webhooks](../user/project/integrations/webhooks.md) that are
+Users with the Maintainer or Owner role can set up [webhooks](../user/project/integrations/webhooks.md) that are
 triggered when specific changes occur in a project or group. When triggered, a `POST` HTTP request is sent to a URL. A webhook is
 usually configured to send data to a specific external web service, which processes the data in an appropriate way.
 

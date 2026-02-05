@@ -1,0 +1,5 @@
+---
+name: delete_snippet_note_award_emoji
+description: Grants the ability to delete award emoji reactions on snippet notes
+boundaries:
+  - project

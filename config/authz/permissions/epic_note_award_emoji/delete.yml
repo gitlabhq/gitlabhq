@@ -1,0 +1,5 @@
+---
+name: delete_epic_note_award_emoji
+description: Grants the ability to delete award emoji reactions on epic notes
+boundaries:
+  - group

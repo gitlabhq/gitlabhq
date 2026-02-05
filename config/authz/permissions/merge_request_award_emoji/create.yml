@@ -1,0 +1,5 @@
+---
+name: create_merge_request_award_emoji
+description: Grants the ability to create award emoji reactions on merge requests
+boundaries:
+  - project

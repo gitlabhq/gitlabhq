@@ -205,7 +205,6 @@ create_iteration
 create_iteration_cadence
 create_jira_connect_subscription
 create_key_result
-create_merge_request
 create_merge_request_approval_rules
 create_merge_request_from
 create_merge_request_in
@@ -730,7 +729,6 @@ update_issue_link
 update_iteration
 update_max_artifacts_size
 update_max_pages_size
-update_merge_request
 update_name
 update_note
 update_o11y_settings

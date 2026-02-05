@@ -187,4 +187,4 @@ end
 
 - [Troubleshooting](troubleshooting.md) for repository mirroring.
 - [Pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
-- [Project pull mirroring API](../../../../api/project_pull_mirroring.md#configure-pull-mirroring-for-a-project)
+- [Project pull mirroring API](../../../../api/project_pull_mirroring.md#update-project-pull-mirroring-settings)

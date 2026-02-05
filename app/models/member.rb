@@ -118,6 +118,8 @@ class Member < ApplicationRecord
     where.not(user_id: user_ids)
   end
 
+  scope :for_users, ->(user_ids) { where(user_id: user_ids) }
+
   scope :count_by_access_level, ->(column_name = nil) do
     group(:access_level).count(column_name)
   end

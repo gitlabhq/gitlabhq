@@ -16,6 +16,7 @@ class ProjectMember < Member
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 
   scope :in_project, ->(project) { where(source_id: project.id) }
+  scope :in_projects, ->(project_ids) { where(source_id: project_ids) }
   scope :in_namespaces, ->(groups) do
     joins('INNER JOIN projects ON projects.id = members.source_id')
       .where(projects: { namespace_id: groups.select(:id) })

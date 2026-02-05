@@ -1424,12 +1424,6 @@ msgstr ""
 msgid "%{source_project_path}:%{source_branch}"
 msgstr ""
 
-msgid "%{source_type} cannot be related to %{type_type}"
-msgstr ""
-
-msgid "%{source_type} cannot block %{type_type}"
-msgstr ""
-
 msgid "%{source} %{copyButton} into %{target} %{targetCopyButton}"
 msgstr ""
 
@@ -2532,6 +2526,12 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
+msgid "AICatalog|Add GitLab-managed external agents to the instance's AI Catalog."
+msgstr ""
+
+msgid "AICatalog|Add to AI Catalog"
+msgstr ""
+
 msgid "AICatalog|Add triggers"
 msgstr ""
 
@@ -2596,6 +2596,12 @@ msgid "AICatalog|Agent updated."
 msgstr ""
 
 msgid "AICatalog|Agents"
+msgstr ""
+
+msgid "AICatalog|Agents already in AI Catalog."
+msgstr ""
+
+msgid "AICatalog|Agents successfully added to AI Catalog."
 msgstr ""
 
 msgid "AICatalog|All project members will be able to use it, after a Maintainer enables it in a project."
@@ -2817,6 +2823,9 @@ msgstr ""
 msgid "AICatalog|External"
 msgstr ""
 
+msgid "AICatalog|Failed to add agents to AI Catalog."
+msgstr ""
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
@@ -2907,7 +2916,13 @@ msgstr ""
 msgid "AICatalog|Foundational agent"
 msgstr ""
 
+msgid "AICatalog|Foundational agents are managed by the %{linkStart}top-level group%{linkEnd}."
+msgstr ""
+
 msgid "AICatalog|Foundational flow"
+msgstr ""
+
+msgid "AICatalog|Foundational flows are managed by the %{linkStart}top-level group%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|Frequently failing or nuisance activity."
@@ -2923,6 +2938,9 @@ msgid "AICatalog|From the flows configured for this project, select the flow tha
 msgstr ""
 
 msgid "AICatalog|Get started with the AI Catalog"
+msgstr ""
+
+msgid "AICatalog|GitLab-managed external agents"
 msgstr ""
 
 msgid "AICatalog|Group is required."
@@ -73162,6 +73180,9 @@ msgstr ""
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
+msgid "UsageQuota|Bloom filters"
+msgstr ""
+
 msgid "UsageQuota|Buy additional compute minutes"
 msgstr ""
 
@@ -73171,7 +73192,13 @@ msgstr ""
 msgid "UsageQuota|Cache for frequently-accessed Docker images and virtual registries."
 msgstr ""
 
+msgid "UsageQuota|Chain length: %{value}"
+msgstr ""
+
 msgid "UsageQuota|Code packages and container images."
+msgstr ""
+
+msgid "UsageQuota|Commit graph"
 msgstr ""
 
 msgid "UsageQuota|Compute minutes usage displays the hosted runner usage against the total available compute minutes."
@@ -73216,6 +73243,12 @@ msgstr ""
 msgid "UsageQuota|Generate Report"
 msgstr ""
 
+msgid "UsageQuota|Generation data"
+msgstr ""
+
+msgid "UsageQuota|Generation data overflow"
+msgstr ""
+
 msgid "UsageQuota|Git repository."
 msgstr ""
 
@@ -73223,6 +73256,9 @@ msgid "UsageQuota|Gitlab-integrated Docker container registry for storing Docker
 msgstr ""
 
 msgid "UsageQuota|Group settings %{gt} Usage quotas"
+msgstr ""
+
+msgid "UsageQuota|Hash cache"
 msgstr ""
 
 msgid "UsageQuota|Hosted runner duration"
@@ -73267,7 +73303,13 @@ msgstr ""
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr ""
 
+msgid "UsageQuota|Lookup table"
+msgstr ""
+
 msgid "UsageQuota|Month"
+msgstr ""
+
+msgid "UsageQuota|Multi-pack index bitmap"
 msgstr ""
 
 msgid "UsageQuota|Namespace"
@@ -73285,13 +73327,22 @@ msgstr ""
 msgid "UsageQuota|Namespace total storage represents the sum of storage consumed by all projects, container registry, and Dependency Proxy."
 msgstr ""
 
+msgid "UsageQuota|No commit graph detected. A commit graph file can significantly speed up Git operations like log, merge-base, and push by pre-computing and caching commit metadata."
+msgstr ""
+
 msgid "UsageQuota|No compute usage data available."
 msgstr ""
 
 msgid "UsageQuota|No compute usage data because %{linkStart}Instance runners%{linkEnd} are disabled, or there are no projects in this group."
 msgstr ""
 
+msgid "UsageQuota|No multi-pack index bitmap detected. A multi-pack index bitmap can improve object lookup performance across multiple pack files, particularly benefiting fetch and clone operations."
+msgstr ""
+
 msgid "UsageQuota|No projects to display."
+msgstr ""
+
+msgid "UsageQuota|No reachability bitmap detected. A reachability bitmap can accelerate Git operations that need to determine object reachability, improving performance for clones, fetches, and pushes."
 msgstr ""
 
 msgid "UsageQuota|Objects storage"
@@ -73300,7 +73351,13 @@ msgstr ""
 msgid "UsageQuota|Observability"
 msgstr ""
 
+msgid "UsageQuota|Packfile count: %{value}"
+msgstr ""
+
 msgid "UsageQuota|Pending Members"
+msgstr ""
+
+msgid "UsageQuota|Performance optimizations"
 msgstr ""
 
 msgid "UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD."
@@ -73313,6 +73370,9 @@ msgid "UsageQuota|Projects under this namespace have %{planLimit} of storage lim
 msgstr ""
 
 msgid "UsageQuota|Purchased storage"
+msgstr ""
+
+msgid "UsageQuota|Reachability bitmap"
 msgstr ""
 
 msgid "UsageQuota|Recalculate repository usage"

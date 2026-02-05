@@ -126,7 +126,7 @@ Supported attributes:
 |:-------------------------|:------------------|:---------|:------------|
 | `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `license`                | boolean           | No       | Include project license data. |
-| `statistics`             | boolean           | No       | Include project statistics. Available only to users with at least the Reporter role. |
+| `statistics`             | boolean           | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
 | `with_custom_attributes` | boolean           | No       | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 
 The responses include attributes related to container registry storage size:
@@ -451,7 +451,7 @@ Supported attributes:
 | `simple`                      | boolean  | No       | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned. |
 | `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean  | No       | Limit by projects starred by the current user. |
-| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with at least the Reporter role. |
+| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
 | `topic_id`                    | integer  | No       | Limit results to projects with the assigned topic given by the topic ID. |
 | `topic`                       | string   | No       | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
@@ -731,7 +731,7 @@ Supported attributes:
 | `simple`                      | boolean  | No       | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean  | No       | Limit by projects starred by the current user. |
-| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with at least the Reporter role. |
+| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with the Reporter, Developer, Maintainer, or Owner role. |
 | `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
 | `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. |
 | `visibility`                  | string   | No       | Limit by visibility `public`, `internal`, or `private`. |
@@ -2396,7 +2396,7 @@ PUT /projects/:id
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Your file must be 200 KB or smaller. The ideal image size is 192 x 192 pixels.
 - The image must be one of the following file types:
   - `.bmp`
@@ -2659,7 +2659,7 @@ Supported attributes:
 
 {{< /history >}}
 
-If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
+If you have the Developer, Maintainer, or Owner role, the following requests could also return the `secret_push_protection_enabled` value.
 Some of these requests have stricter requirements about roles. Refer to the endpoints previously mentioned for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
 To modify the `secret_push_protection_enabled` value, use the [Project Security Settings API](project_security_settings.md).

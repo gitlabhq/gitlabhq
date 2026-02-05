@@ -1,0 +1,5 @@
+---
+name: create_merge_request_context_commit
+description: Grants the ability to create merge request context commits
+boundaries:
+  - project

@@ -122,7 +122,7 @@ licensed seats.
 You can use the [project access tokens API](../../api/project_access_tokens.md) to programmatically take
 action, such as [rotating a project access token](../../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Members of a project with at least the Maintainer role
+Members of a project with the Maintainer or Owner role
 [receive an email](../../user/project/settings/project_access_tokens.md#project-access-token-expiry-emails)
 when project access tokens are nearly expired.
 

@@ -32,38 +32,16 @@ RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :
   end
 
   describe 'validations' do
-    describe '#validate_related_link_restrictions' do
-      using RSpec::Parameterized::TableSyntax
+    describe 'linking work items' do
+      let(:work_item_types) { [:issue, :task, :epic, :objective, :key_result, :incident, :ticket, :test_case] }
 
-      where(:source_type_sym, :target_types, :valid) do
-        :ticket    | [:issue, :task, :ticket, :incident]  | true
-        :test_case | [:test_case, :issue, :task, :ticket] | false
-        :task      | [:test_case]                         | false
-        :issue     | [:test_case]                         | false
-        :ticket    | [:test_case]                         | false
-        :task      | [:task, :issue, :incident, :ticket]  | true
-        :issue     | [:task, :issue, :incident, :ticket]  | true
-        :incident  | [:incident, :issue, :task, :ticket]  | true
-      end
+      it 'allows linking between any combination of work item types' do
+        work_item_types.product(work_item_types).each do |source_type_sym, target_type_sym|
+          source = build(:work_item, source_type_sym, project: project)
+          target = build(:work_item, target_type_sym, project: project)
+          link = build(:work_item_link, source: source, target: target)
 
-      with_them do
-        it 'validates the related link' do
-          target_types.each do |target_type_sym|
-            source_type = WorkItems::Type.default_by_type(source_type_sym)
-            target_type = WorkItems::Type.default_by_type(target_type_sym)
-            source = build(:work_item, work_item_type: source_type, project: project)
-            target = build(:work_item, work_item_type: target_type, project: project)
-            link = build(:work_item_link, source: source, target: target)
-            opposite_link = build(:work_item_link, source: target, target: source)
-
-            expect(link.valid?).to eq(valid)
-            expect(opposite_link.valid?).to eq(valid)
-            next if valid
-
-            expect(link.errors.messages[:source]).to contain_exactly(
-              "#{source_type.name.downcase.pluralize} cannot be related to #{target_type.name.downcase.pluralize}"
-            )
-          end
+          expect(link).to be_valid, "Expected #{source_type_sym} -> #{target_type_sym} link to be valid"
         end
       end
     end

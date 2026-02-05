@@ -55,7 +55,7 @@ Lists all runners available to the user.
 Prerequisites:
 
 - For group runners, you must have the Owner role in the owner namespace.
-- For project runners, you must have at least the Maintainer role in a project assigned to the runner.
+- For project runners, you must have the Maintainer or Owner role in a project assigned to the runner.
 
 ```plaintext
 GET /runners
@@ -248,8 +248,8 @@ Prerequisites:
 
 - User access: You must have one of the following:
 
-  - For group runners: At least the Maintainer role in the owner namespace.
-  - For project runners: At least the Maintainer role in the project that owns the runner.
+  - For group runners: The Maintainer or Owner role in the owner namespace.
+  - For project runners: The Maintainer or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -338,7 +338,7 @@ Prerequisites:
 
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
-  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -424,7 +424,7 @@ Prerequisites:
 
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
-  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -461,7 +461,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 ## List all jobs processed by a runner
 
 Lists all jobs that are being processed or were processed by the specified runner. The list of jobs is limited
-to projects where the user has at least the Reporter role.
+to projects where the user has the Reporter, Developer, Maintainer, or Owner role.
 
 ```plaintext
 GET /runners/:id/jobs
@@ -682,7 +682,7 @@ Prerequisites:
 
 - User access: You must have one of the following:
 
-  - At least the Maintainer role for the project that owns the runner and the target project.
+  - The Maintainer or Owner role for the project that owns the runner and the target project.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 ```plaintext
@@ -734,7 +734,7 @@ Prerequisites:
 - You must not lock the runner, unless you are an administrator.
 - User access: You must have one of the following:
 
-  - At least the Maintainer role in the project you want to unassign.
+  - The Maintainer or Owner role in the project you want to unassign.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -922,7 +922,7 @@ Prerequisites:
 
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
-  - For project runners: At least the Maintainer role in the project that owns the runner.
+  - For project runners: The Maintainer or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -1074,7 +1074,7 @@ Prerequisites:
 
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
-  - For project runners: At least the Maintainer role in a project assigned to the runner.
+  - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.

@@ -1,0 +1,5 @@
+---
+name: update_merge_request
+description: Grants the ability to update merge requests
+boundaries:
+  - project

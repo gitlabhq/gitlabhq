@@ -1,0 +1,11 @@
+---
+name: update_merge_request
+description: Grants the ability to update merge requests
+boundaries:
+  - project
+permissions:
+  - create_merge_request_pipeline
+  - create_merge_request_context_commit
+  - delete_merge_request_context_commit
+  - rebase_merge_request
+  - update_merge_request

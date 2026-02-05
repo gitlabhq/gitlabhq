@@ -3,12 +3,15 @@ name: read_work_item
 description: Grants the ability to read work items
 permissions:
   - read_epic
+  - read_epic_award_emoji
   - read_epic_board
   - read_epic_board_list
   - read_epic_link
   - read_epic_issue
+  - read_epic_note_award_emoji
   - read_epic_state_event
   - read_issue
+  - read_issue_award_emoji
   - read_issue_closing_merge_request
   - read_issue_iteration_event
   - read_issue_board
@@ -16,6 +19,7 @@ permissions:
   - read_issue_link
   - read_issue_merge_request
   - read_issue_milestone_event
+  - read_issue_note_award_emoji
   - read_issue_participant
   - read_issue_state_event
   - read_issue_statistic
@@ -24,7 +28,9 @@ permissions:
   - read_issue_weight_event
   - read_iteration
   - read_label
+  - read_merge_request_award_emoji
   - read_merge_request_milestone_event
+  - read_merge_request_note_award_emoji
   - read_merge_request_time_statistic
   - read_merge_request_state_event
   - read_milestone
@@ -32,6 +38,8 @@ permissions:
   - read_milestone_issue
   - read_milestone_merge_request
   - read_related_epic_link
+  - read_snippet_award_emoji
+  - read_snippet_note_award_emoji
 boundaries:
   - group
   - project

@@ -15,7 +15,7 @@ description: Manage pull mirroring for projects. View mirror details, configure 
 
 Use this API to manage project [pull mirroring](../user/project/repository/mirror/pull.md).
 
-## Get a project's pull mirror details
+## Retrieve project pull mirror details
 
 {{< history >}}
 
@@ -23,7 +23,7 @@ Use this API to manage project [pull mirroring](../user/project/repository/mirro
 
 {{< /history >}}
 
-Return the details of a project's pull mirror.
+Retrieves pull mirror details for a specified project.
 
 ```plaintext
 GET /projects/:id/mirror/pull
@@ -79,7 +79,7 @@ Example response:
 }
 ```
 
-## Configure pull mirroring for a project
+## Update project pull mirroring settings
 
 {{< history >}}
 
@@ -87,7 +87,7 @@ Example response:
 
 {{< /history >}}
 
-Configure pull mirroring settings for a project.
+Updates pull mirroring settings for a project.
 
 ```plaintext
 PUT /projects/:id/mirror/pull
@@ -153,7 +153,7 @@ Example response:
 }
 ```
 
-## Configure pull mirroring for a project (deprecated)
+## Update pull mirroring for a project (deprecated)
 
 {{< history >}}
 
@@ -165,7 +165,7 @@ Example response:
 
 > [!warning]
 > This configuration option was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6
-> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) instead.
+> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#update-project-pull-mirroring-settings) instead.
 > This change is a breaking change.
 
 If the remote repository is publicly accessible or uses `username:token` authentication, use the API

@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Explains how GitLab automatically responds to leaked secrets by revoking tokens or notifying partners. Also explains how vendors can integrate through a partner API.
 title: Automatic response to leaked secrets
 ---
 

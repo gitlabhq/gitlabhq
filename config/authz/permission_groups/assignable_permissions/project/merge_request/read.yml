@@ -1,7 +1,0 @@
----
-name: read_merge_request
-description: Grants the ability to view merge requests
-boundaries:
-  - project
-permissions:
-  - read_merge_request

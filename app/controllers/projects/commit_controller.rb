@@ -363,15 +363,6 @@ class Projects::CommitController < Projects::ApplicationController
       .find_by_id(commit_params_safe[:target_project_id])
   end
 
-  def append_info_to_payload(payload)
-    super
-
-    return unless !rapid_diffs_enabled? && action_name == 'show' && @diffs.present?
-
-    payload[:metadata] ||= {}
-    payload[:metadata]['meta.diffs_files_count'] = @diffs.size
-  end
-
   def rate_limit_for_expanded_diff_files
     return unless diffs_expanded?
 

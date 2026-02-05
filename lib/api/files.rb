@@ -184,6 +184,7 @@ module API
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       head ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
         assign_file_vars!
 
@@ -206,6 +207,7 @@ module API
             desc: 'The last line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
         end
       end
+      route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
         blame_params = declared_params(include_missing: false)
 
@@ -231,8 +233,8 @@ module API
           default: false
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_repositories,
-        allow_public_access_for_enabled_project_features: :repository
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project,
+        job_token_policies: :read_repositories, allow_public_access_for_enabled_project_features: :repository
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
@@ -259,6 +261,7 @@ module API
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       head ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
@@ -275,6 +278,7 @@ module API
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
+      route_setting :authorization, permissions: :read_repository_file, boundary_type: :project
       get ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         # Loads metadata for @blob as a side effect, but not not the actual data
         #
@@ -304,6 +308,7 @@ module API
         ]
         hidden true
       end
+      route_setting :authorization, skip_granular_token_authorization: true
       post ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end
@@ -317,6 +322,7 @@ module API
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
+      route_setting :authorization, permissions: :create_repository_file, boundary_type: :project
       post ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
 
@@ -345,6 +351,7 @@ module API
         tags %w[files]
         hidden true
       end
+      route_setting :authorization, skip_granular_token_authorization: true
       put ':id/repository/files/:file_path/authorize' do
         workhorse_authorize_commits_body_upload!
       end
@@ -358,6 +365,7 @@ module API
         requires :file_path, type: String, file_path: true,
           desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
       end
+      route_setting :authorization, permissions: :update_repository_file, boundary_type: :project
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         require_gitlab_workhorse!
 
@@ -401,6 +409,7 @@ module API
         optional :last_commit_id, type: String,
           desc: 'Last known file commit id', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
       end
+      route_setting :authorization, permissions: :delete_repository_file, boundary_type: :project
       delete ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 

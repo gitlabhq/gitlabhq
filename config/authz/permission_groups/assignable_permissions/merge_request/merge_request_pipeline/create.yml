@@ -1,7 +1,0 @@
----
-name: create_merge_request_pipeline
-description: Grants the ability to create merge request pipelines
-boundaries:
-  - project
-permissions:
-  - create_merge_request_pipeline

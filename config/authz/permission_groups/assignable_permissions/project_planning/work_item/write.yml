@@ -6,16 +6,24 @@ permissions:
   - add_merge_request_spent_time
   - clone_issue
   - create_epic
+  - create_epic_award_emoji
   - create_epic_issue
   - create_epic_link
+  - create_epic_note_award_emoji
   - create_issue
+  - create_issue_award_emoji
   - create_issue_board
   - create_issue_board_list
   - create_issue_link
+  - create_issue_note_award_emoji
   - create_issue_time_estimate
   - create_label
   - create_merge_request_time_estimate
+  - create_merge_request_award_emoji
+  - create_merge_request_note_award_emoji
   - create_milestone
+  - create_snippet_award_emoji
+  - create_snippet_note_award_emoji
   - move_issue
   - create_related_epic_link
   - promote_milestone

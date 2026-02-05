@@ -1,0 +1,5 @@
+---
+name: update_repository_file
+description: Grants the ability to update repository files
+boundaries:
+  - project

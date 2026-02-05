@@ -1,0 +1,5 @@
+---
+name: read_merge_request_note_award_emoji
+description: Grants the ability to read award emoji reactions on merge request notes
+boundaries:
+  - project

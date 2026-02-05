@@ -309,7 +309,8 @@ jobs. Hovering over them shows you if all jobs have passed or any has failed. Se
 To create a group of jobs, in the `.gitlab-ci.yml` file,
 separate each job name with a number and one of the following:
 
-- A slash (`/`), for example, `slash-test 1/3`, `slash-test 2/3`, `slash-test 3/3`.
+- A forward or backward slash (`/` or `\`), for example, `slash-test 1/3`,
+  `slash-test 2/3`, `slash-test 3/3`.
 - A colon (`:`), for example, `colon-test 1:3`, `colon-test 2:3`, `colon-test 3:3`.
 - A space, for example `space-test 0 3`, `space-test 1 3`, `space-test 2 3`.
 
@@ -338,12 +339,6 @@ The pipeline graph displays a group named `build ruby` with three jobs.
 
 The jobs are ordered by comparing the numbers from left to right. You
 usually want the first number to be the index and the second number to be the total.
-
-[This regular expression](https://gitlab.com/gitlab-org/gitlab/-/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99)
-evaluates the job names: `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z`.
-One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **end**
-of job names only. Matching substrings found at the beginning or in the middle of
-job names are not removed.
 
 ## Retry jobs
 

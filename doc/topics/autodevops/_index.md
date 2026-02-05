@@ -96,7 +96,7 @@ This can save you the time of enabling it in each project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 - Ensure your project does not have a `.gitlab-ci.yml` present. If present, your CI/CD configuration takes
   precedence over the Auto DevOps pipeline.
 

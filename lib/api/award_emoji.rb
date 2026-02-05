@@ -11,6 +11,7 @@ module API
       resource awardable_params[:resource], requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
+        boundary_type = awardable_params[:resource].to_s.singularize.to_sym
 
         params do
           requires :id, types: [String, Integer], desc: "The ID or URL-encoded path of the #{awardable_params[:resource] == :projects ? 'project' : 'group'}"
@@ -21,6 +22,9 @@ module API
           ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
+          is_note_endpoint = endpoint.include?(':note_id')
+          permission_suffix = is_note_endpoint ? "#{awardable_params[:type]}_note_award_emoji" : "#{awardable_params[:type]}_award_emoji"
+
           desc "List an awardable's emoji reactions for #{awardable_params[:resource]}" do
             detail 'Get a list of all emoji reactions for a specified awardable. This feature was introduced in 8.9'
             success Entities::AwardEmoji
@@ -31,6 +35,7 @@ module API
           params do
             use :pagination
           end
+          route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get endpoint, feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
               awards = awardable.award_emoji
@@ -51,6 +56,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of the emoji reaction.'
           end
+          route_setting :authorization, permissions: :"read_#{permission_suffix}", boundary_type: boundary_type
           get "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
               present awardable.award_emoji.find(params[:award_id]), with: Entities::AwardEmoji
@@ -68,6 +74,7 @@ module API
           params do
             requires :name, type: String, desc: 'Name of the emoji without colons.'
           end
+          route_setting :authorization, permissions: :"create_#{permission_suffix}", boundary_type: boundary_type
           post endpoint, feature_category: awardable_params[:feature_category] do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
 
@@ -89,6 +96,7 @@ module API
           params do
             requires :award_id, type: Integer, desc: 'ID of an emoji reaction.'
           end
+          route_setting :authorization, permissions: :"delete_#{permission_suffix}", boundary_type: boundary_type
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])
 

@@ -18,9 +18,9 @@ Every API call to project security settings must be [authenticated](rest/authent
 If a project is private, and a user isn't a member of the project to which the security setting
 belongs, requests to that project returns a `404 Not Found` status code.
 
-## List project security settings
+## List all project security settings
 
-List all of a project's security settings.
+Lists all security settings for the project.
 
 Prerequisites:
 

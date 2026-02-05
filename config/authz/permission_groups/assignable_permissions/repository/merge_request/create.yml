@@ -1,0 +1,7 @@
+---
+name: create_merge_request
+description: Grants the ability to create merge requests
+boundaries:
+  - project
+permissions:
+  - create_merge_request
