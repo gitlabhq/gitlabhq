@@ -59,7 +59,7 @@ class Route < ApplicationRecord
     create_redirect(path_before_last_save) if saved_change_to_path?
   end
 
-  def unique_attribute
-    :path
+  def unique_attributes
+    [:path]
   end
 end

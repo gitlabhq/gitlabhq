@@ -439,8 +439,8 @@ To archive a project:
 To archive a project from the **Your work** list view directly:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my projects**.
-1. In the **Member** tab, find the project you want to archive and select ({{< icon name="ellipsis_v" >}}).
+1. From the dropdown, select **View all my projects**.
+1. In the **Member** tab, find the project you want to archive and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
 
 This action is also available on other list pages.
@@ -468,7 +468,7 @@ To unarchive a project:
 
 1. Find the archived project.
    1. On the top bar, select **Search or go to**.
-   1. Select **View all my projects**.
+   1. From the dropdown, select **View all my projects**.
    1. In the **Inactive** tab, select your project.
 1. On the left sidebar, select **Settings** > **General**.
 1. Under **Advanced**, select **Expand**.
@@ -477,8 +477,8 @@ To unarchive a project:
 To unarchive a project from the **Your work** list view directly:
 
 1. On the top bar, select **Search or go to**.
-1. Select **View all my projects**.
-1. In the **Inactive** tab, find the project you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
+1. From the dropdown, select **View all my projects**.
+1. In the **Inactive** tab, find the project you want to unarchive and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
 
 This action is also available on other list pages.
@@ -606,8 +606,9 @@ Prerequisites:
 
 To manage projects with the **Actions** menu:
 
-1. On the top bar, select **Search or go to** > **View all my projects**.
-1. On the **Projects** page, find your project and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. On the top bar, select **Search or go to**.
+1. From the dropdown, select **View all my projects**.
+1. On the **Projects** page, find your project and select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select an action.
 
 The following actions are available

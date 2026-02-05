@@ -30,7 +30,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   let_it_be(:gitlab_session) { '_gitlab_session=session_id' }
   let_it_be(:incoming_email_token) { user.incoming_email_token }
 
-  subject(:token) { described_class.token_for(plaintext, :group_token_revocation_service) }
+  subject(:token) { described_class.token_for(plaintext, :secret_detection) }
 
   context 'with supported token types' do
     where(:plaintext, :token_type, :token?) do

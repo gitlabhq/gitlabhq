@@ -187,7 +187,9 @@ describe('WorkItemsSavedViewsSelectors', () => {
       expect(mutateMock).toHaveBeenCalledWith(
         expect.objectContaining({
           variables: {
-            id: mockSavedViewsData[0].id,
+            input: {
+              id: mockSavedViewsData[0].id,
+            },
           },
         }),
       );

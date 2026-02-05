@@ -6,6 +6,8 @@ app/models/commit_signatures/x509_commit_signature.rb:
   - x509_commit: Accessed from lib/tasks/gitlab/x509/update.rake
 app/models/concerns/transactions.rb:
 - reset_open_transactions_baseline: Used in spec_helper.rb to configure transaction behavior
+app/models/event.rb:
+- find_sti_class: Override of an ActiveRecord internal method
 app/models/jira_import_state.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/service_desk/custom_email_verification.rb:

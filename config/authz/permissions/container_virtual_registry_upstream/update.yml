@@ -1,0 +1,5 @@
+---
+name: update_container_virtual_registry_upstream
+description: Grants the ability to update container virtual registry upstream
+boundaries:
+  - group

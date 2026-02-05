@@ -526,6 +526,10 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 
 1. Ensure that the environment variables are all set correctly.
 
+## Extra installation steps for GitLab Dedicated instances
+
+To access a Self-hosted AI Gateway, see [Self-hosted AI Gateway for GitLab Dedicated instances](../administration/dedicated/configure_instance/_index.md#self-hosted-ai-gateway-for-gitlab-dedicated-instances).
+
 ## Alternative installation methods
 
 For information on alternative ways to install the AI Gateway, see

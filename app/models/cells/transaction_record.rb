@@ -101,7 +101,7 @@ module Cells
       )
     rescue GRPC::BadStatus => e
       raise_committing_error!(e)
-      raise ActiveRecord::Rollback
+      raise Error, 'Failed to create lease'
     end
 
     def rolledback!(force_restore_state: false, should_run_callbacks: true) # rubocop:disable Lint/UnusedMethodArgument -- this needs to follow the interface
@@ -141,8 +141,7 @@ module Cells
 
     def raise_committing_error!(error)
       create_records.map do |record|
-        value = record.dig(:bucket, :value)
-        record[:record].handle_grpc_error(error, value)
+        record[:record].handle_grpc_error(error)
       end
     end
   end

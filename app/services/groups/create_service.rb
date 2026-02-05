@@ -24,6 +24,8 @@ module Groups
       after_successful_creation_hook
 
       ServiceResponse.success(payload: { group: @group })
+    rescue Cells::TransactionRecord::Error
+      error_response
     end
 
     private

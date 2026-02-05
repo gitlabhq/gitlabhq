@@ -4,7 +4,10 @@ boundaries:
   - instance
   - group
 permissions:
-  - upload_maven_package_file
+  - associate_container_virtual_registry_upstream
   - associate_maven_virtual_registry_upstream
+  - create_container_virtual_registry
+  - create_container_virtual_registry_upstream
   - create_maven_virtual_registry
   - create_maven_virtual_registry_upstream
+  - upload_maven_package_file

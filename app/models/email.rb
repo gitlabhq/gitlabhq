@@ -67,7 +67,7 @@ class Email < ApplicationRecord
     self.detumbled_email = ::Gitlab::Utils::Email.normalize_email(email)
   end
 
-  def unique_attribute
-    :email
+  def unique_attributes
+    [:email]
   end
 end

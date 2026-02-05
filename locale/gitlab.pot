@@ -25977,13 +25977,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Developer"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Do not assign the service account a role in your project with higher permissions than the users of that service account."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Edit file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Edit trigger"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Ensure the service account has a role equal to or less than the users in the project. The account can be used for triggers only."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter a description for this trigger"
@@ -26064,9 +26064,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Once the service account is configured for use with triggers, it cannot be used for other things."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Owner"
 msgstr ""
 
@@ -26100,16 +26097,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Security Agent"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Select a service account user"
+msgid "DuoAgentsPlatform|Select a service account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select one or multiple event types"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Select user"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Service account user"
+msgid "DuoAgentsPlatform|Service account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Session has been cancelled successfully."
@@ -26176,9 +26170,6 @@ msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
 msgstr ""
 
 msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platform in this %{namespaceType}. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
-msgstr ""
-
-msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"
@@ -61719,6 +61710,9 @@ msgstr ""
 msgid "SecurityOrchestration|Days of month"
 msgstr ""
 
+msgid "SecurityOrchestration|Decrease by one level"
+msgstr ""
+
 msgid "SecurityOrchestration|Default approval settings on this merge request have been overridden by policies based on their rules."
 msgstr ""
 
@@ -61944,6 +61938,9 @@ msgstr ""
 msgid "SecurityOrchestration|In warn mode, project approval settings are not overridden by policy and violations are reported, but fixes for the violations are not mandatory. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Increase by one level"
+msgstr ""
+
 msgid "SecurityOrchestration|Individual users"
 msgstr ""
 
@@ -62127,6 +62124,9 @@ msgid "SecurityOrchestration|Open policy actions dropdown"
 msgstr ""
 
 msgid "SecurityOrchestration|Other"
+msgstr ""
+
+msgid "SecurityOrchestration|Override"
 msgstr ""
 
 msgid "SecurityOrchestration|Override the following project settings:"
@@ -62396,6 +62396,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select criteria"
 msgstr ""
 
+msgid "SecurityOrchestration|Select customize type"
+msgstr ""
+
 msgid "SecurityOrchestration|Select date"
 msgstr ""
 
@@ -62426,6 +62429,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Select severity level"
+msgstr ""
+
 msgid "SecurityOrchestration|Select source, currently selected: %{selected}"
 msgstr ""
 
@@ -62439,6 +62445,9 @@ msgid "SecurityOrchestration|Send a bot message when the conditions match."
 msgstr ""
 
 msgid "SecurityOrchestration|Send bot message"
+msgstr ""
+
+msgid "SecurityOrchestration|Set to"
 msgstr ""
 
 msgid "SecurityOrchestration|Settings from outside of the policy can override variables when the policy runs, except the variables defined in the denylist."
@@ -62550,6 +62559,9 @@ msgid "SecurityOrchestration|The security findings remain in their current statu
 msgstr ""
 
 msgid "SecurityOrchestration|Then automatically %{boldStart}dismiss%{boldEnd} these vulnerabilities with the %{reason} reason."
+msgstr ""
+
+msgid "SecurityOrchestration|Then automatically %{boldStart}override severity%{boldEnd} these vulnerabilities to:"
 msgstr ""
 
 msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."

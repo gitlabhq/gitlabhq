@@ -67,45 +67,71 @@ func (h *Handler) Build() http.Handler {
 			return
 		}
 
-		runner, err := newRunner(conn, h.rails, h.backend, r, a.DuoWorkflow, h.rdb)
-		if err != nil {
-			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
-			if closeErr := conn.Close(); closeErr != nil {
-				log.WithRequest(r).WithError(closeErr).Error("failed to close connection")
-			}
-			return
-		}
-		h.runners.Store(runner, true)
-		defer func() {
-			h.runners.Delete(runner)
-			_ = runner.Close()
-		}()
-
-		start := time.Now()
-		if err := runner.Execute(r.Context()); err != nil {
-			log.WithRequest(r).WithError(err).WithFields(log.Fields{
-				"duration_ms": time.Since(start).Milliseconds(),
-			}).Error("error executing workflow")
-
-			if errors.Is(err, errFailedToAcquireLockError) {
-				// We provide the client with specific error details
-				// for this case so it can tell the user about the
-				// conflicting flow
-				message := websocket.FormatCloseMessage(websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
-				err = conn.WriteMessage(websocket.CloseMessage, message)
-				if err != nil {
-					log.WithRequest(r).WithError(err).Error()
-				}
-			}
-			if errors.Is(err, errUsageQuotaExceededError) {
-				// We close the connection with the specific error
-				// so client can process and inform user about the lack of credits
-				message := websocket.FormatCloseMessage(websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
-				err = conn.WriteMessage(websocket.CloseMessage, message)
-				if err != nil {
-					log.WithRequest(r).WithError(err).Error()
-				}
-			}
-		}
+		h.handleWebSocketConnection(w, r, conn, a.DuoWorkflow)
 	}, "")
+}
+
+func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
+	runner, err := h.createRunner(conn, duoWorkflowConfig, r)
+	if err != nil {
+		h.handleInitializationError(w, r, conn, err)
+		return
+	}
+
+	h.registerAndExecuteRunner(r, conn, runner)
+}
+
+func (h *Handler) createRunner(conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow, r *http.Request) (*runner, error) {
+	return newRunner(conn, h.rails, h.backend, r, duoWorkflowConfig, h.rdb)
+}
+
+func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, err error) {
+	fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
+	if closeErr := conn.Close(); closeErr != nil {
+		log.WithRequest(r).WithError(closeErr).Error("failed to close connection")
+	}
+}
+
+func (h *Handler) registerAndExecuteRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
+	h.runners.Store(runner, true)
+	defer func() {
+		h.runners.Delete(runner)
+		_ = runner.Close()
+	}()
+
+	h.executeRunner(r, conn, runner)
+}
+
+func (h *Handler) executeRunner(r *http.Request, conn *websocket.Conn, runner *runner) {
+	start := time.Now()
+	if err := runner.Execute(r.Context()); err != nil {
+		log.WithRequest(r).WithError(err).WithFields(log.Fields{
+			"duration_ms": time.Since(start).Milliseconds(),
+		}).Error("error executing workflow")
+
+		h.handleExecutionError(r, conn, err)
+	}
+}
+
+func (h *Handler) handleExecutionError(r *http.Request, conn *websocket.Conn, err error) {
+	if errors.Is(err, errFailedToAcquireLockError) {
+		// We provide the client with specific error details
+		// for this case so it can tell the user about the
+		// conflicting flow
+		h.sendCloseMessage(r, conn, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
+		return
+	}
+
+	if errors.Is(err, errUsageQuotaExceededError) {
+		// We close the connection with the specific error
+		// so client can process and inform user about the lack of credits
+		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
+	}
+}
+
+func (h *Handler) sendCloseMessage(r *http.Request, conn *websocket.Conn, code int, reason string) {
+	closeMessage := websocket.FormatCloseMessage(code, reason)
+	if err := conn.WriteMessage(websocket.CloseMessage, closeMessage); err != nil {
+		log.WithRequest(r).WithError(err).Error()
+	}
 }

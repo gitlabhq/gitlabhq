@@ -2237,47 +2237,6 @@ paths:
       tags:
       - groups
       operationId: deleteApiV4GroupsIdShareGroupId
-  "/api/v4/groups/{id}/tokens/revoke":
-    post:
-      summary: Revoke a single token
-      description: |
-        Revoke a token, if it has access to the group or any of its subgroups
-        and projects. If the token is revoked, or was already revoked, its
-        details are returned in the response.
-
-        The following criteria must be met:
-
-        - The group must be a top-level group.
-        - You must have Owner permission in the group.
-        - The token type is one of:
-          - Personal access token
-          - Group access token
-          - Project access token
-          - Group deploy token
-          - User feed token
-
-        This feature is gated by the :group_agnostic_token_revocation feature flag.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a top-level group
-        type: string
-        required: true
-      - name: postApiV4GroupsIdTokensRevoke
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4GroupsIdTokensRevoke"
-      responses:
-        '201':
-          description: Revoke a single token
-      tags:
-      - groups
-      operationId: postApiV4GroupsIdTokensRevoke
   "/api/v4/groups/{id}/ldap_sync":
     post:
       description: Sync a group with LDAP.
@@ -49785,15 +49744,6 @@ definitions:
     - group_id
     - group_access
     description: Share a group with a group
-  postApiV4GroupsIdTokensRevoke:
-    type: object
-    properties:
-      token:
-        type: string
-        description: The token to revoke
-    required:
-    - token
-    description: Revoke a single token
   API_Entities_AuditEvent:
     type: object
     properties:

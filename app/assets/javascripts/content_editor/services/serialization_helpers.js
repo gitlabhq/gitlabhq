@@ -1,4 +1,4 @@
-import { htmlEncode } from '~/lib/utils/html';
+import { escape } from 'lodash';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
@@ -76,7 +76,7 @@ export function openTag(tagName, attrs) {
     .map(([key, value]) => {
       if (shouldIgnoreAttr(tagName, key, value)) return '';
 
-      return ` ${key}="${htmlEncode(value?.toString())}"`;
+      return ` ${key}="${escape(value?.toString())}"`;
     })
     .join('');
 

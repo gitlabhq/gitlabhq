@@ -36,6 +36,10 @@ If you select a specific model for a feature, the feature uses that model until 
 You can select a model for a feature that applies to the entire instance. If you don't select a specific model,
 all GitLab Duo features use the default GitLab model.
 
+> [!note]
+> For GitLab Self-Managed instances with an offline license, to change the model for features in the GitLab Duo Agent Platform,
+> you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on.
+
 Prerequisites:
 
 - You must be an administrator.

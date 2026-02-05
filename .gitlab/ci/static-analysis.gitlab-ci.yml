@@ -28,6 +28,7 @@ static-analysis:
   parallel: 2
   variables:
     SETUP_DB: "true"
+    OPENAPI_CHECK_DEBUG: "true"
   script:
     - yarn_install_script
     - scripts/install_frontend_islands

@@ -32,7 +32,7 @@ class RedirectRoute < ApplicationRecord
 
   private
 
-  def unique_attribute
-    :path
+  def unique_attributes
+    [:path]
   end
 end

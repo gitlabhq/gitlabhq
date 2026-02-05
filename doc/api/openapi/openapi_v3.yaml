@@ -85201,51 +85201,6 @@ paths:
         schema:
           type: integer
         in: path
-  "/api/v4/groups/{id}/tokens/revoke":
-    post:
-      operationId: postApiV4GroupsIdTokensRevoke
-      summary: Revoke a single token
-      description: |
-        Revoke a token, if it has access to the group or any of its subgroups
-        and projects. If the token is revoked, or was already revoked, its
-        details are returned in the response.
-
-        The following criteria must be met:
-
-        - The group must be a top-level group.
-        - You must have Owner permission in the group.
-        - The token type is one of:
-          - Personal access token
-          - Group access token
-          - Project access token
-          - Group deploy token
-          - User feed token
-
-        This feature is gated by the :group_agnostic_token_revocation feature flag.
-      tags:
-      - Groups
-      responses:
-        '201':
-          description: Created
-      parameters:
-      - name: id
-        required: true
-        description: The ID of a top-level group
-        schema:
-          type: string
-        in: path
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token:
-                  type: string
-                  description: The token to revoke
-              required:
-              - token
   "/api/v4/groups/{id}/ldap_sync":
     post:
       operationId: postApiV4GroupsIdLdapSync

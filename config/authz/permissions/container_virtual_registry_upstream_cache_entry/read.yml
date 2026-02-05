@@ -1,0 +1,5 @@
+---
+name: read_container_virtual_registry_upstream_cache_entry
+description: Grants the ability to read container virtual registry upstream cache entry
+boundaries:
+  - group

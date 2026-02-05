@@ -178,8 +178,8 @@ module Organizations
       raise ActiveRecord::RecordNotDestroyed, _('Cannot delete the default organization')
     end
 
-    def unique_attribute
-      :path
+    def unique_attributes
+      [:path]
     end
   end
 end

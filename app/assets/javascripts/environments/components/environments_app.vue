@@ -179,8 +179,7 @@ export default {
       return {
         text: this.$options.i18n.reviewAppButtonLabel,
         attributes: {
-          category: 'secondary',
-          variant: 'confirm',
+          variant: 'default',
         },
       };
     },
@@ -192,8 +191,7 @@ export default {
       return {
         text: this.$options.i18n.cleanUpEnvsButtonLabel,
         attributes: {
-          category: 'secondary',
-          variant: 'confirm',
+          variant: 'default',
         },
       };
     },

@@ -49,8 +49,6 @@ ee/app/models/ee/ci/pipeline.rb:
 ee/app/models/ee/ci/runner.rb:
 - cost_factor_for_project
 - allowed_plan_names
-ee/app/models/ee/clusters/concerns/application_core.rb:
-- distinct_by_user
 ee/app/models/ee/epic.rb:
 - elapsed_days
 - max_hierarchy_depth_achieved?
@@ -173,12 +171,6 @@ app/models/ci/runner.rb:
 app/models/clusters/cluster.rb:
 - platform_kubernetes_active?
 - legacy_auto_devops_domain
-app/models/clusters/concerns/application_core.rb:
-- can_uninstall?
-- schedule_status_update
-- update_command
-- uninstall_command
-- post_uninstall
 app/models/clusters/concerns/application_data.rb:
 - certificate_files
 app/models/clusters/concerns/application_status.rb:
@@ -241,7 +233,6 @@ app/models/concerns/user_mention_behaviour.rb:
 - mentioned_groups
 - mentioned_projects
 app/models/event.rb:
-- find_sti_class
 - created_target?
 - note_target_id
 - recent_repository_update?

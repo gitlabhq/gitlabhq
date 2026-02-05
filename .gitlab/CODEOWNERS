@@ -1438,7 +1438,6 @@ lib/gitlab/checks/
 /app/serializers/project_access_token_serializer.rb
 /app/services/access_token_validation_service.rb
 /app/services/group_access_tokens/
-/app/services/groups/agnostic_token_revocation_service.rb
 /app/services/personal_access_tokens/
 /app/services/project_access_tokens/
 /app/services/resource_access_tokens/

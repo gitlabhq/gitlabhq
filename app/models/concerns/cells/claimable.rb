@@ -36,10 +36,14 @@ module Cells
       end
     end
 
-    def handle_grpc_error(error, value)
+    def handle_grpc_error(error)
       case error.code
       when GRPC::Core::StatusCodes::ALREADY_EXISTS
-        errors.add(unique_attribute, :taken, value: value)
+        unique_attribute = unique_attributes.to_sentence(two_words_connector: ' or ')
+        error_key = :"#{unique_attribute.parameterize(separator: '_')}_taken"
+        return if errors.added?(:base, error_key)
+
+        errors.add(:base, error_key, message: "#{unique_attribute} has already been taken")
       when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
         errors.add(:base, "Request timed out. Please try again.")
       when GRPC::Core::StatusCodes::NOT_FOUND

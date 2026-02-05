@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Authn::Tokens::FeedToken, feature_category: :system_access do
   let_it_be_with_reload(:user) { create(:user) }
 
-  subject(:token) { described_class.new(plaintext, :group_token_revocation_service) }
+  subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
   context 'with valid feed token' do
     let(:plaintext) { user.feed_token }

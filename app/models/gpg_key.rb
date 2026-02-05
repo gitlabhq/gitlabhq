@@ -130,8 +130,8 @@ class GpgKey < ApplicationRecord
     end
   end
 
-  def unique_attribute
-    :key
+  def unique_attributes
+    [:key]
   end
 end
 

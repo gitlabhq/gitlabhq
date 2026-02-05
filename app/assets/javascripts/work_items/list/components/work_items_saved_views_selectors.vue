@@ -6,7 +6,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ROUTES } from '~/work_items/constants';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import workItemSavedViewDelete from '~/work_items/graphql/delete_saved_view.mutation.graphql';
-import unsubscribeFromSavedView from '../graphql/unsubscribe_from_saved_view.mutation.graphql';
+import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 import WorkItemsCreateSavedViewDropdown from './work_items_create_saved_view_dropdown.vue';
 import WorkItemsSavedViewSelector from './work_items_saved_view_selector.vue';
 
@@ -171,13 +171,13 @@ export default {
 
       try {
         await this.$apollo.mutate({
-          mutation: unsubscribeFromSavedView,
+          mutation: workItemSavedViewUnsubscribe,
           variables: {
-            id: view.id,
+            input: { id: view.id },
           },
           optimisticResponse: {
-            unsubscribeFromSavedView: {
-              __typename: 'UnsubscribeFromSavedViewPayload',
+            workItemSavedViewUnsubscribe: {
+              __typename: 'WorkItemSavedViewUnsubscribePayload',
               errors: [],
               savedView: {
                 __typename: 'WorkItemSavedViewType',

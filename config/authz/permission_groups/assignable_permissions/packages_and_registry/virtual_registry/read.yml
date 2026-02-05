@@ -5,7 +5,11 @@ boundaries:
   - instance
 permissions:
   - download_maven_package_file
+  - read_container_virtual_registry
+  - read_container_virtual_registry_upstream
+  - read_container_virtual_registry_upstream_cache_entry
   - read_maven_virtual_registry_upstream
+  - test_container_virtual_registry_upstream
   - test_maven_virtual_registry_upstream
   - read_maven_virtual_registry
   - read_maven_virtual_registry_upstream_cache_entry

@@ -98,6 +98,19 @@ To view the configuration change log:
 
 Each configuration change appears as an entry in the table. Select **View details** to see more information about each change.
 
+## Self-hosted AI Gateway for GitLab Dedicated instances
+
+{{< history >}}
+
+- The `ALLOW_DEDICATED_SELF_HOSTED_AIGW` environment variable was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584642) in GitLab 18.9.
+
+{{< /history >}}
+
+To self-host an AI Gateway:
+
+1. Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and ask to enable this feature.
+1. After it's enabled, proceed to [install an AI gateway](../../../install/install_ai_gateway.md).
+
 ## Request configuration changes with a support ticket
 
 Certain configuration changes require that you submit a support ticket to request the changes. For more information on how to create a support ticket, see [creating a ticket](https://about.gitlab.com/support/portal/#creating-a-ticket).

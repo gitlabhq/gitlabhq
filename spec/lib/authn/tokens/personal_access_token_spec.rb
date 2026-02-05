@@ -7,7 +7,7 @@ RSpec.describe Authn::Tokens::PersonalAccessToken, feature_category: :system_acc
   let_it_be(:admin) { create(:admin) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
 
-  subject(:token) { described_class.new(plaintext, :group_token_revocation_service) }
+  subject(:token) { described_class.new(plaintext, :secret_detection) }
 
   RSpec.shared_examples 'validates prefix' do
     it 'returns true if token starts with valid prefix' do

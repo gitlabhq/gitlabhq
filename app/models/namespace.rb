@@ -1055,8 +1055,8 @@ class Namespace < ApplicationRecord
     "namespaces:{#{traversal_ids.first}}:first_auto_devops_config:#{group_id}:#{Digest::SHA2.hexdigest(traversal_ids.join(' '))}"
   end
 
-  def unique_attribute
-    :path
+  def unique_attributes
+    [:path]
   end
 end
 

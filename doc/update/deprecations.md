@@ -243,10 +243,7 @@ The trending algorithm only considers public projects, making it ineffective for
 
 **Action required**
 
-UI users: The **Trending** tab will be inaccessible during the next breaking change window before full removal in 19.0. We recommend using:
-
-- The **Active** tab for recently updated or most starred projects
-- The **All** tab for comprehensive browsing with search
+UI users: The **Trending** tab will be inaccessible during the next breaking change window before full removal in 19.0. We recommend using the **Active** tab to view recently updated or most starred projects.
 
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 

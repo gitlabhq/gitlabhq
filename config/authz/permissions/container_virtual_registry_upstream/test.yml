@@ -1,0 +1,5 @@
+---
+name: test_container_virtual_registry_upstream
+description: Grants the ability to test container virtual registry upstream
+boundaries:
+  - group

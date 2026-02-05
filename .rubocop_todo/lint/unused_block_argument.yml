@@ -308,7 +308,6 @@ Lint/UnusedBlockArgument:
     - 'spec/support/shared_examples/lib/gitlab/usage_data_counters/code_review_extension_request_examples.rb'
     - 'spec/support/shared_examples/metrics/active_record_subscriber_shared_examples.rb'
     - 'spec/support/shared_examples/models/active_record_enum_shared_examples.rb'
-    - 'spec/support/shared_examples/models/cluster_application_core_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_positionable_note_shared_examples.rb'
     - 'spec/support/shared_examples/models/issue_tracker_service_shared_examples.rb'
     - 'spec/support/shared_examples/models/snippet_shared_examples.rb'

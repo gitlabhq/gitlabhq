@@ -203,8 +203,8 @@ class Key < ApplicationRecord
     errors.add(:key, message: 'has expired') if expired?
   end
 
-  def unique_attribute
-    :key
+  def unique_attributes
+    [:key]
   end
 end
 

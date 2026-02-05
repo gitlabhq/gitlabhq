@@ -95,6 +95,8 @@ module Projects
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(', ')}"
       fail(error: message)
+    rescue Cells::TransactionRecord::Error => e
+      fail(error: e.message)
     rescue ImportSourceDisabledError => e
       @project.errors.add(:import_source_disabled, e.message) if @project
       fail(error: e.message)

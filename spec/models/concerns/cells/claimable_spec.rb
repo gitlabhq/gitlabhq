@@ -213,14 +213,13 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
 
   describe "#handle_grpc_error" do
     let(:model) { build(:organization) }
-    let(:attribute) { :path }
 
     context "when error is ALREADY_EXISTS" do
       let(:grpc_error) { GRPC::AlreadyExists.new("conflict") }
 
       it "assigns attribute-specific message" do
-        model.handle_grpc_error(grpc_error, attribute)
-        expect(model.errors[attribute]).to include("has already been taken")
+        model.handle_grpc_error(grpc_error)
+        expect(model.errors[:base]).to include("path has already been taken")
       end
     end
 
@@ -228,7 +227,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       let(:grpc_error) { GRPC::DeadlineExceeded.new("timeout") }
 
       it "assigns timeout message" do
-        model.handle_grpc_error(grpc_error, attribute)
+        model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("Request timed out. Please try again.")
       end
     end
@@ -237,7 +236,7 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       let(:grpc_error) { GRPC::Internal.new("something bad") }
 
       it "assigns generic message" do
-        model.handle_grpc_error(grpc_error, attribute)
+        model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("An error occurred while processing your request")
       end
     end

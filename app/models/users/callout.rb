@@ -125,6 +125,7 @@ module Users
       file_tree_browser_popover: 121,
       virtual_registry_permission_change_alert: 122, # EE-only
       security_scanner_profiles_announcement: 123 # EE-only
+      # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
     }
 
     validates :feature_name,

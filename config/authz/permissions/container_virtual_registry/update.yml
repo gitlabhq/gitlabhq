@@ -1,0 +1,5 @@
+---
+name: update_container_virtual_registry
+description: Grants the ability to update container virtual registries
+boundaries:
+  - group

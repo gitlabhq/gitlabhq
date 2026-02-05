@@ -162,9 +162,9 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
           allow(Cells::OutstandingLease).to receive(:create_from_request!).and_raise(grpc_error)
         end
 
-        it "adds error to created records and raises Rollback" do
-          expect { record.before_committed! }.to raise_error(ActiveRecord::Rollback)
-          expect(model.errors[:path]).to include("has already been taken")
+        it "adds error to created records and raises Error" do
+          expect { record.before_committed! }.to raise_error(described_class::Error, /Failed to create lease/)
+          expect(model.errors[:base]).to include("path has already been taken")
         end
       end
     end

@@ -26,10 +26,8 @@ title: Triggers
 
 A trigger determines when a flow runs.
 
-You specify the service account that runs the flow, and which conditions make the flow run.
-
-For example, you can specify flows to be triggered when you mention a service account
-in a discussion, or when you assign the service account as a reviewer.
+For example, you can specify flows to be triggered when you mention them
+in a discussion, or when you assign them as a reviewer.
 
 ## Create a trigger
 
@@ -56,8 +54,8 @@ To create a trigger:
      to an issue or merge request.
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
-1. From the **Service account user** dropdown list,
-   select the service account user.
+1. From the **Service account** dropdown list,
+   select a user to be [the composite identity](../../duo_agent_platform/composite_identity.md).
 1. For **Configuration source**, select one of the following:
    - **AI Catalog**: From the flows configured for this project,
      select a flow for the trigger to execute.

@@ -3229,8 +3229,8 @@ class User < ApplicationRecord
     query.exists?
   end
 
-  def unique_attribute
-    :username
+  def unique_attributes
+    [:username, :email]
   end
 
   ##

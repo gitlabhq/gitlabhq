@@ -1,8 +1,7 @@
 # @feature_category: portfolio_management
 
-mutation unsubscribeFromSavedView($id: WorkItemsSavedViewID!) {
-  unsubscribeFromSavedView(id: $id) @client {
-    errors
+mutation workItemSavedViewUnsubscribe($input: WorkItemSavedViewUnsubscribeInput!) {
+  workItemSavedViewUnsubscribe(input: $input) {
     savedView {
       id
     }

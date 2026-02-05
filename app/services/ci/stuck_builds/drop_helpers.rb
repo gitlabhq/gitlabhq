@@ -11,6 +11,12 @@ module Ci
         end
       end
 
+      def drop_incomplete(builds, failure_reason:)
+        fetch(builds) do |build|
+          drop_incomplete_build :outdated, build, failure_reason
+        end
+      end
+
       def drop_stuck(builds, failure_reason:)
         fetch(builds) do |build|
           break unless build.stuck?
@@ -42,6 +48,19 @@ module Ci
         end
       rescue StandardError => ex
         build.doom!
+
+        track_exception_for_build(ex, build)
+      end
+
+      def drop_incomplete_build(type, build, reason)
+        log_dropping_message(type, build, reason)
+        Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
+          b.drop!(reason)
+        end
+      rescue StandardError => ex
+        # If these causes many race conditions we will need a common lock of
+        # build status updates and this method
+        build.doom! unless build.reset.complete?
 
         track_exception_for_build(ex, build)
       end

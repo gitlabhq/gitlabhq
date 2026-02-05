@@ -16,7 +16,6 @@ internal/healthcheck/puma_checker.go:113:32: Function 'Check' is too long (62 > 
 internal/upstream/routes.go:292:6: Function 'configureRoutes' is too long (313 > 60) (funlen)
 internal/upstream/upstream.go:92:6: Function 'newUpstream' is too long (63 > 60) (funlen)
 cmd/gitlab-workhorse/main.go:210:1: cognitive complexity 31 of func `run` is high (> 20) (gocognit)
-internal/ai_assist/duoworkflow/handler.go:62:1: cognitive complexity 23 of func `(*Handler).Build` is high (> 20) (gocognit)
 internal/git/archive.go:67:1: cognitive complexity 23 of func `(*archive).Inject` is high (> 20) (gocognit)
 internal/transport/transport.go:147:1: cognitive complexity 59 of func `validateIPAddress` is high (> 20) (gocognit)
 internal/git/io_test.go:89:14: string `test data` has 3 occurrences, make it a constant (goconst)

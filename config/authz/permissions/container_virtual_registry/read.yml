@@ -1,0 +1,5 @@
+---
+name: read_container_virtual_registry
+description: Grants the ability to read container virtual registries
+boundaries:
+  - group
