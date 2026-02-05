@@ -237,7 +237,7 @@ Example response:
 
 {{< /history >}}
 
-Creates a two-way relation between two epics. The user must have at least the Guest role for both groups.
+Creates a two-way relation between two epics. The user must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both groups.
 
 ```plaintext
 POST /groups/:id/epics/:epic_iid/related_epics
@@ -364,7 +364,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes a two-way relation between two specified epics. The user must have at least the Guest role for both groups.
+Deletes a two-way relation between two specified epics. The user must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both groups.
 
 ```plaintext
 DELETE /groups/:id/epics/:epic_iid/related_epics/:related_epic_link_id

@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::Package, type: :model, feature_category: :package_registry do
-  let_it_be(:package) { create(:conan_package) }
-
   describe 'relationships' do
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
 
@@ -55,6 +53,8 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
     end
 
     context 'for recipe uniqueness' do
+      let_it_be(:package) { create(:conan_package) }
+
       let(:new_package) do
         build(:conan_package, project: package.project, name: package.name, version: package.version)
       end
@@ -85,6 +85,8 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
   end
 
   describe 'scopes' do
+    let_it_be(:package) { create(:conan_package) }
+
     describe '.with_conan_channel' do
       subject { described_class.with_conan_channel('stable') }
 
@@ -115,45 +117,6 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
 
     describe '.installable' do
       it_behaves_like 'installable packages', :conan_package
-    end
-  end
-
-  describe '#latest_recipe_revision_or_default' do
-    subject(:revision) { package.latest_recipe_revision_or_default }
-
-    context 'when package has recipe revisions' do
-      it 'returns the last recipe revision' do
-        expect(revision).to eq(package.conan_recipe_revisions.last)
-      end
-    end
-
-    context 'when package does not have recipe revisions' do
-      let_it_be(:package) { create(:conan_package, without_revisions: true) }
-
-      it 'returns default recipe revision' do
-        expect(revision).to be_a(::Packages::Conan::RecipeRevision)
-          .and have_attributes(revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION, package_id: package.id)
-      end
-    end
-  end
-
-  describe '#default_recipe_revision' do
-    let_it_be(:package) { create(:conan_package, without_revisions: true) }
-
-    subject(:revision) { package.default_recipe_revision }
-
-    it 'returns default recipe revision' do
-      expect(revision).to be_a(::Packages::Conan::RecipeRevision)
-        .and have_attributes(revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION, package_id: package.id)
-    end
-  end
-
-  describe '#default_package_revision' do
-    subject(:revision) { package.default_package_revision }
-
-    it 'returns default package revision' do
-      expect(revision).to be_a(::Packages::Conan::PackageRevision)
-        .and have_attributes(revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION, package_id: package.id)
     end
   end
 end

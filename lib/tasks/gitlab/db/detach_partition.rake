@@ -22,6 +22,15 @@ namespace :gitlab do
     #   bounds_clause: "FOR VALUES IN ('100')"
     #   required_constraint: "(partition_id = 100)"
     #   parent_schema: "public"
+    #
+    # To find the correct required_constraint value:
+    # 1. Detach the partition on Database Lab first using DETACH CONCURRENTLY
+    #      pgai use -o ci -- bin/rake 'gitlab:db:detach_partition:ci[foo_table_100]'
+    # 2. Query the existing validated constraints:
+    #      SELECT pg_get_constraintdef(oid)
+    #      FROM pg_constraint
+    #      WHERE conrelid = 'gitlab_partitions_dynamic.foo_table_100'::regclass
+    #        AND contype = 'c';
 
     desc "GitLab | DB | Detach partition"
     task :detach_partition, [:partition_name] => :environment do |_, args|

@@ -56,6 +56,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
 
   return {
     el,
+    name: 'PipelineDetailsRoot',
     components: {
       PipelineTabs,
     },

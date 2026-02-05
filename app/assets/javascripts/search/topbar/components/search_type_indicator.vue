@@ -13,7 +13,6 @@ import {
   SEARCH_LEVEL_GROUP,
 } from '~/search/store/constants';
 
-// eslint-disable-next-line no-restricted-imports
 import { SCOPE_BLOB } from '../../sidebar/constants';
 
 export default {

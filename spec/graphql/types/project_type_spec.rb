@@ -507,6 +507,13 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     it { is_expected.to have_graphql_resolver(Resolvers::ReleasesResolver) }
   end
 
+  describe 'pipelineScheduleStatusCount field' do
+    subject { described_class.fields['pipelineScheduleStatusCounts'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::PipelineScheduleStatusCountType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::ProjectPipelineScheduleStatusCountsResolver) }
+  end
+
   describe 'container tags expiration policy field' do
     subject { described_class.fields['containerTagsExpirationPolicy'] }
 

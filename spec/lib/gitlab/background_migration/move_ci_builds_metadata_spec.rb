@@ -251,7 +251,7 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
 
         job_a.update!(
           options: { 'image' => 'ruby', 'script' => 'rspec' },
-          yaml_variables: [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" }]
+          yaml_variables: [{ "key" => "ENVIRONMENT\u0000", "value" => "${ENVIRONMENT}" }]
         )
 
         job_b.update!(
@@ -282,6 +282,35 @@ RSpec.describe Gitlab::BackgroundMigration::MoveCiBuildsMetadata, feature_catego
             { "key" => "DEBUG", "value" => "true" }],
           'tag_list' => %w[docker rails]
         })
+      end
+
+      context 'when the yaml is mangled' do
+        before do
+          job_a.connection.execute(<<-SQL)
+            UPDATE p_ci_builds SET yaml_variables = '{foo: bar baz: qux}' WHERE id = #{job_a.id}
+          SQL
+        end
+
+        it 'removes the invalid content' do
+          expect { migration.perform }.to change { definitions_table.count }.by(2)
+
+          job_definition_a = find_definition(job_a)
+          job_definition_b = find_definition(job_b)
+
+          expect(job_definition_a.config).to match({
+            'options' => { 'image' => 'ruby', 'script' => 'rspec' },
+            'interruptible' => true,
+            'yaml_variables' => [],
+            'tag_list' => %w[postgresql ruby]
+          })
+
+          expect(job_definition_b.config).to match({
+            'options' => { 'image' => 'ruby', 'script' => 'rspec' },
+            'yaml_variables' => [{ "key" => "ENVIRONMENT", "value" => "${ENVIRONMENT}" },
+              { "key" => "DEBUG", "value" => "true" }],
+            'tag_list' => %w[docker rails]
+          })
+        end
       end
     end
 

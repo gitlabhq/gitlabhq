@@ -1,0 +1,6 @@
+---
+name: create_variable
+description: Grants the ability to create variables
+boundaries:
+  - project
+  - group

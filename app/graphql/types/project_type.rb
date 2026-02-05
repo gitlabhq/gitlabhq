@@ -934,6 +934,10 @@ module Types
       experiment: { milestone: '18.5' },
       description: 'A single project webhook.'
 
+    field :pipeline_schedule_status_counts, Types::Ci::PipelineScheduleStatusCountType,
+      resolver: Resolvers::Ci::ProjectPipelineScheduleStatusCountsResolver,
+      description: 'Counts of pipeline schedules by status.'
+
     def ci_pipeline_creation_request(request_id:)
       ::Ci::PipelineCreation::Requests.get_request(object, request_id)
     end

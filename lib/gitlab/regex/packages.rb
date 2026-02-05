@@ -39,14 +39,6 @@ module Gitlab
         @conan_revision_regex_v2 ||= %r/\A(?:\h{32}|\h{40})\z/
       end
 
-      # The revision format depends on the Conan protocol version:
-      # - v1: always "0" (revisions not supported)
-      # - v2: either MD5 hash (32 hex chars) or SCM commit ID (40 hex chars)
-      #   per https://docs.conan.io/2.10/reference/conanfile/attributes.html#revision-mode
-      def conan_revision_regex_combined
-        @conan_revision_regex_combined ||= %r{\A(?:0|\h{32}|\h{40})\z}
-      end
-
       def conan_recipe_user_channel_regex
         %r{\A(_|#{conan_name_regex})\z}
       end

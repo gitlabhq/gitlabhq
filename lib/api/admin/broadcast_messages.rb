@@ -46,9 +46,7 @@ module API
             values: System::BroadcastMessage::ALLOWED_TARGET_ACCESS_LEVELS,
             desc: 'Target user roles'
           optional :target_path, type: String, desc: 'Target path'
-          optional :broadcast_type, type: String, values: System::BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: -> {
-                                                                                                                                                                'banner'
-                                                                                                                                                              }
+          optional :broadcast_type, type: String, values: System::BroadcastMessage.broadcast_types.keys, desc: 'Broadcast type. Defaults to banner', default: 'banner'
           optional :dismissable, type: Boolean, desc: 'Is dismissable'
           optional :theme, type: String, values: System::BroadcastMessage.themes.keys, desc: 'The theme for the message'
         end

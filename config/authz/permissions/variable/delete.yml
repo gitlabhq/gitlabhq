@@ -1,0 +1,6 @@
+---
+name: delete_variable
+description: Grants the ability to delete variables
+boundaries:
+  - project
+  - group

@@ -4,7 +4,7 @@ module Database
   class DuplicateIndexes
     attr_accessor :table_name, :indexes
 
-    BTREE_INDEX_STRUCT = Struct.new(:name, :columns, :unique)
+    BTREE_INDEX_STRUCT = Struct.new(:name, :columns, :unique, :where)
 
     def initialize(table_name, indexes)
       @table_name = table_name
@@ -35,7 +35,8 @@ module Database
           column_order = index.orders.is_a?(Symbol) ? index.orders : (index.orders[column] || :asc)
           { name: column, order: column_order }
         end,
-        index.unique
+        index.unique,
+        index.where
       )
     end
 
@@ -44,9 +45,9 @@ module Database
     def btree_indexes
       return @btree_indexes if @btree_indexes
 
-      # We only scan non-conditional btree indexes
+      # We scan btree indexes without opclasses
       @btree_indexes = indexes.select do |index|
-        index.using == :btree && index.where.nil? && index.opclasses.blank?
+        index.using == :btree && index.opclasses.blank?
       end
 
       @btree_indexes = @btree_indexes.map { |index| self.class.btree_index_struct(index) }
@@ -65,7 +66,7 @@ module Database
 
     def duplicate_indexes_for(btree_index)
       btree_indexes.reject { |other_index| other_index == btree_index }.select do |other_index|
-        other_index.columns == btree_index.columns
+        other_index.columns == btree_index.columns && other_index.where == btree_index.where
       end
     end
 
@@ -77,7 +78,8 @@ module Database
       (1..btree_index.columns.length).each do |subset_length|
         columns = btree_index.columns.first(subset_length)
         matching_indexes = btree_indexes.reject { |other_index| other_index == btree_index }.select do |other_index|
-          other_index.columns == columns
+          # Only compare indexes with the same WHERE clause (including both being nil)
+          other_index.columns == columns && other_index.where == btree_index.where
         end
 
         # For now we ignore other indexes that are UNIQUE and have a matching columns subset of

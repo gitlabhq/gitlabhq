@@ -879,6 +879,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_cache_tag_signatures
+  - 1
 - - repositories_post_receive
   - 5
 - - repositories_rewrite_history

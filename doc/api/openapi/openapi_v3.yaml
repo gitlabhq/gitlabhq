@@ -16125,6 +16125,7 @@ paths:
               properties:
                 number_of_replicas_override:
                   type: integer
+                  minimum: 1
                   description: The number of replicas override to set (nil to unset)
   "/api/v4/admin/zoekt/shards":
     get:
@@ -19522,7 +19523,8 @@ paths:
   "/api/v4/user/{user_id}/credit_card_validation":
     put:
       operationId: putApiV4UserUserIdCreditCardValidation
-      summary: "[DEPRECATED] Update a user's credit_card_validation"
+      summary: Update a user's credit_card_validation
+      description: Deprecated in 17.7
       tags:
       - Users
       responses:
@@ -45596,9 +45598,6 @@ paths:
                   type: string
                   description: Name of the object storage bucket where export data
                     is stored
-                source_hostname:
-                  type: string
-                  description: Hostname or alias of the instance exposed on import
                 aws_s3_configuration:
                   type: object
                   description: AWS S3 object storage configuration
@@ -45660,7 +45659,6 @@ paths:
                     - full_path
               required:
               - bucket
-              - source_hostname
               - entities
     get:
       operationId: getApiV4OfflineExports
@@ -47382,7 +47380,8 @@ paths:
   "/api/v4/namespaces/{id}":
     put:
       operationId: putApiV4NamespacesId
-      summary: "[DEPRECATED] Update a namespace"
+      summary: Update a namespace
+      description: Deprecated in 17.8
       tags:
       - Namespaces
       responses:
@@ -47933,9 +47932,8 @@ paths:
           description: Not found
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidApprovals
-      summary: 'Deprecated in 16.0: Use the merge request approvals API instead. Change
-        approval-related configuration'
-      description: This feature was introduced in 10.6 and deprecated in 16.0
+      summary: Change approval-related configuration
+      description: Deprecated in 16.0. Use the merge request approvals API instead.
       tags:
       - Merge request approvals
       responses:
@@ -66308,6 +66306,8 @@ paths:
                   description: Strategy for behavior on timeouts
                 pagination_limit:
                   type: integer
+                  minimum: 1
+                  maximum: 100
                   description: Pagination limit
               required:
               - personal_access_token
@@ -69436,12 +69436,14 @@ paths:
         description: The first line of the range to blame
         schema:
           type: integer
+          minimum: 1
         in: query
       - name: range[end]
         required: true
         description: The last line of the range to blame
         schema:
           type: integer
+          minimum: 1
         in: query
   "/api/v4/projects/{id}/repository/files/{file_path}/raw":
     get:

@@ -78,7 +78,7 @@ Lists all uploads of a project sorted by `created_at` in descending order.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads
@@ -133,7 +133,7 @@ Downloads an uploaded file by ID.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads/:upload_id
@@ -166,7 +166,7 @@ Download an uploaded file by secret and filename.
 
 Prerequisites:
 
-- At least the Guest role.
+- the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 ```plaintext
 GET /projects/:id/uploads/:secret/:filename
@@ -200,7 +200,7 @@ Deletes an uploaded file by ID.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 DELETE /projects/:id/uploads/:upload_id
@@ -233,7 +233,7 @@ Deletes an uploaded file by secret and filename.
 
 Prerequisites:
 
-- At least the Maintainer role.
+- the Maintainer or Owner role.
 
 ```plaintext
 DELETE /projects/:id/uploads/:secret/:filename

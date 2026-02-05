@@ -31,8 +31,11 @@ GitLab offers extensions for the following development environments:
 
 If you prefer a command-line interface, try:
 
-- [`glab`](gitlab_cli/_index.md) the GitLab CLI.
-- [GitLab.nvim for Neovim](neovim/_index.md): Bring GitLab Duo Code Suggestions directly to Neovim in your terminal window.
+- [`glab`](gitlab_cli/_index.md): The GitLab CLI.
+- [`duo`](../user/gitlab_duo_cli/_index.md): The GitLab Duo CLI. Bring GitLab Duo Chat (Agentic) to your terminal to ask
+  complex questions about your codebase and perform actions on your behalf.
+- [GitLab.nvim for Neovim](neovim/_index.md): The GitLab plugin for Neovim. Bring GitLab Duo Code
+  Suggestions directly to Neovim in your terminal window.
 
 ## Features
 

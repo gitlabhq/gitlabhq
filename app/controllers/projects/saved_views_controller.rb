@@ -15,10 +15,7 @@ module Projects
     end
 
     def show
-      not_found unless project.work_items_saved_views_enabled?(current_user)
-
-      # do the subscribe stuff here
-      # clear out params?
+      return not_found unless project.work_items_saved_views_enabled?(current_user)
 
       render 'projects/work_items/index'
     end

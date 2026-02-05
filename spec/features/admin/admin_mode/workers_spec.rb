@@ -56,7 +56,7 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
 
         visit admin_user_path(user_to_delete)
 
-        expect(page).to have_content("#{user_to_delete.name} Blocked")
+        expect(page).to have_title('Not Found')
       end
     end
   end
@@ -65,6 +65,10 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
     gitlab_sign_out
 
     Sidekiq::Worker.drain_all
+
+    # User deletion is async via GhostUserMigration, processed by a cron worker.
+    # Explicitly run it to complete the deletion.
+    Users::MigrateRecordsToGhostUserInBatchesWorker.new.perform
 
     sign_in(user)
     enable_admin_mode!(user)

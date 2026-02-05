@@ -30,7 +30,6 @@ module API
       desc 'Start a new offline transfer export'
       params do
         requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
-        requires :source_hostname, type: String, desc: 'Hostname or alias of the instance exposed on import'
         optional :aws_s3_configuration, type: Hash, desc: 'AWS S3 object storage configuration' do
           requires :aws_access_key_id, type: String, desc: 'AWS S3 access key ID'
           requires :aws_secret_access_key, type: String, desc: 'AWS S3 secret access key'
@@ -74,7 +73,6 @@ module API
         set_current_organization
         response = ::Import::Offline::Exports::CreateService.new(
           current_user,
-          declared_params[:source_hostname],
           declared_params[:entities],
           storage_config,
           Current.organization.id

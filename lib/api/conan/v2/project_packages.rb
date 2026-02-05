@@ -94,8 +94,10 @@ module API
                 get urgency: :low do
                   not_found!('Package') unless package
 
-                  # Fall back to default revision '0' for Conan v1 compatibility
-                  revision = package.latest_recipe_revision_or_default
+                  revision = package.conan_recipe_revisions.default.order_by_id_desc.first
+
+                  not_found!('Revision') unless revision.present?
+
                   present revision, with: ::API::Entities::Packages::Conan::Revision
                 end
               end
@@ -121,7 +123,7 @@ module API
                   present package, with: ::API::Entities::Packages::Conan::RecipeRevisions
                 end
                 params do
-                  requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_combined,
+                  requires :recipe_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,
                     desc: 'Recipe revision', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
                 end
                 namespace ':recipe_revision' do
@@ -285,8 +287,9 @@ module API
 
                     authorize_read_package!(project)
                     not_found!('Package') unless package
+                    not_found!('Revision') unless recipe_revision.present?
 
-                    (recipe_revision || package).conan_package_references.pluck_reference_and_info.to_h
+                    recipe_revision.conan_package_references.pluck_reference_and_info.to_h
                   end
 
                   params do
@@ -314,8 +317,10 @@ module API
                       get urgency: :low do
                         not_found!('Package') unless package
 
-                        # Fall back to default revision '0' for Conan v1 compatibility
-                        revision = package_revisions.default.order_by_id_desc.first || package.default_package_revision
+                        revision = package_revisions.default.order_by_id_desc.first
+
+                        not_found!('Revision') unless revision.present?
+
                         present revision, with: ::API::Entities::Packages::Conan::Revision
                       end
                     end
@@ -349,7 +354,7 @@ module API
                       end
 
                       params do
-                        requires :package_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_combined,
+                        requires :package_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,
                           desc: 'Package revision', documentation: { example: '3bdd2d8c8e76c876ebd1ac0469a4e72c' }
                       end
                       namespace ':package_revision' do

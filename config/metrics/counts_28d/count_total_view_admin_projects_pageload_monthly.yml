@@ -2,6 +2,10 @@
 key_path: counts.count_total_view_admin_projects_pageload_monthly
 description: Monthly count of vistors to the admin projects page
 product_group: engagement
+product_categories:
+- navigation
+- settings
+- groups_and_projects
 performance_indicator_type: []
 value_type: number
 status: active

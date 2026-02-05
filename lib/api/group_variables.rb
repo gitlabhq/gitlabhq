@@ -23,6 +23,7 @@ module API
       params do
         use :pagination
       end
+      route_setting :authorization, permissions: :read_variable, boundary_type: :group
       get ':id/variables', urgency: :low do
         variables = user_group.variables
 
@@ -39,6 +40,7 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
+      route_setting :authorization, permissions: :read_variable, boundary_type: :group
       get ':id/variables/:key', urgency: :low do
         variable = find_variable(user_group, params)
 
@@ -55,6 +57,7 @@ module API
         tags %w[ci_variables]
       end
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
+      route_setting :authorization, permissions: :create_variable, boundary_type: :group
       params do
         requires :key, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the
         authenticated user'
@@ -94,6 +97,7 @@ module API
         tags %w[ci_variables]
       end
       route_setting :log_safety, { safe: %w[key], unsafe: %w[value] }
+      route_setting :authorization, permissions: :update_variable, boundary_type: :group
       params do
         optional :key, type: String, desc: 'The key of a variable'
         optional :value, type: String, desc: 'The value of a variable'
@@ -155,6 +159,7 @@ module API
       params do
         requires :key, type: String, desc: 'The key of a variable'
       end
+      route_setting :authorization, permissions: :delete_variable, boundary_type: :group
       delete ':id/variables/:key' do
         variable = find_variable(user_group, params)
         break not_found!('GroupVariable') unless variable

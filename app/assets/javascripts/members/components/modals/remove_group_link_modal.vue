@@ -4,7 +4,6 @@ import { GlModal, GlSprintf, GlForm } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
-// eslint-disable-next-line no-restricted-imports
 import { REMOVE_GROUP_LINK_MODAL_ID } from '../../constants';
 
 export default {

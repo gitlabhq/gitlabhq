@@ -1418,7 +1418,8 @@ module API
         present paginate(current_user.emails), with: Entities::Email
       end
 
-      desc "[DEPRECATED] Update a user's credit_card_validation" do
+      desc "Update a user's credit_card_validation" do
+        detail 'Deprecated in 17.7'
         success Entities::UserCreditCardValidations
         tags ['users']
       end

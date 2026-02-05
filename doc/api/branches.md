@@ -61,8 +61,8 @@ response attributes:
 | `commit.trailers`          | object              | Git trailers parsed from the commit message. |
 | `commit.web_url`           | string              | URL to view the commit in the GitLab UI. |
 | `default`                  | boolean             | If `true`, the branch is the default branch for the project. |
-| `developers_can_merge`     | boolean             | If `true`, users with at least the Developer role can merge to this branch. |
-| `developers_can_push`      | boolean             | If `true`, users with at least the Developer role can push to this branch. |
+| `developers_can_merge`     | boolean             | If `true`, users with the Developer, Maintainer, or Owner role can merge to this branch. |
+| `developers_can_push`      | boolean             | If `true`, users with the Developer, Maintainer, or Owner role can push to this branch. |
 | `merged`                   | boolean             | If `true`, the branch has been merged into the default branch. |
 | `name`                     | string              | Name of the branch. |
 | `protected`                | boolean             | If `true`, the branch is protected from force pushes and deletion. |

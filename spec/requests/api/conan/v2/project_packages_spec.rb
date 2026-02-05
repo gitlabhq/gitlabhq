@@ -207,14 +207,17 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       let(:url_suffix) { "#{url_recipe_path}/revisions/#{url_recipe_revision}/files/#{url_file_name}" }
 
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
       where(:error, :url_recipe_path, :url_recipe_revision, :url_file_name) do
-        /package_name/     | 'pac$kage-1/1.0.0/namespace1+project-1/stable' | ref(:recipe_revision) | ref(:file_name)
-        /package_version/  | 'package-1/1.0.$/namespace1+project-1/stable'  | ref(:recipe_revision) | ref(:file_name)
-        /package_username/ | 'package-1/1.0.0/name$pace1+project-1/stable'  | ref(:recipe_revision) | ref(:file_name)
-        /package_channel/  | 'package-1/1.0.0/namespace1+project-1/$table'  | ref(:recipe_revision) | ref(:file_name)
-        /recipe_revision/  | ref(:recipe_path)                              | 'invalid_revi$ion'    | ref(:file_name)
-        /file_name/        | ref(:recipe_path)                              | ref(:recipe_revision) | 'invalid_file.txt'
+        /package_name/     | 'pac$kage-1/1.0.0/namespace1+project-1/stable' | ref(:recipe_revision)                            | ref(:file_name)
+        /package_version/  | 'package-1/1.0.$/namespace1+project-1/stable'  | ref(:recipe_revision)                            | ref(:file_name)
+        /package_username/ | 'package-1/1.0.0/name$pace1+project-1/stable'  | ref(:recipe_revision)                            | ref(:file_name)
+        /package_channel/  | 'package-1/1.0.0/namespace1+project-1/$table'  | ref(:recipe_revision)                            | ref(:file_name)
+        /recipe_revision/  | ref(:recipe_path)                              | 'invalid_revi$ion'                               | ref(:file_name)
+        /recipe_revision/  | ref(:recipe_path)                              | Packages::Conan::FileMetadatum::DEFAULT_REVISION | ref(:file_name)
+        /file_name/        | ref(:recipe_path)                              | ref(:recipe_revision)                            | 'invalid_file.txt'
       end
+      # rubocop:enable Layout/LineLength
 
       with_them do
         it_behaves_like 'returning response status with error', status: :bad_request, error: params[:error]
@@ -261,11 +264,14 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           "#{url_package_revision}/files/#{url_file_name}"
       end
 
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
       where(:error, :url_package_reference, :url_package_revision, :url_file_name) do
-        /conan_package_reference/ | 'invalid_package_reference$'  | ref(:package_revision)     | ref(:file_name)
-        /package_revision/        | ref(:conan_package_reference) | 'invalid_package_revi$ion' | ref(:file_name)
-        /file_name/               | ref(:conan_package_reference) | ref(:package_revision)     | 'invalid_file.txt'
+        /conan_package_reference/ | 'invalid_package_reference$' | ref(:package_revision) | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | 'invalid_package_revi$ion'                        | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | Packages::Conan::FileMetadatum::DEFAULT_REVISION  | ref(:file_name)
+        /file_name/              | ref(:conan_package_reference)                     | ref(:package_revision)                            | 'invalid_file.txt'
       end
+      # rubocop:enable Layout/LineLength
 
       with_them do
         it_behaves_like 'returning response status with error', status: :bad_request, error: params[:error]
@@ -393,7 +399,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         create(:conan_recipe_revision, :processing, package: package)
       end
 
-      it 'returns the latest revision with default status' do
+      it 'returns the latest default revision' do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -408,14 +414,11 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     context 'when package has no revisions' do
       let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
 
-      it 'returns default revision' do
+      it 'returns 404' do
         request
 
-        expect(response).to have_gitlab_http_status(:success)
-        expect(json_response).to eq(
-          'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
-          'time' => nil
-        )
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Revision Not Found')
       end
     end
 
@@ -424,6 +427,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'package not found'
     it_behaves_like 'project not found by project id'
+    it_behaves_like 'package without revisions returns not found'
   end
 
   describe 'DELETE /api/v4/projects/:id/packages/conan/v2/conans/:package_name/package_version/:package_username/' \
@@ -619,12 +623,12 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
     end
 
-    context 'with multiple package revisions' do
+    context 'with multiple recipe revisions' do
       before do
         create(:conan_package_revision, :processing, package: package)
       end
 
-      it 'returns the latest revision with default status' do
+      it 'returns the latest default revision' do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -636,32 +640,16 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
     end
 
-    context 'when package revision does not exist' do
+    context 'when recipe revision does not exist' do
       let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
 
-      it 'returns default revision' do
-        request
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(json_response).to eq(
-          'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
-          'time' => nil
-        )
-      end
+      it_behaves_like 'returns 404 when resource does not exist'
     end
 
     context 'when package reference does not exist' do
       let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
 
-      it 'returns default revision' do
-        request
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(json_response).to eq(
-          'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
-          'time' => nil
-        )
-      end
+      it_behaves_like 'returns 404 when resource does not exist'
     end
 
     it_behaves_like 'enforcing read_packages job token policy'

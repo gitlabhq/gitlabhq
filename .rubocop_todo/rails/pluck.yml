@@ -112,7 +112,6 @@ Rails/Pluck:
     - 'spec/controllers/groups/labels_controller_spec.rb'
     - 'spec/controllers/groups/milestones_controller_spec.rb'
     - 'spec/controllers/groups/releases_controller_spec.rb'
-    - 'spec/controllers/groups/shared_projects_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/stages_controller_spec.rb'
     - 'spec/controllers/projects/autocomplete_sources_controller_spec.rb'
     - 'spec/controllers/projects/environments_controller_spec.rb'

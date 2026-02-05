@@ -16,10 +16,7 @@ module Groups
     end
 
     def show
-      not_found unless group.work_items_saved_views_enabled?(current_user)
-
-      # do the subscribe stuff here
-      # clear out params?
+      return not_found unless group.work_items_saved_views_enabled?(current_user)
 
       render 'groups/work_items/index'
     end

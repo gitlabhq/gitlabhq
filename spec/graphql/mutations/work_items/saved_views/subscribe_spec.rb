@@ -124,7 +124,7 @@ RSpec.describe Mutations::WorkItems::SavedViews::Subscribe, feature_category: :p
           result = resolve_mutation(id: saved_view.to_global_id)
 
           expect(result[:saved_view]).to be_nil
-          expect(result[:errors]).to eq(['Saved view limit exceeded.'])
+          expect(result[:errors]).to eq(['Subscribed saved view limit exceeded.'])
         end
 
         it 'does not create a new subscription' do

@@ -23,7 +23,7 @@ Use this API to interact with GitLab feature flags for [user lists](../operation
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 > [!note]
 > To interact with feature flags for all users, see the [Feature flag API](feature_flags.md).

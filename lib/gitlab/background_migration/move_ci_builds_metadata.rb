@@ -82,6 +82,16 @@ module Gitlab
         2
       end
 
+      class SanitizedYamlCoder
+        def self.load(value)
+          return unless value
+
+          YAML.safe_load(value, permitted_classes: [Symbol])
+        rescue Psych::SyntaxError
+          nil
+        end
+      end
+
       # We know that there are installations with years of data that they might not want to migrate
       # so we provide a few switches here to skip old data.
       # The background migrations are executed in Sidekiq, so these should be set as ENV variables
@@ -477,6 +487,8 @@ module Gitlab
       # Dynamic ActiveRecord models to interact with the database tables.
       def definition_model
         @definition_model ||= ci_model(:p_ci_job_definitions).tap do |klass|
+          klass.attribute :config, Gitlab::Database::Type::JsonPgSafe.new
+
           # Define instance methods, like `global_identifier` that returns an
           # array containing the unique attributes values.
           klass.class_eval do
@@ -504,7 +516,7 @@ module Gitlab
             end
 
             def compute_checksum(config)
-              Digest::SHA256.hexdigest(Gitlab::Json.dump(config))
+              Digest::SHA256.hexdigest(Gitlab::Database::Type::JsonPgSafe.new.serialize(config))
             end
           end
         end
@@ -520,8 +532,8 @@ module Gitlab
 
       def job_model
         @job_model ||= ci_model(:p_ci_builds).tap do |model|
-          model.serialize :options
-          model.serialize :yaml_variables
+          model.serialize :options, coder: SanitizedYamlCoder
+          model.serialize :yaml_variables, coder: SanitizedYamlCoder
         end
       end
 

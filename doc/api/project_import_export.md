@@ -171,9 +171,9 @@ POST /projects/import
 | `file`            | string            | Yes      | The file to be uploaded. |
 | `path`            | string            | Yes      | Name and path for new project. |
 | `name`            | string            | No       | The name of the project to be imported. Defaults to the path of the project if not provided. |
-| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 | `overwrite`       | boolean           | No       | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
@@ -257,9 +257,9 @@ POST /projects/remote-import
 | `path`            | string            | Yes      | Name and path for the new project. |
 | `url`             | string            | Yes      | URL for the file to import. |
 | `name`            | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `overwrite`       | boolean           | No       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
 | `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 
@@ -412,9 +412,9 @@ POST /projects/remote-import-s3
 | `region`            | string            | Yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
 | `secret_access_key` | string            | Yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
 | `name`              | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`         | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. Use `namespace_id` or `namespace_path` instead. |
-| `namespace_id`      | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
-| `namespace_path`    | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group. |
+| `namespace`         | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
+| `namespace_id`      | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
+| `namespace_path`    | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 
 The passed override parameters take precedence over all values defined in the export file.
 

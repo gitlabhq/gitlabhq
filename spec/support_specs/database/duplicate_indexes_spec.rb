@@ -38,6 +38,20 @@ RSpec.describe Database::DuplicateIndexes, feature_category: :database do
     )
   end
 
+  let(:index1_with_where) do
+    instance_double(
+      index_class,
+      default_index_options.merge(name: 'index1_with_where', columns: %w[user_id], where: "id > 100")
+    )
+  end
+
+  let(:index1_with_different_where) do
+    instance_double(
+      index_class,
+      default_index_options.merge(name: 'index1_with_different_where', columns: %w[user_id], where: "id > 200")
+    )
+  end
+
   let(:primary_key_index) do
     instance_double(index_class, default_index_options.merge(name: 'table_pkey', columns: %w[id], unique: true))
   end
@@ -93,6 +107,24 @@ RSpec.describe Database::DuplicateIndexes, feature_category: :database do
     let(:indexes) { [index3, index3_with_where] }
 
     it 'does not detect duplicate indexes between index3 and index3_with_where' do
+      expect(duplicate_indexes).to eq({})
+    end
+  end
+
+  context 'when both indexes have the same WHERE clause' do
+    let(:indexes) { [index3_with_where, index1_with_where] }
+
+    it 'detects a duplicate index between index3_with_where and index1_with_where' do
+      expected_duplicate_indexes = { index_struct(index3_with_where) => [index_struct(index1_with_where)] }
+
+      expect(duplicate_indexes).to eq(expected_duplicate_indexes)
+    end
+  end
+
+  context 'when indexes have the same columns but different WHERE clauses' do
+    let(:indexes) { [index1_with_where, index1_with_different_where] }
+
+    it 'does not detect duplicate indexes' do
       expect(duplicate_indexes).to eq({})
     end
   end

@@ -2,6 +2,10 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_view_admin_application_settings_integrations_pageload_weekly
 description: Weekly count of unique users who visisted the admin application settings integrations page
 product_group: engagement
+product_categories:
+- navigation
+- settings
+- integrations
 performance_indicator_type: []
 value_type: number
 status: active

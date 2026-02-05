@@ -9,35 +9,37 @@ title: Maven仮想レジストリAPI
 
 - プラン: Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- ステータス: ベータ版
 
 {{< /details >}}
-
-{{< alert type="flag" >}}
-
-これらのエンドポイントの可用性は、機能フラグによって制御されます。詳細については、履歴を参照してください。これらのエンドポイントは[ベータ](../policy/development_stages_support.md#beta)で利用できます。使用する前にドキュメントを注意深くレビューしてください。
-
-{{< /alert >}}
-
-このAPIを使用して以下を行います:
-
-- Maven仮想レジストリの作成と管理。
-- アップストリームレジストリの構成。
-- キャッシュエントリの管理。
-- パッケージのダウンロードとアップロードの処理。
-
-## 仮想レジストリを管理する {#manage-virtual-registries}
-
-次のエンドポイントを使用して、Maven仮想レジストリを作成および管理します。
-
-### すべての仮想レジストリをリスト表示 {#list-all-virtual-registries}
 
 {{< history >}}
 
 - GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-- GitLab 18.4で、`downloads_count`および`downloaded_at`が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201790)されました。
+- 機能フラグがGitLab 18.1で`maven_virtual_registry`に[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。機能フラグ`virtual_registry_maven`は削除されました。
+- GitLab 18.1で実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
+- GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
+
+{{< /history >}}
+
+> [!flag] これらのエンドポイントの可用性は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+このAPIを使用して、以下を行います:
+
+- Maven仮想レジストリを作成および管理します。
+- アップストリームレジストリを設定します。
+- キャッシュエントリを管理します。
+- パッケージのダウンロードとアップロードを処理します。
+
+## 仮想レジストリを管理する {#manage-virtual-registries}
+
+Maven仮想レジストリを作成および管理するには、次のエンドポイントを使用します。
+
+### すべての仮想レジストリをリストする {#list-all-virtual-registries}
+
+{{< history >}}
+
+- `downloads_count`および`downloaded_at`がGitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201790)されました。
 
 {{< /history >}}
 
@@ -47,13 +49,13 @@ title: Maven仮想レジストリAPI
 GET /groups/:id/-/virtual_registries/packages/maven/registries
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
-| `id` | 文字列/整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -76,16 +78,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### 仮想レジストリを作成 {#create-a-virtual-registry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### 仮想レジストリを作成する {#create-a-virtual-registry}
 
 グループのMaven仮想レジストリを作成します。
 
@@ -95,11 +88,11 @@ POST /groups/:id/-/virtual_registries/packages/maven/registries
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列/整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `name` | 文字列 | はい | 仮想レジストリの名前。 |
 | `description` | 文字列 | いいえ | 仮想レジストリの説明。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -123,16 +116,7 @@ curl --request POST \
 }
 ```
 
-### Maven仮想レジストリを取得 {#get-a-virtual-registry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### 仮想レジストリを取得する {#get-a-virtual-registry}
 
 特定のMaven仮想レジストリを取得します。
 
@@ -140,13 +124,13 @@ curl --request POST \
 GET /virtual_registries/packages/maven/registries/:id
 ```
 
-パラメータは以下のとおりです:
+パラメータは以下のとおりです。
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -167,16 +151,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### 仮想レジストリを更新 {#update-a-virtual-registry}
-
-{{< history >}}
-
-- GitLab 18.0で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189070)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### 仮想レジストリを更新する {#update-a-virtual-registry}
 
 特定のMaven仮想レジストリを更新します。
 
@@ -190,7 +165,7 @@ PATCH /virtual_registries/packages/maven/registries/:id
 | `name` | 文字列 | はい | 仮想レジストリの名前。 |
 | `description` | 文字列 | いいえ | 仮想レジストリの説明。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH \
@@ -204,20 +179,7 @@ curl --request PATCH \
 
 ### 仮想レジストリを削除する {#delete-a-virtual-registry}
 
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161615)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-仮想レジストリを削除すると、他の仮想レジストリと共有されていない、関連付けられているすべてのアップストリームレジストリも、それらのキャッシュエントリとともに削除されます。
-
-{{< /alert >}}
+> [!warning]仮想レジストリを削除すると、他の仮想レジストリと共有されていない関連付けられたすべてのアップストリームレジストリとそのキャッシュエントリも削除されます。
 
 特定のMaven仮想レジストリを削除します。
 
@@ -229,7 +191,7 @@ DELETE /virtual_registries/packages/maven/registries/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -239,7 +201,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### 仮想レジストリのキャッシュエントリを削除 {#delete-cache-entries-for-a-virtual-registry}
+### 仮想レジストリのキャッシュエントリを削除する {#delete-cache-entries-for-a-virtual-registry}
 
 {{< history >}}
 
@@ -247,7 +209,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-Maven仮想レジストリのすべての排他的アップストリームレジストリ内の削除対象のすべてのキャッシュエントリをスケジュールします。キャッシュエントリは、他の仮想レジストリに関連付けられているアップストリームレジストリでは削除対象としてスケジュールされません。
+Maven仮想レジストリのすべての排他的なアップストリームレジストリのすべてのキャッシュエントリを削除するようにスケジュールします。キャッシュエントリは、他の仮想レジストリに関連付けられているアップストリームレジストリに対して削除するようにスケジュールされていません。
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/registries/:id/cache
@@ -257,7 +219,7 @@ DELETE /virtual_registries/packages/maven/registries/:id/cache
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -269,14 +231,14 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## アップストリームレジストリを管理する {#manage-upstream-registries}
 
-次のエンドポイントを使用して、アップストリームMavenレジストリを構成および管理します。
+次のエンドポイントを使用して、アップストリームMavenレジストリを設定および管理します。
 
-### トップレベルグループのすべてのアップストリームレジストリをリスト {#list-all-upstream-registries-for-a-top-level-group}
+### トップレベルグループのすべてのアップストリームレジストリをリストする {#list-all-upstream-registries-for-a-top-level-group}
 
 {{< history >}}
 
 - GitLab 18.3で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/550728)されました。デフォルトでは有効になっています。
-- `upstream_name`はGitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/561675)されました。{{< /history >}}
+- `upstream_name`がGitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/561675)されました。{{< /history >}}
 
 トップレベルグループのすべてのアップストリームレジストリをリストします。
 
@@ -284,16 +246,16 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /groups/:id/-/virtual_registries/packages/maven/upstreams
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
-| `id` | 文字列/整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `page` | 整数 | いいえ | ページ番号。デフォルトは1です。 |
 | `per_page` | 整数 | いいえ | ページあたりのアイテム数。デフォルトは20です。 |
-| `upstream_name` | 文字列 | いいえ | 名前であいまい検索フィルタリングを行うためのアップストリームレジストリの名前。 |
+| `upstream_name` | 文字列 | いいえ | 名前でファジー検索フィルタリングを行うためのアップストリームレジストリの名前。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -320,7 +282,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### アップストリームレジストリを作成する前に接続をテスト {#test-connection-before-creating-an-upstream-registry}
+### アップストリームレジストリを作成する前に接続をテストする {#test-connection-before-creating-an-upstream-registry}
 
 {{< history >}}
 
@@ -328,41 +290,37 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-まだ仮想レジストリに追加されていないMavenアップストリームレジストリへの接続をテストします。このエンドポイントは、アップストリームレジストリを作成する前に、接続と認証情報を検証します。
+仮想レジストリに追加されていないMavenアップストリームレジストリへの接続をテストします。このエンドポイントは、アップストリームレジストリを作成する前に、接続と認証情報を検証します。
 
 ```plaintext
 POST /groups/:id/-/virtual_registries/packages/maven/upstreams/test
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
-| `id` | 文字列/整数 | はい | グループIDまたは完全なグループパス。トップレベルグループである必要があります。 |
+| `id` | 文字列/整数 | はい | グループIDまたはグループのフルパス。トップレベルグループである必要があります。 |
 | `url` | 文字列 | はい | アップストリームレジストリのURL。 |
-| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 | `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
+| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
-{{< alert type="note" >}}
-
-リクエストに`username`と`password`の両方を含めるか、どちらも含めないでください。設定されていない場合、パブリック（匿名）リクエストが接続のテストに使用されます。
-
-{{< /alert >}}
+> [!note] `username`と`password`の両方をリクエストに含めるか、どちらも含めない必要があります。設定されていない場合、パブリック（匿名）リクエストを使用して接続をテストします。
 
 #### テストワークフロー {#test-workflow}
 
-`test`エンドポイントは、接続と認証を検証するために、テストパスを使用して、指定されたアップストリームURLにHEADリクエストを送信します。HEADリクエストから受信した応答は、次のように解釈されます:
+`test`エンドポイントは、接続と認証を検証するために、テストパスを使用して、指定されたアップストリームURLにHEADリクエストを送信します。HEADリクエストから受信したレスポンスは、次のように解釈されます:
 
-| アップストリーム応答 | 説明 | 結果 |
+| アップストリームレスポンス | 説明 | 結果 |
 |:------------------|:--------|:-------|
 | 2XX | 成功 - アップストリームアクセス可能 | `{ "success": true }` |
 | 404 | 成功 - アップストリームはアクセス可能ですが、テストアーティファクトが見つかりません | `{ "success": true }` |
 | 401 | 認証に失敗しました | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
-| 403 | アクセスが禁止されています | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 403 | アクセスが禁止されました | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
 | 5XX | アップストリームサーバーエラー | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
-| ネットワークエラー | 接続/ タイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
+| ネットワークエラー | 接続またはタイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -379,16 +337,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### 仮想レジストリのすべてのアップストリームレジストリをリスト {#list-all-upstream-registries-for-a-virtual-registry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### 仮想レジストリのすべてのアップストリームレジストリをリストする {#list-all-upstream-registries-for-a-virtual-registry}
 
 Maven仮想レジストリのすべてのアップストリームレジストリをリストします。
 
@@ -396,13 +345,13 @@ Maven仮想レジストリのすべてのアップストリームレジストリ
 GET /virtual_registries/packages/maven/registries/:id/upstreams
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -434,15 +383,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### アップストリームレジストリを作成 {#create-an-upstream-registry}
+### アップストリームレジストリを作成する {#create-an-upstream-registry}
 
 {{< history >}}
 
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-- `metadata_cache_validity_hours`はGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556138)されました。
+- `metadata_cache_validity_hours`がGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556138)されました。
 
 {{< /history >}}
 
@@ -456,23 +401,23 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
 | `url` | 文字列 | はい | アップストリームレジストリのURL。 |
-| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
-| `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
-| `name` | 文字列 | いいえ | アップストリームレジストリの名前。 |
-| `description` | 文字列 | いいえ | アップストリームレジストリの説明。 |
 | `cache_validity_hours` | 整数 | いいえ | キャッシュの有効期間。デフォルトは24時間です。 |
+| `description` | 文字列 | いいえ | アップストリームレジストリの説明。 |
 | `metadata_cache_validity_hours` | 整数 | いいえ | メタデータキャッシュの有効期間。デフォルトは24時間です。 |
+| `name` | 文字列 | いいえ | アップストリームレジストリの名前。 |
+| `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
+| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
 {{< alert type="note" >}}
 
-リクエストに`username`と`password`の両方を含めるか、まったく含めないでください。設定されていない場合、パブリック（匿名）リクエストはアップストリームへのアクセスに使用されます。
+`username`と`password`の両方をリクエストに含めるか、まったく含めない必要があります。設定されていない場合、パブリック（匿名）リクエストを使用してアップストリームにアクセスします。
 
-同じURLと認証情報（`username`と`password`）を持つ2つのアップストリームを同じトップレベルグループに追加することはできません。代わりに、次のいずれかを実行できます:
+同じURLと認証情報（`username`と`password`）を持つ2つのアップストリームを同じトップレベルグループに追加することはできません。代わりに、次のいずれかを実行できます。
 
 - 同じURLを持つ各アップストリームに異なる認証情報を設定します。
-- 複数の仮想レジストリと[アップストリームを関連付けます](#associate-an-upstream-with-a-registry)。{{< /alert >}}
+- 複数の仮想レジストリと[関連付けるアップストリーム](#associate-an-upstream-with-a-registry)。{{< /alert >}}
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -503,16 +448,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### アップストリームレジストリを取得 {#get-an-upstream-registry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### アップストリームレジストリを取得する {#get-an-upstream-registry}
 
 Maven仮想レジストリの特定のアップストリームレジストリを取得します。
 
@@ -520,13 +456,13 @@ Maven仮想レジストリの特定のアップストリームレジストリを
 GET /virtual_registries/packages/maven/upstreams/:id
 ```
 
-パラメータは以下のとおりです:
+パラメータは以下のとおりです。
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -558,15 +494,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-### アップストリームレジストリを更新 {#update-an-upstream-registry}
+### アップストリームレジストリを更新する {#update-an-upstream-registry}
 
 {{< history >}}
 
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-- `metadata_cache_validity_hours`はGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556138)されました。
+- `metadata_cache_validity_hours`がGitLab 18.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556138)されました。
 
 {{< /history >}}
 
@@ -579,23 +511,19 @@ PATCH /virtual_registries/packages/maven/upstreams/:id
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
-| `url` | 文字列 | いいえ | アップストリームレジストリのURL。 |
-| `name` | 文字列 | いいえ | アップストリームレジストリの名前。 |
-| `description` | 文字列 | いいえ | アップストリームレジストリの説明。 |
-| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
-| `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
 | `cache_validity_hours` | 整数 | いいえ | キャッシュの有効期間。デフォルトは24時間です。 |
+| `description` | 文字列 | いいえ | アップストリームレジストリの説明。 |
 | `metadata_cache_validity_hours` | 整数 | いいえ | メタデータキャッシュの有効期間。デフォルトは24時間です。 |
+| `name` | 文字列 | いいえ | アップストリームレジストリの名前。 |
+| `password` | 文字列 | いいえ | アップストリームレジストリのパスワード。 |
+| `url` | 文字列 | いいえ | アップストリームレジストリのURL。 |
+| `username` | 文字列 | いいえ | アップストリームレジストリのユーザー名。 |
 
-{{< alert type="note" >}}
+> [!note]リクエストにオプションのパラメータを少なくとも1つ指定する必要があります。
+>
+> `username`と`password`は、一緒に指定するか、まったく指定しないでください。設定されていない場合、パブリック（匿名）リクエストを使用してアップストリームにアクセスします。
 
-リクエストでオプションのパラメータの少なくとも1つを指定する必要があります。
-
-`username`と`password`は、一緒に指定するか、まったく指定しないでください。設定されていない場合、パブリック（匿名）リクエストはアップストリームへのアクセスに使用されます。
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -606,18 +534,9 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### アップストリームレジストリの位置を更新 {#update-an-upstream-registry-position}
+### アップストリームレジストリの位置を更新する {#update-an-upstream-registry-position}
 
-{{< history >}}
-
-- GitLab 18.0で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186890)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
-
-Maven仮想レジストリの順序付けられたリストでアップストリームレジストリの位置を更新します。
+Maven仮想レジストリの順序付けられたリストで、アップストリームレジストリの位置を更新します。
 
 ```plaintext
 PATCH /virtual_registries/packages/maven/registry_upstreams/:id
@@ -626,9 +545,9 @@ PATCH /virtual_registries/packages/maven/registry_upstreams/:id
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
-| `position` | 整数 | はい | アップストリームレジストリの位置。1～20。 |
+| `position` | 整数 | はい | アップストリームレジストリの位置。1～20の間。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -639,16 +558,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### アップストリームレジストリを削除 {#delete-an-upstream-registry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162019)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### アップストリームレジストリを削除する {#delete-an-upstream-registry}
 
 Maven仮想レジストリの特定のアップストリームレジストリを削除します。
 
@@ -660,7 +570,7 @@ DELETE /virtual_registries/packages/maven/upstreams/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -670,12 +580,12 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### アップストリームをレジストリに関連付けます {#associate-an-upstream-with-a-registry}
+### レジストリとアップストリームを関連付ける {#associate-an-upstream-with-a-registry}
 
 {{< history >}}
 
 - GitLab 18.1で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
+- GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
 
 {{< /history >}}
 
@@ -688,9 +598,9 @@ POST /virtual_registries/packages/maven/registry_upstreams
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `registry_id` | 整数 | はい | Maven仮想レジストリのID。 |
-| `upstream_id` | 整数 | はい | MavenアップストリームレジストリのグローバルID。 |
+| `upstream_id` | 整数 | はい | MavenアップストリームレジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -712,16 +622,16 @@ curl --request POST \
 }
 ```
 
-### レジストリからアップストリームの関連付けを解除 {#disassociate-an-upstream-from-a-registry}
+### レジストリからアップストリームの関連付けを解除する {#disassociate-an-upstream-from-a-registry}
 
 {{< history >}}
 
 - GitLab 18.1で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。デフォルトでは無効になっています。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
+- GitLab 18.2の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)で有効になりました。
 
 {{< /history >}}
 
-アップストリームレジストリとMaven仮想レジストリ間の関連付けを削除します。
+アップストリームレジストリとMaven仮想レジストリの間の関連付けを削除します。
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/registry_upstreams/:id
@@ -731,7 +641,7 @@ DELETE /virtual_registries/packages/maven/registry_upstreams/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | レジストリアップストリームの関連付けのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE \
@@ -743,7 +653,7 @@ curl --request DELETE \
 
 成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### アップストリームレジストリのキャッシュエントリを削除 {#delete-cache-entries-for-an-upstream-registry}
+### アップストリームレジストリのキャッシュエントリを削除する {#delete-cache-entries-for-an-upstream-registry}
 
 {{< history >}}
 
@@ -751,7 +661,7 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Maven仮想レジストリ内の特定のアップストリームレジストリの削除対象のすべてのキャッシュエントリをスケジュールします。
+Maven仮想レジストリ内の特定のアップストリームレジストリの削除のためにすべてのキャッシュエントリをスケジュールします。
 
 ```plaintext
 DELETE /virtual_registries/packages/maven/upstreams/:id/cache
@@ -761,7 +671,7 @@ DELETE /virtual_registries/packages/maven/upstreams/:id/cache
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -771,7 +681,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 成功した場合、[`204 No Content`](rest/troubleshooting.md#status-codes)ステータスコードを返します。
 
-### アップストリームレジストリへの接続をテスト {#test-connection-to-an-upstream-registry}
+### アップストリームレジストリへの接続をテストする {#test-connection-to-an-upstream-registry}
 
 {{< history >}}
 
@@ -787,24 +697,20 @@ GET /virtual_registries/packages/maven/upstreams/:id/test
 
 #### テストの仕組み {#how-the-test-works}
 
-このエンドポイントは、接続と認証を検証するために、テストパスを使用してアップストリームURLへのHEADリクエストを実行します。アップストリームにキャッシュされたアーティファクトがある場合、その相対パスはテストに使用されます。それ以外の場合は、ダミーパスが使用されます。HEADリクエストから受信した応答は、次のように解釈されます:
+このエンドポイントは、接続と認証を検証するために、テストパスを使用してアップストリームURLにHEADリクエストを実行します。アップストリームにキャッシュされたアーティファクトがある場合、その相対パスはテストに使用されます。それ以外の場合は、ダミーのパスが使用されます。HEADリクエストから受信したレスポンスは、次のように解釈されます:
 
-| アップストリーム応答 | 意味 | 結果 |
+| アップストリームレスポンス | 意味 | 結果 |
 |:------------------|:--------|:-------|
 | 2XX | 成功 - アップストリームアクセス可能 | `{ "success": true }` |
 | 404 | 成功 - アップストリームはアクセス可能ですが、テストアーティファクトが見つかりません | `{ "success": true }` |
 | 401 | 認証に失敗しました | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
-| 403 | アクセスが禁止されています | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 403 | アクセスが禁止されました | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
 | 5XX | アップストリームサーバーエラー | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
-| ネットワークエラー | 接続/ タイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
+| ネットワークエラー | 接続/タイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
 
-{{< alert type="note" >}}
+> [!note] `2XX`（検出）と`404`（未検出）のレスポンスはどちらも、アップストリームレジストリへの接続と認証が成功したことを示します。このテストでは、GitLabがアップストリームに到達して認証できるかどうかを検証し、特定のアーティファクトが存在するかどうかは検証しません。
 
-`2XX`（検出）と`404`（見つかりません）の両方の応答は、アップストリームレジストリへの接続と認証が成功したことを示します。このテストでは、GitLabがアップストリームに到達して認証できることを検証しますが、特定のアーティファクトが存在するかどうかは検証しません。
-
-{{< /alert >}}
-
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -820,20 +726,106 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## キャッシュエントリの管理 {#manage-cache-entries}
-
-次のエンドポイントを使用して、Maven仮想レジストリのキャッシュエントリを管理します。
-
-### アップストリームレジストリのキャッシュエントリをリスト {#list-upstream-registry-cache-entries}
+### オーバーライドパラメータを使用してアップストリームレジストリへの接続をテストする {#test-connection-to-an-upstream-registry-with-override-parameters}
 
 {{< history >}}
 
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162614)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
+- GitLab 18.7で`maven_virtual_registry`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/565897)されました。デフォルトでは有効になっています。
 
 {{< /history >}}
+
+オーバーライド可能なパラメータを使用して、既存のMavenアップストリームレジストリへの接続をテストします。
+
+これにより、アップストリームレジストリの設定を更新する前に、URL、ユーザー名、またはパスワードへの変更をテストできます。
+
+```plaintext
+POST /virtual_registries/packages/maven/upstreams/:id/test
+```
+
+サポートされている属性: 
+
+| 属性 | 型 | 必須 | 説明 |
+| --------- | ---- | -------- | ----------- |
+| `id` | 整数 | はい | アップストリームレジストリのID。 |
+| `password` | 文字列 | いいえ | テスト用のオーバーライドパスワード。 |
+| `url` | 文字列 | いいえ | テスト用のオーバーライドURL。指定された場合、アップストリームの設定されたURLの代わりに、このURLへの接続をテストします。 |
+| `username` | 文字列 | いいえ | テスト用のオーバーライドユーザー名。 |
+
+#### テストの仕組み {#how-the-test-works-1}
+
+このエンドポイントは、接続と認証を検証するために、テストパスを使用してアップストリームURLにHEADリクエストを実行します。アップストリームにキャッシュされたアーティファクトがある場合、アップストリームの相対パスがテストに使用されます。それ以外の場合は、プレースホルダパスが使用されます。
+
+テストの動作は、指定されたパラメータによって異なります:
+
+- パラメータなし: アップストリームを現在の設定（既存のURL、ユーザー名、パスワード）でテストします
+- URLオーバーライド: 新しいURLへの接続をテストします。ユーザー名とパスワードは、一緒に指定するか、まったく指定しない必要があります
+- 認証情報オーバーライド: 新しい認証情報で既存のURLをテストします
+
+HEADリクエストから受信したレスポンスは、次のように解釈されます:
+
+| アップストリームレスポンス | 意味 | 結果 |
+|:------------------|:--------|:-------|
+| 2XX | 成功。アップストリームアクセス可能 | `{ "success": true }` |
+| 404 | 成功。アップストリームアクセス可能ですが、テストアーティファクトが見つかりません | `{ "success": true }` |
+| 401 | 認証に失敗しました | `{ "success": false, "result": "Error: 401 - Unauthorized" }` |
+| 403 | アクセスが禁止されました | `{ "success": false, "result": "Error: 403 - Forbidden" }` |
+| 5XX | アップストリームサーバーエラー | `{ "success": false, "result": "Error: 5XX - Server Error" }` |
+| ネットワークエラー | 接続またはタイムアウトの問題 | `{ "success": false, "result": "Error: Connection timeout" }` |
+
+> [!note] `2XX`（検出）と`404`（未検出）のレスポンスはどちらも、アップストリームレジストリへの接続と認証が成功したことを示します。このテストでは、特定のアーティファクトが存在するかどうかは検証されません。
+
+リクエスト例（既存の設定のテスト）:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+リクエスト例（URLオーバーライドがあり、認証情報がないテスト）:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "<https://new-repo.example.com/maven2>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+リクエスト例（URLと認証情報オーバーライドがあるテスト）:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"url": "<https://new-repo.example.com/maven2>", "username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+リクエスト例（認証情報オーバーライドがあるテスト）:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"username": "<newuser>", "password": "<newpass>"}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/test"
+```
+
+レスポンス例:
+
+```json
+{
+  "success": true
+}
+```
+
+## キャッシュエントリの管理 {#manage-cache-entries}
+
+Maven仮想レジストリのキャッシュエントリを管理するには、次のエンドポイントを使用します。
+
+### アップストリームレジストリキャッシュエントリのリスト {#list-upstream-registry-cache-entries}
 
 Mavenアップストリームレジストリのキャッシュエントリをリストします。
 
@@ -841,16 +833,16 @@ Mavenアップストリームレジストリのキャッシュエントリをリ
 GET /virtual_registries/packages/maven/upstreams/:id/cache_entries
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | アップストリームレジストリのID。 |
-| `search` | 文字列 | いいえ | パッケージの相対パスの検索クエリ（たとえば、`foo/bar/mypkg`）。 |
 | `page` | 整数 | いいえ | ページ番号。デフォルトは1です。 |
 | `per_page` | 整数 | いいえ | ページあたりのアイテム数。デフォルトは20です。 |
+| `search` | 文字列 | いいえ | パッケージの相対パスの検索クエリ（例：`foo/bar/mypkg`）。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -881,16 +873,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-### アップストリームレジストリのキャッシュエントリを削除 {#delete-an-upstream-registry-cache-entry}
-
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162614)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
+### アップストリームレジストリキャッシュエントリの削除 {#delete-an-upstream-registry-cache-entry}
 
 Mavenアップストリームレジストリの特定のキャッシュエントリを削除します。
 
@@ -900,9 +883,9 @@ DELETE /virtual_registries/packages/maven/cache_entries/*id
 
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
-| `id` | 文字列 | はい | キャッシュエントリのbase64エンコードされたアップストリームIDと相対パス（たとえば、「Zm9vL2Jhci9teXBrZy5wb20=」）。 |
+| `id` | 文字列 | はい | キャッシュエントリのbase64エンコードされたアップストリームIDと相対パス（例：'Zm9vL2Jhci9teXBrZy5wb20='）。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -914,30 +897,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## パッケージ操作の管理 {#manage-package-operations}
 
-次のエンドポイントを使用して、Maven仮想レジストリのパッケージ操作を管理します。
+Maven仮想レジストリのパッケージ操作を管理するには、次のエンドポイントを使用します。
 
-{{< alert type="warning" >}}
-
-これらのエンドポイントは、GitLabによる内部使用を目的としており、通常は手動で使用することを意図していません。
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
+> [!warning]これらのエンドポイントは、GitLabの内部使用を目的としており、通常は手動での使用を目的としていません。
 
 これらのエンドポイントは、[REST API認証方式](rest/authentication.md)に準拠していません。サポートされているヘッダーとトークンの種類の詳細については、[Maven仮想レジストリ](../user/packages/virtual_registry/maven/_index.md)を参照してください。記載されていない認証方法は、将来削除される可能性があります。
 
-{{< /alert >}}
-
 ### パッケージをダウンロードする {#download-a-package}
-
-{{< history >}}
-
-- GitLab 17.3で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160891)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
 
 Maven仮想レジストリからパッケージをダウンロードします。このリソースにアクセスするには、[レジストリで認証する](../user/packages/package_registry/supported_functionality.md#authenticate-with-the-registry)必要があります。
 
@@ -945,14 +911,14 @@ Maven仮想レジストリからパッケージをダウンロードします。
 GET /virtual_registries/packages/maven/:id/*path
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性: 
 
 | 属性 | 型 | 必須 | 説明 |
 |:----------|:-----|:---------|:------------|
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
-| `path` | 文字列 | はい | 完全なパッケージパス（たとえば、`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
+| `path` | 文字列 | はい | パッケージのフルパス（例：`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -960,25 +926,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --output mypkg-1.0-SNAPSHOT.jar
 ```
 
-成功した場合、[`200 OK`を返し](rest/troubleshooting.md#status-codes)、次のヘッダー応答を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と、次のレスポンスヘッダーを返します:
 
 - `x-checksum-sha1`: ファイルのSHA1チェックサム
 - `x-checksum-md5`: ファイルのMD5チェックサム
 - `Content-Type`: ファイルのMIMEタイプ
-- `Content-Length`: サイズ - ファイルサイズ（バイト単位）
+- `Content-Length`: ファイルサイズ（バイト単位）
 
-### パッケージをアップロード {#upload-a-package}
+### パッケージのアップロード {#upload-a-package}
 
-{{< history >}}
-
-- GitLab 17.4で`virtual_registry_maven`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163641)されました。デフォルトでは無効になっています。
-- 機能フラグはGitLab 18.1で`maven_virtual_registry`に[名前が変更されました](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)。
-- GitLab 18.1で、実験からベータに[変更](https://gitlab.com/gitlab-org/gitlab/-/issues/540276)されました。
-- GitLab 18.2で、[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432)になりました。
-
-{{< /history >}}
-
-パッケージをMaven仮想レジストリにアップロードします。このエンドポイントは、[GitLab Workhorse](../development/workhorse/_index.md)でのみアクセスできます。
+Maven仮想レジストリにパッケージをアップロードします。このエンドポイントは、[GitLab Workhorse](../development/workhorse/_index.md)でのみアクセスできます。
 
 ```plaintext
 POST /virtual_registries/packages/maven/:id/*path/upload
@@ -987,13 +944,13 @@ POST /virtual_registries/packages/maven/:id/*path/upload
 | 属性 | 型 | 必須 | 説明 |
 | --------- | ---- | -------- | ----------- |
 | `id` | 整数 | はい | Maven仮想レジストリのID。 |
-| `path` | 文字列 | はい | 完全なパッケージパス（たとえば、`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
-| `file` | ファイル | はい | アップロードされているファイル。 |
+| `file` | ファイル | はい | アップロードされるファイル。 |
+| `path` | 文字列 | はい | パッケージのフルパス（例：`foo/bar/mypkg/1.0-SNAPSHOT/mypkg-1.0-SNAPSHOT.jar`）。 |
 
 リクエストヘッダー:
 
-- `Etag`: ファイルのエンティティタグ付け
-- `GitLab-Workhorse-Send-Dependency-Content-Type`: ファイルのコンテンツタイプ
+- `Etag`: ファイルのエンティティタグ
+- `GitLab-Workhorse-Send-Dependency-Content-Type`: ファイルコンテンツタイプ
 - `Upstream-GID`: ターゲットアップストリームのグローバルID
 
 成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)ステータスコードを返します。

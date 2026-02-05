@@ -7119,6 +7119,9 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "Agents|Explore other agents"
+msgstr ""
+
 msgid "AggregationEngine|Unknown granularity \"%{granularity}\""
 msgstr ""
 
@@ -14686,10 +14689,10 @@ msgstr ""
 msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
-msgid "CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days."
+msgid "CiCatalog|The number of projects that used a component from this catalog project in their pipelines in the last 30 days."
 msgstr ""
 
-msgid "CiCatalog|The number of unique projects that used a component from this catalog in a pipeline in the last 30 days."
+msgid "CiCatalog|The number of unique projects that used a component from this catalog project in a pipeline in the last 30 days."
 msgstr ""
 
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
@@ -25818,10 +25821,25 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
+msgid "DuoAgenticChat|Chat about different topics"
+msgstr ""
+
+msgid "DuoAgenticChat|Chat with different agents"
+msgstr ""
+
+msgid "DuoAgenticChat|Collaborate with AI agents to accomplish  tasks and answer questions, or use a multi-agent flow to solve a complex problem."
+msgstr ""
+
+msgid "DuoAgenticChat|Get targeted help for tasks with specialized agents"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo AI assistant"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
@@ -58927,9 +58945,6 @@ msgstr ""
 msgid "Save password"
 msgstr ""
 
-msgid "Saved view limit exceeded."
-msgstr ""
-
 msgid "Saved views are not enabled for this namespace."
 msgstr ""
 
@@ -67081,6 +67096,9 @@ msgid "Subscribe to releases RSS feed"
 msgstr ""
 
 msgid "Subscribed"
+msgstr ""
+
+msgid "Subscribed saved view limit exceeded."
 msgstr ""
 
 msgid "Subscribed to notifications."

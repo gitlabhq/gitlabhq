@@ -32,7 +32,7 @@ Users added through LDAP:
 - Usually use a [licensed seat](../../../subscriptions/manage_users_and_seats.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
-  [is disabled](../../settings/sign_in_restrictions.md#password-and-passkey-authentication).
+  [is disabled](../../settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https).
 
 The LDAP distinguished name (DN) is associated with existing GitLab users when:
 

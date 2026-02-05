@@ -1217,7 +1217,7 @@ Resolve or reopen a thread of discussion in a merge request.
 
 Prerequisites:
 
-- You must have at least the Developer role, or be the author of the change being reviewed.
+- You must have the Developer, Maintainer, or Owner role, or be the author of the change being reviewed.
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id

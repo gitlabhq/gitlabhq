@@ -125,16 +125,7 @@ export default {
       return this.pipeline?.name || '';
     },
     pipelineSecondaryLink() {
-      const { name, path, pipeline_schedule: pipelineSchedule } = this.pipeline || {};
-
-      // pipeline name should take priority over
-      // pipeline schedule description (when ci_show_pipeline_name_instead_of_commit_title is enabled)
-      if (!this.ciShowPipelineNameInsteadOfCommitTitle && name) {
-        return {
-          text: name,
-          href: path,
-        };
-      }
+      const { pipeline_schedule: pipelineSchedule } = this.pipeline || {};
 
       if (pipelineSchedule) {
         return {
@@ -153,10 +144,6 @@ export default {
 
       return null;
     },
-    ciShowPipelineNameInsteadOfCommitTitle() {
-      // ci_show_pipeline_name_instead_of_commit_title FF
-      return this.glFeatures?.ciShowPipelineNameInsteadOfCommitTitle;
-    },
   },
   methods: {
     trackClick(action) {
@@ -167,17 +154,16 @@ export default {
 </script>
 <template>
   <div data-testid="pipeline-url-table-cell">
-    <template v-if="ciShowPipelineNameInsteadOfCommitTitle">
-      <gl-link
-        v-tooltip-on-truncate
-        :href="pipeline.path"
-        class="gl-mb-2 gl-block gl-truncate"
-        data-testid="pipeline-url-link"
-        @click="trackClick('click_pipeline_id')"
-        >#{{ pipelineId }} {{ pipelineName }}</gl-link
-      >
-    </template>
-    <template v-else>
+    <gl-link
+      v-tooltip-on-truncate
+      :href="pipeline.path"
+      class="gl-mb-2 gl-block gl-truncate"
+      data-testid="pipeline-url-link"
+      @click="trackClick('click_pipeline_id')"
+      >#{{ pipelineId }} {{ pipelineName }}</gl-link
+    >
+
+    <div class="gl-mb-2">
       <gl-link
         v-if="pipelineSecondaryLink"
         v-tooltip-on-truncate
@@ -198,40 +184,6 @@ export default {
       >
         {{ __("Can't find HEAD commit for this branch") }}
       </div>
-    </template>
-
-    <div class="gl-mb-2">
-      <template v-if="ciShowPipelineNameInsteadOfCommitTitle">
-        <gl-link
-          v-if="pipelineSecondaryLink"
-          v-tooltip-on-truncate
-          class="gl-mb-2 gl-block gl-truncate"
-          :href="pipelineSecondaryLink.href"
-          data-testid="pipeline-identifier-link"
-          @click="
-            pipelineSecondaryLink.trackingAction && trackClick(pipelineSecondaryLink.trackingAction)
-          "
-        >
-          {{ pipelineSecondaryLink.text }}
-        </gl-link>
-        <div
-          v-else
-          v-tooltip-on-truncate
-          class="gl-mb-2 gl-truncate gl-text-subtle"
-          data-testid="pipeline-identifier-missing-message"
-        >
-          {{ __("Can't find HEAD commit for this branch") }}
-        </div>
-      </template>
-      <template v-else>
-        <gl-link
-          :href="pipeline.path"
-          class="gl-mr-1"
-          data-testid="pipeline-url-link"
-          @click="trackClick('click_pipeline_id')"
-          >#{{ pipelineId }}</gl-link
-        >
-      </template>
 
       <!--Commit row-->
       <div class="gl-inline-flex gl-rounded-base gl-bg-strong gl-px-2">

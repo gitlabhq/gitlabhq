@@ -39,7 +39,7 @@ module Mutations
           if subscription
             { saved_view: saved_view, errors: [] }
           else
-            { saved_view: nil, errors: [_('Saved view limit exceeded.')] }
+            { saved_view: nil, errors: [_('Subscribed saved view limit exceeded.')] }
           end
         end
       end

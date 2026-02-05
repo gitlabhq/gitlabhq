@@ -2,4 +2,5 @@
 name: delete_issue_board
 description: Grants the ability to delete issue boards
 boundaries:
+  - group
   - project

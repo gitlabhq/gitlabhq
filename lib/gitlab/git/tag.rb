@@ -34,8 +34,6 @@ module Gitlab
             batch_signature_extraction(args[:key], tag_ids, timeout: timeout).each do |tag_id, signature_data|
               loader.call(tag_id, signature_data)
             end
-          rescue GRPC::DeadlineExceeded => e
-            Gitlab::ErrorTracking.log_exception(e)
           end
         end
 
@@ -117,6 +115,8 @@ module Gitlab
       strong_memoize_attr :signed_tag
 
       def can_use_lazy_cached_signature?
+        return false unless @repository.container.is_a?(Project)
+
         (signature_type == :SSH && render_ssh?) ||
           (signature_type == :PGP && render_gpg?)
       end

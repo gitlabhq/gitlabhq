@@ -171,7 +171,6 @@ export default {
     'app/assets/javascripts/ci/pipelines_page/components/pipeline_triggerer.vue',
     'app/assets/javascripts/ci/pipelines_page/components/pipelines_artifacts.vue',
     'app/assets/javascripts/ci/pipelines_page/components/pipelines_filtered_search.vue',
-    'app/assets/javascripts/ci/pipelines_page/pipelines.vue',
     'app/assets/javascripts/ci/pipelines_page/tokens/pipeline_branch_name_token.vue',
     'app/assets/javascripts/ci/pipelines_page/tokens/pipeline_source_token.vue',
     'app/assets/javascripts/ci/pipelines_page/tokens/pipeline_status_token.vue',

@@ -36,7 +36,7 @@ Applies a suggested patch in a merge request.
 
 Prerequisites:
 
-- Users must have at least the Developer role.
+- Users must have the Developer, Maintainer, or Owner role.
 
 ```plaintext
 PUT /suggestions/:id/apply
@@ -90,7 +90,7 @@ Applies multiple suggested patches in a merge request.
 
 Prerequisites:
 
-- Users must have at least the Developer role.
+- Users must have the Developer, Maintainer, or Owner role.
 
 ```plaintext
 PUT /suggestions/batch_apply

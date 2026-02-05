@@ -1,0 +1,8 @@
+---
+name: update_variable
+description: Grants the ability to update variables
+permissions:
+  - update_variable
+boundaries:
+  - project
+  - group

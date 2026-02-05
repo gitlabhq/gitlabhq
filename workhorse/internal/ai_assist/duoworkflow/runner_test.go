@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	redis "github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
@@ -1385,6 +1386,42 @@ func TestRunner_isUsageQuotaExceededError(t *testing.T) {
 			require.Equal(t, tt.expected, result)
 		})
 	}
+}
+
+func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
+	// Create a misconfigured Redis client (not connected to any server)
+	rdb := redis.NewClient(&redis.Options{})
+	lockManager := newWorkflowLockManager(rdb)
+	require.NotNil(t, lockManager)
+
+	mockConn := &mockWebSocketConn{}
+	mockWf := &mockWorkflowStream{}
+
+	testURL, _ := url.Parse("http://example.com")
+	r := &runner{
+		rails: &api.API{
+			Client: &http.Client{},
+			URL:    testURL,
+		},
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		conn:        mockConn,
+		wf:          mockWf,
+		lockManager: lockManager,
+		lockFlow:    true,
+	}
+
+	startReq := &pb.StartWorkflowRequest{
+		Goal:       "test workflow",
+		WorkflowID: "misconfigured-redis-test",
+		McpTools:   []*pb.McpTool{},
+	}
+
+	// With misconfigured Redis, acquireLock should return errLockIsUnavailable
+	// but acquireWorkflowLock should not return an error (it should proceed without lock)
+	err := r.acquireWorkflowLock(startReq)
+	require.NoError(t, err)
+	require.Equal(t, "misconfigured-redis-test", r.workflowID)
+	require.Nil(t, r.mutex)
 }
 
 func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {

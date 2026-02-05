@@ -48,7 +48,7 @@ Prerequisites:
 
 - [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
 - The namespace set in `target_namespace` must exist.
-- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for.
+- The namespace can be your user namespace or an existing group that you have the Maintainer or Owner role for.
 
 ```plaintext
 POST /import/github

@@ -361,7 +361,7 @@ Delete all artifacts associated with a specific job. Artifacts cannot be recover
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/jobs/:job_id/artifacts
@@ -400,7 +400,7 @@ before artifacts are deleted.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 DELETE /projects/:id/artifacts

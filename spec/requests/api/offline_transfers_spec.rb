@@ -20,7 +20,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
   describe 'POST /offline_exports' do
     let(:bucket) { 'exports' }
-    let(:source_hostname) { 'https://offline-environment-gitlab.example.com' }
     let(:entity_params) { [{ 'full_path' => 'group/subgroup' }, { 'full_path' => 'group/project' }] }
     let(:aws_s3_credentials) do
       {
@@ -42,7 +41,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     let(:params) do
       {
         bucket: bucket,
-        source_hostname: source_hostname,
         aws_s3_configuration: aws_s3_credentials,
         entities: entity_params
       }
@@ -61,7 +59,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           entities: entity_params
         }.merge(configuration_key => credentials)
       end
@@ -73,7 +70,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       it "starts a new offline export using #{provider} object storage default params" do
         expect(Import::Offline::Exports::CreateService).to receive(:new).with(
           user,
-          source_hostname,
           entity_params,
           {
             bucket: bucket,
@@ -95,7 +91,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
           expect(Import::Offline::Exports::CreateService).to receive(:new).with(
             user,
-            source_hostname,
             entity_params,
             {
               bucket: bucket,
@@ -118,7 +113,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
 
           expect(Import::Offline::Exports::CreateService).to receive(:new).with(
             user,
-            source_hostname,
             entity_params,
             {
               bucket: bucket,
@@ -152,7 +146,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           entities: entity_params
         }
       end
@@ -164,7 +157,6 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       let(:params) do
         {
           bucket: bucket,
-          source_hostname: source_hostname,
           aws_s3_configuration: aws_s3_credentials,
           s3_compatible_configuration: s3_compatible_credentials,
           entities: entity_params

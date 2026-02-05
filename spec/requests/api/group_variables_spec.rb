@@ -22,6 +22,13 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_a(Array)
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_variable do
+        let(:boundary_object) { group }
+        let(:request) do
+          get api("/groups/#{group.id}/variables", personal_access_token: pat)
+        end
+      end
     end
 
     context 'authorized user with invalid permissions' do
@@ -60,6 +67,13 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(json_response['variable_type']).to eq(variable.variable_type)
           expect(json_response['environment_scope']).to eq(variable.environment_scope)
           expect(json_response['description']).to be_nil
+        end
+
+        it_behaves_like 'authorizing granular token permissions', :read_variable do
+          let(:boundary_object) { group }
+          let(:request) do
+            get api("/groups/#{group.id}/variables/#{variable.key}", personal_access_token: pat)
+          end
         end
       end
 
@@ -195,6 +209,13 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
         end
       end
 
+      it_behaves_like 'authorizing granular token permissions', :create_variable do
+        let(:boundary_object) { group }
+        let(:request) do
+          post api("/groups/#{group.id}/variables", personal_access_token: pat), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2' }
+        end
+      end
+
       context 'when the group is at the plan limit for variables' do
         before do
           create(:plan_limits, :default_plan, group_ci_variables: 1)
@@ -279,6 +300,13 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
           expect(variable.reload.masked).to eq(false)
           expect(json_response['message']).to eq('value' => ['is invalid'])
         end
+
+        it_behaves_like 'authorizing granular token permissions', :update_variable do
+          let(:boundary_object) { group }
+          let(:request) do
+            put api("/groups/#{group.id}/variables/#{variable.key}", personal_access_token: pat), params: { value: 'UPDATED_VALUE' }
+          end
+        end
       end
 
       context 'when variable is hidden' do
@@ -343,6 +371,13 @@ RSpec.describe API::GroupVariables, feature_category: :pipeline_composition do
 
       it_behaves_like '412 response' do
         let(:request) { api("/groups/#{group.id}/variables/#{variable.key}", user) }
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :delete_variable do
+        let(:boundary_object) { group }
+        let(:request) do
+          delete api("/groups/#{group.id}/variables/#{variable.key}", personal_access_token: pat)
+        end
       end
     end
 

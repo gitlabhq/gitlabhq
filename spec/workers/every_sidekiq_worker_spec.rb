@@ -445,6 +445,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Releases::CreateEvidenceWorker' => 3,
         'RemoteMirrorNotificationWorker' => 3,
         'Repositories::PostReceiveWorker' => 3,
+        'Repositories::CacheTagSignaturesWorker' => false,
         'RepositoryCheck::BatchWorker' => false,
         'RepositoryCheck::ClearWorker' => false,
         'RepositoryCheck::SingleRepositoryWorker' => false,

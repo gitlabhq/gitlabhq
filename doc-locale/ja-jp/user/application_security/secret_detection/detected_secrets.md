@@ -12,216 +12,236 @@ title: 検出されたシークレット
 
 {{< /details >}}
 
-この表は、検出されたシークレットをリストしたものです:
+この表は、シークレット検出によって検出されたシークレットを一覧表示します:
 
 - パイプラインシークレット検出
 - クライアントサイドシークレット検出
 - シークレットプッシュ保護
 
-シークレット検出ルールは、[デフォルトのルールセット](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main)で更新されます。削除または更新されたパターンを持つ検出されたシークレットは、トリアージできるように、開いたままになります。
+シークレット検出ルールは、[default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main)で更新されます。削除または更新されたパターンを持つ検出されたシークレットは、トリアージできるように、開いたままになります。
 
-<!-- markdownlint-disable MD034 -->
+新しいシークレット検出ルールを追加する場合は、すべてのGitLabユーザーに対して[propose new detection rules](pipeline/configure.md#propose-new-detection-rules)するか、特定のプロジェクトに対して[customize rulesets](pipeline/configure.md#customize-analyzer-rulesets)します。
+
 <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab_base.Spelling = NO -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->
 
 | 説明                                   | ID                                            | パイプラインシークレット検出 | クライアントサイドシークレット検出 | シークレットプッシュ保護 |
 |:----------------------------------------------|:----------------------------------------------|:--------------------------|:-----------------------------|:-----------------------|
-| Adafruit IOキー                               | AdafruitIOKey                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Adobe Client ID (OAuth Web)                       | Adobe Client ID (OAuth Web)                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Adobeクライアントのシークレットキー                               | Adobe Client Secret                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Ageシークレットキー                                    | Ageシークレットキー                                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Aiven Service Password                            | AivenServicePassword                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Alibaba AccessKey ID                              | Alibaba AccessKey ID                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Alibaba Secretキー                                | Alibaba Secretキー                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Amazon OAuth Client ID                            | AmazonOAuthClientID                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Anthropic APIキー                                 | anthropic_key                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| Artifactory APIキー                               | ArtifactoryApiKey                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Artifactory Identityトークン                        | ArtifactoryIdentityToken                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| AsanaクライアントID                                   | Asana Client ID                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Asanaクライアントのシークレットキー                               | Asana Client Secret                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| AsanaパーソナルアクセストークンV1                   | AsanaPersonalAccessTokenV1                    | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| AsanaパーソナルアクセストークンV2                   | AsanaPersonalAccessTokenV2                    | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Atlassian APIキー                                 | AtlassianApiKey                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Atlassian APIトークン                               | Atlassian APIトークン                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Atlassian User APIトークン                          | AtlassianUserApiToken                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Auth0 Client Secret                               | Auth0ClientSecret                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| AWSアクセストークン                                  | AWS                                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| AWS Bedrockキー                                   | AWSBedrockKey                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| AWSセキュリティトークンサービス                        | AWSSTSKey                                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure API Management Gatewayキー                  | AzureAPIManagementGatewayKey                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure API Management Directキー                   | AzureAPIManagementDirectKey                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Azure App Config                                  | AzureAppConfigConnectionString                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure Communication Services                      | AzureCommServicesConnectionString                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure Cosmos DB認証情報                       | AzureCosmosDBCredentials                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Azure Entraクライアントのシークレットキー                         | AzureEntraClientSecret                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure Entra Client IDトークン                       | AzureEntraIDToken                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure EventGridアクセスキー                        | AzureEventGridAccessKey                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Azure Functions APIキー                           | AzureFunctionsAPIKey                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure Logic App SAS                               | AzureLogicAppSAS                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Azure OpenAI APIキー                              | AzureOpenAIAPIKey                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Azureパーソナルアクセストークン                       | AzurePersonalAccessToken                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Azure SignalRアクセスキー                          | AzureSignalRAccessKey                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Beamer APIトークン                                  | Beamer APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| BitbucketクライアントID                               | BitbucketクライアントID                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Bitbucketクライアントのシークレットキー                           | Bitbucketクライアントのシークレットキー                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Brevo APIトークン                                   | Sendinblue APIトークン                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Brevo SMTPトークン                                  | Sendinblue SMTPトークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Canada Digital Service Notify APIキー             | CDSCanadaNotifyAPIKey                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| CircleCIアクセストークン                             | CircleCIアクセストークン                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| CircleCIパーソナルアクセストークン                    | CircleCIPersonalAccessToken                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Clojarsデプロイトークン                              | Clojars APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| ContentfulデリバリーAPIトークン                     | ContentfulデリバリーAPIトークン                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Contentfulパーソナルアクセストークン                  | ContentfulPersonalAccessToken                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| ContentfulプレビューAPIトークン                      | ContentfulプレビューAPIトークン                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Databricks APIトークン                              | Databricks APIトークン                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| DataDog APIキー                                   | DataDogAPIKey                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| DigitalOcean OAuthアクセストークン                   | digitalocean-access-token                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| DigitalOceanパーソナルアクセストークン                | digitalocean-pat                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| DigitalOcean更新トークン                        | digitalocean-更新-トークン                    | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Discord APIキー                                   | Discord APIキー                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| DiscordクライアントID                                 | DiscordクライアントID                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Discordクライアントのシークレットキー                             | Discordクライアントのシークレットキー                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Dockerパーソナルアクセストークン                      | DockerPersonalAccessToken                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Doppler APIトークン                                 | Doppler APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Doppler Serviceトークン                             | Doppler Serviceトークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Dropbox APIシークレット/キー                            | Dropbox APIシークレット/キー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Dropbox long lived APIトークン                      | Dropbox long lived APIトークン                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Dropbox short lived APIトークン                     | Dropbox short lived APIトークン                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Duffel APIトークン                                  | Duffel APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Dynatrace Platformトークン                          | DynatracePlatformToken                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| EasyPost本番環境APIキー                       | EasyPost APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| EasyPost test APIキー                             | EasyPost test APIトークン                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Facebookトークン                                    | Facebookトークン                                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Fastly API user or automationトークン               | Fastly APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Figmaパーソナルアクセストークン                       | FigmaPersonalAccessToken                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Finicity APIトークン                                | Finicity APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Finicityクライアントのシークレットキー                            | Finicityクライアントのシークレットキー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Flutterwave test暗号化されたキー                    | Flutterwave暗号化されたキー                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Flutterwave test publicキー                       | Flutterwave publicキー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Flutterwave testシークレットキー                       | Flutterwaveシークレットキー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Frame.io APIトークン                                | Frame.io APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| GCP APIキー                                       | GCP APIキー                                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| GCP OAuthクライアントのシークレットキー                           | GCP OAuthクライアントのシークレットキー                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GCP Vertex Express Modeキー                       | GCPVertexExpressModeKey                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHub appトークン                                  | Github App Token                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHub App Installationトークン                     | GithubAppInstallationToken                    | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHub Fine Grainedパーソナルアクセストークン         | GithubFineGrainedPersonalAccessToken          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHub OAuthアクセストークン                         | Github OAuthアクセストークン                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHubのパーソナルアクセストークンを使用する            | GitHubパーソナルアクセストークンを使用する                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitHub更新トークン                              | Github更新トークン                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitLab CI/CDジョブトークン                            | gitlab_ci_build_token                         | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 |
-| GitLabデプロイトークン                               | GitLabデプロイトークン                           | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 |
-| 機能フラグクライアントトークン                 | なし                                          | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 |
-| GitLabフィードトークン                                 | gitlab_feed_token                             | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 |
-| GitLabフィードトークンv2                              | gitlab_feed_token_v2                          | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| GitLab受信メールトークン                       | gitlab_incoming_email_token                   | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| GitLab Kubernetesエージェントトークン                     | gitlab_kubernetes_エージェント_token                 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| OAuthアプリケーションのシークレット                   | gitlab_oauth_app_シークレット                       | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| GitLabパーソナルアクセストークン                      | GitLabパーソナルアクセストークン                  | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| GitLabパーソナルアクセストークン (ルーティング可能)           | gitlab_personal_access_token_routable         | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| パイプライントリガートークンの変更後                     | gitlab_パイプライントリガートークンの変更後                 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| Runner認証トークン                | gitlab_runner_auth_token                      | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 |
-| Runner登録トークンを許可                  | gitlab_Runner登録トークンを許可              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| GitLab SCIM OAuthトークン                           | gitlab_scim_OAuth_トークン                       | {{< icon name="check-circle" >}}対応 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 |
-| GoCardless APIトークン                              | GoCardless APIトークン                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Google APIキー                                    | GCP APIキー                                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Google (GCP) サービスアカウント                      | Google (GCP) Service-アカウント                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Grafana APIトークン                                 | Grafana APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| HashiCorp Terraform APIトークン                     | Hashicorp Terraform user/org APIトークン        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| HashiCorp Vault batchトークン                       | Hashicorp Vault batchトークン                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| HashiCorp Vault Serviceトークン                     | HashicorpVaultServiceToken                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Heroku APIキーor認可トークン | Heroku APIキー                                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Highnote Live Secretキー                          | HighnoteLiveSecretKey                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Highnote Test Secretキー                          | HighnoteTestSecretKey                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| HubSpot private app APIトークン                     | Hubspot APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Hugging Face Userアクセストークン                    | HuggingFaceUserAccessToken                    | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Instagramアクセストークン                            | Instagramアクセストークン                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Intercom APIトークン                                | Intercom APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| IntercomクライアントのシークレットキーorクライアントID               | Intercomクライアントのシークレットキー/ID                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Ionicパーソナルアクセストークン                       | Ionic APIトークン                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Kubernetesサービスアカウントトークン                  | KubernetesServiceAccToken                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| LangChain APIキー                                 | LangChainAPIKey                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Linear APIトークン                                  | Linear APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Linearクライアントのシークレットキーor ID (OAuth 2.0)            | Linearクライアントのシークレットキー/ID                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| LinkedInクライアントID                                | LinkedInクライアントID                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| LinkedInクライアントシークレット                            | LinkedInクライアントシークレット                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Lob APIキー                                       | Lob APIキー                                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Lob公開APIキー                           | Lob公開APIキー                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Mailchimp APIキー                                 | Mailchimp APIキー                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| MailgunプライベートAPIトークン                         | MailgunプライベートAPIトークン                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Mailgunパブリック検証キー                   | Mailgunパブリック検証キー                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Mailgun Webhook署名キー                       | Mailgun Webhook署名キー                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Mapbox APIトークン                                  | Mapbox APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| MaxMindライセンスキー                               | MaxMindライセンスキー                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| MessageBirdアクセストークン                            | messagebird-api-トークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| MessageBird APIクライアントID                         | MessageBird APIクライアントID                     | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Metaアクセストークン                                 | Metaアクセストークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| New RelicインジェストブラウザーAPIトークン                | New RelicインジェストブラウザーAPIトークン            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| New RelicインジェストブラウザーAPIトークンv2             | New RelicインジェストブラウザーAPIトークンv2         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| New Relic REST APIキー                            | New Relic REST APIキー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| New RelicユーザーAPI ID                             | New RelicユーザーAPI ID                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| New RelicユーザーAPIキー                            | New RelicユーザーAPIキー                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| npmアクセストークン                                  | npmアクセストークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Oculusアクセストークン                               | Oculusアクセストークン                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Okta APIトークン                                    | OktaAPIトークン                                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Oktaクライアントシークレット                                | Oktaクライアントシークレット                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Onfido Live APIトークン                             | Onfido Live APIトークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| OpenAI APIキー                                    | Open AIトークン                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| URLのパスワード                                   | URLのパスワード                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| PGP private key                                   | PGP private key                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| PKCS8 private key                                 | PKCS8 private key                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| PlanetScale APIトークン                             | Planetscale APIトークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| PlanetScaleアプリシークレット                            | Planetscaleアプリシークレット                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| PlanetScale OAuthシークレット                          | Planetscale OAuthシークレット                        | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| PlanetScaleパスワード                              | Planetscaleパスワード                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| PostHogパーソナルAPIキー                          | PostHogパーソナルAPIキー                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| PostHogプロジェクトAPIキー                           | PostHogプロジェクトAPIキー                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Postman APIトークン                                 | Postman APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Pulumi APIトークン                                  | Pulumi APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| PyPiアップロードトークン                                 | PyPiアップロードトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| RSA private key                                   | RSA private key                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| RubyGems APIトークン                                | Rubygem APIトークン                             | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| セグメントパブリックAPIトークン                          | セグメントパブリックAPIトークン                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| SendGrid APIトークン                                | Sendgrid APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Shippo APIトークン                                  | Shippo APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| ShippoテストAPIトークン                             | ShippoテストAPIトークン                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Shopifyカスタムアプリアクセストークン                   | Shopifyカスタムアプリアクセストークン               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Shopifyパーソナルアクセストークン                     | Shopifyアクセストークン                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Shopifyプライベートアプリアクセストークン                  | Shopifyプライベートアプリアクセストークン              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Shopify共有シークレット                             | Shopify共有シークレット                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Slackアプリレベルトークン                             | Slackアプリレベルトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| SlackボットユーザーOAuthトークン                        | Slackトークン                                   | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Slack Webhook                                     | Slack Webhook                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| SonarQubeグローバル分析トークン                   | SonarQubeグローバル分析トークン                  | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| SonarQubeプロジェクト分析トークン                  | SonarQubeプロジェクト分析トークン                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| SonarQubeユーザートークン                              | SonarQubeユーザートークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Splunk Authenticationトークン                       | Splunk認証トークン                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Splunk HTTPイベントコレクター（HEC）トークン            | SplunkHECトークン                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| SSH（DSA）private key                             | SSH（DSA）private key                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| SSH（EC）private key                              | SSH（EC）private key                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| SSH private key                                   | SSH private key                               | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Stripeライブ制限キー                        | Stripeライブ制限キー                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Stripeライブシークレットキー                            | Stripeライブシークレットキー                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Stripeライブショートシークレットキー                      | Stripeライブショートシークレットキー                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Stripe公開ライブキー                       | Stripe公開ライブキー                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Stripe公開テストキー                       | Stripe公開テストキー                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Stripe制限付きテストキー                        | Stripe制限付きテストキー                       | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Stripeシークレットテストキー                            | Stripeシークレットテストキー                           | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Stripeテストショートシークレットキー                      | Stripeテストショートシークレットキー                      | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Tailscaleキー                                     | Tailscaleキー                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Tencent CloudシークレットID                           | TencentCloudシークレットID                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| TwilioアカウントID                                | TwilioアカウントID                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Twilio APIキー                                    | Twilio APIキー                                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Twitch OAuthクライアントシークレット                        | Twitch APIトークン                              | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Typeformパーソナルアクセストークン                    | Typeform APIトークン                            | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| VolcengineアクセスキーID                          | VolcengineアクセスキーID                         | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| WakaTime APIキー                                  | WakaTimeAPIキー                                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}非対応 | {{< icon name="check-circle" >}}対応 |
-| Xトークン                                           | Twitterトークン                                 | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Yandex.Cloud AWS API互換アクセスシークレット     | Yandex.Cloud AWS API互換アクセスシークレット | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Yandex.Cloud APIキー                              | Yandex.Cloud APIキー                          | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Yandex.Cloud IAM cookie v1-1                      | Yandex.Cloud IAM Cookie v1 - 1                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
-| Yandex.Cloud IAM cookie v1-3                      | Yandex.Cloud IAM Cookie v1 - 3                | {{< icon name="check-circle" >}}対応 | {{< icon name="dotted-circle" >}}対象外 | {{< icon name="dotted-circle" >}}対象外 |
+| Adafruit IO Key                               | AdafruitIOKey                                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Adobe Client ID (OAuth Web)                       | Adobe Client ID (Oauth Web)                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Adobeクライアントのシークレットキー                               | Adobe Client Secret                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Ageシークレットキー                                    | Age secret key                                | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Aiven Service Password                            | AivenServicePassword                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| AlibabaアクセスキーID                              | AlibabaアクセスキーID                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Alibabaシークレットキー                                | Alibabaシークレットキー                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Amazon OAuth Client ID                            | AmazonOAuthClientID                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Anthropic APIキー                                 | anthropic_key                                 | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| Artifactory APIキー                               | ArtifactoryApiKey                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Artifactory Identityトークン                        | ArtifactoryIdentityToken                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Asana client ID                                   | Asana Client ID                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Asanaクライアントのシークレットキー                               | Asana Client Secret                           | {{< yes >}} | {{< no >}} | {{< no >}} |
+| AsanaパーソナルアクセストークンV1                   | AsanaPersonalAccessTokenV1                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| AsanaパーソナルアクセストークンV2                   | AsanaPersonalAccessTokenV2                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Atlassian APIキー                                 | AtlassianApiKey                               | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Atlassian APIトークン                               | Atlassian APIトークン                           | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Atlassian User APIトークン                          | AtlassianUserApiToken                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Auth0クライアントのシークレットキー                               | Auth0ClientSecret                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| AWSアクセスキーID                                 | AWS                                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| AWSアクセスシークレットKey                             | AWSSecretAccessKey                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| AWS Sessionトークン                                 | AWSSessionToken                               | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| AWS Cognito IdentityプールID                      | AWSCognitoIdentityPoolID                      | {{< yes >}} | {{< no >}} | {{< no >}} |
+| AWS Bedrock Key                                   | AWSBedrockKey                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| AWS Bedrock Short-lived Key                       | AWSBedrockShortLivedKey                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure API Management Gatewayキー                  | AzureAPIManagementGatewayKey                  | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure API Management Directキー                   | AzureAPIManagementDirectKey                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Azure App設定                                  | AzureAppConfigConnectionString                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure Communication Services                      | AzureCommServicesConnectionString                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure Cosmos DB認証情報                       | AzureCosmosDBCredentials                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Azure Entraクライアントのシークレットキー                         | AzureEntraClientSecret                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure Entra Client IDトークン                       | AzureEntraIDToken                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure EventGridアクセスキー                        | AzureEventGridAccessKey                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Azure Functions APIキー                           | AzureFunctionsAPIKey                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure Logic App SAS                               | AzureLogicAppSAS                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Azure OpenAI APIキー                              | AzureOpenAIAPIKey                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Azureパーソナルアクセストークン                       | AzurePersonalAccessToken                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Azure SignalRアクセスキー                          | AzureSignalRAccessKey                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Beamer APIトークン                                  | Beamer APIトークン                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Bitbucket client ID                               | Bitbucket client ID                           | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Bitbucketクライアントのシークレットキー                           | Bitbucketクライアントのシークレットキー                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Brevo APIトークン                                   | Sendinblue API token                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Brevo SMTPトークン                                  | Sendinblue SMTP token                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Canada Digital Service Notify APIキー             | CDSCanadaNotifyAPIKey                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| CircleCIアクセストークン                             | CircleCI access tokens                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| CircleCIパーソナルアクセストークン                    | CircleCIPersonalAccessToken                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Clojarsデプロイトークン                              | Clojars API token                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Contentful delivery APIトークン                     | Contentful delivery APIトークン                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Contentfulパーソナルアクセストークン                  | ContentfulPersonalAccessToken                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| ContentfulプレビューAPIトークン                      | ContentfulプレビューAPIトークン                  | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Databricks APIトークン                              | Databricks APIトークン                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| DataDog APIキー                                   | DataDogAPIKey                                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| DigitalOcean OAuthアクセストークン                   | digitalocean-access-token                     | {{< yes >}} | {{< no >}} | {{< no >}} |
+| DigitalOceanパーソナルアクセストークン                | digitalocean-pat                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| DigitalOcean更新トークン                        | digitalocean-refresh-token                    | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Discord APIキー                                   | Discord APIキー                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Discord client ID                                 | Discord client ID                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Discordクライアントのシークレットキー                             | Discordクライアントのシークレットキー                         | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Dockerパーソナルアクセストークン                      | DockerPersonalAccessToken                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Doppler APIトークン                                 | Doppler APIトークン                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Doppler Serviceトークン                             | Doppler Serviceトークン                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Dropbox APIシークレット/キー                            | Dropbox APIシークレット/キー                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Dropbox Appアクセストークン                          | DropboxAppAccessToken                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Dropbox long lived APIトークン                      | Dropbox long lived APIトークン                  | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Dropbox short lived APIトークン                     | Dropbox short lived APIトークン                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Duffel APIトークン                                  | Duffel APIトークン                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Dynatrace Platformトークン                          | DynatracePlatformToken                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| EasyPost本番環境APIキー                       | EasyPost API token                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| EasyPost test APIキー                             | EasyPost test API token                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Facebookトークン                                    | Facebookトークン                                | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Fastly API user or認証トークン               | Fastly API token                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Figmaパーソナルアクセストークン                       | FigmaPersonalAccessToken                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Finicity APIトークン                                | Finicity APIトークン                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Finicityクライアントのシークレットキー                            | Finicityクライアントのシークレットキー                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Flutterwave Prod Encrypted Key                    | FlutterwaveProdEncryptedKey                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Flutterwave test暗号化されたキー                    | Flutterwave encrypted key                     | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Flutterwave Prod Public Key                       | FlutterwaveProdPublicKey                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Flutterwave test publicキー                       | Flutterwave public key                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Flutterwave Prodシークレットキー                       | FlutterwaveProdSecretKey                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Flutterwave testシークレットキー                       | Flutterwave secret key                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Frame.io APIトークン                                | Frame.io APIトークン                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| GCP APIキー                                       | GCP APIキー                                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| GCP OAuthクライアントのシークレットキー                           | GCP OAuthクライアントのシークレットキー                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GCP Vertex Express Mode Key                       | GCPVertexExpressModeKey                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHub appトークン                                  | Github App Token                              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHub App Installationトークン                     | GithubAppInstallationToken                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHub Fine Grainedパーソナルアクセストークン         | GithubFineGrainedPersonalAccessToken          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHub OAuthアクセストークン                         | Github OAuth Access Token                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHubパーソナルアクセストークン (classic)            | Github Personal Access Token                  | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitHub更新トークン                              | Github Refresh Token                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitLab CI/CDジョブトークン                            | gitlab_ci_build_token                         | {{< yes >}} | {{< yes >}} | {{< no >}} |
+| GitLabデプロイトークン                               | gitlab_deploy_token                           | {{< yes >}} | {{< yes >}} | {{< no >}} |
+| GitLab機能フラグクライアントトークン                 | なし                                          | {{< no >}} | {{< yes >}} | {{< no >}} |
+| GitLabフィードトークン                                 | gitlab_feed_token                             | {{< yes >}} | {{< yes >}} | {{< no >}} |
+| GitLabフィードトークンv2                              | gitlab_feed_token_v2                          | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLab incomingメールトークン                       | gitlab_incoming_email_token                   | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLab Kubernetesエージェントトークン                     | gitlab_kubernetes_agent_token                 | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLab OAuth applicationシークレット                   | gitlab_oauth_app_secret                       | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLabパーソナルアクセストークン                      | gitlab_personal_access_token                  | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLabパーソナルアクセストークン (routable)           | gitlab_personal_access_token_routable         | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLabパイプライントリガートークン                     | gitlab_pipeline_trigger_token                 | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLab Runner認証トークン                | gitlab_runner_auth_token                      | {{< yes >}} | {{< yes >}} | {{< yes >}} |
+| GitLab Runner登録トークン                  | gitlab_runner_registration_token              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| GitLab SCIM OAuthトークン                           | gitlab_scim_oauth_token                       | {{< yes >}} | {{< yes >}} | {{< no >}} |
+| GoCardless APIトークン                              | GoCardless APIトークン                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Google APIキー                                    | GCP APIキー                                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Google (GCP) サービスアカウント                      | Google (GCP) Service-account                  | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Grafana Service Accountトークン                     | GrafanaServiceAccountToken                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Grafana Cloud Access Policyトークン                 | GrafanaCloudAccessPolicyToken                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| HashiCorp Terraform APIトークン                     | Hashicorp Terraform user/org API token        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| HashiCorp Vault batchトークン                       | Hashicorp Vault batch token                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| HashiCorp Vault Serviceトークン                     | HashicorpVaultServiceToken                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Heroku APIキーor application認可トークン | Heroku API Key                                | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Highnote Liveシークレットキー                          | HighnoteLiveSecretKey                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Highnote Testシークレットキー                          | HighnoteTestSecretKey                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| HubSpot private app APIトークン                     | Hubspot API token                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Hugging Face Userアクセストークン                    | HuggingFaceUserAccessToken                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Instagramアクセストークン                            | Instagramアクセストークン                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Intercom APIトークン                                | Intercom APIトークン                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Intercom Appアクセストークン                         | IntercomAppAccessToken                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Intercomクライアントのシークレットキーor client ID               | Intercom client secret/ID                     | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Ionicパーソナルアクセストークン                       | Ionic API token                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Kubernetes Service Accountトークン                  | KubernetesServiceAccToken                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| LangChain APIキー                                 | LangChainAPIKey                               | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Linear APIトークン                                  | Linear APIトークン                              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Linearクライアントのシークレットキーor ID (OAuth 2.0)            | Linearクライアントのシークレットキー/ID                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| LinkedInクライアントのシークレットキー                                | Linkedin Client ID                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| LinkedInクライアントのシークレットキー                            | Linkedin Client secret                        | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Lob APIキー                                       | Lob API Key                                   | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Lob公開APIキー                           | Lob Publishable API Key                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Mailchimp APIキー                                 | Mailchimp APIキー                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| MailgunプライベートAPIトークン                         | MailgunプライベートAPIトークン                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Mailgunパブリック検証キー                   | Mailgun public validation key                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Mailgun Webhook署名キー                       | Mailgun Webhook署名キー                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Mapbox APIトークン                                  | Mapbox APIトークン                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Mapbox Secret APIトークン                           | MapboxSecretApiToken                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| MaxMindライセンスキー                               | MaxMindライセンスキー                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| MessageBirdアクセスキー                            | messagebird-api-トークン                         | {{< yes >}} | {{< no >}} | {{< no >}} |
+| MessageBird APIクライアントのシークレットキー                         | MessageBird APIクライアントのシークレットキー                     | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Metaアクセストークン                                 | Metaアクセストークン                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| New RelicインジェストするブラウザAPIトークン                | New RelicインジェストするブラウザAPIトークン            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| New RelicインジェストするブラウザAPIトークンv2             | New RelicインジェストするブラウザAPIトークンv2         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| New Relic REST APIキー                            | New Relic REST APIキー                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| New RelicユーザーAPI ID                             | New RelicユーザーAPI ID                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| New RelicユーザーAPIキー                            | New Relic user API Key                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| NPMアクセストークン                                  | NPMアクセストークン                              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Oculusアクセストークン                               | Oculusアクセストークン                           | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Okta APIトークン                                    | OktaAPIToken                                  | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Oktaクライアントのシークレットキー                                | OktaClientSecret                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Onfido Live APIトークン                             | Onfido Live APIトークン                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| OpenAI APIキー                                    | open aiトークン                                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| OpenAI Projectキー                                | OpenAiProjectKey                              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| OpenAI Service Accountキー                        | OpenAiServiceAccountKey                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| URL内のパスワード                                   | URL内のパスワード                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| PGPプライベートキー                                   | PGPプライベートキー                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| PKCS8プライベートキー                                 | PKCS8プライベートキー                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| PlanetScale APIトークン                             | Planetscale API token                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| PlanetScale App Secret                            | PlanetscaleAppSecret                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| PlanetScale OAuth Secret                          | PlanetscaleOAuthSecret                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| PlanetScaleパスワード                              | Planetscale password                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| PostHog Personal APIキー                          | PostHogPersonalAPIkey                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| PostHog Project APIキー                           | PostHogProjectAPIkey                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Postman APIトークン                                 | Postman APIトークン                             | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Postman Collectionアクセスキー                     | PostmanCollectionAccessKey                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Pulumi APIトークン                                  | Pulumi APIトークン                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| PyPiアップロードトークン                                 | PyPI upload token                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| RSAプライベートキー                                   | RSAプライベートキー                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| RubyGems APIトークン                                | Rubygem API token                             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| SegmentパブリックAPIトークン                          | Segment Public API token                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| SendGrid APIトークン                                | Sendgrid API token                            | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Shippo APIトークン                                  | Shippo APIトークン                              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| ShippoテストAPIトークン                             | ShippoテストAPIトークン                         | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Shopify Partner APIトークン                         | ShopifyPartnerAPIToken                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Shopifyパーソナルアクセストークン                     | Shopify access token                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Shopifyプライベートアプリアクセストークン                  | Shopifyプライベートアプリアクセストークン              | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Shopify Custom Appアクセストークン                   | Shopify custom app access token               | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Shopify共有シークレット                             | Shopify共有シークレット                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Slack App設定トークン                     | SlackAppConfigurationToken                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Slack App設定更新トークン             | SlackAppConfigurationRefreshToken             | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Slackアプレベルトークン                             | SlackAppLevelToken                            | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| SlackボットユーザーOAuthトークン                        | Slack token                                   | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Slack Webhook                                     | Slack Webhook                                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| SonarQubeグローバル分析トークン                   | SonarQubeGlobalAnalysisToken                  | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| SonarQubeプロジェクト分析トークン                  | SonarQubeProjectAnalysisToken                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| SonarQubeユーザートークン                              | SonarQubeUserToken                            | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Splunk認証トークン                       | SplunkAuthToken                               | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Splunk HTTPイベントコレクター (HEC) トークン            | SplunkHECToken                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| SSH (DSA) プライベートキー                             | SSH (DSA) プライベートキー                         | {{< yes >}} | {{< no >}} | {{< no >}} |
+| SSH (EC) プライベートキー                              | SSH (EC) プライベートキー                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| SSHプライベートキー                                   | SSHプライベートキー                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Stripe live制限付きキー                        | StripeLiveRestrictedKey                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Stripe liveシークレットキー                            | StripeLiveSecretKey                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Stripe Live Shortシークレットキー                      | StripeLiveShortSecretKey                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Stripe公開可能liveキー                       | StripeLivePublishableKey                      | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Stripe公開可能テストキー                       | StripeTestPublishableKey                      | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Stripe制限付きテストキー                        | StripeTestRestrictedKey                       | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Stripeシークレットテストキー                            | StripeTestSecretKey                           | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Stripe Test Shortシークレットキー                      | StripeTestShortSecretKey                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Tailscale OAuthクライアントのシークレットキー                     | TailscaleOauthClientSecret                    | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Tailscale APIアクセストークン                        | TailscaleApiAccessToken                       | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Tailscale Personal認証キー                       | TailscalePersonalAuthKey                      | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Tencent Cloud Secret ID                           | TencentCloudSecretID                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Twilio Account SID                                | Twilio Account SID                            | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Twilio APIキー                                    | Twilio API Key                                | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Twitch OAuthクライアントのシークレットキー                        | Twitch API token                              | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Typeformパーソナルアクセストークン                    | Typeform API token                            | {{< yes >}} | {{< no >}} | {{< no >}} |
+| VolcengineアクセスキーID                          | VolcengineAccessKeyID                         | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| WakaTime APIキー                                  | WakaTimeAPIKey                                | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Xトークン                                           | Twitter token                                 | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Yandex.Cloud AWS API互換性のあるアクセスキー     | Yandex.Cloud AWS API compatible Access Secret | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Yandex.Cloud APIキー                              | Yandex.Cloud APIキー                          | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Yandex.Cloud IAM cookie v1-1                      | Yandex.Cloud IAM Cookie v1 - 1                | {{< yes >}} | {{< no >}} | {{< no >}} |
+| Yandex.Cloud IAM cookie v1-3                      | Yandex.Cloud IAM Cookie v1 - 3                | {{< yes >}} | {{< no >}} | {{< no >}} |
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->
-<!-- markdownlint-enable MD034 -->
+<!-- vale gitlab_base.Spelling = YES -->
 <!-- markdownlint-enable MD044 -->

@@ -37,6 +37,7 @@ import NavigationControls from './components/nav_controls.vue';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 
 export default {
+  name: 'PipelinesList',
   components: {
     NoCiEmptyState,
     GlCollapsibleListbox,

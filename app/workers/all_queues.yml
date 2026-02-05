@@ -5284,6 +5284,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: repositories_cache_tag_signatures
+  :worker_name: Repositories::CacheTagSignaturesWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: repositories_post_receive
   :worker_name: Repositories::PostReceiveWorker
   :feature_category: :source_code_management

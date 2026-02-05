@@ -25,6 +25,7 @@ module TagsHelper
   end
 
   def tag_view_signature(tag)
+    return unless tag.has_signature?
     return tag.lazy_cached_signature if tag.can_use_lazy_cached_signature?
 
     tag.signature

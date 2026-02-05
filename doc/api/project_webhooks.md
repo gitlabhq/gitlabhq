@@ -19,7 +19,7 @@ are different from [system hooks](system_hooks.md) that impact the entire instan
 
 Prerequisites:
 
-- You must be an administrator or have at least the Maintainer role for the project.
+- You must be an administrator or have the Maintainer or Owner role for the project.
 
 ## List webhooks for a project
 

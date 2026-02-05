@@ -55,7 +55,7 @@ To view storage usage for a project:
 
 You can also use:
 
-- Use the Projects API to get total container registry storage for a project. For more information, see [Get a single project](../../../api/projects.md#get-a-single-project).
+- Use the Projects API to get total container registry storage for a project. For more information, see [Get a single project](../../../api/projects.md#retrieve-a-project).
 - Use the Container registry API to get size data for a specific repository. For more information, see [Retrieve details of a single repository](../../../api/container_registry.md#retrieve-details-of-a-single-repository).
 
 ### For a group

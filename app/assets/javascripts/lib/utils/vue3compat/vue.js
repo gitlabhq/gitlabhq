@@ -1,5 +1,4 @@
 import VueCompatOriginal from '@vue/compat';
-// eslint-disable-next-line no-restricted-imports
 import { logDevNotice } from '../../logger';
 import { compatConfig } from './compat_config';
 

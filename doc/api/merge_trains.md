@@ -17,7 +17,7 @@ Use this API to interact with [merge trains](../ci/pipelines/merge_trains.md).
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 All merge train endpoints support [offset-based pagination](rest/_index.md#offset-based-pagination) using the `page` and `per_page` parameters.
 

@@ -420,7 +420,7 @@ Example response:
 
 ### Retrieve a project audit event
 
-Retrieves an audit event for a specified project. Only available to users with at least the Maintainer role for the project.
+Retrieves an audit event for a specified project. Only available to users with the Maintainer or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/audit_events/:audit_event_id

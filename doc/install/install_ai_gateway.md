@@ -367,6 +367,8 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    kubectl -n ai-gateway create secret tls ai-gateway-tls --cert="<path_to_cert>" --key="<path_to_cert_key>"
    ```
 
+1. Get version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
+
 1. For the AI Gateway to access the API, it must know where the GitLab instance
    is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
    the `ingress.hosts` and `ingress.tls` values as follows:
@@ -378,7 +380,7 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
 
    helm upgrade --install ai-gateway \
      ai-gateway/ai-gateway \
-     --version 0.5.0 \
+     --version <latest-package-in-registery> \
      --namespace=ai-gateway \
      --set="image.tag=<ai-gateway-image-version>" \
      --set="gitlab.url=https://<your_gitlab_domain>" \
@@ -529,6 +531,75 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 ## Extra installation steps for GitLab Dedicated instances
 
 To access a Self-hosted AI Gateway, see [Self-hosted AI Gateway for GitLab Dedicated instances](../administration/dedicated/configure_instance/_index.md#self-hosted-ai-gateway-for-gitlab-dedicated-instances).
+
+## Security updates and image verification
+
+To ensure you're running the latest security patches, follow these guidelines based on your deployment method.
+
+### For Kubernetes or Helm deployments
+
+The [charts versions](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages) before 0.7.0 and Kubernetes uses `imagePullPolicy: IfNotPresent` by default, which won't pull updated images if the tag hasn't changed. This means you might miss security patches released under the same version tag.
+
+You should use the following approach that uses image digests:
+
+```shell
+# Find the image digest from the container registry
+# Use this digest in your Helm install/upgrade command
+
+helm upgrade --install ai-gateway \
+  ai-gateway/ai-gateway \
+  --set="image.tag=self-hosted-v18.2.1-ee@sha256:abc123..." \
+  # ... other flags
+```
+
+Alternatively, you can use the `imagePullPolicy` with either of the following approaches:
+
+- Set the `imagePullPolicy` to always:
+
+  ```shell
+  helm upgrade --install ai-gateway \
+    ai-gateway/ai-gateway \
+    --set="image.pullPolicy=Always" \
+    # ... other flags
+  ```
+
+- Add the `pullPolicy` to your `values.yaml`:
+
+  ```yaml
+  image:
+    pullPolicy: Always
+  ```
+
+To force pulling updates:
+
+```shell
+kubectl rollout restart deployment/ai-gateway -n ai-gateway
+```
+
+### For Docker deployments
+
+When upgrading, verify that you're pulling the latest image:
+
+```shell
+# Check current image digest
+docker images --digests | grep ai-assist
+
+# Pull latest version explicitly
+docker pull registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
+
+# Verify digest changed
+docker images --digests | grep ai-assist
+```
+
+To use image digests for immutable deployments:
+
+```shell
+docker run -d -p 5052:5052 -p 50052:50052 \
+ -e AIGW_GITLAB_URL=<your_gitlab_instance> \
+ -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
+ -e DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat duo_workflow_jwt.key)" \
+ registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-v18.2.1-ee@sha256:abc123...
+```
 
 ## Alternative installation methods
 

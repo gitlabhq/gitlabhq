@@ -12,121 +12,115 @@ title: GitLab Pagesカスタムドメイン
 
 {{< /details >}}
 
-{{< history >}}
+カスタムドメインは、以下で使用できます:
 
-- GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/238461)された、検証済みのドメインを使用して、[SAMLまたはSCIMでプロビジョニングされたユーザーのユーザーEメールの確認を回避する](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains)ことができます。
-
-{{< /history >}}
-
-カスタムドメインは、以下の場合に使用できます。
-
-- GitLab Pagesを使用。
-- [SAMLまたはSCIMでプロビジョニングされたユーザーのユーザーEメールの確認を回避する](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains)。カスタムドメインをこのように使用する場合は、GitLab Pages機能を使用しますが、[前提要件](#prerequisites)をスキップできます。
+- GitLab Pages。
+- [SAMLまたはSCIMプロビジョニングされたユーザーのユーザーメール確認をバイパスする](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains)。このようにカスタムドメインを使用する場合、GitLab Pages機能を使用しますが、[prerequisites](#prerequisites)をスキップできます。
 
 1つまたは複数のカスタムドメイン名を使用するには:
 
-- カスタム[**ルートドメイン**または**サブドメイン**](#set-up-a-custom-domain)を追加します。
-- [SSL/TLS証明](#adding-an-ssltls-certificate-to-pages)を追加します。
+- [カスタムルートドメインまたはサブドメイン](#set-up-a-custom-domain)を追加します。
+- [SSL/TLS証明書](#add-an-ssltls-certificate-to-pages)を追加します。
 
-{{< alert type="warning" >}}
+> [!warning] [最も一般的なパブリックメールドメイン](../../../group/access_and_permissions.md#restrict-group-access-by-domain)は確認できません。
 
-[最も一般的なパブリック](../../../group/access_and_permissions.md#restrict-group-access-by-domain)は検証できません。
+## カスタムドメインの設定 {#set-up-a-custom-domain}
 
-{{< /alert >}}
+カスタムドメインでPagesを設定するには、以下の手順を実行します。
 
-## カスタムドメインを設定する {#set-up-a-custom-domain}
+### 前提条件 {#prerequisites}
 
-カスタムドメイン名でPagesを設定するには、以下の要件と手順をお読みください。
-
-### 前提要件 {#prerequisites}
-
-- 管理者が[GitLab Pagesカスタムドメイン](../../../../administration/pages/_index.md#advanced-configuration)のサーバーをConfigureしている。
-- GitLab PagesのWebサイトが起動し、実行され、デフォルトのPagesドメイン（`*.gitlab.io`、GitLab.comの場合）で提供されている。
+- 管理者が[GitLab Pagesカスタムドメイン](../../../../administration/pages/_index.md#advanced-configuration)のサーバーを設定しました。
+- GitLab PagesのWebサイトが稼働中で、デフォルトのPagesドメイン（`*.gitlab.io`、GitLab.comの場合）で提供されています。
 - カスタムドメイン名`example.com`またはサブドメイン`subdomain.example.com`。
-- を設定するために、ドメインのサーバーコントロールパネルにアクセスします。
-  - ドメインをGitLab Pagesサーバーに（`A`、`AAAA`、`ALIAS`、または`CNAME`）。その名前に複数のがある場合は、`ALIAS`レコードを使用する必要があります。
-  - ドメインの所有権を検証するための`TXT`。
+- DNSレコードをセットアップするための、ドメインのサーバーコントロールパネルへのアクセス:
+  - ドメインをGitLab Pagesサーバーに向けるDNSレコード（`A`、`AAAA`、`ALIAS`、または`CNAME`）。その名前に複数のDNSレコードがある場合は、`ALIAS`レコードを使用する必要があります。
+  - ドメインの所有権を検証するためのDNS `TXT`レコード。
 
-### ステップ {#steps}
+DNSレコードの概要については、[GitLab PagesDNSレコード](dns_concepts.md)を参照してください。
 
-以下の手順に従って、カスタムドメインをPagesに追加します。[の概要](dns_concepts.md)については、このドキュメントも参照してください。
-
-#### 1.カスタムドメインを追加する {#1-add-a-custom-domain}
+### ステップ1: カスタムドメインの追加 {#step-1-add-a-custom-domain}
 
 カスタムドメインをGitLab Pagesに追加するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
 1. 右上隅で、**新しいドメイン**を選択します。
 1. **ドメイン**に、ドメイン名を入力します。
-1. オプション: **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにして、[SSL/TLS証明書SSL/TLS証明書](#adding-an-ssltls-certificate-to-pages)を追加します。証明書とキーは後で追加することもできます。証明書とキーは後で追加することもできます。
-1. **新しいドメインを作成**を選択します。
+1. オプション。**証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにして、[SSL/TLS証明書](#add-an-ssltls-certificate-to-pages)を追加します。後で証明書とキーを追加することもできます。証明書とキーは後で追加することもできます。
+1. **Create New Domain**を選択します。
 
-#### 2.検証コードを取得する {#2-get-the-verification-code}
+### ステップ2: 検証コードの取得 {#step-2-get-the-verification-code}
 
-Pagesに新しいドメインを追加すると、検証コードがプロンプトに表示されます。GitLabから値をコピーし、ドメインのコントロールパネルに`TXT`レコードとして貼り付けます。
+Pagesに新しいドメインを追加すると、GitLabは検証コードを表示します。値をコピーし、次の手順でドメインのコントロールパネルに`TXT`レコードとして貼り付けます。
 
-![検証コードを取得する](img/get_domain_verification_code_v12_0.png)
+![新しいドメイン用に生成された検証コードを示すGitLab Pages。](img/get_domain_verification_code_v12_0.png)
 
-#### 3.を設定する {#3-set-up-dns-records}
+**検証ステータス**フィールドの構造は次のとおりです:
 
-[Pagesのの概要](dns_concepts.md)については、このドキュメントをお読みください。この件について詳しい場合は、Pagesサイトで使用するドメインのタイプに応じて、以下の手順に従ってください。
+- 名前/ホスト:
+  - ルートドメインの場合：`_gitlab-pages-verification-code.example.com`
+  - サブドメインの場合：`_gitlab-pages-verification-code.subdomain.example.com`
+- DNSレコードタイプ：`TXT`
+- 値：`gitlab-pages-verification-code=00112233445566778899aabbccddeeff`（GitLabからの実際のコードを使用）
 
-- [ルートドメインの場合](#for-root-domains)、`example.com`。
-- [サブドメインの場合](#for-subdomains)、`subdomain.example.com`。
-- [両方の場合](#for-both-root-and-subdomains)。
+> [!note] Cloudflareなどの一部のDNSプロバイダーは、ドメイン名を[名前]または[ホスト]フィールドに自動的に追加します。プロバイダーがこれを行う場合は、ルートドメインの場合は`_gitlab-pages-verification-code`、サブドメインの場合は`_gitlab-pages-verification-code.subdomain`のみを入力します。
 
-##### ルートドメインの場合 {#for-root-domains}
+### ステップ3: DNSレコードの設定 {#step-3-set-up-dns-records}
 
-ルートドメイン（`example.com`）には以下が要件です。
+Pagesサイトで使用するドメインのタイプに従ってDNSレコードを設定するには、次のいずれかを選択します:
 
-- 少なくとも次のいずれか。
-  - ドメインをPagesサーバーに[`A`](dns_concepts.md#a-record)。
-  - ドメインをPagesサーバーに[`AAAA`](dns_concepts.md#aaaa-record)。
-- ドメインの所有権を検証するための[`TXT`](dns_concepts.md#txt-record)。
+- [ルートドメインの場合](#for-root-domains)
+- [サブドメインの場合](#for-subdomains)
+- [ルートドメインとサブドメインの両方の場合](#for-both-root-and-subdomains)
 
-| からの                                          | DNSレコード | をに設定します。              |
+#### ルートドメインの場合 {#for-root-domains}
+
+ルートドメイン（`example.com`）には、以下が必要です:
+
+- 少なくとも1つ:
+  - ドメインをPagesサーバーに向ける[DNS `A`レコード](dns_concepts.md#a-record)。
+  - ドメインをPagesサーバーに向ける[DNS `AAAA`レコード](dns_concepts.md#aaaa-record)。
+- ドメインの所有権を検証するための[`TXT`レコード](dns_concepts.md#txt-record)。
+
+| 送信元                                          | DNSレコード | 宛先              |
 | --------------------------------------------- | ---------- | --------------- |
 | `example.com`                                 | `A`        | `35.185.44.232` |
 | `example.com`                                 | `AAAA`     | `2600:1901:0:7b8a::` |
 | `_gitlab-pages-verification-code.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-GitLab.comのプロジェクトの場合、IPv4アドレスは`35.185.44.232`、IPv6アドレスは`2600:1901:0:7b8a::`です。他のGitLabインスタンス（CEまたはGitLab Enterprise Edition）で稼働しているプロジェクトの場合は、システム管理者に問い合わせて、この情報（インスタンスで実行されているPagesサーバーのIPアドレス）を確認してください。
+GitLab.comのプロジェクトの場合、IPv4アドレスは`35.185.44.232`、IPv6アドレスは`2600:1901:0:7b8a::`です。
 
-![GitLab.com Pagesサーバーを`A`](img/dns_add_new_a_record_v11_2.png)
+他のGitLabインスタンス（CEまたはEE）のプロジェクトの場合は、システム管理者に連絡して、インスタンスのPagesサーバーIPアドレスをリクエストしてください。
 
-{{< alert type="warning" >}}
+![GitLab Pagesサーバーに追加されたAレコードを示すDNS設定画面。](img/dns_add_new_a_record_v11_2.png)
 
-ルートドメインをGitLab Pages Webサイト**のみ**に使用していて、ドメインレジストラーがこの機能をサポートしている場合は、`A`または`AAAA`レコードの代わりに、 apex `CNAME`レコードを追加できます。これを行う主な利点は、GitLab.comのGitLab Pages IPが何らかの理由で変更された場合に、`A`または`AAAA`レコードを更新する必要がないことです。いくつかの例外があるかもしれませんが、ルートドメインに[`MX`](dns_concepts.md#mx-record)を設定すると、**この方法は推奨されません**。
+> [!warning]ルートドメインに`A`または`AAAA`レコードの代わりにDNSアペックス`CNAME`レコードを使用しないでください。ルートドメインの[`MX`DNSレコード](dns_concepts.md#mx-record)を設定した場合、このメソッドはほとんどの場合機能しません。
 
-{{< /alert >}}
+#### サブドメインの場合 {#for-subdomains}
 
-##### サブドメインの場合 {#for-subdomains}
+サブドメイン（`subdomain.example.com`）には、以下が必要です:
 
-サブドメイン（`subdomain.example.com`）には以下が要件です。
+- サブドメインをPagesサーバーに向ける[DNS `ALIAS`または`CNAME`レコード](dns_concepts.md#cname-record)。
+- ドメインの所有権を検証するための[DNS `TXT`レコード](dns_concepts.md#txt-record)。
 
-- サブドメインをPagesサーバーに[`ALIAS`または`CNAME`](dns_concepts.md#cname-record)。
-- ドメインの所有権を検証するための[`TXT`](dns_concepts.md#txt-record)。
-
-| からの                                                    | DNSレコード      | をに設定します。                    |
-|:--------------------------------------------------------|:----------------|:----------------------|
+| 送信元                                                    | DNSレコード      | 宛先 |
+|---------------------------------------------------------|-----------------|----|
 | `subdomain.example.com`                                 | `ALIAS`/`CNAME` | `namespace.gitlab.io` |
 | `_gitlab-pages-verification-code.subdomain.example.com` | `TXT`           | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-ユーザーまたはプロジェクトのWebサイトのどちらの場合でも、DNSレコード、パスなしで、Pagesドメイン（`namespace.gitlab.io`）を指す必要があります。
+ユーザーまたはプロジェクトのWebサイトであるかどうかにかかわらず、DNSレコードは、パスなしで、Pagesドメイン（`namespace.gitlab.io`）を指している必要があります。
 
-##### ルートとサブドメインの両方の場合 {#for-both-root-and-subdomains}
+#### ルートドメインとサブドメインの両方の場合 {#for-both-root-and-subdomains}
 
-サブドメインとルートドメインの両方を同じWebサイトに指す必要があるケースがいくつかあります。たとえば、`example.com`や`www.example.com`などです。
+たとえば、ルートドメインとサブドメインの両方を同じWebサイト（`example.com`や`www.example.com`など）に向けるには、以下が必要です:
 
-以下が要件となります。
+- ドメインのDNS `A`レコード。
+- ドメインのDNS `AAAA`レコード。
+- サブドメインのDNS `ALIAS`/`CNAME`レコード。
+- それぞれのDNS `TXT`レコード。
 
-- ドメインの`A`。
-- ドメインの`AAAA`。
-- サブドメインの`ALIAS`/`CNAME`。
-- それぞれの`TXT`。
-
-| からの                                              | DNSレコード | をに設定します。 |
+| 送信元                                              | DNSレコード | 宛先 |
 |---------------------------------------------------|------------|----|
 | `example.com`                                     | `A`        | `35.185.44.232` |
 | `example.com`                                     | `AAAA`     | `2600:1901:0:7b8a::` |
@@ -134,130 +128,123 @@ GitLab.comのプロジェクトの場合、IPv4アドレスは`35.185.44.232`、
 | `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-Cloudflareを使用している場合は、[Cloudflareで`www.domain.com`から`domain.com`へのリダイレクト](#redirect-wwwdomaincom-to-domaincom-with-cloudflare)を確認してください。
+Cloudflareを使用している場合は、[Cloudflareを使用して`www.domain.com`から`domain.com`にリダイレクトする](#redirect-wwwdomaincom-to-domaincom-with-cloudflare)を参照してください。
 
 追加の注意点:
 
-- **Do not**（domain.com） をGitLab Pagesサイトに`CNAME`場合、`domain.com`レコードは使用**Do not**（しないでください）。代わりに`A`レコードを使用してください。
-- デフォルトのPagesドメインの後に特殊文字を**Do not**（追加しないでください）。たとえば、`subdomain.domain.com`をまたは`namespace.gitlab.io/`に指すことはしないでください。一部のドメインホスティングプロバイダーでは、末尾のドット（`namespace.gitlab.io.`）がリクエストされる場合があります。
-- GitLab.comのGitLab Pages IPは2017年に[変更されました](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)。
-- GitLab.comのGitLab Pages IPが、2018年に`52.167.214.135`から`35.185.44.232`に[変更されました](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)。
-- 2023年にIPv6サポートがGitLab.comに[追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/214718)。
+- `CNAME`をGitLab Pagesサイトに向ける場合は、`domain.com`レコードを使用しないでください。代わりに`A`レコードを使用してください。
+- デフォルトのPagesドメインの後に特殊文字を追加しないでください。たとえば、`subdomain.domain.com`をまたは`namespace.gitlab.io/`にポイントしないでください。一部のドメインホスティングプロバイダーは、末尾のドット（`namespace.gitlab.io.`）をリクエストする場合があります。
+- GitLab.comのGitLab PagesIPは、2017年に[変更されました](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)。
+- GitLab.comのGitLab PagesIPは、2018年に[変更されました](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)（`52.167.214.135`から`35.185.44.232`）。
+- IPv6サポートは、2023年にGitLab.comに[追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/214718)。
 
-#### 4.ドメインの所有権を確認する {#4-verify-the-domains-ownership}
+### ステップ4: ドメインの所有権を確認する {#step-4-verify-the-domains-ownership}
 
 すべてのDNSレコードを追加した後は:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**編集**({{< icon name="pencil" >}}) を選択します。
+1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
 1. **検証ステータス**で、**検証を再試行する**（{{< icon name="retry" >}}）を選択します。
 
-![ドメインを確認する](img/retry_domain_verification_v12_0.png)
+![ドメインの[検証の再試行]オプションを示すGitLab Pagesの設定。](img/retry_domain_verification_v12_0.png)
 
-ドメインがアクティブになるとすぐに、Webサイトがドメイン名で使用できるようになります。
+ドメインがアクティブになると、Webサイトがドメイン名で使用できるようになります。
 
-{{< alert type="warning" >}}
-
-インスタンスでドメイン検証が有効になっているGitLabでは、ドメインを7日間検証できない場合、そのドメインはGitLabプロジェクトから削除されます。
-
-{{< /alert >}}
+> [!warning]ドメイン検証が有効になっているGitLabインスタンスでは、GitLabは検証されていないドメインを7日後にプロジェクトから削除します。
 
 追加の注意点:
 
-- ドメインの検証は**required for GitLab.com users**（GitLab.comユーザーに要件です）。GitLab Self-Managedの場合、GitLab管理者は[カスタムドメインの検証を無効](../../../../administration/pages/_index.md#custom-domain-verification)にするオプションがあります。
-- [の伝播には時間がかかる場合があります（最大24時間）](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/)が、通常は数分で完了します。完了するまで、検証に失敗し、ドメインへのアクセス試行の結果は404になります。
+- ドメインの検証は、**required for GitLab.com users**です。GitLab Self-Managedの場合、GitLab管理者は、[カスタムドメインの検証を無効にする](../../../../administration/pages/_index.md#custom-domain-verification)オプションがあります。
+- [DNSの伝播には時間がかかる場合があります（最大24時間）](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/)が、通常は数分で完了します。完了するまでは、検証が失敗し、ドメインにアクセスしようとすると404エラーが発生します。
 - ドメインが検証されたら、検証レコードをそのままにしておきます。ドメインは定期的に再検証され、レコードが削除されると無効になる場合があります。
 
-### ドメインエイリアスを追加する {#add-more-domain-aliases}
+## ドメインエイリアスの追加 {#add-more-domain-aliases}
 
-同じプロジェクトに複数のエイリアス（カスタムドメインとサブドメイン）を追加できます。エイリアスは、同じ部屋に通じる多くのドアがあるものとして理解できます。
+同じプロジェクトに複数のエイリアス（カスタムドメインとサブドメイン）を追加できます。エイリアスは、同じ部屋に通じる多くのドアがあるものと理解できます。
 
-サイトに設定したすべてのエイリアスは、**設定 > Pages**に一覧表示されます。そのページから、表示、追加、削除できます。
+サイトに設定したすべてのエイリアスは、**設定** > **Pages**にリストされています。そのページから、それらを表示、追加、削除できます。
 
-### Cloudflareを使用して`www.domain.com`を`domain.com`にリダイレクトする {#redirect-wwwdomaincom-to-domaincom-with-cloudflare}
+## Cloudflareを使用した`www.domain.com`から`domain.com`へのリダイレクト {#redirect-wwwdomaincom-to-domaincom-with-cloudflare}
 
-Cloudflareを使用している場合は、`www`と`domain.com`の両方をGitLabに追加せずに、`www.domain.com`を`domain.com`にリダイレクトできます。
+Cloudflareを使用している場合は、両方のドメインをGitLabに追加せずに、ページルールを使用して`www.domain.com`を`domain.com`にリダイレクトできます:
 
-これを行うには、`www.domain.com`を`domain.com`にリダイレクトするために、`CNAME`レコードに関連付けられたCloudflareのページルールを使用できます。次の設定を使用できます。
-
-1. Cloudflareで、次のいずれかを少なくとも1つ作成します。
-   - `domain.com`を`35.185.44.232`に`A`。
-   - `domain.com`を`2600:1901:0:7b8a::`に`AAAA`。
-1. GitLabで、ドメインをGitLab Pagesに追加して、検証コードを取得します。
-1. Cloudflareで、ドメインを検証するための`TXT`を作成します。
+1. Cloudflareで、次のいずれかを少なくとも1つ作成します:
+   - `A`レコードが`domain.com`を`35.185.44.232`に向ける。
+   - `AAAA`レコードが`domain.com`を`2600:1901:0:7b8a::`に向ける。
+1. GitLabで、ドメインをGitLab Pagesに追加し、検証コードを取得します。
+1. Cloudflareで、ドメインを検証するためのDNS `TXT`レコードを作成します。
 1. GitLabで、ドメインを検証します。
-1. Cloudflareで、`www`を`domain.com`に`CNAME`を作成します。
-1. Cloudflareで、`www.domain.com`を`domain.com`にページルールを追加します。
-   - ドメインのダッシュボードに移動し、上部のナビゲーションで**Page Rules**（ページルール）を選択します。
-   - **Create Page Rule**（ページルールを作成）を選択します。
-   - ドメイン`www.domain.com`を入力し、**+ Add a Setting**（+ 設定を追加）を選択します。
-   - ドロップダウンリストから、**Forwarding URL**（転送URL）を選択し、ステータス状態コード**301 - Permanent Redirect**（301 - 恒久的なリダイレクト）を選択します。
-   - 宛先URL `https://domain.com`を入力します。
+1. Cloudflareで、`CNAME`レコードが`www`を`domain.com`に向けるように作成します。
+1. Cloudflareで、`www.domain.com`を`domain.com`に向けるページルールを追加します:
+   1. ドメインのダッシュボードに移動します。上部のナビゲーションで、**Page Rules**を選択します。
+   1. **Create Page Rule**を選択します。
+   1. ドメイン`www.domain.com`を入力し、**+ Add a Setting**を選択します。
+   1. ドロップダウンリストから**Forwarding URL**を選択し、ステータスコード**301 - Permanent Redirect**を選択します。
+   1. 宛先URL `https://domain.com`を入力します。
 
-## PagesにSSL/TLS証明書を追加する {#adding-an-ssltls-certificate-to-pages}
+## PagesへのSSL/TLS証明書の追加 {#add-an-ssltls-certificate-to-pages}
 
-[SSL/TLS証明書>の概要](ssl_tls_concepts.md)については、このドキュメントをお読みください。
+GitLab Pagesでカスタムドメインを保護するには、次の操作を実行できます:
 
-GitLab Pagesでカスタムドメインを保護するには、次のいずれかを選択できます。
+- SSL証明書を自動的に取得および更新するには、[Let's Encryptインテグレーション](lets_encrypt_integration.md)を使用します。
+- SSL/TLS証明書を手動で追加します。
 
-- [GitLab PagesとのLet's Encryptインテグレーション](lets_encrypt_integration.md)を使用します。これにより、Pagesドメインのが自動的に取得および更新されます。
-- 以下の手順に従って、SSL/TLS証明書を手動でGitLab Pages Webサイトに追加します。
+SSL/TLS証明書の概要については、[GitLab PagesのSSL/TLS証明書](ssl_tls_concepts.md)を参照してください。
 
-### SSL/TLS証明書の手動追加 {#manual-addition-of-ssltls-certificates}
+### SSL/TLS証明書の手動追加 {#manually-add-ssltls-certificates}
 
-次の要件を満たす任意の証明書を使用できます。
+前提条件: 
 
-- GitLab PagesのWebサイトが起動し、実行され、カスタムドメインでアクセスできる。
-- **A PEM certificate**（PEM証明書）: 認証局によって生成された証明書であり、**証明書 (PEM)**フィールドに追加する必要があります。
-- **An [intermediate certificate](https://en.wikipedia.org/wiki/Intermediate_certificate_authority)**: (aka "root certificate")**：（別名「ルート証明書」）とは、認証局を識別する暗号化キーチェーンの一部です。通常はPEM証明書と組み合わされますが、手動で追加する必要がある場合があります。[Cloudflare証明書](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)は、これらのケースの1つです。
-- **A private key**（秘密キー）: ドメインに対してPEMを検証する暗号化されたキーです。
+- カスタムドメインでアクセス可能なGitLab PagesのWebサイトが稼働中。
+- 次のSSL証明書コンポーネント:
 
-たとえば、[Cloudflare証明書](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)はこれらの要件を満たしています。
+  - **PEM certificate**: CAによって生成された証明書。
+  - **Intermediate certificate**: ルート証明書とも呼ばれ、CAを識別します。通常はPEM証明書と組み合わされますが、一部のSSL証明書（[Cloudflare証明書](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)など）では、個別に追加する必要があります。
+  - **秘密キー**: ドメインに対してPEMを検証する暗号化されたキー。
 
-#### ステップ {#steps-1}
+新しいドメインの作成時にSSL証明書を追加するには:
 
-- 新しいドメインを追加する際に証明書を追加するには:
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **デプロイ** > **Pages**を選択します。
+1. 右上隅で、**新しいドメイン**を選択します。
+1. **ドメイン**に、ドメイン名を入力します。
+1. **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにします。
+1. SSL証明書フィールドに入力します。
+1. **Create New Domain**を選択します。
 
-  1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-  1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
-  1. 右上隅で、**新しいドメイン**を選択します。
-  1. **Domain**（Domain）に、ドメイン名を入力します。
-  1. **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにして、[SSL/TLS証明書](#adding-an-ssltls-certificate-to-pages)を追加します。
-  1. **Create New Domain**（新しいドメインを作成）を選択します。
+既存のドメインにSSL証明書を追加するには:
 
-- 以前に追加したドメインに証明書を追加するには:
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **デプロイ** > **Pages**を選択します。
+1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
+1. **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにします。
+1. SSL証明書フィールドに入力します。
+1. **変更を保存**を選択します。
 
-  1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
-  1. 左側のサイドバーで、**デプロイ** > **Pages**を選択します。
-  1. ドメイン名の横にある**編集**({{< icon name="pencil" >}}) を選択します。
-  1. **証明書**で、**Let's Encryptを用いた自動証明書管理**切替をオフにして、[SSL/TLS証明書](#adding-an-ssltls-certificate-to-pages)を追加します。
-  1. **Save changes**（変更を保存）を選択します。
+SSL証明書フィールドに入力する場合:
 
-1. 対応するフィールドにPEM証明書を追加します。
-1. 証明書に中間証明書がない場合は、ルート証明書（通常は認証局のWebサイトから入手可能）をコピーして、[PEM証明書と同じフィールド](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)に貼り付け、その間に1行挿入します。
-1. 秘密キーをコピーして、最後のフィールドに貼り付けます。
+- **証明書 (PEM)**に、PEM証明書を貼り付けます。証明書に個別の中間証明書が必要な場合は、同じフィールドに貼り付け、空白行で区切ります。詳細については、[Cloudflare証明書を使用したGitLab Pagesの設定](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)を参照してください。
+- [秘密キー]フィールドに、秘密キーを貼り付けます。
 
-通常のテキストエディタで証明書または暗号化キーを**Do not**（開かないでください）。常にコードエディタ（Sublime Text、Dreamweaver、Bracketsなど）を使用してください。
+> [!note]通常のテキストエディタでSSL証明書または暗号化キーを開かないでください。Sublime Text、Dreamweaver、またはVS Codeのようなコードエディタを使用してください。
 
-## GitLab Pages WebサイトのHTTPSを強制する {#force-https-for-gitlab-pages-websites}
+## GitLab PagesWebサイトのHTTPSの強制 {#force-https-for-gitlab-pages-websites}
 
-Webサイトの訪問者をさらに安全にするために、GitLab PagesのHTTPSを強制することを選択できます。そうすることで、HTTP経由でWebサイトにアクセスしようとするすべての試行が、301を介してHTTPSに自動的にリダイレクトされます。
+GitLab PagesにHTTPSを強制して、HTTPリクエストを301リダイレクトでHTTPSに自動的にリダイレクトできます。これは、デフォルトのGitLab Pagesドメインと、有効なSSL証明書を持つカスタムドメインで機能します。
 
-これは、GitLabのデフォルトのドメインとカスタムドメインの両方で機能します（有効な証明書を設定している限り）。
+HTTPSを強制するには:
 
-この設定を有効にするには、次の手順に従います。
-
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
 1. **HTTPSを強制 (有効な証明書が必要)**チェックボックスを選択します。
 1. **変更を保存**を選択します。
 
-GitLab Pagesの前面でCloudflare CDNを使用する場合は、SSL接続設定を`flexible`ではなく`full`に設定してください。詳細については、[Cloudflare CDNの指示](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef)を参照してください。
+GitLab Pagesの前にCloudflare CDNを使用する場合は、SSL接続設定を`full`ではなく`flexible`に設定します。詳細については、[Cloudflare CDNの手順](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef)を参照してください。
 
-## カスタムドメインを編集する {#edit-a-custom-domain}
+## カスタムドメインの編集 {#edit-a-custom-domain}
 
-カスタムドメインを編集して、以下を行うことができます。
+カスタムドメインを編集して、次の操作を実行できます:
 
 - カスタムドメインを表示します。
 - 追加するDNSレコードを表示します。
@@ -267,50 +254,50 @@ GitLab Pagesの前面でCloudflare CDNを使用する場合は、SSL接続設定
 
 カスタムドメインを編集するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
 1. ドメイン名の横にある**編集** ({{< icon name="pencil" >}}) を選択します。
 
-## カスタムドメインを削除する {#delete-a-custom-domain}
+## カスタムドメインの削除 {#delete-a-custom-domain}
 
-カスタムドメインを削除すると、そのドメインはGitLabで検証されなくなり、GitLab Pagesで使用できなくなります。
+カスタムドメインを削除すると、ドメインはGitLabで検証されなくなり、GitLab Pagesで使用できなくなります。
 
 カスタムドメインを削除するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **デプロイ** > **Pages**を選択します。
-1. ドメイン名の横にある**ドメインの消去**({{< icon name="remove" >}})を選択します。
+1. ドメイン名の横にある**ドメインの消去** ({{< icon name="remove" >}}) を選択します。
 1. プロンプトが表示されたら、**ドメインの消去**を選択します。
 
 ## トラブルシューティング {#troubleshooting}
 
 ### ドメインの検証 {#domain-verification}
 
-ドメイン検証`TXT`エントリを適切にConfigureしたことを手動で検証するには、ターミナルで次のコマンドを実行します。
+ドメインの検証`TXT` DNSエントリが正しく設定されていることを手動で確認するには、ターミナルで次のコマンドを実行します:
 
 ```shell
 dig _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN> TXT
 ```
 
-次の出力を想定します。
+次の出力が予想されます:
 
 ```plaintext
 ;; ANSWER SECTION:
 _gitlab-pages-verification-code.<YOUR-PAGES-DOMAIN>. 300 IN TXT "gitlab-pages-verification-code=<YOUR-VERIFICATION-CODE>"
 ```
 
-登録しようとしているドメイン名と同じドメイン名で検証コードを追加すると役立つ場合があります。
+登録しようとしているドメイン名と同じドメイン名で検証コードを追加すると便利な場合があります。
 
 ルートドメインの場合:
 
-| からの                                              | DNSレコード | をに設定します。                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-| `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| 送信元                                          | DNSレコード | 宛先 |
+|-----------------------------------------------|------------|----|
+| `example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
+| `_gitlab-pages-verification-code.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 サブドメインの場合:
 
-| からの                                              | DNSレコード | をに設定します。                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
+| 送信元                                              | DNSレコード | 宛先 |
+|---------------------------------------------------|------------|----|
 | `www.example.com`                                 | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |

@@ -2,4 +2,5 @@
 name: create_issue_board
 description: Grants the ability to create issue boards
 boundaries:
+  - group
   - project

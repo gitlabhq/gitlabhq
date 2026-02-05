@@ -2,6 +2,9 @@
 key_path: counts.count_total_view_admin_dashboard_pageload_monthly
 description: Monthly total views of admin dashboard page
 product_group: engagement
+product_categories:
+- navigation
+- settings
 performance_indicator_type: []
 value_type: number
 status: active

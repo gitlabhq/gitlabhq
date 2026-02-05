@@ -281,16 +281,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('a' * 41) }
   end
 
-  describe '.conan_revision_regex_combined' do
-    subject { described_class.conan_revision_regex_combined }
-
-    it { is_expected.to match(OpenSSL::Digest.hexdigest('MD5', 'valid_MD5')) }
-    it { is_expected.to match(OpenSSL::Digest.hexdigest('SHA1', 'valid_SHA-1')) }
-    it { is_expected.to match('0') }
-    it { is_expected.not_to match('g' * 32) }
-    it { is_expected.not_to match('a' * 41) }
-  end
-
   describe '.composer_dev_version_regex' do
     subject { described_class.composer_dev_version_regex }
 

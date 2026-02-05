@@ -26634,6 +26634,7 @@ Core Agent available for GitLab features.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aifoundationalchatagentavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the foundational chat agent. |
 | <a id="aifoundationalchatagentdescription"></a>`description` | [`String!`](#string) | Description of the agent. |
 | <a id="aifoundationalchatagentid"></a>`id` | [`AiFoundationalChatAgentID!`](#aifoundationalchatagentid) | Global ID of the foundational chat agent. |
 | <a id="aifoundationalchatagentname"></a>`name` | [`String!`](#string) | Name of the agent. |
@@ -26925,6 +26926,7 @@ Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 | <a id="aiusermetricscodesuggestions"></a>`codeSuggestions` | [`codeSuggestionsUserMetrics`](#codesuggestionsusermetrics) | Code Suggestions metrics for the user. |
 | <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.7. Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. |
 | <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated** in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
+| <a id="aiusermetricslastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity across all features for the user. |
 | <a id="aiusermetricsmcp"></a>`mcp` | [`mcpUserMetrics`](#mcpusermetrics) | Mcp metrics for the user. |
 | <a id="aiusermetricstotaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all tracked events for the user. |
 | <a id="aiusermetricstroubleshootjob"></a>`troubleshootJob` | [`troubleshootJobUserMetrics`](#troubleshootjobusermetrics) | Troubleshoot Job metrics for the user. |
@@ -28386,7 +28388,7 @@ Check user's permission for the car.
 | <a id="cicatalogresourcefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` | [`String`](#string) | Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` | [`ID!`](#id) | ID of the catalog resource. |
-| <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component fromthis catalog resource in a pipeline, by using `include:component` in the last 30 days. |
+| <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component from this catalog project in a pipeline, by using `include:component` in the last 30 days. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
 | <a id="cicatalogresourcename"></a>`name` | [`String`](#string) | Name of the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` | [`Int!`](#int) | Number of times the catalog resource has been starred. |
@@ -42743,6 +42745,18 @@ Represents a pipeline schedule.
 | <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Deprecated** in GitLab 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
 | <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline_schedule` on this resource. |
 
+### `PipelineScheduleStatusCount`
+
+Counts of pipeline schedules by status.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulestatuscountactive"></a>`active` | [`Int!`](#int) | Number of active pipeline schedules. |
+| <a id="pipelineschedulestatuscountinactive"></a>`inactive` | [`Int!`](#int) | Number of inactive pipeline schedules. |
+| <a id="pipelineschedulestatuscounttotal"></a>`total` | [`Int!`](#int) | Total number of pipeline schedules. |
+
 ### `PipelineScheduleVariable`
 
 #### Fields
@@ -43166,6 +43180,7 @@ Project-level settings for product analytics provider.
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpendingmemberapprovals"></a>`pendingMemberApprovals` | [`MemberApprovalConnection`](#memberapprovalconnection) | Pending member promotions of the project. (see [Connections](#connections)) |
 | <a id="projectpermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For projects pending deletion, returns the project's scheduled deletion date. For projects not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
+| <a id="projectpipelineschedulestatuscounts"></a>`pipelineScheduleStatusCounts` | [`PipelineScheduleStatusCount`](#pipelineschedulestatuscount) | Counts of pipeline schedules by status. |
 | <a id="projectpipelinetriggers"></a>`pipelineTriggers` {{< icon name="warning-solid" >}} | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in GitLab 16.3. **Status**: Experiment. List of pipeline trigger tokens. |
 | <a id="projectprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Indicates whether secret push protection is on or not for the project. |
 | <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |

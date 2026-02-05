@@ -2,6 +2,7 @@ package duoworkflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -20,6 +21,8 @@ const (
 	workflowLockTimeout = 2 * time.Hour
 	workflowLockPrefix  = "workhorse:duoworkflow:lock:"
 )
+
+var errLockIsUnavailable = errors.New("acquireLock: lock is inavailable")
 
 type workflowLockManager struct {
 	rs  *redsync.Redsync
@@ -44,18 +47,23 @@ func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string
 	lockKey := workflowLockPrefix + workflowID
 	mutex := m.rs.NewMutex(lockKey, redsync.WithExpiry(workflowLockTimeout))
 
+	logger := log.WithContextFields(ctx, log.Fields{"workflow_id": workflowID, "lock_key": lockKey})
+
 	if err := mutex.TryLockContext(ctx); err != nil {
-		log.WithContextFields(ctx, log.Fields{
-			"workflow_id": workflowID,
-			"lock_key":    lockKey,
-		}).WithError(err).Error("Failed to acquire workflow lock")
-		return nil, fmt.Errorf("failed to acquire workflow lock: %w", err)
+		// Only fail the request if the lock is already taken by another process.
+		// For other errors (e.g., network issues), we proceed without the lock.
+		var errTaken *redsync.ErrTaken
+		if errors.As(err, &errTaken) {
+			logger.WithError(err).Error("Failed to acquire workflow lock: already taken")
+			return nil, fmt.Errorf("failed to acquire workflow lock: %w", err)
+		}
+
+		logger.WithError(err).Error("Failed to acquire workflow lock due to transient error, proceeding without lock")
+
+		return nil, errLockIsUnavailable
 	}
 
-	log.WithContextFields(ctx, log.Fields{
-		"workflow_id": workflowID,
-		"lock_key":    lockKey,
-	}).Info("Acquired workflow lock")
+	logger.Info("Acquired workflow lock")
 
 	return mutex, nil
 }

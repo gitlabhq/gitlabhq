@@ -202,9 +202,9 @@ module API
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
         optional :range, type: Hash, desc: 'Object that contains the blame range' do
           requires :start, type: Integer,
-            desc: 'The first line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+            desc: 'The first line of the range to blame', values: 1.., allow_blank: false
           requires :end, type: Integer,
-            desc: 'The last line of the range to blame', allow_blank: false, values: ->(v) { v > 0 }
+            desc: 'The last line of the range to blame', values: 1.., allow_blank: false
         end
       end
       route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project

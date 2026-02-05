@@ -1,4 +1,9 @@
 ---
+approval_merge_request_rules:
+  scan_finding_approval_mr_rule_index_mr_id_and_created_at:
+  - scan_finding_approval_mr_rule_index_merge_request_id
+  index_approval_rule_name_for_sectional_code_owners_rule_type:
+  - index_approval_rules_code_owners_rule_type
 ci_job_artifact_states:
   index_on_job_artifact_id_partition_id_verification_state:
   - index_job_artifact_states_on_verification_state
@@ -56,6 +61,9 @@ ml_model_versions:
 ml_models:
   index_ml_models_on_project_id_and_name:
   - index_ml_models_on_project_id
+namespaces:
+  index_namespaces_on_organization_id_and_id_for_groups:
+  - index_namespaces_on_organization_id_for_groups
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
   - index_pages_domains_on_project_id
@@ -73,6 +81,9 @@ pm_package_versions:
 project_compliance_standards_adherence:
   u_project_compliance_standards_adherence_for_reporting:
   - index_project_compliance_standards_adherence_on_project_id
+projects:
+  index_service_desk_enabled_projects_on_id_creator_id_created_at:
+  - index_projects_on_id_service_desk_enabled
 related_epic_links:
   index_related_epic_links_on_source_id_and_target_id:
   - index_related_epic_links_on_source_id

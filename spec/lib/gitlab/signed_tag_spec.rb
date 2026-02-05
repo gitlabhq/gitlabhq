@@ -4,32 +4,52 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
   let_it_be(:project) { create :project, :repository }
+  let(:gpg_git_tag) { build_tag_context(id: 'git_tag_id1') }
+  let(:ssh_git_tag) { build_tag_context(id: 'git_tag_id3') }
+  let(:repository) { project.repository }
+  let(:git_tags) do
+    [
+      Gitlab::Gpg::Tag.new(repository, gpg_git_tag),
+      Gitlab::Ssh::Tag.new(repository, ssh_git_tag)
+    ]
+  end
+
+  let_it_be(:snippet_repository) { create(:project_snippet, :repository).repository }
+
+  def build_tag_context(id:)
+    {
+      has_signature: true,
+      id: Digest::SHA256.hexdigest(id),
+      user_email: generate(:email)
+    }
+  end
+
+  describe '.batch_write_cached_signatures' do
+    subject(:batch_write_cached_signatures) { described_class.batch_write_cached_signatures(git_tags) }
+
+    let(:project_tag) { Gitlab::Gpg::Tag.new(repository, gpg_git_tag) }
+    let(:snippet_tag) { Gitlab::Ssh::Tag.new(snippet_repository, ssh_git_tag) }
+
+    let(:git_tags) { [project_tag, snippet_tag] }
+
+    context 'when called with tags from a non-project repository' do
+      it 'skips the snippet tag' do
+        expect(project_tag).to receive(:build_cached_signature)
+        expect(snippet_tag).not_to receive(:build_cached_signature)
+
+        batch_write_cached_signatures
+      end
+    end
+  end
 
   describe '#lazy_cached_signature' do
-    def build_tag_context(id:)
-      {
-        has_signature: true,
-        id: Digest::SHA256.hexdigest(id),
-        user_email: generate(:email)
-      }
-    end
-
-    let(:gpg_git_tag) { build_tag_context(id: 'git_tag_id1') }
-    let(:ssh_git_tag) { build_tag_context(id: 'git_tag_id3') }
-    let(:git_tags) do
-      [
-        Gitlab::Gpg::Tag.new(project.repository, gpg_git_tag),
-        Gitlab::Ssh::Tag.new(project.repository, ssh_git_tag)
-      ]
-    end
-
     subject(:batch_verification_status) { git_tags.map(&:lazy_cached_signature).map(&:verification_status) }
 
     context 'when the type of signature is not cached in a table' do
       let(:x509_git_tag) { build_tag_context(id: 'git_tag_id1') }
 
       subject(:x509_cached_signature) do
-        Gitlab::X509::Tag.new(project.repository, x509_git_tag).lazy_cached_signature
+        Gitlab::X509::Tag.new(repository, x509_git_tag).lazy_cached_signature
       end
 
       it 'returns nil' do
@@ -41,7 +61,7 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
 
     it 'batches rpc calls and creates a new tag signature' do
       expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
-        project.repository,
+        repository,
         git_tags.map(&:object_name),
         timeout: Gitlab::GitalyClient.fast_timeout
       ).and_return({
@@ -60,22 +80,49 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
       expect(batch_verification_status).to eq(%w[unknown_key unverified])
     end
 
+    context 'when the signed tag is not from a project' do
+      let(:repository) { snippet_repository }
+
+      it 'returns early and does not cache tag signatures' do
+        expect(Gitlab::Git::Tag).not_to receive(:batch_signature_extraction)
+
+        expect(git_tags.map(&:lazy_cached_signature)).to eq([nil, nil])
+
+        expect(Repositories::Tags::GpgSignature.count).to eq(0)
+        expect(Repositories::Tags::SshSignature.count).to eq(0)
+        expect(Repositories::CacheTagSignaturesWorker.jobs.size).to eq(0)
+      end
+    end
+
+    context 'when the rpc call times out' do
+      before do
+        # Stub a timeout when calling the first time
+        allow(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(repository,
+          git_tags.map(&:object_name), timeout: Gitlab::GitalyClient.fast_timeout).and_raise(GRPC::DeadlineExceeded)
+      end
+
+      it 'enqueues a worker to try the rpc again' do
+        expect(git_tags.map(&:lazy_cached_signature)).to eq([nil, nil])
+        expect(Repositories::CacheTagSignaturesWorker.jobs.size).to eq(1)
+      end
+    end
+
     context 'when called for multiple tags of the same type' do
       let(:gpg_git_tag2) { build_tag_context(id: 'git_tag_id2') }
       let(:ssh_git_tag2) { build_tag_context(id: 'git_tag_id4') }
 
       let(:git_tags) do
         [
-          Gitlab::Gpg::Tag.new(project.repository, gpg_git_tag),
-          Gitlab::Ssh::Tag.new(project.repository, ssh_git_tag),
-          Gitlab::Gpg::Tag.new(project.repository, gpg_git_tag2),
-          Gitlab::Ssh::Tag.new(project.repository, ssh_git_tag2)
+          Gitlab::Gpg::Tag.new(repository, gpg_git_tag),
+          Gitlab::Ssh::Tag.new(repository, ssh_git_tag),
+          Gitlab::Gpg::Tag.new(repository, gpg_git_tag2),
+          Gitlab::Ssh::Tag.new(repository, ssh_git_tag2)
         ]
       end
 
       it 'batches insert' do
         expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
-          project.repository,
+          repository,
           git_tags.map(&:object_name),
           timeout: Gitlab::GitalyClient.fast_timeout
         ).and_return({
@@ -118,7 +165,7 @@ RSpec.describe Gitlab::SignedTag, feature_category: :source_code_management do
 
         it 'updates the cache with the missing tags' do
           expect(Gitlab::Git::Tag).to receive(:batch_signature_extraction).with(
-            project.repository,
+            repository,
             [gpg_git_tag2[:id], ssh_git_tag2[:id]],
             timeout: Gitlab::GitalyClient.fast_timeout
           ).and_return({

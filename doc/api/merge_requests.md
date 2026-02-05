@@ -103,7 +103,7 @@ Supported attributes:
 | `updated_before`            | datetime      | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `view`                      | string        | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `with_labels_details`       | boolean       | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck` | boolean       | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck` | boolean       | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without the Developer, Maintainer, or Owner role. |
 | `wip`                       | string        | No       | Filter merge requests against their `wip` status. Use `yes` to return only draft merge requests, `no` to return non-draft merge requests. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). If `view` is set to `simple`,
@@ -417,7 +417,7 @@ Supported attributes:
 | `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `wip`                           | string         | No       | Filter merge requests against their `wip` status. `yes` to return only draft merge requests, `no` to return non-draft merge requests. |
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without the Developer, Maintainer, or Owner role. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -671,7 +671,7 @@ Supported attributes:
 | `updated_before`            | datetime          | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `view`                      | string            | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
 | `with_labels_details`       | boolean           | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
-| `with_merge_status_recheck` | boolean           | No       | If `true`, requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without at least the Developer role. |
+| `with_merge_status_recheck` | boolean           | No       | If `true`, requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Enable the `restrict_merge_status_recheck` [feature flag](../administration/feature_flags/_index.md) to ignore this attribute when requested by users without the Developer, Maintainer, or Owner role. |
 | `wip`                       | string            | No       | Filter merge requests against their `wip` status. Use `yes` to return only draft merge requests, `no` to return non-draft merge requests. |
 
 In the response, `group_id` represents the ID of the group containing the project where the merge request resides.

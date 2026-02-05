@@ -53,6 +53,14 @@ module Gitlab
         allowed_partitions[partition_name.to_sym]
       end
 
+      def detach?
+        mode == :detach
+      end
+
+      def reattach?
+        mode == :reattach
+      end
+
       def valid_for_mode?(partition_data, database_name)
         return false unless valid_attachment_state?(partition_data, database_name)
         return false unless valid_constraints?(partition_data, database_name)
@@ -62,27 +70,29 @@ module Gitlab
 
       def valid_attachment_state?(partition_data, database_name)
         if partition_data['is_attached']
-          return true if mode == :detach
+          return true if detach?
 
           log("Partition #{partition_name} is already attached to #{partition_data['parent_table']} " \
             "on #{database_name}")
           return false
         end
 
-        return true if mode == :reattach
+        return true if reattach?
 
         log("Partition #{partition_name} is not attached to #{partition_config[:parent_table]} on #{database_name}")
         false
       end
 
       def valid_constraints?(partition_data, database_name)
-        if mode == :detach
+        if detach?
           expected_bounds_clause = partition_config[:bounds_clause]
 
           if partition_data['partition_bounds'].nil? || partition_data['partition_bounds'] != expected_bounds_clause
             log("Bounds clause mismatch, got #{partition_data['partition_bounds']}, expected #{expected_bounds_clause}")
             return false
           end
+
+          return true
         end
 
         required_constraint = partition_config[:required_constraint]
@@ -90,7 +100,7 @@ module Gitlab
 
         return true if constraints_on_table.include?(required_constraint)
 
-        log("#{partition_name} on #{database_name} cannot be safely #{mode}ed because upon reattaching, the " \
+        log("#{partition_name} on #{database_name} cannot be safely reattached because upon reattaching, the " \
           "partition key must be validated, so if a sufficient constraint does not exist, " \
           "we will hold open the requisite lock on the parent table for the duration of this " \
           "validation. Therefore, in order to reattach this partition, we need a constraint with " \
@@ -100,36 +110,108 @@ module Gitlab
 
       def alter_partition(connection, database_name, partition_data)
         partition_info = build_partition_info(partition_data)
-        sql = build_alter_sql(connection, partition_info)
 
-        WithLockRetries.new(
-          connection: connection,
-          logger: Gitlab::AppJsonLogger,
-          allow_savepoints: false
-        ).run(raise_on_exhaustion: true) do
-          connection.execute(sql)
+        if detach?
+          detach_partition(connection, partition_info)
+        else
+          attach_partition(connection, partition_info)
         end
 
         log("Successfully #{mode}ed partition #{partition_info[:target_partition]} on database #{database_name}")
       end
 
-      def build_alter_sql(connection, partition_info)
-        table_name_quoted = "#{connection.quote_table_name(partition_info[:parent_schema])}." \
-          "#{connection.quote_table_name(partition_info[:parent_table])}"
-        partition_name_quoted = "#{connection.quote_table_name(partition_info[:target_schema])}." \
-          "#{connection.quote_table_name(partition_info[:target_partition])}"
+      def detach_partition(connection, partition_info)
+        if pending_detach?(connection, partition_info)
+          log("Partition #{partition_info[:target_partition]} has pending detach, finalizing...")
+          finalize_detach(connection, partition_info)
+        else
+          connection.execute(build_detach_sql(connection, partition_info))
+        end
+      end
 
+      def pending_detach?(connection, partition_info)
+        connection.select_value(<<~SQL)
+          SELECT inh.inhdetachpending
+          FROM pg_catalog.pg_inherits inh
+          JOIN pg_catalog.pg_class child ON inh.inhrelid = child.oid
+          JOIN pg_catalog.pg_namespace child_ns ON child.relnamespace = child_ns.oid
+          JOIN pg_catalog.pg_class parent ON inh.inhparent = parent.oid
+          WHERE child.relname = #{connection.quote(partition_info[:target_partition])}
+            AND child_ns.nspname = #{connection.quote(partition_info[:target_schema])}
+            AND parent.relname = #{connection.quote(partition_info[:parent_table])}
+        SQL
+      end
+
+      def attach_partition(connection, partition_info)
+        execute_with_lock_retries(connection, build_attach_sql(connection, partition_info))
+      end
+
+      def finalize_detach(connection, partition_info)
+        execute_with_lock_retries(connection, build_finalize_sql(connection, partition_info))
+      end
+
+      def execute_with_lock_retries(connection, sql)
+        locking_config = locking_configuration(connection)
+        lock_statement = locking_config.locking_statement_for(lock_tables || [])
+        full_sql = lock_statement.present? ? "#{lock_statement.chomp};\n#{sql}" : sql
+
+        WithLockRetries.new(
+          connection: connection,
+          logger: Gitlab::AppJsonLogger,
+          allow_savepoints: false,
+          timing_configuration: locking_config.lock_timing_configuration
+        ).run(raise_on_exhaustion: true) do
+          connection.execute(full_sql)
+        end
+      end
+
+      def build_detach_sql(connection, partition_info)
         <<~SQL
-          ALTER TABLE #{table_name_quoted}
-          #{mode == :reattach ? 'ATTACH' : 'DETACH'} PARTITION #{partition_name_quoted}
+          ALTER TABLE #{quoted_table_name(connection, partition_info)}
+          DETACH PARTITION #{quoted_partition_name(connection, partition_info)} CONCURRENTLY
+        SQL
+      end
+
+      def build_finalize_sql(connection, partition_info)
+        <<~SQL
+          ALTER TABLE #{quoted_table_name(connection, partition_info)}
+          DETACH PARTITION #{quoted_partition_name(connection, partition_info)} FINALIZE
+        SQL
+      end
+
+      def build_attach_sql(connection, partition_info)
+        <<~SQL
+          ALTER TABLE #{quoted_table_name(connection, partition_info)}
+          ATTACH PARTITION #{quoted_partition_name(connection, partition_info)}
           #{partition_info[:bounds_clause]}
         SQL
+      end
+
+      def locking_configuration(connection)
+        Partitioning::List::LockingConfiguration.new(
+          connection,
+          table_locking_order: lock_tables || []
+        )
+      end
+
+      def lock_tables
+        partition_config[:lock_tables]
+      end
+
+      def quoted_table_name(connection, partition_info)
+        "#{connection.quote_table_name(partition_info[:parent_schema])}." \
+          "#{connection.quote_table_name(partition_info[:parent_table])}"
+      end
+
+      def quoted_partition_name(connection, partition_info)
+        "#{connection.quote_table_name(partition_info[:target_schema])}." \
+          "#{connection.quote_table_name(partition_info[:target_partition])}"
       end
 
       def build_partition_info(partition_data)
         {
           partition_name: partition_name,
-          bounds_clause: mode == :reattach ? partition_config[:bounds_clause] : nil,
+          bounds_clause: reattach? ? partition_config[:bounds_clause] : nil,
           parent_schema: partition_data['parent_schema'] || partition_config[:parent_schema],
           parent_table: partition_data['parent_table'] || partition_config[:parent_table],
           target_schema: partition_data['target_schema'],

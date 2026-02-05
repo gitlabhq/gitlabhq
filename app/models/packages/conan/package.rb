@@ -30,18 +30,6 @@ module Packages
 
       scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
-      def latest_recipe_revision_or_default
-        conan_recipe_revisions.default.order_by_id_desc.first || default_recipe_revision
-      end
-
-      def default_recipe_revision
-        conan_recipe_revisions.build(revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION)
-      end
-
-      def default_package_revision
-        conan_package_revisions.build(revision: ::Packages::Conan::FileMetadatum::DEFAULT_REVISION)
-      end
-
       private
 
       def valid_conan_package_recipe

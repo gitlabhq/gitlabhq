@@ -542,4 +542,30 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
 
     it { is_expected.to eq({ 'input1' => 'value1', 'input2' => 'value2' }) }
   end
+
+  describe '.grouped_by_active' do
+    let_it_be(:active_schedule_1)   { create(:ci_pipeline_schedule, active: true, project: project) }
+    let_it_be(:active_schedule_2)   { create(:ci_pipeline_schedule, active: true, project: project) }
+    let_it_be(:inactive_schedule_1) { create(:ci_pipeline_schedule, active: false, project: project) }
+
+    subject(:result) { described_class.grouped_by_active }
+
+    it 'returns counts grouped by active state' do
+      expect(result).to eq(
+        true => 2,
+        false => 1
+      )
+    end
+
+    context 'when there are no records for a state' do
+      before do
+        described_class.delete_all
+        create(:ci_pipeline_schedule, active: true, project: project)
+      end
+
+      it 'returns only the existing state with count' do
+        expect(result).to eq(true => 1)
+      end
+    end
+  end
 end

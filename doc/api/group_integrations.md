@@ -23,7 +23,7 @@ Use this API to manage [integrations](../user/project/integrations/_index.md) fo
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the group.
+- You must have the Maintainer or Owner role for the group.
 
 ## List all active integrations
 

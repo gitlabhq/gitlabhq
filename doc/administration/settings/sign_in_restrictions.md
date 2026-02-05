@@ -57,10 +57,11 @@ To allow password authentication for Git over HTTP(S):
 ### Disable password and passkey authentication for users with an SSO identity
 
 Organizations might want to restrict SSO users from signing in with passwords or passkeys, and
-require them to use their external authentication provider instead. This restricts password and
-passkey authentication for both the web interface and Git over HTTP(S).
+require them to use their external authentication provider instead. This restricts password
+authentication for both the web interface and Git over HTTP(S), and passkey authentication for the
+web interface. Passkeys can never be used with Git over HTTP(S).
 
-To disable password and passkey authentication for users with an SSO identity
+To disable password and passkey authentication for users with an SSO identity:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.

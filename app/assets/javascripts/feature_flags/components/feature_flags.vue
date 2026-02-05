@@ -211,8 +211,6 @@ export default {
           <gl-button
             v-if="canUserConfigure"
             v-gl-modal="'configure-feature-flags'"
-            variant="confirm"
-            category="secondary"
             data-testid="ff-configure-button"
           >
             {{ s__('FeatureFlags|Configure') }}

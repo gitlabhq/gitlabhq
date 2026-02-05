@@ -28,8 +28,8 @@ This error occurs when:
 - You have enabled 2FA and attempted to authenticate with a username and password.
 - You have not enabled 2FA and attempted to authenticate with an incorrect username or password.
 - You have not enabled 2FA and the [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting is active.
-- You have not enabled 2FA and the [password authentication enabled for Git over HTTP(S)](../../../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication)
-  setting is not active.
+- You have not enabled 2FA and the [**Allow password authentication for Git over HTTP(S)**](../../../administration/settings/sign_in_restrictions.md#allow-password-authentication-for-git-over-https)
+  checkbox is not selected.
 
 To resolve this error:
 

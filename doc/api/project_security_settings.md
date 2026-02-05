@@ -24,7 +24,7 @@ Lists all security settings for the project.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 ```plaintext
 GET /projects/:id/security_settings
@@ -69,7 +69,7 @@ Updates the `secret_push_protection_enabled` setting for the specified project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 ```plaintext
 PUT /projects/:id/security_settings

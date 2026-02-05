@@ -1,0 +1,6 @@
+---
+name: read_variable
+description: Grants the ability to read variables
+boundaries:
+  - project
+  - group
