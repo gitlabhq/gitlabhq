@@ -13,7 +13,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
       'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
-      'slack_integrations_scopes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
+      'p_ci_pipeline_artifact_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
+      'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
+      'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
+      'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
+      'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
+      'supply_chain_attestation_states' # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
     ]
   end
 

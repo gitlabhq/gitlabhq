@@ -66,6 +66,8 @@ Prerequisites:
   - Mobile devices: iOS 16 and later, and Android 9 and later, with biometric authentication
     or device PINs turned on.
   - Security keys: Hardware security keys that support FIDO2 or WebAuthn.
+- Passkey sign-in must not be disabled for your [group](../user/group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users)
+  or [instance](../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication).
 
 To add a passkey:
 

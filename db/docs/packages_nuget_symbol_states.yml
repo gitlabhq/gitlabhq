@@ -4,8 +4,18 @@ description: Separate table for Packages Nuget Symbol verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203221
 milestone: '18.4'
 feature_categories:
-- geo_replication
+  - geo_replication
 classes:
-- Geo::PackagesNugetSymbolState
-gitlab_schema: gitlab_main_cell_local
+  - Geo::PackagesNugetSymbolState
+gitlab_schema: gitlab_main_org
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: packages_nuget_symbol_id
+        table: packages_nuget_symbols
+        sharding_key: project_id
+        belongs_to: packages_nuget_symbol
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
 table_size: small

@@ -306,6 +306,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :create_projects
     enable :read_custom_attribute
     enable :delete_custom_attribute
+    enable :update_custom_attribute
   end
 
   rule { can?(:read_all_resources) }.policy do

@@ -62,7 +62,7 @@ Use the [application settings API](../api/settings.md) to modify the following s
 
 For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#available-settings).
 
-## Enforce 2FA for Administrator users
+## Enforce 2FA for administrators
 
 {{< details >}}
 

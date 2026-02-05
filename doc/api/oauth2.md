@@ -423,7 +423,7 @@ A sample application that implements the client side device flow can be found at
 > These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 > instead.
 >
-> Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
+> Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication)
 > checkbox is selected for the GitLab instance to support the password credentials flow.
 
 In this flow, a token is requested in exchange for the resource owner credentials

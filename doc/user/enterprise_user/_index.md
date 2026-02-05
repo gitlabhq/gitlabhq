@@ -183,7 +183,7 @@ From this list, non-enterprise users have one of the following:
 You can restrict the specific authentication methods available to enterprise users, which can help
 reduce the security footprint of your users.
 
-- [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
+- [Disable password authentication](../group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users).
 - [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 - [Disable SSH Keys](../../user/ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).

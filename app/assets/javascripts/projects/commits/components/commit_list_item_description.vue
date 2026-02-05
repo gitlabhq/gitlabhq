@@ -45,9 +45,11 @@ export default {
       },
       error(error) {
         createAlert({
-          message: s__(
-            'Commits|Something went wrong while loading the commit description. Please try again.',
-          ),
+          message:
+            error.message ||
+            s__(
+              'Commits|Something went wrong while loading the commit description. Please try again.',
+            ),
           captureError: true,
           error,
         });

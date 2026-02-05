@@ -1,11 +1,13 @@
 ---
 table_name: wiki_repository_states
 classes:
-- Geo::WikiRepositoryState
+  - Geo::WikiRepositoryState
 feature_categories:
-- geo_replication
+  - geo_replication
 description: Separate table for project wikis containing Geo verification metadata. Actually has a sharding key `project_id` but it's not needed for replication.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109033
 milestone: '15.9'
-gitlab_schema: gitlab_main_cell_local
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
 table_size: small

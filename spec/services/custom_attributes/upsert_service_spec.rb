@@ -100,6 +100,18 @@ RSpec.describe CustomAttributes::UpsertService, feature_category: :user_profile 
       it_behaves_like 'custom attributes upsert service'
     end
 
+    context 'with a group' do
+      let_it_be(:resource) { create(:group) }
+
+      it_behaves_like 'custom attributes upsert service'
+    end
+
+    context 'with a project' do
+      let_it_be(:resource) { create(:project) }
+
+      it_behaves_like 'custom attributes upsert service'
+    end
+
     context 'with an unsupported resource type' do
       let(:resource) { build(:namespace) }
 

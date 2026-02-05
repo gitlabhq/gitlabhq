@@ -161,7 +161,7 @@ Prerequisites:
 1. On the top bar, select **Search or go to** and find your project.
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
-     [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
+     [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-and-passkey-authentication).
    - SAML authentication for GitLab.com groups, see
      [SAML SSO for GitLab.com groups documentation](../../../group/saml_sso/_index.md).
    - SAML authentication for GitLab Self-Managed instances, see

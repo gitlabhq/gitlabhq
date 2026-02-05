@@ -7,4 +7,5 @@ feature_categories:
 - geo_replication
 classes:
 - Geo::PackagesHelmMetadataCacheState
-gitlab_schema: gitlab_main_cell_local
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587557

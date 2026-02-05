@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Code Suggestions documentation for developers interested in contributing features or bugfixes.
 title: Code Suggestions development guidelines

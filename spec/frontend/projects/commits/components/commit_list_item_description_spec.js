@@ -102,12 +102,22 @@ describe('CommitListItemDescription', () => {
   });
 
   describe('when query fails', () => {
-    beforeEach(async () => {
-      createComponent(jest.fn().mockRejectedValue(new Error('Network error')));
+    it('shows error message from error object when available', async () => {
+      createComponent(jest.fn().mockRejectedValue(new Error('Custom error message')));
       await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Custom error message',
+          captureError: true,
+        }),
+      );
     });
 
-    it('shows error alert', () => {
+    it('shows default error message when error has no message', async () => {
+      createComponent(jest.fn().mockRejectedValue(new Error()));
+      await waitForPromises();
+
       expect(createAlert).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Something went wrong while loading the commit description. Please try again.',

@@ -1034,6 +1034,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it { expect_disallowed(:read_custom_attribute) }
       it { expect_disallowed(:delete_custom_attribute) }
+      it { expect_disallowed(:update_custom_attribute) }
     end
 
     context 'admin' do
@@ -1042,11 +1043,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       context 'when admin mode is enabled', :enable_admin_mode do
         it { expect_allowed(:read_custom_attribute) }
         it { expect_allowed(:delete_custom_attribute) }
+        it { expect_allowed(:update_custom_attribute) }
       end
 
       context 'when admin mode is disabled' do
         it { expect_disallowed(:read_custom_attribute) }
         it { expect_disallowed(:delete_custom_attribute) }
+        it { expect_disallowed(:update_custom_attribute) }
       end
     end
 
@@ -1055,6 +1058,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it { expect_disallowed(:read_custom_attribute) }
       it { expect_disallowed(:delete_custom_attribute) }
+      it { expect_disallowed(:update_custom_attribute) }
     end
   end
 

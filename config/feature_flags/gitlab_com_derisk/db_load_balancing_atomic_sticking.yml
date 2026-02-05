@@ -1,0 +1,9 @@
+name: db_load_balancing_atomic_sticking
+description: Lua script for redis set operation on the db load balancer
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/573726
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217328
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/581981
+milestone: '18.9'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

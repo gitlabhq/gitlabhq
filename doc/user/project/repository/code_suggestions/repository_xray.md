@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Repository X-Ray gives Code Suggestions (Classic) more insight into your project's codebase and dependencies.
 title: Repository X-Ray with Code Suggestions (Classic)

@@ -15,37 +15,90 @@ title: Sign-in restrictions
 
 Use sign-in restrictions to customize authentication restrictions for web interfaces, and Git over HTTP(S).
 
-## Settings
-
 Prerequisites:
 
-- Administrator access.
+- You must have administrator access.
 
-To access sign-in restriction settings:
+## Password and passkey authentication
+
+### Allow password and passkey authentication for the web interface
+
+This setting is enabled by default. When disabled, users are unable to use the standard sign-in
+screen, and must use an [external authentication provider](../auth/_index.md) instead. This also
+disables using passkeys for two-factor authentication.
+
+To allow password and passkey authentication for the web interface:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section.
+1. Select the **Allow password and passkey authentication for the web interface** checkbox.
+1. Select **Save changes**.
 
-## Password authentication enabled
+> [!note]
+> In the event of an outage with your external authentication provider, use the [GitLab Rails console](../operations/rails_console.md)
+> to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console).
+> You can also use the [Application settings API](../../api/settings.md#update-application-settings)
+> to configure the `password_authentication_enabled_for_web` setting.
 
-You can restrict the password authentication for web interface and Git over HTTP(S):
+### Allow password authentication for Git over HTTP(S)
 
-- **Web interface**: When this feature is disabled, the **Standard** sign-in tab
-  is removed and an [external authentication provider](../auth/_index.md)
-  must be used.
-- **Git over HTTP(S)**: When this feature is disabled, a [personal access token](../../user/profile/personal_access_tokens.md)
-  or LDAP password must be used to authenticate.
+This setting is enabled by default. When disabled, users must authenticate with a
+[personal access token](../../user/profile/personal_access_tokens.md) or LDAP password.
 
-In the event of an external authentication provider outage, use the [GitLab Rails console](../operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../api/settings.md#update-application-settings) while authenticating with an administrator account's personal access token.
+To allow password authentication for Git over HTTP(S):
 
-### Disable password authentication for users with an SSO identity
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand the **Sign-in restrictions** section.
+1. Select the **Allow password authentication for Git over HTTP(S)** checkbox.
+1. Select **Save changes**.
 
-Even when password authentication is enabled, it may be desirable to restrict SSO users ability to sign in with a
-password. Select **Disable password authentication for users with an SSO identity** to ensure SSO users always sign in
-with their external provider.
+### Disable password and passkey authentication for users with an SSO identity
 
-This restricts password authentication for both the web interface and Git over HTTP(S).
+Organizations might want to restrict SSO users from signing in with passwords or passkeys, and
+require them to use their external authentication provider instead. This restricts password and
+passkey authentication for both the web interface and Git over HTTP(S).
+
+To disable password and passkey authentication for users with an SSO identity
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand the **Sign-in restrictions** section.
+1. Select the **Disable password and passkey authentication for users with an SSO identity** checkbox.
+1. Select **Save changes**.
+
+## Two-factor authentication
+
+You can require users to register a two-factor authentication (2FA) method for their account.
+
+### Enforce two-factor authentication for all users
+
+This requires all users, including administrators, to register a 2FA method.
+
+To enforce two-factor authentication for all users:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand the **Sign-in restrictions** section.
+1. Select the **Enforce two-factor authentication** checkbox.
+1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
+   method at the end of this time. Set to `0` to enforce registration at the next sign in.
+1. Select **Save changes**.
+
+### Enforce two-factor authentication for administrators
+
+This requires only administrators to register a 2FA method. This also includes users with [custom admin roles](../../user/custom_roles/_index.md).
+
+To enforce two-factor authentication for administrators:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand the **Sign-in restrictions** section.
+1. Select the **Enforce two-factor authentication for administrators** checkbox.
+1. Optional. In **Two-factor grace period**, enter a number of hours. users must register a 2FA
+   method at the end of this time. Set to `0` to enforce registration at the next sign in.
+1. Select **Save changes**.
 
 ## Admin Mode
 
@@ -182,16 +235,6 @@ If necessary, you can disable **Admin Mode** as an administrator by using one of
   ::Gitlab::CurrentSettings.update!(admin_mode: false)
   ```
 
-## Two-factor authentication
-
-When this feature is enabled, all users must use the [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
-
-After the two-factor authentication is configured as mandatory, users are allowed
-to skip forced configuration of two-factor authentication for the configurable grace
-period in hours.
-
-![The two-factor grace period set to 48 hours.](img/two_factor_grace_period_v12_5.png)
-
 ## Email notification for unknown sign-ins
 
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
@@ -225,7 +268,7 @@ To add a help message to the sign-in page, [customize your sign-in and register 
 
 {{< /details >}}
 
-Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](#password-authentication-enabled).
+Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](#password-and-passkey-authentication).
 
 You can use this method through the [rails console](../operations/rails_console.md#starting-a-rails-console-session) when a configured external authentication provider (through SSO or an LDAP configuration) is facing an outage and direct sign-in access to GitLab is required.
 

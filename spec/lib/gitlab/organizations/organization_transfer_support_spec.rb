@@ -111,6 +111,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       subscription_user_add_on_assignments
       topics
       upcoming_reconciliations
+      user_agent_details
       user_uploads
       vulnerability_export_part_uploads
       vulnerability_export_parts

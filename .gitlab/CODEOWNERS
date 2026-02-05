@@ -645,6 +645,7 @@ lib/gitlab/checks/
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
 /doc/administration/gitlab_duo/configure/ @ashrafkhamis
+/doc/administration/gitlab_duo/configure/access_control.md @sselhorn
 /doc/administration/gitlab_duo/gateway.md @ashrafkhamis
 /doc/administration/gitlab_duo/model_selection.md @fneill
 /doc/administration/gitlab_duo_self_hosted/ @fneill
@@ -702,6 +703,7 @@ lib/gitlab/checks/
 /doc/administration/restart_gitlab.md @axil @eread
 /doc/administration/review_abuse_reports.md @idurham
 /doc/administration/review_spam_logs.md @idurham
+/doc/administration/secrets_manager/ @marcel.amirault
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
@@ -734,7 +736,7 @@ lib/gitlab/checks/
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
 /doc/administration/settings/slack_app.md @msedlakjakubowski
-/doc/administration/settings/terraform_limits.md @rsarangadharan
+/doc/administration/settings/terraform_state_settings.md @rsarangadharan
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/web_ide.md @uchandran
@@ -770,6 +772,7 @@ lib/gitlab/checks/
 /doc/api/commits.md @brendan777
 /doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
+/doc/api/container_registry_protection_tag_rules.md @z_painter
 /doc/api/container_repository_protection_rules.md @z_painter
 /doc/api/container_virtual_registries.md @z_painter
 /doc/api/custom_attributes.md @msedlakjakubowski
@@ -793,6 +796,7 @@ lib/gitlab/checks/
 /doc/api/freeze_periods.md @rsarangadharan
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
+/doc/api/glql.md @brendan777
 /doc/api/google_cloud_integration.md @idurham
 /doc/api/graphql/_index.md @idurham
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
@@ -910,6 +914,8 @@ lib/gitlab/checks/
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
 /doc/api/rest/ @idurham
+/doc/api/runner_controller_tokens.md @rsarangadharan
+/doc/api/runner_controllers.md @rsarangadharan
 /doc/api/runners.md @rsarangadharan
 /doc/api/saml.md @idurham
 /doc/api/scim.md @lciutacu
@@ -959,6 +965,7 @@ lib/gitlab/checks/
 /doc/ci/examples/ @lyspin
 /doc/ci/examples/deployment/ @rsarangadharan
 /doc/ci/examples/semantic-release.md @z_painter
+/doc/ci/functions/ @rsarangadharan
 /doc/ci/gitlab_google_cloud_integration/ @z_painter
 /doc/ci/inputs/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @rsarangadharan
@@ -985,7 +992,6 @@ lib/gitlab/checks/
 /doc/ci/secrets/ @marcel.amirault
 /doc/ci/secure_files/ @marcel.amirault
 /doc/ci/services/ @rsarangadharan
-/doc/ci/steps/ @rsarangadharan
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/ @lyspin
 /doc/ci/testing/code_quality.md @rdickenson
@@ -1014,6 +1020,7 @@ lib/gitlab/checks/
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill @kpaizee
+/doc/development/email_one_time_passwords.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/exact_code_search.md @gitlab-org/search-team/migration-maintainers
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/growth
@@ -1026,9 +1033,7 @@ lib/gitlab/checks/
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/internal_analytics/product_analytics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/logs.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/mcp_server.md @gitlab-org/ai-powered
-/doc/development/metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/navigation_sidebar.md @gitlab-org/growth
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
@@ -1045,7 +1050,6 @@ lib/gitlab/checks/
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/testing_guide/ @abdwdd @alexpooley
-/doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @uchandran
 /doc/install/ @axil @eread
@@ -1112,7 +1116,7 @@ lib/gitlab/checks/
 /doc/tutorials/scan_execution_policy/ @rlehmann1
 /doc/tutorials/scan_result_policy/ @rlehmann1
 /doc/tutorials/scrum_events/ @msedlakjakubowski
-/doc/tutorials/setup_steps/ @rsarangadharan
+/doc/tutorials/set_up_cicd_functions/ @rsarangadharan
 /doc/tutorials/update_commit_messages/ @brendan777
 /doc/tutorials/update_git_remote_url/ @brendan777
 /doc/tutorials/website_project_with_analytics/ @lciutacu
@@ -1121,6 +1125,8 @@ lib/gitlab/checks/
 /doc/user/analytics/ci_cd_analytics.md @rsarangadharan
 /doc/user/analytics/dora_metrics_charts.md @rsarangadharan
 /doc/user/application_security/ @rdickenson
+/doc/user/application_security/analyze/_index.md @rdickenson
+/doc/user/application_security/analyze/duo.md @rlehmann1
 /doc/user/application_security/api_fuzzing/ @rsarangadharan
 /doc/user/application_security/api_security/ @rsarangadharan
 /doc/user/application_security/api_security_testing/ @rsarangadharan
@@ -1134,6 +1140,8 @@ lib/gitlab/checks/
 /doc/user/application_security/detect/vulnerability_deduplication.md @rlehmann1
 /doc/user/application_security/get-started-security.md @rsarangadharan
 /doc/user/application_security/policies/ @rlehmann1
+/doc/user/application_security/remediate/_index.md @rdickenson
+/doc/user/application_security/remediate/duo.md @rlehmann1
 /doc/user/application_security/secret_detection/ @rsarangadharan
 /doc/user/application_security/security_center/ @rlehmann1
 /doc/user/application_security/security_dashboard/ @rlehmann1
@@ -1151,7 +1159,13 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @brendan777
 /doc/user/duo_agent_platform/ @sselhorn
+/doc/user/duo_agent_platform/code_suggestions/ @uchandran
+/doc/user/duo_agent_platform/customize/_index.md @jglassman1
+/doc/user/duo_agent_platform/customize/agents_md.md @uchandran
+/doc/user/duo_agent_platform/customize/custom_rules.md @jglassman1
+/doc/user/duo_agent_platform/customize/review_instructions.md @uchandran
 /doc/user/duo_agent_platform/flows/foundational_flows/code_review.md @uchandran
+/doc/user/duo_agent_platform/model_selection.md @fneill
 /doc/user/duo_amazon_q/ @ashrafkhamis
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
@@ -1164,6 +1178,8 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_runner.md @rsarangadharan
 /doc/user/get_started/getting_started_gitlab_duo.md @ashrafkhamis
 /doc/user/gitlab_duo/ @ashrafkhamis
+/doc/user/gitlab_duo/code_review_classic.md @uchandran
+/doc/user/gitlab_duo/customize_duo/ @uchandran
 /doc/user/gitlab_duo/model_selection.md @fneill
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
@@ -1199,6 +1215,7 @@ lib/gitlab/checks/
 /doc/user/operations_dashboard/ @rsarangadharan
 /doc/user/organization/ @z_painter
 /doc/user/packages/ @z_painter
+/doc/user/participants.md @msedlakjakubowski
 /doc/user/permissions.md @idurham
 /doc/user/profile/ @idurham
 /doc/user/profile/account/create_accounts.md @lciutacu
@@ -1255,7 +1272,6 @@ lib/gitlab/checks/
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @uchandran
 /doc/user/project/repository/code_suggestions/ @uchandran
-/doc/user/project/repository/knowledge_graph/ @uchandran
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
@@ -1278,6 +1294,7 @@ lib/gitlab/checks/
 /doc/user/shortcuts.md @kpaizee
 /doc/user/snippets.md @brendan777
 /doc/user/ssh.md @idurham
+/doc/user/ssh_advanced.md @idurham
 /doc/user/ssh_troubleshooting.md @idurham
 /doc/user/storage_management_automation.md @lciutacu
 /doc/user/storage_usage_quotas.md @lciutacu

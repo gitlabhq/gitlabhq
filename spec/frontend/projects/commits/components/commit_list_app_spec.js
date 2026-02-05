@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { groupCommitsByDay } from '~/projects/commits/utils';
 import CommitListApp from '~/projects/commits/components/commit_list_app.vue';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
@@ -18,6 +19,7 @@ import {
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
+jest.mock('~/projects/commits/utils');
 
 describe('CommitListApp', () => {
   let wrapper;
@@ -35,6 +37,19 @@ describe('CommitListApp', () => {
       provide: defaultProvide,
     });
   };
+
+  beforeEach(() => {
+    groupCommitsByDay.mockReturnValue([
+      {
+        day: '2025-06-23',
+        commits: [mockCommitsNodes[0], mockCommitsNodes[1]],
+      },
+      {
+        day: '2025-06-21',
+        commits: [mockCommitsNodes[2]],
+      },
+    ]);
+  });
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCommitHeader = () => wrapper.findComponent(CommitListHeader);
@@ -140,6 +155,7 @@ describe('CommitListApp', () => {
 
   describe('when no commits exist', () => {
     beforeEach(async () => {
+      groupCommitsByDay.mockReturnValue([]);
       createComponent(jest.fn().mockResolvedValue(mockEmptyCommitsQueryResponse));
       await waitForPromises();
     });
@@ -154,16 +170,93 @@ describe('CommitListApp', () => {
   });
 
   describe('when query fails', () => {
-    beforeEach(async () => {
-      createComponent(jest.fn().mockRejectedValue(new Error('Network error')));
+    it('shows error alert with error message', async () => {
+      createComponent(jest.fn().mockRejectedValue(new Error('Custom error message')));
       await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Custom error message',
+          captureError: true,
+        }),
+      );
     });
 
-    it('shows error alert', () => {
+    it('shows fallback error message when error has no message', async () => {
+      createAlert.mockClear();
+      createComponent(jest.fn().mockRejectedValue(new Error()));
+      await waitForPromises();
+
       expect(createAlert).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Something went wrong while loading commits. Please try again.',
           captureError: true,
+        }),
+      );
+    });
+  });
+
+  describe('filtering', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('refetches commits with author filter when filter is applied', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          author: 'Administrator',
+          query: null,
+        }),
+      );
+    });
+
+    it('refetches commits with message filter when filter is applied', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [{ type: 'message', value: { data: 'fix bug' } }]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          author: null,
+          query: 'fix bug',
+        }),
+      );
+    });
+
+    it('treats free text search as message filter', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', [
+        { type: 'filtered-search-term', value: { data: 'search term' } },
+      ]);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          query: 'search term',
+        }),
+      );
+    });
+
+    it('clears filters when empty filter array is passed', async () => {
+      findCommitHeader().vm.$emit('filter', [{ type: 'author', value: { data: 'Administrator' } }]);
+      await waitForPromises();
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('filter', []);
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          author: null,
+          query: null,
         }),
       );
     });

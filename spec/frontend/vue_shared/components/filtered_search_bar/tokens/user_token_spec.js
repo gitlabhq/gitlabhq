@@ -335,6 +335,35 @@ describe('UserToken', () => {
       });
     });
 
+    describe('valueField config', () => {
+      it('uses username as default value', async () => {
+        wrapper = createComponent({
+          active: true,
+          data: { users: mockUsers },
+          stubs: { Portal: true },
+        });
+
+        await activateSuggestionsList();
+
+        const suggestions = findSuggestions();
+        expect(suggestions.at(2).props('value')).toBe(mockUsers[0].username);
+      });
+
+      it('uses custom field when valueField is specified', async () => {
+        wrapper = createComponent({
+          active: true,
+          config: { ...mockAuthorToken, valueField: 'name' },
+          data: { users: mockUsers },
+          stubs: { Portal: true },
+        });
+
+        await activateSuggestionsList();
+
+        const suggestions = findSuggestions();
+        expect(suggestions.at(2).props('value')).toBe(mockUsers[0].name);
+      });
+    });
+
     describe('multiSelect', () => {
       it('renders check icons in suggestions when multiSelect is true', async () => {
         wrapper = createComponent({

@@ -23,6 +23,51 @@ module Gitlab
           end
         LUA
 
+        ATOMIC_STICK_SCRIPT = <<~LUA
+          -- Converts a PostgreSQL LSN string (e.g., "0/16B3A78") to an integer for comparison
+          -- We keep them separate to avoid precision loss with 64-bit integers in Lua's doubles
+          local function lsn_to_int(lsn)
+            -- Extract the high and low hex parts from the LSN format "high/low"
+            local high, low = string.match(lsn, "(%x+)/(%x+)")
+            if not high or not low then
+              return nil, nil
+            end
+            -- Convert hex to int: high part shifted left by 32 bits (4294967296 = 2^32) plus low part
+            return tonumber(high, 16), tonumber(low, 16)
+          end
+
+          --  Compares two LSNs by their high/low parts. Returns true if first LSN is greater.
+          local function lsn_greater_than(high1, low1, high2, low2)
+            if high1 ~= high2 then
+              return high1 > high2
+            end
+            return low1 > low2
+          end
+
+          local key = KEYS[1]
+          local new_lsn_str = ARGV[1]
+          local ttl = tonumber(ARGV[2])
+
+          local new_high, new_low = lsn_to_int(new_lsn_str)
+
+          assert(new_high, "ERR ARGV[1] must be a valid LSN (e.g. 0/16B3A78)")
+          assert(ttl and ttl > 0, "ERR ARGV[2] (TTL) must be a positive integer")
+
+          local current_lsn_str = redis.call("get", key)
+          local current_high, current_low =  nil, nil
+          if current_lsn_str then
+            current_high, current_low = lsn_to_int(current_lsn_str)
+          end
+
+          if not current_high or lsn_greater_than(new_high, new_low, current_high, current_low) then
+            redis.call("set", key, new_lsn_str, "ex", ttl)
+            return 1
+          else
+            redis.call("expire", key, ttl)
+            return 0
+          end
+        LUA
+
         attr_reader :load_balancer
 
         def initialize(load_balancer)
@@ -125,8 +170,28 @@ module Gitlab
         end
 
         def set_write_location_for(namespace, id, location)
+          if atomic_sticking_enabled?
+            set_atomic_write_location_for(namespace, id, location)
+          else
+            with_redis do |redis|
+              redis.set(redis_key_for(namespace, id), location, ex: EXPIRATION)
+            end
+          end
+        end
+
+        def atomic_sticking_enabled?
+          Feature.enabled?(:db_load_balancing_atomic_sticking, Feature.current_request)
+        end
+
+        # Atomically updates the stick LSN if the new value is higher, ensuring
+        # clients always stick to the most recent write position. This prevents race conditions
+        # that can cause LSN values to regress leading to stale reads from the replicas.
+        #
+        # Returns 1 if the LSN was updated, 0 if the value remains unchanged (just refresh the TTL)
+        def set_atomic_write_location_for(namespace, id, location)
           with_redis do |redis|
-            redis.set(redis_key_for(namespace, id), location, ex: EXPIRATION)
+            redis.eval(ATOMIC_STICK_SCRIPT, keys: [redis_key_for(namespace, id)],
+              argv: [location, EXPIRATION])
           end
         end
 

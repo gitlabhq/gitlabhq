@@ -3,6 +3,11 @@ import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import {
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_MESSAGE,
+  FILTERED_SEARCH_TERM,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import commitsQuery from '../graphql/queries/commits.query.graphql';
 import { groupCommitsByDay } from '../utils';
 import CommitListHeader from './commit_list_header.vue';
@@ -20,7 +25,11 @@ export default {
   },
   inject: ['projectFullPath', 'escapedRef'],
   data() {
-    return { commits: [] };
+    return {
+      commits: [],
+      authorFilter: null,
+      messageFilter: null,
+    };
   },
   apollo: {
     commits: {
@@ -30,6 +39,8 @@ export default {
           projectPath: this.projectFullPath,
           ref: this.escapedRef,
           first: COMMITS_PER_PAGE,
+          author: this.authorFilter,
+          query: this.messageFilter,
         };
       },
       update(data) {
@@ -37,7 +48,9 @@ export default {
       },
       error(error) {
         createAlert({
-          message: s__('Commits|Something went wrong while loading commits. Please try again.'),
+          message:
+            error.message ||
+            s__('Commits|Something went wrong while loading commits. Please try again.'),
           captureError: true,
           error,
         });
@@ -49,15 +62,37 @@ export default {
       return this.$apollo.queries.commits.loading;
     },
     groupedCommits() {
-      return groupCommitsByDay(this.commits) || [];
+      return groupCommitsByDay(this.commits);
     },
   },
   methods: {
     getFormattedDate(dateTime) {
       return localeDateFormat.asDate.format(new Date(dateTime));
     },
-    handleFilter() {
-      // TODO: integrate with graphql in https://gitlab.com/gitlab-org/gitlab/-/issues/550474
+    handleFilter(filters) {
+      let author = null;
+      let message = null;
+
+      filters.forEach((filter) => {
+        if (typeof filter === 'object') {
+          switch (filter.type) {
+            case TOKEN_TYPE_AUTHOR:
+              author = filter.value?.data;
+              break;
+            case TOKEN_TYPE_MESSAGE:
+              message = filter.value?.data;
+              break;
+            case FILTERED_SEARCH_TERM:
+              if (filter.value?.data) message = filter.value.data;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+      this.authorFilter = author;
+      this.messageFilter = message;
     },
   },
 };

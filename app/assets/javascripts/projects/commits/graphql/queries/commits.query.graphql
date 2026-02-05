@@ -1,9 +1,15 @@
 # @feature_category: source_code_management
-query getCommitList($projectPath: ID!, $ref: String!, $first: Int) {
+query getCommitList(
+  $projectPath: ID!
+  $ref: String!
+  $first: Int
+  $author: String
+  $query: UntrustedRegexp
+) {
   project(fullPath: $projectPath) {
     id
     repository {
-      commits(ref: $ref, first: $first) {
+      commits(ref: $ref, first: $first, author: $author, query: $query) {
         pageInfo {
           hasNextPage
           endCursor
@@ -16,12 +22,14 @@ query getCommitList($projectPath: ID!, $ref: String!, $first: Int) {
           titleHtml
           description
           webPath
+          webUrl
           authoredDate
           authorName
           authorGravatar
           author {
             id
             name
+            username
             avatarUrl
             webPath
           }

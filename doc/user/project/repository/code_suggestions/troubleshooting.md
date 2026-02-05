@@ -1,6 +1,6 @@
 ---
 stage: AI-powered
-group: Code Creation
+group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Troubleshooting tips for common problems in Code Suggestions (Classic).
 title: Troubleshooting Code Suggestions (Classic)

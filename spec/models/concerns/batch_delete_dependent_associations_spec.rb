@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BatchDeleteDependentAssociations, feature_category: :authentication do
+RSpec.describe BatchDeleteDependentAssociations, feature_category: :system_access do
   let(:test_project_class) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'projects'

@@ -22049,6 +22049,8 @@ paths:
                   type: string
                 elasticsearch_indexed_file_size_limit_kb:
                   type: string
+                elasticsearch_indexing_timeout_minutes:
+                  type: string
                 elasticsearch_requeue_workers:
                   type: string
                 elasticsearch_worker_number_of_shards:
@@ -93060,6 +93062,8 @@ components:
         elasticsearch_indexed_field_length_limit:
           type: string
         elasticsearch_indexed_file_size_limit_kb:
+          type: string
+        elasticsearch_indexing_timeout_minutes:
           type: string
         elasticsearch_indexing:
           type: string

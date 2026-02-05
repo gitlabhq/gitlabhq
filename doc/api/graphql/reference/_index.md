@@ -13122,6 +13122,34 @@ Input type: `SetContainerScanningForRegistryInput`
 | <a id="mutationsetcontainerscanningforregistrycontainerscanningforregistryenabled"></a>`containerScanningForRegistryEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 | <a id="mutationsetcontainerscanningforregistryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.setGroupCustomAttribute`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Creates or updates a custom attribute on a group. Only available to admins.
+
+Input type: `SetGroupCustomAttributeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupcustomattributegrouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the group. |
+| <a id="mutationsetgroupcustomattributekey"></a>`key` | [`String!`](#string) | Key of the custom attribute. |
+| <a id="mutationsetgroupcustomattributevalue"></a>`value` | [`String!`](#string) | Value of the custom attribute. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupcustomattributeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupcustomattributecustomattribute"></a>`customAttribute` | [`CustomAttribute`](#customattribute) | Custom attribute after mutation. |
+| <a id="mutationsetgroupcustomattributeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.setGroupSecretPushProtection`
 
 Enable or disable secret push protection for a group.
@@ -29386,6 +29414,7 @@ Represents the Geo replication and verification state of a ci_secure_file.
 | <a id="cisecurefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the CiSecureFileRegistry do not match on the primary and secondary. |
 | <a id="cisecurefileregistrycisecurefileid"></a>`ciSecureFileId` | [`ID!`](#id) | ID of the Ci Secure File. |
 | <a id="cisecurefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the CiSecureFileRegistry was created. |
+| <a id="cisecurefileregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this CiSecureFileRegistry. |
 | <a id="cisecurefileregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="cisecurefileregistryid"></a>`id` | [`ID!`](#id) | ID of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the CiSecureFileRegistry. |
@@ -30397,6 +30426,7 @@ Represents the Geo replication and verification state of an Container Repository
 | <a id="containerrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ContainerRepositoryRegistry do not match on the primary and secondary. |
 | <a id="containerrepositoryregistrycontainerrepositoryid"></a>`containerRepositoryId` | [`ID!`](#id) | ID of the ContainerRepository. |
 | <a id="containerrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ContainerRepositoryRegistry was created. |
+| <a id="containerrepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="containerrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ContainerRepositoryRegistry. |
@@ -31945,6 +31975,7 @@ Represents the Geo replication and verification state of a dependency_proxy_blob
 | ---- | ---- | ----------- |
 | <a id="dependencyproxyblobregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyBlobRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxyblobregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyBlobRegistry was created. |
+| <a id="dependencyproxyblobregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrydependencyproxyblobid"></a>`dependencyProxyBlobId` | [`ID!`](#id) | ID of the Dependency Proxy Blob. |
 | <a id="dependencyproxyblobregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="dependencyproxyblobregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyBlobRegistry. |
@@ -32004,6 +32035,7 @@ Represents the Geo replication and verification state of a dependency_proxy_mani
 | ---- | ---- | ----------- |
 | <a id="dependencyproxymanifestregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyManifestRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxymanifestregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyManifestRegistry was created. |
+| <a id="dependencyproxymanifestregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrydependencyproxymanifestid"></a>`dependencyProxyManifestId` | [`ID!`](#id) | ID of the Dependency Proxy Manifest. |
 | <a id="dependencyproxymanifestregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="dependencyproxymanifestregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyManifestRegistry. |
@@ -32374,6 +32406,7 @@ Represents the Geo replication and verification state of a Design Management Rep
 | ---- | ---- | ----------- |
 | <a id="designmanagementrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DesignManagementRepositoryRegistry do not match on the primary and secondary. |
 | <a id="designmanagementrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DesignManagementRepositoryRegistry was created. |
+| <a id="designmanagementrepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrydesignmanagementrepositoryid"></a>`designManagementRepositoryId` | [`ID!`](#id) | ID of the Design Management Repository. |
 | <a id="designmanagementrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="designmanagementrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the DesignManagementRepositoryRegistry. |
@@ -37023,6 +37056,7 @@ Represents the Geo sync and verification state of a group wiki repository.
 | ---- | ---- | ----------- |
 | <a id="groupwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the GroupWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="groupwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the GroupWikiRepositoryRegistry was created. |
+| <a id="groupwikirepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="groupwikirepositoryregistrygroupwikirepositoryid"></a>`groupWikiRepositoryId` | [`ID!`](#id) | ID of the Group Wiki Repository. |
 | <a id="groupwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry. |
@@ -37754,6 +37788,7 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobartifactregistryartifactid"></a>`artifactId` | [`ID!`](#id) | ID of the Job Artifact. |
 | <a id="jobartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the JobArtifactRegistry do not match on the primary and secondary. |
 | <a id="jobartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the JobArtifactRegistry was created. |
+| <a id="jobartifactregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this JobArtifactRegistry. |
 | <a id="jobartifactregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="jobartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the JobArtifactRegistry. |
@@ -37890,6 +37925,7 @@ Represents the Geo sync and verification state of an LFS object.
 | ---- | ---- | ----------- |
 | <a id="lfsobjectregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the LfsObjectRegistry do not match on the primary and secondary. |
 | <a id="lfsobjectregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the LfsObjectRegistry was created. |
+| <a id="lfsobjectregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this LfsObjectRegistry. |
 | <a id="lfsobjectregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="lfsobjectregistryid"></a>`id` | [`ID!`](#id) | ID of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the LfsObjectRegistry. |
@@ -39377,6 +39413,7 @@ Represents the Geo sync and verification state of a Merge Request diff.
 | ---- | ---- | ----------- |
 | <a id="mergerequestdiffregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the MergeRequestDiffRegistry do not match on the primary and secondary. |
 | <a id="mergerequestdiffregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the MergeRequestDiffRegistry was created. |
+| <a id="mergerequestdiffregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="mergerequestdiffregistryid"></a>`id` | [`ID!`](#id) | ID of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry. |
@@ -41919,6 +41956,7 @@ Represents the Geo sync and verification state of a package file.
 | ---- | ---- | ----------- |
 | <a id="packagefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackageFileRegistry do not match on the primary and secondary. |
 | <a id="packagefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackageFileRegistry was created. |
+| <a id="packagefileregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this PackageFileRegistry. |
 | <a id="packagefileregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="packagefileregistryid"></a>`id` | [`ID!`](#id) | ID of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry. |
@@ -42073,6 +42111,7 @@ Represents the Geo replication and verification state of a packages_nuget_symbol
 | ---- | ---- | ----------- |
 | <a id="packagesnugetsymbolregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackagesNugetSymbolRegistry do not match on the primary and secondary. |
 | <a id="packagesnugetsymbolregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackagesNugetSymbolRegistry was created. |
+| <a id="packagesnugetsymbolregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this PackagesNugetSymbolRegistry. |
 | <a id="packagesnugetsymbolregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="packagesnugetsymbolregistryid"></a>`id` | [`ID!`](#id) | ID of the PackagesNugetSymbolRegistry. |
 | <a id="packagesnugetsymbolregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackagesNugetSymbolRegistry. |
@@ -42151,6 +42190,7 @@ Represents the Geo replication and verification state of a pages_deployment.
 | ---- | ---- | ----------- |
 | <a id="pagesdeploymentregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PagesDeploymentRegistry do not match on the primary and secondary. |
 | <a id="pagesdeploymentregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PagesDeploymentRegistry was created. |
+| <a id="pagesdeploymentregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="pagesdeploymentregistryid"></a>`id` | [`ID!`](#id) | ID of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PagesDeploymentRegistry. |
@@ -42522,6 +42562,7 @@ Represents the Geo sync and verification state of a pipeline artifact.
 | ---- | ---- | ----------- |
 | <a id="pipelineartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PipelineArtifactRegistry do not match on the primary and secondary. |
 | <a id="pipelineartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PipelineArtifactRegistry was created. |
+| <a id="pipelineartifactregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="pipelineartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PipelineArtifactRegistry. |
@@ -46090,6 +46131,7 @@ Represents the Geo replication and verification state of a project repository.
 | ---- | ---- | ----------- |
 | <a id="projectrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectRepositoryRegistry was created. |
+| <a id="projectrepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="projectrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectRepositoryRegistry. |
@@ -46396,6 +46438,7 @@ Represents the Geo replication and verification state of a project_wiki_reposito
 | ---- | ---- | ----------- |
 | <a id="projectwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectWikiRepositoryRegistry was created. |
+| <a id="projectwikirepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="projectwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectWikiRepositoryRegistry. |
@@ -47992,6 +48035,7 @@ Represents the Geo sync and verification state of a snippet repository.
 | ---- | ---- | ----------- |
 | <a id="snippetrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the SnippetRepositoryRegistry do not match on the primary and secondary. |
 | <a id="snippetrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the SnippetRepositoryRegistry was created. |
+| <a id="snippetrepositoryregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="snippetrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry. |
@@ -48333,6 +48377,7 @@ Represents the Geo sync and verification state of a terraform state version.
 | ---- | ---- | ----------- |
 | <a id="terraformstateversionregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the TerraformStateVersionRegistry do not match on the primary and secondary. |
 | <a id="terraformstateversionregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the TerraformStateVersionRegistry was created. |
+| <a id="terraformstateversionregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="terraformstateversionregistryid"></a>`id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry. |
@@ -48670,6 +48715,7 @@ Represents the Geo replication and verification state of an upload.
 | ---- | ---- | ----------- |
 | <a id="uploadregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the UploadRegistry do not match on the primary and secondary. |
 | <a id="uploadregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the UploadRegistry was created. |
+| <a id="uploadregistrydatamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this UploadRegistry. |
 | <a id="uploadregistryfileid"></a>`fileId` | [`ID!`](#id) | ID of the Upload. |
 | <a id="uploadregistryforcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
 | <a id="uploadregistryid"></a>`id` | [`ID!`](#id) | ID of the UploadRegistry. |

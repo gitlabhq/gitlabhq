@@ -4,8 +4,18 @@ description: Separate table for Supply Chain Attestation verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212350
 milestone: '18.7'
 feature_categories:
-- geo_replication
+  - geo_replication
 classes:
-- Geo::SupplyChainAttestationState
-gitlab_schema: gitlab_main_cell_local
+  - Geo::SupplyChainAttestationState
+gitlab_schema: gitlab_main_org
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: supply_chain_attestation_id
+        table: slsa_attestations
+        sharding_key: project_id
+        belongs_to: supply_chain_attestation
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
 table_size: small

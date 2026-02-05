@@ -64,6 +64,9 @@ export default {
     getUsername(user) {
       return user.username;
     },
+    getValueField(user) {
+      return user[this.config.valueField] ?? user.username;
+    },
     displayNameFor(username) {
       return this.getActiveUser(this.allUsers, username)?.name || username;
     },
@@ -148,7 +151,7 @@ export default {
       <gl-filtered-search-suggestion
         v-for="user in suggestions"
         :key="getUsername(user)"
-        :value="getUsername(user)"
+        :value="getValueField(user)"
       >
         <div
           class="gl-flex gl-items-center"

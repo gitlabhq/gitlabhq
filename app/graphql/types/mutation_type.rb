@@ -226,6 +226,7 @@ module Types
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Namespaces::RegenerateNewWorkItemEmailAddress, experiment: { milestone: '18.2' }
     mount_mutation Mutations::Groups::CustomAttributes::Delete, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Groups::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::Users::GroupCallouts::Create

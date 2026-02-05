@@ -309,8 +309,8 @@ After you set up your identity provider to work with GitLab, you must configure 
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Recommended. Select:
-   - In GitLab 17.4 and later, **Disable password authentication for enterprise users**.
-     For more information, see the [Disable password authentication for enterprise users documentation](#disable-password-authentication-for-enterprise-users).
+   - In GitLab 17.4 and later, **Disable password and passkey authentication for enterprise users**.
+     For more information, see the [Disable password and passkey authentication for enterprise users documentation](#disable-password-and-passkey-authentication-for-enterprise-users).
    - **Enforce SSO-only authentication for web activity for this group**.
    - **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**.
      For more information, see the [SSO enforcement documentation](#sso-enforcement).
@@ -536,7 +536,7 @@ automatically confirms user accounts. Users still receive an
 - The user is provisioned with SAML or SCIM.
 - The user has an email address that belongs to the verified domain.
 
-### Disable password authentication for enterprise users
+### Disable password and passkey authentication for enterprise users
 
 {{< history >}}
 
@@ -554,11 +554,11 @@ You can disable password authentication for all [enterprise users](../../enterpr
 - The group SAML IdP for the GitLab web UI.
 - A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 
-To disable password authentication for enterprise users:
+To disable password and passkey authentication for enterprise users:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
-1. Under **Configuration**, select **Disable password authentication for enterprise users**.
+1. Under **Configuration**, select **Disable password and passkey authentication for enterprise users**.
 1. Select **Save changes**.
 
 ### Block user access
@@ -632,9 +632,9 @@ SSO is enforced as follows:
 
 > [!note]
 > SSO enforcement does not apply to API requests. However, you can
-> [disable password authentication for enterprise users](#disable-password-authentication-for-enterprise-users)
+> [disable password and passkey authentication for enterprise users](#disable-password-and-passkey-authentication-for-enterprise-users)
 > to prevent password-based API access.
-> 
+>
 > An [issue proposes](https://gitlab.com/gitlab-org/gitlab/-/issues/297389) to add
 > SSO enforcement for API activity.
 
