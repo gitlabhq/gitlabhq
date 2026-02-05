@@ -1,0 +1,22 @@
+# @feature_category: navigation
+query userProjects($limit: Int!, $includeFrecent: Boolean!, $includeStarred: Boolean!) {
+  frecentProjects @include(if: $includeFrecent) {
+    id
+    name
+    namespace: nameWithNamespace
+    avatarUrl
+    webPath
+  }
+  currentUser @include(if: $includeStarred) {
+    id
+    starredProjects(first: $limit) {
+      nodes {
+        id
+        name
+        namespace: nameWithNamespace
+        avatarUrl
+        webPath
+      }
+    }
+  }
+}

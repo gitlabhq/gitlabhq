@@ -1,5 +1,12 @@
 <script>
-import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea, GlButton } from '@gitlab/ui';
+import {
+  GlForm,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+  GlButton,
+  GlExperimentBadge,
+} from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { s__, __ } from '~/locale';
@@ -30,6 +37,7 @@ export default {
     PersonalAccessTokenPermissionsSelector,
     GlButton,
     CreatedPersonalAccessToken,
+    GlExperimentBadge,
   },
   inject: ['accessTokenMaxDate', 'accessTokenTableUrl'],
   data() {
@@ -201,7 +209,13 @@ export default {
     <created-personal-access-token v-if="createdToken" v-model="createdToken" />
 
     <div v-else>
-      <page-heading :heading="$options.i18n.heading">
+      <page-heading>
+        <template #heading>
+          <span class="gl-flex">
+            {{ $options.i18n.heading }}
+            <gl-experiment-badge type="beta" class="gl-self-center" />
+          </span>
+        </template>
         <template #description>
           {{ $options.i18n.description }}
         </template>

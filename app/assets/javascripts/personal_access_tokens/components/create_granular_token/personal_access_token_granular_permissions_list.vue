@@ -1,16 +1,18 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { groupBy } from 'lodash';
 import { s__ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { humanize } from '~/lib/utils/text_utility';
 import { ACCESS_USER_ENUM } from '~/personal_access_tokens/constants';
+import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 
 export default {
   name: 'PersonalAccessTokenGranularPermissionsList',
   components: {
     CrudComponent,
     GlCollapsibleListbox,
+    GlButton,
   },
   props: {
     targetBoundaries: {
@@ -22,7 +24,7 @@ export default {
       required: false,
       default: () => [],
     },
-    resources: {
+    selectedResources: {
       type: Array,
       required: false,
       default: () => [],
@@ -33,7 +35,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['input'],
+  emits: ['input', 'remove-resource'],
   computed: {
     selected: {
       get() {
@@ -42,6 +44,17 @@ export default {
       set(newValue) {
         this.$emit('input', newValue);
       },
+    },
+    selectedResourcesGroupedByCategory() {
+      if (!this.selectedResources.length) {
+        return [];
+      }
+
+      const permissions = this.selectedResources.map((resource) =>
+        this.permissions.find((p) => p.resource === resource),
+      );
+
+      return groupPermissionsByResourceAndCategory(permissions);
     },
     permissionsByResource() {
       return groupBy(this.permissions, 'resource');
@@ -61,33 +74,29 @@ export default {
     },
   },
   methods: {
-    listboxItems(resource) {
-      const items = this.permissionsByResource[resource];
+    listboxItems(resourceKey) {
+      const items = this.permissionsByResource[resourceKey];
 
       if (!items) {
         return [];
       }
 
       return items?.map((item) => ({
-        ...item,
-        text: this.removeUnderscore(item.text),
+        value: item.name,
+        text: humanize(item.action),
       }));
     },
-    dropdownText(resource) {
-      // permissions is an array of all selected permissions -> [read_badge, read_member]
-      // find the list of selected permissions for the resource first
-      const permissions = this.selected
-        .filter((perm) => perm.endsWith(`_${resource}`))
-        .map((perm) => perm.split('_')[0]);
+    dropdownText(resourceKey) {
+      const items = this.listboxItems(resourceKey);
 
-      if (permissions.length) {
-        return permissions.map(capitalizeFirstCharacter).join(', ');
-      }
+      // Filter items where value is in selected array and map to text
+      const selectedTexts = items
+        .filter((item) => this.selected.includes(item.value))
+        .map((item) => item.text);
 
-      return this.$options.i18n.selectPermissions;
-    },
-    removeUnderscore(string) {
-      return string.replace(/_/g, ' ');
+      return selectedTexts.length > 0
+        ? selectedTexts.join(', ')
+        : this.$options.i18n.selectPermissions;
     },
   },
   i18n: {
@@ -118,26 +127,51 @@ export default {
       {{ permissionsDescription }}
     </template>
 
-    <template v-if="!resources.length" #empty>
+    <template v-if="!selectedResources.length" #empty>
       <div class="gl-my-8 gl-text-center">
         {{ $options.i18n.noResourcesSelected }}
       </div>
     </template>
 
     <div
-      v-for="resource in resources"
-      :key="resource"
-      class="gl-mb-4 gl-flex gl-items-center gl-justify-between gl-gap-3"
+      v-for="category in selectedResourcesGroupedByCategory"
+      :key="category.key"
+      :data-testid="`category-${category.key}`"
     >
-      <div class="gl-capitalize">{{ removeUnderscore(resource) }}</div>
-
-      <gl-collapsible-listbox
-        v-model="selected"
-        :items="listboxItems(resource)"
-        :toggle-text="dropdownText(resource)"
-        multiple
-        class="gl-capitalize"
-      />
+      <div class="gl-heading-5 gl-font-bold" data-testid="category-heading">
+        {{ category.name }}
+      </div>
+      <div
+        v-for="resource in category.resources"
+        :key="resource.key"
+        class="gl-mb-6 gl-flex gl-items-center gl-justify-between gl-gap-3"
+      >
+        <div class="gl-min-w-0 gl-flex-1">
+          <div data-testid="resource-name">
+            {{ resource.name }}
+          </div>
+          <div
+            class="gl-mt-3 gl-line-clamp-2 gl-max-w-62 gl-text-sm gl-leading-20 gl-text-subtle"
+            data-testid="resource-description"
+          >
+            {{ resource.description }}
+          </div>
+        </div>
+        <div class="gl-flex gl-shrink-0 gl-items-center gl-gap-2">
+          <gl-collapsible-listbox
+            v-model="selected"
+            :items="listboxItems(resource.key)"
+            :toggle-text="dropdownText(resource.key)"
+            multiple
+          />
+          <gl-button
+            icon="close"
+            category="tertiary"
+            @click="$emit('remove-resource', resource.key)"
+          />
+        </div>
+      </div>
+      <hr />
     </div>
   </crud-component>
 </template>

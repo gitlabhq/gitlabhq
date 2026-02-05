@@ -1,4 +1,11 @@
-import { GlForm, GlFormGroup, GlFormInput, GlFormTextarea, GlButton } from '@gitlab/ui';
+import {
+  GlForm,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+  GlButton,
+  GlExperimentBadge,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -43,6 +50,8 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findPageHeading = () => wrapper.findComponent(PageHeading);
+
+  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   const findNameFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(0);
   const findDescriptionFormGroup = () => wrapper.findAllComponents(GlFormGroup).at(1);
@@ -91,7 +100,15 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
 
   it('renders the page heading', () => {
     expect(findPageHeading().exists()).toBe(true);
-    expect(findPageHeading().props('heading')).toBe('Generate fine-grained token');
+    expect(findPageHeading().text()).toContain('Generate fine-grained token');
+    expect(findPageHeading().text()).toContain(
+      'Fine-grained personal access tokens give you granular control over the specific resources and actions available to the token.',
+    );
+  });
+
+  it('renders the experiment badge', () => {
+    expect(findExperimentBadge().exists()).toBe(true);
+    expect(findExperimentBadge().props('type')).toBe('beta');
   });
 
   describe('form fields', () => {

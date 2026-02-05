@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       hasError: false,
+      errorData: null,
       blobSearch: {},
       loaded: false,
     };
@@ -77,6 +78,7 @@ export default {
         logError(error);
         this.loaded = true;
         this.hasError = true;
+        this.errorData = error;
       },
     },
   },
@@ -101,7 +103,7 @@ export default {
 
 <template>
   <div>
-    <error-result v-if="hasError" />
+    <error-result v-if="hasError" :error="errorData" />
     <section v-else>
       <status-bar v-if="!isLoading" :blob-search="blobSearch" />
       <zoekt-blob-results

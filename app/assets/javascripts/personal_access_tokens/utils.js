@@ -1,3 +1,4 @@
+import { map, groupBy, uniqBy } from 'lodash';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import {
@@ -62,4 +63,26 @@ export function convertFiltersToVariables(filters) {
       return [[`${type}${suffix}`, value.data]];
     }),
   );
+}
+
+/**
+ * Groups permissions by category and resources
+ * @param {Array} permissions - Array of permission objects, each with a resource and category
+ * @returns {Object} An array of categories, each with it's respective resources
+ */
+export function groupPermissionsByResourceAndCategory(permissions) {
+  const grouped = groupBy(permissions, 'category');
+
+  return map(grouped, (items, category) => ({
+    key: category,
+    name: items[0]?.categoryName,
+    resources: uniqBy(
+      items.map((permission) => ({
+        key: permission.resource,
+        name: permission.resourceName,
+        description: permission.resourceDescription,
+      })),
+      'key',
+    ),
+  }));
 }

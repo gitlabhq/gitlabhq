@@ -4,7 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
   let_it_be(:project) { create(:project, :repository) }
-  let(:features) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
+  let(:retry_policy) { Gitlab::GitalyClient.retry_policy }
+  let(:server_feature_flags) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
+  let(:features) do
+    server_feature_flags.merge('retry_config' => Gitlab::Json.dump(retry_policy))
+  end
 
   let(:repository) { project.repository }
 
@@ -426,6 +430,36 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
       end
     end
 
+    context 'when retry_policy is present' do
+      let(:retry_policy) do
+        {
+          maxAttempts: 4,
+          initialBackoff: '0.4s',
+          maxBackoff: '1.4s',
+          backoffMultiplier: 2,
+          retryableStatusCodes: %w[UNAVAILABLE ABORTED]
+        }
+      end
+
+      before do
+        allow(Gitlab::GitalyClient).to receive(:retry_policy).and_return(retry_policy)
+      end
+
+      it 'includes retry_config in call_metadata' do
+        expect(subject.dig(:GitalyServer, :call_metadata, 'retry_config')).to eq(Gitlab::Json.dump(retry_policy))
+      end
+    end
+
+    context 'when retry_policy is nil' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:retry_policy).and_return(nil)
+      end
+
+      it 'includes retry_config as null in call_metadata' do
+        expect(subject.dig(:GitalyServer, :call_metadata, 'retry_config')).to eq('null')
+      end
+    end
+
     context 'with composite identity', :request_store do
       let(:primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
       let(:scoped_user) { user }
@@ -835,6 +869,48 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
           repository: repository.gitaly_repository
         ).to_json
       )
+    end
+  end
+
+  describe '.gitaly_server_hash' do
+    let(:retry_policy) do
+      {
+        maxAttempts: 4,
+        initialBackoff: '0.4s',
+        maxBackoff: '1.4s',
+        backoffMultiplier: 2,
+        retryableStatusCodes: %w[UNAVAILABLE ABORTED]
+      }
+    end
+
+    subject(:result) { described_class.send(:gitaly_server_hash, repository) }
+
+    context 'when retry_policy is present' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:retry_policy).and_return(retry_policy)
+      end
+
+      it 'includes retry_config in call_metadata' do
+        expect(result[:call_metadata]['retry_config']).to eq(Gitlab::Json.dump(retry_policy))
+      end
+
+      it 'includes feature flags in call_metadata' do
+        expect(result[:call_metadata]).to include('gitaly-feature-enforce-requests-limits' => 'true')
+      end
+    end
+
+    context 'when retry_policy is nil' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:retry_policy).and_return(nil)
+      end
+
+      it 'includes retry_config as null in call_metadata' do
+        expect(result[:call_metadata]['retry_config']).to eq('null')
+      end
+
+      it 'still includes feature flags in call_metadata' do
+        expect(result[:call_metadata]).to include('gitaly-feature-enforce-requests-limits' => 'true')
+      end
     end
   end
 end

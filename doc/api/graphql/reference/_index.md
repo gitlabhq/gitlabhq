@@ -52754,7 +52754,6 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobfailurereasoninsufficient_upstream_permissions"></a>`INSUFFICIENT_UPSTREAM_PERMISSIONS` | A job that failed due to insufficient upstream permissions. |
 | <a id="cijobfailurereasoninvalid_bridge_trigger"></a>`INVALID_BRIDGE_TRIGGER` | A job that failed due to invalid bridge trigger. |
 | <a id="cijobfailurereasonip_restriction_failure"></a>`IP_RESTRICTION_FAILURE` | A job that failed due to ip restriction failure. |
-| <a id="cijobfailurereasonjob_execution_server_timeout"></a>`JOB_EXECUTION_SERVER_TIMEOUT` | A job that failed due to job execution server timeout. |
 | <a id="cijobfailurereasonjob_execution_timeout"></a>`JOB_EXECUTION_TIMEOUT` | A job that failed due to job execution timeout. |
 | <a id="cijobfailurereasonjob_router_failure"></a>`JOB_ROUTER_FAILURE` | A job that failed due to job router failure. |
 | <a id="cijobfailurereasonjob_token_expired"></a>`JOB_TOKEN_EXPIRED` | A job that failed due to job token expired. |

@@ -145,7 +145,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Retry do
           runner_unsupported
           stale_schedule
           job_execution_timeout
-          job_execution_server_timeout
           archived_failure
           unmet_prerequisites
           scheduler_failure

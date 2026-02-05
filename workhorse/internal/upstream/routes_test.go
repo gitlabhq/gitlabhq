@@ -3,7 +3,6 @@ package upstream
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -124,17 +123,16 @@ func TestAllowedProxyRoute(t *testing.T) {
 	runTestCasesPost(t, ws, testCases)
 }
 
-func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
-	const consecutiveFailures = 0
+func TestAllowedProxyRouteWithRateLimitCache(t *testing.T) {
 	var requestCount atomic.Int32
-	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		current := requestCount.Add(1)
-		if current <= 3 {
+		if current <= 2 {
 			w.Header().Set("Enable-Workhorse-Circuit-Breaker", "true")
+			w.Header().Set("Retry-After", "60")
 			w.WriteHeader(http.StatusTooManyRequests)
 		} else {
-			// Subsequent requests would succeed if they reached the server
-			fmt.Fprint(w, "Local Rails server received request to path "+r.URL.Path)
+			w.WriteHeader(http.StatusOK)
 		}
 	}))
 	defer railsServer.Close()
@@ -143,15 +141,14 @@ func TestAllowedProxyRouteWithCircuitBreaker(t *testing.T) {
 
 	config := newUpstreamConfig(railsServer.URL)
 	config.CircuitBreakerConfig.Enabled = true
-	config.CircuitBreakerConfig.ConsecutiveFailures = consecutiveFailures
 
 	upstreamHandler := newUpstream(*config, logrus.StandardLogger(), configureRoutes, nil, rdb, nil, nil, nil)
 	ws := httptest.NewServer(upstreamHandler)
 	defer ws.Close()
 
-	// The first request receives a 429 from the server, and tracks the user in the circuit breaker.
-	// The second request receives a 429 from the server, and trips the circuit breaker.
-	// The third request shouldn't make it to the server and pre-emptively responds with a 429.
+	// The first request receives a 429 from the server with Retry-After header,
+	// which caches the block for this user.
+	// Subsequent should be blocked by the cache and not reach the server.
 	for range 3 {
 		resp, err := http.Post(ws.URL+"/api/v4/internal/allowed", "application/json",
 			bytes.NewBufferString(`{"key_id":"test_key"}`))

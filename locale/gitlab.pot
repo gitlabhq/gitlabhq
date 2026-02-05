@@ -25476,6 +25476,9 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
+msgid "Display options"
+msgstr ""
+
 msgid "Display progress of child issues"
 msgstr ""
 
@@ -25491,7 +25494,13 @@ msgstr ""
 msgid "Display view"
 msgstr ""
 
-msgid "Displaying frequently visited projects"
+msgid "Displaying frequently visited and starred projects."
+msgstr ""
+
+msgid "Displaying frequently visited projects."
+msgstr ""
+
+msgid "Displaying starred projects."
 msgstr ""
 
 msgid "Do not display content for customer experience improvement and offers from third parties"
@@ -30502,6 +30511,9 @@ msgid "Frequency"
 msgstr ""
 
 msgid "Frequently searched"
+msgstr ""
+
+msgid "Frequently visited"
 msgstr ""
 
 msgid "Fri"
@@ -45245,6 +45257,9 @@ msgstr ""
 msgid "No projects found"
 msgstr ""
 
+msgid "No projects match your selected display options."
+msgstr ""
+
 msgid "No public deploy keys"
 msgstr ""
 
@@ -54204,9 +54219,6 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
-msgid "Projects you visit will appear here."
-msgstr ""
-
 msgid "ProjectsEdit|An error occurred updating this project. Please try again."
 msgstr ""
 
@@ -60035,6 +60047,9 @@ msgid "SearchError|%{search_syntax_link_start}What is the supported syntax%{sear
 msgstr ""
 
 msgid "SearchError|A problem has occurred"
+msgstr ""
+
+msgid "SearchError|Cannot connect to the Zoekt"
 msgstr ""
 
 msgid "SearchError|No results found"

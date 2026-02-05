@@ -1,4 +1,9 @@
-import { timeFormattedAsDate, timeFormattedAsDateFull } from '~/personal_access_tokens/utils';
+import {
+  timeFormattedAsDate,
+  timeFormattedAsDateFull,
+  groupPermissionsByResourceAndCategory,
+} from '~/personal_access_tokens/utils';
+import { mockGroupPermissions } from './mock_data';
 
 describe('personal_access_tokens/utils', () => {
   describe('timeFormattedAsDate', () => {
@@ -28,6 +33,35 @@ describe('personal_access_tokens/utils', () => {
 
     it('handles different date formats', () => {
       expect(timeFormattedAsDateFull('2025-12-01')).toBe('December 1, 2025 at 12:00:00 AM GMT');
+    });
+  });
+
+  describe('groupPermissionsByResourceAndCategory', () => {
+    it('groups permissions by resources and category', () => {
+      expect(groupPermissionsByResourceAndCategory(mockGroupPermissions)).toEqual([
+        {
+          key: 'groups_and_projects',
+          name: 'Groups and projects',
+          resources: [
+            {
+              description: 'Project resource description',
+              key: 'project',
+              name: 'Project',
+            },
+          ],
+        },
+        {
+          key: 'merge_request',
+          name: 'Merge request',
+          resources: [
+            {
+              description: 'Repository resource description',
+              key: 'repository',
+              name: 'Repository',
+            },
+          ],
+        },
+      ]);
     });
   });
 });

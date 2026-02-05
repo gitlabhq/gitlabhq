@@ -19,7 +19,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/bodylimit"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/circuitbreaker"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
@@ -31,6 +30,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/ratelimitcache"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/sendfile"
@@ -692,9 +692,9 @@ func denyWebsocket(next http.Handler) http.Handler {
 
 func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
 	if u.CircuitBreakerConfig.Enabled {
-		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.rdb)
+		roundTripperRateLimitCache := ratelimitcache.NewRoundTripper(u.RoundTripper, u.rdb)
 
-		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
+		return buildProxy(u.Backend, u.Version, roundTripperRateLimitCache, u.Config, dependencyProxyInjector)
 	}
 
 	return proxy

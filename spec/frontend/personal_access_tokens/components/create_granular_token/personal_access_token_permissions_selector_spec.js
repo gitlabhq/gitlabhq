@@ -129,6 +129,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       await findSearchBox().vm.$emit('input', 'Repository');
 
       expect(findResourcesList().props('permissions')).toStrictEqual([mockGroupPermissions[2]]);
+      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
     });
 
     it('searches by permission category', async () => {
@@ -138,6 +139,8 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
         mockGroupPermissions[0],
         mockGroupPermissions[1],
       ]);
+
+      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
     });
 
     it('shows message when no matches are found', async () => {
@@ -157,7 +160,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
       await findResourcesList().vm.$emit('input', selectedResources);
 
-      expect(findPermissionsList().props('resources')).toEqual(selectedResources);
+      expect(findPermissionsList().props('selectedResources')).toEqual(selectedResources);
     });
 
     it('emits input event when permissions list changes', async () => {
@@ -177,9 +180,23 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
       expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'read_repository']]);
 
-      // simulate unchecking a resource
+      // simulate unchecking `project` resource
       await findResourcesList().vm.$emit('input', ['repository']);
-      await findResourcesList().vm.$emit('change', 'project');
+
+      await nextTick();
+
+      expect(wrapper.emitted('input')[1]).toEqual([['read_repository']]);
+    });
+
+    it('handles `remove-resource` event', async () => {
+      await findResourcesList().vm.$emit('input', ['project', 'repository']);
+
+      await findPermissionsList().vm.$emit('input', ['read_project', 'read_repository']);
+
+      expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'read_repository']]);
+
+      // simulate unchecking `project` resource
+      await findPermissionsList().vm.$emit('remove-resource', 'project');
 
       await nextTick();
 

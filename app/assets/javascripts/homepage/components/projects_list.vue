@@ -2,9 +2,10 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
+import { PROJECT_SOURCE_FRECENT, PROJECT_SOURCE_STARRED } from '~/homepage/constants';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import FrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
+import userProjectsQuery from '~/homepage/graphql/queries/user_projects.query.graphql';
 
 const MAX_ITEMS = 10;
 
@@ -15,6 +16,13 @@ export default {
     ProjectAvatar,
     TooltipOnTruncate,
   },
+  props: {
+    selectedSources: {
+      type: Array,
+      required: false,
+      default: () => [PROJECT_SOURCE_FRECENT],
+    },
+  },
   data() {
     return {
       projects: [],
@@ -23,15 +31,43 @@ export default {
   },
   apollo: {
     projects: {
-      query: FrecentProjectsQuery,
-      update({ frecentProjects = [] }) {
-        return frecentProjects.map((project) => ({
-          id: project.id,
-          title: project.name,
-          nameWithNamespace: project.namespace,
-          webUrl: `/${project.fullPath}`,
-          avatarUrl: project.avatarUrl,
-        }));
+      query: userProjectsQuery,
+      variables() {
+        return {
+          limit: MAX_ITEMS,
+          includeFrecent: this.selectedSources.includes(PROJECT_SOURCE_FRECENT),
+          includeStarred: this.selectedSources.includes(PROJECT_SOURCE_STARRED),
+        };
+      },
+      update(data) {
+        const projects = [];
+        const seenIds = new Set();
+
+        const addProjects = (projectList) => {
+          for (const project of projectList) {
+            if (projects.length >= MAX_ITEMS) break;
+            if (!seenIds.has(project.id)) {
+              projects.push({
+                id: project.id,
+                title: project.name,
+                nameWithNamespace: project.namespace,
+                webPath: project.webPath,
+                avatarUrl: project.avatarUrl,
+              });
+              seenIds.add(project.id);
+            }
+          }
+        };
+
+        if (data.frecentProjects) {
+          addProjects(data.frecentProjects);
+        }
+
+        if (data.currentUser?.starredProjects?.nodes) {
+          addProjects(data.currentUser.starredProjects.nodes);
+        }
+
+        return projects;
       },
       error(error) {
         Sentry.captureException(error);
@@ -43,8 +79,13 @@ export default {
     isLoading() {
       return this.$apollo.queries.projects.loading;
     },
-    emptyStateMessage() {
-      return __('Projects you visit will appear here.');
+    footerMessage() {
+      if (this.selectedSources.length === 2) {
+        return __('Displaying frequently visited and starred projects.');
+      }
+      return this.selectedSources.includes(PROJECT_SOURCE_FRECENT)
+        ? __('Displaying frequently visited projects.')
+        : __('Displaying starred projects.');
     },
   },
   methods: {
@@ -54,6 +95,8 @@ export default {
     },
   },
   MAX_ITEMS,
+  PROJECT_SOURCE_FRECENT,
+  PROJECT_SOURCE_STARRED,
 };
 </script>
 
@@ -78,13 +121,13 @@ export default {
       </div>
     </template>
 
-    <p v-else-if="!projects.length" class="gl-my-0 gl-mb-3">
-      {{ emptyStateMessage }}
+    <p v-else-if="!projects.length" class="gl-my-0 gl-my-3 gl-text-subtle">
+      {{ __('No projects match your selected display options.') }}
     </p>
     <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="project in projects" :key="project.id">
         <a
-          :href="project.webUrl"
+          :href="project.webPath"
           class="-gl-mx-3 gl-flex gl-items-center gl-gap-3 gl-rounded-base gl-p-3 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
         >
           <project-avatar
@@ -107,7 +150,7 @@ export default {
 
     <div v-if="!error && !isLoading && projects.length" class="gl-mt-3">
       <p class="gl-mb-0 gl-text-sm gl-text-subtle">
-        {{ __('Displaying frequently visited projects') }}.
+        {{ footerMessage }}
       </p>
     </div>
   </div>

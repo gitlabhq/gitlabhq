@@ -182,27 +182,36 @@ export const mockSearchGroupsAndProjectsQueryResponse = {
 
 export const mockGroupPermissions = [
   {
-    value: 'read_project',
+    name: 'read_project',
     description: 'Grants the ability to read projects',
-    text: 'read',
+    action: 'read',
     category: 'groups_and_projects',
+    categoryName: 'Groups and projects',
     resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
     boundaries: ['GROUP', 'PROJECT'],
   },
   {
-    value: 'write_project',
+    name: 'write_project',
     description: 'Grants the ability to write to projects',
-    text: 'write',
+    action: 'write',
     category: 'groups_and_projects',
+    categoryName: 'Groups and projects',
     resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
     boundaries: ['GROUP', 'PROJECT'],
   },
   {
-    value: 'read_repository',
+    name: 'read_repository',
     description: 'Grants the ability to read repository',
-    text: 'read_repository',
+    action: 'read',
     category: 'merge_request',
+    categoryName: 'Merge request',
     resource: 'repository',
+    resourceName: 'Repository',
+    resourceDescription: 'Repository resource description',
     boundaries: ['PROJECT'],
   },
 ];
@@ -211,25 +220,44 @@ export const mockGroupResources = ['project', 'repository'];
 
 export const mockInstancePermissions = [
   {
-    value: 'read_admin_member_role',
-    description: 'Grants the ability to read admin member roles',
-    text: 'read',
-    category: 'groups_and_projects',
-    resource: 'member_roles',
+    name: 'read_compliance_policy_setting',
+    description: 'Grants the ability to read compliance policy settings',
+    action: 'read',
+    category: 'application_security',
+    categoryName: 'Application security',
+    resource: 'compliance_policy_setting',
+    resourceName: 'Compliance policy setting',
+    resourceDescription: 'Grants the ability to read and update compliance policy settings.',
     boundaries: ['INSTANCE'],
   },
 ];
 
 export const mockUserPermissions = [
   {
-    value: 'read_user',
+    name: 'read_user',
     description: 'Grants the ability to read user data',
-    text: 'read',
+    action: 'read',
     category: 'user_access',
+    categoryName: 'User access',
     resource: 'user',
+    resourceName: 'User',
+    resourceDescription: 'User resource description',
+    boundaries: ['USER'],
+  },
+  {
+    name: 'read_contributed_project',
+    description: 'Grants the ability to view projects user has contributed to',
+    action: 'read_contributed',
+    category: 'projects',
+    categoryName: 'Projects',
+    resource: 'project',
+    resourceName: 'Project',
+    resourceDescription: 'Project resource description',
     boundaries: ['USER'],
   },
 ];
+
+export const mockUserResources = ['user', 'project'];
 
 export const mockAccessTokenPermissionsQueryResponse = {
   data: {

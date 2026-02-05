@@ -1,10 +1,13 @@
 query getAccessTokenPermissions {
   accessTokenPermissions {
-    value: name
+    name
+    action
     description
-    text: action
     category
+    categoryName
     resource
+    resourceName
+    resourceDescription
     boundaries
   }
 }

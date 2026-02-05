@@ -84,19 +84,30 @@ export default {
       );
     },
   },
+  watch: {
+    selectedResources(newResources, oldResources) {
+      this.updateSelectedResources(newResources, oldResources);
+    },
+  },
   methods: {
-    handleResourceChange(resource) {
-      const exists = this.selectedResources.includes(resource);
+    updateSelectedResources(newResources, oldResources) {
+      // find resources that were removed
+      const removedResources = oldResources.filter((resource) => !newResources.includes(resource));
 
-      // if a resource doesn't exist i.e. is unchecked,
-      // remove any selected permissions
-      if (!exists) {
+      // remove permissions associated with the removed resources
+      if (removedResources.length > 0) {
         this.selectedPermissions = this.selectedPermissions.filter(
-          (perm) => !perm.endsWith(`_${resource}`),
+          (permission) => !removedResources.some((resource) => permission.endsWith(`_${resource}`)),
         );
 
+        // emit updated permissions after cleanup
         this.$emit('input', this.selectedPermissions);
       }
+    },
+    handleRemoveResource(resourceToRemove) {
+      this.selectedResources = this.selectedResources.filter(
+        (selectedResource) => selectedResource !== resourceToRemove,
+      );
     },
   },
   i18n: {
@@ -116,7 +127,7 @@ export default {
 <template>
   <div>
     <div class="gl-flex gl-flex-col lg:gl-flex-row lg:gl-gap-5">
-      <div class="gl-border gl-mt-5 gl-w-full gl-rounded-lg gl-p-4 lg:gl-w-1/3">
+      <div class="gl-border gl-mt-5 gl-w-full gl-rounded-lg gl-p-4 lg:gl-min-h-75 lg:gl-w-1/3">
         <h3 class="gl-heading-5">
           {{ resourceTitle }}
         </h3>
@@ -132,7 +143,6 @@ export default {
           v-else-if="filteredPermissions.length"
           v-model="selectedResources"
           :permissions="filteredPermissions"
-          @change="handleResourceChange"
         />
         <div v-else class="gl-my-4 gl-text-center gl-text-subtle">
           {{ $options.i18n.noResourcesFound }}
@@ -141,11 +151,12 @@ export default {
 
       <personal-access-token-granular-permissions-list
         v-model="selectedPermissions"
-        :permissions="filteredPermissions"
-        :resources="selectedResources"
+        :permissions="filteredPermissionsByBoundary"
+        :selected-resources="selectedResources"
         :target-boundaries="targetBoundaries"
         class="gl-mt-5 gl-w-full lg:gl-w-2/3"
         @input="$emit('input', $event)"
+        @remove-resource="handleRemoveResource"
       />
     </div>
 

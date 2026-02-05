@@ -53,7 +53,7 @@ export default {
       <div class="gl-mx-3 gl-w-34">
         <div class="gl-font-bold">
           {{ item.text }}
-          <gl-badge v-if="item.badge" class="gl-ml-2" variant="info">
+          <gl-badge v-if="item.badge" class="gl-ml-2">
             {{ item.badge }}
           </gl-badge>
         </div>
