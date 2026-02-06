@@ -13,6 +13,8 @@ module Groups
         !!group&.work_items_consolidated_list_enabled?(current_user))
       push_force_frontend_feature_flag(:work_items_saved_views, !!group&.work_items_saved_views_enabled?(current_user))
       push_force_frontend_feature_flag(:use_work_item_url, !!group&.use_work_item_url?)
+      push_force_frontend_feature_flag(:work_item_features_field,
+        Feature.enabled?(:work_item_features_field, current_user))
     end
 
     def show

@@ -11,6 +11,7 @@ import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import * as utils from '~/work_items/utils';
 import {
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -19,6 +20,14 @@ import {
 } from '~/work_items/constants';
 import { mockBlockedByLinkedItem as mockLinkedItems } from 'jest/work_items/mock_data';
 import { mockIssuable, mockDraftIssuable, mockRegularLabel } from '../mock_data';
+
+const defaultWorkItemConfig = {
+  useIssueView: false,
+  isIncidentManagement: false,
+  isServiceDesk: false,
+};
+
+const mockWorkItemConfigGetter = jest.fn(() => defaultWorkItemConfig);
 
 const createComponent = ({
   hasScopedLabelsFeature = false,
@@ -894,74 +903,34 @@ describe('IssuableItem', () => {
   describe('when item is of unsupported work item type', () => {
     const fullPath = 'gitlab-org/gitlab';
 
-    const testCases = [
-      {
-        type: 'Work item incident',
-        item: {
+    describe.each`
+      type                              | workItemTypeName                 | itemType       | authorUsername
+      ${'Work item incident'}           | ${WORK_ITEM_TYPE_NAME_INCIDENT}  | ${undefined}   | ${undefined}
+      ${'Work item Service Desk issue'} | ${WORK_ITEM_TYPE_NAME_TICKET}    | ${undefined}   | ${'support-bot'}
+      ${'Work item test case'}          | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${undefined}   | ${undefined}
+      ${'Work item ticket'}             | ${WORK_ITEM_TYPE_NAME_TICKET}    | ${undefined}   | ${undefined}
+      ${'Legacy incident'}              | ${'Incident'}                    | ${'INCIDENT'}  | ${undefined}
+      ${'Legacy Service Desk issue'}    | ${'Issue'}                       | ${'ISSUE'}     | ${'support-bot'}
+      ${'Legacy test case'}             | ${'TestCase'}                    | ${'TEST_CASE'} | ${undefined}
+    `('when item is $type', ({ workItemTypeName, itemType, authorUsername }) => {
+      it('uses redirect on row click', async () => {
+        const item = {
           ...mockIssuable,
-          workItemType: { name: WORK_ITEM_TYPE_NAME_INCIDENT },
-        },
-      },
-      {
-        type: 'Work item Service Desk issue',
-        item: {
-          ...mockIssuable,
-          workItemType: { name: WORK_ITEM_TYPE_NAME_ISSUE },
-          author: { username: 'support-bot' },
-        },
-      },
-      {
-        type: 'Work item test case',
-        item: {
-          ...mockIssuable,
-          workItemType: { name: WORK_ITEM_TYPE_NAME_TEST_CASE },
-        },
-      },
-      {
-        type: 'Work item ticket',
-        item: {
-          ...mockIssuable,
-          workItemType: { name: WORK_ITEM_TYPE_NAME_TICKET },
-        },
-      },
-      {
-        type: 'Legacy incident',
-        item: {
-          ...mockIssuable,
-          type: 'INCIDENT',
-        },
-      },
-      {
-        type: 'Legacy Service Desk issue',
-        item: {
-          ...mockIssuable,
-          type: 'ISSUE',
-          author: { username: 'support-bot' },
-        },
-      },
-      {
-        type: 'Legacy test case',
-        item: {
-          ...mockIssuable,
-          type: 'TEST_CASE',
-        },
-      },
-    ];
+          workItemType: { name: workItemTypeName },
+          ...(itemType && { type: itemType }),
+          ...(authorUsername && { author: { ...mockAuthor, username: authorUsername } }),
+        };
 
-    testCases.forEach(({ type, item }) => {
-      describe(`when item is ${type}`, () => {
-        it('uses redirect on row click', async () => {
-          wrapper = createComponent({
-            preventRedirect: true,
-            showCheckbox: false,
-            issuable: { ...item, namespace: { fullPath } },
-          });
-
-          await findIssuableItemWrapper().trigger('click');
-
-          expect(wrapper.emitted('select-issuable')).not.toBeDefined();
-          expect(visitUrl).toHaveBeenCalledWith(item.webUrl);
+        wrapper = createComponent({
+          preventRedirect: true,
+          showCheckbox: false,
+          issuable: { ...item, namespace: { fullPath } },
         });
+
+        await findIssuableItemWrapper().trigger('click');
+
+        expect(wrapper.emitted('select-issuable')).not.toBeDefined();
+        expect(visitUrl).toHaveBeenCalledWith(item.webUrl);
       });
     });
   });
@@ -982,6 +951,73 @@ describe('IssuableItem', () => {
       state: 'opened',
       isDraft: true,
       issuableType: 'merge_request',
+    });
+  });
+
+  describe('Navigation guards for issues and work items SPA', () => {
+    describe('when canRouterNav should be called', () => {
+      describe.each`
+        useIssueView | isGroup      | workItemType                     | expectedIssueAsWorkItem | description
+        ${false}     | ${undefined} | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${true}                 | ${'when useIssueView is false for a test case'}
+        ${false}     | ${true}      | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${false}                | ${'when useIssueView is false and isGroup is true'}
+        ${false}     | ${false}     | ${WORK_ITEM_TYPE_NAME_TEST_CASE} | ${true}                 | ${'when useIssueView is false and isGroup is false'}
+        ${false}     | ${undefined} | ${WORK_ITEM_TYPE_NAME_INCIDENT}  | ${true}                 | ${'when useIssueView is false and work item type is unsupported'}
+      `('$description', ({ useIssueView, isGroup, workItemType, expectedIssueAsWorkItem }) => {
+        beforeEach(async () => {
+          jest.spyOn(utils, 'canRouterNav');
+
+          mockWorkItemConfigGetter.mockReturnValue({
+            ...defaultWorkItemConfig,
+            useIssueView,
+          });
+
+          const provide = isGroup !== undefined ? { isGroup } : {};
+
+          wrapper = createComponent({
+            preventRedirect: true,
+            showCheckbox: false,
+            provide,
+            issuable: {
+              ...mockIssuable,
+              workItemType: { name: workItemType },
+            },
+          });
+
+          await findIssuableItemWrapper().trigger('click');
+        });
+
+        it('passes correct issueAsWorkItem value to canRouterNav', () => {
+          expect(utils.canRouterNav).toHaveBeenCalledWith(
+            expect.objectContaining({ issueAsWorkItem: expectedIssueAsWorkItem }),
+          );
+        });
+      });
+    });
+
+    describe('when canRouterNav should not be called', () => {
+      beforeEach(async () => {
+        jest.spyOn(utils, 'canRouterNav');
+
+        mockWorkItemConfigGetter.mockReturnValue({
+          ...defaultWorkItemConfig,
+          useIssueView: true,
+        });
+
+        wrapper = createComponent({
+          preventRedirect: true,
+          showCheckbox: false,
+          issuable: {
+            ...mockIssuable,
+            workItemType: { name: WORK_ITEM_TYPE_NAME_ISSUE },
+          },
+        });
+
+        await findIssuableItemWrapper().trigger('click');
+      });
+
+      it('does not call canRouterNav when useIssueView is true for an issue', () => {
+        expect(utils.canRouterNav).not.toHaveBeenCalled();
+      });
     });
   });
 });

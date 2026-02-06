@@ -33,11 +33,11 @@
 #   MR Labeled with pipeline::tier-1 Changing package.json
 #   MR Labeled with pipeline::tier-2 Changiong package.json
 #   MR Labeled with pipeline::tier-1 Changing app/models/user.rb
-#   MR Labeled with pipeline::tier-2 and pipeline:mr-approved Changing app/models/user.rb
-#   MR Labeled with pipeline::tier-3 and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-2 Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-3 Changing app/models/user.rb
 #   MR Labeled with pipeline:run-as-if-foss Changing app/models/user.rb
 #   MR Labeled with pipeline:force-run-as-if-jh Changing app/models/user.rb
-#   MR Labeled with pipeline:run-as-if-jh and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline:run-as-if-jh and pipeline::tier-2 Changing app/models/user.rb
 #   MR Labeled with pipeline:run-in-ruby3_2 Changing app/models/user.rb
 #
 # Automated MR

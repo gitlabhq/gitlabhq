@@ -30,7 +30,6 @@ describe('Import Project by URL Form', () => {
     namespace: {
       id: '1',
       fullPath: 'root',
-      isPersonal: true,
     },
   };
 
@@ -103,10 +102,10 @@ describe('Import Project by URL Form', () => {
     expect(template.props('currentStep')).toBe(3);
   });
 
-  it('renders shared fields', () => {
+  it('renders shared fields and passes namespace', () => {
     const sharedFields = findSharedFields();
     expect(sharedFields.exists()).toBe(true);
-    expect(sharedFields.props('namespace')).toEqual(defaultProps.namespace);
+    expect(sharedFields.props('namespace').id).toEqual(defaultProps.namespace.id);
   });
 
   describe('when importByUrlNewPage feature flag is enabled', () => {
@@ -219,7 +218,7 @@ describe('Import Project by URL Form', () => {
   });
 
   it('emits onSelectNamespace event when shared fields emits it', () => {
-    const newNamespace = { id: '2', fullPath: 'new-namespace', isPersonal: false };
+    const newNamespace = { id: '2', fullPath: 'new-namespace' };
 
     findSharedFields().vm.$emit('onSelectNamespace', newNamespace);
 

@@ -57,6 +57,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_item_planning_view, !!project&.work_items_consolidated_list_enabled?(current_user))
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_frontend_feature_flag(:hide_incident_management_features, project)
+    push_force_frontend_feature_flag(:work_item_features_field, Feature.enabled?(:work_item_features_field, current_user))
   end
 
   after_action :log_issue_show, only: :show

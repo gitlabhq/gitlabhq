@@ -643,6 +643,7 @@ export default {
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
         excludeGroupWorkItems: this.isGroupIssuesList,
+        useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
       };
     },
     csvExportQueryVariables() {

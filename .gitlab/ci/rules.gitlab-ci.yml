@@ -80,15 +80,6 @@
 .if-not-merge-request: &if-not-merge-request
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == null'
 
-# Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
-# or any similar condition to check that the MR has *any* approval (not just required approval).
-.if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-[23]/'
-
-.if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-[23]/'
-
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
 
@@ -196,6 +187,12 @@
 
 .if-merge-request-tier-3: &if-merge-request-tier-3
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
+
+.if-merge-request-tier-2-or-above: &if-merge-request-tier-2-or-above
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-[23]/'
+
+.if-merge-request-tier-1-or-no-tier: &if-merge-request-tier-1-or-no-tier
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-[23]/'
 
 .if-merge-train: &if-merge-train
   if: $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train"
@@ -1113,7 +1110,7 @@
 ###########################
 .rails:rules:predictive-default-rules:
   rules:
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-2-or-above
       when: never
     - <<: *if-automated-merge-request
       when: never
@@ -1541,7 +1538,7 @@
 ##################
 .frontend:rules:predictive-default-rules:
   rules:
-    - <<: *if-merge-request-approved
+    - <<: *if-merge-request-tier-2-or-above
       when: never
     - <<: *if-automated-merge-request
       when: never
@@ -1619,9 +1616,7 @@
     - <<: *if-default-branch-refs
       when: never
     - !reference [".prevent-tier-2-and-above", "rules"]
-    - <<: *if-merge-request-no-tier
-      changes: *frontend-code-patterns
-    - <<: *if-merge-request-tier-1
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-code-patterns
 
 .frontend:rules:eslint-default:
@@ -1658,7 +1653,7 @@
       when: never
     - !reference [.frontend:rules:default-frontend-jobs, rules]
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:frontend_fixture:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1684,15 +1679,15 @@
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     # Rules for `jest predictive` jobs
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:compile-storybook:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1702,10 +1697,10 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
@@ -1718,8 +1713,8 @@
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
@@ -1769,7 +1764,7 @@
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
@@ -1800,7 +1795,7 @@
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
 
-# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+# .frontend:rules:default-frontend-jobs, with additional rules for tier-1 pipelines
 .frontend:rules:jest-integration:
   rules:
     # From .frontend:rules:default-frontend-jobs
@@ -1810,10 +1805,10 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       changes: *setup-test-env-patterns
-    # If the MR isn't approved, only run when jest predictive jobs would
-    - <<: *if-merge-request-not-approved
+    # For tier-1 pipelines, only run when jest predictive jobs would
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *frontend-predictive-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-default-refs
@@ -2244,7 +2239,7 @@
     - if: '$ENABLE_RSPEC_SINGLE_REDIS == "true"'
     - <<: *if-merge-request
       changes: *redis-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -2322,7 +2317,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_RSPEC_SINGLE_DB_SEC_CONNECTION == "true"'
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
 
 .rails:rules:single-db-sec-connection-ee:
@@ -2355,7 +2350,7 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-refs
       changes: *db-backup-patterns
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-default-refs
       changes: *db-patterns
@@ -2897,8 +2892,8 @@
 .static-analysis:rules:rubocop:
   rules:
     - if: '$ENABLE_RUBOCOP == "true"'
-    # Do not run full rubocop if the merge request isn't approved
-    - <<: *if-merge-request-not-approved
+    # Do not run full rubocop on tier-1 pipelines
+    - <<: *if-merge-request-tier-1-or-no-tier
       changes: *rubocop-patterns
       variables:
         RUN_ALL_RUBOCOP: "false"
@@ -3283,7 +3278,7 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request
       changes:
@@ -3430,7 +3425,7 @@
     - <<: *if-merge-request-labels-force-as-if-jh
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request
@@ -3460,7 +3455,7 @@
       changes: *dependency-patterns
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-tier-1-or-no-tier
       when: never
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns

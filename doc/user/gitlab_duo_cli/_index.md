@@ -54,8 +54,7 @@ The GitLab Duo CLI offers two modes:
 
 - Interactive mode: Provides a chat experience similar to GitLab Duo Chat in the GitLab UI or in
   editor extensions.
-- Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows. For
-  example, you can run an ESLint command and pipe errors to GitLab Duo CLI to resolve.
+- Headless mode: Enables non-interactive use in runners, scripts, and other automated workflows.
 
 ## Install the GitLab Duo CLI
 
@@ -137,6 +136,12 @@ To run a workflow in non-interactive mode, use the command `duo run`:
 duo run --goal "Your goal or prompt here"
 ```
 
+For example, you can run an ESLint command and pipe errors to the GitLab Duo CLI to resolve:
+
+ ```shell
+duo run --goal "Fix these errors: $eslint_output"
+```
+
 When you use headless mode, the GitLab Duo CLI:
 
 - Bypasses manual tool approvals and automatically approves all tools for use.
@@ -170,6 +175,11 @@ Additional options for headless mode:
 - `duo`: Start interactive mode.
 - `duo config`: Manage the configuration and authentication settings.
 - `duo log`: View and manage logs.
+  - `duo log last`: Open the last log file.
+  - `duo log list`: List all log files.
+  - `duo log tail <args...>`: Display the tail of the last log file.
+    Supports standard tail arguments.
+  - `duo log clear`: Remove all existing log files.
 - `duo run`: Start headless mode.
 
 ## Environment variables

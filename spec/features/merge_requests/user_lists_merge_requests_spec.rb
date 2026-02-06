@@ -84,6 +84,26 @@ RSpec.describe 'Merge requests > User lists merge requests', :js, feature_catego
     end
   end
 
+  context 'when clicking on a merge request item' do
+    before do
+      visit_merge_requests(project, assignee_username: user.username)
+    end
+
+    it 'navigates user to the merge request page' do
+      expect(page).to have_content 'fix'
+      expect(page).to have_content "Merged"
+
+      expect(page).not_to have_content "Reviewers"
+
+      click_link @fix.title
+
+      expect(page).to have_content 'fix'
+      expect(page).not_to have_content "Merged"
+      expect(page).to have_content "Reviewers"
+      expect(page).to have_current_path(project_merge_request_path(project, @fix))
+    end
+  end
+
   it 'filters on no assignee' do
     visit_merge_requests(project, assignee_id: 'None')
 

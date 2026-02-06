@@ -117,6 +117,9 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       security_manager_access
       access_security_and_compliance
+      cancel_build
+      create_build
+      read_runners
       read_security_configuration
     ]
   end
@@ -196,6 +199,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_deploy_token
       read_member_access_request
       rename_project
+      read_runners
       update_snippet
     ]
   end

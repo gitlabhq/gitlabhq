@@ -15,4 +15,6 @@
   new_project_path: new_project_path(anchor: 'import_project'),
   new_project_form_path: projects_path,
   user_namespace_id: current_user.namespace_id.to_s,
-  user_namespace_full_path: current_user.namespace.full_path } }
+  user_namespace_full_path: current_user.namespace.full_path,
+  namespace_id: @namespace&.id.to_s,
+  namespace_full_path: @namespace&.full_path } }

@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "./work_item_widgets.fragment.graphql"
+#import "ee_else_ce/work_items/list/graphql/work_item_features.fragment.graphql"
 
 # @feature_category: portfolio_management
 query getWorkItemsFull(
@@ -41,6 +42,7 @@ query getWorkItemsFull(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $useWorkItemFeatures: Boolean = false
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -128,6 +130,9 @@ query getWorkItemsFull(
         ) {
           type
           ...WorkItemWidgets
+        }
+        features @include(if: $useWorkItemFeatures) {
+          ...WorkItemFeatures
         }
         workItemType {
           id

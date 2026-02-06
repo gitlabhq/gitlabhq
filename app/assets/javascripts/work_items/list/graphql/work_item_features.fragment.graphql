@@ -1,0 +1,46 @@
+fragment WorkItemFeatures on WorkItemFeatures {
+  assignees {
+    assignees {
+      nodes {
+        id
+        avatarUrl
+        name
+        username
+        webUrl
+        webPath
+      }
+    }
+  }
+  awardEmoji {
+    upvotes
+    downvotes
+  }
+  milestone {
+    milestone {
+      id
+      dueDate
+      startDate
+      title
+      webPath
+    }
+  }
+  startAndDueDate {
+    startDate
+    dueDate
+  }
+  timeTracking {
+    humanReadableAttributes {
+      timeEstimate
+    }
+  }
+  development {
+    closingMergeRequests {
+      count
+    }
+  }
+  hierarchy {
+    parent {
+      id
+    }
+  }
+}

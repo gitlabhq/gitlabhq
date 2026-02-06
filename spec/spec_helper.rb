@@ -379,6 +379,10 @@ RSpec.configure do |config|
       # https://gitlab.com/gitlab-org/gitlab/-/work_items/584318
       stub_feature_flags(two_step_sign_in: false)
 
+      # Disable work_item_features_field while we work on it. Enabled in 18.10.
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
+      stub_feature_flags(work_item_features_field: false)
+
       # When `dap_onboarding_empty_states` is enabled, the Duo Chat panel is expanded for free users.
       # This might cause elements to be laid out differently in the main panel due to container
       # queries, which in turn can cause some specs to fail.

@@ -17,7 +17,7 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
 
     before do
       sign_in(user)
-      stub_feature_flags(work_items_saved_views: false)
+      stub_feature_flags(work_items_saved_views: false, work_item_features_field: false)
 
       visit project_work_items_path(project)
 

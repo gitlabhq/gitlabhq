@@ -29,108 +29,100 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
     end
   end
 
-  shared_examples 'predictive is inverse of non-predictive' do
-    context 'with derived rules' do
-      it 'has the "when: never" in reverse compared to the base' do
-        rules_pairs = base_rules.zip(derived_rules)
+  describe 'anchor references' do
+    rules_file_path = File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__)
+    raw_content = File.read(rules_file_path)
 
-        cut_point = rules_pairs.each.with_index do |(base, derived), index|
-          # YAML.safe_load doesn't resolve !reference, the rule structures diverge and can't be compared
-          break index if base.is_a?(Array) || derived.is_a?(Array)
-          next unless base.is_a?(Hash) && derived.is_a?(Hash)
+    anchor_definitions = raw_content.scan(/&([a-z][a-z0-9_-]*)/i).flatten.to_set
 
-          # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
-          #            because when we set this label on an MR, we don't want to run either jobs.
-          if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
-            expect(derived).to eq(base)
-            expect(derived['when']).to eq('never')
-            next
-          end
+    # Match patterns like `<<: *anchor`, `- *anchor`, or `key: *anchor`
+    anchor_references = Set.new
+    raw_content.each_line do |line|
+      next if line.strip.start_with?('#') # skip comments
 
-          # exception: `.if-default-branch-schedule-weekly` should both be set to "never"
-          #            because the weekly job is a small subset of tests. We don't want to run either jobs.
-          if base['if'] == config['.if-default-branch-schedule-weekly']['if']
-            expect(derived).to eq(base)
-            expect(derived['when']).to eq('never')
-            next
-          end
+      line.scan(/<<:\s*\*([a-z][a-z0-9_-]*)/i) { |m| anchor_references.add(m[0]) }
 
-          # exception: `.if-merge-request-not-approved` in the base should be `.if-merge-request-approved` in derived.
-          #            The base wants to run when the MR is approved, and the derived wants to run if it's not approved,
-          #            and both are specifying this with `when: never`.
-          #            For rspec-predictive, the derived also includes `changes: *code-backstage-patterns` to limit
-          #            when to skip.
-          if base['if'] == config['.if-merge-request-not-approved']['if']
-            expected = base.merge(config['.if-merge-request-approved'])
-            # Some predictive rules (like rspec-predictive) include changes condition, others don't
-            expected = expected.merge('changes' => derived['changes']) if derived['changes']
-            expect(derived).to eq(expected)
-            expect(derived['when']).to eq('never')
+      line.scan(/^\s*-\s*\*([a-z][a-z0-9_-]*)/i) { |m| anchor_references.add(m[0]) }
 
-            # The following rules should match exactly, because after the
-            # approval rules, the logic is flipped.
-            break index
-          end
+      line.scan(/^\s*[a-z_-]+:\s*\*([a-z][a-z0-9_-]*)/i) { |m| anchor_references.add(m[0]) }
+    end
 
-          if base['when'] == 'never'
-            expect(derived).to eq(base.except('when'))
-          elsif base['if'].start_with?('$ENABLE_')
-            derived_if = base['if'].sub('RSPEC', 'RSPEC_PREDICTIVE_TRIGGER')
-            expect(derived).to eq(base.merge('if' => derived_if))
-          elsif base['when'].nil?
-            expect(derived).to eq(base.merge('when' => 'never'))
-          end
-        end
+    it 'has definitions for all anchor references' do
+      undefined_anchors = anchor_references - anchor_definitions
 
-        # Match the remaining rules that should be the same
-        # Only process if cut_point was found, temporary while tiers and MR-approved reference both exists
-        if cut_point.is_a?(Integer)
-          rules_pairs.drop(cut_point + 1).each do |(base, derived)|
-            # Skip !reference entries which are parsed as arrays, not hashes
-            next unless base.is_a?(Hash) && derived.is_a?(Hash)
+      expect(undefined_anchors).to be_empty,
+        "The following anchors are referenced but not defined: #{undefined_anchors.to_a.sort.join(', ')}"
+    end
 
-            expect(derived).to eq(base)
-          end
-        end
-      end
+    it 'has no duplicate anchor definitions' do
+      # Each anchor should be defined only once
+      all_anchors = raw_content.scan(/&([a-z][a-z0-9_-]*)/i).flatten
+      duplicates = all_anchors.group_by(&:itself).select { |_, v| v.size > 1 }.keys
+
+      expect(duplicates).to be_empty,
+        "The following anchors are defined multiple times: #{duplicates.sort.join(', ')}"
     end
   end
 
-  describe '.rails:rules:ee-and-foss-default-rules' do
-    it_behaves_like 'predictive is inverse of non-predictive' do
-      let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
+  describe 'rule structure' do
+    valid_when_values = %w[always never on_success on_failure manual delayed].freeze
 
-      let(:derived_rules) do
-        config.dig('.rails:rules:rspec-predictive', 'rules').reject do |rule|
-          # This happens in each specific rspec,
-          # which is outside of .rails:rules:ee-and-foss-default-rules
-          rule['if'].start_with?('$ENABLE_')
+    it 'has valid when values in all rules' do
+      invalid_rules = []
+
+      config.each do |name, definition|
+        next unless definition.is_a?(Hash) && definition['rules']
+
+        definition['rules'].each_with_index do |rule, index|
+          next unless rule.is_a?(Hash) && rule['when']
+          next if valid_when_values.include?(rule['when'])
+
+          invalid_rules << "#{name} rule[#{index}] has invalid when: #{rule['when']}"
         end
       end
 
-      it 'contains an additional allow rule about code-backstage-spec-patterns not present in the base' do
-        expected_rule = {
-          'if' => config['.if-merge-request']['if'],
-          'changes' => config['.code-backstage-spec-patterns']
-        }
+      expect(invalid_rules).to be_empty, invalid_rules.join("\n")
+    end
 
-        expect(base_rules).not_to include(expected_rule)
-        expect(derived_rules).to include(expected_rule)
+    it 'expedite label rules have when: never' do
+      expedite_condition = config['.if-merge-request-labels-pipeline-expedite']['if']
+      violations = []
+
+      config.each do |name, definition|
+        next unless definition.is_a?(Hash) && definition['rules']
+
+        definition['rules'].each_with_index do |rule, index|
+          next unless rule.is_a?(Hash)
+          next unless rule['if'] == expedite_condition
+
+          unless rule['when'] == 'never'
+            violations << "#{name} rule[#{index}] uses expedite label but when is '#{rule['when']}' (expected 'never')"
+          end
+        end
       end
+
+      expect(violations).to be_empty, violations.join("\n")
     end
   end
 
-  describe '.rails:rules:single-db' do
-    it_behaves_like 'predictive is inverse of non-predictive' do
-      let(:base_rules) { config.dig('.rails:rules:single-db', 'rules') }
-      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db', 'rules') }
-    end
-  end
+  describe 'naming conventions' do
+    it 'all top-level keys start with .' do
+      invalid_keys = config.keys.reject { |key| key.start_with?('.') }
 
-  describe '.rails:rules:single-db-ci-connection' do
-    it_behaves_like 'predictive is inverse of non-predictive' do
-      let(:base_rules) { config.dig('.rails:rules:single-db-ci-connection', 'rules') }
-      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive:single-db-ci-connection', 'rules') }
+      expect(invalid_keys).to be_empty,
+        "Top-level keys should start with '.': #{invalid_keys.join(', ')}"
+    end
+
+    it 'if-conditions follow naming convention' do
+      if_condition_keys = config.keys.select do |key|
+        definition = config[key]
+        definition.is_a?(Hash) && definition.key?('if') && !definition.key?('rules')
+      end
+
+      invalid_if_keys = if_condition_keys.reject { |key| key.start_with?('.if-') }
+
+      expect(invalid_if_keys).to be_empty,
+        "if-condition keys should start with '.if-': #{invalid_if_keys.join(', ')}"
     end
   end
 

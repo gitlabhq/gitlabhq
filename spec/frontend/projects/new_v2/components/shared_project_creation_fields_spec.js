@@ -60,6 +60,12 @@ describe('Project creation form fields component', () => {
     });
   });
 
+  it('initializes destination with the provided namespace prop', () => {
+    createComponent();
+    expect(findNamespaceSelect().props('namespaceId')).toBe(defaultProps.namespace.id);
+    expect(findNamespaceSelect().props('namespaceFullPath')).toBe(defaultProps.namespace.fullPath);
+  });
+
   it('updates project slug according to a project name', async () => {
     createComponent();
 

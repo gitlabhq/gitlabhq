@@ -78,6 +78,22 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
       expect(page).not_to have_content(other_issue.title)
     end
 
+    context 'when clicking on an issue' do
+      it 'navigates to the project issue page' do
+        expect(page).not_to have_content("Labels")
+
+        expect(page).to have_content("Your work")
+        expect(page).to have_content(assigned_issue.title)
+
+        click_link assigned_issue.title
+
+        expect(page).to have_content("Labels")
+
+        expect(page).not_to have_content("Your work")
+        expect(page).to have_content(assigned_issue.title)
+      end
+    end
+
     describe 'RSS link' do
       before do
         click_button 'Actions'

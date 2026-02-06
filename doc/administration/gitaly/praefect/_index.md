@@ -130,7 +130,7 @@ The following table outlines the major differences between Gitaly Cluster (Praef
 
 | Tool                      | Nodes    | Locations | Latency tolerance                                                                                      | Failover                                                                     | Consistency                   | Provides redundancy for |
 |:--------------------------|:---------|:----------|:-------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------|:------------------------------|:------------------------|
-| Gitaly Cluster (Praefect) | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](configure.md#network-latency-and-connectivity) | [Automatic](configure.md#automatic-failover-and-primary-election-strategies) | [Strong](#strong-consistency) | Data storage in Git     |
+| Gitaly Cluster (Praefect) | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](configure.md#network-latency-and-connectivity) | [Automatic](configure.md#automatic-failover-and-primary-election) | [Strong](#strong-consistency) | Data storage in Git     |
 | Geo                       | Multiple | Multiple  | Up to one minute                                                                                       | [Manual](../../geo/disaster_recovery/_index.md)                              | Eventual                      | Entire GitLab instance  |
 
 For more information, see:
@@ -404,7 +404,7 @@ Gitaly Cluster (Praefect) provides the following features:
 - [Distributed reads](#distributed-reads) among Gitaly nodes.
 - [Strong consistency](#strong-consistency) of the secondary replicas.
 - [Replication factor](#replication-factor) of repositories for increased redundancy.
-- [Automatic failover](configure.md#automatic-failover-and-primary-election-strategies) from the
+- [Automatic failover](configure.md#automatic-failover-and-primary-election) from the
   primary Gitaly node to secondary Gitaly nodes.
 - Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 

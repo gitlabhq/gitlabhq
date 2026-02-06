@@ -10659,3 +10659,213 @@ export const singleSavedView = [
     sort: 'UPDATED_DESC',
   },
 ];
+
+export const workItemsQueryResponseWithFeatures = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'start',
+          endCursor: 'end',
+          __typename: 'PageInfo',
+        },
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/1',
+            iid: '1',
+            title: 'Test item 1',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            updatedAt: '2022-08-08T12:32:54Z',
+            closedAt: null,
+            author: mockAssignees[0],
+            namespace: {
+              id: 'gid://gitlab/Group/3',
+              fullPath: 'test-group',
+              __typename: 'Namespace',
+            },
+            webUrl: 'http://gdk.test/groups/test-group/-/work_items/1',
+            webPath: '/groups/test-group/-/work_items/1',
+            reference: 'test-group#1',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/1',
+              name: 'Issue',
+              iconName: 'work-item-issue',
+              __typename: 'WorkItemType',
+            },
+            confidential: false,
+            hidden: false,
+            archived: false,
+            externalAuthor: null,
+            imported: false,
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'ASSIGNEES',
+                __typename: 'WorkItemWidgetAssignees',
+                allowsMultipleAssignees: true,
+                canInviteMembers: true,
+                assignees: {
+                  nodes: [mockAssignees[0]],
+                },
+              },
+              {
+                type: 'LABELS',
+                __typename: 'WorkItemWidgetLabels',
+                allowsScopedLabels: false,
+                labels: {
+                  nodes: mockLabels,
+                },
+              },
+            ],
+            features: {
+              assignees: {
+                assignees: {
+                  nodes: [mockAssignees[0]],
+                },
+              },
+              awardEmoji: {
+                upvotes: 0,
+                downvotes: 0,
+              },
+              milestone: {
+                milestone: null,
+              },
+              startAndDueDate: {
+                startDate: null,
+                dueDate: null,
+                rollUp: false,
+                isFixed: false,
+              },
+              timeTracking: {
+                humanReadableAttributes: {
+                  timeEstimate: '',
+                },
+              },
+              healthStatus: {
+                healthStatus: null,
+              },
+              weight: {
+                weight: null,
+              },
+              linkedItems: {
+                blockedByCount: 0,
+                blockingCount: 0,
+              },
+              iteration: {
+                iteration: null,
+              },
+              development: {
+                closingMergeRequests: {
+                  count: 0,
+                },
+              },
+              hierarchy: {
+                parent: null,
+              },
+              status: null,
+              __typename: 'WorkItemFeatures',
+            },
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/2',
+            iid: '2',
+            title: 'Test item 2',
+            state: 'CLOSED',
+            createdAt: '2022-08-03T12:41:54Z',
+            updatedAt: '2022-08-08T12:32:54Z',
+            closedAt: '2022-08-10T12:32:54Z',
+            author: mockAssignees[1],
+            namespace: {
+              id: 'gid://gitlab/Group/3',
+              fullPath: 'test-group',
+              __typename: 'Namespace',
+            },
+            webUrl: 'http://gdk.test/groups/test-group/-/work_items/2',
+            webPath: '/groups/test-group/-/work_items/2',
+            reference: 'test-group#2',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Task',
+              iconName: 'work-item-task',
+              __typename: 'WorkItemType',
+            },
+            confidential: false,
+            hidden: false,
+            archived: false,
+            externalAuthor: null,
+            imported: false,
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'ASSIGNEES',
+                __typename: 'WorkItemWidgetAssignees',
+                allowsMultipleAssignees: true,
+                canInviteMembers: true,
+                assignees: {
+                  nodes: [mockAssignees[1]],
+                },
+              },
+            ],
+            features: {
+              assignees: {
+                assignees: {
+                  nodes: [mockAssignees[1]],
+                },
+              },
+              awardEmoji: {
+                upvotes: 0,
+                downvotes: 0,
+              },
+              milestone: {
+                milestone: null,
+              },
+              startAndDueDate: {
+                startDate: null,
+                dueDate: null,
+                rollUp: false,
+                isFixed: false,
+              },
+              timeTracking: {
+                humanReadableAttributes: {
+                  timeEstimate: '',
+                },
+              },
+              healthStatus: {
+                healthStatus: null,
+              },
+              weight: {
+                weight: null,
+              },
+              linkedItems: {
+                blockedByCount: 0,
+                blockingCount: 0,
+              },
+              iteration: {
+                iteration: null,
+              },
+              development: {
+                closingMergeRequests: {
+                  count: 0,
+                },
+              },
+              hierarchy: {
+                parent: null,
+              },
+              status: null,
+              __typename: 'WorkItemFeatures',
+            },
+            __typename: 'WorkItem',
+          },
+        ],
+        __typename: 'WorkItemConnection',
+      },
+    },
+  },
+};

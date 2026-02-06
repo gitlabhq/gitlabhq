@@ -16,11 +16,37 @@ RSpec.describe Import::UrlController, feature_category: :importers do
       end
 
       it 'renders the new template' do
-        stub_licensed_features(repository_mirrors: true) if Gitlab.ee?
-
         get new_import_url_path
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when user is allowed to create projects in this namespace' do
+        let(:namespace) { create(:namespace, owner: user) }
+
+        it 'includes namespace data in the response' do
+          get new_import_url_path(namespace_id: namespace.id)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include("data-namespace-id=\"#{namespace.id}\"")
+        end
+      end
+
+      context 'when user is not allowed to create projects in this namespace' do
+        let(:new_namespace) { create(:namespace) }
+
+        it 'does not include namespace in response' do
+          get new_import_url_path(namespace_id: new_namespace.id)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-namespace-id=""')
+        end
+      end
+
+      context 'without namespace_id param' do
+        it 'does not include namespace in the response' do
+          get new_import_url_path
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-namespace-id=""')
+        end
       end
     end
 

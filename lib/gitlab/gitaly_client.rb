@@ -28,6 +28,9 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Gitlab::Runtime.sidekiq? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
     GITALY_METADATA_FILENAME = '.gitaly-metadata'
+    CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS = 4
+    CLIENT_RETRY_DEFAULT_MAX_BACKOFF = 1.4
+    CLIENT_RETRY_DEFAULT_INITIAL_BACKOFF = 0.4
 
     MUTEX = Mutex.new
 
@@ -55,17 +58,32 @@ module Gitlab
     private_class_method :interceptors
 
     def self.retry_policy
-      ## Default max retry time is 6 seconds:
-      ##  0.4 +
-      ##  (0.4 * 2) = 0.8 +
-      ##  (0.8 * 2) = 1.6 +
-      ##  (1.6 * 2) = 3.2
-      ##  ==
-      ##  0.4 + 0.8 + 1.6 + 3.2 = 6
+      # We cap to 5 max_attempts because this limit is enforced by the gRPC library.
+      # See here: https://github.com/grpc/grpc-node/issues/2326
+      max_attempts = [Gitlab.config.gitaly.try(:client_max_attempts) || CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS, 5].min
+      max_backoff = Gitlab.config.gitaly.try(:client_max_backoff) || "#{CLIENT_RETRY_DEFAULT_MAX_BACKOFF}s"
+
+      # Parse max_backoff string to extract float value
+      # Example: '1.4s' => float(1.4)
+      max_backoff_value = max_backoff.to_s.delete_suffix('s').to_f
+
+      # Our backoffMultiplier (see below) is hardcoded to 2.
+      # Which means that between each retry, we double the delay
+      # before retrying.
+      # Hence, we can compute the initial_backoff with:
+      initial_backoff = max_backoff_value / (2**max_attempts)
+
+      # If 'max_attempts' and 'max_backoff' have default values
+      # we set 'initial_backoff' back to its default value, overwriting
+      # the computation above.
+      initial_backoff = CLIENT_RETRY_DEFAULT_INITIAL_BACKOFF if
+        max_attempts == CLIENT_RETRY_DEFAULT_MAX_ATTEMPTS &&
+          (max_backoff_value - CLIENT_RETRY_DEFAULT_MAX_BACKOFF).abs < Float::EPSILON
+
       {
-        maxAttempts: Gitlab.config.gitaly.try(:client_max_attempts) || 4,
-        initialBackoff: '0.4s',
-        maxBackoff: Gitlab.config.gitaly.try(:client_max_backoff) || '1.4s',
+        maxAttempts: max_attempts,
+        initialBackoff: "#{initial_backoff}s",
+        maxBackoff: max_backoff,
         backoffMultiplier: 2,
         retryableStatusCodes: %w[UNAVAILABLE ABORTED]
       }

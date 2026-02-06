@@ -29,10 +29,10 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import {
@@ -67,6 +67,9 @@ export default {
   inject: {
     isGroup: {
       default: false,
+    },
+    getWorkItemTypeConfiguration: {
+      default: null,
     },
   },
   props: {
@@ -138,32 +141,47 @@ export default {
     issuableIid() {
       return this.issuable.iid;
     },
+    workItemType() {
+      return this.issuable.workItemType?.name;
+    },
     workItemFullPath() {
       return (
         this.issuable.namespace?.fullPath || this.issuable.reference?.split(this.issuableSymbol)[0]
       );
     },
     isIncident() {
-      return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
-        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT
-      );
+      // Remove once we have the workItemConfig returning real data
+      const isTypeIncident =
+        this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT ||
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT;
+
+      return this.workItemConfig?.isIncidentManagement || isTypeIncident;
     },
     isServiceDeskIssue() {
-      const isServiceDeskIssue =
+      const isTypeServiceDeskIssue =
         (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
-          this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE) &&
+          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
         this.issuable?.author?.username === SUPPORT_BOT_USERNAME;
-      const isTicket =
+
+      const isTicketType =
         this.issuable?.type === WORK_ITEM_TYPE_ENUM_TICKET ||
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TICKET;
-      return isServiceDeskIssue || isTicket;
+        this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
+      return this.workItemConfig?.isServiceDesk || isTypeServiceDeskIssue || isTicketType;
     },
     isTestCase() {
       return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TEST_CASE ||
+        this.workItemType === WORK_ITEM_TYPE_NAME_TEST_CASE ||
         this.issuable?.type === WORK_ITEM_TYPE_ENUM_TEST_CASE
       );
+    },
+    workItemConfig() {
+      // Legacy applications may not have the configuration getter available
+      return this.getWorkItemTypeConfiguration
+        ? this.getWorkItemTypeConfiguration(this.workItemType)
+        : {};
+    },
+    useIssueView() {
+      return this.workItemConfig?.useIssueView;
     },
     author() {
       return this.issuable.author || {};
@@ -184,7 +202,7 @@ export default {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
     },
     type() {
-      return this.issuable.type || this.issuable.workItemType?.name.toUpperCase();
+      return this.issuable.type || this.workItemType?.toUpperCase();
     },
     labels() {
       return (
@@ -303,15 +321,14 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return this.issuable.__typename === 'MergeRequest';
     },
-    issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        // Use legacy view for unsupported work item types
-        // incidents and Service Desk issues
-        !this.isIncident &&
-        !this.isServiceDeskIssue &&
-        !this.isTestCase
-      );
+    isAllowedType() {
+      return !this.isIncident && !this.isServiceDeskIssue && !this.isTestCase;
+    },
+    useWorkItemTemplate() {
+      if (this.isGroup) return false;
+
+      // Use new config-based check first, fall back to legacy hardcoded checks for backward compatibility
+      return !this.useIssueView || this.isAllowedType;
     },
     hiddenIssuableTitle() {
       if (this.isMergeRequest) {
@@ -352,10 +369,11 @@ export default {
       e.preventDefault();
       // Unsupported types incidents and Service Desk issues
       // should not open in drawer
-      if (this.isIncident || this.isServiceDeskIssue || this.isTestCase || !this.preventRedirect) {
+      if (!this.isAllowedType || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }
+
       this.$emit('select-issuable', {
         id: this.issuable.id,
         iid: this.issuableIid,
@@ -372,7 +390,7 @@ export default {
         fullPath: this.fullPath,
         webUrl: this.issuableLinkHref,
         isGroup: this.isGroup,
-        issueAsWorkItem: this.issueAsWorkItem,
+        issueAsWorkItem: this.useWorkItemTemplate,
       });
 
       if (shouldRouterNav) {

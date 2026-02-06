@@ -177,7 +177,7 @@ following to `gitlab.rb` on each node:
 
 > [!note]
 > Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
-> 
+>
 > - Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
 > - Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
 
@@ -1694,10 +1694,10 @@ Praefect supports configuring a replication factor on a per-repository basis, by
 specific storage nodes to host a repository.
 
 > [!warning]
-> Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
-> 
-> Do not reduce the replication factor of object pools. This can cause linked repositories to break.
-> Object pools have relative paths that begin with `@pools/`.
+> Do not reduce the replication factor of object pools, any repository that has been forked, or the forks
+> themselves. This can cause the entire fork network to become corrupted.
+> Object pools have relative paths that begin with `@pools/`. You can check if a repository has been forked
+> through the GitLab UI.
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
@@ -1903,7 +1903,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 The output includes the number of replicas that were marked unverified.
 
-## Automatic failover and primary election strategies
+## Automatic failover and primary election
 
 Praefect regularly checks the health of each Gitaly node, which is used to automatically fail over
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.

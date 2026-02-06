@@ -25989,6 +25989,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create triggers to automatically run pipelines when specified events occur in your project."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Created"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Default"
 msgstr ""
 
@@ -53466,9 +53469,6 @@ msgstr ""
 msgid "ProjectSettings|Additional settings that influence how and when merges are done."
 msgstr ""
 
-msgid "ProjectSettings|All merge request titles must match this %{link_start}regular expression%{link_end}. If empty, any title is allowed."
-msgstr ""
-
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
@@ -53569,6 +53569,9 @@ msgid "ProjectSettings|Delete immediately"
 msgstr ""
 
 msgid "ProjectSettings|Delete project"
+msgstr ""
+
+msgid "ProjectSettings|Describe what the title pattern enforces. Include a valid example."
 msgstr ""
 
 msgid "ProjectSettings|Determine what happens to the commit history when you merge a merge request."
@@ -53736,12 +53739,6 @@ msgstr ""
 msgid "ProjectSettings|Merge options"
 msgstr ""
 
-msgid "ProjectSettings|Merge request title example"
-msgstr ""
-
-msgid "ProjectSettings|Merge request title validation pattern"
-msgstr ""
-
 msgid "ProjectSettings|Merge requests"
 msgstr ""
 
@@ -53820,6 +53817,9 @@ msgstr ""
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr ""
 
+msgid "ProjectSettings|Regex pattern that all merge request titles must match. %{link_start}What is regex?%{link_end} If empty, any title is allowed."
+msgstr ""
+
 msgid "ProjectSettings|Relative path:"
 msgstr ""
 
@@ -53878,9 +53878,6 @@ msgid "ProjectSettings|Show default emoji reactions"
 msgstr ""
 
 msgid "ProjectSettings|Show link to create or view a merge request when pushing from the command line"
-msgstr ""
-
-msgid "ProjectSettings|Shown to users when creating merge requests."
 msgstr ""
 
 msgid "ProjectSettings|Snippets"
@@ -53953,6 +53950,12 @@ msgid "ProjectSettings|This setting is on for the instance."
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden for a project."
+msgstr ""
+
+msgid "ProjectSettings|Title example"
+msgstr ""
+
+msgid "ProjectSettings|Title pattern"
 msgstr ""
 
 msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."

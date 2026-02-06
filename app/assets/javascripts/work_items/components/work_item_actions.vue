@@ -81,7 +81,14 @@ export default {
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
-  inject: ['hasOkrsFeature', 'getWorkItemTypeConfiguration'],
+  inject: {
+    hasOkrsFeature: {
+      default: false,
+    },
+    getWorkItemTypeConfiguration: {
+      default: () => {},
+    },
+  },
   props: {
     fullPath: {
       type: String,

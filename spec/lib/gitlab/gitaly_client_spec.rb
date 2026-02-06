@@ -1104,8 +1104,8 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
 
       it 'uses the configured values' do
         is_expected.to eq(
-          maxAttempts: 10,
-          initialBackoff: '0.4s',
+          maxAttempts: 5, ## We expect the provided value 10 to be capped to 5
+          initialBackoff: '0.15625s', # 5/2^5 = 0.15625
           maxBackoff: '5.0s',
           backoffMultiplier: 2,
           retryableStatusCodes: %w[UNAVAILABLE ABORTED]

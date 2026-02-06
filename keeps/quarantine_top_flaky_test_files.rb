@@ -70,13 +70,16 @@ module Keeps
       change.description = <<~MARKDOWN
         ### Summary
 
-        The `#{relative_file_path}` test file has been identified as one of the most flaky files in our test suite.
-        Hence this auto-quarantine MR is created.
+        The `#{relative_file_path}` test file has been identified as a **top pipeline-blocking flaky test**, determined using test execution metrics. This auto-quarantine MR quarantines affected tests in the test file to improve pipeline stability.
+
+        Visit the handbook page for more details: [Reporting of Top Flaky Test Files](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/#reporting-of-top-flaky-test-files)
 
         More details about the statistics for this test file can be found in the corresponding issue: #{flaky_test_file_issue['web_url']}.
 
-        This MR quarantines affected tests in the test file. Product group that owns this tests should review, update if needed \
-        and merge this MR to quarantine the tests unless the tests can be fixed in timely manner.
+        The product group that owns these tests should:
+        1. Review the quarantine changes in this MR
+        2. Either **merge this MR** to quarantine the tests, OR
+        3. **Fix the underlying flakiness** in line with [Flaky tests - Urgency Tiers and Response Timelines](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/#urgency-tiers-and-response-timelines)
 
         ### References
 

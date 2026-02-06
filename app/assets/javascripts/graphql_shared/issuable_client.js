@@ -163,6 +163,12 @@ export const config = {
           reference: {
             keyArgs: false,
           },
+          features: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return unionBy(incoming, existing, '__typename');
+            },
+          },
           // widgets policy because otherwise the subscriptions invalidate the cache
           widgets: {
             keyArgs: false,

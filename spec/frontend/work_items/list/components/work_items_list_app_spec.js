@@ -102,6 +102,7 @@ import {
   workItemUserPreferenceUpdateMutationResponseWithErrors,
   workItemCountsOnlyResponse,
   singleSavedView,
+  workItemsQueryResponseWithFeatures,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -260,6 +261,7 @@ const mountComponent = ({
   userPreferenceMutationResponse = userPreferenceMutationHandler,
   savedViewHandler = namespaceSavedViewHandler,
   workItemPlanningView = false,
+  workItemFeaturesField = false,
   workItemsSavedViewsEnabled = false,
   props = {},
   additionalHandlers = [],
@@ -308,6 +310,7 @@ const mountComponent = ({
       glFeatures: {
         okrsMvc: true,
         workItemPlanningView,
+        workItemFeaturesField,
       },
       canReadCrmOrganization,
       canReadCrmContact,
@@ -2504,6 +2507,52 @@ describe('when service desk list', () => {
       await waitForPromises();
 
       expect(document.title).toBe('Service Desk · Test · GitLab');
+    });
+  });
+
+  describe('work item features field feature flag', () => {
+    describe('when the feature flag is off', () => {
+      it('does not pass features variable to the query', async () => {
+        mountComponent({
+          provide: {
+            isServiceDeskSupported: true,
+            workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+            glFeatures: { workItemFeaturesField: false },
+          },
+        });
+
+        await waitForPromises();
+
+        expect(defaultQueryHandler).toHaveBeenCalled();
+        expect(defaultQueryHandler).not.toHaveBeenCalledWith(
+          expect.objectContaining({
+            useWorkItemFeatures: true,
+          }),
+        );
+      });
+    });
+
+    describe('when the feature flag is on', () => {
+      it('passes the useWorkItemFeatures to the query', async () => {
+        const mockQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseWithFeatures);
+
+        mountComponent({
+          provide: {
+            isServiceDeskSupported: true,
+            workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+            glFeatures: { workItemFeaturesField: true },
+          },
+          queryHandler: mockQueryHandler,
+        });
+
+        await waitForPromises();
+
+        expect(mockQueryHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            useWorkItemFeatures: true,
+          }),
+        );
+      });
     });
   });
 });

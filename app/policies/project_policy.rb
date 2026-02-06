@@ -515,6 +515,9 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:security_manager_access) }.policy do
     enable :access_security_and_compliance
+    enable :cancel_build
+    enable :create_build
+    enable :read_runners
     enable :read_security_configuration
   end
 
