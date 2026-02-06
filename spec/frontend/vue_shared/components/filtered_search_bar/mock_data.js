@@ -13,6 +13,7 @@ import {
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_SOURCE_BRANCH,
   TOKEN_TITLE_GROUP,
+  TOKEN_TITLE_PROJECT,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CONTACT,
@@ -22,6 +23,7 @@ import {
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_SOURCE_BRANCH,
+  TOKEN_TYPE_PROJECT,
   TOKEN_TYPE_GROUP,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { EMOJI_THUMBS_UP } from '~/emoji/constants';
@@ -31,6 +33,7 @@ import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
+import ProjectToken from '~/vue_shared/components/filtered_search_bar/tokens/project_token.vue';
 import GroupToken from '~/vue_shared/components/filtered_search_bar/tokens/group_token.vue';
 import CrmContactToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue';
 import CrmOrganizationToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue';
@@ -397,6 +400,14 @@ export const mockReleaseToken = {
   fetchReleases: () => Promise.resolve(),
 };
 
+export const mockProjectToken = {
+  icon: 'project',
+  title: TOKEN_TYPE_PROJECT,
+  type: TOKEN_TITLE_PROJECT,
+  token: ProjectToken,
+  operators: OPERATORS_IS,
+};
+
 export const mockGroupToken = {
   icon: 'group',
   title: TOKEN_TYPE_GROUP,
@@ -526,6 +537,30 @@ export const mockSortOptions = [
     },
   },
 ];
+
+export const mockProjects = [
+  {
+    id: 'gid://gitlab/Project/1000000',
+    name: 'Test',
+    fullPath: 'gitlab-duo/test',
+    avatarUrl: null,
+    __typename: 'Project',
+  },
+  {
+    id: 'gid://gitlab/Project/20',
+    name: 'coverage',
+    fullPath: 'root/coverage',
+    avatarUrl: null,
+    __typename: 'Project',
+  },
+];
+export const mockProjectResponse = {
+  data: {
+    projects: {
+      nodes: mockProjects,
+    },
+  },
+};
 
 export const mockGroups = [
   {

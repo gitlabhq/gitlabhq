@@ -4,8 +4,9 @@
   icon: 'key',
   count: @passkeys.length ) do |c|
   - c.with_actions do
-    = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path(entry_point: passkey_tracking_entry_point), size: :small, icon: 'passkey', disabled: !current_user.allow_passkey_authentication?) do
-      = s_('ProfilesAuthentication|Add passkey')
+    - if current_user.allow_passkey_authentication?
+      = render Pajamas::ButtonComponent.new(href: new_profile_passkey_path(entry_point: passkey_tracking_entry_point), size: :small, icon: 'passkey') do
+        = s_('ProfilesAuthentication|Add passkey')
   - c.with_body do
     .table-holder
       %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
@@ -16,17 +17,7 @@
             %th= s_('ProfilesAuthentication|Last used')
             %th= _('Actions')
         %tbody
-          - if !current_user.allow_passkey_authentication?
-            %tr
-              %td{ colspan: 4 }
-                = render Pajamas::AlertComponent.new(title: s_('ProfilesAuthentication|Passkeys unavailable'),
-                  dismissible: false,
-                  variant: :warning ) do |c|
-                  = c.with_body do
-                    - doc_link = link_to '', help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'password-and-passkey-authentication'), target: '_blank', rel: 'noopener noreferrer'
-                    = safe_format(s_('ProfilesAuthentication|To use passkeys, an administrator must allow password authentication. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))
-
-          - elsif @passkeys.present?
+          - if @passkeys.any?
             - @passkeys.each do |passkey|
               %tr
                 %td{ data: { label: _('Name') } }= passkey[:name]
@@ -38,3 +29,16 @@
             %tr
               %td{ colspan: 4 }
                 = s_('ProfilesAuthentication|No passkeys added.')
+
+          - if !current_user.allow_passkey_authentication?
+            %tr
+              %td{ colspan: 4 }
+                = render Pajamas::AlertComponent.new(title: s_('ProfilesAuthentication|Passkeys unavailable'),
+                  dismissible: false,
+                  variant: :warning ) do |c|
+                  = c.with_body do
+                    - doc_link = link_to '', help_page_path('administration/settings/sign_in_restrictions.md', anchor: 'password-and-passkey-authentication'), target: '_blank', rel: 'noopener noreferrer'
+                    - if @passkeys.empty? || !current_user.two_factor_enabled?
+                      = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))
+                    - else
+                      = safe_format(s_('ProfilesAuthentication|Passkey sign-in has been restricted for your account. Register your passkeys as a WebAuthn device to continue using them for two-factor authentication. %{link_start}Learn more%{link_end}.'), tag_pair(doc_link, :link_start, :link_end))

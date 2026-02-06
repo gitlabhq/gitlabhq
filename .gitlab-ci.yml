@@ -33,7 +33,6 @@ default:
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_3"
-  FF_TIMESTAMPS: "true"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
@@ -194,7 +193,6 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
-        FF_TIMESTAMPS: "true"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables
@@ -307,7 +305,6 @@ variables:
 
   # Runner features
   FF_NETWORK_PER_BUILD: "true"
-  FF_TIMESTAMPS: "true"
   FF_USE_FASTZIP: "true"
 
 include:

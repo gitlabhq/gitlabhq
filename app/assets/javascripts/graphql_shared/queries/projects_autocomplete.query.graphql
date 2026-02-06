@@ -1,0 +1,12 @@
+# @feature_category: runner_core
+
+query projectsAutocomplete($search: String) {
+  projects(search: $search, searchNamespaces: true) {
+    nodes {
+      id
+      name
+      fullPath
+      avatarUrl
+    }
+  }
+}

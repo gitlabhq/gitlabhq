@@ -53,7 +53,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
                         end
 
     allowed_visibility_levels = visibility_levels.select do |level|
-      Project.new(namespace: @subject).visibility_level_allowed?(level)
+      Project.new(group: @subject).visibility_level_allowed?(level)
     end
 
     Group.prevent_project_creation?(user, @subject.project_creation_level) || allowed_visibility_levels.empty?

@@ -52056,6 +52056,12 @@ msgstr ""
 msgid "ProfilesAuthentication|Passkey"
 msgstr ""
 
+msgid "ProfilesAuthentication|Passkey sign-in has been restricted for your account. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "ProfilesAuthentication|Passkey sign-in has been restricted for your account. Register your passkeys as a WebAuthn device to continue using them for two-factor authentication. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "ProfilesAuthentication|Passkeys"
 msgstr ""
 
@@ -52072,9 +52078,6 @@ msgid "ProfilesAuthentication|Register another 2FA method above to automatically
 msgstr ""
 
 msgid "ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below."
-msgstr ""
-
-msgid "ProfilesAuthentication|To use passkeys, an administrator must allow password authentication. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "ProfilesAuthentication|Use passkey as 2FA"

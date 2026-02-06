@@ -76,6 +76,7 @@ export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 // List
 export const I18N_CREATOR = s__('Runners|Creator');
 export const I18N_GROUP = s__('Runners|Group');
+export const I18N_PROJECT = s__('Runners|Project');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
@@ -124,6 +125,7 @@ export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 
 export const PARAM_KEY_CREATOR = 'creator';
 export const PARAM_KEY_GROUP = 'group';
+export const PARAM_KEY_PROJECT = 'project';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';

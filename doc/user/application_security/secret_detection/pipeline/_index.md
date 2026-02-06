@@ -123,8 +123,9 @@ By default, when you run a pipeline:
 - On a branch:
   - On the **default branch**, the Git working tree is scanned.
     This means the current repository state is scanned as though it were a typical directory.
-  - On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
-  - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
+  - On a **new, non-default branch**, only the content of the latest commit is scanned. Earlier commits on the branch are not included in the scan.
+  - On an **existing, non-default branch**, the content of all commits after the last pushed commit to the latest commit are scanned.
+  - To scan all commits from the branch divergence point every time, enable [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To scan all commits, you must enable
   [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
