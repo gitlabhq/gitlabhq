@@ -26017,6 +26017,7 @@ Core Agent available for GitLab features.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aifoundationalchatagentavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the foundational chat agent. |
 | <a id="aifoundationalchatagentdescription"></a>`description` | [`String!`](#string) | Description of the agent. |
 | <a id="aifoundationalchatagentid"></a>`id` | [`AiFoundationalChatAgentID!`](#aifoundationalchatagentid) | Global ID of the foundational chat agent. |
 | <a id="aifoundationalchatagentname"></a>`name` | [`String!`](#string) | Name of the agent. |

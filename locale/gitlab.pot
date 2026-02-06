@@ -7053,6 +7053,9 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "Agents|Explore other agents"
+msgstr ""
+
 msgid "AggregationEngine|Unknown granularity \"%{granularity}\""
 msgstr ""
 
@@ -25765,10 +25768,31 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
+msgid "DuoAgenticChat|Chat about different topics"
+msgstr ""
+
+msgid "DuoAgenticChat|Chat with different agents"
+msgstr ""
+
+msgid "DuoAgenticChat|Collaborate with AI agents to accomplish  tasks and answer questions, or use a multi-agent flow to solve a complex problem."
+msgstr ""
+
+msgid "DuoAgenticChat|Get targeted help for tasks with specialized agents"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo"
 msgstr ""
 
+msgid "DuoAgenticChat|GitLab Duo AI assistant"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo Agentic Chat is unavailable"
 msgstr ""
 
 msgid "DuoAgenticChat|GitLab Duo is already responding to this chat in another tab or location. Start a new chat, or wait for GitLab Duo to finish before sending a new message."
@@ -25780,16 +25804,25 @@ msgstr ""
 msgid "DuoAgenticChat|Invalid chat state provided"
 msgstr ""
 
-msgid "DuoAgenticChat|Need more credits? Contact your administrator."
-msgstr ""
-
-msgid "DuoAgenticChat|No GitLab Credits remain"
+msgid "DuoAgenticChat|Learn more"
 msgstr ""
 
 msgid "DuoAgenticChat|No GitLab Credits remain for this billing period. Turn off the %{agenticModeStart}Agentic mode%{agenticModeEnd} toggle or ask your administrator for more credits. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "DuoAgenticChat|No credits remain for this billing period. To continue collaborating with GitLab Duo, turn off the Agentic mode toggle. You can still get AI assistance, just without the advanced agentic features. %{linkStart}Learn more%{linkEnd}."
+msgid "DuoAgenticChat|No credits remain for this billing period"
+msgstr ""
+
+msgid "DuoAgenticChat|No credits remain on your trial"
+msgstr ""
+
+msgid "DuoAgenticChat|Purchase more credits"
+msgstr ""
+
+msgid "DuoAgenticChat|Return to Classic Chat"
+msgstr ""
+
+msgid "DuoAgenticChat|Select default namespace"
 msgstr ""
 
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
@@ -25798,16 +25831,31 @@ msgstr ""
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
-msgid "DuoAgenticChat|To use GitLab Duo Agentic Chat, please select a default namespace in your %{linkStart}User Profile Preferences%{linkEnd}."
+msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, purchase more credits or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
 msgstr ""
 
-msgid "DuoAgenticChat|Turn off Agentic mode"
+msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, upgrade to a paid subscription or turn off the Agentic toggle. You can still get AI assistance, just without the advanced agentic features."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use GitLab Duo Agentic Chat, please select a default namespace in your %{linkStart}User Profile Preferences%{linkEnd}."
 msgstr ""
 
 msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
 msgstr ""
 
+msgid "DuoAgenticChat|Upgrade to Premium"
+msgstr ""
+
 msgid "DuoAgentsPlatform|AI Catalog"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Access required"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Action"
@@ -25825,6 +25873,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Analyze pipeline failures and get fix suggestions"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Are you sure you want to cancel this session? This action cannot be undone."
 msgstr ""
 
@@ -25840,6 +25891,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Cancel session?"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Chat with a specialized agent"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Concise view"
 msgstr ""
 
@@ -25850,6 +25907,9 @@ msgid "DuoAgentsPlatform|Configuration path"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Configuration source"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Convert to gitlab ci"
@@ -25918,6 +25978,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Fix a failing pipeline"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Fix pipeline"
 msgstr ""
 
@@ -25927,10 +25990,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Full view"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Get access to GitLab Duo"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Identify code improvements"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Issue to merge request"
@@ -25972,10 +26041,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Planning Agent"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Read file"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Review a merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -25991,6 +26066,9 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Security Agent"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a flow"
@@ -26020,7 +26098,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Start a Free Trial"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Start agent session"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day trial%{strongEnd} now to accelerate your software delivery. Automate tasks with AI agents, from searching projects to creating commits."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
@@ -26050,13 +26134,25 @@ msgstr ""
 msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Unknown"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Who can grant you access"
+msgstr ""
+
+msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
+msgstr ""
+
+msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platform in this %{namespaceType}. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
 msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."
