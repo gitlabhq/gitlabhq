@@ -11,6 +11,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     runner_unsupported: 'No runners support the requirements to run this job.',
     stale_schedule: 'Delayed job could not be executed by some reason, please try again',
     job_execution_timeout: 'The script exceeded the maximum execution time set for the job',
+    job_execution_server_timeout: 'The script exceeded the maximum execution time set for the job',
     archived_failure: 'The job is archived and cannot be run',
     unmet_prerequisites: 'The job failed to complete prerequisite tasks',
     scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',

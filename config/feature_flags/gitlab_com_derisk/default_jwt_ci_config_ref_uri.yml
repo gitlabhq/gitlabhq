@@ -1,0 +1,10 @@
+---
+name: default_jwt_ci_config_ref_uri
+description: De-risk deployment of a changed default behaviour for JWT field
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/579211
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221612
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588392
+milestone: '18.9'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

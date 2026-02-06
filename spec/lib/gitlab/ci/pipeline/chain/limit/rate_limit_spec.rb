@@ -94,6 +94,54 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       it_behaves_like 'excluded from rate limits'
     end
 
+    context 'with SAST FP detection duo_workflow pipelines' do
+      let(:source) { 'duo_workflow' }
+      let(:workload) { double('Workload') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
+      let(:workflow) { double('Workflow', workflow_definition: 'sast_fp_detection/v1') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
+
+      before do
+        allow(pipeline).to receive(:workload).and_return(workload)
+        allow(workload).to receive(:workflows).and_return([workflow])
+      end
+
+      it_behaves_like 'excluded from rate limits'
+    end
+
+    context 'with non-SAST FP duo_workflow pipelines' do
+      let(:source) { 'duo_workflow' }
+      let(:workload) { double('Workload') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
+      let(:workflow) { double('Workflow', workflow_definition: 'other_workflow/v1') } # rubocop:disable RSpec/VerifiedDoubles -- EE-only class not available in FOSS
+
+      before do
+        stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+        stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+        allow(pipeline).to receive(:workload).and_return(workload)
+        allow(workload).to receive(:workflows).and_return([workflow])
+      end
+
+      it 'does not exclude from rate limits' do
+        perform
+
+        expect(pipeline.errors).not_to be_empty
+      end
+    end
+
+    context 'with duo_workflow pipelines when workload is nil' do
+      let(:source) { 'duo_workflow' }
+
+      before do
+        stub_application_setting(pipeline_limit_per_project_user_sha: 1)
+        stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: false)
+        allow(pipeline).to receive(:workload).and_return(nil)
+      end
+
+      it 'does not exclude from rate limits' do
+        perform
+
+        expect(pipeline.errors).not_to be_empty
+      end
+    end
+
     context 'when saving incomplete pipelines' do
       let(:save_incompleted) { true }
 

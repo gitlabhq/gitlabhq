@@ -114,7 +114,7 @@ module API
         detail 'This feature allows administrators to retrieve the support PIN for a specified user'
         success Entities::UserSupportPin
         is_array false
-        tags ['support_pins']
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -142,7 +142,7 @@ module API
         detail 'This feature allows administrators to revoke the support PIN for a specified user before its natural expiration'
         success code: 204
         is_array false
-        tags ['support_pins']
+        tags ['users']
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -1103,7 +1103,7 @@ module API
           desc 'Retrieve impersonation tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             use :pagination
@@ -1116,7 +1116,7 @@ module API
           desc 'Create a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationTokenWithToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
@@ -1138,7 +1138,7 @@ module API
           desc 'Retrieve impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1149,7 +1149,7 @@ module API
 
           desc 'Revoke a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            tags ['impersonation_tokens']
+            tags ['access_tokens']
           end
           params do
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
@@ -1175,7 +1175,7 @@ module API
           desc 'Create a personal access token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 13.6'
             success Entities::PersonalAccessTokenWithToken
-            tags ['personal_access_tokens']
+            tags ['access_tokens']
           end
           params do
             use :create_personal_access_token_params
@@ -1420,6 +1420,7 @@ module API
 
       desc "Update a user's credit_card_validation" do
         detail 'Deprecated in 17.7'
+        deprecated true
         success Entities::UserCreditCardValidations
         tags ['users']
       end
@@ -1459,7 +1460,7 @@ module API
       desc 'Create a new Support PIN for the authenticated user' do
         detail 'This feature creates a temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
-        tags ['support_pins']
+        tags ['users']
       end
       route_setting :authorization, permissions: :create_user_support_pin, boundary_type: :user
       post "support_pin", feature_category: :user_profile do
@@ -1477,7 +1478,7 @@ module API
       desc 'Get the current Support PIN for the authenticated user' do
         detail 'This feature retrieves the temporary Support PIN for the authenticated user'
         success Entities::UserSupportPin
-        tags ['support_pins']
+        tags ['users']
       end
       route_setting :authorization, permissions: :read_user_support_pin, boundary_type: :user
       get "support_pin", feature_category: :user_profile do
@@ -1620,7 +1621,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be nullified.'
-        tags ['user_statuses']
+        tags ['users']
       end
       params do
         use :set_user_status_params
@@ -1633,7 +1634,7 @@ module API
       desc 'Set the status of the current user' do
         success Entities::UserStatus
         detail 'Any parameters that are not passed will be ignored.'
-        tags ['user_statuses']
+        tags ['users']
       end
       params do
         use :set_user_status_params
@@ -1651,7 +1652,7 @@ module API
 
       desc 'get the status of the current user' do
         success Entities::UserStatus
-        tags ['user_statuses']
+        tags ['users']
       end
       route_setting :authorization, permissions: :read_user_status, boundary_type: :user
       get 'status', feature_category: :user_profile do
@@ -1685,7 +1686,7 @@ module API
         desc 'Create a personal access token with limited scopes for the currently authenticated user' do
           detail 'This feature was introduced in GitLab 16.5'
           success Entities::PersonalAccessTokenWithToken
-          tags ['personal_access_tokens']
+          tags ['access_tokens']
         end
         params do
           use :create_personal_access_token_params

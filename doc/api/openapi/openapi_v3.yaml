@@ -17,12 +17,12 @@ info:
 tags:
 - name: Access requests
   description: Operations related to access requests.
+- name: Access tokens
+  description: Operations related to access tokens.
 - name: Active context
   description: Operations related to active context.
 - name: Add on purchases
   description: Operations related to add on purchases.
-- name: Admin
-  description: Operations related to admin.
 - name: Advanced search rollout
   description: Operations related to advanced search rollout.
 - name: Agents
@@ -105,6 +105,8 @@ tags:
   description: Operations related to discussions.
 - name: Draft notes
   description: Operations related to draft notes.
+- name: Enterprise users
+  description: Operations related to enterprise users.
 - name: Environments
   description: Operations related to environments.
 - name: Epics
@@ -133,24 +135,16 @@ tags:
   description: Operations related to gitlab pages.
 - name: Gitlab subscriptions
   description: Operations related to gitlab subscriptions.
-- name: Group
-  description: Operations related to group.
 - name: Group access tokens
   description: Operations related to group access tokens.
 - name: Group credentials inventory
   description: Operations related to group credentials inventory.
-- name: Group enterprise users
-  description: Operations related to group enterprise users.
 - name: Group import and export
   description: Operations related to group import and export.
-- name: Group member roles
-  description: Operations related to group member roles.
 - name: Groups
   description: Operations related to groups.
 - name: Hooks
   description: Operations related to hooks.
-- name: Impersonation tokens
-  description: Operations related to impersonation tokens.
 - name: Imports
   description: Operations related to imports.
 - name: Instance
@@ -175,10 +169,6 @@ tags:
   description: Operations related to knowledge graph.
 - name: LDAP
   description: Operations related to LDAP.
-- name: LDAP group links
-  description: Operations related to LDAP group links.
-- name: LDAP groups
-  description: Operations related to LDAP groups.
 - name: Labels
   description: Operations related to labels.
 - name: Licenses
@@ -221,8 +211,6 @@ tags:
   description: Operations related to organizations.
 - name: Packages
   description: Operations related to packages.
-- name: Personal access tokens
-  description: Operations related to personal access tokens.
 - name: Pipeline schedules
   description: Operations related to pipeline schedules.
 - name: Pipelines
@@ -277,8 +265,10 @@ tags:
   description: Operations related to runner controllers.
 - name: Runners
   description: Operations related to runners.
-- name: SCIM and SAML
-  description: Operations related to SCIM and SAML.
+- name: SAML group links
+  description: Operations related to SAML group links.
+- name: SCIM
+  description: Operations related to SCIM.
 - name: Search
   description: Operations related to search.
 - name: Secure files
@@ -295,8 +285,6 @@ tags:
   description: Operations related to submodules.
 - name: Suggestions
   description: Operations related to suggestions.
-- name: Support pins
-  description: Operations related to support pins.
 - name: Tags
   description: Operations related to tags.
 - name: Templates
@@ -309,10 +297,6 @@ tags:
   description: Operations related to unleash.
 - name: Usage data
   description: Operations related to usage data.
-- name: User
-  description: Operations related to user.
-- name: User statuses
-  description: Operations related to user statuses.
 - name: Users
   description: Operations related to users.
 - name: VSCode
@@ -3451,7 +3435,7 @@ paths:
       operationId: getApiV4GroupsIdEnterpriseUsers
       summary: Get a list of enterprise users of the group
       tags:
-      - Group enterprise users
+      - Enterprise users
       responses:
         '200':
           description: OK
@@ -3534,7 +3518,7 @@ paths:
       operationId: getApiV4GroupsIdEnterpriseUsersUserId
       summary: Get a single enterprise user of the group
       tags:
-      - Group enterprise users
+      - Enterprise users
       responses:
         '200':
           description: OK
@@ -3561,7 +3545,7 @@ paths:
       operationId: patchApiV4GroupsIdEnterpriseUsersUserId
       summary: Modify an enterprise user
       tags:
-      - Group enterprise users
+      - Enterprise users
       responses:
         '200':
           description: OK
@@ -3602,7 +3586,7 @@ paths:
       operationId: deleteApiV4GroupsIdEnterpriseUsersUserId
       summary: Delete an enterprise user
       tags:
-      - Group enterprise users
+      - Enterprise users
       responses:
         '204':
           description: No Content
@@ -3634,7 +3618,7 @@ paths:
       operationId: patchApiV4GroupsIdEnterpriseUsersUserIdDisableTwoFactor
       summary: Disable two factor authentication for an enterprise user
       tags:
-      - Group enterprise users
+      - Enterprise users
       responses:
         '204':
           description: No Content
@@ -4062,7 +4046,7 @@ paths:
       summary: Get a list of all personal access tokens
       description: Get a list of all personal access tokens
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -4187,7 +4171,7 @@ paths:
       summary: Create a personal access token. Available only for group owners.
       description: This feature was introduced in GitLab 16.1
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -4239,7 +4223,7 @@ paths:
       summary: Revoke personal access token
       description: Revoke a personal access token.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -4266,7 +4250,7 @@ paths:
       summary: Rotate personal access token
       description: Rotates a personal access token.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -5071,7 +5055,7 @@ paths:
       summary: Lists SAML group links
       description: Get SAML group links for a group
       tags:
-      - SCIM and SAML
+      - SAML group links
       responses:
         '200':
           description: OK
@@ -5093,7 +5077,7 @@ paths:
       summary: Add SAML group link
       description: Add a SAML group link for a group
       tags:
-      - SCIM and SAML
+      - SAML group links
       responses:
         '201':
           description: Created
@@ -5153,7 +5137,7 @@ paths:
       summary: Get SAML group link
       description: Get a SAML group link for the group
       tags:
-      - SCIM and SAML
+      - SAML group links
       responses:
         '200':
           description: OK
@@ -5192,7 +5176,7 @@ paths:
       summary: Delete SAML group link
       description: Deletes a SAML group link for the group
       tags:
-      - SCIM and SAML
+      - SAML group links
       responses:
         '204':
           description: No Content
@@ -8267,7 +8251,7 @@ paths:
       operationId: getApiScimV4ApplicationUsers
       summary: Get SCIM users
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8279,7 +8263,7 @@ paths:
       operationId: postApiScimV4ApplicationUsers
       summary: Create a SCIM user
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '201':
           description: Created
@@ -8292,7 +8276,7 @@ paths:
       operationId: getApiScimV4ApplicationUsersId
       summary: Get a SCIM user
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8304,7 +8288,7 @@ paths:
       operationId: patchApiScimV4ApplicationUsersId
       summary: Updates a SCIM user
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '204':
           description: No Content
@@ -8312,7 +8296,7 @@ paths:
       operationId: deleteApiScimV4ApplicationUsersId
       summary: Removes a SCIM user
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '204':
           description: No Content
@@ -8322,7 +8306,7 @@ paths:
       summary: Create a SCIM group
       description: Associates SCIM group ID with existing SAML group link
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '201':
           description: Created
@@ -8349,7 +8333,7 @@ paths:
       operationId: getApiScimV4ApplicationGroups
       summary: Get SCIM groups
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8388,7 +8372,7 @@ paths:
       summary: Get a SCIM group
       description: Retrieves a SCIM group by its ID
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8407,7 +8391,7 @@ paths:
       operationId: patchApiScimV4ApplicationGroupsId
       summary: Update a SCIM group
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '204':
           description: No Content
@@ -8454,7 +8438,7 @@ paths:
       operationId: putApiScimV4ApplicationGroupsId
       summary: Replace a SCIM group
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8488,7 +8472,7 @@ paths:
       operationId: deleteApiScimV4ApplicationGroupsId
       summary: Delete a SCIM group
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '204':
           description: No Content
@@ -8505,7 +8489,7 @@ paths:
       summary: Get SCIM users
       description: This feature was introduced in GitLab 11.10.
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8520,7 +8504,7 @@ paths:
       summary: Create a SCIM user
       description: This feature was introduced in GitLab 11.10.
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '201':
           description: Created
@@ -8536,7 +8520,7 @@ paths:
       summary: Get a SCIM user
       description: This feature was introduced in GitLab 11.10.
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8551,7 +8535,7 @@ paths:
       summary: Updates a SCIM user
       description: This feature was introduced in GitLab 11.10.
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '200':
           description: OK
@@ -8566,7 +8550,7 @@ paths:
       summary: Removes a SCIM user
       description: This feature was introduced in GitLab 11.10.
       tags:
-      - SCIM and SAML
+      - SCIM
       responses:
         '204':
           description: No Content
@@ -9763,7 +9747,7 @@ paths:
       operationId: getApiV4GroupsIdMemberRoles
       summary: Get Member Roles for a group
       tags:
-      - Group member roles
+      - Member roles
       responses:
         '200':
           description: OK
@@ -9784,7 +9768,7 @@ paths:
       operationId: postApiV4GroupsIdMemberRoles
       summary: Create Member Role for a group
       tags:
-      - Group member roles
+      - Member roles
       responses:
         '201':
           description: Created
@@ -9986,7 +9970,7 @@ paths:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
       summary: Delete Member Role for a group
       tags:
-      - Group member roles
+      - Member roles
       responses:
         '204':
           description: No Content
@@ -11231,7 +11215,7 @@ paths:
       summary: List LDAP group links
       description: Get LDAP group links for a group
       tags:
-      - LDAP group links
+      - LDAP
       responses:
         '200':
           description: OK
@@ -11254,7 +11238,7 @@ paths:
       description: Adds an LDAP group link using a CN or filter.Adding a group link
         by filter is only supported in the Premium tier and above.
       tags:
-      - LDAP group links
+      - LDAP
       responses:
         '201':
           description: Created
@@ -11316,7 +11300,7 @@ paths:
       description: Deletes an LDAP group link using a CN or filter.Deleting by filter
         is only supported in the Premium tier and above.
       tags:
-      - LDAP group links
+      - LDAP
       responses:
         '204':
           description: No Content
@@ -11354,7 +11338,7 @@ paths:
       description: Deletes an LDAP group link. Deprecated. Scheduled for removal in
         a future release.
       tags:
-      - LDAP group links
+      - LDAP
       responses:
         '204':
           description: No Content
@@ -11380,7 +11364,7 @@ paths:
       description: Deletes an LDAP group link for a specific LDAP provider.Deprecated.
         Scheduled for removal in a future release.
       tags:
-      - LDAP group links
+      - LDAP
       responses:
         '204':
           description: No Content
@@ -11411,7 +11395,7 @@ paths:
       summary: List LDAP groups
       description: Limit size to 20 of them.
       tags:
-      - LDAP groups
+      - LDAP
       responses:
         '200':
           description: OK
@@ -11433,7 +11417,7 @@ paths:
       summary: List LDAP groups by the requested provider
       description: Limit size to 20 of them.
       tags:
-      - LDAP groups
+      - LDAP
       responses:
         '200':
           description: OK
@@ -17719,7 +17703,7 @@ paths:
       description: This feature allows administrators to retrieve the support PIN
         for a specified user
       tags:
-      - Support pins
+      - Users
       responses:
         '200':
           description: OK
@@ -17741,7 +17725,7 @@ paths:
       description: This feature allows administrators to revoke the support PIN for
         a specified user before its natural expiration
       tags:
-      - Support pins
+      - Users
       responses:
         '204':
           description: No Content
@@ -19050,7 +19034,7 @@ paths:
       summary: Retrieve impersonation tokens. Available only for admins.
       description: This feature was introduced in GitLab 9.0
       tags:
-      - Impersonation tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -19096,7 +19080,7 @@ paths:
       summary: Create a impersonation token. Available only for admins.
       description: This feature was introduced in GitLab 9.0
       tags:
-      - Impersonation tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -19141,7 +19125,7 @@ paths:
       summary: Retrieve impersonation token. Available only for admins.
       description: This feature was introduced in GitLab 9.0
       tags:
-      - Impersonation tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -19167,7 +19151,7 @@ paths:
       summary: Revoke a impersonation token. Available only for admins.
       description: This feature was introduced in GitLab 9.0
       tags:
-      - Impersonation tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -19190,7 +19174,7 @@ paths:
       summary: Create a personal access token. Available only for admins.
       description: This feature was introduced in GitLab 13.6
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -19534,6 +19518,7 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesUserCreditCardValidations"
+      deprecated: true
       parameters:
       - name: user_id
         required: true
@@ -19593,7 +19578,7 @@ paths:
       description: This feature creates a temporary Support PIN for the authenticated
         user
       tags:
-      - Support pins
+      - Users
       responses:
         '201':
           description: Created
@@ -19607,7 +19592,7 @@ paths:
       description: This feature retrieves the temporary Support PIN for the authenticated
         user
       tags:
-      - Support pins
+      - Users
       responses:
         '200':
           description: OK
@@ -19741,7 +19726,7 @@ paths:
       summary: Set the status of the current user
       description: Any parameters that are not passed will be nullified.
       tags:
-      - User statuses
+      - Users
       responses:
         '200':
           description: OK
@@ -19782,7 +19767,7 @@ paths:
       summary: Set the status of the current user
       description: Any parameters that are not passed will be ignored.
       tags:
-      - User statuses
+      - Users
       responses:
         '200':
           description: OK
@@ -19822,7 +19807,7 @@ paths:
       operationId: getApiV4UserStatus
       summary: get the status of the current user
       tags:
-      - User statuses
+      - Users
       responses:
         '200':
           description: OK
@@ -19864,7 +19849,7 @@ paths:
         authenticated user
       description: This feature was introduced in GitLab 16.5
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -29490,7 +29475,7 @@ paths:
       summary: Create a runner owned by currently authenticated user
       description: Create a new runner
       tags:
-      - User
+      - Users
       - Runners
       responses:
         '201':
@@ -32736,7 +32721,7 @@ paths:
       summary: Rotate a resource access token
       description: Rotates a resource access token by passing it to the API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -32776,7 +32761,7 @@ paths:
       summary: Rotate a resource access token
       description: Rotates a resource access token by passing it to the API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -44782,7 +44767,7 @@ paths:
       summary: Rotate a personal access token
       description: Rotates a personal access token by passing it to the API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -44816,7 +44801,7 @@ paths:
       description: Get the details of a personal access token by passing it to the
         API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -44833,7 +44818,7 @@ paths:
       summary: Revoke a personal access token
       description: Revoke a personal access token by passing it to the API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -44846,7 +44831,7 @@ paths:
       description: Get groups and projects this personal access token can access by
         passing it to the API in a header
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -44895,7 +44880,7 @@ paths:
       description: Get all personal access tokens the authenticated user has access
         to.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -45015,7 +45000,7 @@ paths:
       description: Get a personal access token by using the ID of the personal access
         token.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -45033,7 +45018,7 @@ paths:
       description: Revoke a personal access token by using the ID of the personal
         access token.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -45045,7 +45030,7 @@ paths:
       summary: Rotate personal access token
       description: Rotates a personal access token.
       tags:
-      - Personal access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -85283,7 +85268,7 @@ paths:
       operationId: getApiV4GroupsIdSamlUsers
       summary: Get a list of SAML users of the group
       tags:
-      - Group
+      - Groups
       responses:
         '200':
           description: OK
@@ -88323,7 +88308,7 @@ paths:
       summary: Get information about a token.
       description: This feature was introduced in GitLab 17.5.
       tags:
-      - Admin
+      - Access tokens
       responses:
         '401':
           description: Unauthorized
@@ -88350,7 +88335,7 @@ paths:
       summary: Revoke a token.
       description: This feature was introduced in GitLab 17.7.
       tags:
-      - Admin
+      - Access tokens
       responses:
         '401':
           description: Unauthorized

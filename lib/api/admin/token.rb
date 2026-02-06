@@ -45,7 +45,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 422, message: 'Unprocessable' }
           ]
-          tags %w[admin]
+          tags %w[access_tokens]
           hidden true
         end
         post do
@@ -67,7 +67,7 @@ module API
             { code: 404, message: 'Not Found' },
             { code: 422, message: 'Unprocessable' }
           ]
-          tags %w[admin]
+          tags %w[access_tokens]
           hidden true
         end
         delete do

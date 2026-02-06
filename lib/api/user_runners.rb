@@ -15,7 +15,7 @@ module API
         detail 'Create a new runner'
         success Entities::Ci::RunnerRegistrationDetails
         failure [[400, 'Bad Request'], [403, 'Forbidden']]
-        tags %w[user runners]
+        tags %w[users runners]
       end
       params do
         requires :runner_type, type: String, values: ::Ci::Runner.runner_types.keys,

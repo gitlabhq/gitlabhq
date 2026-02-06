@@ -12,19 +12,20 @@ in the JetBrains plugin's project. If an issue matches your problem, update the 
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/new)
 and provide the [required information for Support](#required-information-for-support).
 
-## GitLab Duo features do not appear
+## GitLab Duo features are unavailable
 
-If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in your IDE:
+To troubleshoot GitLab Duo errors in your IDE:
 
-- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- Review diagnostics output:
-  - In your JetBrains IDE, go to **Tools** > **GitLab** > **Diagnostics** and review the output for any failed checks.
-- If the diagnostics indicate that the feature is not enabled:
-  1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
-  1. Find and select the checkbox to enable the missing feature.
-  1. Select **OK** or **Save**.
-  1. Restart your IDE if prompted.
-- If the diagnostics indicate that Agentic Chat is not supported for the current project, [set a default GitLab Duo namespace](setup.md#set-the-default-namespace) in the extension.
+1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+1. Review diagnostics output:
+   - In your JetBrains IDE, go to **Tools** > **GitLab** > **Diagnostics** and review the output for
+     any failed checks.
+1. If the diagnostics indicate that the feature is not enabled:
+   1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+   1. Find and select the checkbox to enable the missing feature.
+   1. Select **OK** or **Save**.
+   1. Restart your IDE, if prompted.
+1. If the diagnostics indicate that Agentic Chat is not supported for the current project, [set a default GitLab Duo namespace](setup.md#set-the-default-namespace) in the extension.
 
 For additional support:
 

@@ -44,7 +44,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
-          tags %w[personal_access_tokens]
+          tags %w[access_tokens]
         end
         get 'self' do
           present access_token, with: Entities::PersonalAccessTokenWithLastUsedIps
@@ -57,7 +57,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
           ]
-          tags %w[personal_access_tokens]
+          tags %w[access_tokens]
         end
         params do
           optional :min_access_level, type: Integer, values: Gitlab::Access.all_values,
@@ -78,7 +78,7 @@ module API
           failure [
             { code: 400, message: 'Bad Request' }
           ]
-          tags %w[personal_access_tokens]
+          tags %w[access_tokens]
         end
         delete 'self' do
           revoke_token(access_token)

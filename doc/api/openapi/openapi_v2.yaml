@@ -37,8 +37,6 @@ tags:
   description: Operations about ldaps
 - name: audit_events
   description: Operations about audit_events
-- name: group
-  description: Operations about groups
 - name: keys
   description: Operations about keys
 - name: runners
@@ -55,8 +53,8 @@ tags:
   description: Operations about invitations
 - name: members
   description: Operations about members
-- name: personal_access_tokens
-  description: Operations about personal_access_tokens
+- name: access_tokens
+  description: Operations about access_tokens
 - name: search
   description: Operations about searches
 - name: wikis
@@ -162,8 +160,6 @@ tags:
 - name: metrics
   description: Operations about metrics
 - name: users
-  description: Operations about users
-- name: user
   description: Operations about users
 - name: instance
   description: Operations about instances
@@ -2401,7 +2397,7 @@ paths:
             items:
               "$ref": "#/definitions/API_Entities_UserPublic"
       tags:
-      - group
+      - groups
       operationId: getApiV4GroupsIdSamlUsers
   "/api/v4/groups/{id}/provisioned_users":
     get:
@@ -8990,7 +8986,7 @@ paths:
         '405':
           description: Method not allowed
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: postApiV4GroupsIdAccessTokensSelfRotate
   "/api/v4/groups/{id}/(-/)search":
     get:
@@ -38146,7 +38142,7 @@ paths:
         '405':
           description: Method not allowed
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: postApiV4ProjectsIdAccessTokensSelfRotate
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_milestone_events":
     get:
@@ -45541,7 +45537,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: getApiV4PersonalAccessTokensSelf
     delete:
       summary: Revoke a personal access token
@@ -45554,7 +45550,7 @@ paths:
         '400':
           description: Bad Request
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: deleteApiV4PersonalAccessTokensSelf
   "/api/v4/personal_access_tokens/self/associations":
     get:
@@ -45603,7 +45599,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: getApiV4PersonalAccessTokensSelfAssociations
   "/api/v4/personal_access_tokens/self/rotate":
     post:
@@ -45633,7 +45629,7 @@ paths:
         '405':
           description: Method not allowed
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: postApiV4PersonalAccessTokensSelfRotate
   "/api/v4/personal_access_tokens":
     get:
@@ -45744,7 +45740,7 @@ paths:
         '401':
           description: Unauthorized
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: getApiV4PersonalAccessTokens
   "/api/v4/personal_access_tokens/{id}":
     get:
@@ -45769,7 +45765,7 @@ paths:
         '404':
           description: Not found
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: getApiV4PersonalAccessTokensId
     delete:
       summary: Revoke a personal access token
@@ -45789,7 +45785,7 @@ paths:
         '400':
           description: Bad Request
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: deleteApiV4PersonalAccessTokensId
   "/api/v4/personal_access_tokens/{id}/rotate":
     post:
@@ -45816,7 +45812,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithToken"
       tags:
-      - personal_access_tokens
+      - access_tokens
       operationId: postApiV4PersonalAccessTokensIdRotate
   "/api/v4/search":
     get:
@@ -46879,7 +46875,7 @@ paths:
         '403':
           description: Forbidden
       tags:
-      - user
+      - users
       - runners
       operationId: postApiV4UserRunners
   "/api/v4/application/plan_limits":

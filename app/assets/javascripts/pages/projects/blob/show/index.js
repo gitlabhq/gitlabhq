@@ -14,7 +14,7 @@ import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import App from '~/repository/components/app.vue';
+import RepositoryApp from '~/repository/components/app.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateHistoryUrl } from '~/repository/utils/url_utility';
@@ -116,6 +116,7 @@ if (viewBlobEl) {
   // eslint-disable-next-line no-new
   new Vue({
     el: viewBlobEl,
+    name: 'RepositoryAppRoot',
     store: createStore(),
     router,
     apolloProvider,
@@ -131,7 +132,7 @@ if (viewBlobEl) {
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {
-      return createElement(App, {
+      return createElement(RepositoryApp, {
         props: {
           path: blobPath,
           projectPath,

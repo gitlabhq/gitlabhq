@@ -469,6 +469,17 @@ module Ci
         end
       end
 
+      before_transition canceling: [:canceled] do |build, transition|
+        reason_enum = ::Gitlab::Ci::Build::Status::Reason
+                           .fabricate(build, transition.args.first)
+
+        if reason_enum.failure_reason == :job_execution_server_timeout
+          # If job was stuck or timed-out, only bill the set timeout.
+          build.failure_reason = reason_enum.failure_reason
+          build.finished_at = build.started_at + build.timeout.seconds
+        end
+      end
+
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription

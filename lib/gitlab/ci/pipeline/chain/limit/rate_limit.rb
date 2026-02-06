@@ -18,8 +18,10 @@ module Gitlab
               # We exclude child-pipelines from the rate limit because they represent
               # sub-pipelines, as well as execution policy pipelines
               # that would otherwise hit the rate limit due to having the same scope (project, user, sha).
+              # We also exclude SAST FP detection workflows specifically to prevent rate limiting
+              # when processing multiple vulnerabilities concurrently.
               #
-              return if pipeline.parent_pipeline? || creating_policy_pipeline?
+              return if pipeline.parent_pipeline? || creating_policy_pipeline? || sast_fp_detection_workflow?
 
               throttled_keys = find_throttled_keys
 
@@ -72,6 +74,14 @@ module Gitlab
             def throttle_override?
               strong_memoize(:throttle_override) do
                 ::Feature.enabled?(:ci_enforce_throttle_pipelines_creation_override, project, type: :ops)
+              end
+            end
+
+            def sast_fp_detection_workflow?
+              return false unless pipeline.duo_workflow?
+
+              pipeline.workload&.workflows&.any? do |workflow|
+                workflow.workflow_definition == 'sast_fp_detection/v1'
               end
             end
           end

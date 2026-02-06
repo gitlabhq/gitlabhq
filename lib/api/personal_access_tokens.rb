@@ -18,7 +18,7 @@ module API
         detail 'Get all personal access tokens the authenticated user has access to.'
         is_array true
         success Entities::PersonalAccessTokenWithLastUsedIps
-        tags %w[personal_access_tokens]
+        tags %w[access_tokens]
         failure [
           { code: 401, message: 'Unauthorized' }
         ]
@@ -42,7 +42,7 @@ module API
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
-        tags %w[personal_access_tokens]
+        tags %w[access_tokens]
       end
       route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
       get ':id' do
@@ -61,7 +61,7 @@ module API
       desc 'Rotate personal access token' do
         detail 'Rotates a personal access token.'
         success Entities::PersonalAccessTokenWithToken
-        tags %w[personal_access_tokens]
+        tags %w[access_tokens]
       end
       params do
         optional :expires_at,
@@ -89,7 +89,7 @@ module API
         failure [
           { code: 400, message: 'Bad Request' }
         ]
-        tags %w[personal_access_tokens]
+        tags %w[access_tokens]
       end
       route_setting :authorization, permissions: :revoke_personal_access_token, boundary_type: :user
       delete ':id' do

@@ -7,7 +7,7 @@ import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
-import App from './components/app.vue';
+import RepositoryApp from './components/app.vue';
 import Breadcrumbs from './components/header_area/breadcrumbs.vue';
 import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
@@ -200,6 +200,7 @@ export default function setupVueRepositoryList() {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'RepositoryAppRoot',
     store: createStore(),
     router,
     apolloProvider,
@@ -212,7 +213,7 @@ export default function setupVueRepositoryList() {
       hasRevsFile: parseBoolean(hasRevsFile),
     },
     render(h) {
-      return h(App);
+      return h(RepositoryApp);
     },
   });
 

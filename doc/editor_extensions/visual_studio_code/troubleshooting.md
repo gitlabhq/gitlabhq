@@ -104,24 +104,24 @@ For more information about simplifying this process, see
 [issue 577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)
 in the `gitlab-vscode-extension` project.
 
-## GitLab Duo features do not appear
+## GitLab Duo features are unavailable
 
-If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in VS Code:
+To troubleshoot GitLab Duo errors in VS Code:
 
-- Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- Review diagnostics output:
-  1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
-     <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
-  1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
-- If the diagnostics indicate that the feature is not enabled:
-  1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
-  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-  1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
-- If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
-  default GitLab Duo namespace in the extension:
-  1. Select **Extensions** > **GitLab**.
-  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-  1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
+1. Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
+1. Review diagnostics output:
+      1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
+         <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+      1. Run the command `GitLab: Diagnostics` and review the output for any failed checks.
+1. If the diagnostics indicate that the feature is not enabled:
+      1. On the left sidebar in VS Code, select **Extensions** > **GitLab Workflow**.
+      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+      1. Find the **GitLab >** section for the missing feature and select the checkbox to enable it.
+1. If the diagnostics indicate that Agentic Chat is not supported for the current project, set a
+   default GitLab Duo namespace in the extension:
+      1. Select **Extensions** > **GitLab**.
+      1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
+      1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
 
 For additional support:
 

@@ -41,7 +41,8 @@ Parameters:
 > To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4"
 ```
 
 This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects within a group, use the [list a group's projects endpoint](#list-projects) instead.
@@ -256,7 +257,8 @@ Additional response attributes:
 When adding the parameter `with_projects=false`, projects aren't returned.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4?with_projects=false"
 ```
 
 Example response:
@@ -766,7 +768,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/saml_users"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/saml_users"
 ```
 
 Example response:
@@ -1357,10 +1360,11 @@ This is similar to creating a [New group](#create-a-group). You need the `parent
 - `subgroup_name`
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-Type: application/json" \
-     --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> }' \
-     "https://gitlab.example.com/api/v4/groups/"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"path": "<subgroup_path>", "name": "<subgroup_name>", "parent_id": <parent_group_id> }' \
+  --url "https://gitlab.example.com/api/v4/groups/"
 ```
 
 ### Schedule a group for deletion
@@ -1399,10 +1403,11 @@ If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) 
 
 Example request:
 
-```plaintext
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Accept: application/json" \
-     --url "https://gitlab.example.com/api/v4/groups/:id"
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
 ```
 
 > [!note]
@@ -1442,17 +1447,19 @@ To permanently delete a group scheduled for deletion, you must:
 
 For example:
 
-```plaintext
+```shell
 # Schedule a group for deletion
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Accept: application/json" \
-     --url "https://gitlab.example.com/api/v4/groups/:id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
 
 # Permanently delete a group scheduled for deletion
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Accept: application/json" \
-     --data '{"full_path": <full_path>, "permanently_remove": "true"}' \
-     --url "https://gitlab.example.com/api/v4/groups/:id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Accept: application/json" \
+  --data '{"full_path": <full_path>, "permanently_remove": "true"}' \
+  --url "https://gitlab.example.com/api/v4/groups/:id"
 ```
 
 #### Restore a group marked for deletion
@@ -1686,8 +1693,9 @@ Parameters:
 | `group_id` | integer | no       | ID of the new parent group. If unspecified, the group is transformed into a top-level group. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
 ```
 
 #### List all locations available for group transfer
@@ -1706,7 +1714,8 @@ GET /groups/:id/transfer_locations
 Example request:
 
 ```shell
-curl --request GET "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
+curl --request GET \
+    --url "https://gitlab.example.com/api/v4/groups/1/transfer_locations"
 ```
 
 Example response:
@@ -1762,8 +1771,9 @@ Parameters:
 | `project_id` | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/4/projects/56"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
 ### Invite groups
@@ -1887,8 +1897,9 @@ PUT /groups/:id
 > To get the details of all projects within a group, use either the [list a group's projects](#list-projects) or the [list a group's shared projects](#list-shared-projects) endpoint.
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 ```
 
 This endpoint returns a maximum of 100 projects and shared projects. To get the details of all projects in a group, use the
@@ -2006,7 +2017,7 @@ Example:
 curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   --remote-header-name \
   --remote-name \
-  "https://gitlab.example.com/api/v4/groups/4/avatar"
+  --url "https://gitlab.example.com/api/v4/groups/4/avatar"
 ```
 
 ### Upload a group avatar
@@ -2017,8 +2028,10 @@ curl to post data using the header `Content-Type: multipart/form-data`. The
 `@`. For example:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
-     --form "avatar=@/tmp/example.png"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "avatar=@/tmp/example.png" \
+  --url "https://gitlab.example.com/api/v4/groups/22"
 ```
 
 ### Remove a group avatar
@@ -2028,8 +2041,10 @@ To remove a group avatar, use a blank value for the `avatar` attribute.
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22" \
-     --data "avatar="
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "avatar=" \
+  --url "https://gitlab.example.com/api/v4/groups/22"
 ```
 
 ## Sync a group with LDAP
@@ -2100,7 +2115,8 @@ GET /groups/:id/manage/personal_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/personal_access_tokens"
 ```
 
 Example response:
@@ -2147,7 +2163,8 @@ GET /groups/:id/manage/resource_access_tokens
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/resource_access_tokens"
 ```
 
 Example response:
@@ -2191,7 +2208,8 @@ GET /groups/:id/manage/ssh_keys
 | `expires_after`  | datetime (ISO 8601) | No       | If defined, returns SSH keys that expire after the specified time. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <group_owner_token>" "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
+curl --header "PRIVATE-TOKEN: <group_owner_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/manage/ssh_keys"
 ```
 
 Example response:
