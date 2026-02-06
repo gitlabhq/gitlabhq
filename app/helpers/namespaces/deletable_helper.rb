@@ -50,13 +50,13 @@ module Namespaces
       date = permanent_deletion_date_formatted(namespace)
 
       messages = {
-        group: _('This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.'),
-        project: _('This project is pending deletion, and will be deleted on %{date}. Repository and other project ' \
-          'resources are read-only.')
+        group: _('This group and all its data will be %{strongOpen}permanently deleted%{strongClose} on %{date}.'),
+        project: _('This project and all its data will be %{strongOpen}permanently deleted%{strongClose} on %{date}.')
       }
 
       safe_format(
         message_for_namespace(namespace, messages),
+        tag_pair(tag.strong, :strongOpen, :strongClose),
         date: tag.strong(date)
       )
     end
@@ -66,14 +66,15 @@ module Namespaces
       date = permanent_deletion_date_formatted(namespace_pending_deletion)
 
       messages = {
-        group: _('This group will be deleted on %{date} because its parent group is ' \
-          'scheduled for deletion.'),
-        project: _('This project will be deleted on %{date} because its parent group is ' \
-          'scheduled for deletion.')
+        group: _('The parent group is pending deletion. This group will be ' \
+          '%{strongOpen}permanently deleted%{strongClose} on %{date}.'),
+        project: _('The parent group is pending deletion. This project will be ' \
+          '%{strongOpen}permanently deleted%{strongClose} on %{date}.')
       }
 
       safe_format(
         message_for_namespace(namespace, messages),
+        tag_pair(tag.strong, :strongOpen, :strongClose),
         date: tag.strong(date)
       )
     end

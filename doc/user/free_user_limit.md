@@ -156,7 +156,7 @@ do not limit users and have more features to increase team productivity. For mor
 information, see [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/manage_subscription.md#upgrade-subscription-tier).
 
 To try the paid tiers before deciding to upgrade, start a
-[free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html)
+[free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/user/free_user_limit/)
 for GitLab Ultimate.
 
 ## Manage members in personal projects outside a group namespace
@@ -171,4 +171,4 @@ so that you can:
 - Increase the amount of users to more than five.
 - Purchase a paid tier subscription, additional compute minutes, or storage.
 - Use [GitLab features](https://about.gitlab.com/pricing/feature-comparison/) in the group.
-- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html) for GitLab Ultimate.
+- Start a [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/user/free_user_limit/) for GitLab Ultimate.

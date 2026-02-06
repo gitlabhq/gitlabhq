@@ -538,7 +538,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
 
       let(:ancestor_notice_regex) do
-        /This project will be deleted on .* because its parent group is scheduled for deletion\./
+        %r{The parent group is pending deletion\. This project will be <strong>permanently deleted</strong> on <strong>.*</strong>\.}
       end
 
       context 'when the parent group has not been scheduled for deletion' do
@@ -573,7 +573,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
             expect(response.body).not_to match(ancestor_notice_regex)
             # However, shows the notice that the project has been marked for deletion.
             expect(response.body).to match(
-              /This project is pending deletion, and will be deleted on .*. Repository and other project resources are read-only./
+              %r{This project and all its data will be <strong>permanently deleted</strong> on <strong>.*</strong>\.}
             )
           end
         end

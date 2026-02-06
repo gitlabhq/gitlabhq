@@ -267,7 +267,7 @@ For the second log, you might have one of the following scenarios:
       ```json
       {
         "host":"gitlab.mycompany.com:443", // The host should match the reverse proxy FQDN entered into the GitLab for Jira Cloud app
-        "remote_ip":"34.74.226.3", // This IP should be within the GitLab.com IP range https://docs.gitlab.com/ee/user/gitlab_com/#ip-range
+        "remote_ip":"34.74.226.3", // This IP should be within the GitLab.com IP range https://docs.gitlab.com/user/gitlab_com/#ip-range
         "status":401,
         "uri":"/-/jira_connect/events/installed"
       }

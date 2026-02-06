@@ -36,7 +36,7 @@ release_job:
     - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
   script:
     - echo "running release_job"
-  release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+  release:                               # See https://docs.gitlab.com/ci/yaml/#release for available properties
     tag_name: '$CI_COMMIT_TAG'
     description: '$CI_COMMIT_TAG'
 ```
@@ -61,7 +61,7 @@ release_job:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
   script:
     - echo "running release_job for $TAG"
-  release:                                         # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+  release:                                         # See https://docs.gitlab.com/ci/yaml/#release for available properties
     tag_name: 'v0.$CI_PIPELINE_IID'                # The version is incremented per pipeline.
     description: 'v0.$CI_PIPELINE_IID'
     ref: '$CI_COMMIT_SHA'                          # The tag is created from the pipeline SHA.

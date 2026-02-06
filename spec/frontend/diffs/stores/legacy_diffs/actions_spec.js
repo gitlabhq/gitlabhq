@@ -1238,6 +1238,73 @@ describe('legacyDiffs actions', () => {
     });
   });
 
+  describe('collapseDiffDiscussion', () => {
+    const fileHash = 'abc123';
+    const lineCode = 'abc123_1_1';
+
+    it('collapses file-level discussion immediately', () => {
+      const discussion = {
+        position: { position_type: FILE_DIFF_POSITION_TYPE },
+        diff_file: { file_hash: fileHash },
+      };
+      store.$patch({ diffFiles: [{ file_hash: fileHash, discussions: [discussion] }] });
+
+      store.collapseDiffDiscussion(discussion);
+
+      expect(store[types.TOGGLE_FILE_DISCUSSION_EXPAND]).toHaveBeenCalledWith({
+        discussion,
+        expandedOnDiff: false,
+      });
+      expect(store[types.TOGGLE_LINE_DISCUSSIONS]).not.toHaveBeenCalled();
+    });
+
+    it('collapses line discussion only when all discussions on line are resolved', () => {
+      const discussion = {
+        diff_file: { file_hash: fileHash },
+        line_code: lineCode,
+      };
+      const diffFile = {
+        file_hash: fileHash,
+        [INLINE_DIFF_LINES_KEY]: [
+          {
+            line_code: lineCode,
+            discussions: [{ resolved: true }, { resolved: true }],
+          },
+        ],
+      };
+      store.$patch({ diffFiles: [diffFile] });
+
+      store.collapseDiffDiscussion(discussion);
+
+      expect(store[types.TOGGLE_LINE_DISCUSSIONS]).toHaveBeenCalledWith({
+        fileHash,
+        expanded: false,
+        lineCode,
+      });
+    });
+
+    it('does not collapse line discussion when some discussions are unresolved', () => {
+      const discussion = {
+        diff_file: { file_hash: fileHash },
+        line_code: lineCode,
+      };
+      const diffFile = {
+        file_hash: fileHash,
+        [INLINE_DIFF_LINES_KEY]: [
+          {
+            line_code: lineCode,
+            discussions: [{ resolved: true }, { resolved: false }],
+          },
+        ],
+      };
+      store.$patch({ diffFiles: [diffFile] });
+
+      store.collapseDiffDiscussion(discussion);
+
+      expect(store[types.TOGGLE_LINE_DISCUSSIONS]).not.toHaveBeenCalled();
+    });
+  });
+
   describe('saveDiffDiscussion', () => {
     const endpoint = '/create-note-path';
     const commitId = 'something';

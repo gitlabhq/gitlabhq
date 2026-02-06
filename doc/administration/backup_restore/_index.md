@@ -66,4 +66,4 @@ on how GitLab creates this archive, see [Backup archive process](backup_archive_
 - [Import and migrate to GitLab](../../user/import/_index.md)
 - [GitLab Linux package (Omnibus) - Backup and Restore](https://docs.gitlab.com/omnibus/settings/backups.html)
 - [GitLab Helm chart - Backup and Restore](https://docs.gitlab.com/charts/backup-restore/)
-- [GitLab Operator - Backup and Restore](https://docs.gitlab.com/operator/backup_and_restore.html)
+- [GitLab Operator - Backup and Restore](https://docs.gitlab.com/operator/backup_and_restore/)

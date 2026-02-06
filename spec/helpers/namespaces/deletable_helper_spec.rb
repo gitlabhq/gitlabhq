@@ -111,15 +111,15 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
 
     # rubocop:disable Layout/LineLength -- We cannot wrap lines when using RSpec::Parameterized::TableSyntax
     where(:namespace_type, :self_deletion_in_progress, :self_deletion_scheduled, :expected_message) do
-      :group             | false | false | 'This group will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
-      :project           | false | false | 'This project will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
-      :project_namespace | false | false | 'This project will be deleted on <strong>2025-01-22</strong> because its parent group is scheduled for deletion.'
-      :group             | false | true | 'This group and its subgroups and projects are pending deletion, and will be deleted on <strong>2025-02-09</strong>.'
-      :project           | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
-      :project_namespace | false | true | 'This project is pending deletion, and will be deleted on <strong>2025-02-09</strong>. Repository and other project resources are read-only.'
-      :group             | true  | nil  | 'This group and its subgroups are being deleted.'
-      :project           | true  | nil  | 'This project is being deleted.'
-      :project_namespace | true  | nil  | 'This project is being deleted.'
+      :group             | false | false | 'The parent group is pending deletion. This group will be <strong>permanently deleted</strong> on <strong>2025-01-22</strong>.'
+      :project           | false | false | 'The parent group is pending deletion. This project will be <strong>permanently deleted</strong> on <strong>2025-01-22</strong>.'
+      :project_namespace | false | false | 'The parent group is pending deletion. This project will be <strong>permanently deleted</strong> on <strong>2025-01-22</strong>.'
+      :group             | false | true  | 'This group and all its data will be <strong>permanently deleted</strong> on <strong>2025-02-09</strong>.'
+      :project           | false | true  | 'This project and all its data will be <strong>permanently deleted</strong> on <strong>2025-02-09</strong>.'
+      :project_namespace | false | true  | 'This project and all its data will be <strong>permanently deleted</strong> on <strong>2025-02-09</strong>.'
+      :group             | true  | nil   | 'This group and its subgroups are being deleted.'
+      :project           | true  | nil   | 'This project is being deleted.'
+      :project_namespace | true  | nil   | 'This project is being deleted.'
     end
     # rubocop:enable Layout/LineLength
 

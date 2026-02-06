@@ -369,7 +369,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
       expect { remove_with_confirm('Delete', group.path) }.to change {
         group.reload.self_deletion_scheduled?
       }.from(false).to(true)
-      expect(page).to have_content "pending deletion"
+      expect(page).to have_content "permanently deleted"
     end
   end
 

@@ -11,7 +11,13 @@ RSpec.describe Backup::Restore::PoolRepositories, feature_category: :backup_rest
     context 'with a pool without a source project' do
       let_it_be(:default_organization) { create(:organization, id: 1) }
 
-      let(:pool_repository) { create(:pool_repository, :without_project, organization: default_organization) }
+      let(:pool_repository) do
+        pool = create(:pool_repository, organization: default_organization)
+
+        pool.update!(source_project_id: nil)
+
+        pool
+      end
 
       it 'yields a skipped result' do
         results = []

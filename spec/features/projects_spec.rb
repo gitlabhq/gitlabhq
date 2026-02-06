@@ -300,7 +300,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
         remove_with_confirm("Delete", project_to_delete.path_with_namespace)
 
-        expect(page).to have_content("This project is pending deletion, and will be deleted on #{permanent_deletion_date_formatted}. Repository and other project resources are read-only.")
+        expect(page).to have_content("This project and all its data will be permanently deleted on #{permanent_deletion_date_formatted}.")
 
         visit inactive_dashboard_projects_path
 
@@ -357,7 +357,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
           visit edit_project_path(project_aimed_for_deletion)
 
           expect(page).not_to have_button('Delete permanently')
-          expect(page).to have_content("This project is pending deletion, and will be deleted on #{permanent_deletion_date_formatted(project_aimed_for_deletion)}. Repository and other project resources are read-only.")
+          expect(page).to have_content("This project and all its data will be permanently deleted on #{permanent_deletion_date_formatted(project_aimed_for_deletion)}.")
         end
       end
     end

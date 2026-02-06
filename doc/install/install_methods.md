@@ -51,7 +51,7 @@ This installation and management method follows the [Kubernetes Operator pattern
 
 Use if your infrastructure is on Kubernetes or [OpenShift](openshift_and_gitlab/_index.md), and you're familiar with how Operators work.
 
-This installation method provides additional functionality beyond the Helm chart installation method, including automation of the [GitLab upgrade steps](https://docs.gitlab.com/operator/gitlab_upgrades.html). The considerations for the Helm chart also apply here.
+This installation method provides additional functionality beyond the Helm chart installation method, including automation of the [GitLab upgrade steps](https://docs.gitlab.com/operator/gitlab_upgrades/). The considerations for the Helm chart also apply here.
 
 Consider the Helm chart installation method if you are limited by [GitLab Operator known issues](https://docs.gitlab.com/operator/#known-issues).
 

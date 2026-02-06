@@ -185,14 +185,30 @@ describe('Actions Notes Store', () => {
   });
 
   describe('collapseDiscussion', () => {
-    it('should commit collapse discussion', () => {
-      return testAction(
-        store.collapseDiscussion,
-        { discussionId: discussionMock.id },
-        { discussions: [discussionMock] },
-        [{ type: store[types.COLLAPSE_DISCUSSION], payload: { discussionId: discussionMock.id } }],
-        [],
-      );
+    const discussionId = 'test-discussion-id';
+
+    it('sets expanded to false and calls collapseDiffDiscussion when discussion has diff_file', () => {
+      const discussion = { id: discussionId, expanded: true, diff_file: { file_hash: 'abc' } };
+      const collapseDiffDiscussionSpy = jest
+        .spyOn(useLegacyDiffs(), 'collapseDiffDiscussion')
+        .mockImplementation(() => {});
+      store.$patch({ discussions: [discussion] });
+
+      store.collapseDiscussion(discussionId);
+
+      expect(discussion.expanded).toBe(false);
+      expect(collapseDiffDiscussionSpy).toHaveBeenCalledWith(discussion);
+    });
+
+    it('sets expanded to false without calling collapseDiffDiscussion when no diff_file', () => {
+      const discussion = { id: discussionId, expanded: true };
+      const collapseDiffDiscussionSpy = jest.spyOn(useLegacyDiffs(), 'collapseDiffDiscussion');
+      store.$patch({ discussions: [discussion] });
+
+      store.collapseDiscussion(discussionId);
+
+      expect(discussion.expanded).toBe(false);
+      expect(collapseDiffDiscussionSpy).not.toHaveBeenCalled();
     });
   });
 

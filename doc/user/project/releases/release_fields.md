@@ -178,7 +178,7 @@ stages:
 variables:
   # Package version can only contain numbers (0-9), and dots (.).
   # Must be in the format of X.Y.Z, and should match the /\A\d+\.\d+\.\d+\z/ regular expression.
-  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  # See https://docs.gitlab.com/user/packages/generic_packages/#publish-a-package
   PACKAGE_VERSION: "1.2.3"
   DARWIN_AMD64_BINARY: "myawesomerelease-darwin-amd64-${PACKAGE_VERSION}"
   LINUX_AMD64_BINARY: "myawesomerelease-linux-amd64-${PACKAGE_VERSION}"

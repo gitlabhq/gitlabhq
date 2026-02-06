@@ -616,6 +616,29 @@ export function toggleFileDiscussionWrappers(diff) {
   }
 }
 
+export function collapseDiffDiscussion(discussion) {
+  if (discussion.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+    this[types.TOGGLE_FILE_DISCUSSION_EXPAND]({
+      discussion,
+      expandedOnDiff: false,
+    });
+    return;
+  }
+
+  const diffFile = this.getDiffFileByHash(discussion.diff_file.file_hash);
+  const line = diffFile[INLINE_DIFF_LINES_KEY].find(
+    (diffLine) => diffLine.line_code === discussion.line_code,
+  );
+
+  if (!line.discussions.every((lineDiscussion) => lineDiscussion.resolved)) return;
+
+  this[types.TOGGLE_LINE_DISCUSSIONS]({
+    fileHash: diffFile.file_hash,
+    expanded: false,
+    lineCode: line.line_code,
+  });
+}
+
 export async function saveDiffDiscussion({ note, formData }) {
   const postData = getNoteFormData({
     commit: this.commit,

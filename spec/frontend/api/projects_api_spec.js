@@ -11,6 +11,7 @@ describe('~/api/projects_api.js', () => {
 
   const mockApiVersion = 'v7';
   const projectId = 1;
+  const userId = 1;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -386,6 +387,23 @@ describe('~/api/projects_api.js', () => {
       });
 
       expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params: MOCK_PARAMS });
+    });
+  });
+
+  describe('deleteProjectMember', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'delete');
+    });
+
+    it('deletes to the correct URL', async () => {
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/members/${userId}`;
+
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      await expect(projectsApi.deleteProjectMember(projectId, userId)).resolves.toMatchObject({
+        status: HTTP_STATUS_OK,
+      });
+      expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
     });
   });
 });

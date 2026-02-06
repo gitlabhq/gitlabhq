@@ -74,8 +74,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
-          click_button 'Reopen thread'
         end
+
+        wait_for_requests
+
+        find("[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
+
+        click_button 'Reopen thread'
 
         page.within(first('.discussions-counter')) do
           expect(page).to have_content('1 open thread')
@@ -98,13 +103,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           end
 
           it 'shows resolved thread when toggled' do
-            find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
+            find("[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
 
             expect(page.find(".timeline-content #note_#{note.id}")).to be_visible
           end
 
           it 'renders tables in lazy-loaded resolved diff dicussions' do
-            find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
+            find("[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
 
             wait_for_requests
 
@@ -407,8 +412,13 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to unresolve thread' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
-          click_button 'Reopen thread'
         end
+
+        wait_for_requests
+
+        find("[data-discussion-id='#{note.discussion_id}'] [data-testid='replies-toggle']").click
+
+        click_button 'Reopen thread'
 
         page.within(first('.discussions-counter')) do
           expect(page).to have_content('1 open thread')
@@ -434,16 +444,19 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
       it 'allows user to comment & unresolve thread' do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
+        end
 
-          wait_for_requests
+        wait_for_requests
 
+        page.within("[data-discussion-id='#{note.discussion_id}']") do
+          find_by_testid('replies-toggle').click
           find_field('Reply…').click
-
           find('.js-unresolve-checkbox')
           find('.js-note-text').set 'testing'
-
           click_button 'Add comment now'
         end
+
+        wait_for_requests
 
         page.within(first('.discussions-counter')) do
           expect(page).to have_content('1 open thread')

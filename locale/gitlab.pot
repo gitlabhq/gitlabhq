@@ -31004,7 +31004,7 @@ msgstr ""
 msgid "Geo|Model information"
 msgstr ""
 
-msgid "Geo|Model record: %{modelRecordId}"
+msgid "Geo|Model record: %{modelRecord}"
 msgstr ""
 
 msgid "Geo|Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
@@ -31125,9 +31125,6 @@ msgid "Geo|Remove site"
 msgstr ""
 
 msgid "Geo|Removing a Geo site stops the synchronization to and from that site. Are you sure?"
-msgstr ""
-
-msgid "Geo|Replicable ID: %{id}"
 msgstr ""
 
 msgid "Geo|Replicated data is verified with the secondary site(s) using checksums"
@@ -54488,6 +54485,9 @@ msgstr ""
 msgid "ProjectsNew|my-awesome-project"
 msgstr ""
 
+msgid "Projects|All the issues and merge requests that were assigned to you are unassigned."
+msgstr ""
+
 msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."
 msgstr ""
 
@@ -54500,6 +54500,12 @@ msgstr ""
 msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Projects|An error occurred while leaving the project. Please refresh the page to try again."
+msgstr ""
+
+msgid "Projects|Are you sure you want to leave \"%{nameWithNamespace}\"?"
+msgstr ""
+
 msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
 msgstr ""
 
@@ -54510,6 +54516,9 @@ msgid "Projects|Copy project ID: %{id}"
 msgstr ""
 
 msgid "Projects|Explore and collaborate on open-source projects"
+msgstr ""
+
+msgid "Projects|Leave project"
 msgstr ""
 
 msgid "Projects|No inactive projects found"
@@ -54545,6 +54554,12 @@ msgstr ""
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
 msgstr ""
 
+msgid "Projects|When you leave this project:"
+msgstr ""
+
+msgid "Projects|You are no longer a project member and cannot contribute."
+msgstr ""
+
 msgid "Projects|You aren't a member of any projects yet."
 msgstr ""
 
@@ -54558,6 +54573,9 @@ msgid "Projects|You haven't contributed to any projects yet."
 msgstr ""
 
 msgid "Projects|You haven't starred any projects yet."
+msgstr ""
+
+msgid "Projects|You left the \"%{nameWithNamespace}\" project."
 msgstr ""
 
 msgid "Project|already in use"
@@ -68989,6 +69007,12 @@ msgstr ""
 msgid "The parent group is archived. This project and its data are %{strong_open}read-only%{strong_close}."
 msgstr ""
 
+msgid "The parent group is pending deletion. This group will be %{strongOpen}permanently deleted%{strongClose} on %{date}."
+msgstr ""
+
+msgid "The parent group is pending deletion. This project will be %{strongOpen}permanently deleted%{strongClose} on %{date}."
+msgstr ""
+
 msgid "The password for your GitLab account on %{gitlab_url} has successfully been changed."
 msgstr ""
 
@@ -69805,10 +69829,10 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
-msgid "This group and its contents, including subgroups and projects, will be permanently deleted on %{date}. After this point, your data cannot be recovered. Scheduled pipelines will not run during deletion."
+msgid "This group and all its data will be %{strongOpen}permanently deleted%{strongClose} on %{date}."
 msgstr ""
 
-msgid "This group and its subgroups and projects are pending deletion, and will be deleted on %{date}."
+msgid "This group and its contents, including subgroups and projects, will be permanently deleted on %{date}. After this point, your data cannot be recovered. Scheduled pipelines will not run during deletion."
 msgstr ""
 
 msgid "This group and its subgroups are being deleted."
@@ -69845,9 +69869,6 @@ msgid "This group is scheduled for deletion on %{date}. This action will permane
 msgstr ""
 
 msgid "This group requires additional authentication. Please sign in with your OAuth provider to continue."
-msgstr ""
-
-msgid "This group will be deleted on %{date} because its parent group is scheduled for deletion."
 msgstr ""
 
 msgid "This group will be restored from scheduled deletion."
@@ -70128,6 +70149,9 @@ msgstr[1] ""
 msgid "This process deletes the project repository and all related resources."
 msgstr ""
 
+msgid "This project and all its data will be %{strongOpen}permanently deleted%{strongClose} on %{date}."
+msgstr ""
+
 msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}."
 msgstr ""
 
@@ -70173,9 +70197,6 @@ msgstr ""
 msgid "This project is mirrored from %{link}."
 msgstr ""
 
-msgid "This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only."
-msgstr ""
-
 msgid "This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}"
 msgstr ""
 
@@ -70192,9 +70213,6 @@ msgid "This project reached the limit of custom domains. (Max %d)"
 msgstr ""
 
 msgid "This project was scheduled for deletion, but failed with the following message:"
-msgstr ""
-
-msgid "This project will be deleted on %{date} because its parent group is scheduled for deletion."
 msgstr ""
 
 msgid "This project will be restored from scheduled deletion."

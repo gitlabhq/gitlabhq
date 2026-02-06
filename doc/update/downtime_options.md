@@ -44,4 +44,4 @@ HA systems, and graceful reloads to minimize disruption.
 The documentation covers only core GitLab components. For upgrades or management
 of third-party services such as AWS RDS, see their documentation.
 
-To perform a zero downtime upgrade, see the documentation for your installation method: [Helm charts](https://docs.gitlab.com/charts/installation/upgrade.html), [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html), or [multi-node instances](zero_downtime.md).
+To perform a zero downtime upgrade, see the documentation for your installation method: [Helm charts](https://docs.gitlab.com/charts/installation/upgrade.html), [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades/), or [multi-node instances](zero_downtime.md).

@@ -392,10 +392,6 @@ To ensure a quick response, include the GitLab Advanced SAST analyzer version in
 
 Because this feature is only available at the Ultimate tier, you must be associated with an organization with that level of support entitlement.
 
-## Feedback
-
-Feel free to add your feedback in the dedicated [issue 466322](https://gitlab.com/gitlab-org/gitlab/-/issues/466322).
-
 ## Troubleshooting
 
 When working with GitLab Advanced SAST, you might encounter the following issues.

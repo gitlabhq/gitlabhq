@@ -9,15 +9,15 @@ class PoolRepository < ApplicationRecord
 
   belongs_to :source_project, class_name: 'Project'
 
-  belongs_to :organization,
-    class_name: 'Organizations::Organization',
-    optional: true
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :member_projects, class_name: 'Project'
 
   before_validation :set_organization
 
   after_create :set_disk_path
+
+  validates :organization, presence: true
 
   scope :by_source_project, ->(project) { where(source_project: project) }
   scope :by_disk_path, ->(disk_path) { where(disk_path: disk_path) }
@@ -121,12 +121,6 @@ class PoolRepository < ApplicationRecord
 
   private
 
-  # For now, we set the association  without validating.
-  # Until backfill migrations are complete, we must not validate this.
-  # Completing this will mean adding 2 validation aspects:
-  #   1. We should ensure pool repositories have a source project
-  #   2. We should ensure pool repositories have an organization
-  # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/490484
   def set_organization
     return if organization
 

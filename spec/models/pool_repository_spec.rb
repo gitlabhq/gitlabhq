@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe PoolRepository, feature_category: :source_code_management do
   describe 'associations' do
     it { is_expected.to belong_to(:shard) }
-    it { is_expected.to belong_to(:organization).optional(true) }
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to belong_to(:source_project) }
     it { is_expected.to have_many(:member_projects) }
   end
@@ -14,7 +14,7 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     let_it_be(:project) { create(:project) }
     let_it_be(:other_organization) { create(:organization) }
     let_it_be(:default_organization) { create(:organization, id: 1) }
-    let_it_be(:shard) { create(:shard) }
+    let_it_be(:shard) { create(:shard, name: "pool_repository_testing") }
 
     context 'when organization is not set' do
       it 'assigns organization from the source project' do

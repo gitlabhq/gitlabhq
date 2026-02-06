@@ -421,7 +421,7 @@ Examples:
 <!--
 The "2." and "4." in the previous example are changed to "1." in the following example,
 to match the style standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
+See https://docs.gitlab.com/development/documentation/styleguide/#lists
 -->
 
 When rendered, the example looks similar to:
@@ -457,7 +457,7 @@ They can even:
 <!--
 The "*" and "+" in the previous example are changed to "-" in the following example,
 to match the style standards on docs.gitlab.com.
-See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
+See https://docs.gitlab.com/development/documentation/styleguide/#lists
 -->
 
 When rendered, the example looks similar to:

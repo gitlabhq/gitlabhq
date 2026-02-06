@@ -35,17 +35,24 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     context 'resolving the thread' do
       it 'hides and shows the link for creating a new issue' do
+        issue_link_href = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
+
         within_testid('reply-wrapper') do
-          expect(page).to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
-
+          expect(page).to have_link('Create issue to resolve thread', href: issue_link_href)
           click_button 'Resolve thread'
-
-          expect(page).not_to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
-
-          click_button 'Reopen thread'
-
-          expect(page).to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
         end
+
+        wait_for_requests
+
+        expect(page).not_to have_link('Create issue to resolve thread', href: issue_link_href)
+
+        # After resolving, the discussion collapses. Click the toggle to expand it.
+        find_by_testid('replies-toggle').click
+
+        click_button 'Reopen thread'
+        wait_for_requests
+
+        expect(page).to have_link('Create issue to resolve thread', href: issue_link_href)
       end
     end
 

@@ -178,7 +178,7 @@ To use Docker-in-Docker with TLS enabled:
      # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # Specify to Docker where to create the certificates. Docker
      # creates them automatically on boot, and creates
@@ -357,7 +357,7 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      DOCKER_HOST: tcp://docker:2376
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # Specify to Docker where to create the certificates. Docker
      # creates them automatically on boot, and creates
@@ -424,7 +424,7 @@ For example:
      DOCKER_HOST: tcp://docker:2375
      #
      # The 'docker' hostname is the alias of the service container as described at
-     # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+     # https://docs.gitlab.com/ci/services/#accessing-the-services.
      #
      # This instructs Docker not to start over TLS.
      DOCKER_TLS_CERTDIR: ""

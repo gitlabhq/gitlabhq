@@ -100,7 +100,7 @@ min_gitlab_version: '16.9'
 min_gitlab_version_for_free_access: '16.8'
 group: group::your_group
 feature_category: your_category
-documentation_url: https://docs.gitlab.com/ee/path/to/docs
+documentation_url: https://docs.gitlab.com/path/to/docs
 backend_services:
   - ai_gateway
 add_ons:

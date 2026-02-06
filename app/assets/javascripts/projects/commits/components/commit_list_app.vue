@@ -70,29 +70,22 @@ export default {
       return localeDateFormat.asDate.format(new Date(dateTime));
     },
     handleFilter(filters) {
-      let author = null;
-      let message = null;
+      const filterMap = {
+        [TOKEN_TYPE_AUTHOR]: 'authorFilter',
+        [TOKEN_TYPE_MESSAGE]: 'messageFilter',
+        [FILTERED_SEARCH_TERM]: 'messageFilter',
+      };
+
+      const result = { authorFilter: null, messageFilter: null };
 
       filters.forEach((filter) => {
-        if (typeof filter === 'object') {
-          switch (filter.type) {
-            case TOKEN_TYPE_AUTHOR:
-              author = filter.value?.data;
-              break;
-            case TOKEN_TYPE_MESSAGE:
-              message = filter.value?.data;
-              break;
-            case FILTERED_SEARCH_TERM:
-              if (filter.value?.data) message = filter.value.data;
-              break;
-            default:
-              break;
-          }
+        const key = filterMap[filter.type];
+        if (key && filter.value?.data) {
+          result[key] = filter.value.data;
         }
       });
 
-      this.authorFilter = author;
-      this.messageFilter = message;
+      Object.assign(this, result);
     },
   },
 };
@@ -105,7 +98,7 @@ export default {
     <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-5" />
 
     <template v-else-if="groupedCommits.length">
-      <ol class="gl-my-6 gl-list-none gl-p-0">
+      <ol class="gl-my-5 gl-list-none gl-p-0">
         <li v-for="group in groupedCommits" :key="group.day" data-testid="daily-commits">
           <h2 class="gl-mb-5 gl-flex gl-items-center gl-gap-3 gl-text-base @md/panel:gl-gap-5">
             <gl-icon name="commit" />

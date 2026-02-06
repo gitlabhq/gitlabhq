@@ -17,6 +17,7 @@ import {
   ACTION_UNARCHIVE,
   ACTION_REQUEST_ACCESS,
   ACTION_WITHDRAW_ACCESS_REQUEST,
+  ACTION_LEAVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { InternalEvents } from '~/tracking';
@@ -27,6 +28,7 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
 } from './utils';
+import ProjectsListItemLeaveModal from './projects_list_item_leave_modal.vue';
 
 export default {
   name: 'ProjectListItemActions',
@@ -34,6 +36,7 @@ export default {
     GlLoadingIcon,
     ListActions,
     DeleteModal,
+    ProjectsListItemLeaveModal,
   },
   mixins: [InternalEvents.mixin()],
   i18n: {
@@ -50,6 +53,7 @@ export default {
       actionsLoading: false,
       isDeleteModalVisible: false,
       isDeleteLoading: false,
+      isLeaveModalVisible: false,
     };
   },
   computed: {
@@ -95,6 +99,10 @@ export default {
         [ACTION_DELETE_IMMEDIATELY]: {
           action: this.onActionDelete,
         },
+        [ACTION_LEAVE]: {
+          text: __('Leave project'),
+          action: this.onActionLeave,
+        },
       };
 
       if (this.project.requestAccessPath) {
@@ -133,11 +141,17 @@ export default {
         this.project.availableActions?.includes(ACTION_DELETE_IMMEDIATELY)
       );
     },
+    hasActionLeave() {
+      return this.project.availableActions?.includes(ACTION_LEAVE);
+    },
   },
   methods: {
+    refetch() {
+      this.$emit('refetch');
+    },
     async archive() {
       await archiveProject(this.project.id);
-      this.$emit('refetch');
+      this.refetch();
       renderArchiveSuccessToast(this.project);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -147,7 +161,7 @@ export default {
     },
     async unarchive() {
       await unarchiveProject(this.project.id);
-      this.$emit('refetch');
+      this.refetch();
       renderUnarchiveSuccessToast(this.project);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -157,7 +171,7 @@ export default {
     },
     async restore() {
       await restoreProject(this.project.id);
-      this.$emit('refetch');
+      this.refetch();
       renderRestoreSuccessToast(this.project);
     },
     async onActionWithLoading({ action, errorMessage }) {
@@ -189,7 +203,7 @@ export default {
 
       try {
         await deleteProject(this.project.id, deleteParams(this.project));
-        this.$emit('refetch');
+        this.refetch();
         renderDeleteSuccessToast(this.project);
       } catch (error) {
         createAlert({
@@ -202,6 +216,9 @@ export default {
       } finally {
         this.isDeleteLoading = false;
       }
+    },
+    onActionLeave() {
+      this.isLeaveModalVisible = true;
     },
   },
 };
@@ -230,6 +247,12 @@ export default {
       :marked-for-deletion="project.markedForDeletion"
       :permanent-deletion-date="project.permanentDeletionDate"
       @primary="onDeleteModalPrimary"
+    />
+    <projects-list-item-leave-modal
+      v-if="hasActionLeave"
+      v-model="isLeaveModalVisible"
+      :project="project"
+      @success="refetch"
     />
   </div>
 </template>
