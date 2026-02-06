@@ -39,9 +39,6 @@ type Server struct {
 	// Success tracking for optimized readiness checks
 	successTracker *SuccessTracker
 
-	// Load shedding
-	loadShedder *LoadShedder
-
 	// Metrics
 	readinessStatus    prometheus.Gauge
 	readinessErrorRate prometheus.Counter
@@ -95,11 +92,6 @@ func (hcs *Server) GetSuccessRecorder() SuccessRecorder {
 // GetOptimizedReadinessChecker returns the optimized readiness checker interface
 func (hcs *Server) GetOptimizedReadinessChecker() OptimizedReadinessChecker {
 	return hcs.successTracker
-}
-
-// GetLoadShedder returns the load shedder if configured
-func (hcs *Server) GetLoadShedder() *LoadShedder {
-	return hcs.loadShedder
 }
 
 // AddReadinessChecker adds a readiness checker

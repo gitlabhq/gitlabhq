@@ -54482,9 +54482,6 @@ msgstr ""
 msgid "ProjectsNew|my-awesome-project"
 msgstr ""
 
-msgid "Projects|All the issues and merge requests that were assigned to you are unassigned."
-msgstr ""
-
 msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."
 msgstr ""
 
@@ -54497,12 +54494,6 @@ msgstr ""
 msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
-msgid "Projects|An error occurred while leaving the project. Please refresh the page to try again."
-msgstr ""
-
-msgid "Projects|Are you sure you want to leave \"%{nameWithNamespace}\"?"
-msgstr ""
-
 msgid "Projects|Are you sure you want to withdraw your access request for the %{nameWithNamespace} project?"
 msgstr ""
 
@@ -54513,9 +54504,6 @@ msgid "Projects|Copy project ID: %{id}"
 msgstr ""
 
 msgid "Projects|Explore and collaborate on open-source projects"
-msgstr ""
-
-msgid "Projects|Leave project"
 msgstr ""
 
 msgid "Projects|No inactive projects found"
@@ -54551,12 +54539,6 @@ msgstr ""
 msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
 msgstr ""
 
-msgid "Projects|When you leave this project:"
-msgstr ""
-
-msgid "Projects|You are no longer a project member and cannot contribute."
-msgstr ""
-
 msgid "Projects|You aren't a member of any projects yet."
 msgstr ""
 
@@ -54570,9 +54552,6 @@ msgid "Projects|You haven't contributed to any projects yet."
 msgstr ""
 
 msgid "Projects|You haven't starred any projects yet."
-msgstr ""
-
-msgid "Projects|You left the \"%{nameWithNamespace}\" project."
 msgstr ""
 
 msgid "Project|already in use"
@@ -79023,6 +79002,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong while copying the %{workItemType} reference. Please try again."
 msgstr ""
 
+msgid "WorkItem|Something went wrong while creating the view"
+msgstr ""
+
 msgid "WorkItem|Something went wrong while fetching items. Please try again."
 msgstr ""
 
@@ -79231,6 +79213,9 @@ msgid "WorkItem|Update work items"
 msgstr ""
 
 msgid "WorkItem|Usage"
+msgstr ""
+
+msgid "WorkItem|Usage is controlled by the Monitor feature."
 msgstr ""
 
 msgid "WorkItem|Usage is controlled by the Service Desk feature."

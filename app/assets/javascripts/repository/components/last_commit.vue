@@ -24,6 +24,7 @@ const trackingMixin = InternalEvents.mixin();
 const POLL_INTERVAL = 30000;
 
 export default {
+  name: 'LastCommit',
   components: {
     CiIcon,
     CommitInfo,

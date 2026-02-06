@@ -27,6 +27,7 @@ import {
   getInitialPageParams,
   getSortOptions,
   groupMultiSelectFilterTokens,
+  saveSavedView,
 } from 'ee_else_ce/work_items/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -58,7 +59,7 @@ import {
 } from '~/work_items/list/constants';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
-import getSubsribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
@@ -509,14 +510,20 @@ export default {
 
           this.initialViewTokens = tokens;
           this.initialViewSortKey = savedView?.sort;
-          this.initialViewDisplaySettings = savedView.displaySettings;
+          this.initialViewDisplaySettings = {
+            commonPreferences: { ...this.displaySettings.commonPreferences },
+            namespacePreferences: savedView.displaySettings,
+          };
 
           if (draft) {
             this.restoreViewDraft();
           } else {
             this.filterTokens = tokens.filter((token) => availableTokenTypes.includes(token.type));
             this.sortKey = savedView?.sort;
-            this.localDisplaySettings = savedView.displaySettings;
+            this.localDisplaySettings = {
+              commonPreferences: { ...this.displaySettings.commonPreferences },
+              namespacePreferences: savedView.displaySettings,
+            };
           }
         } catch (error) {
           Sentry.captureException(error);
@@ -527,11 +534,11 @@ export default {
       },
     },
     subscribedSavedViews: {
-      query: getSubsribedSavedViewsQuery,
+      query: getSubscribedSavedViewsQuery,
       variables() {
         return {
           fullPath: this.rootPageFullPath,
-          subscribedOnly: false,
+          subscribedOnly: true,
         };
       },
       update(data) {
@@ -1042,11 +1049,11 @@ export default {
       if (!this.initialPreferences) return false;
 
       const currentPreferences = {
-        hiddenMetadataKeys: this.displaySettingsSoT.namespacePreferences?.hiddenMetadataKeys ?? [],
+        hiddenMetadataKeys: this.displaySettingsSoT?.namespacePreferences?.hiddenMetadataKeys ?? [],
       };
       const viewPreferences = {
         hiddenMetadataKeys:
-          this.initialViewDisplaySettings.namespacePreferences?.hiddenMetadataKeys ?? [],
+          this.initialViewDisplaySettings?.namespacePreferences?.hiddenMetadataKeys ?? [],
       };
       const comparePreferences = this.isSavedView ? viewPreferences : this.initialPreferences;
 
@@ -1141,27 +1148,17 @@ export default {
       handler(value) {
         if (!this.initialPreferences && value) {
           this.initialPreferences = {
-            hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
+            commonPreferences: {
+              shouldOpenItemsInSidePanel: value.commonPreferences?.shouldOpenItemsInSidePanel,
+            },
+            namespacePreferences: {
+              hiddenMetadataKeys: value.namespacePreferences?.hiddenMetadataKeys ?? [],
+            },
           };
         }
         if (isEmpty(this.localDisplaySettings) || !this.isSavedView) {
           this.localDisplaySettings = { ...this.value };
         }
-      },
-    },
-    filterTokens: {
-      deep: true,
-      handler() {
-        this.persistDraft();
-      },
-    },
-    sortKey() {
-      this.persistDraft();
-    },
-    localDisplaySettings: {
-      deep: true,
-      handler() {
-        this.persistDraft();
       },
     },
   },
@@ -1192,6 +1189,7 @@ export default {
           hiddenMetadataKeys: [...newSettings.hiddenMetadataKeys],
         },
       };
+      this.persistDraft();
     },
     handleListDataResults(listData) {
       this.pageInfo = listData?.namespace?.workItems.pageInfo ?? {};
@@ -1288,6 +1286,7 @@ export default {
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.updateRouterQueryParams();
+      this.persistDraft();
     },
     updateRouterQueryParams() {
       if (this.isSavedView) {
@@ -1351,6 +1350,7 @@ export default {
       }
 
       this.updateRouterQueryParams();
+      this.persistDraft();
     },
     async saveSortPreference(sortKey) {
       try {
@@ -1659,18 +1659,50 @@ export default {
         </span>
       `;
 
-      await confirmAction(null, {
+      const confirmation = await confirmAction(null, {
         title,
         modalHtmlMessage: message,
         primaryBtnText: s__('WorkItem|Save changes'),
       });
 
-      // TODO: add update view mutation at integration
+      if (confirmation) {
+        const mutationKey = 'workItemSavedViewUpdate';
+        try {
+          const { data } = await saveSavedView({
+            isEdit: true,
+            isForm: false,
+            namespacePath: this.fullPath,
+            id: this.savedView?.id,
+            name: this.savedView?.name,
+            description: this.savedView?.description,
+            isPrivate: this.savedView?.isPrivate,
+            filters: this.apiFilterParams,
+            displaySettings: this.displaySettingsSoT?.namespacePreferences || {},
+            sort: this.sortKey,
+            userPermissions: this.savedView?.userPermissions,
+            subscribed: this.savedView?.subscribed,
+            mutationKey,
+            apolloClient: this.$apollo,
+          });
+
+          if (data[mutationKey].errors?.length) {
+            this.error = s__('WorkItem|Something went wrong while saving the view');
+            return;
+          }
+
+          this.$toast.show(s__('WorkItem|View has been saved.'));
+          this.clearLocalSavedViewsConfig();
+        } catch (e) {
+          Sentry.captureException(e);
+          this.error = s__('WorkItem|Something went wrong while saving the view');
+        }
+      }
     },
     async resetToViewDefaults() {
       this.filterTokens = [...this.initialViewTokens];
       this.sortKey = this.initialViewSortKey;
       this.localDisplaySettings = this.initialViewDisplaySettings;
+      this.clearLocalSavedViewsConfig();
     },
     restoreViewDraft() {
       const draft = localStorage.getItem(this.savedViewDraftStorageKey);
@@ -1692,11 +1724,14 @@ export default {
       if (!this.isSavedView) return;
 
       if (!this.viewConfigChanged) {
-        localStorage.removeItem(this.savedViewDraftStorageKey);
+        this.clearLocalSavedViewsConfig();
         return;
       }
 
       localStorage.setItem(this.savedViewDraftStorageKey, JSON.stringify(this.viewDraftData));
+    },
+    clearLocalSavedViewsConfig() {
+      localStorage.removeItem(this.savedViewDraftStorageKey);
     },
   },
   constants: {
@@ -1889,9 +1924,12 @@ export default {
 
           <template v-if="workItemsSavedViewsEnabled">
             <work-items-saved-views-selectors
+              :selected-saved-view="savedView"
               :full-path="rootPageFullPath"
               :saved-views="subscribedSavedViews"
               :sort-key="sortKey"
+              :filters="apiFilterParams"
+              :display-settings="displaySettingsSoT.namespacePreferences"
               @reset-to-default-view="resetToDefaultView"
               @error="handleError"
             >
@@ -1959,6 +1997,8 @@ export default {
                   :full-path="rootPageFullPath"
                   :title="s__('WorkItem|Save view')"
                   :sort-key="sortKey"
+                  :filters="apiFilterParams"
+                  :display-settings="displaySettingsSoT.namespacePreferences"
                   @hide="isNewViewModalVisible = false"
                 />
               </template>

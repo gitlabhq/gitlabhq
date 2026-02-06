@@ -10,13 +10,12 @@ import {
   GlFormRadio,
   GlAlert,
 } from '@gitlab/ui';
-import { produce } from 'immer';
 
 import { s__ } from '~/locale';
-import { SAVED_VIEW_VISIBILITY, NEW_SAVED_VIEWS_GID } from '~/work_items/constants';
-import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
-import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
-import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
+import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 export default {
   name: 'WorkItemsNewSavedViewModal',
@@ -112,104 +111,57 @@ export default {
     validateTitle() {
       this.isTitleValid = Boolean(this.savedViewTitle.trim());
     },
-    async saveSavedView() {
+    async saveView() {
       this.validateTitle();
 
       if (!this.isTitleValid) {
         return;
       }
-
-      const isPrivate = this.savedViewVisibility === SAVED_VIEW_VISIBILITY.PRIVATE;
-      const mutation = this.isEdit ? updateSavedViewMutation : createSavedViewMutation;
       const mutationKey = this.isEdit ? 'workItemSavedViewUpdate' : 'workItemSavedViewCreate';
 
-      const commonInput = {
-        name: this.savedViewTitle,
-        description: this.savedViewDescription || '',
-        private: isPrivate,
-        filters: this.filters ?? {},
-        displaySettings: this.displaySettings ?? {},
-        sort: this.sortKey,
-      };
-
-      const inputVariables = this.isEdit
-        ? { id: this.savedView.id, ...commonInput }
-        : { namespacePath: this.fullPath, ...commonInput };
-
-      const commonSavedViewResponse = {
-        name: this.savedViewTitle,
-        description: this.savedViewDescription || '',
-        isPrivate,
-        filters: this.filters ?? {},
-        displaySettings: this.displaySettings ?? {},
-      };
-
-      const optimisticResponse = {
-        [mutationKey]: {
-          errors: [],
-          savedView: this.isEdit
-            ? {
-                id: this.savedView.id,
-                ...commonSavedViewResponse,
-                userPermissions: this.savedView.userPermissions,
-                subscribed: this.savedView.subscribed,
-              }
-            : {
-                id: NEW_SAVED_VIEWS_GID,
-                ...commonSavedViewResponse,
-                subscribed: true,
-                userPermissions: { updateSavedView: true, deleteSavedView: true },
-              },
-        },
-      };
-
       try {
-        const { data } = await this.$apollo.mutate({
-          mutation,
-          variables: { input: inputVariables },
-          optimisticResponse,
-          update: (cache, { data: responseData }) => {
-            const query = {
-              query: getSubscribedSavedViewsQuery,
-              variables: { fullPath: this.fullPath, subscribedOnly: false },
-            };
-            const sourceData = cache.readQuery(query);
-
-            if (!sourceData) {
-              return;
-            }
-
-            const newData = produce(sourceData, (draftState) => {
-              const { savedView } = responseData[mutationKey];
-              const { nodes: savedViews } = draftState.namespace.savedViews;
-
-              if (this.isEdit) {
-                const index = savedViews.findIndex(({ id }) => id === savedView.id);
-                if (index !== -1) {
-                  savedViews[index] = savedView;
-                }
-              } else {
-                // TODO: shift the view to the overflow index rather than at last
-                // Also, redirect it to the new view
-                savedViews.push(savedView);
-              }
-            });
-
-            cache.writeQuery({ ...query, data: newData });
-          },
+        const { data } = await saveSavedView({
+          isEdit: this.isEdit,
+          isForm: true,
+          namespacePath: this.fullPath,
+          id: this.savedView?.id,
+          name: this.savedViewTitle,
+          description: this.savedViewDescription,
+          isPrivate: this.savedViewVisibility === SAVED_VIEW_VISIBILITY.PRIVATE,
+          filters: this.filters ?? {},
+          displaySettings: this.displaySettings,
+          sort: this.sortKey,
+          userPermissions: this.savedView?.userPermissions,
+          subscribed: this.savedView?.subscribed,
+          mutationKey,
+          apolloClient: this.$apollo,
         });
 
         if (data[mutationKey].errors?.length) {
-          this.error = s__('WorkItem|Something went wrong while saving the view');
+          this.error = this.isEdit
+            ? s__('WorkItem|Something went wrong while saving the view')
+            : s__('WorkItem|Something went wrong while creating the view');
           return;
+        }
+
+        if (!this.isEdit) {
+          const newViewId = getIdFromGraphQLId(data[mutationKey].savedView.id);
+          this.$router.push({
+            name: ROUTES.savedView,
+            params: { view_id: newViewId.toString() },
+            query: undefined,
+          });
         }
 
         this.$toast.show(
           this.isEdit ? s__('WorkItem|View has been saved.') : s__('WorkItem|New view created.'),
         );
         this.hideAddNewViewModal();
-      } catch {
-        this.error = s__('WorkItem|Something went wrong while saving the view');
+      } catch (e) {
+        Sentry.captureException(e);
+        this.error = this.isEdit
+          ? s__('WorkItem|Something went wrong while saving the view')
+          : s__('WorkItem|Something went wrong while creating the view');
       }
     },
     resetModal() {
@@ -247,7 +199,7 @@ export default {
     @shown="focusTitleInput"
     @hide="hideAddNewViewModal"
   >
-    <gl-form data-testid="add-new-saved-view-form" @submit.prevent="saveSavedView">
+    <gl-form data-testid="add-new-saved-view-form" @submit.prevent="saveView">
       <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="error = undefined">
         {{ error }}
       </gl-alert>

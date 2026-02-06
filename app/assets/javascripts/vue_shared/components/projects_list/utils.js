@@ -6,10 +6,9 @@ import {
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
   ACTION_ARCHIVE,
-  ACTION_LEAVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
-import { sprintf, __, s__ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 
 export const availableGraphQLProjectActions = ({
   userPermissions,
@@ -29,7 +28,6 @@ export const availableGraphQLProjectActions = ({
   const canArchive = userPermissions.archiveProject && !archived && !markedForDeletion;
   const canUnarchive = userPermissions.archiveProject && isSelfArchived;
   const canRestore = userPermissions.removeProject && isSelfDeletionScheduled;
-  const { canLeave } = userPermissions;
   // Projects that are not marked for deletion can be deleted (delayed)
   const canDelete = userPermissions.removeProject && !markedForDeletion;
   // Projects with self deletion scheduled can be deleted immediately if the
@@ -48,7 +46,6 @@ export const availableGraphQLProjectActions = ({
     [ACTION_RESTORE]: canRestore,
     [ACTION_DELETE]: canDelete,
     [ACTION_DELETE_IMMEDIATELY]: canDeleteImmediately,
-    [ACTION_LEAVE]: canLeave,
   };
 
   const availableActions = Object.entries(actions).flatMap(([action, isAvailable]) =>
@@ -96,14 +93,6 @@ export const renderDeleteSuccessToast = (project) => {
   toast(
     sprintf(__('%{project_name} moved to pending deletion.'), {
       project_name: project.name,
-    }),
-  );
-};
-
-export const renderLeaveSuccessToast = (project) => {
-  toast(
-    sprintf(s__('Projects|You left the "%{nameWithNamespace}" project.'), {
-      nameWithNamespace: project.nameWithNamespace,
     }),
   );
 };

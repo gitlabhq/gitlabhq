@@ -1,4 +1,8 @@
-package healthcheck
+// Package loadshedding provides load shedding functionality for Workhorse.
+// It monitors Puma's request backlog and returns 503 Service Unavailable
+// when the backlog exceeds configured thresholds, allowing NGINX to retry
+// requests to other instances.
+package loadshedding
 
 import (
 	"net/http"
@@ -7,9 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// LoadSheddingMiddleware creates middleware that sheds load based on Puma backlog
+// Middleware creates HTTP middleware that sheds load based on Puma backlog
 // Returns 503 Service Unavailable when backlog exceeds the configured threshold
-func LoadSheddingMiddleware(loadShedder *LoadShedder, logger *logrus.Logger) func(http.Handler) http.Handler {
+func Middleware(loadShedder *LoadShedder, logger *logrus.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if loadShedder == nil {

@@ -1,10 +1,13 @@
 <script>
+import uniqueId from 'lodash/uniqueId';
 import { GlTooltipDirective, GlButton, GlLink, GlTruncate } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { sprintf, __ } from '~/locale';
 import defaultAvatarUrl from 'images/no_avatar.png';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import CommitPopover from './commit_popover.vue';
 
 export default {
   name: 'BlameCommitInfo',
@@ -14,6 +17,7 @@ export default {
     GlTruncate,
     TimeagoTooltip,
     UserAvatarImage,
+    CommitPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +37,11 @@ export default {
       required: false,
       default: null,
     },
+  },
+  data() {
+    return {
+      popoverTargetId: uniqueId('blame-commit-popover-'),
+    };
   },
   computed: {
     commitTitle() {
@@ -64,6 +73,28 @@ export default {
       );
       return `${blobPath}?blame=1`;
     },
+    author() {
+      return this.commit.author;
+    },
+    authorUserId() {
+      return this.author?.id ? getIdFromGraphQLId(this.author.id) : null;
+    },
+    authorUsername() {
+      return this.author?.username || '';
+    },
+    authorWebPath() {
+      return this.author?.webPath || '';
+    },
+    avatarWrapperProps() {
+      if (!this.author) return {};
+      return {
+        href: this.authorWebPath,
+        'data-user-id': this.authorUserId,
+        'data-username': this.authorUsername,
+        class: 'js-user-link',
+        'data-testid': 'commit-author-link',
+      };
+    },
   },
   defaultAvatarUrl,
   i18n: {
@@ -85,24 +116,27 @@ export default {
       data-testid="commit-time"
     />
 
-    <user-avatar-image
-      :img-src="avatarUrl"
-      :size="16"
-      class="gl-pb-[0.15rem]"
-      data-testid="commit-author-avatar"
-      :img-alt="avatarLinkAltText"
-      lazy
-    />
+    <component :is="author ? 'a' : 'span'" v-bind="avatarWrapperProps" class="gl-pb-[0.15rem]">
+      <user-avatar-image
+        :img-src="avatarUrl"
+        :size="16"
+        :img-alt="avatarLinkAltText"
+        data-testid="commit-author-avatar"
+        lazy
+      />
+    </component>
 
     <div class="gl-min-w-0 gl-flex-1">
       <gl-link
+        :id="popoverTargetId"
         :href="commitUrl"
         :class="{ 'gl-italic': !hasMessage }"
         class="gl-text-sm gl-text-default hover:gl-text-default focus:gl-focus-inset"
         data-testid="commit-message-link"
       >
-        <gl-truncate :text="commitTitle" with-tooltip class="gl-pb-2" />
+        <gl-truncate :text="commitTitle" class="gl-pb-2" />
       </gl-link>
+      <commit-popover :popover-target-id="popoverTargetId" :commit="commit" class="gl-z-3" />
     </div>
 
     <gl-button

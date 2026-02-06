@@ -5,7 +5,6 @@ import { buildApiUrl } from './api_utils';
 const PROJECTS_PATH = '/api/:version/projects.json';
 const PROJECT_PATH = '/api/:version/projects/:id';
 const PROJECT_MEMBERS_PATH = '/api/:version/projects/:id/members';
-const PROJECT_MEMBER_PATH = '/api/:version/projects/:id/members/:user_id';
 const PROJECT_ALL_MEMBERS_PATH = '/api/:version/projects/:id/members/all';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
 const PROJECT_REPOSITORY_SIZE_PATH = '/api/:version/projects/:id/repository_size';
@@ -147,12 +146,4 @@ export const getProjectRepositoryHealth = (projectId, params = {}) => {
   const url = buildApiUrl(PROJECT_REPOSITORY_HEALTH_PATH).replace(':id', projectId);
 
   return axios.get(url, { params });
-};
-
-export const deleteProjectMember = (projectId, userId) => {
-  const url = buildApiUrl(PROJECT_MEMBER_PATH)
-    .replace(':id', projectId)
-    .replace(':user_id', userId);
-
-  return axios.delete(url);
 };

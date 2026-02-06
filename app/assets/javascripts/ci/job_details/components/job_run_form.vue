@@ -11,6 +11,7 @@ import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import playJobWithVariablesMutation from '../graphql/mutations/job_play_with_variables.mutation.graphql';
+import playJobWithInputsMutation from '../graphql/mutations/job_play_with_inputs.mutation.graphql';
 import retryJobWithVariablesMutation from '../graphql/mutations/job_retry_with_variables.mutation.graphql';
 import getJobInputsQuery from '../graphql/queries/get_job_inputs.query.graphql';
 import JobVariablesForm from './job_variables_form.vue';
@@ -19,7 +20,7 @@ import JobVariablesForm from './job_variables_form.vue';
 // It is meant to fetch/update the job information via GraphQL instead of REST API.
 
 export default {
-  name: 'ManualJobForm',
+  name: 'JobRunForm',
   components: {
     GlButton,
     JobVariablesForm,
@@ -29,10 +30,6 @@ export default {
   inject: ['canSetPipelineVariables', 'projectPath'],
   props: {
     isRetryable: {
-      type: Boolean,
-      required: true,
-    },
-    isManual: {
       type: Boolean,
       required: true,
     },
@@ -60,7 +57,7 @@ export default {
         };
       },
       skip() {
-        return Boolean(!this.glFeatures.ciJobInputs || !this.isRetryable || this.isManual);
+        return !this.glFeatures.ciJobInputs;
       },
       update(data) {
         const job = data?.project?.job;
@@ -98,12 +95,19 @@ export default {
         : this.$options.i18n.runButtonText;
     },
     showInputsForm() {
-      return (
-        this.glFeatures.ciJobInputs &&
-        this.isRetryable &&
-        !this.isManual &&
-        !this.$apollo.queries.job.loading
-      );
+      return this.glFeatures.ciJobInputs && !this.$apollo.queries.job.loading;
+    },
+    playProps() {
+      if (this.glFeatures.ciJobInputs) {
+        return {
+          mutation: playJobWithInputsMutation,
+          variables: { ...this.mutationVariables, inputs: this.updatedInputs },
+        };
+      }
+      return {
+        mutation: playJobWithVariablesMutation,
+        variables: this.mutationVariables,
+      };
     },
   },
   methods: {
@@ -113,10 +117,11 @@ export default {
         .map(({ key, value }) => ({ key, value }));
     },
     async playJob() {
+      const { mutation, variables } = this.playProps;
       try {
         const { data } = await this.$apollo.mutate({
-          mutation: playJobWithVariablesMutation,
-          variables: this.mutationVariables,
+          mutation,
+          variables,
         });
         if (data.jobPlay?.errors?.length) {
           createAlert({ message: data.jobPlay.errors[0] });

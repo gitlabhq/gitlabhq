@@ -10,6 +10,11 @@ query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
         displaySettings
         filters
         sort
+        subscribed
+        userPermissions {
+          updateSavedView
+          deleteSavedView
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-package healthcheck
+package loadshedding
 
 import (
 	"net/http"
@@ -8,22 +8,25 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
 )
 
 func TestLoadSheddingMiddlewareSheds(t *testing.T) {
 	logger := logrus.New()
 	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0, logger, reg, nil)
+	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
+	shedder.InitializeMetrics()
 
 	// Set up shedder to shed load
-	controlResp := &PumaControlResponse{
+	controlResp := &puma.ControlResponse{
 		Workers:       1,
 		BootedWorkers: 1,
-		WorkerStatus: []PumaWorker{
+		WorkerStatus: []puma.Worker{
 			{
 				Index:  0,
 				Booted: true,
-				LastStatus: PumaWorkerStatus{
+				LastStatus: puma.WorkerStatus{
 					Backlog: 150,
 				},
 			},
@@ -37,7 +40,7 @@ func TestLoadSheddingMiddlewareSheds(t *testing.T) {
 		w.Write([]byte("OK"))
 	})
 
-	middleware := LoadSheddingMiddleware(shedder, logger)
+	middleware := Middleware(shedder, logger)
 	handler := middleware(nextHandler)
 
 	// Make request
@@ -54,17 +57,18 @@ func TestLoadSheddingMiddlewareSheds(t *testing.T) {
 func TestLoadSheddingMiddlewareAllows(t *testing.T) {
 	logger := logrus.New()
 	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0, logger, reg, nil)
+	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
+	shedder.InitializeMetrics()
 
 	// Set up shedder to NOT shed load
-	controlResp := &PumaControlResponse{
+	controlResp := &puma.ControlResponse{
 		Workers:       1,
 		BootedWorkers: 1,
-		WorkerStatus: []PumaWorker{
+		WorkerStatus: []puma.Worker{
 			{
 				Index:  0,
 				Booted: true,
-				LastStatus: PumaWorkerStatus{
+				LastStatus: puma.WorkerStatus{
 					Backlog: 50,
 				},
 			},
@@ -78,7 +82,7 @@ func TestLoadSheddingMiddlewareAllows(t *testing.T) {
 		w.Write([]byte("OK"))
 	})
 
-	middleware := LoadSheddingMiddleware(shedder, logger)
+	middleware := Middleware(shedder, logger)
 	handler := middleware(nextHandler)
 
 	// Make request
@@ -101,7 +105,7 @@ func TestLoadSheddingMiddlewareNilShedder(t *testing.T) {
 		w.Write([]byte("OK"))
 	})
 
-	middleware := LoadSheddingMiddleware(nil, logger)
+	middleware := Middleware(nil, logger)
 	handler := middleware(nextHandler)
 
 	// Make request

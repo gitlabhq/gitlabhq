@@ -88,7 +88,6 @@ describe('groups show resolver', () => {
         userPermissions: {
           archiveProject: true,
           removeProject: true,
-          canLeave: false,
           viewEditPage: true,
         },
         maxAccessLevel: { integerValue: 0 },
@@ -129,7 +128,6 @@ describe('groups show resolver', () => {
         userPermissions: {
           archiveProject: true,
           removeProject: true,
-          canLeave: false,
           viewEditPage: true,
         },
         maxAccessLevel: { integerValue: 0 },
@@ -205,7 +203,6 @@ describe('groups show resolver', () => {
             userPermissions: {
               archiveProject: true,
               removeProject: true,
-              canLeave: false,
               viewEditPage: true,
             },
             maxAccessLevel: { integerValue: 0 },
@@ -281,7 +278,6 @@ describe('groups show resolver', () => {
                 userPermissions: {
                   archiveProject: true,
                   removeProject: true,
-                  canLeave: false,
                   viewEditPage: true,
                 },
                 maxAccessLevel: { integerValue: 0 },

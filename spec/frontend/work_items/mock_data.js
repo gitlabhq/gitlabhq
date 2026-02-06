@@ -10634,7 +10634,7 @@ export const singleSavedView = [
     __typename: 'SavedView',
     name: 'Current sprint 3',
     description: 'The things I am focused on for the sprint',
-    isSubscribed: false,
+    subscribed: false,
     isPrivate: true,
     id: 'gid://gitlab/WorkItems::SavedViews::SavedView/3',
     displaySettings: {
@@ -10657,6 +10657,10 @@ export const singleSavedView = [
       labelName: 'Broffe',
     },
     sort: 'UPDATED_DESC',
+    userPermissions: {
+      updateSavedView: true,
+      deleteSavedView: true,
+    },
   },
 ];
 

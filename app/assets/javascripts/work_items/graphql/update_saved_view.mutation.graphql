@@ -8,6 +8,9 @@ mutation workItemSavedViewUpdate($input: WorkItemSavedViewUpdateInput!) {
       description
       subscribed
       isPrivate: private
+      displaySettings
+      filters
+      sort
       userPermissions {
         updateSavedView
         deleteSavedView

@@ -38,6 +38,16 @@ export default {
       type: String,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    displaySettings: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   emits: ['unsubscribe-saved-view', 'delete-saved-view'],
   data() {
@@ -174,6 +184,8 @@ export default {
       :saved-view="savedView"
       :full-path="fullPath"
       :sort-key="sortKey"
+      :filters="filters"
+      :display-settings="displaySettings"
       @hide="isNewViewModalVisible = false"
     />
   </div>

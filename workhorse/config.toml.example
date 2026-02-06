@@ -107,16 +107,52 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   # Number of consecutive successes required to become ready (readiness only)
   min_successful_probes = 1
 
-  # Optional: Load shedding configuration
-  # When enabled, Workhorse will return 503 Service Unavailable when Puma's
-  # request backlog exceeds the configured threshold. This helps protect Puma
-  # from being overwhelmed and allows NGINX to retry requests to other instances.
-  # Set to 0 (default) to disable load shedding.
-  # load_shed_backlog_threshold = 50
+# Optional: Load shedding configuration
+# When enabled, Workhorse will return 503 Service Unavailable when Puma's
+# request backlog exceeds the configured threshold. This helps protect Puma
+# from being overwhelmed and allows NGINX to retry requests to other instances.
+[load_shedding]
+  # Enable load shedding (default: false)
+  enabled = false
 
-  # Optional: Retry-After header value in seconds when shedding load
+  # Backlog threshold at which to start shedding load
+  # When the backlog exceeds this value, new requests will be rejected with 503
+  backlog_threshold = 50
+
+  # Hysteresis factor for deactivation (0.0 to 1.0)
+  # Load shedding will be deactivated when backlog drops below:
+  #   threshold * hysteresis_factor
+  # This prevents rapid oscillation around the threshold.
+  # Example: threshold=100, hysteresis=0.8 means:
+  #   - Activate shedding at backlog >= 100
+  #   - Deactivate shedding at backlog < 80
+  # Default: 0.8
+  backlog_hysteresis = 0.8
+
+  # Retry-After header value in seconds when shedding load
   # In Kubernetes with multiple pods, use 0 to allow NGINX to immediately
   # retry to a different pod. For single instances, use 1-2 to give Puma
   # time to process queued requests.
   # Default: 0 (immediate retry, recommended for Kubernetes)
-  # load_shed_retry_after_seconds = 0
+  retry_after_seconds = 0
+
+  # Strategy for calculating effective backlog across workers
+  # Options: "max" (default), "sum"
+  #   - "max": Use the maximum backlog across all workers
+  #   - "sum": Use the sum of backlogs across all workers
+  # Default: "max"
+  strategy = "max"
+
+  # How often to sample Puma's backlog metrics
+  # This is independent of the health check interval and allows for
+  # faster response to load changes.
+  # Default: 1s
+  check_interval = "1s"
+
+  # URL to Puma's control server for backlog metrics
+  # If not specified, defaults to http://localhost:9293
+  # puma_control_url = "http://localhost:9293"
+
+  # Timeout for control server requests
+  # Default: 5s
+  timeout = "5s"

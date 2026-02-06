@@ -18,6 +18,9 @@ describe('WorkItemsSavedViewsSelectors', () => {
       description: 'Only I can see this',
       isPrivate: true,
       subscribed: true,
+      filters: {},
+      displaySettings: {},
+      sort: CREATED_DESC,
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
@@ -30,6 +33,9 @@ describe('WorkItemsSavedViewsSelectors', () => {
       description: 'Only I can see this',
       isPrivate: false,
       subscribed: true,
+      filters: {},
+      displaySettings: {},
+      sort: CREATED_DESC,
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
@@ -42,6 +48,9 @@ describe('WorkItemsSavedViewsSelectors', () => {
       description: 'Only I can see this',
       isPrivate: false,
       subscribed: true,
+      filters: {},
+      displaySettings: {},
+      sort: CREATED_DESC,
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
@@ -88,6 +97,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
         fullPath: 'test-project-path',
         savedViews: mockSavedViews,
         sortKey: CREATED_DESC,
+        filters: {},
+        displaySettings: {},
         ...props,
       },
       data() {

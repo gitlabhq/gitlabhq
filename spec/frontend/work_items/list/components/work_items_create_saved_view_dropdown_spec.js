@@ -12,6 +12,8 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
       propsData: {
         fullPath: 'test-project-path',
         sortKey: CREATED_DESC,
+        filters: {},
+        displaySettings: {},
       },
     });
   };

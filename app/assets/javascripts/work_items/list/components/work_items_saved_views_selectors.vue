@@ -33,6 +33,16 @@ export default {
       type: Array,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    displaySettings: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   emits: ['reset-to-default-view', 'error'],
   data() {
@@ -156,6 +166,7 @@ export default {
       const newData = produce(sourceData, (draftState) => {
         const savedViews = draftState.namespace.savedViews.nodes;
         const index = savedViews.findIndex((v) => v.id === viewId);
+
         if (index !== -1) {
           savedViews.splice(index, 1);
         }
@@ -178,14 +189,15 @@ export default {
           optimisticResponse: {
             workItemSavedViewUnsubscribe: {
               __typename: 'WorkItemSavedViewUnsubscribePayload',
-              errors: [],
               savedView: {
                 __typename: 'WorkItemSavedViewType',
                 id: view.id,
               },
             },
           },
-          update: (cache) => this.updateCacheAfterRemoval(cache, view.id),
+          update: (cache) => {
+            this.updateCacheAfterRemoval(cache, view.id);
+          },
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
@@ -223,7 +235,9 @@ export default {
               },
             },
           },
-          update: (cache) => this.updateCacheAfterRemoval(cache, view.id),
+          update: (cache) => {
+            this.updateCacheAfterRemoval(cache, view.id);
+          },
         });
 
         await this.navigateAfterViewRemoval(nextNearestView);
@@ -270,6 +284,8 @@ export default {
             :saved-view="view"
             :full-path="fullPath"
             :sort-key="sortKey"
+            :filters="filters"
+            :display-settings="displaySettings"
             @unsubscribe-saved-view="handleUnsubscribeFromView"
             @delete-saved-view="handleDeleteView"
           />
@@ -289,6 +305,8 @@ export default {
             :saved-view="view"
             :full-path="fullPath"
             :sort-key="sortKey"
+            :filters="filters"
+            :display-settings="displaySettings"
             @unsubscribe-saved-view="handleUnsubscribeFromView"
             @delete-saved-view="handleDeleteView"
           />
@@ -309,6 +327,8 @@ export default {
       <work-items-create-saved-view-dropdown
         :full-path="fullPath"
         :sort-key="sortKey"
+        :filters="filters"
+        :display-settings="displaySettings"
         class="gl-ml-2"
       />
     </div>

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
 )
 
 // PumaReadinessChecker checks Puma's readiness endpoint and optionally control server
@@ -21,42 +23,11 @@ type PumaReadinessChecker struct {
 	logger         *logrus.Logger
 	successChecker OptimizedReadinessChecker // Interface for both recording and checking success
 	skipInterval   time.Duration             // Duration to skip checks if recent success
-	loadShedder    *LoadShedder              // Optional load shedder for backlog-based load shedding
 }
 
 // PumaReadinessResponse represents the JSON response from Puma's readiness endpoint
 type PumaReadinessResponse struct {
 	Status string `json:"status"`
-}
-
-// PumaControlResponse represents the JSON response from Puma's control server
-type PumaControlResponse struct {
-	StartedAt     string       `json:"started_at"`
-	Workers       int          `json:"workers"`
-	Phase         int          `json:"phase"`
-	BootedWorkers int          `json:"booted_workers"`
-	OldWorkers    int          `json:"old_workers"`
-	WorkerStatus  []PumaWorker `json:"worker_status"`
-}
-
-// PumaWorker represents a Puma worker's status
-type PumaWorker struct {
-	StartedAt   string           `json:"started_at"`
-	PID         int              `json:"pid"`
-	Index       int              `json:"index"`
-	Phase       int              `json:"phase"`
-	Booted      bool             `json:"booted"`
-	LastCheckin string           `json:"last_checkin"`
-	LastStatus  PumaWorkerStatus `json:"last_status"`
-}
-
-// PumaWorkerStatus represents the detailed status of a Puma worker
-type PumaWorkerStatus struct {
-	Backlog       int `json:"backlog"`
-	Running       int `json:"running"`
-	PoolCapacity  int `json:"pool_capacity"`
-	MaxThreads    int `json:"max_threads"`
-	RequestsCount int `json:"requests_count"`
 }
 
 // PumaReadinessCheckerOption defines a function type for configuring PumaReadinessChecker
@@ -73,13 +44,6 @@ func WithSuccessChecker(successChecker OptimizedReadinessChecker) PumaReadinessC
 func WithSkipInterval(interval time.Duration) PumaReadinessCheckerOption {
 	return func(p *PumaReadinessChecker) {
 		p.skipInterval = interval
-	}
-}
-
-// WithLoadShedder configures the checker to use load shedding based on backlog
-func WithLoadShedder(loadShedder *LoadShedder) PumaReadinessCheckerOption {
-	return func(p *PumaReadinessChecker) {
-		p.loadShedder = loadShedder
 	}
 }
 
@@ -262,21 +226,16 @@ func (p *PumaReadinessChecker) checkControlServer(ctx context.Context) (bool, ti
 		return false, result.duration, err
 	}
 
-	var controlResp PumaControlResponse
+	var controlResp puma.ControlResponse
 	if err := json.Unmarshal(result.body, &controlResp); err != nil {
 		return false, result.duration, fmt.Errorf("unable to parse puma control response: %w", err)
-	}
-
-	// Update load shedder with latest backlog data if configured
-	if p.loadShedder != nil {
-		p.loadShedder.UpdateBacklog(&controlResp)
 	}
 
 	return p.validateWorkerStatus(controlResp, result.duration)
 }
 
 // validateWorkerStatus validates that at least one worker is booted
-func (p *PumaReadinessChecker) validateWorkerStatus(controlResp PumaControlResponse, duration time.Duration) (bool, time.Duration, error) {
+func (p *PumaReadinessChecker) validateWorkerStatus(controlResp puma.ControlResponse, duration time.Duration) (bool, time.Duration, error) {
 	bootedWorkers := controlResp.BootedWorkers
 	totalWorkers := controlResp.Workers
 

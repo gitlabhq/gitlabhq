@@ -453,3 +453,100 @@ export const savedViewFilterTokens = [
   },
   { type: 'status', value: { data: "Won't do", operator: '=' } },
 ];
+
+export const saveSavedViewParams = {
+  isEdit: false,
+  isForm: false,
+  namespacePath: 'my-group',
+  name: 'My View',
+  description: 'A test view',
+  isPrivate: false,
+  filters: { state: 'opened' },
+  sort: 'CREATED_DESC',
+  displaySettings: { groupBy: 'assignee' },
+  mutationKey: 'workItemSavedViewCreate',
+};
+
+export const saveSavedViewResponse = {
+  data: {
+    workItemSavedViewCreate: {
+      errors: [],
+      savedView: {
+        id: 'gid://gitlab/SavedView/1',
+        name: 'My View',
+        description: 'A test view',
+        isPrivate: false,
+        filters: { state: 'opened' },
+        sort: 'CREATED_DESC',
+        displaySettings: { groupBy: 'assignee' },
+        subscribed: true,
+        userPermissions: { updateSavedView: true, deleteSavedView: true },
+      },
+    },
+  },
+};
+
+export const editSavedViewParams = {
+  isEdit: true,
+  isForm: false,
+  id: 'gid://gitlab/SavedView/1',
+  name: 'Updated View',
+  description: 'Updated description',
+  isPrivate: false,
+  filters: { state: 'closed' },
+  sort: 'UPDATED_DESC',
+  displaySettings: { groupBy: 'status' },
+  userPermissions: { updateSavedView: true, deleteSavedView: true },
+  subscribed: true,
+  mutationKey: 'workItemSavedViewUpdate',
+};
+
+export const editSavedViewResponse = {
+  data: {
+    workItemSavedViewUpdate: {
+      errors: [],
+      savedView: {
+        id: 'gid://gitlab/SavedView/1',
+        name: 'Updated View',
+        description: 'Updated description',
+        isPrivate: false,
+        filters: { state: 'closed' },
+        sort: 'UPDATED_DESC',
+        displaySettings: { groupBy: 'status' },
+        userPermissions: { updateSavedView: true, deleteSavedView: true },
+        subscribed: true,
+      },
+    },
+  },
+};
+
+export const editSavedViewFormOnlyParams = {
+  isEdit: true,
+  isForm: true,
+  id: 'gid://gitlab/SavedView/1',
+  name: 'Updated View',
+  description: 'Updated description',
+  isPrivate: false,
+  filters: { state: 'closed' },
+  sort: 'UPDATED_DESC',
+  displaySettings: { groupBy: 'status' },
+  userPermissions: { updateSavedView: true, deleteSavedView: true },
+  subscribed: true,
+  mutationKey: 'workItemSavedViewUpdate',
+};
+
+export const editSavedViewFormOnlyResponse = {
+  data: {
+    workItemSavedViewUpdate: {
+      errors: [],
+      savedView: {
+        id: 'gid://gitlab/SavedView/1',
+        name: 'Updated View',
+        description: 'Updated description',
+        isPrivate: false,
+        userPermissions: { updateSavedView: true, deleteSavedView: true },
+        subscribed: true,
+      },
+    },
+  },
+};

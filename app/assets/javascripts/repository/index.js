@@ -7,10 +7,12 @@ import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
+
 import RepositoryApp from './components/app.vue';
-import Breadcrumbs from './components/header_area/breadcrumbs.vue';
+import RepositoryBreadcrumbs from './components/header_area/breadcrumbs.vue';
 import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
+
 import apolloProvider from './graphql';
 import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
@@ -167,11 +169,11 @@ export default function setupVueRepositoryList() {
     // eslint-disable-next-line no-new
     new Vue({
       el: breadcrumbEl,
-      name: 'BreadcrumbsRoot',
+      name: 'RepositoryBreadcrumbsRoot',
       router,
       apolloProvider,
       render(h) {
-        return h(Breadcrumbs, {
+        return h(RepositoryBreadcrumbs, {
           props: {
             currentPath: this.$route.params.path,
             refType: this.$route.query.ref_type,

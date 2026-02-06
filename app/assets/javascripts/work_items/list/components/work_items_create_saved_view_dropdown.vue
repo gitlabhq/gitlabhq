@@ -25,6 +25,16 @@ export default {
       type: String,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    displaySettings: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -68,6 +78,8 @@ export default {
       v-model="isNewViewModalVisible"
       :full-path="fullPath"
       :sort-key="sortKey"
+      :filters="filters"
+      :display-settings="displaySettings"
       @hide="isNewViewModalVisible = false"
     />
     <work-items-existing-saved-views-modal

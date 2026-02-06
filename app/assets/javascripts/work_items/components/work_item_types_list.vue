@@ -112,6 +112,8 @@ export default {
         additionalText = s__('WorkItem|Usage is controlled by the Service Desk feature.');
       } else if (item.isGroupWorkItemType) {
         additionalText = s__('WorkItem|Usage is limited to groups.');
+      } else if (item.isIncidentManagement) {
+        additionalText = s__('WorkItem|Usage is controlled by the Monitor feature.');
       }
 
       return additionalText ? `${baseMessage} ${additionalText}` : baseMessage;

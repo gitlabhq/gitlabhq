@@ -7,6 +7,7 @@ import { createMockDirective } from 'helpers/vue_mock_directive';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
+import { CREATED_DESC } from '~/work_items/list/constants';
 
 describe('WorkItemsExistingSavedViewsModal', () => {
   let wrapper;
@@ -21,6 +22,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       description: 'Only I can see this',
       isPrivate: true,
       subscribed: true,
+      filters: {},
+      displaySettings: {},
+      sort: CREATED_DESC,
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
@@ -33,6 +37,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       description: 'Shared with the team',
       isPrivate: false,
       subscribed: false,
+      filters: {},
+      displaySettings: {},
+      sort: CREATED_DESC,
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,

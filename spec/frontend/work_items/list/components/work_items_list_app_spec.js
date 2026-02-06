@@ -89,6 +89,7 @@ import {
 import { routes } from '~/work_items/router/routes';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -112,6 +113,10 @@ jest.mock('~/alert');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
   confirmAction: jest.fn().mockResolvedValue(true),
+}));
+jest.mock('ee_else_ce/work_items/list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/list/utils'),
+  saveSavedView: jest.fn(),
 }));
 
 const showToast = jest.fn();
@@ -148,6 +153,9 @@ const mockSavedViewsData = [
     description: 'Only I can see this',
     isPrivate: true,
     subscribed: true,
+    filters: {},
+    displaySettings: {},
+    sort: CREATED_DESC,
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
@@ -2227,7 +2235,7 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       findIssuableList().vm.$emit('filter', [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
       ]);
-      await nextTick();
+      await waitForPromises();
 
       findResetViewButton().vm.$emit('click');
       await nextTick();
@@ -2237,26 +2245,81 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       expect(localStorage.removeItem).toHaveBeenCalledWith('full/path-saved-view-3');
     });
 
-    it('prompts for confirmation when clicking "Save changes"', async () => {
-      findIssuableList().vm.$emit('filter', [
-        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
-      ]);
-      await nextTick();
+    describe('when "Save changes" is clicked', () => {
+      it('prompts for confirmation', async () => {
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+        ]);
 
-      findUpdateViewButton().vm.$emit('click');
-      await nextTick();
-      await waitForPromises();
+        await findUpdateViewButton().vm.$emit('click');
 
-      expect(confirmAction).toHaveBeenCalledWith(
-        null,
-        expect.objectContaining({
-          title: 'Save changes to Current sprint 3?',
-          modalHtmlMessage: expect.stringContaining(
-            'Changes will be applied for anyone else who has access to the view.',
-          ),
-          primaryBtnText: 'Save changes',
-        }),
-      );
+        expect(confirmAction).toHaveBeenCalledWith(
+          null,
+          expect.objectContaining({
+            title: 'Save changes to Current sprint 3?',
+            modalHtmlMessage: expect.stringContaining(
+              'Changes will be applied for anyone else who has access to the view.',
+            ),
+            primaryBtnText: 'Save changes',
+          }),
+        );
+      });
+
+      it('calls saveSavedView when user confirms', async () => {
+        saveSavedView.mockResolvedValue({
+          data: {
+            workItemSavedViewUpdate: {
+              errors: [],
+              savedView: singleSavedView[0],
+            },
+          },
+        });
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(saveSavedView).toHaveBeenCalledTimes(1);
+
+        expect(showToast).toHaveBeenCalledWith('View has been saved.');
+      });
+
+      it('sets error when mutation returns errors', async () => {
+        saveSavedView.mockResolvedValue({
+          data: {
+            workItemSavedViewUpdate: {
+              errors: ['Something went wrong'],
+              savedView: null,
+            },
+          },
+        });
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+      });
+
+      it('sets error when mutation throws error', async () => {
+        saveSavedView.mockRejectedValue(new Error('Network error'));
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findGlAlert().text()).toBe('Something went wrong while saving the view');
+      });
+
+      it('does not call saveSavedView when user cancels', async () => {
+        confirmAction.mockResolvedValue(false);
+
+        await findUpdateViewButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(saveSavedView).not.toHaveBeenCalled();
+      });
     });
 
     it('persists unsaved changes to localStorage', async () => {

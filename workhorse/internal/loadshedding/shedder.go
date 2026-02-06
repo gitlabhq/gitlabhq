@@ -1,4 +1,4 @@
-package healthcheck
+package loadshedding
 
 import (
 	"sync/atomic"
@@ -6,6 +6,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/sirupsen/logrus"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
 )
 
 // BacklogStrategy defines how to calculate the effective backlog from worker backlogs
@@ -64,6 +66,7 @@ func (s *SumBacklogStrategy) Name() string {
 type LoadShedder struct {
 	logger              *logrus.Logger
 	backlogThreshold    int
+	backlogHysteresis   float64 // Factor for deactivation (e.g., 0.8 means deactivate at 80% of threshold)
 	retryAfterSeconds   int
 	lastBacklogSnapshot atomic.Int64
 	shouldShed          atomic.Bool
@@ -77,11 +80,17 @@ type LoadShedder struct {
 	allowLoadCounter prometheus.Counter
 }
 
-// NewLoadShedder creates a new load shedder with the specified backlog threshold and strategy
+// NewLoadShedder creates a new load shedder with the specified backlog threshold, hysteresis, and strategy
 // If strategy is nil, MaxBacklogStrategy is used by default
-func NewLoadShedder(backlogThreshold int, retryAfterSeconds int, logger *logrus.Logger, reg prometheus.Registerer, strategy BacklogStrategy) *LoadShedder {
+// backlogHysteresis should be between 0 and 1 (e.g., 0.8 means deactivate at 80% of threshold)
+func NewLoadShedder(backlogThreshold int, backlogHysteresis float64, retryAfterSeconds int, logger *logrus.Logger, reg prometheus.Registerer, strategy BacklogStrategy) *LoadShedder {
 	if strategy == nil {
 		strategy = &MaxBacklogStrategy{}
+	}
+
+	// Validate hysteresis (must be between 0 and 1, where 1.0 means no hysteresis effect)
+	if backlogHysteresis <= 0 || backlogHysteresis > 1 {
+		backlogHysteresis = 0.8
 	}
 
 	promFactory := promauto.With(reg)
@@ -89,6 +98,7 @@ func NewLoadShedder(backlogThreshold int, retryAfterSeconds int, logger *logrus.
 	return &LoadShedder{
 		logger:            logger,
 		backlogThreshold:  backlogThreshold,
+		backlogHysteresis: backlogHysteresis,
 		retryAfterSeconds: retryAfterSeconds,
 		strategy:          strategy,
 		backlogGauge: promFactory.NewGauge(prometheus.GaugeOpts{
@@ -115,8 +125,8 @@ func NewLoadShedder(backlogThreshold int, retryAfterSeconds int, logger *logrus.
 }
 
 // UpdateBacklog updates the current backlog metric from Puma control server data
-// It uses the configured strategy to calculate the effective backlog
-func (ls *LoadShedder) UpdateBacklog(controlResp *PumaControlResponse) {
+// It uses the configured strategy to calculate the effective backlog and applies hysteresis logic
+func (ls *LoadShedder) UpdateBacklog(controlResp *puma.ControlResponse) {
 	if controlResp == nil || len(controlResp.WorkerStatus) == 0 {
 		return
 	}
@@ -135,26 +145,39 @@ func (ls *LoadShedder) UpdateBacklog(controlResp *PumaControlResponse) {
 	// Update backlog gauge
 	ls.backlogGauge.Set(float64(effectiveBacklog))
 
-	// Determine if we should shed load
-	shouldShed := effectiveBacklog >= ls.backlogThreshold
+	// Calculate hysteresis threshold once with proper rounding to avoid precision loss
+	hysteresisThreshold := int(float64(ls.backlogThreshold)*ls.backlogHysteresis + 0.5)
+
+	// Apply hysteresis logic to prevent oscillation
 	wasShedding := ls.shouldShed.Load()
+	shouldShed := wasShedding
+
+	if !wasShedding && effectiveBacklog >= ls.backlogThreshold {
+		// Activate shedding when backlog exceeds threshold
+		shouldShed = true
+	} else if wasShedding && effectiveBacklog < hysteresisThreshold {
+		// Deactivate shedding when backlog drops below hysteresis threshold
+		shouldShed = false
+	}
 
 	if shouldShed != wasShedding {
 		ls.shouldShed.Store(shouldShed)
 		if shouldShed {
 			ls.logger.WithFields(map[string]interface{}{
-				"effective_backlog": effectiveBacklog,
-				"backlog_threshold": ls.backlogThreshold,
-				"strategy":          ls.strategy.Name(),
+				"effective_backlog":    effectiveBacklog,
+				"backlog_threshold":    ls.backlogThreshold,
+				"hysteresis_threshold": hysteresisThreshold,
+				"strategy":             ls.strategy.Name(),
 			}).Warn("Load shedding enabled: backlog threshold exceeded")
 			ls.shedLoadGauge.Set(1)
 			ls.shedLoadCounter.Inc()
 		} else {
 			ls.logger.WithFields(map[string]interface{}{
-				"effective_backlog": effectiveBacklog,
-				"backlog_threshold": ls.backlogThreshold,
-				"strategy":          ls.strategy.Name(),
-			}).Info("Load shedding disabled: backlog below threshold")
+				"effective_backlog":    effectiveBacklog,
+				"backlog_threshold":    ls.backlogThreshold,
+				"hysteresis_threshold": hysteresisThreshold,
+				"strategy":             ls.strategy.Name(),
+			}).Info("Load shedding disabled: backlog below hysteresis threshold")
 			ls.shedLoadGauge.Set(0)
 			ls.allowLoadCounter.Inc()
 		}

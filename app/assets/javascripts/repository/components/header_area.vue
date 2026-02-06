@@ -31,7 +31,7 @@ import {
 import { InternalEvents } from '~/tracking';
 
 export default {
-  name: 'HeaderArea',
+  name: 'RepositoryHeaderArea',
   i18n: {
     compare: __('Compare'),
     findFile: __('Find file'),

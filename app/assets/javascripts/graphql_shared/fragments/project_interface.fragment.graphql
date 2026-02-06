@@ -9,6 +9,5 @@ fragment ProjectInterface on ProjectInterface {
     archiveProject
     removeProject
     viewEditPage
-    canLeave @gl_introduced(version: "18.9.0")
   }
 }

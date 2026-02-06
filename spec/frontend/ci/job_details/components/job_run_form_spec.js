@@ -8,8 +8,9 @@ import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
-import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
+import JobRunForm from '~/ci/job_details/components/job_run_form.vue';
 import playJobMutation from '~/ci/job_details/graphql/mutations/job_play_with_variables.mutation.graphql';
+import playJobWithInputsMutation from '~/ci/job_details/graphql/mutations/job_play_with_inputs.mutation.graphql';
 import retryJobMutation from '~/ci/job_details/graphql/mutations/job_retry_with_variables.mutation.graphql';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import JobVariablesForm from '~/ci/job_details/components/job_variables_form.vue';
@@ -37,7 +38,6 @@ const defaultProps = {
   jobId: mockId,
   jobName: 'job-name',
   isRetryable: false,
-  isManual: false,
 };
 
 const defaultProvide = {
@@ -63,6 +63,7 @@ describe('Manual Variables Form', () => {
 
     mockApollo = createMockApollo([
       [playJobMutation, handlers.playJobMutationHandler],
+      [playJobWithInputsMutation, handlers.playJobMutationHandler],
       [retryJobMutation, handlers.retryJobMutationHandler],
       [getJobInputsQuery, handlers.getJobInputsQueryHandler],
     ]);
@@ -71,7 +72,7 @@ describe('Manual Variables Form', () => {
       apolloProvider: mockApollo,
     };
 
-    wrapper = shallowMountExtended(ManualJobForm, {
+    wrapper = shallowMountExtended(JobRunForm, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -282,7 +283,7 @@ describe('Manual Variables Form', () => {
     describe('when feature flag is enabled and job is retryable', () => {
       beforeEach(async () => {
         createComponent({
-          props: { isRetryable: true, isManual: false },
+          props: { isRetryable: true },
           provide: { glFeatures: { ciJobInputs: true } },
           handlers: {
             ...defaultHandlers,
@@ -326,25 +327,52 @@ describe('Manual Variables Form', () => {
       });
     });
 
-    describe('when feature flag is disabled', () => {
-      beforeEach(() => {
+    describe('when feature flag is enabled and job is playable', () => {
+      beforeEach(async () => {
         createComponent({
-          props: { isRetryable: true, isManual: false },
-          provide: { glFeatures: { ciJobInputs: false } },
+          props: { isRetryable: false },
+          provide: { glFeatures: { ciJobInputs: true } },
+          handlers: {
+            ...defaultHandlers,
+            getJobInputsQueryHandler: jest.fn().mockResolvedValue(mockJobInputsQueryHandler),
+          },
         });
+        await waitForPromises();
       });
 
-      it('does not render inputs form', async () => {
-        await waitForPromises();
-        expect(findInputsForm().exists()).toBe(false);
+      it('passes job creation inputs to form', () => {
+        expect(findInputsForm().props('initialInputs')).toEqual([
+          {
+            name: 'environment',
+            type: 'STRING',
+            description: 'Target environment',
+            required: false,
+            default: 'staging',
+            options: ['staging', 'production'],
+            regex: null,
+          },
+        ]);
+      });
+
+      it('updates inputs when form emits update-inputs', () => {
+        const updatedInputs = [{ name: 'environment', value: 'production' }];
+
+        findInputsForm().vm.$emit('update-inputs', updatedInputs);
+        findRunBtn().vm.$emit('click');
+
+        expect(playJobMutationHandler).toHaveBeenCalledWith({
+          id: convertToGraphQLId(TYPENAME_CI_BUILD, mockId),
+          variables: [],
+          inputs: updatedInputs,
+        });
       });
     });
 
-    describe('when job is manual', () => {
+    describe('when feature flag is disabled', () => {
       beforeEach(() => {
         createComponent({
-          props: { isRetryable: true, isManual: true },
-          provide: { glFeatures: { ciJobInputs: true } },
+          props: { isRetryable: true },
+          provide: { glFeatures: { ciJobInputs: false } },
         });
       });
 
@@ -357,7 +385,7 @@ describe('Manual Variables Form', () => {
     describe('when job inputs query fails', () => {
       beforeEach(() => {
         createComponent({
-          props: { isRetryable: true, isManual: false },
+          props: { isRetryable: true },
           provide: { glFeatures: { ciJobInputs: true } },
           handlers: {
             getJobInputsQueryHandler: jest.fn().mockRejectedValue(new Error('Query failed')),

@@ -33,7 +33,10 @@ describe('WorkItemsSavedViewSelector', () => {
     wrapper = shallowMountExtended(WorkItemsSavedViewSelector, {
       propsData: {
         savedView,
-        savedSort: CREATED_DESC,
+        sortKey: CREATED_DESC,
+        filters: {},
+        displaySettings: {},
+        fullPath: 'test-project-path',
       },
       provide: {
         isGroup,

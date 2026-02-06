@@ -12,6 +12,12 @@ import {
   urlParamsWithWildcardValues,
   savedViewFiltersObject,
   savedViewFilterTokens,
+  saveSavedViewParams,
+  saveSavedViewResponse,
+  editSavedViewParams,
+  editSavedViewResponse,
+  editSavedViewFormOnlyParams,
+  editSavedViewFormOnlyResponse,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -27,6 +33,7 @@ import {
   getTypeTokenOptions,
   groupMultiSelectFilterTokens,
   getSavedViewFilterTokens,
+  saveSavedView,
 } from 'ee_else_ce/work_items/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -238,5 +245,99 @@ describe('groupMultiSelectFilterTokens', () => {
 describe('getSavedViewFilterTokens', () => {
   it('returns valid filter tokens given a saved view filters object', () => {
     expect(getSavedViewFilterTokens(savedViewFiltersObject)).toEqual(savedViewFilterTokens);
+  });
+});
+
+describe('saveSavedView', () => {
+  let mockApolloClient;
+  let mockMutate;
+
+  beforeEach(() => {
+    mockMutate = jest.fn();
+    mockApolloClient = {
+      mutate: mockMutate,
+    };
+  });
+
+  describe('when creating a new saved view', () => {
+    it('calls mutate with workItemSavedViewCreate', async () => {
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient: mockApolloClient,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewResponse);
+
+      const result = await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              namespacePath: 'my-group',
+              name: 'My View',
+              description: 'A test view',
+              private: false,
+              filters: { state: 'opened' },
+              sort: 'CREATED_DESC',
+              displaySettings: { groupBy: 'assignee' },
+            },
+          },
+        }),
+      );
+      expect(result.data.workItemSavedViewCreate.savedView.id).toBe('gid://gitlab/SavedView/1');
+    });
+  });
+
+  describe('when editing a saved view', () => {
+    it('calls mutate with workItemSavedViewUpdate', async () => {
+      const params = {
+        ...editSavedViewParams,
+        apolloClient: mockApolloClient,
+      };
+
+      mockMutate.mockResolvedValue(editSavedViewResponse);
+
+      const result = await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              id: 'gid://gitlab/SavedView/1',
+              name: 'Updated View',
+              description: 'Updated description',
+              private: false,
+              filters: { state: 'closed' },
+              sort: 'UPDATED_DESC',
+              displaySettings: { groupBy: 'status' },
+            },
+          },
+        }),
+      );
+      expect(result.data.workItemSavedViewUpdate.savedView.name).toBe('Updated View');
+    });
+
+    it('excludes filters and sort when editing form only', async () => {
+      const params = {
+        ...editSavedViewFormOnlyParams,
+        apolloClient: mockApolloClient,
+      };
+
+      mockMutate.mockResolvedValue(editSavedViewFormOnlyResponse);
+
+      await saveSavedView(params);
+
+      const callArgs = mockMutate.mock.calls[0][0];
+      expect(callArgs.variables.input).toEqual({
+        id: 'gid://gitlab/SavedView/1',
+        name: 'Updated View',
+        description: 'Updated description',
+        private: false,
+      });
+      expect(callArgs.variables.input.filters).toBeUndefined();
+      expect(callArgs.variables.input.sort).toBeUndefined();
+      expect(callArgs.variables.input.displaySettings).toBeUndefined();
+    });
   });
 });

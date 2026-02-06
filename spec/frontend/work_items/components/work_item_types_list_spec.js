@@ -462,6 +462,33 @@ describe('WorkItemTypesList', () => {
       expect(tooltipText).toContain('Usage is limited to groups.');
     });
 
+    it('includes incident message when isIncidentManagement is true', async () => {
+      const incidentType = {
+        ...mockWorkItemTypes[0],
+        isIncidentManagement: true,
+        isConfigurable: false,
+      };
+
+      const queryHandler = jest.fn().mockResolvedValue({
+        data: {
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            workItemTypes: {
+              nodes: [incidentType],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'Namespace',
+          },
+        },
+      });
+
+      createWrapper({ queryHandler });
+      await waitForPromises();
+
+      const tooltipText = findLockIconTooltip(incidentType.id);
+      expect(tooltipText).toContain('Usage is controlled by the Monitor feature.');
+    });
+
     it('does not render lock icon for configurable types', async () => {
       const nonConfigurableType = {
         ...mockWorkItemTypes[0],

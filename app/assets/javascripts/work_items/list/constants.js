@@ -787,3 +787,5 @@ export const savedViewFilters = {
     operator: OPERATOR_IS,
   },
 };
+
+export const NEW_SAVED_VIEWS_GID = 'gid://gitlab/WorkItems::SavedViews::SavedView/new';

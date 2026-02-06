@@ -21,6 +21,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/listener"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/loadshedding"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -171,9 +172,11 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
 	cfg.Listeners = cfgFromFile.Listeners
 	cfg.HealthCheckListener = cfgFromFile.HealthCheckListener
+	cfg.LoadSheddingConfig = cfgFromFile.LoadSheddingConfig
 
 	// Apply default health check configuration if not provided
 	cfg.ApplyHealthCheckDefaults()
+	cfg.ApplyLoadSheddingDefaults()
 
 	cfg.CircuitBreakerConfig = cfgFromFile.CircuitBreakerConfig
 	cfg.AdoptCfRayHeader = cfgFromFile.AdoptCfRayHeader
@@ -292,6 +295,22 @@ func run(boot bootConfig, cfg config.Config) error {
 		defer healthCancel()
 	}
 
+	// Initialize load shedding service if configured
+	var loadShedder *loadshedding.LoadShedder
+	if cfg.LoadSheddingConfig != nil && cfg.LoadSheddingConfig.Enabled {
+		cfg.ApplyLoadSheddingDefaults()
+
+		loadSheddingService, shedder, err := loadshedding.NewLoadSheddingService(cfg.LoadSheddingConfig, accessLogger)
+		if err != nil {
+			return fmt.Errorf("failed to create load shedding service: %v", err)
+		}
+
+		loadShedder = shedder
+
+		// Start load shedding service in background
+		go loadSheddingService.Start(context.Background()) // lint:allow context.Background
+	}
+
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
@@ -323,11 +342,8 @@ func run(boot bootConfig, cfg config.Config) error {
 	)
 
 	// Apply load shedding middleware if configured
-	if healthCheckServer != nil {
-		loadShedder := healthCheckServer.GetLoadShedder()
-		if loadShedder != nil {
-			up = healthcheck.LoadSheddingMiddleware(loadShedder, accessLogger)(up)
-		}
+	if loadShedder != nil {
+		up = loadshedding.Middleware(loadShedder, accessLogger)(up)
 	}
 
 	srv := &http.Server{Handler: wrapRaven(up)}

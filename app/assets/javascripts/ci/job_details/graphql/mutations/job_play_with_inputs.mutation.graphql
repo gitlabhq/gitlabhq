@@ -1,0 +1,16 @@
+# @feature_category: pipeline_composition
+#import "~/ci/job_details/graphql/fragments/ci_job.fragment.graphql"
+
+mutation playJobWithInputs(
+  $id: CiProcessableID!
+  $variables: [CiVariableInput!]
+  $inputs: [CiInputsInput!]
+) {
+  jobPlay(input: { id: $id, variables: $variables, inputs: $inputs }) {
+    job {
+      ...BaseCiJob
+      webPath
+    }
+    errors
+  }
+}

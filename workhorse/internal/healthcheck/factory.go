@@ -42,16 +42,6 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 			WithSkipInterval(cfg.RailsSkipInterval.Duration),
 		}
 
-		// Add load shedder if configured
-		if cfg.LoadShedBacklogThreshold > 0 {
-			strategy := NewBacklogStrategy(cfg.LoadShedStrategy)
-			loadShedder := NewLoadShedder(cfg.LoadShedBacklogThreshold, cfg.LoadShedRetryAfterSeconds, logger, reg, strategy)
-			loadShedder.InitializeMetrics()
-			opts = append(opts, WithLoadShedder(loadShedder))
-			// Store the load shedder in the server for access by middleware
-			server.loadShedder = loadShedder
-		}
-
 		pumaReadinessChecker := NewPumaReadinessChecker(
 			cfg.ReadinessProbeURL,
 			cfg.PumaControlURL,
@@ -65,7 +55,8 @@ func CreateServer(cfg config.HealthCheckConfig, logger *logrus.Logger, reg prome
 	return server, nil
 }
 
-// InitializeAndStart creates and starts the health check server if configured
+// InitializeAndStart creates and starts the health check server
+// Returns the server, a cancel function for the background context, and any error
 func InitializeAndStart(cfg config.Config, accessLogger *logrus.Logger, errors chan error) (*Server, context.CancelFunc, error) {
 	if cfg.HealthCheckListener == nil {
 		return nil, nil, nil
@@ -76,8 +67,10 @@ func InitializeAndStart(cfg config.Config, accessLogger *logrus.Logger, errors c
 		return nil, nil, fmt.Errorf("failed to create health check server: %v", err)
 	}
 
-	// Start health check server in background
+	// Create a context for background services (health check and load shedding)
 	healthCtx, healthCancel := context.WithCancel(context.Background()) // lint:allow context.Background
+
+	// Start health check server in background
 	go healthCheckServer.Start(healthCtx)
 
 	// Start health check HTTP server

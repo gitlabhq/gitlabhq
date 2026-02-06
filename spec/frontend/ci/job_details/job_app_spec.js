@@ -8,7 +8,7 @@ import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
-import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
+import JobRunForm from '~/ci/job_details/components/job_run_form.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
@@ -86,7 +86,7 @@ describe('Job App', () => {
   const findEnvironmentsBlockComponent = () => wrapper.findComponent(EnvironmentsBlock);
   const findErasedBlock = () => wrapper.findComponent(ErasedBlock);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
-  const findJobForm = () => wrapper.findComponent(ManualJobForm);
+  const findJobForm = () => wrapper.findComponent(JobRunForm);
   const findJobLog = () => wrapper.findComponent(JobLog);
   const findJobLogTopBar = () => wrapper.findComponent(JobLogTopBar);
 

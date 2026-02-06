@@ -13,7 +13,6 @@ import { archiveProject, unarchiveProject, restoreProject, deleteProject } from 
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
-import ProjectListItemLeaveModal from '~/vue_shared/components/projects_list/projects_list_item_leave_modal.vue';
 import {
   ACTION_COPY_ID,
   ACTION_EDIT,
@@ -23,7 +22,6 @@ import {
   ACTION_UNARCHIVE,
   ACTION_REQUEST_ACCESS,
   ACTION_WITHDRAW_ACCESS_REQUEST,
-  ACTION_LEAVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
@@ -61,7 +59,7 @@ describe('ProjectListItemActions', () => {
   const editPath = '/foo/bar/edit';
   const projectWithActions = {
     ...project,
-    availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+    availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE],
     editPath,
   };
 
@@ -81,7 +79,6 @@ describe('ProjectListItemActions', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findListActionsLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
-  const findLeaveModal = () => wrapper.findComponent(ProjectListItemLeaveModal);
   const fireAction = async (action) => {
     findListActions().props('actions')[action].action();
     await nextTick();
@@ -116,11 +113,8 @@ describe('ProjectListItemActions', () => {
           [ACTION_DELETE]: {
             action: expect.any(Function),
           },
-          [ACTION_LEAVE]: {
-            action: expect.any(Function),
-          },
         },
-        availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+        availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE],
       });
     });
   });
@@ -427,35 +421,6 @@ describe('ProjectListItemActions', () => {
           });
           expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
         });
-      });
-    });
-  });
-
-  describe('when leave action is fired', () => {
-    beforeEach(async () => {
-      createComponent();
-      await fireAction(ACTION_LEAVE);
-    });
-
-    it('shows leave modal', () => {
-      expect(findLeaveModal().props('visible')).toBe(true);
-    });
-
-    describe('when leave modal emits visibility change', () => {
-      it("updates the modal's visibility prop", async () => {
-        findLeaveModal().vm.$emit('change', false);
-
-        await nextTick();
-
-        expect(findLeaveModal().props('visible')).toBe(false);
-      });
-    });
-
-    describe('when leave modal emits success event', () => {
-      it('emits refetch event', () => {
-        findLeaveModal().vm.$emit('success');
-
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
       });
     });
   });

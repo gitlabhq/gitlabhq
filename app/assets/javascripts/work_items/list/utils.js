@@ -88,7 +88,11 @@ import {
   START_DATE_ASC,
   START_DATE_DESC,
   savedViewFilters,
+  NEW_SAVED_VIEWS_GID,
 } from '~/work_items/list/constants';
+import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
+import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 
 /**
  * Get the types of work items that should be displayed on issues lists.
@@ -786,3 +790,149 @@ export function updateUpvotesCount({ list, workItem, namespace = BoardType.proje
     activeItem.downvotes = downvotesCount;
   });
 }
+
+// Manually update the saved views Apollo cache since its
+// fields differ from the mutation, causing automatic cache updates to fail.
+const updateSavedViewsQueryCache = ({
+  cache,
+  responseData,
+  mutationKey,
+  namespacePath,
+  isEdit,
+  subscribedOnly,
+}) => {
+  const query = {
+    query: getSubscribedSavedViewsQuery,
+    variables: { fullPath: namespacePath, subscribedOnly },
+  };
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newData = produce(sourceData, (draftState) => {
+    const { savedView } = responseData[mutationKey];
+    const { nodes: savedViews } = draftState.namespace.savedViews;
+
+    if (isEdit) {
+      const index = savedViews.findIndex(({ id }) => id === savedView.id);
+      if (index !== -1) {
+        savedViews[index] = savedView;
+      }
+    } else {
+      savedViews.unshift(savedView);
+    }
+  });
+
+  cache.writeQuery({ ...query, data: newData });
+};
+
+const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath, isEdit }) => {
+  updateSavedViewsQueryCache({
+    cache,
+    responseData,
+    mutationKey,
+    namespacePath,
+    isEdit,
+    subscribedOnly: true,
+  });
+  updateSavedViewsQueryCache({
+    cache,
+    responseData,
+    mutationKey,
+    namespacePath,
+    isEdit,
+    subscribedOnly: false,
+  });
+};
+
+// Centralized logic for creating and updating saved views
+// Reused across All items > Save view, Save changes, and Create/Edit saved view
+// TODO: Break this into smaller functions (create, updateMeta, updateConfig) with clearer responsibilities
+export const saveSavedView = ({
+  isEdit = false,
+  isForm = false,
+  id = '',
+  namespacePath = '',
+  name = '',
+  description = '',
+  isPrivate = true,
+  filters = {},
+  sort = null,
+  displaySettings = {},
+  userPermissions,
+  subscribed,
+  mutationKey,
+  apolloClient,
+}) => {
+  const mutation = isEdit ? updateSavedViewMutation : createSavedViewMutation;
+
+  const commonInput =
+    isEdit && isForm
+      ? {
+          name,
+          description,
+          private: isPrivate,
+        }
+      : {
+          name,
+          description,
+          private: isPrivate,
+          filters,
+          displaySettings,
+          sort,
+        };
+
+  const inputVariables = isEdit
+    ? { id, ...commonInput }
+    : {
+        namespacePath,
+        ...commonInput,
+      };
+
+  const commonSavedViewResponse = {
+    name,
+    description,
+    isPrivate,
+    filters,
+    displaySettings,
+    sort,
+  };
+
+  const optimisticResponse = {
+    [mutationKey]: {
+      errors: [],
+      savedView: isEdit
+        ? {
+            id,
+            ...commonSavedViewResponse,
+            userPermissions,
+            subscribed,
+          }
+        : {
+            id: NEW_SAVED_VIEWS_GID,
+            ...commonSavedViewResponse,
+            subscribed: true,
+            userPermissions: { updateSavedView: true, deleteSavedView: true },
+          },
+    },
+  };
+
+  return apolloClient.mutate({
+    mutation,
+    variables: { input: inputVariables },
+    optimisticResponse,
+    update: (cache, { data: responseData }) => {
+      if (!isEdit) {
+        updateSavedViewsCache({
+          cache,
+          responseData,
+          mutationKey,
+          namespacePath,
+          isEdit,
+        });
+      }
+    },
+  });
+};
