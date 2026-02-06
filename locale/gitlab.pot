@@ -72693,6 +72693,9 @@ msgstr ""
 msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
+msgid "UsageBilling|Continue after your evaluation"
+msgstr ""
+
 msgid "UsageBilling|Credit amount"
 msgstr ""
 
@@ -72714,6 +72717,9 @@ msgstr ""
 msgid "UsageBilling|Displaying user data is disabled."
 msgstr ""
 
+msgid "UsageBilling|Explore GitLab Duo"
+msgstr ""
+
 msgid "UsageBilling|GitLab Credits"
 msgstr ""
 
@@ -72732,6 +72738,9 @@ msgstr ""
 msgid "UsageBilling|GitLab Credits usage"
 msgstr ""
 
+msgid "UsageBilling|Go to Customers Portal"
+msgstr ""
+
 msgid "UsageBilling|Included credits"
 msgstr ""
 
@@ -72747,7 +72756,13 @@ msgstr ""
 msgid "UsageBilling|Last event transaction at:"
 msgstr ""
 
+msgid "UsageBilling|Learn about GitLab Credits"
+msgstr ""
+
 msgid "UsageBilling|Learn more about %{helpLinkStart}GitLab Credit pricing%{helpLinkEnd}."
+msgstr ""
+
+msgid "UsageBilling|Learn more about GitLab Duo"
 msgstr ""
 
 msgid "UsageBilling|Location"
@@ -72763,6 +72778,9 @@ msgid "UsageBilling|Monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Monthly commitment limit"
+msgstr ""
+
+msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs."
 msgstr ""
 
 msgid "UsageBilling|Monthly commitments offer significant discounts off list price. Share GitLab Credits across your namespace for flexibility and predictable monthly costs. Learn more about %{linkStart}GitLab Credit pricing%{linkEnd}."
@@ -72783,6 +72801,9 @@ msgstr ""
 msgid "UsageBilling|Purchase monthly commitment"
 msgstr ""
 
+msgid "UsageBilling|Read the documentation"
+msgstr ""
+
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
@@ -72790,6 +72811,12 @@ msgid "UsageBilling|This dashboard may not display all current subscription data
 msgstr ""
 
 msgid "UsageBilling|Total credits used"
+msgstr ""
+
+msgid "UsageBilling|Try the GitLab Duo Agent Platform and agentic chat to delegate routine tasks like code refactoring, security scans, and research to AI-powered assistants."
+msgstr ""
+
+msgid "UsageBilling|Understand how credits are consumed by different features, explore your billing and commitment options, and learn how to monitor your members' usage."
 msgstr ""
 
 msgid "UsageBilling|Unlock more discounts for your GitLab usage. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs. %{linkStart}GitLab Credit pricing%{linkEnd}."
@@ -72815,7 +72842,13 @@ msgid_plural "UsageBilling|Used this month, resets in %{days} days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "UsageBilling|You are currently using temporary evaluation credits to access GitLab Duo features. Your subscription's included credits for users will be available after your evaluation ends. If you have access to the %{linkStart}Customers Portal%{linkEnd}, you can view your usage breakdown, remaining balance, and some usage details."
+msgstr ""
+
 msgid "UsageBilling|You won't be billed for this usage until you accept the on-demand billing terms."
+msgstr ""
+
+msgid "UsageBilling|Your GitLab evaluation credits are active"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"
