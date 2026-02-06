@@ -125,22 +125,23 @@ The `gitlab:zoekt:info` Rake task returns an output similar to the following:
 
 ```console
 Exact Code Search
-GitLab version:                                    18.9.0
-Enable indexing:                                   yes
-Enable searching:                                  yes
-Pause indexing:                                    no
-Index root namespaces automatically:               yes
-Cache search results for five minutes:             yes
-Indexing CPU to tasks multiplier:                  1.0
-Number of parallel processes per indexing task:    1
-Number of namespaces per indexing rollout:         32
-Offline nodes automatically deleted after:         20m
-Indexing timeout per project:                      30m
-Maximum number of files per project to be indexed: 500000
-Maximum file size for indexing:                    1MB
-Maximum trigrams per file:                         20000
-Retry interval for failed namespaces:              1d
-Number of replicas per namespace:                  1
+GitLab version:                                      18.9.0
+Enable indexing:                                     yes
+Enable searching:                                    yes
+Pause indexing:                                      no
+Index root namespaces automatically:                 yes
+Cache search results for five minutes:               yes
+Indexing CPU to tasks multiplier:                    1.0
+Probability of random force reindexing (percentage): 0.25
+Number of parallel processes per indexing task:      1
+Number of namespaces per indexing rollout:           32
+Offline nodes automatically deleted after:           20m
+Indexing timeout per project:                        30m
+Maximum number of files per project to be indexed:   500000
+Maximum file size for indexing:                      1MB
+Maximum trigrams per file:                           20000
+Retry interval for failed namespaces:                1d
+Number of replicas per namespace:                    1
 
 Nodes
 # Number of Zoekt nodes and their status
@@ -338,6 +339,35 @@ To set the number of concurrent indexing tasks:
    For example, if a Zoekt node has `4` CPU cores and the multiplier is `1.5`,
    the number of concurrent tasks for the node is `6`.
 
+1. Select **Save changes**.
+
+## Define the probability of random force reindexing
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222273) in GitLab 18.9.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can define the probability that a project is
+force reindexed instead of incrementally indexed.
+The default value is `0.25` (0.25%).
+
+Force reindexing helps prevent memory map (mmap) handlers from running out
+by periodically rebuilding indices from scratch.
+A higher percentage increases indexing load, especially for very large repositories.
+
+To define the probability of random force reindexing:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **Search**.
+1. Expand **Exact code search**.
+1. In the **Probability of random force reindexing (percentage)** text box,
+   enter a number between `0` and `100`.
 1. Select **Save changes**.
 
 ## Set the number of parallel processes per indexing task

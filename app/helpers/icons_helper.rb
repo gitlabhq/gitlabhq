@@ -128,9 +128,7 @@ module IconsHelper
 
   def audit_icon(name, css_class: nil)
     case name
-    when "standard"
-      name = "key"
-    when "two-factor"
+    when "standard", "two-factor"
       name = "key"
     when "google_oauth2"
       name = "google"

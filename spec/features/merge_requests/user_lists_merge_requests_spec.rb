@@ -93,13 +93,13 @@ RSpec.describe 'Merge requests > User lists merge requests', :js, feature_catego
       expect(page).to have_content 'fix'
       expect(page).to have_content "Merged"
 
-      expect(page).not_to have_content "Reviewers"
+      expect(page).not_to have_content "Reviewer"
 
       click_link @fix.title
 
       expect(page).to have_content 'fix'
       expect(page).not_to have_content "Merged"
-      expect(page).to have_content "Reviewers"
+      expect(page).to have_content "Reviewer"
       expect(page).to have_current_path(project_merge_request_path(project, @fix))
     end
   end

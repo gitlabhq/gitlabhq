@@ -53,6 +53,8 @@
   - 1
 - - ai_catalog_flows_cascade_sync_foundational_flows
   - 1
+- - ai_catalog_flows_sync_project_foundational_flows
+  - 1
 - - ai_duo_workflows_code_review_timeout
   - 1
 - - ai_duo_workflows_update_workflow_status_event

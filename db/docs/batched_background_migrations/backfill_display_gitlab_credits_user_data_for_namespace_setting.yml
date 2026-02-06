@@ -1,0 +1,13 @@
+---
+migration_job_name: BackfillDisplayGitlabCreditsUserDataForNamespaceSetting
+description: |
+  Backfills the display_gitlab_credits_user_data setting to true for all existing
+  groups on GitLab.com. This enables the "Display user data" feature on
+  the GitLab Credits dashboard by default, improving discoverability of user-level
+  usage information. Only group namespaces (type = 'Group') not already set to true
+  are affected.
+feature_category: consumables_cost_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222043
+milestone: '18.9'
+queued_migration_version: 20260204080217
+finalized_by: # version of the migration that finalized this BBM

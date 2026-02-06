@@ -8,7 +8,6 @@ module Users
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
-    SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
@@ -63,11 +62,6 @@ module Users
     end
 
     def dismiss_two_factor_auth_recovery_settings_check; end
-
-    def show_security_newsletter_user_callout?
-      current_user&.can_admin_all_resources? &&
-        !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
-    end
 
     def web_hook_disabled_dismissed?(object)
       return false unless object.is_a?(::WebHooks::HasWebHooks)

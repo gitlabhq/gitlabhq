@@ -103,6 +103,9 @@ Most base images include these commands by default. However, minimal images (lik
 might require you to install them explicitly. If needed, you can install missing commands in the
 [setup script configuration](#configure-setup-scripts).
 
+> [!note]
+> There is [an issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) with the latest version of `git` in custom images. Use Git version `2.43.7` or earlier in your custom image.
+
 Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
 
 For example, if you use an Alpine-based image:

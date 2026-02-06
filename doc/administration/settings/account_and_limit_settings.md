@@ -483,17 +483,6 @@ After a lifetime for access tokens is set, GitLab:
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
-
-{{< /history >}}
-
-> [!flag]
-> The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
-> For more information, see the history.
-> The feature flag is not available on GitLab Dedicated.
-
 Users can optionally specify a lifetime for
 [SSH keys](../../user/ssh.md).
 This lifetime is not a requirement, and can be set to any arbitrary number of days.

@@ -945,6 +945,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(described_class.with_api_blob_entity_associations.preload_values).to match_array(expected_array)
       end
     end
+
+    describe '.projects_order_namespace_id_asc' do
+      let(:arel_table) { described_class.arel_table }
+      let(:relation) { described_class.all }
+
+      before do
+        allow(relation).to receive(:reorder)
+      end
+
+      it do
+        relation.projects_order_namespace_id_asc
+        expect(relation).to have_received(:reorder).with(arel_table['namespace_id'].asc)
+      end
+    end
   end
 
   describe 'modules' do

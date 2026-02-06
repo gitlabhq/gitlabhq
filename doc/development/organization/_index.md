@@ -9,111 +9,77 @@ title: Organization
 The [Organization initiative](../../user/organization/_index.md) focuses on reaching feature parity between
 GitLab.com and GitLab Self-Managed.
 
-## Consolidate groups and projects
+## Current phase (FY27-Q1 and FY27-Q2): Feature parity
 
-- [Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
+The current development focus is achieving **feature parity** for organizations. This means ensuring that existing features work for groups inside organizations so users who transfer to an organization don't lose functionality.
 
-One facet of the Organization initiative is to consolidate groups and projects,
-addressing the feature disparity between them. Some features, such as epics, are
-only available at the group level. Some features, such as issues, are only available
-at the project level. Other features, such as milestones, are available to both groups
-and projects.
+**Organizations is not yet ready for new features.** Any new features should continue to target:
 
-We receive many requests to add features either to the group or project level.
-Moving features around to different levels is problematic on multiple levels:
+- **GitLab.com**: Top-level groups
+- **GitLab Self-Managed**: Instance level
 
-- It requires engineering time to move the features.
-- It requires UX overhead to maintain mental models of feature availability.
-- It creates redundant code.
+Guidance on building new features on organizations, or migrating existing features from top-level group to organizations, will come in the future.
+Please contact the team on Slack (`#g_organizations`) if you wish to informally discuss this.
 
-When features are copied from one level (project, group, or instance) to another,
-the copies often have small, nuanced differences between them. These nuances cause
-extra engineering time when fixes are needed, because the fix must be copied to
-several locations. These nuances also create different user experiences when the
-feature is used in different places.
+## Using `Current.organization`
 
-A solution for this problem is to consolidate groups and projects into a single
-entity, `namespace`. The work on this solution is split into several phases and
-is tracked in [epic 6473](https://gitlab.com/groups/gitlab-org/-/epics/6473).
+The application maps incoming requests to an organization through `Current.organization`. This context is automatically set in the request layer and should be used to ensure data is properly scoped to the current organization.
 
-## How to plan features that interact with Group and ProjectNamespace
+### Where `Current.organization` is available
 
-As of now, every Project in the system has a record in the `namespaces` table. This makes it possible to
-use common interface to create features that are shared between Groups and Projects. Shared behavior can be added using
-a concerns mechanism. Because the `Namespace` model is responsible for `UserNamespace` methods as well, it is discouraged
-to use the `Namespace` model for shared behavior for Projects and Groups.
+`Current.organization` is available in:
 
-### Resource-based features
+- Controllers
+- GraphQL
+- Grape API endpoints (use the `set_current_organization` helper)
+- Sidekiq
 
-To migrate resource-based features, existing functionality will need to be supported. This can be achieved in two Phases.
+### Passing organization context
 
-**Phase 1 - Setup**
+When creating or updating records, pass the organization context using `Current.organization`:
 
-- Link into the namespaces table
-  - Add a column to the table
-  - For example, in issues a `project id` points to the projects table. We need to establish a link to the `namespaces` table.
-  - Modify code so that any new record already has the correct data in it
-  - Backfill
+```ruby
+# In controllers
+def create
+  @group = Groups::CreateService.new(
+    current_user,
+    group_params.with_defaults(organization_id: Current.organization.id)
+  ).execute
+end
 
-**Phase 2 - Prerequisite work**
+# In GraphQL mutations
+def resolve(args)
+  args[:organization_id] = Current.organization.id
+  # ...
+end
 
-- Investigate the permission model as well as any performance concerns related to that.
-  - Permissions need to be checked and kept in place.
-- Investigate what other models need to support namespaces for functionality dependent on features you migrate in Phase 1.
-- Adjust CRUD services and APIs (REST and GraphQL) to point to the new column you added in Phase 1.
-- Consider performance when fetching resources.
+# In finders
+@snippets = SnippetsFinder.new(
+  current_user,
+  organization_id: Current.organization.id,
+  author: current_user
+).execute
+```
 
-Introducing new functionality is very much dependent on every single team and feature.
+### Scoping queries to organizations
 
-### Settings-related features
+Ensure queries are scoped to the current organization:
 
-Right now, cascading settings are available for `NamespaceSettings`. By creating `ProjectNamespace`,
-we can use this framework to make sure that some settings are applicable on the project level as well.
-
-When working on settings, we need to make sure that:
-
-- They are not used in `join` queries or modify those queries.
-- Updating settings is taken into consideration.
-- If we want to move from project to project namespace, we follow a similar database process to the one described in Phase 1.
+```ruby
+@labels = Label.in_organization(organization).templates
+@topic = Projects::Topic.in_organization(organization.id).find_by_name(topic_name)
+```
 
 ## Organization routing
 
-Organization-scoped routes use the `/o/:organization_path/*path` pattern. These routes are created by redrawing all existing routes within an organization scope in `config/routes.rb`.
-
-### How it works
-
-In `config/routes.rb`, all routes are defined within a scope block:
+Organization-scoped routes use the `/o/:organization_path/` pattern (for example, `/o/my-org/projects`).
+Always use regular, unscoped Rails URL helpers like `projects_path` and GitLab automatically routes based on `Current.organization`. This ensures switching between organization-scoped routes and global routes automatically.
 
 ```ruby
-scope(
-  path: '/o/:organization_path',
-  constraints: { organization_path: Gitlab::PathRegex.organization_route_regex },
-  as: :organization
-) do
-  draw_all_routes
-end
+# Recommended: Use global route helpers
+projects_path                    # Automatically becomes /o/my-org/projects if Current.organization is set
+project_issues_path(@project)    # Automatically becomes /o/my-org/namespace/project/-/issues
 ```
-
-This approach:
-
-1. Redraws all existing routes under the `/o/:organization_path` prefix
-1. Validates the organization path using a regex constraint
-1. Preserves organization context throughout the request lifecycle
-
-For example, `GET /o/my-org/projects` routes to `ProjectsController#index` (same as `/projects`) with the organization context available via `Current.organization`.
-
-This creates organization-scoped versions of all routes without requiring separate controller or route definitions.
-
-### Routes not yet organization-scoped
-
-Some routes are not currently available under the organization scope:
-
-- **Devise OmniAuth callbacks** - Devise does not support scoping OmniAuth callbacks under a dynamic segment, so these remain at the global level
-- **API routes** - API endpoints are not yet organization-scoped
-
-## Organization URL helpers
-
-Organization URL helpers automatically switch between organization-scoped routes (`/o/:organization_path/...`) and global routes based on the current organization context. This allows you to use standard Rails URL helpers like `projects_path` throughout your code, and they automatically generate the correct URL based on whether an organization context is present.
 
 ### How it works
 
@@ -125,15 +91,7 @@ The organization URL helper system is implemented in [`Routing::OrganizationsHel
 1. When `Current.organization` is present and the organization has scoped paths enabled, the helpers automatically use the organization-scoped version of the route
 1. Preserves the original `root_path` and `root_url` as `unscoped_root_path` and `unscoped_root_url`
 
-### Usage
-
-Use standard global route helpers and let the system automatically switch to organization-scoped routes when appropriate:
-
-```ruby
-# Recommended: Use global route helpers
-projects_path                    # Automatically becomes /o/my-org/projects if Current.organization is set
-project_issues_path(@project)    # Automatically becomes /o/my-org/namespace/project/-/issues
-```
+This approach preserves organization context throughout the request lifecycle. For example, `GET /o/my-org/projects` routes to `ProjectsController#index` (same as `/projects`) with the organization context available via `Current.organization`.
 
 Use explicit organization helpers only when you need to generate a URL for a specific organization that differs from `Current.organization`, or when working outside the request layer (services, workers, Rake tasks) where `Current.organization` is not available:
 
@@ -143,332 +101,58 @@ organization_projects_path(organization_path: 'my-org')           # /o/my-org/pr
 organization_project_issues_path(@project, organization_path: 'my-org')  # /o/my-org/namespace/project/-/issues
 ```
 
-## Organizations & cells
+### Routes not yet organization-scoped
 
-For the [Cells](../cells) project, GitLab will rely on organizations. A cell will host one or more organizations. When a request is made, the [HTTP Router Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/http_routing_service/) will route it to the correct cell.
+Some routes are not currently available under the organization scope:
 
-### Defining a sharding key for all organizational tables
+- **Devise OmniAuth callbacks** - Devise does not support scoping OmniAuth callbacks under a dynamic segment, so these remain at the global level
+- **API routes** - API endpoints are not yet organization-scoped
 
-All tables with the following [`gitlab_schema`](../cells/_index.md#available-cells--organization-schemas) are considered organization level:
+## Testing organization isolation
 
-- `gitlab_main_org`
-- `gitlab_ci`
-- `gitlab_sec`
-- `gitlab_main_user`
+Enable the following feature flags to test organizations:
 
-All newly created organization-level tables are required to have a `sharding_key`
-defined in the corresponding `db/docs/` file for that table.
+- `organization_scoped_paths`
+- `ui_for_organizations`
+- `organization_switching`
 
-The purpose of the sharding key is documented in the
-[Organization isolation blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/),
-but in short this column is used to provide a standard way of determining which
-Organization owns a particular row in the database. The column will be used in
-the future to enforce constraints on data not cross Organization boundaries. It
-will also be used in the future to provide a uniform way to migrate data
-between Cells.
+When making features organization-aware, pay special attention to areas where cross-organization data leakage could occur.
+Examples include:
 
-The actual name of the foreign key can be anything but it must reference a row
-in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable.
+- Group and project member invites
+- User mentions in issues, merge requests, or comments
+- User search and autocomplete results
+- Issue, merge request, milestone, and label references across organizations
+- Finder classes scoping results to the current organization
 
-The reasoning for adding sharding keys, and which keys to add to a table/row, goes like this:
+A helpful convention for manual testing in your development environment is to create an organization with an obvious
+name and prefix all its associated data. This makes it easy to visually confirm whether data from other organizations
+has accidentally been exposed.
 
-- In order to move organizations across cells, we want `organization_id` on all rows of all tables
-- But `organization_id` on rows that are actually owned by a top-level group (or its subgroups or projects) makes top-level group
-  transfer inefficient (due to `organization_id` rewrites) to the point of being impractical
-- Compromise: Add `organization_id` or `namespace_id` to all rows of all tables
-- But `namespace_id` on rows of tables that are actually owned by projects makes project transfer (and certain subgroup transfers) inefficient
-  (due to `namespace_id` rewrites) to the point of being impractical
-- Compromise: Add `organization_id` or `namespace_id` or `project_id` to all rows of all tables, which ever is the most specific
+Create an Organization named `Secret Tanuki` and prefix all its associated data with this name:
 
-#### Conclusions
+- Organization: `Secret Tanuki`
+- Users: `Secret Tanuki User Bob`, `Secret Tanuki User Alice`
+- Projects: `Secret Tanuki Project X`, `Secret Tanuki Project Y`
+- Issues: `Secret Tanuki Issue #42`, `Secret Tanuki Issue #99`
+- Groups: `Secret Tanuki Group`
+- Merge Requests: `Secret Tanuki MR: Add feature`
 
-There is no benefit of filling `namespace_id` if a row is also owned by `project_id`
+When testing for data leaks, search your UI or API responses for `Secret Tanuki`. If you find it where it shouldn't be,
+you've discovered a cross-organization data leak. This is particularly useful when:
 
-There is a performance impact on group/project transfer to filling `namespace_id` if a row is also owned by `project_id`.
-Though if your table is small then the performance impact is small.
-It can be confusing to have 2 sharding key values on some rows.
+- Testing search and autocomplete features
+- Verifying member invitations don't leak across organizations
+- Checking that mentions and references are properly scoped
+- Reviewing API responses for unintended data exposure
 
-#### Guideline
+### Automated testing
 
-Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large tables.
-
-In rare cases where a table can belong to multiple different parent entities (for example, both a project and a namespace),
-you may define the `sharding_key` with multiple columns.
-This is only allowed if the table has a check constraint that correctly ensures exactly one of the sharding key columns must be non-nullable for a row in the table.
-See [`NOT NULL` constraints for multiple columns](../database/not_null_constraints.md#not-null-constraints-for-multiple-columns)
-for instructions on creating these constraints.
-
-> [!warning]
-> Tables with multiple-column sharding key may be required to be split into separate tables in the future to support efficient data migration and isolation across cells.
-> Avoid designing new tables with multiple-column sharding keys unless absolutely necessary.
-
-The following are examples of valid sharding keys:
-
-- The table entries belong to a project only:
-
-  ```yaml
-  sharding_key:
-    project_id: projects
-  ```
-
-- The table entries belong to a project and the foreign key is `target_project_id`:
-
-  ```yaml
-  sharding_key:
-    target_project_id: projects
-  ```
-
-- The table entries belong to a namespace/group only:
-
-  ```yaml
-  sharding_key:
-    namespace_id: namespaces
-  ```
-
-- The table entries belong to a namespace/group only and the foreign key is `group_id`:
-
-  ```yaml
-  sharding_key:
-    group_id: namespaces
-  ```
-
-- The table entries belong to a namespace or a project:
-
-  ```yaml
-  sharding_key:
-    project_id: projects
-    namespace_id: namespaces
-  ```
-
-- (Only for `gitlab_main_user`) The table entries belong to a user only:
-
-  ```yaml
-  sharding_key:
-    user_id: users
-  ```
-
-#### The sharding key must be immutable
-
-The choice of a `sharding_key` should always be immutable. This is because the
-sharding key column will be used as an index for the planned
-[Org Mover](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/migration/),
-and also the
-[enforcement of isolation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/)
-of Organization data.
-Any mutation of the `sharding_key` could result in in-consistent data being read.
-
-Therefore, if your feature requires a user experience which allows data to be
-moved between projects or groups/namespaces, then you may need to redesign the
-move feature to create new rows.
-An example of this can be seen in the
-[move an issue feature](../../user/project/issues/managing_issues.md#move-an-issue).
-This feature does not actually change the `project_id` column for an existing
-`issues` row but instead creates a new `issues` row and creates a link in the
-database from the original `issues` row.
-If there is a particularly challenging
-existing feature that needs to allow moving data you will need to reach out to
-the Tenant Scale team early on to discuss options for how to manage the
-sharding key.
-
-#### Using `namespace_id` as sharding key
-
-The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
-or a `UserNamespace`. The `UserNamespace` type is also known as a personal namespace.
-
-Using a `namespace_id` as a sharding key is a good option, except when `namespace_id`
-refers to a `UserNamespace`. Because a user does not necessarily have a related
-`namespace` record, this sharding key can be `NULL`. A sharding key should not
-have `NULL` values.
-
-#### Using the same sharding key for projects and namespaces
-
-Developers may also choose to use `namespace_id` only for tables that can
-belong to a project where the feature used by the table is being developed
-following the
-[Consolidating Groups and Projects blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/).
-In that case the `namespace_id` would need to be the ID of the
-`ProjectNamespace` and not the group that the namespace belongs to.
-
-#### Using `organization_id` as sharding key
-
-Usually, `project_id` or `namespace_id` are the most common sharding keys.
-However, there are cases where a table does not belong to a project or a namespace.
-
-In such cases, `organization_id` is an option for the sharding key, provided the below guidelines are followed:
-
-- The `sharding_key` column still needs to be [immutable](#the-sharding-key-must-be-immutable).
-- Only add `organization_id` for root level models (for example, `namespaces`), and not leaf-level models (for example, `issues`).
-- Ensure such tables do not contain data related to groups, or projects (or records that belong to groups / projects).
-  Instead, use `project_id`, or `namespace_id`.
-- Tables with lots of rows are not good candidates because we would need to re-write every row if we move the entity to a different organization which can be expensive.
-- When there are other tables referencing this table, the application should continue to work if the referencing table records are moved to a different organization.
-
-If you believe that the `organization_id` is the best option for the sharding key, seek approval from the Tenant Scale group.
-This is crucial because it has implications for data migration and may require reconsideration of the choice of sharding key.
-
-As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462758), which added `organization_id` as a sharding key to an existing table.
-
-For more information about development with organizations, see [Organization](../organization)
-
-#### Add a sharding key to a pre-existing table
-
-See the following [guidance](sharding/_index.md).
-
-#### Define a `desired_sharding_key` to backfill a `sharding_key`
-
-We need to backfill a `sharding_key` to hundreds of tables that do not have one.
-This process will involve creating a merge request like
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800> to add the new
-column, backfill the data from a related table in the database, and then create
-subsequent merge requests to add indexes, foreign keys and not-null
-constraints.
-
-In order to minimize the amount of repetitive effort for developers we've
-introduced a concise declarative way to describe how to backfill the
-`sharding_key` for this specific table. With the help of [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) you can
-create the MRs with the desired changes rather than manually doing it.
-
-An example of the `desired_sharding_key` was added in
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336> and it looks like:
-
-```yaml
---- # db/docs/security_findings.yml
-table_name: security_findings
-classes:
-- Security::Finding
-
-# ...
-
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: scanner_id
-        table: vulnerability_scanners
-        table_primary_key: id # Optional. Defaults to 'id'
-        sharding_key: project_id
-        belongs_to: scanner
-```
-
-To understand best how this YAML data will be used you can map it onto
-the merge request we created manually in GraphQL
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The content of the YAML specifies
-the parent table and its `sharding_key` to backfill from in the batched
-background migration. It also specifies a `belongs_to` relation which
-will be added to the model to populate the `sharding_key` in
-the `before_save`.
-
-##### Define a `desired_sharding_key` when the parent table also has one
-
-By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
-exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration
-and is itself waiting to be backfilled, you need to include the `awaiting_backfill_on_parent` field.
-For example:
-
-```yaml
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: package_file_id
-        table: packages_package_files
-        table_primary_key: id # Optional. Defaults to 'id'
-        sharding_key: project_id
-        belongs_to: package_file
-    awaiting_backfill_on_parent: true
-```
-
-There are likely edge cases where this `desired_sharding_key` structure is not
-suitable for backfilling a `sharding_key`. In such cases the team owning the
-table will need to create the necessary merge requests to add the
-`sharding_key` manually.
-
-### Ensure sharding key presence on application level
-
-When you define your sharding key you must make sure it's filled on application level.
-Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
-provides a convenient way of defining sharding key logic,
-and also a corresponding matcher to test your sharding key logic. For example:
-
-```ruby
-# in model.rb
-populate_sharding_key :project_id, source: :merge_request, field: :target_project_id
-
-# in model_spec.rb
-it { is_expected.to populate_sharding_key(:project_id).from(:merge_request, :target_project_id) }
-```
-
-See more [helper examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/populates_sharding_key.rb)
-and [RSpec matcher examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/matchers/populate_sharding_key_matcher.rb).
-
-### Map a request to an organization with `Current.organization`
-
-The application needs to know how to map incoming requests to an organization. The mapping logic is encapsulated in [`Gitlab::Current::Organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/current/organization.rb). The outcome of this mapping is stored in a [`ActiveSupport::CurrentAttributes`](https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html) instance called `Current`. You can then access the current organization using the `Current.organization` method.
-
-### Availability of `Current.organization`
-
-Since this mapping depends on HTTP requests, `Current.organization` is available only in the request layer. You can use it in:
-
-- Rails controllers that inherit from `ApplicationController`
-- GraphQL queries and mutations
-- Grape API endpoints (requires [usage of a helper](#usage-in-grape-api)
-- Sidekiq workers (if `Current.organization` is defined when `perform_async` is called)
-
-In these request layers, it is safe to assume that `Current.organization` is not `nil`.
-
-You cannot use `Current.organization` in:
-
-- Rake tasks
-- Cron jobs
-
-This restriction is enforced by a RuboCop rule. For these cases, derive the organization ID from related data or pass it as an argument.
-
-### Usage in Grape API
-
-`Current.organization` is not available in all Grape API endpoints. Use the `set_current_organization` helper to set `Current.organization`:
-
-```ruby
-module API
-  class SomeAPIEndpoint < ::API::Base
-    before do
-      set_current_organization # This will set Current.organization
-    end
-
-    # ... api logic ...
-  end
-end
-```
-
-### The default organization
-
-Do not rely on a default organization. Only one cell can access the default organization, and other cells cannot access it.
-
-Default organizations were initially used to assign existing data when introducing the Organization data structure. However, the application no longer depends on default organizations. Do not create or assign default organization objects.
-
-The default organization remains available on GitLab.com only until all data is assigned to new organizations. Hard-coded dependencies on the default organization do not work in cells. All cells should be treated the same.
-
-### Organization data sources
-
-An organization serves two purposes:
-
-- A logical grouping of data (for example: an User belongs to one or more Organizations)
-- [Sharding key](../cells) for Cells
-
-For data modeling purposes, there is no need to have redundant `organization_id` attributes. For example, the projects table has an `organization_id` column. From a normalization point of view, this is not needed because a project belongs to a namespace and a namespace belongs to an organization.
-
-However, for sharding purposes, we violate this normalization rule. Tables that have a parent-child relationship still define `organization_id` on both the parent table and the child.
-
-To populate the `organization_id` column, use these methods in order of preference:
-
-1. Derive from related data. For example, a subgroup can use the organization that is assigned to the parent group.
-1. `Current.organization`. This is available in the request layer and can be passed into Sidekiq workers.
-1. Ask the user. In some cases, the UI needs to be updated and should include a way of selecting an organization.
+For automated testing strategies, see [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md).
 
 ## Related topics
 
-- [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
-  architecture documentation
+- [Sharding guidelines](sharding/_index.md)
 - [Organization user documentation](../../user/organization/_index.md)
-- [Writing tests with Organizations](../../development/testing_guide/testing_with_organizations.md)
+- [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md)
+- [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/) architecture documentation

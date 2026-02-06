@@ -134,6 +134,9 @@ following response attributes:
 
 <!-- markdownlint-disable MD055 -->
 <!-- markdownlint-disable MD056 -->
+
+| Attribute                | Type              | Description |
+|:-------------------------|:------------------|:------------|
 | `id` | integer | ID of the project. |
 | `description` | string | Description of the project. |
 | `description_html` | string | Description of the project in HTML format. |

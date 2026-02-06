@@ -211,6 +211,8 @@ tags:
   description: Operations related to organizations.
 - name: Packages
   description: Operations related to packages.
+- name: Personal access tokens
+  description: Operations related to personal access tokens.
 - name: Pipeline schedules
   description: Operations related to pipeline schedules.
 - name: Pipelines
@@ -3840,6 +3842,244 @@ paths:
                 email:
                   type: string
                   description: Custom email address for the user
+  "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens":
+    get:
+      operationId: getApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokens
+      summary: Get a list of all personal access tokens
+      description: Get a list of all personal access tokens
+      tags:
+      - Personal access tokens
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessToken"
+        '400':
+          description: Bad Request
+        '401':
+          description: 401 Unauthorized
+        '404':
+          description: 404 Project Not Found
+        '403':
+          description: Forbidden
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      - name: revoked
+        required: false
+        description: Filter tokens where revoked state matches parameter
+        schema:
+          type: boolean
+        in: query
+        example: false
+      - name: state
+        required: false
+        description: Filter tokens which are either active or not
+        schema:
+          type: string
+          enum:
+          - active
+          - inactive
+        in: query
+        example: active
+      - name: created_before
+        required: false
+        description: Filter tokens which were created before given datetime
+        schema:
+          type: string
+          format: date-time
+        in: query
+        example: '2022-01-01'
+      - name: created_after
+        required: false
+        description: Filter tokens which were created after given datetime
+        schema:
+          type: string
+          format: date-time
+        in: query
+        example: '2021-01-01'
+      - name: last_used_before
+        required: false
+        description: Filter tokens which were used before given datetime
+        schema:
+          type: string
+          format: date-time
+        in: query
+        example: '2021-01-01'
+      - name: last_used_after
+        required: false
+        description: Filter tokens which were used after given datetime
+        schema:
+          type: string
+          format: date-time
+        in: query
+        example: '2022-01-01'
+      - name: expires_before
+        required: false
+        description: Filter tokens which expire before given datetime
+        schema:
+          type: string
+          format: date
+        in: query
+        example: '2022-01-01'
+      - name: expires_after
+        required: false
+        description: Filter tokens which expire after given datetime
+        schema:
+          type: string
+          format: date
+        in: query
+        example: '2021-01-01'
+      - name: search
+        required: false
+        description: Filters tokens by name
+        schema:
+          type: string
+        in: query
+        example: token
+      - name: sort
+        required: false
+        description: Sort tokens
+        schema:
+          type: string
+        in: query
+        example: created_at_desc
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+        in: query
+        example: 20
+    post:
+      operationId: postApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokens
+      summary: Create a personal access token. Available only for project owners/maintainers.
+      description: Create a personal access token for a project service account
+      tags:
+      - Personal access tokens
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenWithToken"
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the access token
+                  example: My token
+                description:
+                  type: string
+                  description: The description of the access token
+                  example: A token used for k8s
+                expires_at:
+                  type: string
+                  description: Expiration date of the access token in ISO format (YYYY-MM-DD).
+                    If undefined, the date is set to the maximum allowable lifetime
+                    limit.
+                  example: '2021-01-31'
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                  description: The array of scopes of the personal access token
+              required:
+              - name
+              - scopes
+  "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}":
+    delete:
+      operationId: deleteApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokensTokenId
+      summary: Revoke personal access token
+      description: Revoke a personal access token.
+      tags:
+      - Personal access tokens
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+  "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}/rotate":
+    post:
+      operationId: postApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokensTokenIdRotate
+      summary: Rotate personal access token
+      description: Rotates a personal access token.
+      tags:
+      - Personal access tokens
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesPersonalAccessTokenWithToken"
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                expires_at:
+                  type: string
+                  description: The expiration date of the token
+                  example: '2021-01-31'
   "/api/v4/groups/{id}/service_accounts":
     post:
       operationId: postApiV4GroupsIdServiceAccounts
@@ -22348,6 +22588,8 @@ paths:
                 zoekt_cache_response:
                   type: string
                 zoekt_cpu_to_tasks_ratio:
+                  type: string
+                zoekt_force_reindexing_percentage:
                   type: string
                 zoekt_indexing_parallelism:
                   type: string
@@ -93362,6 +93604,8 @@ components:
         zoekt_cache_response:
           type: string
         zoekt_cpu_to_tasks_ratio:
+          type: string
+        zoekt_force_reindexing_percentage:
           type: string
         zoekt_indexing_parallelism:
           type: string

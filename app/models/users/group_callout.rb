@@ -27,7 +27,7 @@ module Users
       preview_usage_quota_free_plan_alert: 15, # EE-only
       enforcement_at_limit_alert: 16, # EE-only
       web_hook_disabled: 17, # EE-only
-      unlimited_members_during_trial_alert: 18, # EE-only
+      # 18 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220970
       # 19 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
       project_repository_limit_alert_warning_threshold: 20, # EE-only
       # 21 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122494

@@ -5421,9 +5421,6 @@ msgstr ""
 msgid "AdminArea|For teams who need advanced CI/CD and productivity features."
 msgstr ""
 
-msgid "AdminArea|Get security updates from GitLab and stay up to date"
-msgstr ""
-
 msgid "AdminArea|GitLab Free"
 msgstr ""
 
@@ -5476,12 +5473,6 @@ msgid "AdminArea|Projects"
 msgstr ""
 
 msgid "AdminArea|Reporter"
-msgstr ""
-
-msgid "AdminArea|Sign up for the GitLab Security Newsletter to get notified for security updates."
-msgstr ""
-
-msgid "AdminArea|Sign up for the GitLab newsletter"
 msgstr ""
 
 msgid "AdminArea|Start free trial"
@@ -51711,6 +51702,9 @@ msgstr ""
 msgid "Private projects compute cost factor"
 msgstr ""
 
+msgid "Probability of random force reindexing (percentage)"
+msgstr ""
+
 msgid "Problem with %{name} command: %{message}."
 msgstr ""
 
@@ -72617,20 +72611,6 @@ msgid "Unless otherwise agreed to in writing with GitLab, by selecting \"Add Lic
 msgstr ""
 
 msgid "Unlimited"
-msgstr ""
-
-msgid "UnlimitedMembersDuringTrialAlert|During your trial, invite as many members as you like to %{name} to collaborate with you. When your trial ends, you'll have a maximum of %{limit} member on the Free tier, or you can get more by upgrading to a paid tier."
-msgid_plural "UnlimitedMembersDuringTrialAlert|During your trial, invite as many members as you like to %{name} to collaborate with you. When your trial ends, you'll have a maximum of %{limit} members on the Free tier, or you can get more by upgrading to a paid tier."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "UnlimitedMembersDuringTrialAlert|Explore paid plans"
-msgstr ""
-
-msgid "UnlimitedMembersDuringTrialAlert|Get the most out of your trial with space for more members"
-msgstr ""
-
-msgid "UnlimitedMembersDuringTrialAlert|Invite more members"
 msgstr ""
 
 msgid "Unlink"

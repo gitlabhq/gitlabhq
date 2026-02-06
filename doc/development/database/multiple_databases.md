@@ -53,7 +53,7 @@ The usage of schema enforces the base class to be used:
 ### Defining a sharding key for all cell-local tables
 
 This content has been moved to a
-[new location](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables)
+[new location](../organization/sharding/_index.md#choosing-the-right-sharding-key)
 
 ### The impact of `gitlab_schema`
 

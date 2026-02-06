@@ -251,26 +251,10 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
   end
 
   describe '#bulk_process' do
-    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
-    let(:connection_model) { class_double(ActiveRecord::Base) }
-    let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
     let(:model_class) { class_double(ActiveRecord::Base) }
-    let(:raw_connection) { instance_double(PG::Connection) }
 
     before do
-      allow_any_instance_of(described_class).to receive(:create_connection_model)
-        .and_return(connection_model)
-
-      allow(connection_model).to receive(:establish_connection)
-      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
-
-      allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
-
-      allow(ar_connection).to receive(:raw_connection).and_return(raw_connection)
-      allow(raw_connection).to receive(:server_version).and_return(120000)
-
-      # Stub ar_model_for to return our test model
-      allow(client).to receive(:ar_model_for).and_return(model_class)
+      allow(client).to receive(:with_model_for).and_yield(model_class)
     end
 
     context 'with empty operations' do
@@ -450,38 +434,6 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       # Now call our mock instead of the real method
       client.with_model_for(table_name) { |_model| } # Block intentionally empty for testing
-    end
-  end
-
-  describe '#ar_model_for' do
-    let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
-    let(:connection_model) { class_double(ActiveRecord::Base) }
-    let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
-    let(:raw_connection) { instance_double(PG::Connection) }
-    let(:table_name) { 'test_table' }
-    let(:model_class) { double('ModelClass') }
-
-    before do
-      allow_any_instance_of(described_class).to receive(:create_connection_model)
-        .and_return(connection_model)
-
-      allow(connection_model).to receive(:establish_connection)
-      allow(connection_model).to receive(:connection_pool).and_return(connection_pool)
-
-      allow(connection_pool).to receive(:with_connection).and_yield(ar_connection)
-
-      allow(ar_connection).to receive(:raw_connection).and_return(raw_connection)
-      allow(raw_connection).to receive(:server_version).and_return(120000)
-    end
-
-    it 'returns a model class for the table' do
-      # Directly stub the with_model_for method instead of calling it
-      expect(client).to receive(:with_model_for)
-        .with(table_name)
-        .and_yield(model_class)
-
-      result = client.ar_model_for(table_name)
-      expect(result).to eq(model_class)
     end
   end
 

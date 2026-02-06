@@ -163,10 +163,6 @@
     "PendingProjectMember",
     "ProjectMember"
   ],
-  "MemberRoleInterface": [
-    "MemberRole",
-    "StandardRole"
-  ],
   "NamespaceMetadata": [
     "GroupNamespaceMetadata",
     "ProjectNamespaceMetadata",

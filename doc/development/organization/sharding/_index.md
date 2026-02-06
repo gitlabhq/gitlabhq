@@ -10,16 +10,246 @@ The sharding initiative is a long-running project to ensure that most GitLab dat
 
 ## Sharding principles
 
-Follow this guidance to complete the remaining sharding key work and resolve outstanding issues.
+All tables with the following [`gitlab_schema`](../../cells/_index.md#available-cells--organization-schemas) are considered organization level:
 
-## Use unique issues for each table
+- `gitlab_main_org`
+- `gitlab_ci`
+- `gitlab_sec`
+- `gitlab_main_user`
 
-We have a number of tables which share an issue. For example, [eight tables point to the same issue here](https://gitlab.com/search?search=sharding_key_issue_url%3A%20https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab%2F-%2Fissues%2F493768&nav_source=navbar&project_id=278964&group_id=9970&search_code=true&repository_ref=master). This makes tracking progress and resolving blockers difficult.
-You should break out these shared issues into a single one per table, and update the YAML files to match.
+All newly created organization-level tables are required to have a `sharding_key`
+defined in the corresponding `db/docs/` file for that table.
 
-## Define a sharding key
+The purpose of the sharding key is documented in the
+[Organization isolation blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/),
+but in short this column is used to provide a standard way of determining which
+Organization owns a particular row in the database.
 
-### 1: Add column, triggers, indexes, and foreign keys
+The actual name of the foreign key can be anything but it must reference a row
+in `projects` or `namespaces`. The chosen `sharding_key` column must be non-nullable.
+
+The reasoning for adding sharding keys, and which keys to add to a table/row, goes like this:
+
+- In order to move organizations across cells, we want `organization_id` on all rows of all tables.
+- But `organization_id` on rows that are actually owned by a top-level group (or its subgroups or projects) makes
+  top-level group transfer inefficient (due to `organization_id` rewrites) to the point of being impractical.
+- Compromise: Add `organization_id` or `namespace_id` to all rows of all tables.
+- But `namespace_id` on rows of tables that are actually owned by projects makes project transfer (and certain subgroup
+  transfers) inefficient (due to `namespace_id` rewrites) to the point of being impractical.
+- Compromise: Add `organization_id`, `namespace_id`, or `project_id` to all rows of all tables (whichever is most specific).
+
+### Choosing the right sharding key
+
+Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large
+tables.
+
+In rare cases where a table can belong to multiple different parent entities (for example, both a project and a namespace),
+you may define the `sharding_key` with multiple columns.
+This is only allowed if the table has a check constraint that correctly ensures exactly one of the sharding key columns must be non-nullable for a row in the table.
+See [`NOT NULL` constraints for multiple columns](../../database/not_null_constraints.md#not-null-constraints-for-multiple-columns)
+for instructions on creating these constraints.
+
+> [!warning]
+> Tables with multiple-column sharding key may be required to be split into separate tables in the future to support efficient data migration and isolation across cells.
+> Avoid designing new tables with multiple-column sharding keys unless absolutely necessary.
+
+The following are examples of valid sharding keys:
+
+- The table entries belong only to a project:
+
+  ```yaml
+  sharding_key:
+    project_id: projects
+  ```
+
+- The table entries belong to a project and the foreign key is `target_project_id`:
+
+  ```yaml
+  sharding_key:
+    target_project_id: projects
+  ```
+
+- The table entries belong only to a namespace/group:
+
+  ```yaml
+  sharding_key:
+    namespace_id: namespaces
+  ```
+
+- The table entries belong only to a namespace/group and the foreign key is `group_id`:
+
+  ```yaml
+  sharding_key:
+    group_id: namespaces
+  ```
+
+- The table entries belong to a namespace or a project:
+
+  ```yaml
+  sharding_key:
+    project_id: projects
+    namespace_id: namespaces
+  ```
+
+- (Only for `gitlab_main_user`) The table entries belong only to a user:
+
+  ```yaml
+  sharding_key:
+    user_id: users
+  ```
+
+#### The sharding key must be immutable
+
+The choice of a `sharding_key` should always be immutable. This is because the
+sharding key column is used as an index for the planned
+[Org Mover](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/migration/),
+and also the
+[enforcement of isolation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/)
+of organization data.
+Any mutation of the `sharding_key` could result in inconsistent data being read.
+
+Therefore, if your feature requires a user experience which allows data to be
+moved between projects or groups/namespaces, then you might need to redesign the
+move feature to create new rows.
+An example of this can be seen in the
+[move an issue feature](../../../user/project/issues/managing_issues.md#move-an-issue).
+This feature does not actually change the `project_id` column for an existing
+`issues` row but instead creates a new `issues` row and creates a link in the
+database from the original `issues` row.
+If there is a particularly challenging
+existing feature that needs to allow moving data you will need to reach out to
+the Tenant Scale team early on to discuss options for how to manage the
+sharding key.
+
+#### Using `namespace_id` as sharding key
+
+The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
+or a `UserNamespace`. The `UserNamespace` type is also known as a personal namespace.
+
+Using a `namespace_id` as a sharding key is a good option, except when `namespace_id`
+refers to a `UserNamespace`. Because a user does not necessarily have a related
+`namespace` record, this sharding key can be `NULL`. A sharding key should not
+have `NULL` values.
+
+#### Using the same sharding key for projects and namespaces
+
+Developers may also choose to use `namespace_id` only for tables that can
+belong to a project where the feature used by the table is being developed
+following the
+[Consolidating Groups and Projects blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/).
+In that case the `namespace_id` would need to be the ID of the
+`ProjectNamespace` and not the group that the namespace belongs to.
+
+#### Using `organization_id` as sharding key
+
+Usually, `project_id` or `namespace_id` are the most common sharding keys.
+However, there are cases where a table does not belong to a project or a namespace.
+
+In such cases, `organization_id` is an option for the sharding key, provided the below guidelines are followed:
+
+- The `sharding_key` column still needs to be [immutable](#the-sharding-key-must-be-immutable).
+- Only add `organization_id` for root level models (for example, `namespaces`), and not leaf-level models (for example,
+  `issues`).
+- Ensure such tables do not contain data related to groups or projects (or records that belong to groups or projects).
+  Instead, use `project_id`, or `namespace_id`.
+- Tables with lots of rows are not good candidates because we would need to re-write every row if we move the entity to
+  a different organization which can be expensive.
+- When there are other tables referencing this table, the application should continue to work if the referencing table
+  records are moved to a different organization.
+
+If you believe that the `organization_id` is the best option for the sharding key, seek approval from the Tenant Scale
+group.
+This is crucial because it has implications for data migration and may require reconsideration of the choice of sharding
+key.
+
+As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462758), which added `organization_id` as
+a sharding key to an existing table.
+
+## Sharding tables by `organization_id`
+
+When you add a new table or modify an existing table to be sharded by `organization_id`, you must:
+
+1. **Add transfer service support**: Update records' `organization_id` when a group or users transfer to a new organization.
+1. **Use common organization in factories**: Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
+
+### Implementing sharding keys
+
+To add a sharding key to a table, follow these steps. We need to backfill a `sharding_key` to hundreds of tables that do
+not have one. To minimize repetitive effort, we've introduced a declarative way to describe how to backfill the
+`sharding_key` using [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper),
+which can create the MRs with the desired changes rather than manually doing it.
+
+#### Ensure sharding key presence on application level
+
+When you define your sharding key you must make sure it's filled on application level.
+Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
+provides a convenient way of defining sharding key logic,
+and also a corresponding matcher to test your sharding key logic. For example:
+
+```ruby
+# in model.rb
+populate_sharding_key :project_id, source: :merge_request, field: :target_project_id
+
+# in model_spec.rb
+it { is_expected.to populate_sharding_key(:project_id).from(:merge_request, :target_project_id) }
+```
+
+See
+more [helper examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/populates_sharding_key.rb)
+and [RSpec matcher examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/matchers/populate_sharding_key_matcher.rb).
+
+#### Define a `desired_sharding_key` configuration
+
+Define a `desired_sharding_key` in your table's YAML configuration to automate the backfill process. An example was
+added in
+[this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336):
+
+```yaml
+--- # db/docs/security_findings.yml
+table_name: security_findings
+classes:
+- Security::Finding
+
+# ...
+
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: scanner_id
+        table: vulnerability_scanners
+        table_primary_key: id # Optional. Defaults to 'id'
+        sharding_key: project_id
+        belongs_to: scanner
+```
+
+The YAML specifies the parent table and its `sharding_key` to backfill from in the batched background migration. It also
+specifies a `belongs_to` relation which will be added to the model to populate the `sharding_key` in the `before_save`.
+
+**When the parent table also has a `desired_sharding_key`**
+
+If the parent table also has a `desired_sharding_key` configuration and is itself waiting to be backfilled, include the
+`awaiting_backfill_on_parent` field:
+
+```yaml
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: package_file_id
+        table: packages_package_files
+        table_primary_key: id # Optional. Defaults to 'id'
+        sharding_key: project_id
+        belongs_to: package_file
+    awaiting_backfill_on_parent: true
+```
+
+There are edge cases where this `desired_sharding_key` structure is not suitable for backfilling a `sharding_key`. In
+such cases, the team owning the table will need to create the necessary merge requests manually.
+
+#### Add column, triggers, indexes, and foreign keys
 
 This is the step where we add the sharding key column, indexes, foreign keys and necessary triggers.
 
@@ -154,7 +384,7 @@ The keep file contains code that:
        on_delete: async_delete
    ```
 
-### 2: Finalization Migration
+#### Finalization Migration
 
 Once the column has been added and the backfill is finished we need to finalize the migration. We can check the status of queued migration in `#chat-ops-test` Slack channel.
 
@@ -200,11 +430,11 @@ Once the column has been added and the backfill is finished we need to finalize 
 
 - You are all set. Git commit and create MR 🎉
 
-### 3. Add a NOT NULL constraint
+#### Add a NOT NULL constraint
 
 The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
-**1. Small tables**
+**Small tables**
 
 1. Create a post deployment migration using `bundle exec rails g post_deployment_migration <table_name>_not_null`
 
@@ -231,17 +461,9 @@ The last step is to make sure the sharding key has a `NOT NULL` constraint.
    ```yaml
    sharding_key:
      organization_id: organizations
-   organization_transfer_support: supported
    ```
 
-1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
-
-   - Set to `supported` if you've implemented the transfer logic in `app/services/organizations/users/transfer_service.rb` or `app/services/organizations/groups/transfer_service.rb`
-   - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
-
-- Example MR: [Add NOT NULL for sharding key on `subscription_user_add_on_assignments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170136/diffs)
-
-**2. Large tables or tables that exceed runtime**
+**Large tables or tables that exceed runtime**
 
 In this case we have to add async validation before we can add the sharding key. It will be a 2 MR process. Let's take an example of table `packages_package_files`.
 
@@ -325,9 +547,49 @@ In this case we have to add async validation before we can add the sharding key.
 > [!note]
 > Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb?ref_type=heads#L81).
 
-### 4. Debug Failures
+#### Add transfer service support
 
-#### 1. Using Kibana
+1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
+   - Set to `supported` if you've implemented the transfer logic in one of the transfer services:
+     - `app/services/organizations/groups/transfer_service.rb`
+     - `app/services/organizations/users/transfer_service.rb`
+     - `ee/app/services/ee/organizations/groups/transfer_service.rb`
+     - `ee/app/services/ee/organizations/users/transfer_service.rb`
+   - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
+
+   ```yaml
+     sharding_key:
+       organization_id: organizations
+     organization_transfer_support: supported
+   ```
+
+1. Add your table to the appropriate transfer service using the `update_organization_id_for` helper:
+
+   ```ruby
+   # app/services/organizations/users/transfer_service.rb
+   def update_associated_organization_ids(user_ids)
+     update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
+     update_organization_id_for(YourModel) { |relation| relation.where(user_id: user_ids) }
+   end
+   ```
+
+#### Use common organization in factories
+
+RSpec factories for models sharded by `organization_id` must automatically associate with the common organization.
+This ensures tests work correctly without requiring explicit organization setup.
+
+```ruby
+# spec/factories/your_models.rb
+factory :your_model do
+  organization { association(:common_organization) }
+  # or derive from a related model
+  organization { user&.organization || association(:common_organization) }
+end
+```
+
+#### Debug Failures
+
+**Using Kibana**
 
 There will be certain cases where you can get failure notification after queuing the backfill job. One way is to use the [Kibana logs](https://log.gprd.gitlab.net/).
 
@@ -377,7 +639,7 @@ Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an exa
 
 - To fix it, just requeue the migration.
 
-#### 2. Using Grafana
+**Using Grafana**
 
 Sometimes you won't find anything on Kibana since we only store logs up to 7 days. For this, we can use the [Grafana dashboard](https://dashboards.gitlab.net/).
 
@@ -442,7 +704,7 @@ Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fail
 Some of the issues linked in the database YAML docs have been closed, sometimes in favor of new issues, but the YAML files still point to the original URL.
 You should update these to point to the correct items to ensure we're accurately measuring progress.
 
-## Add more information to sharding issues
+## Add more information to sharding issue
 
 Every sharding issue should have an assignee, an associated milestone, and should link to blockers, if applicable.
 This helps us plan the work and estimate completion dates. It also ensures each issue names someone to contact in the case of problems or concerns. It also helps us to visualize the project work by highlighting blocker issues so we can help resolve them.
