@@ -1,7 +1,0 @@
----
-name: read_terraform_module
-description: Grants the ability to read Terraform modules
-permissions:
-  - read_terraform_module
-boundaries:
-  - group

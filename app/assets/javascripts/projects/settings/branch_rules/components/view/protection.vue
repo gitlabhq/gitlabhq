@@ -160,7 +160,7 @@ export default {
       </slot>
     </template>
     <template #actions>
-      <div v-if="glFeatures.editBranchRules && isEditAvailable" class="gl-flex">
+      <div v-if="isEditAvailable" class="gl-flex">
         <gl-button
           :disabled="isEditDisabled"
           size="small"

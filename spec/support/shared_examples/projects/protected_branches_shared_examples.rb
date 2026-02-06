@@ -15,17 +15,6 @@ RSpec.shared_examples 'setting project protected branches' do
       expect(ProtectedBranch.last.name).to eq('some->branch')
     end
 
-    it "shows success alert once protected branch is created" do
-      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
-
-      show_add_form
-      set_defaults
-      set_protected_branch_name('some->branch')
-      click_on "Protect"
-      wait_for_requests
-      expect(page).to have_content(success_message)
-    end
-
     it "displays the last commit on the matching branch if it exists" do
       commit = create(:commit, project: project)
       project.repository.add_branch(admin, 'some-branch', commit.id)

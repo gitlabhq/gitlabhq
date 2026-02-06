@@ -36,14 +36,11 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
   end
 
   context 'logged in as maintainer' do
-    let(:success_message) { s_('ProtectedBranch|View protected branches as branch rules') }
-
     before_all do
       project.add_maintainer(user)
     end
 
     before do
-      stub_feature_flags(edit_branch_rules: false)
       sign_in(user)
     end
 

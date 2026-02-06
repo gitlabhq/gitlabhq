@@ -1,16 +1,10 @@
-import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
 import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
-import {
-  protectionPropsMock,
-  protectionEmptyStatePropsMock,
-  statusChecksRulesMock,
-  deployKeysMock,
-} from './mock_data';
+import { protectionPropsMock, protectionEmptyStatePropsMock, deployKeysMock } from './mock_data';
 
 describe('Branch rule protection', () => {
   let wrapper;
@@ -59,7 +53,6 @@ describe('Branch rule protection', () => {
   const findDisabledByPolicyPopover = () => wrapper.findComponent(DisabledByPolicyPopover);
   const findGroupInheritancePopover = () => wrapper.findComponent(GroupInheritancePopover);
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
-  const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
   const findEmptyState = () => wrapper.findByTestId('protection-empty-state');
   const findEditButton = () => wrapper.findByTestId('edit-rule-button');
@@ -164,50 +157,6 @@ describe('Branch rule protection', () => {
       it('does not disable the `Edit` button', () => {
         expect(findEditButton().props('disabled')).toBe(false);
       });
-    });
-  });
-
-  describe('When `edit_branch_rules` FF is disabled', () => {
-    it('does not render `Edit` button', () => {
-      createComponent({ editBranchRules: false });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
-    describe('when headerLinkHref and headerLinkTitle are set', () => {
-      beforeEach(() => {
-        createComponent({ editBranchRules: false });
-      });
-
-      it('renders link to manage branch protections', () => {
-        expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
-        expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
-      });
-    });
-
-    describe('when headerLinkHref and headerLinkTitle are not set', () => {
-      beforeEach(() => {
-        createComponent(
-          { editBranchRules: false },
-          { headerLinkHref: null, headerLinkTitle: null },
-        );
-      });
-
-      it('does not render link to manage branch protections', () => {
-        expect(findLink().exists()).toBe(false);
-      });
-    });
-
-    it('renders a protection row for status checks', () => {
-      createComponent({ editBranchRules: false }, { statusChecks: statusChecksRulesMock });
-      const statusCheck = statusChecksRulesMock[0];
-      expect(findProtectionRows().at(0).props()).toMatchObject({
-        title: statusCheck.name,
-        showDivider: false,
-        statusCheckUrl: statusCheck.externalUrl,
-      });
-
-      expect(findProtectionRows().at(1).props('showDivider')).toBe(true);
     });
   });
 

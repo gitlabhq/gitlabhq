@@ -90,14 +90,10 @@ export default {
       return this.dataTestIdPrefix ? `${this.dataTestIdPrefix}-icon` : '';
     },
     hasDescription() {
-      if (!this.glFeatures.editBranchRules) {
-        return Boolean(this.description);
-      }
-
       return this.isProtected ? Boolean(this.description) : false;
     },
     canEditProtectionToggles() {
-      return this.canAdminProtectedBranches && this.glFeatures.editBranchRules;
+      return this.canAdminProtectedBranches;
     },
   },
 };

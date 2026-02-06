@@ -7,6 +7,7 @@ permissions:
   - authorize_helm_chart
   - authorize_nuget_package
   - authorize_pypi_package
+  - authorize_terraform_module
   - upload_conan_package
   - upload_debian_package
   - upload_generic_package
@@ -14,6 +15,7 @@ permissions:
   - upload_maven_package_file
   - upload_nuget_package
   - upload_pypi_package
+  - upload_terraform_module
 boundaries:
   - group
   - project

@@ -816,39 +816,4 @@ describe('View branch rules', () => {
       expect(findNoDataTitle().text()).toBe('No data to display');
     });
   });
-
-  describe('When edit_branch_rules feature flag is disabled', () => {
-    beforeEach(() => createComponent({ glFeatures: { editBranchRules: false } }));
-
-    it('does not render delete rule button and modal', () => {
-      expect(findDeleteRuleButton().exists()).toBe(false);
-      expect(findDeleteRuleModal().exists()).toBe(false);
-    });
-
-    it('does not render edit rule button and modal', () => {
-      expect(findEditRuleNameButton().exists()).toBe(false);
-      expect(findBranchRuleModal().exists()).toBe(false);
-    });
-
-    it.each`
-      allowForcePush | title                              | description
-      ${true}        | ${I18N.allowForcePushTitle}        | ${I18N.forcePushIconDescription}
-      ${false}       | ${I18N.doesNotAllowForcePushTitle} | ${I18N.forcePushIconDescription}
-    `(
-      'renders force push section with the correct title and description, when rule is `$allowForcePush`',
-      async ({ allowForcePush, title, description }) => {
-        const mockResponse = branchProtectionsMockResponse;
-        mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush =
-          allowForcePush;
-
-        await createComponent({
-          glFeatures: { editBranchRules: false },
-          branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
-        });
-
-        expect(findAllowForcePushToggle().props('iconTitle')).toEqual(title);
-        expect(findAllowForcePushToggle().props('description')).toEqual(description);
-      },
-    );
-  });
 });

@@ -142,21 +142,4 @@ describe('ProtectionToggle', () => {
       expect(wrapper.text()).toContain('Some description');
     });
   });
-
-  describe('when glFeatures.editBranchRules is false', () => {
-    beforeEach(() => {
-      createComponent({
-        glFeatures: { editBranchRules: false },
-        provided: { canAdminProtectedBranches: true },
-      });
-    });
-
-    it('does not render the toggle even for users with edit privileges', () => {
-      expect(findToggle().exists()).toBe(false);
-    });
-
-    it('does not render the toggle description when not provided', () => {
-      expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
-    });
-  });
 });

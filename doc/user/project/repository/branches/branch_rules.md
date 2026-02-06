@@ -72,12 +72,9 @@ To view branch rules and protections for a single branch:
 - **All branches** and **All protected branches** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388129) in GitLab 17.0.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 
@@ -200,6 +197,7 @@ To edit a squash option:
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/_index.md) named `edit_branch_rules`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
 
@@ -227,12 +225,9 @@ For more information, see [External status checks](../../merge_requests/status_c
 - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 
@@ -263,12 +258,9 @@ For information about branch protection controls, see [Protected branches](prote
 - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/586354) in GitLab 18.9. Feature flag `edit_branch_rules` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Prerequisites:
 

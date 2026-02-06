@@ -31,16 +31,11 @@ import {
 import {
   I18N,
   BRANCH_PROTECTION_MODAL_ID,
-  PROTECTED_BRANCHES_ANCHOR,
 } from '~/projects/settings/repository/branch_rules/constants';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
-import { expandSection } from '~/settings_panels';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 
 jest.mock('~/alert');
-jest.mock('~/settings_panels');
-jest.mock('~/lib/utils/scroll_utils');
 
 Vue.use(VueApollo);
 
@@ -86,7 +81,6 @@ describe('Branch rules app', () => {
 
   const findAllBranchRules = () => wrapper.findAllComponents(BranchRule);
   const findEmptyState = () => wrapper.findByTestId('crud-empty');
-  const findAddBranchRuleButton = () => wrapper.findByRole('button', I18N.addBranchRule);
   const findModal = () => wrapper.findComponent(GlModal);
   const findAddBranchRuleDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findCreateBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -244,45 +238,6 @@ describe('Branch rules app', () => {
           addBranchRulesItems.length - nodes.length,
         );
       });
-    });
-  });
-
-  describe('Add branch rule when editBranchRules FF disabled', () => {
-    beforeEach(async () => {
-      await createComponent({
-        glFeatures: { editBranchRules: false },
-      });
-    });
-    it('renders an Add branch rule button', () => {
-      expect(findAddBranchRuleButton().exists()).toBe(true);
-    });
-
-    it('renders a modal with correct props/attributes', () => {
-      expect(findModal().props()).toMatchObject({
-        modalId: BRANCH_PROTECTION_MODAL_ID,
-        title: I18N.addBranchRule,
-      });
-
-      expect(findModal().attributes('ok-title')).toBe(I18N.createProtectedBranch);
-    });
-
-    it('renders correct modal id for the default action', () => {
-      const binding = getBinding(findAddBranchRuleButton().element, 'gl-modal');
-
-      expect(binding.value).toBe(BRANCH_PROTECTION_MODAL_ID);
-    });
-
-    it('renders the correct modal content', () => {
-      expect(findModal().text()).toContain(I18N.branchRuleModalDescription);
-      expect(findModal().text()).toContain(I18N.branchRuleModalContent);
-    });
-
-    it('when the primary modal action is clicked, takes user to the correct location', () => {
-      findAddBranchRuleButton().trigger('click');
-      findModal().vm.$emit('ok');
-
-      expect(expandSection).toHaveBeenCalledWith(PROTECTED_BRANCHES_ANCHOR);
-      expect(scrollToElement).toHaveBeenCalledWith(PROTECTED_BRANCHES_ANCHOR);
     });
   });
 

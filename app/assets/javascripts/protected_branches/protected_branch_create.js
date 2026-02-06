@@ -8,12 +8,7 @@ import { initToggle } from '~/toggles';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
-import {
-  BRANCH_RULES_ANCHOR,
-  PROTECTED_BRANCHES_ANCHOR,
-  IS_PROTECTED_BRANCH_CREATED,
-  ACCESS_LEVELS,
-} from './constants';
+import { PROTECTED_BRANCHES_ANCHOR, IS_PROTECTED_BRANCH_CREATED, ACCESS_LEVELS } from './constants';
 
 export default class ProtectedBranchCreate {
   constructor(options) {
@@ -126,25 +121,9 @@ export default class ProtectedBranchCreate {
     return this.isLocalStorageAvailable && localStorage.getItem(IS_PROTECTED_BRANCH_CREATED);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   createSuccessAlert() {
-    if (!gon.features.editBranchRules) {
-      this.alert = createAlert({
-        variant: VARIANT_SUCCESS,
-        containerSelector: '.js-alert-protected-branch-created-container',
-        title: s__('ProtectedBranch|View protected branches as branch rules'),
-        message: s__(
-          'ProtectedBranch|Manage branch related settings in one area with branch rules.',
-        ),
-        primaryButton: {
-          text: s__('ProtectedBranch|View branch rule'),
-          clickHandler: () => this.expandAndScroll(BRANCH_RULES_ANCHOR),
-        },
-        secondaryButton: {
-          text: __('Dismiss'),
-          clickHandler: () => this.alert.dismiss(),
-        },
-      });
-    }
+    // Feature flag removed - alert no longer needed
   }
 
   createLimitedSuccessAlert() {

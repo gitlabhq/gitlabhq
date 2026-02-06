@@ -11,10 +11,12 @@ permissions:
   - download_maven_package_file
   - download_nuget_package
   - download_pypi_package
+  - download_terraform_module
   - read_conan_package
   - read_nuget_package
   - read_package
   - read_pypi_package
+  - read_terraform_module
   - search_conan_package
   - search_nuget_package
 boundaries:

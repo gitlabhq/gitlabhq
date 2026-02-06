@@ -54863,9 +54863,6 @@ msgstr ""
 msgid "ProtectedBranch|Learn more."
 msgstr ""
 
-msgid "ProtectedBranch|Manage branch related settings in one area with branch rules."
-msgstr ""
-
 msgid "ProtectedBranch|Matching Branches"
 msgstr ""
 
@@ -54924,12 +54921,6 @@ msgid "ProtectedBranch|Unprotect"
 msgstr ""
 
 msgid "ProtectedBranch|Unprotect branch"
-msgstr ""
-
-msgid "ProtectedBranch|View branch rule"
-msgstr ""
-
-msgid "ProtectedBranch|View protected branches as branch rules"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"

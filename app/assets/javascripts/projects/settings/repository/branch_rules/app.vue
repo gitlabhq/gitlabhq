@@ -1,18 +1,10 @@
 <script>
-import {
-  GlButton,
-  GlModal,
-  GlModalDirective,
-  GlDisclosureDropdown,
-  GlKeysetPagination,
-} from '@gitlab/ui';
+import { GlModalDirective, GlDisclosureDropdown, GlKeysetPagination } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { expandSection } from '~/settings_panels';
-import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   BRANCH_RULE_DETAILS_LABEL,
@@ -31,8 +23,6 @@ export default {
   components: {
     BranchRule,
     BranchRuleModal,
-    GlButton,
-    GlModal,
     GlDisclosureDropdown,
     CrudComponent,
     GlKeysetPagination,
@@ -115,11 +105,6 @@ export default {
     hasPredefinedBranchRule(branchName) {
       return Boolean(this.branchRules.filter((rule) => rule.name === branchName).length);
     },
-    showProtectedBranches() {
-      // Protected branches section is on the same page as the branch rules section.
-      expandSection(this.$options.protectedBranchesAnchor);
-      scrollToElement(this.$options.protectedBranchesAnchor);
-    },
     openCreateRuleModal() {
       this.$refs[this.$options.modalId].show();
     },
@@ -170,14 +155,10 @@ export default {
   >
     <template #actions>
       <gl-disclosure-dropdown
-        v-if="glFeatures.editBranchRules"
         :toggle-text="$options.i18n.addBranchRule"
         :items="getAddRuleItems"
         size="small"
       />
-      <gl-button v-else v-gl-modal="$options.modalId" size="small" class="gl-ml-3"
-        >{{ $options.i18n.addBranchRule }}
-      </gl-button>
     </template>
 
     <template v-if="!branchRules.length" #empty>
@@ -202,24 +183,12 @@ export default {
       </ul>
 
       <branch-rule-modal
-        v-if="glFeatures.editBranchRules"
         :id="$options.modalId"
         :ref="$options.modalId"
         :title="$options.i18n.createBranchRule"
         :action-primary-text="$options.i18n.createBranchRule"
         @primary="addBranchRule({ name: $event })"
       />
-      <gl-modal
-        v-else
-        :ref="$options.modalId"
-        :modal-id="$options.modalId"
-        :title="$options.i18n.addBranchRule"
-        :ok-title="$options.i18n.createProtectedBranch"
-        @ok="showProtectedBranches"
-      >
-        <p>{{ $options.i18n.branchRuleModalDescription }}</p>
-        <p>{{ $options.i18n.branchRuleModalContent }}</p>
-      </gl-modal>
     </template>
 
     <template #pagination>
