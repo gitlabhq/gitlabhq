@@ -14,7 +14,7 @@
       = form_tag(@group, method: :delete, id: remove_form_id) do
         %p= delete_immediately_namespace_scheduled_for_deletion_message(@group)
         = hidden_field_tag(:permanently_remove, true)
-        = render 'groups/settings/delete_button', remove_form_id: remove_form_id, button_text: s_('GroupSettings|Delete immediately')
+        = render 'groups/settings/delete_button', remove_form_id: remove_form_id, button_text: s_('GroupSettings|Delete permanently')
     - elsif @group.scheduled_for_deletion_in_hierarchy_chain?
       -# Immediate deletion not available: either because of ancestor, or instance setting
       %p.gl-m-0

@@ -12,6 +12,7 @@
   variables:
     CLICKHOUSE_URL: $GLCI_DA_CLICKHOUSE_URL
     CLICKHOUSE_DATABASE: $GLCI_CLICKHOUSE_CODE_COVERAGE_DB
+    CLICKHOUSE_SHARED_DB: $GLCI_CLICKHOUSE_SHARED_DB
     CLICKHOUSE_USERNAME: $GLCI_CLICKHOUSE_METRICS_USERNAME
     # Note: GLCI_CLICKHOUSE_METRICS_PASSWORD is read directly from the environment
     # by the test-coverage script and is not passed via CLI for security reasons
@@ -106,5 +107,5 @@ sync-category-owners:
   script:
     - bundle exec sync-category-owners
         --clickhouse-url "${GLCI_DA_CLICKHOUSE_URL}"
-        --clickhouse-database shared
+        --clickhouse-database "${GLCI_CLICKHOUSE_SHARED_DB}"
         --clickhouse-username "${GLCI_CLICKHOUSE_METRICS_USERNAME}"

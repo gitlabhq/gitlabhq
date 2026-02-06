@@ -125,7 +125,7 @@ module Organizations
       end
 
       def update_users(user_ids)
-        User.id_in(user_ids).update_all(organization_id: new_organization.id)
+        User.id_in(user_ids).update_all(user_transfer_attributes)
         user_namespaces(user_ids).update_all(transfer_attributes)
       end
 
@@ -187,6 +187,12 @@ module Organizations
           organization_id: new_organization.id,
           visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
         }
+      end
+
+      def user_transfer_attributes
+        attrs = { organization_id: new_organization.id }
+        attrs[:private_profile] = true unless new_organization.public?
+        attrs
       end
 
       def user_namespaces(user_ids)

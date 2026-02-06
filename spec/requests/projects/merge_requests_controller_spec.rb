@@ -450,4 +450,49 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end.not_to change { merge_request.reload.merge_schedule.merge_after }
     end
   end
+
+  describe 'GET #versions' do
+    let(:merge_request_diff) { merge_request.merge_request_diff }
+    let(:full_path) { project.full_path }
+    let(:iid) { merge_request.iid }
+    let(:diffs_path) { "/#{full_path}/-/merge_requests/#{iid}/diffs" }
+    let(:diff_id) { merge_request_diff.id }
+    let(:start_sha) { merge_request_diff.head_commit_sha }
+
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    it 'responds with list of diff versions' do
+      get versions_project_merge_request_path(project, merge_request)
+
+      expect(json_response).to be_kind_of(Array)
+      expect(json_response.size).to eq(1)
+      expect(json_response.first).to include(
+        "base_version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true",
+        "commits_count" => merge_request_diff.commits_count,
+        "compare_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true&start_sha=#{start_sha}",
+        "head_commit_sha" => start_sha,
+        "head_version_path" => nil,
+        "id" => diff_id,
+        "latest" => true,
+        "short_commit_sha" => Commit.truncate_sha(start_sha),
+        "version_index" => nil,
+        "version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true"
+      )
+    end
+
+    context 'when rapid_diffs_on_mr_show feature flag is disabled' do
+      subject { response }
+
+      before do
+        stub_feature_flags(rapid_diffs_on_mr_show: false)
+
+        get versions_project_merge_request_path(project, merge_request)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+  end
 end

@@ -56,7 +56,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/20325', type: 'flaky' } do
         within_testid('admin-visibility-access-settings') do
           fill_in 'Retention period', with: 30
-          uncheck 'Allow immediate deletion'
+          uncheck 'Allow permanent deletion'
           click_button 'Save changes'
         end
 
@@ -64,7 +64,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         within_testid('admin-visibility-access-settings') do
           expect(find_field('Retention period').value).to eq('30')
-          expect(find_field('Allow immediate deletion')).not_to be_checked
+          expect(find_field('Allow permanent deletion')).not_to be_checked
         end
       end
 

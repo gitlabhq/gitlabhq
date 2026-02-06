@@ -23,9 +23,13 @@ Configure editor extensions settings for your GitLab instance.
 
 {{< /history >}}
 
-You can configure GitLab Workflow extension for VS Code to connect and authenticate with GitLab using an OAuth application ID.
+You can configure editor extensions to connect and authenticate with GitLab
+using an OAuth application ID. The configuration steps differ depending on
+your IDE.
 
-To create an OAuth application:
+### VS Code
+
+To create an OAuth application for VS Code:
 
 1. Create an [instance-wide application](../../integration/oauth_provider.md#create-an-instance-wide-application).
 1. In **Redirect URI**, enter `vscode://gitlab.gitlab-workflow/authentication`.
@@ -34,6 +38,17 @@ To create an OAuth application:
 1. Select the `api` scope.
 1. Select **Submit**.
 1. Copy the **Application ID**. Use this for the `gitlab.authentication.oauthClientIds` setting in your VS Code configuration.
+
+### JetBrains IDEs
+
+To create an OAuth application for JetBrains IDEs:
+
+1. Create an [instance-wide application](../../integration/oauth_provider.md#create-an-instance-wide-application).
+1. In **Redirect URI**, enter `http://127.0.0.1/api/oauth/gitlab/authorization`.
+1. Select the `api` scope.
+1. Select **Submit**.
+1. Copy the **Application ID**. Use this when configuring the GitLab Duo plugin
+   in your JetBrains IDE.
 
 ## Require a minimum language server version
 

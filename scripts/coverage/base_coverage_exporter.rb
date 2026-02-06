@@ -98,6 +98,7 @@ class BaseCoverageExporter
       '--test-map', test_map_path,
       '--clickhouse-url', env.fetch('CLICKHOUSE_URL', ''),
       '--clickhouse-database', env.fetch('CLICKHOUSE_DATABASE', ''),
+      '--clickhouse-shared-database', env.fetch('CLICKHOUSE_SHARED_DB', ''),
       '--clickhouse-username', env.fetch('CLICKHOUSE_USERNAME', ''),
       '--responsibility-patterns', RESPONSIBILITY_PATTERNS
     )

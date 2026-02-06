@@ -329,6 +329,9 @@ In some cases, Semgrep vulnerabilities may still appear as duplicates if the [de
 By default, GitLab Advanced SAST analyzes all source code in the supported languages. If diff-based
 scanning is enabled, only the changes in a merge request are scanned.
 
+You can disable default GitLab Advanced SAST rules or edit their metadata. For details, see
+[customize rulesets](customize_rulesets.md#replace-or-add-to-the-default-rules).
+
 ### Supported languages
 
 {{< history >}}
@@ -369,19 +372,16 @@ When analyzing PHP code, GitLab Advanced SAST has the following known issues:
 
 You can adjust GitLab Advanced SAST behavior using the following variables:
 
-| CI/CD variable                          | Default  | Description                                                                         |
-|-----------------------------------------|----------|-------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`          | `false`  | Enables GitLab Advanced SAST scanning for all supported languages except C and C++. |
-| `GITLAB_ADVANCED_SAST_CPP_ENABLED`      | `false`  | Enables GitLab Advanced SAST scanning specifically for C and C++ projects.          |
-| `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`     | `30`     | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.      |
+| CI/CD variable                      | Default | Description                                                                        |
+|-------------------------------------|---------|------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED`      | `false` | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. |
+| `GITLAB_ADVANCED_SAST_CPP_ENABLED`  | `false` | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.          |
+| `ADVANCED_SAST_PARTIAL_SCAN`        | N/A     | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.       |
+| `GITLAB_ADVANCED_SAST_RULE_TIMEOUT` | `30`    | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.     |
 
-Advanced SAST scanning is disabled by default. To explicitly disable it when enabled at a higher level (like group-level),
-set `GITLAB_ADVANCED_SAST_ENABLED` (or `GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/C++ projects) to `false`.
-
-## Customize GitLab Advanced SAST
-
-You can disable GitLab Advanced SAST rules or edit their metadata, just as you can other analyzers.
-For details, see [customize rulesets](customize_rulesets.md#replace-or-add-to-the-default-rules).
+GitLab Advanced SAST scanning is disabled by default. To explicitly disable it when enabled at a
+higher level (for example, for a group), set `GITLAB_ADVANCED_SAST_ENABLED` (or
+`GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/C++ projects) to `false`.
 
 ## Request source code of LGPL-licensed components in GitLab Advanced SAST
 

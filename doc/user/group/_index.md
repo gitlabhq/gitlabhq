@@ -316,7 +316,7 @@ the deletion job instead restores the group, and the group is no longer schedule
 
 - Enabled delayed deletion by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561680) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
-- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow immediate deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
+- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow permanent deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
 
 {{< /history >}}
 
@@ -327,12 +327,12 @@ Prerequisites:
 - You must have the Owner role for a group.
 - You have [scheduled the group for deletion](#schedule-a-group-for-deletion).
 
-To immediately delete a group scheduled for deletion:
+To permanently delete a group scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
-1. In the **Delete group** section, select **Delete immediately**.
+1. In the **Delete group** section, select **Delete permanently**.
 1. On the confirmation dialog, enter the group path and select **Yes, delete group**.
 
 This action deletes the group, its subgroups, projects, and all related resources, including issues and merge requests.

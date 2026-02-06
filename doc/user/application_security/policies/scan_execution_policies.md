@@ -76,6 +76,7 @@ value for each policy action. For example, `secret-detection` becomes `secret-de
 - `Merge Request Security Template`:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`. Disabled by default.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.3.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.4. Feature flag `flexible_scan_execution` removed.
 
 {{< /history >}}
 
@@ -161,10 +162,6 @@ the following sections and tables provide an alternative.
 
 {{< /history >}}
 
-> [!flag]
-> This feature is controlled by a feature flag.
-> For more information, see the history.
-
 | Field          | Type                                         | Required | Description |
 |----------------|----------------------------------------------|----------|-------------|
 | `name`         | `string`                                     | true     | Name of the policy. Maximum of 255 characters. |
@@ -210,12 +207,9 @@ from bypassing the pipeline execution policies.
 - The `pipeline_sources` field and the `branch_type` options `target_default` and `target_protected`:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `flexible_scan_execution`.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.3.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/541689) in GitLab 18.4. Feature flag `flexible_scan_execution` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 

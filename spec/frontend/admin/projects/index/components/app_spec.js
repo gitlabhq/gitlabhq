@@ -120,7 +120,7 @@ describe('AdminProjectsApp', () => {
     await waitForPromises();
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
 
-    expect(wrapper.findByRole('button', { name: 'Delete immediately' }).exists()).toBe(true);
+    expect(wrapper.findByRole('button', { name: 'Delete permanently' }).exists()).toBe(true);
   });
 
   it('uses adminShowPath for avatar link', async () => {

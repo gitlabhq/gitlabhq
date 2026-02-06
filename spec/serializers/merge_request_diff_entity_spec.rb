@@ -9,6 +9,12 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.first }
+  let(:full_path) { project.full_path }
+  let(:iid) { merge_request.iid }
+  let(:diff_id) { merge_request_diff.id }
+  let(:start_sha) { merge_request_diff.head_commit_sha }
+  let(:path_extra_options) { nil }
+  let(:options) { {} }
 
   let(:entity) { initialize_entity(merge_request, merge_request_diff) }
 
@@ -18,7 +24,9 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
       request: request,
       merge_request: merge_request,
       merge_request_diff: merge_request_diff,
-      merge_request_diffs: merge_request_diffs
+      merge_request_diffs: merge_request_diffs,
+      path_extra_options: path_extra_options,
+      **options
     )
   end
 
@@ -114,8 +122,18 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
 
       it 'returns diff path with diff_head param set' do
         expect(subject[:head_version_path]).to eq(
-          "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/diffs?diff_head=true"
+          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_head=true"
         )
+      end
+
+      context 'when path extra options are set' do
+        let(:path_extra_options) { { rapid_diffs: true } }
+
+        it 'returns diff path with extra options' do
+          expect(subject[:head_version_path]).to eq(
+            "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_head=true&rapid_diffs=true"
+          )
+        end
       end
     end
 
@@ -124,6 +142,70 @@ RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow d
 
       it 'returns diff path with diff_head param set' do
         expect(subject[:head_version_path]).to be_nil
+      end
+    end
+  end
+
+  describe '#base_version_path' do
+    it 'returns base version diff path' do
+      expect(subject[:base_version_path]).to eq(
+        "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}"
+      )
+    end
+
+    context 'when path extra options are set' do
+      let(:path_extra_options) { { rapid_diffs: true } }
+
+      it 'returns diff path with extra options' do
+        expect(subject[:base_version_path]).to eq(
+          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true"
+        )
+      end
+    end
+  end
+
+  describe '#version_path' do
+    it 'returns version diff path' do
+      expect(subject[:version_path]).to eq(
+        "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}"
+      )
+    end
+
+    context 'when start_sha option is set' do
+      let(:options) { { start_sha: 'abc123' } }
+
+      it 'returns version diff path with start_sha' do
+        expect(subject[:version_path]).to eq(
+          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&start_sha=abc123"
+        )
+      end
+    end
+
+    context 'when path extra options are set' do
+      let(:path_extra_options) { { rapid_diffs: true } }
+
+      it 'returns diff path with extra options' do
+        expect(subject[:version_path]).to eq(
+          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true"
+        )
+      end
+    end
+  end
+
+  describe '#compare_path' do
+    it 'returns version diff path' do
+      expect(subject[:compare_path]).to eq(
+        "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&start_sha=#{start_sha}"
+      )
+    end
+
+    context 'when path extra options are set' do
+      let(:path_extra_options) { { rapid_diffs: true } }
+
+      it 'returns diff path with extra options' do
+        expect(subject[:compare_path]).to eq(
+          "/#{full_path}/-/merge_requests/#{iid}/diffs?diff_id=#{diff_id}&rapid_diffs=true&start_sha=#{start_sha}"
+        )
       end
     end
   end

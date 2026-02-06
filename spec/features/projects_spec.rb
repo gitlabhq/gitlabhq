@@ -311,20 +311,20 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     context 'when project is marked for deletion' do
       let_it_be_with_reload(:project_aimed_for_deletion) { create(:project, :aimed_for_deletion, group: group) }
 
-      context 'when "Allow immediate deletion" setting is enabled' do
+      context 'when "Allow permanent deletion" setting is enabled' do
         before do
           sign_in user
           visit edit_project_path(project_aimed_for_deletion)
         end
 
-        it 'allows immediate deletion', :sidekiq_inline do
-          remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+        it 'allows permanent deletion', :sidekiq_inline do
+          remove_with_confirm('Delete permanently', project_aimed_for_deletion.path_with_namespace)
 
           expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
         end
       end
 
-      context 'when "Allow immediate deletion" setting is disabled' do
+      context 'when "Allow permanent deletion" setting is disabled' do
         before do
           stub_application_setting(allow_immediate_namespaces_deletion: false)
         end
@@ -336,27 +336,27 @@ RSpec.describe 'Project', feature_category: :source_code_management do
             visit edit_project_path(project_aimed_for_deletion)
           end
 
-          it 'allows immediate deletion', :sidekiq_inline do
-            remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+          it 'allows permanent deletion', :sidekiq_inline do
+            remove_with_confirm('Delete permanently', project_aimed_for_deletion.path_with_namespace)
 
             expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
           end
         end
 
-        it 'allows immediate deletion for admins', :enable_admin_mode, :sidekiq_inline do
+        it 'allows permanent deletion for admins', :enable_admin_mode, :sidekiq_inline do
           sign_in admin
           visit edit_project_path(project_aimed_for_deletion)
 
-          remove_with_confirm('Delete immediately', project_aimed_for_deletion.path_with_namespace)
+          remove_with_confirm('Delete permanently', project_aimed_for_deletion.path_with_namespace)
 
           expect(page).to have_content "#{project_aimed_for_deletion.name} is being deleted."
         end
 
-        it 'does not allow immediate deletion' do
+        it 'does not allow permanent deletion' do
           sign_in user
           visit edit_project_path(project_aimed_for_deletion)
 
-          expect(page).not_to have_button('Delete immediately')
+          expect(page).not_to have_button('Delete permanently')
           expect(page).to have_content("This project is pending deletion, and will be deleted on #{permanent_deletion_date_formatted(project_aimed_for_deletion)}. Repository and other project resources are read-only.")
         end
       end

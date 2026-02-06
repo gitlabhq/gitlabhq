@@ -85,8 +85,8 @@ module MergeRequestsHelper
       merge_request.closed_or_merged_without_fork?
   end
 
-  def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
-    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, start_sha: start_sha)
+  def merge_request_version_path(project, merge_request, merge_request_diff, path_extra_options = {})
+    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, **path_extra_options)
   end
 
   def merge_params(merge_request)

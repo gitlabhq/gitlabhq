@@ -465,7 +465,7 @@ describe('GroupListItemActions', () => {
     });
   });
 
-  describe('when delete immediately action is fired', () => {
+  describe('when delete permanently action is fired', () => {
     beforeEach(async () => {
       createComponent();
       await fireAction(ACTION_DELETE_IMMEDIATELY);

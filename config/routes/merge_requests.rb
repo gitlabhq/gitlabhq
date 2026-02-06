@@ -53,6 +53,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     get :diff_files_metadata
     get :diffs_stats
     get :diff_file
+    get :versions
 
     # NOTE: Fallback to `merge_requests/diffs#diff_for_path` to handle `collapsed_diff_url` from the collapsed partial
     scope controller: 'merge_requests/diffs_stream' do

@@ -2835,6 +2835,13 @@ class MergeRequest < ApplicationRecord
     record
   end
 
+  def viewable_recent_merge_request_diffs
+    merge_request_diffs
+      .viewable
+      .order_id_desc
+      .limit(DIFF_VERSION_LIMIT)
+  end
+
   private
 
   def merge_data_attributes

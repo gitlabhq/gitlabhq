@@ -16,7 +16,7 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       render
 
       expect(rendered).to have_selector('#js-admin-deletion-protection-settings')
-      expect(rendered).to have_field('Allow immediate deletion')
+      expect(rendered).to have_field('Allow permanent deletion')
     end
   end
 

@@ -373,7 +373,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let(:project) { build(:project) }
     let(:base_button_data) do
       {
-        button_text: 'Delete immediately',
+        button_text: 'Delete permanently',
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,

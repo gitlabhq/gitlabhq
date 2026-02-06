@@ -1369,7 +1369,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
-- `permanently_remove` controlled by [immediate deletion instance setting](../administration/settings/visibility_and_access_controls.md#immediate-deletion) in GitLab 18.5. [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) and [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/582574) by default.
+- `permanently_remove` controlled by [permanent deletion instance setting](../administration/settings/visibility_and_access_controls.md#permanent-deletion) in GitLab 18.5. [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) and [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/582574) by default.
 
 {{< /history >}}
 
@@ -1408,7 +1408,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 > [!note]
 > You cannot delete a GitLab.com group that is linked to a subscription. You must first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
 
-#### Delete a group immediately
+#### Delete a group permanently
 
 {{< details >}}
 
@@ -1417,7 +1417,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< /details >}}
 
 Bypasses the configured retention period and
-deletes a group and its data immediately.
+deletes a group and its data permanently.
 
 Prerequisites:
 
@@ -1431,11 +1431,11 @@ DELETE /groups/:id
 |----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `full_path`          | string            | Yes       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
-| `permanently_remove` | boolean/string    | Yes       | If `true`, immediately deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
+| `permanently_remove` | boolean/string    | Yes       | If `true`, permanently deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
 
 If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.
 
-To immediately delete a group, you must:
+To permanently delete a group scheduled for deletion, you must:
 
 1. Schedule the group for deletion with an API call.
 1. In a second API call, delete the group.
@@ -1448,7 +1448,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
      --url "https://gitlab.example.com/api/v4/groups/:id"
 
-# Immediately delete a group scheduled for deletion
+# Permanently delete a group scheduled for deletion
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
      --data '{"full_path": <full_path>, "permanently_remove": "true"}' \

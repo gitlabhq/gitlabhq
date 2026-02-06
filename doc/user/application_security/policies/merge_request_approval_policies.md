@@ -522,11 +522,9 @@ The settings set in the policy overwrite settings in the project.
 - The `fallback_behavior` field:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.0 [with a flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
   - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.1. Feature flag `security_scan_result_policies_unblock_fail_open_approval_rules` removed.
 
 {{< /history >}}
-
-> [!flag]
-> On GitLab Self-Managed, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags/_index.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|

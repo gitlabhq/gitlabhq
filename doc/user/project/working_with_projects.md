@@ -364,7 +364,7 @@ You can also [delete projects using the Rails console](troubleshooting.md#delete
 - Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561680) in GitLab 18.4 [with a flag](../../administration/feature_flags/_index.md) named `disallow_immediate_deletion`. Disabled by default.
-- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow immediate deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
+- [Replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) in GitLab 18.5 by an instance setting to allow permanent deletion of groups and projects scheduled for deletion. [Controlled by a flag](../../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`. Feature flag is disabled by default.
 
 {{< /history >}}
 
@@ -376,12 +376,12 @@ Prerequisites:
 - You must have the Owner role for a project.
 - You have [scheduled the project for deletion](#delete-a-project).
 
-To immediately delete a project scheduled for deletion:
+To permanently delete a project scheduled for deletion:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete immediately**.
+1. In the **Delete project** section, select **Delete permanently**.
 1. On the confirmation dialog, enter the project name and select **Confirm**.
 
 This action deletes the project and all related resources, including issues and merge requests.
@@ -618,7 +618,7 @@ depending on the state of your project:
 |----------|-------------------------|
 | Active   | **Copy project ID**, **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
 | Archived | **Copy project ID**, **Unarchive**, **Leave project**, **Delete** |
-| Pending deletion | **Copy project ID**, **Restore**, **Leave project**, **Delete immediately** |
+| Pending deletion | **Copy project ID**, **Restore**, **Leave project**, **Delete permanently** |
 
 ## Add a compliance framework to a project
 

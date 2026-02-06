@@ -53,7 +53,7 @@ export default {
       return csrf.token;
     },
     buttonText() {
-      return this.markedForDeletion ? s__('GroupSettings|Delete immediately') : __('Delete');
+      return this.markedForDeletion ? s__('GroupSettings|Delete permanently') : __('Delete');
     },
   },
   methods: {

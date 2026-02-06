@@ -625,7 +625,8 @@
     }
 
     // Strikethrough block-level items in non-tight lists as a whole; we don't do sublists.
-    > p, div {
+    > p,
+    > div {
       text-decoration: line-through;
       @apply gl-text-disabled;
     }

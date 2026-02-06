@@ -183,6 +183,42 @@ RSpec.describe Organizations::Users::TransferService, :aggregate_failures, featu
         expect(user3).to be_valid
       end
 
+      context 'when new organization is public' do
+        let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+        it 'does not set private_profile on users' do
+          service.execute
+
+          expect(user1.reload.private_profile).to be false
+          expect(user2.reload.private_profile).to be false
+          expect(user3.reload.private_profile).to be false
+        end
+      end
+
+      context 'when new organization is internal' do
+        let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+        it 'sets private_profile to true on users' do
+          service.execute
+
+          expect(user1.reload.private_profile).to be true
+          expect(user2.reload.private_profile).to be true
+          expect(user3.reload.private_profile).to be true
+        end
+      end
+
+      context 'when new organization is private' do
+        let_it_be(:new_organization) { create(:organization, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
+        it 'sets private_profile to true on users' do
+          service.execute
+
+          expect(user1.reload.private_profile).to be true
+          expect(user2.reload.private_profile).to be true
+          expect(user3.reload.private_profile).to be true
+        end
+      end
+
       it 'updates organization_id for user namespaces' do
         service.execute
 

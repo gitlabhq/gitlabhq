@@ -57,7 +57,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update
+    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update,
+    :versions
   ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
@@ -88,7 +89,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :test_reports,
     :codequality_mr_diff_reports,
     :codequality_reports,
-    :terraform_reports
+    :terraform_reports,
+    :versions
   ]
   urgency :low, [:pipeline_status, :pipelines, :exposed_artifacts]
 
@@ -367,6 +369,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     message = format(_('Your CSV export has started. It will be emailed to %{email} when complete.'),
       email: current_user.notification_email_or_default)
     redirect_to(index_path, notice: message)
+  end
+
+  def versions
+    return render_404 unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+
+    viewable_merge_request_diffs = @merge_request.viewable_recent_merge_request_diffs
+
+    render json: RapidDiffs::MergeRequestDiffEntity.represent(
+      viewable_merge_request_diffs,
+      merge_request: @merge_request,
+      merge_request_diffs: viewable_merge_request_diffs,
+      merge_request_diff: @merge_request.merge_request_diff,
+      path_extra_options: { rapid_diffs: true }
+    )
   end
 
   protected

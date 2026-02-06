@@ -104,10 +104,10 @@ describe('DeleteButton', () => {
       createComponent({ markedForDeletion: true });
     });
 
-    it('renders Delete immediately as button text', () => {
+    it('renders Delete permanently as button text', () => {
       const button = findDeleteButton();
 
-      expect(button.text()).toBe('Delete immediately');
+      expect(button.text()).toBe('Delete permanently');
     });
 
     it('renders permanently_remove=true hidden input', () => {

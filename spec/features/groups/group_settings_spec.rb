@@ -429,14 +429,14 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         create(:group_deletion_schedule, group: group)
       end
 
-      context 'when "Allow immediate deletion" setting is enabled' do
+      context 'when "Allow permanent deletion" setting is enabled' do
         before do
           stub_application_setting(usage_ping_enabled: true)
           visit edit_group_path(group)
         end
 
-        it 'allows immediate deletion', :sidekiq_inline do
-          expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
+        it 'allows permanent deletion', :sidekiq_inline do
+          expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
 
           expect(page).to have_content "#{group.name} is being deleted."
         end
@@ -446,22 +446,22 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         let_it_be(:subgroup) { create(:group, parent: group) }
         let_it_be(:project) { create(:project, namespace: group) }
 
-        it 'does not allow immediate deletion of subgroup' do
+        it 'does not allow permanent deletion of subgroup' do
           visit edit_group_path(subgroup)
 
-          expect(page).not_to have_button('Delete immediately')
+          expect(page).not_to have_button('Delete permanently')
           expect(page).to have_content "This group will be deleted on #{permanent_deletion_date_formatted(group)} because its parent group is scheduled for deletion."
         end
 
-        it 'does not allow immediate deletion of project' do
+        it 'does not allow permanent deletion of project' do
           visit edit_project_path(project)
 
-          expect(page).not_to have_button('Delete immediately')
+          expect(page).not_to have_button('Delete permanently')
           expect(page).to have_content "This project will be deleted on #{permanent_deletion_date_formatted(group)} because its parent group is scheduled for deletion."
         end
       end
 
-      context 'when "Allow immediate deletion" setting is disabled' do
+      context 'when "Allow permanent deletion" setting is disabled' do
         before do
           stub_application_setting(allow_immediate_namespaces_deletion: false)
         end
@@ -472,26 +472,26 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
             visit edit_group_path(group)
           end
 
-          it 'allows immediate deletion', :sidekiq_inline do
-            expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
+          it 'allows permanent deletion', :sidekiq_inline do
+            expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
 
             expect(page).to have_content "#{group.name} is being deleted."
           end
         end
 
-        it 'allows immediate deletion for admins', :enable_admin_mode, :sidekiq_inline do
+        it 'allows permanent deletion for admins', :enable_admin_mode, :sidekiq_inline do
           sign_in(admin)
           visit edit_group_path(group)
 
-          expect { remove_with_confirm('Delete immediately', group.path) }.to change { Group.count }.by(-1)
+          expect { remove_with_confirm('Delete permanently', group.path) }.to change { Group.count }.by(-1)
 
           expect(page).to have_content "#{group.name} is being deleted."
         end
 
-        it 'does not allow immediate deletion' do
+        it 'does not allow permanent deletion' do
           visit edit_group_path(group)
 
-          expect(page).not_to have_button('Delete immediately')
+          expect(page).not_to have_button('Delete permanently')
           expect(page).to have_content "This group and its subgroups and projects are pending deletion, and will be deleted on #{permanent_deletion_date_formatted(group)}."
         end
       end

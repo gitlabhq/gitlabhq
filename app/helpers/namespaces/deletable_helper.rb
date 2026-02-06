@@ -157,7 +157,7 @@ module Namespaces
     end
 
     def project_delete_immediately_button_data(project)
-      _project_delete_button_shared_data(project, s_('ProjectSettings|Delete immediately')).merge({
+      _project_delete_button_shared_data(project, s_('ProjectSettings|Delete permanently')).merge({
         form_path: project_path(project, permanently_delete: true)
       })
     end

@@ -94,7 +94,7 @@ To disable the restriction:
 
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0. Premium and Ultimate only.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in GitLab 18.0.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the immediate deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the permanent deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
 
 {{< /history >}}
 
@@ -121,11 +121,11 @@ To configure deletion protection for groups and projects:
 1. Scroll to **Retention period** and set the retention period to a value between `1` and `90` days.
 1. Select **Save changes**.
 
-### Immediate deletion
+### Permanent deletion
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the immediate deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569453) a feature flag in GitLab 18.5 called `allow_immediate_namespaces_deletion` that controls the permanent deletion instance setting for groups and projects scheduled for deletion. Enabled by default on GitLab Self-Managed and GitLab.com. Disabled by default on GitLab Dedicated.
 
 {{< /history >}}
 
@@ -133,23 +133,23 @@ To configure deletion protection for groups and projects:
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-By default, immediate deletion is turned on for groups and projects scheduled for deletion. This way, users
+By default, permanent deletion is turned on for groups and projects scheduled for deletion. This way, users
 can bypass the configured retention period and delete groups or projects immediately.
 
-To disable immediate deletion:
+To disable permanent deletion:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
-1. Scroll to **Immediate deletion** and uncheck the checkbox.
+1. Scroll to **Permanent deletion** and uncheck the checkbox.
 1. Select **Save changes**.
 
 > [!note]
 > Administrators can always immediately delete groups and projects through the Admin pages.
 
-### Override defaults and delete immediately
+### Override defaults and delete permanently
 
-To override the delay, and immediately delete a project marked for removal:
+To override the delay, and permanently delete a project marked for removal:
 
 1. [Restore the project](../../user/project/working_with_projects.md#restore-a-project).
 1. Delete the project as described in the

@@ -187,7 +187,7 @@ describe('renderDeleteSuccessToast', () => {
     );
   });
 
-  it('when delayed deletion is enabled and group is already pending deletion, renders the delete immediately message', () => {
+  it('when delayed deletion is enabled and group is already pending deletion, renders the delete permanently message', () => {
     renderDeleteSuccessToast(MOCK_GROUP_PENDING_DELETION);
 
     expect(toast).toHaveBeenCalledWith(`${MOCK_GROUP_PENDING_DELETION.name} is being deleted.`);

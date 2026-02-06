@@ -8845,4 +8845,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#viewable_recent_merge_request_diffs' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:viewable_diff_1) { merge_request.merge_request_diff }
+    let_it_be(:viewable_diff_2) { merge_request.create_merge_request_diff }
+    let_it_be(:unviewable_diff) { create(:merge_request_diff, merge_request: merge_request, state: :empty) }
+
+    it 'returns viewable (not empty) diffs sorted most recent first' do
+      expect(merge_request.viewable_recent_merge_request_diffs).to eq([viewable_diff_2, viewable_diff_1])
+    end
+
+    context 'when limited' do
+      before do
+        stub_const("#{described_class}::DIFF_VERSION_LIMIT", 1)
+      end
+
+      it 'returns limited viewable diffs' do
+        expect(merge_request.viewable_recent_merge_request_diffs).to eq([viewable_diff_2])
+      end
+    end
+  end
 end
