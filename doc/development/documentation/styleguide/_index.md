@@ -882,6 +882,7 @@ To make tables easier to maintain:
 
 You can use [Hugo class attributes](https://gohugo.io/content-management/markdown-attributes/) to make a table condensed or expandable.
 To use a Hugo attribute with a table, you must [disable Markdown rules](../testing/markdownlint.md#disable-markdownlint-tests) `055` and `056`.
+Add a space between the Markdown comment and the top of the table so the table renders correctly.
 To avoid introducing linting errors in a table, test the table locally with all rules enabled.
 
 Hugo class attributes only render on the GitLab documentation site (`https://docs.gitlab.com`).
@@ -893,6 +894,9 @@ By default, wide tables that do not fit on the page are condensed. Long tables a
 the `condensed` class attribute to reduce the space the table takes up on a page.
 
 ```markdown
+<!-- markdownlint-disable MD055 -->
+<!-- markdownlint-disable MD056 -->
+
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
 | `param1`  | `true`       | A and B.     |
@@ -903,6 +907,9 @@ the `condensed` class attribute to reduce the space the table takes up on a page
 or
 
 ```markdown
+<!-- markdownlint-disable MD055 -->
+<!-- markdownlint-disable MD056 -->
+
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
 | `param1`  | `true`       | A and B.     |
