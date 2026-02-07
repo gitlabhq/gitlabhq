@@ -3,7 +3,7 @@ import timezoneMock from 'timezone-mock';
 import { GlTruncate, GlDrawer, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import Feature from '~/whats_new/components/feature.vue';
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
 
 describe("What's new single feature", () => {
@@ -19,7 +19,7 @@ describe("What's new single feature", () => {
     'self-managed': true,
     'gitlab-com': true,
     available_in: ['Ultimate'],
-    documentation_link: `${DOCS_URL_IN_EE_DIR}/user/project/settings/#compliance-pipeline-configuration`,
+    documentation_link: `${DOCS_URL}/user/project/settings/#compliance-pipeline-configuration`,
     image_url: 'https://img.youtube.com/vi/upLJ_equomw/hqdefault.jpg',
     published_at: '2021-04-22',
     release: '13.11',
@@ -117,7 +117,7 @@ describe("What's new single feature", () => {
         'click_whats_new_item',
         {
           label: 'Compliance pipeline configurations',
-          property: `${DOCS_URL_IN_EE_DIR}/user/project/settings/#compliance-pipeline-configuration`,
+          property: `${DOCS_URL}/user/project/settings/#compliance-pipeline-configuration`,
         },
       ]);
     });

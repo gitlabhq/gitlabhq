@@ -1,5 +1,5 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 
 export const commonOptions = {
   ciConfigPath: '/ci/config',
@@ -479,7 +479,7 @@ export const mockErrors = [
 ];
 
 export const mockWarnings = [
-  `"jobs:multi_project_job may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings"`,
+  `"jobs:multi_project_job may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL}/ci/troubleshooting.html#pipeline-warnings"`,
 ];
 
 export const mockCommitCreateResponse = {

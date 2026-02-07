@@ -19,9 +19,6 @@ const {
   promo_url: PROMO_URL = DEFAULT_PROMO_URL,
 } = window.gon;
 
-// eslint-disable-next-line no-restricted-syntax
-export const DOCS_URL_IN_EE_DIR = `${DOCS_URL}/ee`;
-
 export { FORUM_URL, DOCS_URL, PROMO_URL, CONTRIBUTE_URL };
 
 export const GL_DARK = 'gl-dark';

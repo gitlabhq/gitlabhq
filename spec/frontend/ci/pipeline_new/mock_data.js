@@ -1,4 +1,4 @@
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 
 export const mockFilteredRefs = {
   Branches: ['branch-1'],
@@ -30,9 +30,9 @@ export const mockError = {
     'test job: chosen stage test does not exist; available stages are .pre, build, test, deploy, .post',
   ],
   warnings: [
-    `jobs:build1 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings`,
-    `jobs:build2 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings`,
-    `jobs:build3 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings`,
+    `jobs:build1 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL}/ci/troubleshooting.html#pipeline-warnings`,
+    `jobs:build2 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL}/ci/troubleshooting.html#pipeline-warnings`,
+    `jobs:build3 may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL}/ci/troubleshooting.html#pipeline-warnings`,
   ],
   total_warnings: 7,
 };

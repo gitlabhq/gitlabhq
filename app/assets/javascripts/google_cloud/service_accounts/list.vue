@@ -2,7 +2,7 @@
 <script>
 import { GlAlert, GlButton, GlEmptyState, GlLink, GlSprintf, GlTable } from '@gitlab/ui';
 import { setUrlParams } from 'jh_else_ce/lib/utils/url_utility';
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 import { __ } from '~/locale';
 
 const GOOGLE_CONSOLE_URL = 'https://console.cloud.google.com/iam-admin/serviceaccounts';
@@ -51,7 +51,7 @@ export default {
     },
   },
   GOOGLE_CONSOLE_URL,
-  secretsDocsLink: `${DOCS_URL_IN_EE_DIR}/ci/secrets/`,
+  secretsDocsLink: `${DOCS_URL}/ci/secrets/`,
 };
 </script>
 

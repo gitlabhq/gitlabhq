@@ -16,13 +16,7 @@ if (!REVEAL_ESLINT_TODO || REVEAL_ESLINT_TODO === 'false' || REVEAL_ESLINT_TODO 
 const NO_HARDCODED_URLS_OPTIONS = {
   allowedKeys: ['path', 'redirect'],
   allowedFunctions: ['helpPagePath'],
-  allowedInterpolationVariables: [
-    'FORUM_URL',
-    'DOCS_URL',
-    'PROMO_URL',
-    'CONTRIBUTE_URL',
-    'DOCS_URL_IN_EE_DIR',
-  ],
+  allowedInterpolationVariables: ['FORUM_URL', 'DOCS_URL', 'PROMO_URL', 'CONTRIBUTE_URL'],
   allowedPatterns: ['\\/api\\/:version'],
   disallowedObjectProperties: ['relative_url_root'],
 };
@@ -134,11 +128,11 @@ const baseNoRestrictedSyntax = [
   },
   {
     selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-    message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+    message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
@@ -159,8 +153,7 @@ const baseNoRestrictedSyntax = [
   {
     selector:
       'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-    message:
-      '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+    message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL` in `~/constants`',
   },
   {
     selector: "MemberExpression[object.type='ThisExpression'][property.name=/(\\$delete|\\$set)/]",
@@ -369,8 +362,7 @@ export default [
         {
           object: 'window',
           property: 'open',
-          message:
-            'Use `visitUrl` in `~/constants` to avoid cross-site leaks.',
+          message: 'Use `visitUrl` in `~/constants` to avoid cross-site leaks.',
         },
         {
           object: 'window',
@@ -475,12 +467,7 @@ export default [
       'vue/no-undef-components': [
         'error',
         {
-          ignorePatterns: [
-            '^router-link$',
-            '^router-view$',
-            '^gl-emoji$',
-            'fe-island-duo-next'
-          ],
+          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
         },
       ],
 
@@ -566,13 +553,11 @@ export default [
         },
         {
           selector: 'Literal[value=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'TemplateElement[value.cooked=/docs.gitlab.+\\u002Fee/]',
-          message:
-            'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+          message: 'No hard coded url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'Literal[value=/(?=.*docs.gitlab.*)(?!.*\\u002Fee\\b.*)/]',
@@ -593,8 +578,7 @@ export default [
         {
           selector:
             'TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\\u002Fjh|\\u002Fee/]',
-          message:
-            '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `~/constants`',
+          message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL` in `~/constants`',
         },
         {
           selector: 'CallExpression[callee.property.name=/(\\$delete|\\$set)/]',
@@ -636,7 +620,7 @@ export default [
               name: '~/locale',
               importNames: ['__', 's__'],
               message:
-                'Do not externalize strings in specs: https://docs.gitlab.com/ee/development/i18n/externalization.html#test-files-jest',
+                'Do not externalize strings in specs: https://docs.gitlab.com/development/i18n/externalization.html#test-files-jest',
             },
           ],
 

@@ -1,5 +1,5 @@
 import { __, s__ } from '~/locale';
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 
 export const JOB_RULES_WHEN = {
   onSuccess: {
@@ -129,9 +129,9 @@ export const i18n = {
 };
 
 export const HELP_PATHS = {
-  artifactsHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#artifacts`,
-  cacheHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#cache`,
-  imageHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#image`,
-  rulesHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#rules`,
-  servicesHelpPath: `${DOCS_URL_IN_EE_DIR}/ci/yaml/#services`,
+  artifactsHelpPath: `${DOCS_URL}/ci/yaml/#artifacts`,
+  cacheHelpPath: `${DOCS_URL}/ci/yaml/#cache`,
+  imageHelpPath: `${DOCS_URL}/ci/yaml/#image`,
+  rulesHelpPath: `${DOCS_URL}/ci/yaml/#rules`,
+  servicesHelpPath: `${DOCS_URL}/ci/yaml/#services`,
 };

@@ -2,7 +2,7 @@
 import { GlFormRadio, GlFormRadioGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
-import { DOCS_URL_IN_EE_DIR } from '~/constants';
+import { DOCS_URL } from '~/constants';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 const KEY_EVERY_DAY = 'everyDay';
@@ -53,8 +53,8 @@ export default {
       inputNameAttribute: 'schedule[cron]',
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,
-      cronSyntaxUrl: `${DOCS_URL_IN_EE_DIR}/topics/cron/`,
-      pipelineScheduleWorkerUrl: `${DOCS_URL_IN_EE_DIR}/administration/cicd/#change-maximum-scheduled-pipeline-frequency`,
+      cronSyntaxUrl: `${DOCS_URL}/topics/cron/`,
+      pipelineScheduleWorkerUrl: `${DOCS_URL}/administration/cicd/#change-maximum-scheduled-pipeline-frequency`,
     };
   },
   computed: {
