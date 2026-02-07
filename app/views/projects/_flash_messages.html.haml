@@ -7,8 +7,6 @@
     = render 'shared/no_password'
     - unless project.empty_repo?
       = render 'shared/auto_devops_implicitly_enabled_banner', project: project
-    - if show_auto_devops_callout?(@project)
-      = render 'shared/auto_devops_callout'
     = render_if_exists 'projects/above_size_limit_warning', project: project
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project
     = render 'projects/lfs_misconfiguration_banner', project: project

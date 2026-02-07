@@ -237,7 +237,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
 
     context 'when all partitions are below the threshold' do
-      let(:threshold) { 1.megabyte }
+      let(:threshold) { 100.megabytes }
 
       it { is_expected.to eq(false) }
     end

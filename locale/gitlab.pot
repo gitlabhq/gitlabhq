@@ -10821,24 +10821,6 @@ msgstr ""
 msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps"
-msgstr ""
-
-msgid "AutoDevOps|Auto DevOps documentation"
-msgstr ""
-
-msgid "AutoDevOps|Automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
-msgid "AutoDevOps|Dismiss Auto DevOps box"
-msgstr ""
-
-msgid "AutoDevOps|Enable in settings"
-msgstr ""
-
-msgid "AutoDevOps|Learn more in the %{link_to_documentation}."
-msgstr ""
-
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
 msgstr ""
 

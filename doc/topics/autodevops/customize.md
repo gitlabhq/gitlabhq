@@ -18,30 +18,6 @@ You can customize components of Auto DevOps to fit your needs. For example, you 
 - Enable staging and canary deployments with a custom [CI/CD configuration](#customize-gitlab-ciyml).
 - Extend Auto DevOps with the [GitLab API](#extend-auto-devops-with-the-api).
 
-## Auto DevOps banner
-
-When Auto DevOps is not enabled, a banner displays for users with at
-least the Maintainer role:
-
-![Auto DevOps banner](img/autodevops_banner_v12_6.png)
-
-The banner can be disabled for:
-
-- A user, when they dismiss it themselves.
-- A project, by explicitly [disabling Auto DevOps](_index.md#enable-or-disable-auto-devops).
-- An entire GitLab instance:
-  - By an administrator running the following in a Rails console:
-
-    ```ruby
-    Feature.enable(:auto_devops_banner_disabled)
-    ```
-
-  - Through the REST API with an administrator access token:
-
-    ```shell
-    curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"
-    ```
-
 ## Custom buildpacks
 
 You can customize your buildpacks when either:

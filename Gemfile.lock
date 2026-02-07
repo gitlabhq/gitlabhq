@@ -687,7 +687,7 @@ GEM
       excon (~> 1.0)
       formatador (>= 0.2, < 2.0)
       mime-types
-    fog-google (1.29.2)
+    fog-google (1.29.3)
       addressable (>= 2.7.0)
       fog-core (~> 2.5)
       fog-json (~> 1.2)

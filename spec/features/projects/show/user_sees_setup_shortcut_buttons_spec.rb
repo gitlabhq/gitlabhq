@@ -124,7 +124,6 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
 
     describe 'as a maintainer' do
       before do
-        allow_any_instance_of(AutoDevopsHelper).to receive(:show_auto_devops_callout?).and_return(false)
         project.add_maintainer(user)
         sign_in(user)
       end
@@ -271,19 +270,6 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
 
             within_testid('project-buttons') do
               expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
-            end
-          end
-
-          it 'no Auto DevOps button if Auto DevOps callout is shown' do
-            allow_any_instance_of(AutoDevopsHelper).to receive(:show_auto_devops_callout?).and_return(true)
-
-            visit project_path(project)
-
-            expect(page).to have_selector('.js-autodevops-banner')
-
-            within_testid('project-buttons') do
-              expect(page).not_to have_link('Enable Auto DevOps')
-              expect(page).not_to have_link('Auto DevOps enabled')
             end
           end
 

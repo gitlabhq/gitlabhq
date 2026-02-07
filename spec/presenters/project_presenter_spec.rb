@@ -903,7 +903,7 @@ RSpec.describe ProjectPresenter do
       allow(presenter).to receive(:filename_path).and_return('fake/path')
       allow(presenter).to receive(:contribution_guide_path).and_return('fake_path')
 
-      buttons = presenter.statistics_buttons(show_auto_devops_callout: false)
+      buttons = presenter.statistics_buttons
       expect(buttons.map(&:label)).to start_with(
         a_string_including('README'),
         a_string_including('CONTRIBUTING')
