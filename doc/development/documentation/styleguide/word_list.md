@@ -1306,6 +1306,12 @@ Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
 
 Do not use **Duo Agent Platform** or **DAP**.
 
+## GitLab Duo Agent Platform Self-Hosted
+
+Use **GitLab Duo Agent Platform Self-Hosted**. After first use, use **Agent Platform Self-Hosted**.
+
+Do not use **Duo Agent Platform Self-Hosted** or **DAP Self-Hosted**.
+
 ## GitLab Duo Core
 
 Use **GitLab Duo Core** for the add-on. Do not use **Duo Core** by itself.
