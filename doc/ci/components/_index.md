@@ -665,6 +665,47 @@ Visibility of components in the CI/CD catalog follows the component source proje
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
 
+### View catalog resource analytics
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14027) in GitLab 18.9.
+
+{{< /history >}}
+
+If you maintain CI/CD catalog resources, you can view usage analytics to understand how your components are being adopted across projects.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for one or more catalog resource projects.
+
+To view catalog resource analytics:
+
+1. In the top bar, select **Search or go to** > **Explore**.
+1. Select **CI/CD Catalog**.
+1. Select the **Analytics** tab.
+
+The Analytics view displays the catalog resources where you have at least the Maintainer role.
+This view shows:
+
+- **Projects**: The catalog resource name and its latest released version.
+- **Usage statistics**: The number of unique projects that used a component from this catalog resource in a pipeline in the last 30 days.
+- **Components**: A list of components available in the latest version of the catalog resource.
+
+You can use this information to:
+
+- Identify which catalog resources are most widely adopted.
+- Track usage trends for your components over time.
+- Understand which projects are using your catalog resources.
+- Make informed decisions about component maintenance and deprecation.
+
 ### Publish a component project
 
 To publish a component project in the CI/CD catalog, you must:

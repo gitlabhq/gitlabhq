@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SCOPE, MIN_ACCESS_LEVEL, TAB_NAME } from '~/ci/catalog/constants';
 
 export default {
@@ -12,7 +11,6 @@ export default {
     GlTabs,
     GlLoadingIcon,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     isLoading: {
       type: Boolean,
@@ -26,7 +24,7 @@ export default {
   emits: ['tab-change'],
   computed: {
     tabs() {
-      const basicTabs = [
+      return [
         {
           text: s__('CiCatalog|All'),
           scope: SCOPE.all,
@@ -41,18 +39,15 @@ export default {
           count: this.resourceCounts.namespaces,
           name: TAB_NAME.namespaces,
         },
-      ];
-      if (this.glFeatures.showCiCdCatalogAnalytics) {
-        basicTabs.push({
+        {
           text: s__('CiCatalog|Analytics'),
           scope: SCOPE.namespaces,
           testId: 'resources-analytics-tab',
           count: this.resourceCounts.analytics,
           minAccessLevel: MIN_ACCESS_LEVEL,
           name: TAB_NAME.analytics,
-        });
-      }
-      return basicTabs;
+        },
+      ];
     },
     showLoadingIcon() {
       return this.isLoading;

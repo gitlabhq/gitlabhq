@@ -24,14 +24,11 @@ describe('Catalog Tabs', () => {
 
   const triggerTabChange = (index) => wrapper.findAllComponents(GlTab).at(index).vm.$emit('click');
 
-  const createComponent = ({ props = defaultProps, showCiCdCatalogAnalytics = true } = {}) => {
+  const createComponent = ({ props = defaultProps } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(CatalogTabs, {
         propsData: {
           ...props,
-        },
-        provide: {
-          glFeatures: { showCiCdCatalogAnalytics },
         },
         stubs: { GlTabs },
       }),
@@ -84,19 +81,5 @@ describe('Catalog Tabs', () => {
         });
       },
     );
-  });
-
-  describe('When show_ci_cd_catalog_analytics feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({ showCiCdCatalogAnalytics: false });
-    });
-
-    it('renders only All and Your groups tabs', () => {
-      expect(wrapper.findAllComponents(GlTab)).toHaveLength(2);
-    });
-
-    it('does not render analytics tab', () => {
-      expect(findAnalyticsTab().exists()).toBe(false);
-    });
   });
 });
