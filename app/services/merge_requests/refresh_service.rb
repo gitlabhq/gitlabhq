@@ -45,7 +45,6 @@ module MergeRequests
         notify_about_push(mr)
 
         mark_mr_as_draft_from_commits(mr)
-
         merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
       end
 
@@ -291,7 +290,22 @@ module MergeRequests
         existing_commits, @push.oldrev
       )
 
-      notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
+      if Feature.enabled?(:split_refresh_worker_notify_about_push, @current_user)
+        new_commits_data, total_new = prepare_commits_for_notification(new_commits)
+        existing_commits_data, total_existing = prepare_commits_for_notification(existing_commits, first_and_last_only: true)
+
+        MergeRequests::Refresh::NotifyAboutPushWorker.perform_async(
+          merge_request.id,
+          @current_user.id,
+          new_commits_data,
+          total_new,
+          existing_commits_data,
+          total_existing
+        )
+      else
+        notification_service.push_to_merge_request(
+          merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
+      end
     end
 
     def mark_mr_as_draft_from_commits(merge_request)
@@ -341,10 +355,10 @@ module MergeRequests
     def merge_requests_for_forks
       @merge_requests_for_forks ||=
         MergeRequest
-          .opened
-          .from_project(project)
-          .from_source_branches(@push.branch_name)
-          .from_fork
+        .opened
+        .from_project(project)
+        .from_source_branches(@push.branch_name)
+        .from_fork
     end
 
     def schedule_duo_code_review(merge_request)
@@ -368,6 +382,23 @@ module MergeRequests
         @push.ref,
         params.slice(:push_options, :gitaly_context).as_json # ensure sidekiq-compatible hash argument
       )
+    end
+
+    def prepare_commits_for_notification(commits, first_and_last_only: false)
+      total_count = commits.count
+      return [[], 0] if total_count == 0
+
+      commits_to_process = if first_and_last_only && total_count > 2
+                             [commits.first, commits.last]
+                           else
+                             commits.first(NotificationService::NEW_COMMIT_EMAIL_DISPLAY_LIMIT)
+                           end
+
+      commit_data = commits_to_process.map do |commit|
+        { 'short_id' => commit.short_id, 'title' => commit.title }
+      end
+
+      [commit_data, total_count]
     end
   end
 end

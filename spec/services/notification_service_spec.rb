@@ -3305,6 +3305,83 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
+    describe '#push_to_merge_request_with_data' do
+      let(:new_commits_data) do
+        [
+          { short_id: 'a1b2c3d', title: 'First commit' },
+          { short_id: 'a1b2c32', title: 'Second commit' }
+        ]
+      end
+
+      let(:existing_commits_data) do
+        [
+          { short_id: '01d1131', title: 'Old first commit' },
+          { short_id: '01d9939', title: 'Old last commit' }
+        ]
+      end
+
+      before do
+        update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)
+        update_custom_notification(:push_to_merge_request, @u_custom_global)
+        allow(::Notify).to receive(:push_to_merge_request_email).and_call_original
+      end
+
+      it do
+        notification.push_to_merge_request_with_data(
+          merge_request,
+          merge_request.author,
+          new_commits_data: new_commits_data,
+          total_new_commits_count: 2,
+          existing_commits_data: existing_commits_data,
+          total_existing_commits_count: 50
+        )
+
+        merge_request.assignees.each { |assignee| should_email(assignee) }
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'sends emails to the correct recipients with pre-computed commit data' do
+        notification.push_to_merge_request_with_data(
+          merge_request,
+          merge_request.author,
+          new_commits_data: new_commits_data,
+          total_new_commits_count: 2,
+          existing_commits_data: existing_commits_data,
+          total_existing_commits_count: 50
+        )
+
+        expect(Notify).to have_received(:push_to_merge_request_email).at_least(:once).with(
+          @subscriber.id, merge_request.id, merge_request.author.id, "subscribed",
+          new_commits: new_commits_data, total_new_commits_count: 2,
+          existing_commits: existing_commits_data, total_existing_commits_count: 50
+        )
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) do
+          notification.push_to_merge_request_with_data(
+            merge_request,
+            @u_disabled,
+            new_commits_data: new_commits_data,
+            total_new_commits_count: 2,
+            existing_commits_data: existing_commits_data,
+            total_existing_commits_count: 50
+          )
+        end
+      end
+    end
+
     describe '#relabel_merge_request' do
       let(:group_label_1) { create(:group_label, group: group, title: 'Group Label 1', merge_requests: [merge_request]) }
       let(:group_label_2) { create(:group_label, group: group, title: 'Group Label 2') }

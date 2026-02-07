@@ -310,6 +310,37 @@ class NotificationService
     end
   end
 
+  # Sends push notification emails using pre-computed commit data.
+  # This method is designed for async workers that need to avoid large Sidekiq payloads.
+  #
+  # @param merge_request [MergeRequest] The merge request to notify about
+  # @param current_user [User] The user who pushed
+  # @param new_commits_data [Array<Hash>] Array of hashes with :short_id and :title keys
+  #   (max NEW_COMMIT_EMAIL_DISPLAY_LIMIT items, already truncated by caller)
+  # @param total_new_commits_count [Integer] Total count of new commits (may be > new_commits_data.size)
+  # @param existing_commits_data [Array<Hash>] Array of hashes with :short_id and :title keys
+  #   (should contain only first and last commit if total > 2)
+  # @param total_existing_commits_count [Integer] Total count of existing commits
+  def push_to_merge_request_with_data(
+    merge_request,
+    current_user,
+    new_commits_data: [],
+    total_new_commits_count: 0,
+    existing_commits_data: [],
+    total_existing_commits_count: 0
+  )
+    recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to")
+
+    recipients.each do |recipient|
+      mailer.send(
+        :push_to_merge_request_email,
+        recipient.user.id, merge_request.id, current_user.id, recipient.reason,
+        new_commits: new_commits_data, total_new_commits_count: total_new_commits_count,
+        existing_commits: existing_commits_data, total_existing_commits_count: total_existing_commits_count
+      ).deliver_later
+    end
+  end
+
   def change_in_merge_request_draft_status(merge_request, current_user)
     recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "draft_status_change")
 

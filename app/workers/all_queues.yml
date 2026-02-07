@@ -4696,6 +4696,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_notify_about_push
+  :worker_name: MergeRequests::Refresh::NotifyAboutPushWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_refresh_pipeline
   :worker_name: MergeRequests::Refresh::PipelineWorker
   :feature_category: :code_review_workflow

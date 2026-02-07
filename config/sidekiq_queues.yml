@@ -695,6 +695,8 @@
   - 1
 - - merge_requests_refresh_approval
   - 1
+- - merge_requests_refresh_notify_about_push
+  - 1
 - - merge_requests_refresh_pipeline
   - 1
 - - merge_requests_refresh_web_hooks
