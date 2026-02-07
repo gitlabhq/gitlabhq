@@ -35,18 +35,19 @@ The response depends on the requested scope.
 GET /search
 ```
 
-| Attribute          | Type             | Required | Description                                                                                                                                                                                      |
-|--------------------|------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
-| `search`           | string           | Yes      | The search term.                                                                                                                                                                                 |
-| `search_type`      | string           | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                         |
-| `confidential`     | boolean          | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                    |
-| `exclude_forks`    | boolean          | No       | Excludes forked projects from the search. Available for exact code search. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                                                                       |
-| `fields`           | array of strings | No       | Array of fields you wish to search, allowed values are `title` only. Supports `issues` and `merge_requests` scopes; other scopes are ignored. Premium and Ultimate only.                         |
-| `include_archived` | boolean          | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                                                                                                      |
-| `state`            | string           | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                        |
-| `order_by`         | string           | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                |
-| `sort`             | string           | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.             |
+| Attribute          | Type             | Required | Description                                                                                                                                                                                                    |
+|--------------------|------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `scope`            | string           | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, `snippet_titles`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.               |
+| `search`           | string           | Yes      | The search term.                                                                                                                                                                                               |
+| `search_type`      | string           | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
+| `confidential`     | boolean          | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
+| `exclude_forks`    | boolean          | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
+| `regex`            | boolean          | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`           | array of strings | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `include_archived` | boolean          | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
+| `state`            | string           | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `order_by`         | string           | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`             | string           | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 ### Scope: `projects`
 
@@ -455,6 +456,7 @@ Example response:
 
 > [!note]
 > `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+> Elasticsearch syntax might not work properly with exact code search. Replace Elasticsearch wildcard queries with regular expressions for exact code search. For more information, see [issue 521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686).
 
 ### Scope: `notes`
 
@@ -509,19 +511,20 @@ If a user is not a member of a group and the group is private, a `GET` request o
 GET /groups/:id/search
 ```
 
-| Attribute          | Type              | Required | Description                                                                                                                                                                          |
-|--------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`               | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.                                                                                                          |
-| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.       |
-| `search`           | string            | Yes      | The search term.                                                                                                                                                                     |
-| `search_type`      | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                             |
-| `confidential`     | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                        |
-| `exclude_forks`    | boolean           | No       | Excludes forked projects from the search. Available for exact code search. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                                                           |
-| `fields`           | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports `issues` and `merge_requests` scopes; other scopes are ignored. Premium and Ultimate only.             |
-| `include_archived` | boolean           | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                                                                                          |
-| `state`            | string         | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                            |
-| `order_by`         | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.    |
-| `sort`             | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search. |
+| Attribute          | Type              | Required | Description                                                                                                                                                                                                    |
+|--------------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`               | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.                                                                                                                                    |
+| `scope`            | string            | Yes      | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                 |
+| `search`           | string            | Yes      | The search term.                                                                                                                                                                                               |
+| `search_type`      | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
+| `confidential`     | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
+| `exclude_forks`    | boolean           | No       | Excludes forked projects from the search. Available for exact code search. If not set, forks will be excluded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.          |
+| `regex`            | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`           | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `include_archived` | boolean           | No       | Includes archived projects in the search. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.                                                           |
+| `state`            | string            | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `order_by`         | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`             | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 The response depends on the requested scope.
 
@@ -899,6 +902,7 @@ Example response:
 
 > [!note]
 > `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+> Elasticsearch syntax might not work properly with exact code search. Replace Elasticsearch wildcard queries with regular expressions for exact code search. For more information, see [issue 521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686).
 
 ### Scope: `notes`
 
@@ -953,18 +957,19 @@ If a user is not a member of a project and the project is private, a `GET` reque
 GET /projects/:id/search
 ```
 
-| Attribute      | Type              | Required | Description                                                                                                                                                                          |
-|----------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                        |
-| `scope`        | string            | Yes      | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                   |
-| `search`       | string            | Yes      | The search term.                                                                                                                                                                     |
-| `search_type`  | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                             |
-| `confidential` | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                        |
-| `fields`       | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports `issues` and `merge_requests` scopes; other scopes are ignored. Premium and Ultimate only.             |
-| `ref`          | string            | No       | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`.               |
-| `state`        | string            | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                            |
-| `order_by`     | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.    |
-| `sort`         | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search. |
+| Attribute      | Type              | Required | Description                                                                                                                                                                                                    |
+|----------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                  |
+| `scope`        | string            | Yes      | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`.                                             |
+| `search`       | string            | Yes      | The search term.                                                                                                                                                                                               |
+| `search_type`  | string            | No       | The search type to use. Values include `basic`, `advanced`, and `zoekt`.                                                                                                                                       |
+| `confidential` | boolean           | No       | Filter by confidentiality. Supports `issues` scope; other scopes are ignored.                                                                                                                                  |
+| `regex`        | boolean           | No       | Uses regular expressions to search for code. Available for exact code search. If not set, regular expressions are used. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9. |
+| `fields`       | array of strings  | No       | Array of fields you wish to search, allowed values are `title` only. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.                                                            |
+| `ref`          | string            | No       | The name of a repository branch or tag to search on. The project's default branch is used by default. Applicable only for scopes `blobs`, `commits`, and `wiki_blobs`.                                         |
+| `state`        | string            | No       | Filter by state. Supports `issues` and `merge_requests` scopes; other scopes are ignored.                                                                                                                      |
+| `order_by`     | string            | No       | Allowed values are `created_at` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                              |
+| `sort`         | string            | No       | Allowed values are `asc` or `desc` only. If not set, results are sorted by `created_at` in descending order for basic search, or by the most relevant documents for advanced search.                           |
 
 The response depends on the requested scope.
 
@@ -1297,6 +1302,7 @@ Example response:
 
 > [!note]
 > `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
+> Elasticsearch syntax might not work properly with exact code search. Replace Elasticsearch wildcard queries with regular expressions for exact code search. For more information, see [issue 521686](https://gitlab.com/gitlab-org/gitlab/-/issues/521686).
 
 ### Scope: `notes`
 

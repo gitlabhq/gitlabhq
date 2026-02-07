@@ -9056,7 +9056,12 @@ paths:
         description: Excludes forked projects in the search. Available with exact
           code search. Introduced in GitLab 18.9.
         type: boolean
-        default: true
+        required: false
+      - in: query
+        name: regex
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        type: boolean
         required: false
       - in: query
         name: page
@@ -38653,6 +38658,12 @@ paths:
           - title
         required: false
       - in: query
+        name: regex
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        type: boolean
+        required: false
+      - in: query
         name: page
         description: Current page number
         type: integer
@@ -45878,7 +45889,12 @@ paths:
         description: Excludes forked projects in the search. Available with exact
           code search. Introduced in GitLab 18.9.
         type: boolean
-        default: true
+        required: false
+      - in: query
+        name: regex
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        type: boolean
         required: false
       - in: query
         name: page

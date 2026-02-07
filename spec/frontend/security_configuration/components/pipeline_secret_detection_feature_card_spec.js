@@ -139,8 +139,6 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
 
       expect(findManageViaMr().props()).toMatchObject({
         feature,
-        variant: 'confirm',
-        category: 'secondary',
       });
     });
 

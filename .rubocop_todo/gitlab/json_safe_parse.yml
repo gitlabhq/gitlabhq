@@ -211,7 +211,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/lib/sbom/spdx_spec.rb'
     - 'ee/spec/lib/search/elastic/filters/confidentiality_filters_spec.rb'
     - 'ee/spec/lib/search/elastic/filters_spec.rb'
-    - 'ee/spec/lib/search/zoekt/code_query_builder_spec.rb'
     - 'ee/spec/lib/search/zoekt/multi_match_spec.rb'
     - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/ee/user_detail_spec.rb'

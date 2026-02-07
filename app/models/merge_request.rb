@@ -795,10 +795,6 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def head_pipeline_active?
-    !!head_pipeline&.active?
-  end
-
   def diff_head_pipeline_success?
     !!diff_head_pipeline&.success?
   end

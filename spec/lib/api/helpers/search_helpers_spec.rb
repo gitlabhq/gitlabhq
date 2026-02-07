@@ -43,27 +43,36 @@ RSpec.describe API::Helpers::SearchHelpers, feature_category: :global_search do
   describe '.search_param_keys' do
     it 'for CE returns the expected param keys', unless: Gitlab.ee? do
       expect(described_class.search_param_keys).to match_array(
-        %i[scope search state confidential num_context_lines search_type page per_page order_by sort include_archived])
+        %i[confidential include_archived num_context_lines order_by page per_page scope search search_type sort state]
+      )
     end
 
     it 'for EE returns the expected param keys', if: Gitlab.ee? do
       expect(described_class.search_param_keys).to match_array(
-        %i[scope search state confidential num_context_lines search_type
-          page per_page order_by sort fields exclude_forks include_archived])
+        %i[
+          confidential exclude_forks fields include_archived num_context_lines order_by page per_page regex scope search
+          search_type sort state
+        ]
+      )
     end
   end
 
   describe '.gitlab_search_mcp_params' do
     it 'returns search_param_keys with id', unless: Gitlab.ee? do
       expect(described_class.gitlab_search_mcp_params).to match_array(
-        %i[scope search state confidential num_context_lines search_type
-          page per_page order_by sort id include_archived])
+        %i[
+          confidential id include_archived num_context_lines order_by page per_page scope search search_type sort state
+        ]
+      )
     end
 
     it 'returns search_param_keys with id', if: Gitlab.ee? do
       expect(described_class.gitlab_search_mcp_params).to match_array(
-        %i[scope search state confidential num_context_lines search_type
-          page per_page order_by sort id fields exclude_forks include_archived])
+        %i[
+          confidential exclude_forks fields id include_archived num_context_lines order_by page per_page regex scope
+          search search_type sort state
+        ]
+      )
     end
   end
 end

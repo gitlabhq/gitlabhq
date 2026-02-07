@@ -529,20 +529,6 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       end
     end
 
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_instance
-
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
-      let(:current_user) { user }
-
-      def request
-        get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
-      end
-
-      def request_with_second_scope
-        get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
-      end
-    end
-
     context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
         stub_application_setting(search_rate_limit: 1)
@@ -557,12 +543,24 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_instance
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
+      let(:current_user) { user }
+
+      def request
+        get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+      end
+
+      def request_with_second_scope
+        get api(endpoint, user2), params: { scope: 'users', search: 'foo@bar.com' }
+      end
+    end
   end
 
   describe "GET /groups/:id/search" do
     let(:endpoint) { "/groups/#{group.id}/-/search" }
-
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -755,12 +753,12 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
     end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_group
   end
 
   describe "GET /projects/:id/search" do
     let(:endpoint) { "/projects/#{project.id}/search" }
-
-    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
 
     context 'when user is not authenticated' do
       it 'returns 401 error' do
@@ -1162,5 +1160,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         end
       end
     end
+
+    it_behaves_like 'mcp allowed endpoint', :gitlab_search_in_project
   end
 end

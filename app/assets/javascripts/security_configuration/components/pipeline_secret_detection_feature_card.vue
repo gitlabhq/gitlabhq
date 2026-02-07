@@ -117,7 +117,7 @@ export default {
 </script>
 
 <template>
-  <gl-card :class="cardClasses">
+  <gl-card :class="cardClasses" body-class="gl-flex gl-flex-col gl-grow">
     <template #header>
       <div class="gl-flex gl-items-baseline">
         <h3 class="gl-m-0 gl-mr-3 gl-text-base" :class="textClasses">
@@ -141,7 +141,7 @@ export default {
       </div>
     </template>
 
-    <p class="gl-mb-0" :class="textClasses">
+    <p class="gl-mb-0 gl-grow" :class="textClasses">
       {{ feature.description }}
       <gl-link :href="feature.helpPath" target="_blank">{{ __('Learn more') }}.</gl-link>
     </p>

@@ -32290,7 +32290,13 @@ paths:
           code search. Introduced in GitLab 18.9.
         schema:
           type: boolean
-          default: true
+        in: query
+      - name: regex
+        required: false
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        schema:
+          type: boolean
         in: query
       - name: page
         required: false
@@ -32386,7 +32392,13 @@ paths:
           code search. Introduced in GitLab 18.9.
         schema:
           type: boolean
-          default: true
+        in: query
+      - name: regex
+        required: false
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        schema:
+          type: boolean
         in: query
       - name: page
         required: false
@@ -32475,6 +32487,13 @@ paths:
         schema:
           oneOf:
           - type: string
+        in: query
+      - name: regex
+        required: false
+        description: Performs a regex code search. Available with exact code search.
+          Introduced in GitLab 18.9
+        schema:
+          type: boolean
         in: query
       - name: page
         required: false

@@ -31,16 +31,6 @@ export default {
       type: Object,
       required: true,
     },
-    variant: {
-      type: String,
-      required: false,
-      default: 'confirm',
-    },
-    category: {
-      type: String,
-      required: false,
-      default: 'secondary',
-    },
   },
   data() {
     return {
@@ -105,12 +95,7 @@ export default {
 </script>
 
 <template>
-  <gl-button
-    v-if="!feature.configured"
-    :loading="isLoading"
-    :variant="variant"
-    :category="category"
-    @click="mutate"
-    >{{ $options.i18n.buttonLabel }}</gl-button
-  >
+  <gl-button v-if="!feature.configured" :loading="isLoading" @click="mutate">{{
+    $options.i18n.buttonLabel
+  }}</gl-button>
 </template>
