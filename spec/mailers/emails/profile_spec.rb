@@ -45,6 +45,23 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       is_expected.to have_body_text(new_user_password_url)
       is_expected.to have_body_text(/\?user_email=.*%40.*/)
     end
+
+    context 'when password authentication is disabled for the user' do
+      before do
+        allow_next_found_instance_of(User) do |instance|
+          allow(instance).to receive(:allow_password_authentication?).and_return(false)
+        end
+      end
+
+      it 'does not contain the password reset link' do
+        is_expected.not_to have_body_text('Click here to set your password')
+        is_expected.not_to have_body_text('reset_password_token')
+      end
+
+      it 'does not explain the reset link expiration' do
+        is_expected.not_to have_body_text('This link is valid for')
+      end
+    end
   end
 
   describe 'for users that signed up, the email' do
