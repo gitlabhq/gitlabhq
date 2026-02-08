@@ -21,7 +21,6 @@ module Database
 
     def perform
       return unless Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
-      return if Feature.disabled?(:monitor_database_locked_tables, type: :ops)
 
       lock_writes_results = ::Gitlab::Database::TablesLocker.new(
         dry_run: true, include_partitions: false).lock_writes

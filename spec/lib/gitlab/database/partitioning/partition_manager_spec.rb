@@ -163,7 +163,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
         create_partitioned_table(connection, partitioned_table_name)
 
-        stub_feature_flags(automatic_lock_writes_on_partition_tables: ff_enabled)
+        stub_feature_flags(automatic_lock_writes_on_table: ff_enabled)
       end
 
       where(:gitlab_schema, :database, :expectation) do
