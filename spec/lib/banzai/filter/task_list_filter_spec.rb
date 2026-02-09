@@ -107,6 +107,15 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :markdown do
       # All content is within paragraph tag; no <s class="inapplicable"> required.
       expect(doc.css('li.inapplicable s.inapplicable').count).to eq(0)
     end
+
+    it 'does not wrap text nodes multiple times when inside nested elements' do
+      doc = reference_filter(<<~MARKDOWN)
+        * [~] foo <span><em>a</em><em>b</em></span> bar
+      MARKDOWN
+
+      expect(doc.to_html).not_to include('<s class="inapplicable"><s class="inapplicable">')
+      expect(doc.css('li.inapplicable s.inapplicable').count).to eq(4)
+    end
   end
 
   it_behaves_like 'pipeline timing check'

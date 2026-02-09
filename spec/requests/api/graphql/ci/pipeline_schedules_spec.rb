@@ -142,6 +142,147 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
     end
   end
 
+  describe 'variables authorization', :aggregate_failures do
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:unauthenticated) { nil }
+
+    let!(:schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule) }
+
+    before_all do
+      project.add_maintainer(maintainer)
+      project.add_developer(developer)
+      project.add_guest(guest)
+    end
+
+    context 'when user is a maintainer' do
+      it 'returns variables' do
+        post_graphql(query, current_user: maintainer)
+
+        variables = pipeline_schedule_graphql_data['variables']['nodes']
+        expect(variables).to contain_exactly(a_graphql_entity_for(schedule_variable, :key, :value))
+      end
+    end
+
+    context 'when user is schedule owner and developer' do
+      before do
+        pipeline_schedule.update!(owner: developer)
+      end
+
+      it 'returns variables' do
+        post_graphql(query, current_user: developer)
+
+        variables = pipeline_schedule_graphql_data['variables']['nodes']
+        expect(variables).to contain_exactly(a_graphql_entity_for(schedule_variable, :key, :value))
+      end
+    end
+
+    context 'when user is not schedule owner and is developer' do
+      it 'does not return variables' do
+        post_graphql(query, current_user: developer)
+
+        variables = pipeline_schedule_graphql_data['variables']
+        expect(variables).to be_nil
+      end
+    end
+
+    context 'when user is guest' do
+      it 'does not return variables' do
+        post_graphql(query, current_user: guest)
+
+        variables = pipeline_schedule_graphql_data['variables']
+        expect(variables).to be_nil
+      end
+    end
+
+    context 'when user is unauthenticated' do
+      it 'does not return variables' do
+        post_graphql(query, current_user: unauthenticated)
+
+        variables = pipeline_schedule_graphql_data['variables']
+        expect(variables).to be_nil
+      end
+    end
+  end
+
+  describe 'inputs authorization', :aggregate_failures do
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:unauthenticated) { nil }
+
+    let!(:schedule_input) { create(:ci_pipeline_schedule_input, pipeline_schedule: pipeline_schedule) }
+
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          inputs { nodes { name value } }
+        }
+      QUERY
+    end
+
+    before_all do
+      project.add_maintainer(maintainer)
+      project.add_developer(developer)
+      project.add_guest(guest)
+    end
+
+    context 'when user is a maintainer' do
+      it 'returns inputs' do
+        post_graphql(query, current_user: maintainer)
+
+        inputs = pipeline_schedule_graphql_data['inputs']['nodes']
+        expect(inputs).to contain_exactly(
+          a_hash_including('name' => schedule_input.name, 'value' => schedule_input.value)
+        )
+      end
+    end
+
+    context 'when user is schedule owner and developer' do
+      before do
+        pipeline_schedule.update!(owner: developer)
+      end
+
+      it 'returns inputs' do
+        post_graphql(query, current_user: developer)
+
+        inputs = pipeline_schedule_graphql_data['inputs']['nodes']
+        expect(inputs).to contain_exactly(
+          a_hash_including('name' => schedule_input.name, 'value' => schedule_input.value)
+        )
+      end
+    end
+
+    context 'when user is not schedule owner and is developer' do
+      it 'does not return inputs' do
+        post_graphql(query, current_user: developer)
+
+        inputs = pipeline_schedule_graphql_data['inputs']
+        expect(inputs).to be_nil
+      end
+    end
+
+    context 'when user is guest' do
+      it 'does not return inputs' do
+        post_graphql(query, current_user: guest)
+
+        inputs = pipeline_schedule_graphql_data['inputs']
+        expect(inputs).to be_nil
+      end
+    end
+
+    context 'when user is unauthenticated' do
+      it 'does not return inputs' do
+        post_graphql(query, current_user: unauthenticated)
+
+        inputs = pipeline_schedule_graphql_data['inputs']
+        expect(inputs).to be_nil
+      end
+    end
+  end
+
   it 'avoids N+1 queries' do
     create_pipeline_schedules(1)
 

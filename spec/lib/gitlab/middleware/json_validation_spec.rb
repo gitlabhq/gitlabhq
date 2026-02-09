@@ -212,11 +212,13 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
     context 'with invalid JSON syntax' do
       let(:body) { '{"invalid": json}' }
 
-      it 'allows invalid JSON to pass through' do
-        expect(app).to receive(:call).with(env)
-
+      it 'rejects invalid JSON with 400 error' do
         result = middleware.call(env)
-        expect(result).to eq([200, {}, ['OK']])
+
+        expect(result[0]).to eq(400)
+        expect(result[1]).to eq({ 'Content-Type' => 'application/json' })
+        response_body = Gitlab::Json.parse(result[2].first)
+        expect(response_body['error']).to eq('Invalid JSON format')
       end
     end
 
@@ -804,10 +806,52 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
     context 'with encoding errors' do
       let(:body) { "\xFF\xFE{\"key\": \"value\"}" } # Invalid UTF-8
 
-      it 'allows requests with encoding errors to pass through' do
-        expect(app).to receive(:call).with(env)
+      it 'rejects requests with encoding errors with 400 error' do
         result = middleware.call(env)
-        expect(result).to eq([200, {}, ['OK']])
+
+        expect(result[0]).to eq(400)
+        expect(result[1]).to eq({ 'Content-Type' => 'application/json' })
+        response_body = Gitlab::Json.parse(result[2].first)
+        expect(response_body['error']).to eq('Invalid JSON format')
+      end
+    end
+
+    context 'with invalid escape sequences in JSON keys' do
+      let(:body) { '{"te\st": "value", "items": [1, 2, 3]}' }
+
+      it 'rejects JSON with invalid escape sequences to prevent validation bypass' do
+        result = middleware.call(env)
+
+        expect(result[0]).to eq(400)
+        expect(result[1]).to eq({ 'Content-Type' => 'application/json' })
+        response_body = Gitlab::Json.parse(result[2].first)
+        expect(response_body['error']).to eq('Invalid JSON format')
+      end
+    end
+
+    context 'with simple JSON strings' do
+      context 'with valid simple string' do
+        let(:body) { '"hello world"' }
+
+        it 'allows valid simple JSON strings' do
+          expect(app).to receive(:call).with(env)
+
+          result = middleware.call(env)
+          expect(result).to eq([200, {}, ['OK']])
+        end
+      end
+
+      context 'with simple string containing invalid escape sequence' do
+        let(:body) { '"te\st"' }
+
+        it 'rejects simple strings with invalid escape sequences' do
+          result = middleware.call(env)
+
+          expect(result[0]).to eq(400)
+          expect(result[1]).to eq({ 'Content-Type' => 'application/json' })
+          response_body = Gitlab::Json.parse(result[2].first)
+          expect(response_body['error']).to eq('Invalid JSON format')
+        end
       end
     end
   end

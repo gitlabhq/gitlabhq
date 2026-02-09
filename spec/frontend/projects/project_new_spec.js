@@ -37,6 +37,7 @@ describe('New Project', () => {
               <small id="js-project-name-description" />
               <div class="gl-field-error gl-hidden" id="js-project-name-error" />
               <input id="project_path" />
+              <div class="js-import-url-error hide"></div>
             </div>
             <div class="js-user-readme-repo"></div>
             <button class="js-create-project-button"/>
@@ -347,6 +348,27 @@ describe('New Project', () => {
       it('leaves the field empty', () => {
         expect($projectPath.value).toBe('');
       });
+    });
+  });
+
+  describe('import URL validation error message', () => {
+    let $projectImportUrlError;
+
+    beforeEach(() => {
+      $projectImportUrlError = document.querySelector('.js-import-url-error');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('displays custom error message from validation response', () => {
+      projectNew.bindEvents();
+
+      const customMessage = 'Requests to localhost are not allowed';
+      $projectImportUrlError.textContent = customMessage;
+
+      expect($projectImportUrlError.textContent).toBe(customMessage);
     });
   });
 });

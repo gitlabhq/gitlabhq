@@ -54,10 +54,9 @@ describe('IssuableTitle', () => {
   });
 
   describe('template', () => {
-    it('renders issuable title', async () => {
-      const titleHtml = '<b>Sample</b> title';
-
-      const wrapperWithTitle = createComponent({
+    const findTitleEl = (wrapperWithTitle) => wrapperWithTitle.findByTestId('issuable-title');
+    const createComponentWithTitle = (titleHtml) =>
+      createComponent({
         ...mockIssuableShowProps,
         issuable: {
           ...mockIssuable,
@@ -65,11 +64,29 @@ describe('IssuableTitle', () => {
         },
       });
 
+    it('renders issuable title with rich text', async () => {
+      const titleHtml = '<b>Sample</b> title';
+
+      const wrapperWithTitle = createComponentWithTitle(titleHtml);
+
       await nextTick();
-      const titleEl = wrapperWithTitle.findByTestId('issuable-title');
+      const titleEl = findTitleEl(wrapperWithTitle);
 
       expect(titleEl.exists()).toBe(true);
-      expect(titleEl.element.innerHTML).toBe('<b>Sample</b> title');
+      expect(titleEl.element.innerHTML.trim()).toBe('<b>Sample</b> title');
+
+      wrapperWithTitle.destroy();
+    });
+
+    it('renders issuable title without rich text', async () => {
+      const titleHtml = '';
+
+      const wrapperWithTitle = createComponentWithTitle(titleHtml);
+
+      await nextTick();
+      const titleEl = findTitleEl(wrapperWithTitle);
+
+      expect(titleEl.element.innerHTML.trim()).toBe('Sample title');
 
       wrapperWithTitle.destroy();
     });

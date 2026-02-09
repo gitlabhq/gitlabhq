@@ -112,6 +112,14 @@ RSpec.describe LabelsHelper do
     end
   end
 
+  describe 'render_label_link' do
+    it 'does not describe the data-title as HTML' do
+      label_link_html = render_label_link('<b>safe content</b>'.html_safe, link: 'https://target', title: 'Evil <script>XSS</script> title', dataset: {})
+      # No data-html is included.
+      expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="Evil &lt;script&gt;XSS&lt;/script&gt; title" href="https://target"><b>safe content</b></a>')
+    end
+  end
+
   describe 'render_label_text' do
     it 'html escapes the bg_color correctly' do
       xss_payload = '"><img src=x onerror=prompt(1)>'
