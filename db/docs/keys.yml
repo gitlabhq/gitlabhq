@@ -15,4 +15,4 @@ gitlab_schema: gitlab_main_org
 table_size: medium
 sharding_key:
   organization_id: organizations
-organization_transfer_support: todo
+organization_transfer_support: supported

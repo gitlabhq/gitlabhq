@@ -49,6 +49,12 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           expect(response).to be_ok
           expect(assigns(:ref)).to eq commit.id
         end
+
+        it 'defines commit vars' do
+          go(id: commit.id)
+
+          expect(assigns(:diffs)).to be_present
+        end
       end
 
       context 'when a pipeline job is running' do
@@ -528,6 +534,12 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
             diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
           end
+
+          it 'defines commit vars' do
+            diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
+
+            expect(assigns(:diffs)).to be_present
+          end
         end
 
         context 'when the path does not exist in the diff' do
@@ -592,6 +604,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           it 'defines last pipeline information' do
             expect(assigns(:last_pipeline)).to have_attributes(id: pipeline.id, status: 'running')
             expect(assigns(:last_pipeline_stages)).not_to be_empty
+          end
+
+          it 'defines commit vars' do
+            expect(assigns(:diffs)).to be_present
           end
         end
 

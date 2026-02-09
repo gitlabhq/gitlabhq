@@ -21,10 +21,6 @@ description: Security attributes allows security teams to apply custom metadata 
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by feature flags.
-> For more information, see the history.
-
 Security teams can now apply metadata specific to their own organization and business needs to projects using security attributes.
 
 Security attributes are organized by categories based on:

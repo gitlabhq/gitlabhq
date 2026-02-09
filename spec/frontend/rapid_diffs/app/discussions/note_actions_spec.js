@@ -175,10 +175,10 @@ describe('NoteActions', () => {
       expect(findReplyButton().exists()).toBe(true);
     });
 
-    it('emits startReplying when ReplyButton emits startReplying', () => {
+    it('emits start-replying when ReplyButton emits start-replying', () => {
       createComponent({ showReply: true });
-      findReplyButton().vm.$emit('startReplying');
-      expect(wrapper.emitted('startReplying')).toEqual([[]]);
+      findReplyButton().vm.$emit('start-replying');
+      expect(wrapper.emitted('start-replying')).toEqual([[]]);
     });
 
     it('renders the Edit button when canEdit is true', () => {

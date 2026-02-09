@@ -18,8 +18,8 @@
           .term
             = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
         - elsif @scope === 'epics'
-          - @search_objects.each_with_index do |work_item, index|
-            = render partial: "search/results/work_item", locals: { work_item: work_item, index: index }
+          - @search_objects.each_with_index do |result, index|
+            = render partial: "search/results/work_item", locals: { result: result, index: index }
         - elsif @scope === 'users'
           %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
             %thead

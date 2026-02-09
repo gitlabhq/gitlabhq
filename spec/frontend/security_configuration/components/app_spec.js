@@ -369,7 +369,7 @@ describe('~/security_configuration/components/app', () => {
 
       it('renders description with correct text', () => {
         expect(findRefsTrackingSection().text()).toContain(
-          'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+          `Track vulnerabilities in up to ${provideMock.maxTrackedRefs} refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.`,
         );
       });
 

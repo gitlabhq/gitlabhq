@@ -25,6 +25,6 @@ export default {
     icon="reply"
     :title="$options.i18n.buttonText"
     :aria-label="$options.i18n.buttonText"
-    @click="$emit('startReplying')"
+    @click="$emit('start-replying')"
   />
 </template>

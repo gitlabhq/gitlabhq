@@ -667,6 +667,13 @@ export default {
       }
       return false;
     },
+    workItemWidgetsAutoSaveKey() {
+      return getNewWorkItemWidgetsAutoSaveKey({
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
+        relatedItemId: this.relatedItemId,
+      });
+    },
   },
   watch: {
     shouldDiscardDraft: {
@@ -760,13 +767,7 @@ export default {
         relatedItemId: this.relatedItemId,
       });
       clearDraft(fullDraftAutosaveKey);
-
-      const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
-        fullPath: this.selectedProjectFullPath,
-        context: this.creationContext,
-        relatedItemId: this.relatedItemId,
-      });
-      clearDraft(widgetsAutosaveKey);
+      clearDraft(this.workItemWidgetsAutoSaveKey);
     },
     handleChangeType() {
       setNewWorkItemCache({
@@ -1138,6 +1139,7 @@ export default {
                 :new-work-item-type="selectedWorkItemTypeName"
                 :work-item-id="workItemId"
                 :work-item-iid="workItemIid"
+                :work-item-widgets-auto-save-key="workItemWidgetsAutoSaveKey"
                 @error="updateError = $event"
                 @cancelCreate="handleCancelClick"
                 @updateDraft="updateDraftData('description', $event)"

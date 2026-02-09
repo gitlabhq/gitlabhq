@@ -68,9 +68,10 @@ TTL: 72 hours
 Key: background_operation:{operation_id}:failed_items
 Type: List
 Items: JSON objects with:
-  - project_id: ID of failed project
-  - project_name: name of the project
-  - project_full_path: full path for linking
+  - entity_id: ID of failed entity (project or group)
+  - entity_type: 'Project' or 'Group'
+  - entity_name: name of the entity
+  - entity_full_path: full path for linking
   - error_message: human-readable error
   - error_code: machine-readable error code
   - created_at: timestamp
@@ -98,7 +99,7 @@ Emails are sent **only when failures occur** after the operation completes.
 Email includes:
 
 - Summary: total, successful, failed counts
-- List of failed projects with error details and links
+- List of failed items (projects or groups) with error details and links
 
 ## Usage
 
@@ -119,12 +120,24 @@ operation_id = Gitlab::BackgroundOperations::RedisStore.create_operation(
 # Record success
 Gitlab::BackgroundOperations::RedisStore.increment_successful(operation_id)
 
-# Record failure
-Gitlab::BackgroundOperations::RedisStore.add_failed_project(
+# Record failure for a project
+Gitlab::BackgroundOperations::RedisStore.add_failed_item(
   operation_id,
-  project_id: project.id,
-  project_name: project.name,
-  project_full_path: project.full_path,
+  entity_id: project.id,
+  entity_type: 'Project',
+  entity_name: project.name,
+  entity_full_path: project.full_path,
+  error_message: 'Permission denied',
+  error_code: 'service_error'
+)
+
+# Record failure for a group
+Gitlab::BackgroundOperations::RedisStore.add_failed_item(
+  operation_id,
+  entity_id: group.id,
+  entity_type: 'Group',
+  entity_name: group.name,
+  entity_full_path: group.full_path,
   error_message: 'Permission denied',
   error_code: 'service_error'
 )

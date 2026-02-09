@@ -297,9 +297,9 @@ export default {
         this.commentText = newText;
         updateDraft(this.autosaveKey, this.commentText);
         if (this.commentText) {
-          this.$emit('startEditing');
+          this.$emit('start-editing');
         } else {
-          this.$emit('stopEditing');
+          this.$emit('stop-editing');
         }
       }
     },
@@ -328,7 +328,7 @@ export default {
         }
       }
 
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
       clearDraft(this.autosaveKey);
     },
     async submitForm(shouldMeasureTemperature = true) {
@@ -351,14 +351,14 @@ export default {
       }
 
       if (this.toggleResolveChecked) {
-        this.$emit('toggleResolveDiscussion');
+        this.$emit('toggle-resolve-discussion');
       }
 
       if (this.$refs.markdownEditor) {
         trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'WorkItem_Comment');
       }
 
-      this.$emit('submitForm', {
+      this.$emit('submit-form', {
         commentText: this.commentText,
         isNoteInternal: this.isNoteInternal,
       });
@@ -456,7 +456,7 @@ export default {
               :work-item-type="workItemType"
               :full-path="fullPath"
               :has-comment="Boolean(commentText.length)"
-              :disabled="Boolean(commentText.lengt) && isMeasuringCommentTemperature"
+              :disabled="Boolean(commentText.length) && isMeasuringCommentTemperature"
               :parent-id="parentId"
               can-update
               @submit-comment="submitForm()"

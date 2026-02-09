@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_code_intelligence
 description: Count of distinct projects that included the Jobs/Code-Intelligence.gitlab-ci.yml template in a pipeline
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: '14.3'

@@ -1,5 +1,6 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert, GlButton, GlExperimentBadge } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 import Api from '~/api';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -68,7 +69,12 @@ export default {
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'canReadAttributes'],
+  inject: {
+    projectFullPath: { default: '' },
+    vulnerabilityTrainingDocsPath: { default: '' },
+    canReadAttributes: { default: false },
+    maxTrackedRefs: { default: 0 },
+  },
   props: {
     augmentedSecurityFeatures: {
       type: Array,
@@ -130,11 +136,7 @@ export default {
       return this.glFeatures?.vulnerabilitiesAcrossContexts;
     },
     shouldShowSecurityAttributes() {
-      return (
-        window.gon?.licensed_features?.securityAttributes &&
-        this.glFeatures?.securityContextLabels &&
-        this.canReadAttributes
-      );
+      return window.gon?.licensed_features?.securityAttributes && this.canReadAttributes;
     },
     shouldShowScannerProfiles() {
       return this.glFeatures?.securityScanProfilesFeature;
@@ -143,6 +145,14 @@ export default {
       // Once the help page content is available, we can use the anchor to link to the specific section
       // See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/578081
       return helpPagePath('user/application_security/vulnerability_report/_index.md');
+    },
+    trackedRefsDescription() {
+      return sprintf(
+        __(
+          'Track vulnerabilities in up to %{limit} refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
+        ),
+        { limit: this.maxTrackedRefs },
+      );
     },
   },
   methods: {
@@ -307,11 +317,7 @@ export default {
         >
           <template #description>
             <p>
-              {{
-                __(
-                  'Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed.',
-                )
-              }}
+              {{ trackedRefsDescription }}
             </p>
             <p>
               {{

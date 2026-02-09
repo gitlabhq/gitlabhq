@@ -533,12 +533,13 @@ Azure B2C [offers two ways of defining the business logic for logging in a user]
 - [User flows](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
 - [Custom policies](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
 
-Custom policies are required because standard Azure B2C user flows
-[do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566).
+Custom policies are required because standard Azure B2C user flows do not send the OpenID `email` claim that GitLab needs to create or link users.
 Therefore, the standard user flows do not work with the
 [`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-common-settings).
 With a standard Azure B2C policy, GitLab cannot create a new account or
 link to an existing account with an email address.
+
+For more information on how Azure AD B2C issues tokens and claims in user flows and custom policies, see the Microsoft documentation on [user flows and custom policies](https://learn.microsoft.com/azure/active-directory-b2c/user-flow-overview) and [claims schema configuration](https://learn.microsoft.com/azure/active-directory-b2c/claimsschema).
 
 First, [create a custom policy](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy).
 

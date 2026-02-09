@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_quickactions_remind_me
 description: Count of WAU using the `/remind_me` quick action
 product_group: code_review
+product_categories:
+- notifications
 value_type: number
 status: removed
 milestone: "17.0"

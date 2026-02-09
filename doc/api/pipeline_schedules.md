@@ -329,7 +329,7 @@ curl --request PUT \
   --form "inputs[][name]=deploy_strategy" \
   --form "inputs[][value]=rolling" \
   --form "inputs[][name]=existing_input" \
-  --form "inputs[][_destroy]=true"
+  --form "inputs[][destroy]=true"
 ```
 
 ## Update ownership of a pipeline schedule

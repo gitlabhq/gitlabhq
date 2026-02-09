@@ -51,6 +51,8 @@ module Gitlab
         formatted_limited_count(limited_projects_count)
       when 'issues'
         formatted_limited_count(limited_issues_count)
+      when 'work_items'
+        work_items_search_enabled? ? formatted_limited_count(limited_issues_count) : '0'
       when 'merge_requests'
         formatted_limited_count(limited_merge_requests_count)
       when 'milestones'
@@ -144,6 +146,8 @@ module Gitlab
         projects
       when 'issues'
         issues
+      when 'work_items'
+        work_items_search_enabled? ? work_items : Issue.none
       when 'merge_requests'
         merge_requests
       when 'milestones'
@@ -203,6 +207,11 @@ module Gitlab
       end
 
       apply_sort(issues, scope: 'issues')
+    end
+
+    def work_items(finder_params = {})
+      # In CE, work items are just issues since group-level work items are EE-only
+      issues(finder_params)
     end
 
     def milestones
@@ -281,6 +290,10 @@ module Gitlab
 
     def limited_count(relation)
       relation.without_order.limit(count_limit).size
+    end
+
+    def work_items_search_enabled?
+      ::Feature.enabled?(:search_scope_work_item, :instance)
     end
   end
 end

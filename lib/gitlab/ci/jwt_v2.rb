@@ -72,6 +72,12 @@ module Gitlab
         super.merge(additional_custom_claims).merge(mapper.to_h)
       end
 
+      def ci_claims
+        super.merge(
+          job_source: build.source
+        )
+      end
+
       def user_identities
         return unless user&.pass_user_identities_to_ci_jwt
 
@@ -107,3 +113,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::JwtV2.prepend_mod

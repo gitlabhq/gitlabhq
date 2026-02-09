@@ -173,29 +173,34 @@ For subsidized models with basic integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| gpt-5-mini | 8.0 |
-| gemini-2.5-flash | 8.0 |
-| codestral-2501 | 8.0 |
-| claude-3-haiku | 8.0 |
-| gemini-2.0-flash-lite | 8.0 |
+| `gpt-5-mini` | 8.0 |
+| `gemini-2.5-flash` | 8.0 |
+| `codestral-2501` | 8.0 |
+| `claude-3-haiku` | 8.0 |
+| `gemini-2.0-flash-lite` | 8.0 |
 
 For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| claude-4.5-haiku (default Agentic Chat model) | 6.7 |
-| gpt-5-codex | 3.3|
-| gpt-5 | 3.3 |
-| gpt-5.2 | 2.5 |
-| claude-3.7-sonnet | 2.0 |
-| claude-3.5-sonnet | 2.0 |
-| claude-sonnet-4 <=200k tokens (default model) | 2.0 |
-| claude-sonnet-4 >200k tokens | 1.1 |
-| claude-sonnet-4.5 <=200k tokens | 2.0 |
-| claude-sonnet-4.5 >200k tokens | 1.1 |
-| claude-opus-4.5 | 1.2 |
-| claude-opus-4.6 <=200k tokens | 1.2 |
-| claude-opus-4.6 >200k tokens | 0.7 |
+| `claude-4.5-haiku` (default Agentic Chat model) | 6.7 |
+| `gpt-5-codex` | 3.3|
+| `gpt-5` | 3.3 |
+| `gpt-5.2` | 2.5 |
+| `claude-3.7-sonnet` | 2.0 |
+| `claude-3.5-sonnet` | 2.0 |
+| `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
+| `claude-sonnet-4` <sup>2</sup> | 1.1 |
+| `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
+| `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
+| `claude-opus-4.5` | 1.2 |
+| `claude-opus-4.6` <sup>1</sup> | 1.2 |
+| `claude-opus-4.6` <sup>2</sup> | 0.7 |
+
+**Footnotes**:
+
+1. Prompts with up to 200,000 tokens.
+1. Prompts with more than 200,000 tokens.
 
 ### Features
 

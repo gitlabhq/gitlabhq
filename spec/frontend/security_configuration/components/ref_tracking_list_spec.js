@@ -58,6 +58,7 @@ describe('RefTrackingList component', () => {
       apolloProvider: createApolloProvider({ queryHandler }),
       provide: {
         projectFullPath: 'namespace/project',
+        maxTrackedRefs: MAX_TRACKED_REFS,
       },
       stubs: {
         GlCard,

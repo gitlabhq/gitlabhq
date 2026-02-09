@@ -151,6 +151,11 @@ module Types
         GraphQL::Types::String,
         null: true,
         description: 'Path to manage group security attributes.'
+
+      field :max_tracked_refs,
+        GraphQL::Types::Int,
+        null: true,
+        description: 'Maximum number of refs that can be tracked for security scanning.'
       # rubocop:enable GraphQL/ExtractType
     end
   end

@@ -17,7 +17,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :define_commit_vars, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :verify_commit, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :define_commit_vars, only: [:diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_environment,
     only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_commit_box_vars, only: [:show, :pipelines]
@@ -42,6 +43,7 @@ class Projects::CommitController < Projects::ApplicationController
           @js_action_name = 'rapid_diffs'
           render action: :rapid_diffs
         else
+          define_commit_vars
           define_note_vars
           @ref = commit_params_safe[:id]
           render locals: { pagination_params: pagination_params }
@@ -297,9 +299,11 @@ class Projects::CommitController < Projects::ApplicationController
     end
   end
 
-  def define_commit_vars
-    return git_not_found! unless commit
+  def verify_commit
+    git_not_found! unless commit
+  end
 
+  def define_commit_vars
     @diffs = commit.diffs(commit_diff_options)
   end
 

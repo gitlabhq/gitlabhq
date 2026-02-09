@@ -99,6 +99,8 @@ module SearchHelper
       ns_('SearchResults|commit', 'SearchResults|commits', count)
     when 'issues'
       ns_('SearchResults|issue', 'SearchResults|issues', count)
+    when 'work_items'
+      ns_('SearchResults|work item', 'SearchResults|work items', count)
     when 'merge_requests'
       ns_('SearchResults|merge request', 'SearchResults|merge requests', count)
     when 'milestones'

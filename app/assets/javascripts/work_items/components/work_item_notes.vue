@@ -620,8 +620,8 @@ export default {
             :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
             :discussions-sort-order="initialSortOrder"
-            @startEditing="$emit('startEditing')"
-            @stopEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @stop-editing="$emit('stop-editing')"
             @error="$emit('error', $event)"
             @updateCount="updateDiscussionsCount"
           />
@@ -655,11 +655,11 @@ export default {
             :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :uploads-path="uploadsPath"
-            @deleteNote="showDeleteNoteModal($event, discussion)"
-            @reportAbuse="reportAbuse(true, $event)"
+            @delete-note="showDeleteNoteModal($event, discussion)"
+            @report-abuse="reportAbuse(true, $event)"
             @error="$emit('error', $event)"
-            @startEditing="$emit('startEditing')"
-            @cancelEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @cancel-editing="$emit('stop-editing')"
           />
         </template>
 
@@ -674,8 +674,8 @@ export default {
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroup"
             :uploads-path="uploadsPath"
-            @startEditing="$emit('startEditing')"
-            @stopEditing="$emit('stopEditing')"
+            @start-editing="$emit('start-editing')"
+            @stop-editing="$emit('stop-editing')"
             @error="$emit('error', $event)"
             @focus="$emit('focus')"
             @blur="$emit('blur')"

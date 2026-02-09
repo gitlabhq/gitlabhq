@@ -59,6 +59,26 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
     end
 
+    describe 'job_source' do
+      context 'without build_source' do
+        it 'includes the job source' do
+          allow(pipeline).to receive(:source).and_return('api')
+
+          expect(payload[:job_source]).to eq('api')
+        end
+      end
+
+      context 'with build_source' do
+        it 'includes the job source' do
+          allow(build).to receive(:build_source).and_return(
+            build_stubbed(:ci_build_source, job: build, source: 'web')
+          )
+
+          expect(payload[:job_source]).to eq('web')
+        end
+      end
+    end
+
     describe 'when only project_path provided' do
       let(:sub_components) { [:project_path] }
 

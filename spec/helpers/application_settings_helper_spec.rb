@@ -535,8 +535,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       # Extract values (second element of each pair), excluding the first "system default"
       values = options[1..].map(&:last)
 
-      expected_order = %w[projects blobs epics issues merge_requests wiki_blobs commits notes milestones users
-        snippet_titles]
+      expected_order = %w[projects blobs work_items epics issues merge_requests wiki_blobs commits notes milestones
+        users snippet_titles]
       expected_order.delete('epics') unless Gitlab.ee?
 
       expect(values).to eq(expected_order)

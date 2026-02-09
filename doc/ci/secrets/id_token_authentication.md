@@ -121,6 +121,8 @@ The token also includes custom claims provided by GitLab:
 | `ci_config_ref_uri`     | Always                                     | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
 | `ci_config_sha`         | Always                                     | Git commit SHA for the `ci_config_ref_uri`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
 | `project_visibility`    | Always                                     | The [visibility](../../user/public_access.md) of the project where the pipeline is running. Can be `internal`, `private`, or `public`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418810) in GitLab 16.3. |
+| `job_source`            | Always                                     | [Job source](../jobs/_index.md#available-job-sources). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/459001) in GitLab 18.9. |
+| `job_config`              | Job triggered by a policy                  | Metadata about the origin of the job. For policy jobs, includes `sha` and `url` for the policy configuration. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/459001) in GitLab 18.9. |
 
 ```json
 {
@@ -147,6 +149,11 @@ The token also includes custom claims provided by GitLab:
   "environment_protected": "false",
   "deployment_tier": "testing",
   "environment_action": "start",
+  "job_source": "push",
+  "job_config": {
+    "url": "https://gitlab.example.com/my-group/my-policy-project/-/blob/ab035e64eca9a7a85bd62e485d3593f52a2804ac/.gitlab/security-policies/policy.yml",
+    "sha": "ab035e64eca9a7a85bd62e485d3593f52a2804ac"
+  },
   "runner_id": 1,
   "runner_environment": "self-hosted",
   "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",

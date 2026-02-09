@@ -462,13 +462,13 @@ describe('WorkItemNotes component', () => {
     });
   });
 
-  it('should open delete modal confirmation when child discussion emits `deleteNote` event', async () => {
+  it('should open delete modal confirmation when child discussion emits `delete-note` event', async () => {
     createComponent({
       defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
     });
     await waitForPromises();
 
-    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: '1', isLastNote: false });
+    findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', { id: '1', isLastNote: false });
     expect(showModal).toHaveBeenCalled();
   });
 
@@ -483,7 +483,7 @@ describe('WorkItemNotes component', () => {
     it('sends the mutation with correct variables', () => {
       const noteId = 'some-test-id';
 
-      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: noteId });
+      findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', { id: noteId });
       findDeleteNoteModal().vm.$emit('primary');
 
       expect(deleteWorkItemNoteMutationSuccessHandler).toHaveBeenCalledWith({
@@ -496,7 +496,7 @@ describe('WorkItemNotes component', () => {
     it('successfully removes the note from the discussion', async () => {
       expect(findWorkItemDiscussionAtIndex(0).props('discussion').notes.nodes).toHaveLength(2);
 
-      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
+      findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', {
         id: mockDiscussions[0].notes.nodes[0].id,
       });
       findDeleteNoteModal().vm.$emit('primary');
@@ -511,7 +511,7 @@ describe('WorkItemNotes component', () => {
       expect(findAllWorkItemDiscussions()).toHaveLength(2);
       expect(secondDiscussion.props('discussion').notes.nodes).toHaveLength(1);
 
-      secondDiscussion.vm.$emit('deleteNote', {
+      secondDiscussion.vm.$emit('delete-note', {
         id: mockDiscussions[1].notes.nodes[0].id,
         discussion: { id: mockDiscussions[1].id },
       });
@@ -529,7 +529,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
+    findWorkItemDiscussionAtIndex(0).vm.$emit('delete-note', {
       id: mockDiscussions[0].notes.nodes[0].id,
     });
     findDeleteNoteModal().vm.$emit('primary');

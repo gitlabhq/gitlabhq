@@ -82,6 +82,106 @@ RSpec.describe WorkItems::TypesFramework::Custom::Type, feature_category: :team_
         end
       end
     end
+
+    describe 'name uniqueness against system-defined types' do
+      it 'prevents using system-defined type names' do
+        type = build(:work_item_custom_type, organization: organization, namespace: nil, name: 'Task')
+
+        expect(type).to be_invalid
+        expect(type.errors[:name]).to include("'Task' is already taken")
+      end
+
+      it 'allows names that are not system-defined' do
+        type = build(:work_item_custom_type, organization: organization, namespace: nil, name: 'Feature')
+        expect(type).to be_valid
+      end
+
+      it 'skips validation when name is blank' do
+        type = build(:work_item_custom_type, organization: organization, namespace: nil, name: '')
+        type.valid?
+        expect(type.errors[:name]).to include("can't be blank")
+      end
+
+      context 'when converted from system-defined type' do
+        it 'allows keeping the same name as the system-defined type' do
+          type = build(:work_item_custom_type, :converted_from_issue,
+            organization: organization, namespace: nil, name: 'Issue')
+          expect(type).to be_valid
+        end
+
+        it 'allows keeping the same name with different casing' do
+          type = build(:work_item_custom_type, :converted_from_incident,
+            organization: organization, namespace: nil, name: 'INCIDENT')
+          expect(type).to be_valid
+        end
+
+        it 'prevents renaming to a different system-defined type name' do
+          type = build(:work_item_custom_type, :converted_from_task,
+            organization: organization, namespace: nil, name: 'Issue')
+          expect(type).to be_invalid
+          expect(type.errors[:name]).to include("'Issue' is already taken")
+        end
+
+        it 'allows renaming to a non-system-defined name' do
+          type = build(:work_item_custom_type, :converted_from_task,
+            organization: organization, namespace: nil, name: 'Feature')
+          expect(type).to be_valid
+        end
+
+        context 'when another converted type with changed name exists' do
+          before do
+            create(:work_item_custom_type, :converted_from_issue,
+              organization: organization, namespace: nil, name: 'Custom Issue')
+          end
+
+          it 'allows reusing the system-defined name of the existing converted type' do
+            type = build(:work_item_custom_type, :converted_from_task,
+              organization: organization, namespace: nil, name: 'Issue')
+            expect(type).to be_valid
+          end
+        end
+      end
+    end
+
+    describe 'max types per parent limit' do
+      before do
+        stub_const("#{described_class}::MAX_TYPE_PER_PARENT", 1)
+      end
+
+      context 'for organization' do
+        let_it_be(:existing_type) { create(:work_item_custom_type, organization: organization, namespace: nil) }
+
+        it 'is invalid when exceeding maximum allowed types' do
+          type = build(:work_item_custom_type, organization: organization, namespace: nil)
+
+          expect(type).to be_invalid
+          expect(type.errors[:organization]).to include('can only have a maximum of 1 work item types.')
+        end
+
+        it 'allows updating existing types without hitting the limit' do
+          existing_type.name = 'Updated Name'
+
+          expect(existing_type).to be_valid
+        end
+      end
+
+      context 'for namespace' do
+        let_it_be(:existing_type) { create(:work_item_custom_type, namespace: namespace) }
+
+        it 'is invalid when exceeding maximum allowed types' do
+          type = build(:work_item_custom_type, namespace: namespace)
+
+          expect(type).to be_invalid
+          expect(type.errors[:namespace]).to include('can only have a maximum of 1 work item types.')
+        end
+
+        it 'allows updating existing types without hitting the limit' do
+          existing_type.name = 'Updated Name'
+
+          expect(existing_type).to be_valid
+        end
+      end
+    end
   end
 
   describe 'scopes' do

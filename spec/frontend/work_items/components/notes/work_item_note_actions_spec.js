@@ -148,11 +148,11 @@ describe('Work Item Note Actions', () => {
       expect(findEditButton().exists()).toBe(false);
     });
 
-    it('emits `startEditing` event when clicked', () => {
+    it('emits `start-editing` event when clicked', () => {
       createComponent();
       findEditButton().vm.$emit('click');
 
-      expect(wrapper.emitted('startEditing')).toEqual([[]]);
+      expect(wrapper.emitted('start-editing')).toEqual([[]]);
     });
   });
 
@@ -192,14 +192,14 @@ describe('Work Item Note Actions', () => {
       expect(findDeleteNoteButton().exists()).toBe(false);
     });
 
-    it('should emit `deleteNote` event when delete note action is clicked', () => {
+    it('should emit `delete-note` event when delete note action is clicked', () => {
       createComponent({
         showEdit: true,
       });
 
       findDeleteNoteButton().vm.$emit('action');
 
-      expect(wrapper.emitted('deleteNote')).toEqual([[]]);
+      expect(wrapper.emitted('delete-note')).toEqual([[]]);
       expect(showSpy).toHaveBeenCalled();
     });
   });
@@ -212,10 +212,10 @@ describe('Work Item Note Actions', () => {
       expect(findCopyLinkButton().exists()).toBe(true);
     });
 
-    it('should emit `notifyCopyDone` event when copy link note action is clicked', () => {
+    it('should emit `notify-copy-done` event when copy link note action is clicked', () => {
       findCopyLinkButton().vm.$emit('action');
 
-      expect(wrapper.emitted('notifyCopyDone')).toEqual([[]]);
+      expect(wrapper.emitted('notify-copy-done')).toEqual([[]]);
       expect(showSpy).toHaveBeenCalled();
     });
   });
@@ -235,14 +235,14 @@ describe('Work Item Note Actions', () => {
       expect(findAssignUnassignButton().exists()).toBe(true);
     });
 
-    it('should emit `assignUser` event when assign note action is clicked', () => {
+    it('should emit `assign-user` event when assign note action is clicked', () => {
       createComponent({
         showAssignUnassign: true,
       });
 
       findAssignUnassignButton().vm.$emit('action');
 
-      expect(wrapper.emitted('assignUser')).toEqual([[]]);
+      expect(wrapper.emitted('assign-user')).toEqual([[]]);
       expect(showSpy).toHaveBeenCalled();
     });
   });
@@ -262,14 +262,14 @@ describe('Work Item Note Actions', () => {
       expect(findReportAbuseToAdminButton().exists()).toBe(true);
     });
 
-    it('should emit `reportAbuse` event when report abuse action is clicked', () => {
+    it('should emit `report-abuse` event when report abuse action is clicked', () => {
       createComponent({
         canReportAbuse: true,
       });
 
       findReportAbuseToAdminButton().vm.$emit('action');
 
-      expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
+      expect(wrapper.emitted('report-abuse')).toEqual([[]]);
       expect(showSpy).toHaveBeenCalled();
     });
   });

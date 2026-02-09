@@ -17,8 +17,6 @@ import RefTrackingListItem from './ref_tracking_list_item.vue';
 import RefUntrackingConfirmation from './ref_untracking_confirmation.vue';
 import RefTrackingSelection from './ref_tracking_selection.vue';
 
-export const MAX_TRACKED_REFS = 3;
-
 export default {
   components: {
     GlAlert,
@@ -34,7 +32,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectFullPath'],
+  inject: ['projectFullPath', 'maxTrackedRefs'],
   apollo: {
     trackedRefs: {
       query: securityTrackedRefs,
@@ -43,8 +41,8 @@ export default {
 
         return {
           fullPath: this.projectFullPath,
-          first: before ? null : MAX_TRACKED_REFS,
-          last: before ? MAX_TRACKED_REFS : null,
+          first: before ? null : this.maxTrackedRefs,
+          last: before ? this.maxTrackedRefs : null,
           after,
           before,
         };
@@ -100,7 +98,7 @@ export default {
       return this.hasPreviousPage || this.hasNextPage;
     },
     hasMaxTrackedRefs() {
-      return this.totalCount >= this.$options.MAX_TRACKED_REFS;
+      return this.totalCount >= this.maxTrackedRefs;
     },
     shouldDisableTrackNewRefButton() {
       return this.isLoading || this.isTrackingRefs || this.hasMaxTrackedRefs;
@@ -209,7 +207,6 @@ export default {
       this.pageCursor.after = null;
     },
   },
-  MAX_TRACKED_REFS,
 };
 </script>
 
@@ -222,7 +219,7 @@ export default {
             {{ s__('SecurityTrackedRefs|Currently tracked refs') }}
           </h3>
           <gl-badge variant="neutral"
-            >{{ totalCount === null ? '-' : totalCount }}/{{ $options.MAX_TRACKED_REFS }}</gl-badge
+            >{{ totalCount === null ? '-' : totalCount }}/{{ maxTrackedRefs }}</gl-badge
           >
         </div>
         <span
@@ -297,7 +294,7 @@ export default {
     <ref-tracking-selection
       v-if="showTrackingSelection"
       :tracked-refs="trackedRefs"
-      :max-tracked-refs="$options.MAX_TRACKED_REFS"
+      :max-tracked-refs="maxTrackedRefs"
       @select="trackRefs"
       @cancel="showTrackingSelection = false"
     />

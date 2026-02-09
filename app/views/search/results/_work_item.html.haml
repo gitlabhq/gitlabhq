@@ -1,0 +1,32 @@
+- index = local_assigns.fetch(:index, nil)
+- work_item = local_assigns.fetch(:result, nil)
+- position = index + 1
+
+.search-result-row.gl-row.gl-no-gutters.gl-flex.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0 @sm/panel:gl-flex-row' }
+  .gl-col-sm-9
+    %span.gl-flex.gl-items-center
+      = gl_badge_tag issuable_state_text(work_item), variant: issuable_state_to_badge_class(work_item)
+      = sprite_icon('eye-slash', css_class: 'gl-fill-icon-subtle gl-ml-2') if work_item.respond_to?(:confidential?) && work_item.confidential?
+      = link_to work_item_path(work_item), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }, class: 'gl-w-full' do
+        %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(work_item.title, @search_term)
+    .gl-text-subtle.gl-mb-3.gl-mt-2.gl-text-sm
+      - if (reference = work_item_reference(work_item))
+        = reference
+        &middot;
+      = sprintf(s_('created %{work_item_created} by %{author}'), { work_item_created: time_ago_with_tooltip(work_item.created_at, placement: 'bottom'), author: link_to_member(work_item.author, avatar: false) }).html_safe
+    .description.term.gl-px-0.gl-text-sm
+      = highlight_and_truncate_issuable(work_item, @search_term, @search_highlight)
+    - if work_item.labels.any?
+      .gl-mt-3.gl-flex.gl-flex-wrap.gl-gap-2
+        - label_subject = work_item.respond_to?(:project) && work_item.project ? work_item.project : work_item.namespace
+        - presented_labels_sorted_by_title(work_item.labels, label_subject).each do |label|
+          = link_to_label(label)
+
+  .gl-col-sm-3.gl-mt-3.gl-text-right{ class: "@sm/panel:gl-mt-0" }
+    %li.gl-list-none
+      - if work_item.respond_to?(:upvotes_count) && work_item.upvotes_count > 0
+        %span.has-tooltip{ title: _('Upvotes') }
+          = sprite_icon('thumb-up', css_class: "gl-align-middle")
+          = work_item.upvotes_count
+      = render_if_exists partial: 'search/results/work_item_status', locals: { issuable: work_item }
+    %span.gl-text-subtle.gl-text-sm= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(work_item.updated_at, placement: 'bottom') }).html_safe

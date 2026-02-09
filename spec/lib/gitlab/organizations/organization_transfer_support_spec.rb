@@ -11,7 +11,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
   let(:allowed_todo_tables) do
     %w[
       abuse_events
-      abuse_report_events
       abuse_report_uploads
       abuse_report_user_mentions
       abuse_reports
@@ -19,17 +18,11 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       agent_organization_authorizations
       ai_catalog_item_consumers
       ai_catalog_item_version_dependencies
-      ai_catalog_item_versions
       ai_catalog_items
       ai_code_suggestion_events
       ai_conversation_messages
-      ai_conversation_threads
       ai_duo_chat_events
-      ai_events_counts
-      ai_usage_events
       analytics_cycle_analytics_stage_event_hashes
-      authentication_events
-      award_emoji
       background_operation_jobs
       background_operation_workers
       bulk_import_batch_trackers
@@ -37,42 +30,33 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       bulk_import_entities
       bulk_import_failures
       bulk_import_trackers
-      bulk_imports
       ci_runner_taggings_group_type
       ci_runner_taggings_project_type
       clusters
       custom_dashboard_search_data
-      custom_dashboard_versions
       custom_dashboards
       dependency_list_export_part_uploads
       dependency_list_export_parts
       dependency_list_export_uploads
-      dependency_list_exports
       fork_networks
       granular_scopes
       group_type_ci_runner_machines
       group_type_ci_runners
       import_failures
       import_offline_configurations
-      import_offline_exports
-      import_placeholder_user_details
       integrations
       issue_tracker_data
       jira_connect_installations
       jira_tracker_data
-      keys
       labels
       ldap_admin_role_links
       member_roles
       merge_request_diff_commit_users
       non_sql_service_pings
       notes
-      oauth_access_grants
-      oauth_access_tokens
       oauth_applications
       oauth_device_grants
       oauth_openid_requests
-      organization_cluster_agent_mappings
       organization_detail_uploads
       organization_details
       organization_foundational_agent_statuses
@@ -83,7 +67,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       organization_users
       personal_access_token_granular_scopes
       personal_access_token_last_used_ips
-      personal_access_tokens
       project_secrets_manager_maintenance_tasks
       project_topic_uploads
       project_type_ci_runner_machines
@@ -104,7 +87,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       snippet_statistics
       snippet_uploads
       snippet_user_mentions
-      snippets
       subscription_add_on_purchases
       subscription_seat_assignments
       subscription_user_add_on_assignment_versions
@@ -116,7 +98,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       vulnerability_export_part_uploads
       vulnerability_export_parts
       vulnerability_export_uploads
-      vulnerability_exports
       web_hooks
       web_hook_logs_daily
       zentao_tracker_data

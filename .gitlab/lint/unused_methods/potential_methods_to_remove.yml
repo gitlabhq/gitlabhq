@@ -266,7 +266,6 @@ app/models/project.rb:
 - import_scheduled?
 - updating_remote_mirror?
 - issue_exists?
-- latest_successful_pipeline_for
 - enable_ci
 - valid_runners_token?
 - storage_upgradable?

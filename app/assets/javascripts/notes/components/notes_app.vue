@@ -327,7 +327,7 @@ export default {
     async startReplying(discussionId) {
       this.convertToDiscussion(discussionId);
       await this.$nextTick();
-      eventHub.$emit('startReplying', discussionId);
+      eventHub.$emit('start-replying', discussionId);
     },
     setAiLoading(loading) {
       this.aiLoading = loading;
@@ -407,7 +407,7 @@ export default {
                 :key="discussion.id"
                 :note="discussion.notes[0]"
                 :show-reply-button="canReply"
-                @startReplying="startReplying(discussion.id)"
+                @start-replying="startReplying(discussion.id)"
               />
             </template>
             <noteable-discussion

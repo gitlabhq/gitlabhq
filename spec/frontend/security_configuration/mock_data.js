@@ -163,6 +163,7 @@ export const provideMock = {
   canManageAttributes: false,
   canApplyProfiles: true,
   securityScanProfilesLicensed: true,
+  maxTrackedRefs: 2,
 };
 
 export const createTrackedRef = (overrides = {}) => ({

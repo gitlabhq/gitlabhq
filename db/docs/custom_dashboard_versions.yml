@@ -13,5 +13,5 @@ milestone: '18.6'
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
-organization_transfer_support: todo
+organization_transfer_support: supported
 table_size: small

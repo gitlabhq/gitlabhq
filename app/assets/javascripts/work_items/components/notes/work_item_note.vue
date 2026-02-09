@@ -261,11 +261,11 @@ export default {
   },
   methods: {
     showReplyForm() {
-      this.$emit('startReplying');
-      this.$emit('startEditing');
+      this.$emit('start-replying');
+      this.$emit('start-editing');
     },
     startEditing() {
-      this.$emit('startEditing');
+      this.$emit('start-editing');
       this.isEditing = true;
       const currentDraft = getDraft(this.autosaveKey);
       // Prevent accidental overwriting of
@@ -379,7 +379,7 @@ export default {
     },
     cancelEditing() {
       this.isEditing = false;
-      this.$emit('cancelEditing');
+      this.$emit('cancel-editing');
     },
   },
 };
@@ -436,14 +436,14 @@ export default {
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
               :resolved-by="resolvedBy"
-              @startReplying="showReplyForm"
-              @startEditing="startEditing"
+              @start-replying="showReplyForm"
+              @start-editing="startEditing"
               @resolve="$emit('resolve')"
               @error="($event) => $emit('error', $event)"
-              @notifyCopyDone="notifyCopyDone"
-              @deleteNote="$emit('deleteNote')"
-              @assignUser="assignUserAction"
-              @reportAbuse="$emit('reportAbuse')"
+              @notify-copy-done="notifyCopyDone"
+              @delete-note="$emit('delete-note')"
+              @assign-user="assignUserAction"
+              @report-abuse="$emit('report-abuse')"
             />
           </div>
         </div>
@@ -469,9 +469,9 @@ export default {
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :uploads-path="uploadsPath"
             class="gl-mt-3"
-            @cancelEditing="cancelEditing"
-            @toggleResolveDiscussion="$emit('resolve')"
-            @submitForm="updateNote"
+            @cancel-editing="cancelEditing"
+            @toggle-resolve-discussion="$emit('resolve')"
+            @submit-form="updateNote"
           />
           <div v-else class="timeline-discussion-body">
             <note-body
@@ -479,7 +479,7 @@ export default {
               :note="note"
               :has-admin-note-permission="hasAdminPermission"
               :is-updating="isUpdating"
-              @updateNote="updateNote"
+              @update-note="updateNote"
             />
           </div>
           <edited-at

@@ -2523,14 +2523,6 @@ class Project < ApplicationRecord
       ci_pipelines.latest_successful_for_ref(default_branch)
   end
 
-  def latest_successful_pipeline_for(ref = nil)
-    if ref && ref != default_branch
-      ci_pipelines.latest_successful_for_ref(ref)
-    else
-      latest_successful_pipeline_for_default_branch
-    end
-  end
-
   def feature_available?(feature, user = nil)
     !!project_feature&.feature_available?(feature, user)
   end

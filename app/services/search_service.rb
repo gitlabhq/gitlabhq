@@ -104,6 +104,9 @@ class SearchService
     case params[:scope]
     when 'issues'
       ::Gitlab::CurrentSettings.global_search_issues_enabled?
+    when 'work_items'
+      ::Feature.enabled?(:search_scope_work_item, :instance) &&
+        ::Gitlab::CurrentSettings.global_search_issues_enabled?
     when 'merge_requests'
       ::Gitlab::CurrentSettings.global_search_merge_requests_enabled?
     when 'snippet_titles'

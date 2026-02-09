@@ -133,7 +133,7 @@ describe('Work Item Discussion', () => {
     it('should autofocus when we click expand replies', async () => {
       const mainComment = findThreadAtIndex(0);
 
-      mainComment.vm.$emit('startReplying');
+      mainComment.vm.$emit('start-replying');
       await nextTick();
       expect(findWorkItemAddNote().exists()).toBe(true);
       expect(findWorkItemAddNote().props('autofocus')).toBe(true);
@@ -142,7 +142,7 @@ describe('Work Item Discussion', () => {
     it('should send the correct props is when the main comment is internal', async () => {
       const mainComment = findThreadAtIndex(0);
 
-      mainComment.vm.$emit('startReplying');
+      mainComment.vm.$emit('start-replying');
       await nextTick();
       expect(findWorkItemAddNote().props('isInternalThread')).toBe(
         mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes[0].internal,
@@ -157,7 +157,7 @@ describe('Work Item Discussion', () => {
       });
       const mainComment = findThreadAtIndex(0);
 
-      mainComment.vm.$emit('startReplying');
+      mainComment.vm.$emit('start-replying');
       await nextTick();
       await findWorkItemAddNote().vm.$emit('replying', 'reply text');
     });
@@ -182,11 +182,11 @@ describe('Work Item Discussion', () => {
     });
   });
 
-  it('emits `deleteNote` event with correct parameter when child note component emits `deleteNote` event', () => {
+  it('emits `delete-note` event with correct parameter when child note component emits `delete-note` event', () => {
     createComponent();
-    findThreadAtIndex(0).vm.$emit('deleteNote');
+    findThreadAtIndex(0).vm.$emit('delete-note');
 
-    expect(wrapper.emitted('deleteNote')).toEqual([[mockWorkItemDiscussion.notes.nodes[0]]]);
+    expect(wrapper.emitted('delete-note')).toEqual([[mockWorkItemDiscussion.notes.nodes[0]]]);
   });
 
   it('emits `error` event when child note emits an `error`', () => {

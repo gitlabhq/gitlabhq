@@ -92,6 +92,7 @@ module Gitlab
       def process_params(params)
         processed_params = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
         processed_params = convert_all_boolean_params(processed_params)
+        processed_params = convert_type_to_ids(processed_params)
         convert_not_params(processed_params)
       end
 
@@ -111,6 +112,15 @@ module Gitlab
           params[key] = Gitlab::Utils.to_boolean(params[key]) if params.key?(key)
         end
 
+        params
+      end
+
+      def convert_type_to_ids(params)
+        return params unless params[:type].present?
+
+        provider = ::WorkItems::TypesFramework::Provider.new
+        params[:work_item_type_ids] = provider.ids_by_base_types(Array(params[:type]))
+        params.delete(:type)
         params
       end
     end

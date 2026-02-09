@@ -963,9 +963,6 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
-msgid "%{group_name}&%{work_item_iid} &middot; created %{work_item_created} by %{author}"
-msgstr ""
-
 msgid "%{groupsLength} group"
 msgid_plural "%{groupsLength} groups"
 msgstr[0] ""
@@ -1710,6 +1707,9 @@ msgid "'%{lock_path}' is locked by @%{lock_user_name}"
 msgstr ""
 
 msgid "'%{lock_path}' is locked in Git LFS by @%{lock_user_name}"
+msgstr ""
+
+msgid "'%{name}' is already taken"
 msgstr ""
 
 msgid "'%{slug}' is a reserved name"
@@ -10417,9 +10417,6 @@ msgstr ""
 msgid "Attribute 'pod-overrides' is not yet supported"
 msgstr ""
 
-msgid "Attribute update"
-msgstr ""
-
 msgid "Attributes"
 msgstr ""
 
@@ -11286,6 +11283,9 @@ msgstr ""
 msgid "BillingPlans|10 GiB adjustable storage"
 msgstr ""
 
+msgid "BillingPlans|10,000 Compute Minutes per Month"
+msgstr ""
+
 msgid "BillingPlans|10,000 compute minutes per month"
 msgstr ""
 
@@ -11310,10 +11310,16 @@ msgstr ""
 msgid "BillingPlans|@%{user_name} you are currently using the %{plan_name}."
 msgstr ""
 
+msgid "BillingPlans|A central hub to manage standards adherence, violations reporting, and compliance frameworks."
+msgstr ""
+
 msgid "BillingPlans|AI Chat in the IDE"
 msgstr ""
 
 msgid "BillingPlans|AI Code Suggestions in the IDE"
+msgstr ""
+
+msgid "BillingPlans|AI across the software development lifecycle."
 msgstr ""
 
 msgid "BillingPlans|AI agents and automated flows that work alongside you to answer complex questions, automate tasks, and streamline development. Use pre-built options or create custom agents and flows for your team."
@@ -11322,7 +11328,16 @@ msgstr ""
 msgid "BillingPlans|AI agents and automated flows that work alongside you to answer complex questions, automate tasks, and streamline development. Use pre-built options or create custom agents and flows for your team. Powered by GitLab Credits."
 msgstr ""
 
+msgid "BillingPlans|AI-powered assistants that help you accomplish specific tasks and answer complex questions. Use pre-built agents for common workflows or create custom ones for your team's needs."
+msgstr ""
+
 msgid "BillingPlans|AI-powered features that help you write code, understand your work, and automate tasks across your workflow."
+msgstr ""
+
+msgid "BillingPlans|Accelerate development with AI guidance and automation"
+msgstr ""
+
+msgid "BillingPlans|Access AI assistance wherever you're most productive"
 msgstr ""
 
 msgid "BillingPlans|Add-ons"
@@ -11337,6 +11352,9 @@ msgstr ""
 msgid "BillingPlans|Advanced application security"
 msgstr ""
 
+msgid "BillingPlans|Agents"
+msgstr ""
+
 msgid "BillingPlans|All stages of the DevOps lifecycle"
 msgstr ""
 
@@ -11346,7 +11364,13 @@ msgstr ""
 msgid "BillingPlans|All the benefits of Premium +"
 msgstr ""
 
+msgid "BillingPlans|Also featuring GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "BillingPlans|Application Security Testing"
+msgstr ""
+
+msgid "BillingPlans|Automate repetitive development tasks"
 msgstr ""
 
 msgid "BillingPlans|Automatically merge changes in sequence to prevent conflicts and keep your branch stable."
@@ -11356,6 +11380,9 @@ msgid "BillingPlans|Automatically notify the next responder when critical alerts
 msgstr ""
 
 msgid "BillingPlans|Automatically sync branches, tags, and commits from an external repository with GitLab."
+msgstr ""
+
+msgid "BillingPlans|Automatically sync branches, tags, and commits from an external repository."
 msgstr ""
 
 msgid "BillingPlans|Billed annually at $1,188 USD"
@@ -11373,13 +11400,28 @@ msgstr ""
 msgid "BillingPlans|Bring your own production environment"
 msgstr ""
 
+msgid "BillingPlans|Build smarter with intelligent AI"
+msgstr ""
+
+msgid "BillingPlans|Built to grow with your team"
+msgstr ""
+
+msgid "BillingPlans|Chat that can be used throughout the GitLab platform, granting a much more fluid and efficient workflow experience."
+msgstr ""
+
 msgid "BillingPlans|Choose Premium"
 msgstr ""
 
 msgid "BillingPlans|Choose Ultimate"
 msgstr ""
 
+msgid "BillingPlans|Combine one or more agents to solve complex problems. Use pre-built flows for common development tasks or create custom workflows with your own triggers and steps."
+msgstr ""
+
 msgid "BillingPlans|Company wide portfolio management"
+msgstr ""
+
+msgid "BillingPlans|Compliance Center"
 msgstr ""
 
 msgid "BillingPlans|Compliance automation"
@@ -11389,6 +11431,12 @@ msgid "BillingPlans|Compute Minutes"
 msgstr ""
 
 msgid "BillingPlans|Congratulations, your free trial is activated."
+msgstr ""
+
+msgid "BillingPlans|Consolidate your toolchain in one place"
+msgstr ""
+
+msgid "BillingPlans|Continue with GitLab Premium to keep shipping faster, together."
 msgstr ""
 
 msgid "BillingPlans|Control who can approve merge requests to ensure code quality and compliance."
@@ -11403,10 +11451,22 @@ msgstr ""
 msgid "BillingPlans|Currently trialing"
 msgstr ""
 
+msgid "BillingPlans|Customizable pre-receive Git hooks that enforce commit content standards, message formats, branch naming rules, and file requirements."
+msgstr ""
+
+msgid "BillingPlans|Customize approval workflows with rules defining who must review code before merging, including options to prevent self-approvals and require authentication."
+msgstr ""
+
+msgid "BillingPlans|Discover Premium"
+msgstr ""
+
 msgid "BillingPlans|Duo Enterprise"
 msgstr ""
 
 msgid "BillingPlans|Duo Pro"
+msgstr ""
+
+msgid "BillingPlans|Enhanced CI/CD"
 msgstr ""
 
 msgid "BillingPlans|Enterprise Agile Planning Seats"
@@ -11415,7 +11475,13 @@ msgstr ""
 msgid "BillingPlans|Epics"
 msgstr ""
 
+msgid "BillingPlans|Escalation Policies"
+msgstr ""
+
 msgid "BillingPlans|Escalation policies"
+msgstr ""
+
+msgid "BillingPlans|Event Audits"
 msgstr ""
 
 msgid "BillingPlans|Everything from Free, plus:"
@@ -11425,6 +11491,9 @@ msgid "BillingPlans|Everything from Premium, plus:"
 msgstr ""
 
 msgid "BillingPlans|Executive level insights"
+msgstr ""
+
+msgid "BillingPlans|Explain complex logic instantly"
 msgstr ""
 
 msgid "BillingPlans|Explore %{feature}"
@@ -11439,6 +11508,9 @@ msgstr ""
 msgid "BillingPlans|Features include:"
 msgstr ""
 
+msgid "BillingPlans|Flows"
+msgstr ""
+
 msgid "BillingPlans|For individuals working on personal projects and open source contributions."
 msgstr ""
 
@@ -11451,6 +11523,15 @@ msgstr ""
 msgid "BillingPlans|Free guest users"
 msgstr ""
 
+msgid "BillingPlans|Generate tests and refactor efficiently"
+msgstr ""
+
+msgid "BillingPlans|Get 10,000 compute minutes per month for your CI/CD pipelines, up from 400 on the Free plan."
+msgstr ""
+
+msgid "BillingPlans|Get support from GitLab with guaranteed response times."
+msgstr ""
+
 msgid "BillingPlans|Get the most from your trial"
 msgstr ""
 
@@ -11460,13 +11541,22 @@ msgstr ""
 msgid "BillingPlans|Get the most out of GitLab with Ultimate and GitLab Duo Enterprise"
 msgstr ""
 
+msgid "BillingPlans|Get unlimited user licenses, which includes guest user licenses, up from a maximum of 5 users on the Free plan."
+msgstr ""
+
 msgid "BillingPlans|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "BillingPlans|GitLab Duo Agent Platform:"
 msgstr ""
 
+msgid "BillingPlans|GitLab Duo Chat"
+msgstr ""
+
 msgid "BillingPlans|GitLab Free"
+msgstr ""
+
+msgid "BillingPlans|GitLab Premium features"
 msgstr ""
 
 msgid "BillingPlans|Governance & Compliance"
@@ -11482,6 +11572,9 @@ msgid "BillingPlans|Includes"
 msgstr ""
 
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
+msgstr ""
+
+msgid "BillingPlans|Keep building with GitLab Premium."
 msgstr ""
 
 msgid "BillingPlans|Learn more"
@@ -11503,6 +11596,12 @@ msgid "BillingPlans|Manage plan"
 msgstr ""
 
 msgid "BillingPlans|Manage seats"
+msgstr ""
+
+msgid "BillingPlans|Merge Request Guardrails"
+msgstr ""
+
+msgid "BillingPlans|Merge Trains"
 msgstr ""
 
 msgid "BillingPlans|Merge request approvals"
@@ -11541,13 +11640,28 @@ msgstr ""
 msgid "BillingPlans|Priority support"
 msgstr ""
 
+msgid "BillingPlans|Protected Environments"
+msgstr ""
+
+msgid "BillingPlans|Push Rules"
+msgstr ""
+
 msgid "BillingPlans|Recommended"
 msgstr ""
 
 msgid "BillingPlans|Release Controls"
 msgstr ""
 
+msgid "BillingPlans|Repository Pull Mirroring"
+msgstr ""
+
 msgid "BillingPlans|Repository pull mirroring"
+msgstr ""
+
+msgid "BillingPlans|Safeguard testing and production environments by restricting deployment access to authorized users only."
+msgstr ""
+
+msgid "BillingPlans|Scale with Confidence"
 msgstr ""
 
 msgid "BillingPlans|Seats in use"
@@ -11598,6 +11712,9 @@ msgstr ""
 msgid "BillingPlans|Strategic Portfolio Management"
 msgstr ""
 
+msgid "BillingPlans|Strengthen pipelines with advanced approvals workflows"
+msgstr ""
+
 msgid "BillingPlans|Talk to an expert"
 msgstr ""
 
@@ -11616,7 +11733,16 @@ msgstr ""
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
 msgstr ""
 
+msgid "BillingPlans|Track critical actions and respond when issues arise"
+msgstr ""
+
+msgid "BillingPlans|Track critical security actions like permission changes and user modifications with comprehensive, permanent audit logs, providing detailed reports for compliance, incident response, and access reviews."
+msgstr ""
+
 msgid "BillingPlans|Track groups of related issues to manage large initiatives and monitor progress toward long-term goals."
+msgstr ""
+
+msgid "BillingPlans|Track related issues to manage large initiatives and monitor progress toward long-term goals."
 msgstr ""
 
 msgid "BillingPlans|Trusted by"
@@ -11626,6 +11752,12 @@ msgid "BillingPlans|Try GitLab Duo Pro"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
+msgstr ""
+
+msgid "BillingPlans|Unified Platform"
+msgstr ""
+
+msgid "BillingPlans|Unlimited Licensed Users"
 msgstr ""
 
 msgid "BillingPlans|Unlimited guest users"
@@ -11649,6 +11781,9 @@ msgstr ""
 msgid "BillingPlans|Value Stream Management"
 msgstr ""
 
+msgid "BillingPlans|Visibility & Incident Response"
+msgstr ""
+
 msgid "BillingPlans|Vulnerability Management"
 msgstr ""
 
@@ -11662,6 +11797,12 @@ msgid "BillingPlans|You have successfully started an Ultimate and GitLab Duo Ent
 msgstr ""
 
 msgid "BillingPlans|Your %{platform} is on %{planName}"
+msgstr ""
+
+msgid "BillingPlans|Your AI companion throughout development"
+msgstr ""
+
+msgid "BillingPlans|Your trial has %{days} days left."
 msgstr ""
 
 msgid "BillingPlans|a trial of Ultimate"
@@ -29123,6 +29264,9 @@ msgid "Fail"
 msgstr ""
 
 msgid "Failed"
+msgstr ""
+
+msgid "Failed Groups:"
 msgstr ""
 
 msgid "Failed Jobs"
@@ -60074,6 +60218,11 @@ msgid_plural "SearchResults|wiki results"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SearchResults|work item"
+msgid_plural "SearchResults|work items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SearchToken|Assignee"
 msgstr ""
 
@@ -71758,7 +71907,7 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
-msgid "Track vulnerabilities in up to 16 refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed."
+msgid "Track vulnerabilities in up to %{limit} refs (branches or tags). The default branch is tracked by default on the Security Dashboard and Vulnerability report and cannot be removed."
 msgstr ""
 
 msgid "Tracking"
@@ -81414,6 +81563,9 @@ msgstr ""
 msgid "can only have a maximum of %{limit} statuses."
 msgstr ""
 
+msgid "can only have a maximum of %{limit} work item types."
+msgstr ""
+
 msgid "can only have one escalation policy"
 msgstr ""
 
@@ -81947,6 +82099,9 @@ msgid "created %{timeAgo} by %{author} in %{project_link}"
 msgstr ""
 
 msgid "created %{timeAgo} by %{email} via %{author}"
+msgstr ""
+
+msgid "created %{work_item_created} by %{author}"
 msgstr ""
 
 msgid "created by"

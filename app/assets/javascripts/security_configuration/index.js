@@ -59,6 +59,7 @@ export const initSecurityConfiguration = (el) => {
     secretDetectionConfigurationPath,
     vulnerabilityArchiveExportPath,
     licenseConfigurationSource,
+    maxTrackedRefs,
   } = el.dataset;
 
   const { augmentedSecurityFeatures } = augmentFeatures(features ? JSON.parse(features) : []);
@@ -83,6 +84,7 @@ export const initSecurityConfiguration = (el) => {
       vulnerabilityArchiveExportPath,
       secretDetectionConfigurationPath,
       licenseConfigurationSource,
+      maxTrackedRefs: Number(maxTrackedRefs, 10),
       ...parseBooleanDataAttributes(el, [
         'secretPushProtectionAvailable',
         'secretPushProtectionEnabled',

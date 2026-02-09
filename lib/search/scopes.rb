@@ -27,7 +27,16 @@ module Search
           project: %i[zoekt advanced basic]
         }
       },
-      # sort: 3 is reserved for EE scopes (epics)
+      # sort: 3 is reserved for EE scopes (epics/work_items)
+      work_items: {
+        label: -> { _('Work items') },
+        sort: 3,
+        availability: {
+          global: %i[advanced basic],
+          group: %i[advanced basic],
+          project: %i[advanced basic]
+        }
+      },
       issues: {
         label: -> { _('Issues') },
         sort: 4,
@@ -105,6 +114,7 @@ module Search
     # EE scopes are added in ee/lib/ee/search/scopes.rb
     GLOBAL_SEARCH_SETTING_MAP = {
       'issues' => :global_search_issues_enabled?,
+      'work_items' => :global_search_issues_enabled?,
       'merge_requests' => :global_search_merge_requests_enabled?,
       'snippet_titles' => :global_search_snippet_titles_enabled?,
       'users' => :global_search_users_enabled?

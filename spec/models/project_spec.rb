@@ -7023,40 +7023,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#latest_successful_builds_for' do
-    let(:project) { build(:project) }
-
-    before do
-      allow(project).to receive(:default_branch).and_return('master')
-    end
-
-    context 'without a ref' do
-      it 'returns a pipeline for the default branch' do
-        expect(project)
-          .to receive(:latest_successful_pipeline_for_default_branch)
-
-        project.latest_successful_pipeline_for
-      end
-    end
-
-    context 'with the ref set to the default branch' do
-      it 'returns a pipeline for the default branch' do
-        expect(project)
-          .to receive(:latest_successful_pipeline_for_default_branch)
-
-        project.latest_successful_pipeline_for(project.default_branch)
-      end
-    end
-
-    context 'with a ref that is not the default branch' do
-      it 'returns the latest successful pipeline for the given ref' do
-        expect(project.ci_pipelines).to receive(:latest_successful_for_ref).with('foo')
-
-        project.latest_successful_pipeline_for('foo')
-      end
-    end
-  end
-
   describe '#check_repository_path_availability' do
     let(:project) { build(:project, :repository, :legacy_storage) }
 

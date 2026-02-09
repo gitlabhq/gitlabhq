@@ -31,6 +31,14 @@ module WorkItemsHelper
     self_managed_new_trial_url
   end
 
+  def work_item_path(work_item, **options)
+    Gitlab::UrlBuilder.build(work_item, only_path: true, **options)
+  end
+
+  def work_item_reference(work_item)
+    work_item.to_reference(full: true)
+  end
+
   private
 
   def add_project_specific_data(data, resource_parent, current_user)

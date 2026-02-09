@@ -8,7 +8,6 @@ module WorkItems
 
         include ActiveRecord::FixedItemsModel::HasOne
 
-        # TODO: Add validation check for this limit
         MAX_TYPE_PER_PARENT = 30
 
         belongs_to :organization, class_name: 'Organizations::Organization', optional: true
@@ -43,6 +42,9 @@ module WorkItems
 
         validates_with ExactlyOnePresentValidator, fields: :sharding_keys
 
+        validate :system_defined_names_unique_across_parent_scope
+        validate :max_types_per_parent_limit, on: :create
+
         scope :for_organization, ->(organization) { where(organization_id: organization.id) }
         scope :for_namespace, ->(namespace) { where(namespace_id: namespace.id) }
         scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
@@ -67,7 +69,7 @@ module WorkItems
         end
 
         def icon_name_with_prefix
-          icon_name.tr('_', '-').to_s
+          icon_name.tr('_', '-')
         end
 
         private
@@ -78,6 +80,53 @@ module WorkItems
 
         def sharding_keys
           [:namespace_id, :organization_id]
+        end
+
+        def system_defined_names_unique_across_parent_scope
+          return if name.blank?
+
+          system_type = WorkItems::TypesFramework::SystemDefined::Type.find_by_name(name)
+
+          return unless system_type
+
+          # Allow the same name if this custom type is converted from that exact system defined type
+          return if converted_from_system_defined_type_identifier == system_type.id
+
+          # Allow if the system-defined name is available across namespace/organization
+          # i.e a type was converted from the :issue type but renamed to something else, so "Issue" is still available
+          return if system_defined_name_available?(system_type)
+
+          errors.add(:name, format(_("'%{name}' is already taken"), name: name))
+        end
+
+        def system_defined_name_available?(system_type)
+          converted_type = self.class
+            .where(parent_scope_conditions)
+            .excluding(self)
+            .find_by(converted_from_system_defined_type_identifier: system_type.id)
+
+          # Name is available if there's a converted type that uses a DIFFERENT name
+          # than the system defined type it was converted from
+          converted_type.present? && !(converted_type.name.casecmp(system_type.name) == 0)
+        end
+
+        def max_types_per_parent_limit
+          return unless organization_id.present? || namespace_id.present?
+          return unless self.class.where(parent_scope_conditions).count >= MAX_TYPE_PER_PARENT
+
+          parent_attribute = organization_id.present? ? :organization : :namespace
+
+          errors.add(parent_attribute,
+            format(_('can only have a maximum of %{limit} work item types.'), limit: MAX_TYPE_PER_PARENT)
+          )
+        end
+
+        def parent_scope_conditions
+          if organization_id.present?
+            { organization_id: organization_id }
+          else
+            { namespace_id: namespace_id }
+          end
         end
       end
     end

@@ -4,6 +4,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import workItemDescriptionTemplatesListQuery from '../graphql/work_item_description_templates_list.query.graphql';
+import { DEFAULT_DESCRIPTION_TEMPLATE_NAME } from '../constants';
+
+/* eslint-disable @gitlab/require-i18n-strings */
+const PROJECT_SETTINGS_TEMPLATE = {
+  name: 'Default (Project Settings)',
+  displayName: 'Default',
+};
+/* eslint-enable @gitlab/require-i18n-strings */
 
 export default {
   name: 'WorkItemDescriptionTemplateListbox',
@@ -52,26 +60,48 @@ export default {
       return this.$apollo.queries.descriptionTemplates.loading;
     },
     toggleText() {
-      return (
-        (this.selectedTemplateValue && this.template?.name) || s__('WorkItem|Choose a template')
-      );
+      if (!this.selectedTemplateValue || !this.template?.name) {
+        return s__('WorkItem|Choose a template');
+      }
+      return this.template.name === PROJECT_SETTINGS_TEMPLATE.name
+        ? PROJECT_SETTINGS_TEMPLATE.displayName
+        : this.template.name;
     },
     hasTemplates() {
       return this.descriptionTemplates.length > 0;
     },
     selectedTemplateValue() {
+      // When no template is provided, don't select anything in the dropdown
       if (!this.template) {
         return undefined;
       }
+
+      // When template is present with projectId and category, return it serialized
       if (this.template?.projectId && this.template?.category) {
         return this.makeTemplateValue(this.template);
       }
-      if (this.template.name && this.template.projectId === null) {
-        const closestMatch = this.items
-          .flatMap((group) => group.options)
-          .find((option) => option.text.toLowerCase() === this.template.name.toLowerCase());
-        return closestMatch?.value;
+
+      // When only template name is present, it is likely
+      // default or is coming from URL param
+      if (this.template?.name && this.template?.projectId === null) {
+        const itemOptions = this.items.flatMap((group) => group.options);
+
+        // template is set to `default` and options list includes
+        // default template as first entry too, so we return that
+        if (
+          this.template.name === DEFAULT_DESCRIPTION_TEMPLATE_NAME &&
+          itemOptions[0]?.text === PROJECT_SETTINGS_TEMPLATE.displayName
+        ) {
+          return itemOptions[0].value;
+        }
+
+        // Provided template name is not `default`, return the matching template
+        return itemOptions.find(
+          (option) => option.text.toLowerCase() === this.template.name.toLowerCase(),
+        )?.value;
       }
+
+      // No matching template name found
       return undefined;
     },
     items() {
@@ -81,15 +111,19 @@ export default {
         )
         .reduce((groups, current) => {
           const idx = groups.findIndex((group) => group.text === current.category);
+          const displayName =
+            current.name === PROJECT_SETTINGS_TEMPLATE.name
+              ? PROJECT_SETTINGS_TEMPLATE.displayName
+              : current.name;
           if (idx > -1) {
             groups[idx].options.push({
               value: this.makeTemplateValue(current),
-              text: current.name,
+              text: displayName,
             });
           } else {
             groups.push({
               text: current.category,
-              options: [{ value: this.makeTemplateValue(current), text: current.name }],
+              options: [{ value: this.makeTemplateValue(current), text: displayName }],
             });
           }
           return groups;

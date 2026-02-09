@@ -31,6 +31,32 @@ RSpec.describe Ci::TimedOutBuilds::DropCancelingService, feature_category: :cont
 
       it_behaves_like 'job is unchanged'
     end
+
+    context 'when job becomes complete before processing the timeout' do
+      it 'does not doom the job' do
+        allow(service).to receive(:drop_incomplete_build).and_wrap_original do |method, *args|
+          job.drop!
+          method.call(*args)
+        end
+
+        service.execute
+        expect(job.reload.status).to eq("canceled")
+      end
+    end
+
+    context 'when the job is not complete' do
+      context 'when the status transition fails' do
+        it 'dooms the job' do
+          allow_next_found_instance_of(Ci::Build) do |build|
+            allow(build).to receive(:drop!).and_raise(StandardError)
+          end
+
+          service.execute
+          expect(job.reload.status).to eq("failed")
+          expect(job.failure_reason).to eq("data_integrity_failure")
+        end
+      end
+    end
   end
 
   context 'when job timeout has not been exceeded' do

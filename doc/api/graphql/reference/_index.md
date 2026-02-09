@@ -47616,6 +47616,7 @@ Security configuration data for a project.
 | <a id="securityconfigurationisgitlabcom"></a>`isGitlabCom` | [`Boolean`](#boolean) | Whether the instance is GitLab.com. |
 | <a id="securityconfigurationlatestpipelinepath"></a>`latestPipelinePath` | [`String`](#string) | Path to the latest pipeline on the default branch. |
 | <a id="securityconfigurationlicenseconfigurationsource"></a>`licenseConfigurationSource` | [`String`](#string) | Source of license configuration. |
+| <a id="securityconfigurationmaxtrackedrefs"></a>`maxTrackedRefs` | [`Int`](#int) | Maximum number of refs that can be tracked for security scanning. |
 | <a id="securityconfigurationsecretdetectionconfigurationpath"></a>`secretDetectionConfigurationPath` | [`String`](#string) | Path to secret detection configuration. |
 | <a id="securityconfigurationsecretpushprotectionavailable"></a>`secretPushProtectionAvailable` | [`Boolean!`](#boolean) | Whether secret push protection is available at the instance level. |
 | <a id="securityconfigurationsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Whether secret push protection is enabled for the project. |

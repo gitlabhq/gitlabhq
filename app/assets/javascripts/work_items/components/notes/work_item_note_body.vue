@@ -83,7 +83,7 @@ export default {
       });
       if (!replacement) return;
 
-      this.$emit('updateNote', {
+      this.$emit('update-note', {
         commentText: replacement.newMarkdown,
         executeOptimisticResponse: false,
       });

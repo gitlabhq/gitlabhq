@@ -225,6 +225,7 @@ export const EPIC_COLORS = [
 ];
 
 export const DEFAULT_EPIC_COLORS = '#1068bf';
+export const DEFAULT_DESCRIPTION_TEMPLATE_NAME = 'default';
 
 export const MAX_FREQUENT_PROJECTS = 3;
 export const MAX_FREQUENT_ITEMS = 3;

@@ -46,14 +46,14 @@ describe('DiscussionActions', () => {
       // ensure the mutation does not resolve before the prop is tested
       mockApollo.defaultClient.mutate = jest.fn(() => new Promise(() => {}));
 
-      await findResolveDiscussionButton().vm.$emit('onClick');
+      await findResolveDiscussionButton().vm.$emit('on-click');
       await nextTick();
 
       expect(findResolveDiscussionButton().props('isResolving')).toBe(true);
     });
 
     it('sends a discussionToggleResolveMutation when it is clicked', async () => {
-      await findResolveDiscussionButton().vm.$emit('onClick');
+      await findResolveDiscussionButton().vm.$emit('on-click');
       await nextTick();
 
       expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
@@ -77,7 +77,7 @@ describe('DiscussionActions', () => {
     });
 
     it('sends a discussionToggleResolveMutation when it is clicked', async () => {
-      await findResolveDiscussionButton().vm.$emit('onClick');
+      await findResolveDiscussionButton().vm.$emit('on-click');
       await nextTick();
 
       expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({

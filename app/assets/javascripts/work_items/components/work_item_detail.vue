@@ -1378,8 +1378,8 @@ export default {
                 :hide-fullscreen-markdown-button="isDrawer"
                 @error="updateError = $event"
                 @openReportAbuse="openReportAbuseModal"
-                @startEditing="isAddingNotes = true"
-                @stopEditing="isAddingNotes = false"
+                @start-editing="isAddingNotes = true"
+                @stop-editing="isAddingNotes = false"
                 @focus="isAddingNotes = true"
                 @blur="isAddingNotes = false"
               />

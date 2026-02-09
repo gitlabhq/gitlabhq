@@ -38,7 +38,8 @@ module Projects
           can_read_attributes: can_read_attributes?,
           can_manage_attributes: can_manage_attributes?,
           security_scan_profiles_licensed: security_scan_profiles_licensed?,
-          group_manage_attributes_path: group_manage_attributes_path
+          group_manage_attributes_path: group_manage_attributes_path,
+          max_tracked_refs: max_tracked_refs
         }
       end
 
@@ -168,6 +169,7 @@ module Projects
       end
 
       def gitlab_com?; end
+      def max_tracked_refs; end
       def validity_checks_available; end
       def validity_checks_enabled; end
       def container_scanning_for_registry_enabled; end

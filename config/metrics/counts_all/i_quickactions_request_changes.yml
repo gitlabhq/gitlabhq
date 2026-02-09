@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_request_changes
 description: Count using the `/request_changes` quick action on Merge Requests
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: '16.6'

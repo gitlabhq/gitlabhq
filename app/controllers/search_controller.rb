@@ -335,7 +335,7 @@ class SearchController < ApplicationController
   end
 
   def filter_params
-    params.permit(:confidential, :state, language: [])
+    params.permit(:confidential, :state, language: [], type: [])
   end
 
   def settings_for_project(project_id)
