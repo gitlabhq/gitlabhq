@@ -28,7 +28,7 @@ module Users
     def track_event(_); end
 
     def state_error(user)
-      error(_("You cannot %{action} %{state} users." % { action: action.to_s, state: user.state }), :forbidden)
+      error(_("You cannot %{action} %{state} users.") % { action: action.to_s, state: user.state }, :forbidden)
     end
 
     def allowed?
@@ -36,7 +36,7 @@ module Users
     end
 
     def permission_error
-      error(_("You are not allowed to %{action} a user" % { action: action.to_s }), :forbidden)
+      error(_("You are not allowed to %{action} a user") % { action: action.to_s }, :forbidden)
     end
 
     def log_event(user)

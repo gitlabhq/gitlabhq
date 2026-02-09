@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 RSpec.describe Gitlab::MarkupHelper do
   describe '#markup?' do
     %w[textile rdoc org creole wiki
-       mediawiki rst adoc ad asciidoc mdown md markdown].each do |type|
+      mediawiki rst adoc ad asciidoc mdown md markdown].each do |type|
       it "returns true for #{type} files" do
         expect(described_class.markup?("README.#{type}")).to be_truthy
       end

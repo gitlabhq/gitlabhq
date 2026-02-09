@@ -18,4 +18,4 @@
     Customers should migrate from compliance pipelines to the new
     [pipeline execution policy type](https://docs.gitlab.com/user/application_security/policies/pipeline_execution_policies/)
     as soon as possible.
-    For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/2024/10/01/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
+    For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).

@@ -626,7 +626,7 @@ Use Root Cause Analysis to determine the root cause of a CI/CD
 job failure. The following examples illustrate common errors, and
 encourage you to fork and practice finding and fixing the root cause.
 
-For more information, see the blog post [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/).
+For more information, see the blog post [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/).
 
 ### Analyze missing Go runtime
 
@@ -699,7 +699,7 @@ maintained by the Developer Relations team. These examples are tested working. Y
 ### C code generation prompts
 
 Create a Linux statistics tool that collects I/O, performance, disk usage, and TCP latency
-and prints their output. For a full example, see the blog post [Top tips for efficient AI-powered Code Suggestions with GitLab Duo blog post](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#code-suggestions-flow-with-comments).
+and prints their output. For a full example, see the blog post [Top tips for efficient AI-powered Code Suggestions with GitLab Duo blog post](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#code-suggestions-flow-with-comments).
 
 ```c
 // Create a Linux statistic tool
@@ -1040,7 +1040,7 @@ Watch the recording here: [GitLab Duo Coffee Chat: Code Generation Challenge wit
 <!-- Video published on 2024-03-27. Maintainer: Developer Relations. -->
 
 Create an in-memory key value store, similar to Redis. For a complete walkthrough, see the
-blog post, [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#iterate-faster-with-code-generation)
+blog post, [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/#iterate-faster-with-code-generation)
 blog post.
 
 ```go
@@ -1398,7 +1398,7 @@ fn main() {
 }
 ```
 
-Create an RSS feed reader app, example from the blog post [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/2023/10/12/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/).
+Create an RSS feed reader app, example from the blog post [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/).
 
 ```rust
     // Create a function that iterates over the source array
@@ -1518,18 +1518,18 @@ Many of the use cases are available as hands-on recordings in the [GitLab Duo Co
 
 The following blog posts provide tutorials for these use cases:
 
-- [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/2024/06/11/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
-- [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
-- [GitLab Duo Chat 101: Get more done on GitLab with our AI assistant](https://about.gitlab.com/blog/2024/05/29/gitlab-duo-chat-101-get-more-done-on-gitlab-with-our-ai-assistant/)
-- [Developing GitLab Duo: How we are dogfooding our AI features](https://about.gitlab.com/blog/2024/05/20/developing-gitlab-duo-how-we-are-dogfooding-our-ai-features/)
-- [Developing GitLab Duo: Secure and thoroughly test AI-generated code](https://about.gitlab.com/blog/2024/05/30/how-gitlab-duo-helps-secure-and-thoroughly-test-ai-generated-code/)
-- [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)
-- [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/)
+- [Top tips for efficient AI-powered Code Suggestions with GitLab Duo](https://about.gitlab.com/blog/top-tips-for-efficient-ai-powered-code-suggestions-with-gitlab-duo/)
+- [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
+- [GitLab Duo Chat 101: Get more done on GitLab with our AI assistant](https://about.gitlab.com/blog/gitlab-duo-chat-101-get-more-done-on-gitlab-with-our-ai-assistant/)
+- [Developing GitLab Duo: How we are dogfooding our AI features](https://about.gitlab.com/blog/developing-gitlab-duo-how-we-are-dogfooding-our-ai-features/)
+- [Developing GitLab Duo: Secure and thoroughly test AI-generated code](https://about.gitlab.com/blog/how-gitlab-duo-helps-secure-and-thoroughly-test-ai-generated-code/)
+- [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/)
+- [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/)
 
 Code Suggestions tutorial blog posts are available for the following languages:
 
-- [Learning Rust with a little help from AI](https://about.gitlab.com/blog/2023/08/10/learning-rust-with-a-little-help-from-ai-code-suggestions-getting-started/)
-- [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/2023/10/12/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)
-- [Learning Python with a little help from AI](https://about.gitlab.com/blog/2023/11/09/learning-python-with-a-little-help-from-ai-code-suggestions/)
-- [Write Terraform plans faster with GitLab Duo Code Suggestions](https://about.gitlab.com/blog/2024/01/24/write-terraform-plans-faster-with-gitlab-duo-code-suggestions/)
-- [Explore the Dragon Realm: Build a C++ adventure game with a little help from AI](https://about.gitlab.com/blog/2023/08/24/building-a-text-adventure-using-cplusplus-and-code-suggestions/)
+- [Learning Rust with a little help from AI](https://about.gitlab.com/blog/learning-rust-with-a-little-help-from-ai-code-suggestions-getting-started/)
+- [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)
+- [Learning Python with a little help from AI](https://about.gitlab.com/blog/learning-python-with-a-little-help-from-ai-code-suggestions/)
+- [Write Terraform plans faster with GitLab Duo Code Suggestions](https://about.gitlab.com/blog/write-terraform-plans-faster-with-gitlab-duo-code-suggestions/)
+- [Explore the Dragon Realm: Build a C++ adventure game with a little help from AI](https://about.gitlab.com/blog/building-a-text-adventure-using-cplusplus-and-code-suggestions/)

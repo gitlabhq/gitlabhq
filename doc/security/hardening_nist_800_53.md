@@ -718,7 +718,7 @@ for GitLab Self-Managed customers that covers topics such as:
 
 - [Operating System Recommendations](hardening_operating_system_recommendations.md)
 
-GitLab CIS Benchmark Guide - GitLab has published a [CIS Benchmark](https://about.gitlab.com/blog/2024/04/17/gitlab-introduces-new-cis-benchmark-for-improved-security/)
+GitLab CIS Benchmark Guide - GitLab has published a [CIS Benchmark](https://about.gitlab.com/blog/gitlab-introduces-new-cis-benchmark-for-improved-security/)
 to guide hardening decisions in the application. This may be used in
 concert with this guide to harden the environment in accordance with NIST 800-53
 controls. Not all suggestions in the CIS Benchmark directly align with

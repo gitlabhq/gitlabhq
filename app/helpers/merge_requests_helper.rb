@@ -336,12 +336,6 @@ module MergeRequestsHelper
     data
   end
 
-  def show_mr_dashboard_banner?
-    request.query_string.present? &&
-      current_page?(merge_requests_search_dashboard_path) &&
-      show_new_mr_dashboard_banner?
-  end
-
   def merge_request_squash_option?(merge_request)
     merge_request.persisted? ? merge_request.squash : merge_request.squash_enabled_by_default?
   end

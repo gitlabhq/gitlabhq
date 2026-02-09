@@ -177,6 +177,9 @@ export const SCAN_PROFILE_CATEGORIES = {
     tooltip: s__('SecurityProfiles|Prevents secrets from being pushed to your repository'),
   },
 };
+export const SCAN_PROFILE_PROMO_ITEMS = [
+  { scanType: SCAN_PROFILE_TYPE_SECRET_DETECTION, isConfigured: false },
+];
 export const SCAN_PROFILE_I18N = {
   noProfile: s__('SecurityProfiles|No profile applied'),
   notConfigured: s__('SecurityProfiles|Not configured'),

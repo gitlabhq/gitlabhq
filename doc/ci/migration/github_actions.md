@@ -698,6 +698,6 @@ Before doing any migration work, you should first:
 ### Additional Resources
 
 - [Video: How to migrate from GitHub to GitLab including Actions](https://youtu.be/0Id5oMl1Kqs?feature=shared)
-- [Blog: GitHub to GitLab migration the easy way](https://about.gitlab.com/blog/2023/07/11/github-to-gitlab-migration-made-easy/)
+- [Blog: GitHub to GitLab migration the easy way](https://about.gitlab.com/blog/github-to-gitlab-migration-made-easy/)
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

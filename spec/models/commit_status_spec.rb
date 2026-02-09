@@ -397,10 +397,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
-       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
-       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
-       create_status(name: 'cc', ref: 'bb', status: 'success'),
-       create_status(name: 'aa', ref: 'bb', status: 'success')]
+        create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+        create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+        create_status(name: 'cc', ref: 'bb', status: 'success'),
+        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns unique statuses' do
@@ -413,10 +413,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
-       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
-       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
-       create_status(name: 'cc', ref: 'bb', status: 'success'),
-       create_status(name: 'aa', ref: 'bb', status: 'success')]
+        create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+        create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+        create_status(name: 'cc', ref: 'bb', status: 'success'),
+        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns unique statuses' do
@@ -429,10 +429,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let!(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
-       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
-       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
-       create_status(name: 'cc', ref: 'bb', status: 'success'),
-       create_status(name: 'aa', ref: 'bb', status: 'success')]
+        create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+        create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+        create_status(name: 'cc', ref: 'bb', status: 'success'),
+        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
 
     it 'returns retried statuses in order' do
@@ -445,10 +445,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
-       create_status(name: 'cc', ref: 'cc', status: 'pending'),
-       create_status(name: 'aa', ref: nil, status: 'success'),
-       create_status(name: 'dd', ref: nil, status: 'failed'),
-       create_status(name: 'ee', ref: nil, status: 'canceled')]
+        create_status(name: 'cc', ref: 'cc', status: 'pending'),
+        create_status(name: 'aa', ref: nil, status: 'success'),
+        create_status(name: 'dd', ref: nil, status: 'failed'),
+        create_status(name: 'ee', ref: nil, status: 'canceled')]
     end
 
     it 'returns statuses that are running or pending' do
@@ -461,8 +461,8 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(name: 'aa', stage_idx: 0),
-       create_status(name: 'cc', stage_idx: 1),
-       create_status(name: 'aa', stage_idx: 2)]
+        create_status(name: 'cc', stage_idx: 1),
+        create_status(name: 'aa', stage_idx: 2)]
     end
 
     it 'returns statuses from second and third stage' do
@@ -475,13 +475,13 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'canceled'),
-       create_status(allow_failure: false, status: 'canceled'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
+        create_status(allow_failure: true, status: 'failed'),
+        create_status(allow_failure: false, status: 'success'),
+        create_status(allow_failure: false, status: 'failed'),
+        create_status(allow_failure: true, status: 'canceled'),
+        create_status(allow_failure: false, status: 'canceled'),
+        create_status(allow_failure: true, status: 'manual'),
+        create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
@@ -494,8 +494,8 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(ref: 'aa'),
-       create_status(ref: 'bb'),
-       create_status(ref: 'cc')]
+        create_status(ref: 'bb'),
+        create_status(ref: 'cc')]
     end
 
     it 'returns statuses with the specified ref' do
@@ -508,8 +508,8 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     let(:statuses) do
       [create_status(name: 'aa'),
-       create_status(name: 'bb'),
-       create_status(name: 'cc')]
+        create_status(name: 'bb'),
+        create_status(name: 'cc')]
     end
 
     it 'returns statuses with the specified name' do
@@ -534,7 +534,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
       let(:statuses) do
         [create_status(pipeline: pipeline),
-         create_status(pipeline: other_pipeline)]
+          create_status(pipeline: other_pipeline)]
       end
 
       it 'returns statuses for other_project' do
@@ -880,7 +880,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
     context 'when status is one that transitions to success' do
       [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual,
-:scheduled].each do |status|
+        :scheduled].each do |status|
         it 'transitions to success' do
           commit_status = create_status(status: status.to_s)
 

@@ -84,7 +84,9 @@ module Keeps
         'maintenance::removal',
         GROUP_LABEL
       ]
-      change.assignees = groups_helper.pick_reviewer(group_data, change.identifiers)
+      change.assignees = groups_helper.pick_reviewer(
+        group_data, change.identifiers, reviewer_types: ['backend_engineers']
+      )
       change.changelog_ee = true
 
       # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application

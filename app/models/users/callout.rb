@@ -96,7 +96,7 @@ module Users
       branch_rules_tip_callout: 93,
       openssl_callout: 94,
       # 95 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170868
-      new_mr_dashboard_banner: 96,
+      # 96 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222230,
       # 97 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196130
       # EE-only
       pipl_compliance_alert: 98,
@@ -124,8 +124,9 @@ module Users
       vulnerability_report_limited_experience: 120, # EE-only
       file_tree_browser_popover: 121,
       virtual_registry_permission_change_alert: 122, # EE-only
-      security_scanner_profiles_announcement: 123 # EE-only
+      security_scanner_profiles_announcement: 123, # EE-only
       # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
+      duo_panel_auto_expanded: 125 # EE-only
     }
 
     validates :feature_name,

@@ -304,22 +304,6 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
       described_class.ci_pipeline_creation_requests_updated(merge_request)
     end
 
-    describe 'when FF ci_pipeline_creation_requests_realtime is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_creation_requests_realtime: false)
-      end
-
-      it 'does not trigger the subscription' do
-        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
-          :ci_pipeline_creation_requests_updated,
-          { merge_request_id: merge_request.to_gid },
-          merge_request
-        )
-
-        described_class.ci_pipeline_creation_requests_updated(merge_request)
-      end
-    end
-
     it 'passes correct merge request GID to subscription' do
       expected_gid = merge_request.to_gid
 

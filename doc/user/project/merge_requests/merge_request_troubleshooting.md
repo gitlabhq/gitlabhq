@@ -317,7 +317,7 @@ If you automate the creation of merge requests, or pushing to them, you might wa
 approvals for those merge requests. In GitLab Premium and Ultimate, by default, all approvals are removed
 [when commits are added to the source branch](approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
 To avoid this problem, add logic to your automation that ensures
-[commits are processed before approving](../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests) the merge request.
+[commits are processed before approving](../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests) the merge request.
 
 ## Merge request `merged manually`
 

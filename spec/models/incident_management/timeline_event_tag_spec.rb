@@ -61,7 +61,7 @@ RSpec.describe IncidentManagement::TimelineEventTag do
 
     it 'returns tags on the project' do
       expect(project2.incident_management_timeline_event_tags.by_names(['Test tag 1',
-                                                                        'Test tag 3'])).to contain_exactly(tag3)
+        'Test tag 3'])).to contain_exactly(tag3)
     end
 
     it 'returns one matching tag with case insensitive' do

@@ -84,7 +84,7 @@ compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 19.0.
 Customers should migrate from compliance pipelines to the new
 [pipeline execution policy type](https://docs.gitlab.com/user/application_security/policies/pipeline_execution_policies/)
 as soon as possible.
-For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/2024/10/01/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
+For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
 
 ### Container Registry AWS S3 Signature Version 2 support
 
@@ -151,7 +151,7 @@ This limit ensures consistent service quality and performance across GitLab.com 
 
 Using the resource owner password credentials (ROPC) grant as an OAuth flow is deprecated, and support will be fully removed in GitLab 19.0. We have added a setting that can be enabled or disabled by administrators to use this grant type with client credentials only, in their instances. This allows users who would like to opt out of using ROPC without client credentials to do so prior to 19.0. ROPC will be completely removed in 19.0 and cannot be used even with client credentials after that point.
 
-GitLab has [required client authentication for ROPC on GitLab.com](https://about.gitlab.com/blog/2025/04/01/improving-oauth-ropc-security-on-gitlab-com/) since April 8, 2025 for security reasons. Fully removing ROPC support keeps security in line with the OAuth RFC version 2.1.
+GitLab has [required client authentication for ROPC on GitLab.com](https://about.gitlab.com/blog/improving-oauth-ropc-security-on-gitlab-com/) since April 8, 2025 for security reasons. Fully removing ROPC support keeps security in line with the OAuth RFC version 2.1.
 
 ### S3 storage driver (AWS SDK v1) for the container registry
 
@@ -1385,7 +1385,7 @@ The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings 
 
 We have recently announced the release of Windows Server 2022 for our GitLab.com runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
 
-For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab.com runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).
+For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab.com runners now available](https://about.gitlab.com/blog/windows-2022-support-for-gitlab-saas-runners/).
 
 ### DingTalk OmniAuth provider
 
@@ -1822,7 +1822,7 @@ Due to historical reasons, small Linux GitLab.com Runners had a lot of tags atta
 
 We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
 
-For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/2023/08/15/removing-tags-from-small-saas-runner-on-linux/).
+For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/removing-tags-from-small-saas-runner-on-linux/).
 
 ### Required Pipeline Configuration is deprecated
 
@@ -2053,7 +2053,7 @@ That COS upgrade includes a Docker Engine upgrade from Version 19.03.15 to Versi
 
 Docker-in-Docker prior to version 20.10 or Kaniko images older than v1.9.0, will be unable to detect the container runtime and fail.
 
-For more information, see [Upgrading the operating system version of our SaaS runners on Linux](https://about.gitlab.com/blog/2023/10/04/updating-the-os-version-of-saas-runners-on-linux/).
+For more information, see [Upgrading the operating system version of our SaaS runners on Linux](https://about.gitlab.com/blog/updating-the-os-version-of-saas-runners-on-linux/).
 
 ### Vulnerability confidence field
 
@@ -4651,7 +4651,7 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 > [!note]
 > This change has been removed from its original milestone and is being reassessed.
 
-The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/).
 
 For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/administration/feature_flags/#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 
@@ -4672,7 +4672,7 @@ For updates and details about this deprecation, see [epic 8](https://gitlab.com/
 > [!note]
 > This change has been removed from its original milestone and is being reassessed.
 
-The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab.com user, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
+The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/). As a GitLab.com user, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
 
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
 [agent for Kubernetes](https://docs.gitlab.com/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/user/infrastructure/clusters/migrate_to_gitlab_agent/)

@@ -162,6 +162,7 @@ export const provideMock = {
   canReadAttributes: false,
   canManageAttributes: false,
   canApplyProfiles: true,
+  securityScanProfilesLicensed: true,
 };
 
 export const createTrackedRef = (overrides = {}) => ({

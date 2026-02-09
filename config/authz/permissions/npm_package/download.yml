@@ -1,0 +1,5 @@
+---
+name: download_npm_package
+description: Grants the ability to download NPM package files
+boundaries:
+  - project

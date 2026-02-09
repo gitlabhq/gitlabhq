@@ -6,15 +6,13 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user, :with_namespace) }
 
-  let(:verified_ref_extractor_enabled) { true }
-
   before_all do
     project.add_developer(user)
   end
 
   before do
     sign_in(user)
-    stub_feature_flags(repository_file_tree_browser: true, verified_ref_extractor: verified_ref_extractor_enabled)
+    stub_feature_flags(repository_file_tree_browser: true)
     visit project_tree_path(project, project.default_branch)
     wait_for_requests
   end
@@ -48,18 +46,6 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
       expect(page).to have_current_path(
         project_blob_path(project, "#{project.default_branch}/CONTRIBUTING.md", ref_type: :heads)
       )
-    end
-
-    context 'with verified_ref_extractor is disabled' do
-      let(:verified_ref_extractor_enabled) { false }
-
-      it 'navigates to a file' do
-        within('.file-tree-browser') do
-          click_file('CONTRIBUTING.md')
-        end
-
-        expect(page).to have_current_path(project_blob_path(project, "#{project.default_branch}/CONTRIBUTING.md"))
-      end
     end
 
     it 'expands and collapses directories' do

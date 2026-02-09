@@ -85,7 +85,7 @@ or want to contribute to the development of our extensions:
 
 ## Related topics
 
-- [How we created a GitLab Workflow Extension for VS Code](https://about.gitlab.com/blog/2020/07/31/use-gitlab-with-vscode/)
-- [GitLab for Visual Studio](https://about.gitlab.com/blog/2023/06/29/gitlab-visual-studio-extension/)
-- [GitLab for JetBrains and Neovim](https://about.gitlab.com/blog/2023/07/25/gitlab-jetbrains-neovim-plugins/)
-- [Put `glab` at your fingertips with the GitLab CLI](https://about.gitlab.com/blog/2022/12/07/introducing-the-gitlab-cli/)
+- [How we created a GitLab Workflow Extension for VS Code](https://about.gitlab.com/blog/use-gitlab-with-vscode/)
+- [GitLab for Visual Studio](https://about.gitlab.com/blog/gitlab-visual-studio-extension/)
+- [GitLab for JetBrains and Neovim](https://about.gitlab.com/blog/gitlab-jetbrains-neovim-plugins/)
+- [Put `glab` at your fingertips with the GitLab CLI](https://about.gitlab.com/blog/introducing-the-gitlab-cli/)

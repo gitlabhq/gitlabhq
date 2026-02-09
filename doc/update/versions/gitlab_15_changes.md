@@ -451,7 +451,7 @@ if you can't upgrade to 15.11.12 and later.
   respect the typical rules of shell variable expansion. There was also the potential
   that secrets or sensitive information could leak if the file variable and its
   contents printed. For example, if they were printed in an echo output. For more information,
-  see [Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/2023/02/13/impact-of-the-file-type-variable-change-15-7/).
+  see [Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/impact-of-the-file-type-variable-change-15-7/).
 - The `no_proxy` [custom environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.md) in the Linux package (Omnibus)
   might not work properly due to a bug in the [version of cURL](https://github.com/curl/curl/issues/10122) included with GitLab 15.4.6.
   This issue causes all wildcard domains (like `.example.com`) to be ignored except for the last one listed in the `no_proxy` variable.

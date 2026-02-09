@@ -23,7 +23,7 @@ and password information.
 > [a different API endpoint](project_pull_mirroring.md#update-project-pull-mirroring-settings) to
 > display and update them.
 
-## List a project's remote mirrors
+## List all remote mirrors for a project
 
 {{< history >}}
 
@@ -31,7 +31,7 @@ and password information.
 
 {{< /history >}}
 
-Get an array of remote mirrors and their statuses for a project.
+Lists all remote mirrors for a specified project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors
@@ -94,7 +94,7 @@ Example response:
 ]
 ```
 
-## Get a single project's remote mirror
+## Retrieve a remote mirror for a project
 
 {{< history >}}
 
@@ -102,7 +102,7 @@ Example response:
 
 {{< /history >}}
 
-Get a single remote mirror and its status for a project.
+Retrieves a specified remote mirror for a project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id
@@ -162,7 +162,7 @@ Example response:
 }
 ```
 
-## Get a single project's remote mirror public key
+## Retrieve a public key for a remote mirror
 
 {{< history >}}
 
@@ -170,7 +170,7 @@ Example response:
 
 {{< /history >}}
 
-Get the public key of a remote mirror that uses SSH authentication.
+Retrieves the public key of a specified remote mirror that uses SSH authentication.
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id/public_key
@@ -222,7 +222,7 @@ project pull mirroring API.
 
 {{< /history >}}
 
-Create a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
+Creates a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror.
 
 ```plaintext
@@ -291,7 +291,7 @@ Example response:
 }
 ```
 
-## Update a remote mirror's attributes
+## Update a remote mirror in a project
 
 {{< history >}}
 
@@ -300,8 +300,7 @@ Example response:
 
 {{< /history >}}
 
-Update a remote mirror's configuration. Toggle a remote mirror on or off, or change which types of branches are
-mirrored.
+Updates the configuration or operational status of a specified remote mirror.
 
 ```plaintext
 PUT /projects/:id/remote_mirrors/:mirror_id
@@ -400,9 +399,9 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
 ```
 
-## Delete a remote mirror
+## Delete a remote mirror from a project
 
-Delete a remote mirror.
+Deletes a specified remote mirror from a project.
 
 ```plaintext
 DELETE /projects/:id/remote_mirrors/:mirror_id

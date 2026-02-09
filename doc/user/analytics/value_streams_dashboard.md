@@ -146,7 +146,7 @@ For example, if a project has a high score for deployment frequency (velocity), 
 | Time to restore service | ≤1   | 2-6     | ≥7   | The number of days to restore service when a service incident or a defect that impacts users occurs |
 | Change failure rate     | ≤15% | 16%-44% | ≥45% | The percentage of changes to production resulted in degraded service |
 
-To learn more, see the blog post [Inside DORA Performers score in GitLab Value Streams Dashboard](https://about.gitlab.com/blog/2024/01/18/inside-dora-performers-score-in-gitlab-value-streams-dashboard/).
+To learn more, see the blog post [Inside DORA Performers score in GitLab Value Streams Dashboard](https://about.gitlab.com/blog/inside-dora-performers-score-in-gitlab-value-streams-dashboard/).
 
 #### Filter the panel by project topic
 
@@ -271,7 +271,7 @@ and opens an issue in a specified project.
 The issue includes a comparison metrics table in Markdown format.
 
 See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
-To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/2024/06/20/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
+To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
 
 ## Customize dashboard panels
 

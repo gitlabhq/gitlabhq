@@ -9,23 +9,28 @@ permissions:
   - create_epic_award_emoji
   - create_epic_issue
   - create_epic_link
+  - create_epic_note
   - create_epic_note_award_emoji
   - create_issue
   - create_issue_award_emoji
   - create_issue_board
   - create_issue_board_list
   - create_issue_link
+  - create_issue_note
   - create_issue_note_award_emoji
   - create_issue_time_estimate
   - create_label
   - create_merge_request_time_estimate
   - create_merge_request_award_emoji
+  - create_merge_request_note
   - create_merge_request_note_award_emoji
   - create_milestone
   - create_snippet_award_emoji
+  - create_snippet_note
   - create_snippet_note_award_emoji
-  - move_issue
+  - create_wiki_page_meta_note
   - create_related_epic_link
+  - move_issue
   - promote_milestone
   - reorder_issue
   - reset_issue_spent_time
@@ -35,11 +40,16 @@ permissions:
   - update_epic
   - update_epic_issue
   - update_epic_link
+  - update_epic_note
   - update_issue
   - update_issue_board
   - update_issue_board_list
+  - update_issue_note
   - update_label
+  - update_merge_request_note
   - update_milestone
+  - update_snippet_note
+  - update_wiki_page_meta_note
 boundaries:
   - group
   - project

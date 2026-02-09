@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_open_kubernetes_resource_details_weekly
 description: Weekly count of unique users who opened Kubernetes resource details drawer
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

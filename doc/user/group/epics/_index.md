@@ -108,8 +108,8 @@ meet the product needs of our Agile Planning offering.
 For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the
 following blog posts:
 
-- [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
-- [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/2024/07/03/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
+- [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
+- [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
 
 If you run into any issues while trying out this change, you can use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.

@@ -1,7 +1,0 @@
----
-name: create_epic_note
-description: Grants the ability to create epic notes
-permissions:
-  - create_epic_note
-boundaries:
-  - group

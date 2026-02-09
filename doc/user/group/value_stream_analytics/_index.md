@@ -27,7 +27,7 @@ Value stream analytics helps businesses:
 
 - Visualize their end-to-end DevSecOps workstreams.
 - Identify and solve inefficiencies.
-- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/2025/02/20/how-we-reduced-mr-review-time-with-value-stream-management/)).
+- Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/)).
 
 For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
@@ -514,7 +514,7 @@ time from a staging environment to production, you could use the following label
 You can automatically add labels by using [GitLab webhook events](../../project/integrations/webhook_events.md),
 so that a label is applied to merge requests or issues when a specific event occurs.
 Then, you can add label-based stages to track your workflow.
-To learn more about the implementation, see the blog post [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+To learn more about the implementation, see the blog post [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/applying-gitlab-labels-automatically/).
 
 ### Example configuration
 

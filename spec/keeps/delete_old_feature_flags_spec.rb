@@ -8,7 +8,9 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     {
       foo: {
         label: 'group::global search',
-        engineers: ['@john_doe']
+        engineers: %w[@john_doe @jane_doe],
+        backend_engineers: ['@john_doe'],
+        frontend_engineers: ['@jane_doe']
       }
     }
   end

@@ -1,0 +1,5 @@
+---
+name: read_npm_package
+description: Grants the ability to read NPM packages
+boundaries:
+  - project

@@ -99,4 +99,4 @@ For detailed architecture information, see [AI-assisted features architecture](a
 - Workhorse does not clean up idle client connections.
 - We assume that all requests to Rails pass through Workhorse.
 
-For more information see ['A brief history of GitLab Workhorse'](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/).
+For more information see ['A brief history of GitLab Workhorse'](https://about.gitlab.com/blog/a-brief-history-of-gitlab-workhorse/).

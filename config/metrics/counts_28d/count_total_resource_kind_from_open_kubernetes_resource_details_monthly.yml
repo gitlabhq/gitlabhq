@@ -1,7 +1,9 @@
 ---
 key_path: counts.count_total_resource_kind_from_open_kubernetes_resource_details_monthly
 description: Monthly count of openings of the Kubernetes resource details drawer per resource kind
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

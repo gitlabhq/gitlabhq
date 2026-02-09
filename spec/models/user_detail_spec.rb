@@ -539,12 +539,12 @@ RSpec.describe UserDetail, feature_category: :system_access do
         # HTML entities encoding - fields that encode & to &amp;
         :linkedin     | 'test&attr'                                 | 'test&amp;attr'
         :twitter      | 'test&attr'                                 | 'test&amp;attr'
-        :website_url  | 'http://example.com?test&attr'              | 'http://example.com?test&amp;attr'
         :github       | 'test&attr'                                 | 'test&amp;attr'
 
-        # HTML entities NOT encoded - location, organization preserve &
+        # HTML entities NOT encoded - location, organization, website_url preserve &
         :location     | 'test&attr'                                 | 'test&attr'
         :organization | 'test&attr'                                 | 'test&attr'
+        :website_url  | 'http://example.com?test&attr'              | 'http://example.com?test&attr'
 
         # Does not apply Sanitizable validations
         :twitter      | '&lt;script&gt;alert(1)&lt;/script&gt;'     | '&lt;script&gt;alert(1)&lt;/script&gt;'

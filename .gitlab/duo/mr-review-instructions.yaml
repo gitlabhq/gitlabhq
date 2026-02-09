@@ -8,6 +8,8 @@
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
 # - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
+# - Field Standardisation in Observability: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_field_standardisation/
+
 
 # This file defines custom review criteria that will be applied to specific files
 # during merge request reviews. Instructions are grouped by name and can target
@@ -190,3 +192,16 @@ instructions:
       - "db/schema_migrations/**/*"
     instructions: |
       1. These files are auto-generated and do not require a newline at the end of the file - do not flag missing newlines
+
+instructions:
+  - name: Log Field Standards
+    fileFilters:
+      - "**/*.rb"
+    instructions: |
+      Backend engineers should be complying with the new field standardisation in observability best practices
+      1. For any log lines that have been altered:
+        - Ask: "If you are adding or modifying fields, please ensure that the field is defined within the LabKit Ruby Fields module engineers should follow Field Standardisation Guidelines - https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_field_standardisation/
+        - Remind: "Common logging fields should be defined within the LabKit Ruby fields module - https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/fields.rb?ref_type=heads and imported from there."
+      2. For any new fields being added to log messages:
+        - Check to ensure that these fields are not dynamically generated
+        - Remind: "We're aiming to standardise the fields that we emit across all of our services at GitLab through this approach"

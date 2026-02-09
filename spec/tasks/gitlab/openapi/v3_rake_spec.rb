@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require_relative '../../../support/silence_stdout'
 
 RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, feature_category: :api do
   before :all do
@@ -160,6 +161,27 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
         expect { run_rake_task('gitlab:openapi:v3:check_docs') }.to output(
           %r{OpenAPI documentation is outdated! Please update it by running `bin/rake gitlab:openapi:v3:generate`}
         ).to_stdout.and raise_error(SystemExit)
+      end
+    end
+
+    context "when debug is enabled" do
+      let(:outdated_yaml) { "---\nopenapi: 3.0.0\ninfo:\n  title: Outdated API\n" }
+      let(:verbose) { Rake::FileUtilsExt.verbose }
+      let(:nowrite) { Rake::FileUtilsExt.nowrite }
+      let(:expected_command) { "diff -u doc/api/openapi/openapi_v3.yaml doc/api/openapi/openapi_v3.yaml.generated" }
+
+      before do
+        stub_env("OPENAPI_CHECK_DEBUG", "true")
+
+        allow(File).to receive(:read).with("doc/api/openapi/openapi_v3.yaml")
+          .and_return(yaml_v3_doc_introduction + outdated_yaml)
+        allow(File).to receive(:write).with("doc/api/openapi/openapi_v3.yaml.generated", anything)
+      end
+
+      it "writes the yaml content to the expected file and outputs the diff with it" do
+        expect(File).to receive(:write).with("doc/api/openapi/openapi_v3.yaml.generated", anything)
+        expect(main_object).to receive(:sh).with(expected_command)
+        expect { run_rake_task("gitlab:openapi:v3:check_docs") }.to raise_error(SystemExit)
       end
     end
   end

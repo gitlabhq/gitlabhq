@@ -59,10 +59,13 @@ module Ci
         end
       rescue StandardError => ex
         # If these causes many race conditions we will need a common lock of
-        # build status updates and this method
-        build.doom! unless build.reset.complete?
-
-        track_exception_for_build(ex, build)
+        # build status updates and this method.
+        # Errors are expected when jobs complete during timeout processing.
+        # Only track exceptions for incomplete builds as those are unexpected.
+        unless build.reset.complete?
+          track_exception_for_build(ex, build)
+          build.doom!
+        end
       end
 
       def track_exception_for_build(ex, build)

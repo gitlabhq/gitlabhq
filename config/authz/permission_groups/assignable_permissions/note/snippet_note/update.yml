@@ -1,7 +1,0 @@
----
-name: update_snippet_note
-description: Grants the ability to update snippet notes
-permissions:
-  - update_snippet_note
-boundaries:
-  - project

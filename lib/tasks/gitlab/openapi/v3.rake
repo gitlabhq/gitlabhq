@@ -47,10 +47,9 @@ namespace :gitlab do
           entity_classes: Grape::Entity.descendants
         )
 
-        current_doc = Digest::SHA512.hexdigest(File.read('doc/api/openapi/openapi_v3.yaml'))
-        generated_doc = Digest::SHA512.hexdigest(
-          YAML_V3_DOC_INTRODUCTION + generator.generate.deep_stringify_keys.to_yaml
-        )
+        current_doc = Digest::SHA512.hexdigest(File.read("doc/api/openapi/openapi_v3.yaml"))
+        yaml_content = generator.generate.deep_stringify_keys.to_yaml
+        generated_doc = Digest::SHA512.hexdigest(YAML_V3_DOC_INTRODUCTION + yaml_content)
 
         if current_doc == generated_doc
           puts "OpenAPI v3 documentation is up to date"
@@ -61,6 +60,12 @@ namespace :gitlab do
           puts '# OpenAPI documentation is outdated! Please update it by running `bin/rake gitlab:openapi:v3:generate`.'
           puts '#'
           puts heading
+
+          if ENV["OPENAPI_CHECK_DEBUG"] == "true"
+            File.write("doc/api/openapi/openapi_v3.yaml.generated", yaml_content)
+            sh "diff -u doc/api/openapi/openapi_v3.yaml doc/api/openapi/openapi_v3.yaml.generated"
+          end
+
           abort
         end
       end

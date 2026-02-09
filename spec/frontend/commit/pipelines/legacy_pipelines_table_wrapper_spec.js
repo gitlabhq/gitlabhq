@@ -100,12 +100,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findSkeletonLoader = () => wrapper.find('.gl-animate-skeleton-loader');
   const findCreationFailedAlert = () => wrapper.findComponent({ name: 'GlAlert' });
 
-  const createComponent = ({
-    props = {},
-    handlers = [],
-    mountFn = mountExtended,
-    glFeatures = { ciPipelineCreationRequestsRealtime: false },
-  } = {}) => {
+  const createComponent = ({ props = {}, handlers = [], mountFn = mountExtended } = {}) => {
     const requestHandlers = [
       [getPipelineCreationRequests, getPipelineCreationRequestsHandler],
       ...handlers,
@@ -132,9 +127,6 @@ describe('Pipelines table in Commits and Merge requests', () => {
       },
       mocks: {
         $toast,
-      },
-      provide: {
-        glFeatures,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -598,487 +590,431 @@ describe('Pipelines table in Commits and Merge requests', () => {
       jest.clearAllTimers();
     });
 
-    describe('with feature flag ci_pipeline_creation_requests_realtime', () => {
-      describe('when feature flag is OFF', () => {
-        it('skips getPipelineCreationRequests query', async () => {
+    describe('getPipelineCreationRequests query', () => {
+      it('calls getPipelineCreationRequests query with correct variables', async () => {
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
+        });
+
+        await waitForPromises();
+
+        expect(getPipelineCreationRequestsHandler).toHaveBeenCalledWith({
+          fullPath: 'test/project',
+          mergeRequestIid: '3',
+        });
+      });
+
+      it.each`
+        scenario                              | isMergeRequestTable | targetProjectFullPath | mergeRequestId
+        ${'not on merge request table'}       | ${false}            | ${'test/project'}     | ${3}
+        ${'mergeRequestId is missing'}        | ${true}             | ${'test/project'}     | ${null}
+        ${'targetProjectFullPath is missing'} | ${true}             | ${null}               | ${3}
+      `(
+        'skips query when $scenario',
+        async ({ isMergeRequestTable, targetProjectFullPath, mergeRequestId }) => {
           createComponent({
             props: {
-              isMergeRequestTable: true,
-              targetProjectFullPath: 'test/project',
-              mergeRequestId: 3,
+              isMergeRequestTable,
+              targetProjectFullPath,
+              mergeRequestId,
             },
           });
 
           await waitForPromises();
 
           expect(getPipelineCreationRequestsHandler).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    describe('pipelineCreationRequestsUpdated subscription', () => {
+      it('calls subscription with correct variables', async () => {
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
         });
 
-        it('skips subscription', async () => {
+        await waitForPromises();
+
+        expect(mockSubscriptionHandler).toHaveBeenCalledWith({
+          mergeRequestId: 'gid://gitlab/MergeRequest/3',
+        });
+      });
+
+      const mockMergeRequestGlobalId = () =>
+        getPipelineCreationRequestsHandler.mockResolvedValue({
+          data: {
+            project: {
+              id: 'gid://gitlab/Project/5',
+              mergeRequest: { id: null, pipelineCreationRequests: [] },
+            },
+          },
+        });
+
+      it.each`
+        scenario                                   | isMergeRequestTable | targetProjectFullPath | mergeRequestId | mockHandlerSetup
+        ${'not on merge request table'}            | ${false}            | ${'test/project'}     | ${3}           | ${undefined}
+        ${'mergeRequestId is missing'}             | ${true}             | ${'test/project'}     | ${null}        | ${undefined}
+        ${'targetProjectFullPath is missing'}      | ${true}             | ${null}               | ${3}           | ${undefined}
+        ${'mergeRequestGlobalId is not available'} | ${true}             | ${'test/project'}     | ${3}           | ${mockMergeRequestGlobalId}
+      `(
+        'skips subscription when $scenario',
+        async ({
+          isMergeRequestTable,
+          targetProjectFullPath,
+          mergeRequestId,
+          mockHandlerSetup,
+        }) => {
+          if (mockHandlerSetup) {
+            mockHandlerSetup();
+          }
+
           createComponent({
             props: {
-              isMergeRequestTable: true,
-              targetProjectFullPath: 'test/project',
-              mergeRequestId: 3,
+              isMergeRequestTable,
+              targetProjectFullPath,
+              mergeRequestId,
             },
           });
 
           await waitForPromises();
 
           expect(mockSubscriptionHandler).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    describe('Pipeline creation failed alert', () => {
+      it('shows alert when pipeline creation fails', async () => {
+        const failedRequests = [
+          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
+        ];
+
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: failedRequests }),
+        );
+
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
+        });
+
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(true);
+        expect(findCreationFailedAlert().text()).toBe(
+          'Pipeline creation failed. Please try again.',
+        );
+        expect(findCreationFailedAlert().props('variant')).toBe('danger');
+        expect(findCreationFailedAlert().props('dismissible')).toBe(true);
+      });
+
+      it('hides alert when dismissed', async () => {
+        const failedRequests = [
+          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
+        ];
+
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: failedRequests }),
+        );
+
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
+        });
+
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(true);
+
+        await findCreationFailedAlert().vm.$emit('dismiss');
+
+        expect(findCreationFailedAlert().exists()).toBe(false);
+      });
+
+      it('shows alert when failure count increases via subscription', async () => {
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
+        });
+
+        await waitForPromises();
+
+        expect(findCreationFailedAlert().exists()).toBe(false);
+
+        const failedRequests = [
+          { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
+        ];
+
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: failedRequests }),
+        );
+
+        await wrapper.vm.$apollo.queries.pipelineCreationRequests.refetch();
+        await waitForPromises();
+
+        await nextTick();
+
+        expect(findCreationFailedAlert().exists()).toBe(true);
+      });
+    });
+
+    describe('Run pipeline button', () => {
+      describe('when there are in progress pipeline creation requests', () => {
+        it.each([
+          {
+            buttonType: 'desktop',
+            findRunButton: () => findRunPipelineBtn(),
+          },
+          {
+            buttonType: 'mobile',
+            findRunButton: () => findRunPipelineBtnMobile(),
+          },
+          {
+            buttonType: 'empty state',
+            findRunButton: () => findRunPipelineBtn(),
+          },
+        ])('disables the $buttonType button & enables loading', async ({ findRunButton }) => {
+          const inProgressRequests = [
+            { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+          ];
+
+          getPipelineCreationRequestsHandler.mockResolvedValue(
+            generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
+          );
+
+          createComponent({
+            props: {
+              canRunPipeline: true,
+              isMergeRequestTable: true,
+              mergeRequestId: 3,
+              projectId: '5',
+              targetProjectFullPath: 'test/project',
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findRunButton().exists()).toBe(true);
+          expect(findRunButton().props('disabled')).toBe(true);
+          expect(findRunButton().props('loading')).toBe(true);
         });
       });
 
-      describe('when feature flag is ON', () => {
-        let glFeatures;
-
-        beforeEach(() => {
-          glFeatures = { ciPipelineCreationRequestsRealtime: true };
-        });
-
-        describe('getPipelineCreationRequests query', () => {
-          it('calls getPipelineCreationRequests query with correct variables', async () => {
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            expect(getPipelineCreationRequestsHandler).toHaveBeenCalledWith({
-              fullPath: 'test/project',
-              mergeRequestIid: '3',
-            });
-          });
-
-          it.each`
-            scenario                              | isMergeRequestTable | targetProjectFullPath | mergeRequestId
-            ${'not on merge request table'}       | ${false}            | ${'test/project'}     | ${3}
-            ${'mergeRequestId is missing'}        | ${true}             | ${'test/project'}     | ${null}
-            ${'targetProjectFullPath is missing'} | ${true}             | ${null}               | ${3}
-          `(
-            'skips query when $scenario',
-            async ({ isMergeRequestTable, targetProjectFullPath, mergeRequestId }) => {
-              createComponent({
-                props: {
-                  isMergeRequestTable,
-                  targetProjectFullPath,
-                  mergeRequestId,
-                },
-                glFeatures,
-              });
-
-              await waitForPromises();
-
-              expect(getPipelineCreationRequestsHandler).not.toHaveBeenCalled();
+      describe('shows skeleton loader', () => {
+        it('after a small delay when run pipeline button is clicked', async () => {
+          createComponent({
+            props: {
+              canRunPipeline: true,
+              isMergeRequestTable: true,
+              mergeRequestId: 3,
+              projectId: '5',
+              targetProjectFullPath: 'test/project',
             },
-          );
-        });
-
-        describe('pipelineCreationRequestsUpdated subscription', () => {
-          it('calls subscription with correct variables', async () => {
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            expect(mockSubscriptionHandler).toHaveBeenCalledWith({
-              mergeRequestId: 'gid://gitlab/MergeRequest/3',
-            });
           });
 
-          const mockMergeRequestGlobalId = () =>
-            getPipelineCreationRequestsHandler.mockResolvedValue({
-              data: {
-                project: {
-                  id: 'gid://gitlab/Project/5',
-                  mergeRequest: { id: null, pipelineCreationRequests: [] },
-                },
-              },
-            });
+          await waitForPromises();
 
-          it.each`
-            scenario                                   | isMergeRequestTable | targetProjectFullPath | mergeRequestId | mockHandlerSetup
-            ${'not on merge request table'}            | ${false}            | ${'test/project'}     | ${3}           | ${undefined}
-            ${'mergeRequestId is missing'}             | ${true}             | ${'test/project'}     | ${null}        | ${undefined}
-            ${'targetProjectFullPath is missing'}      | ${true}             | ${null}               | ${3}           | ${undefined}
-            ${'mergeRequestGlobalId is not available'} | ${true}             | ${'test/project'}     | ${3}           | ${mockMergeRequestGlobalId}
-          `(
-            'skips subscription when $scenario',
-            async ({
-              isMergeRequestTable,
-              targetProjectFullPath,
-              mergeRequestId,
-              mockHandlerSetup,
-            }) => {
-              if (mockHandlerSetup) {
-                mockHandlerSetup();
-              }
+          expect(findSkeletonLoader().exists()).toBe(false);
 
-              createComponent({
-                props: {
-                  isMergeRequestTable,
-                  targetProjectFullPath,
-                  mergeRequestId,
-                },
-                glFeatures,
-              });
+          await findRunPipelineBtn().trigger('click');
 
-              await waitForPromises();
+          expect(findSkeletonLoader().exists()).toBe(false);
 
-              expect(mockSubscriptionHandler).not.toHaveBeenCalled();
+          jest.runAllTimers();
+          await nextTick();
+
+          expect(findSkeletonLoader().exists()).toBe(true);
+        });
+
+        it('when hasInProgressCreationRequests becomes true', async () => {
+          getPipelineCreationRequestsHandler.mockResolvedValue(
+            generatePipelineCreationRequestsResponse({
+              requests: [{ status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null }],
+            }),
+          );
+
+          createComponent({
+            props: {
+              canRunPipeline: true,
+              isMergeRequestTable: true,
+              mergeRequestId: 3,
+              projectId: '5',
+              targetProjectFullPath: 'test/project',
             },
-          );
+          });
+
+          await waitForPromises();
+
+          expect(findSkeletonLoader().exists()).toBe(false);
+
+          jest.runAllTimers();
+          await nextTick();
+
+          expect(findSkeletonLoader().exists()).toBe(true);
+        });
+      });
+    });
+
+    describe('debounced pipeline loader', () => {
+      it('shows skeleton loader after debounce delay when run pipeline button is clicked', async () => {
+        createComponent({
+          props: {
+            canRunPipeline: true,
+            isMergeRequestTable: true,
+            mergeRequestId: 3,
+            projectId: '5',
+            targetProjectFullPath: 'test/project',
+          },
         });
 
-        describe('Pipeline creation failed alert', () => {
-          it('shows alert when pipeline creation fails', async () => {
-            const failedRequests = [
-              { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-            ];
+        await waitForPromises();
 
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: failedRequests }),
-            );
+        expect(findSkeletonLoader().exists()).toBe(false);
 
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
+        findRunPipelineBtn().trigger('click');
 
-            await waitForPromises();
+        expect(findSkeletonLoader().exists()).toBe(false);
 
-            expect(findCreationFailedAlert().exists()).toBe(true);
-            expect(findCreationFailedAlert().text()).toBe(
-              'Pipeline creation failed. Please try again.',
-            );
-            expect(findCreationFailedAlert().props('variant')).toBe('danger');
-            expect(findCreationFailedAlert().props('dismissible')).toBe(true);
-          });
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await nextTick();
 
-          it('hides alert when dismissed', async () => {
-            const failedRequests = [
-              { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-            ];
+        expect(findSkeletonLoader().exists()).toBe(true);
+      });
 
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: failedRequests }),
-            );
+      it('stops showing skeleton loader when pipeline creation completes', async () => {
+        const inProgressRequests = [
+          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+        ];
+        const completedRequests = [
+          {
+            status: 'SUCCEEDED',
+            pipelineId: '123',
+            pipeline: generateMockPipeline({ id: '123' }),
+            error: null,
+          },
+        ];
 
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
+        );
 
-            await waitForPromises();
-
-            expect(findCreationFailedAlert().exists()).toBe(true);
-
-            await findCreationFailedAlert().vm.$emit('dismiss');
-
-            expect(findCreationFailedAlert().exists()).toBe(false);
-          });
-
-          it('shows alert when failure count increases via subscription', async () => {
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            expect(findCreationFailedAlert().exists()).toBe(false);
-
-            const failedRequests = [
-              { status: 'FAILED', pipelineId: null, pipeline: null, error: 'Creation failed' },
-            ];
-
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: failedRequests }),
-            );
-
-            await wrapper.vm.$apollo.queries.pipelineCreationRequests.refetch();
-            await waitForPromises();
-
-            await nextTick();
-
-            expect(findCreationFailedAlert().exists()).toBe(true);
-          });
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
         });
 
-        describe('Run pipeline button', () => {
-          describe('when there are in progress pipeline creation requests', () => {
-            it.each([
-              {
-                buttonType: 'desktop',
-                findRunButton: () => findRunPipelineBtn(),
-              },
-              {
-                buttonType: 'mobile',
-                findRunButton: () => findRunPipelineBtnMobile(),
-              },
-              {
-                buttonType: 'empty state',
-                findRunButton: () => findRunPipelineBtn(),
-              },
-            ])('disables the $buttonType button & enables loading', async ({ findRunButton }) => {
-              const inProgressRequests = [
-                { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-              ];
+        await waitForPromises();
 
-              getPipelineCreationRequestsHandler.mockResolvedValue(
-                generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
-              );
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await nextTick();
 
-              createComponent({
-                props: {
-                  canRunPipeline: true,
-                  isMergeRequestTable: true,
-                  mergeRequestId: 3,
-                  projectId: '5',
-                  targetProjectFullPath: 'test/project',
-                },
-                glFeatures,
-              });
+        expect(findSkeletonLoader().exists()).toBe(true);
 
-              await waitForPromises();
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: completedRequests }),
+        );
 
-              expect(findRunButton().exists()).toBe(true);
-              expect(findRunButton().props('disabled')).toBe(true);
-              expect(findRunButton().props('loading')).toBe(true);
-            });
-          });
+        mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, []);
 
-          describe('shows skeleton loader', () => {
-            it('after a small delay when run pipeline button is clicked', async () => {
-              createComponent({
-                props: {
-                  canRunPipeline: true,
-                  isMergeRequestTable: true,
-                  mergeRequestId: 3,
-                  projectId: '5',
-                  targetProjectFullPath: 'test/project',
-                },
-                glFeatures,
-              });
+        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+        await waitForPromises();
 
-              await waitForPromises();
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
 
-              expect(findSkeletonLoader().exists()).toBe(false);
+      it('continues showing skeleton loader when there are still in-progress requests', async () => {
+        const inProgressRequests = [
+          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+        ];
 
-              await findRunPipelineBtn().trigger('click');
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
+        );
 
-              expect(findSkeletonLoader().exists()).toBe(false);
-
-              jest.runAllTimers();
-              await nextTick();
-
-              expect(findSkeletonLoader().exists()).toBe(true);
-            });
-
-            it('when hasInProgressCreationRequests becomes true', async () => {
-              getPipelineCreationRequestsHandler.mockResolvedValue(
-                generatePipelineCreationRequestsResponse({
-                  requests: [
-                    { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-                  ],
-                }),
-              );
-
-              createComponent({
-                props: {
-                  canRunPipeline: true,
-                  isMergeRequestTable: true,
-                  mergeRequestId: 3,
-                  projectId: '5',
-                  targetProjectFullPath: 'test/project',
-                },
-                glFeatures,
-              });
-
-              await waitForPromises();
-
-              expect(findSkeletonLoader().exists()).toBe(false);
-
-              jest.runAllTimers();
-              await nextTick();
-
-              expect(findSkeletonLoader().exists()).toBe(true);
-            });
-          });
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
         });
 
-        describe('debounced pipeline loader', () => {
-          it('shows skeleton loader after debounce delay when run pipeline button is clicked', async () => {
-            createComponent({
-              props: {
-                canRunPipeline: true,
-                isMergeRequestTable: true,
-                mergeRequestId: 3,
-                projectId: '5',
-                targetProjectFullPath: 'test/project',
-              },
-              glFeatures,
-            });
+        await waitForPromises();
 
-            await waitForPromises();
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await nextTick();
 
-            expect(findSkeletonLoader().exists()).toBe(false);
+        expect(findSkeletonLoader().exists()).toBe(true);
 
-            findRunPipelineBtn().trigger('click');
+        const mixedRequests = [
+          { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
+          {
+            status: 'SUCCEEDED',
+            pipelineId: '123',
+            pipeline: generateMockPipeline({ id: '123' }),
+            error: null,
+          },
+        ];
 
-            expect(findSkeletonLoader().exists()).toBe(false);
+        getPipelineCreationRequestsHandler.mockResolvedValue(
+          generatePipelineCreationRequestsResponse({ requests: mixedRequests }),
+        );
 
-            jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-            await nextTick();
+        mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [
+          {
+            ...pipeline,
+            flags: {
+              ...pipeline.flags,
+              detached_merge_request_pipeline: true,
+              merge_request_pipeline: true,
+            },
+          },
+        ]);
+        findPipelinesTable().vm.$emit('refresh-pipelines-table');
+        await waitForPromises();
 
-            expect(findSkeletonLoader().exists()).toBe(true);
-          });
+        expect(findSkeletonLoader().exists()).toBe(true);
+      });
 
-          it('stops showing skeleton loader when pipeline creation completes', async () => {
-            const inProgressRequests = [
-              { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-            ];
-            const completedRequests = [
-              {
-                status: 'SUCCEEDED',
-                pipelineId: '123',
-                pipeline: generateMockPipeline({ id: '123' }),
-                error: null,
-              },
-            ];
-
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
-            );
-
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-            await nextTick();
-
-            expect(findSkeletonLoader().exists()).toBe(true);
-
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: completedRequests }),
-            );
-
-            mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, []);
-
-            findPipelinesTable().vm.$emit('refresh-pipelines-table');
-            await waitForPromises();
-
-            expect(findSkeletonLoader().exists()).toBe(false);
-          });
-
-          it('continues showing skeleton loader when there are still in-progress requests', async () => {
-            const inProgressRequests = [
-              { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-              { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-            ];
-
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: inProgressRequests }),
-            );
-
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-            await nextTick();
-
-            expect(findSkeletonLoader().exists()).toBe(true);
-
-            const mixedRequests = [
-              { status: 'IN_PROGRESS', pipelineId: null, pipeline: null, error: null },
-              {
-                status: 'SUCCEEDED',
-                pipelineId: '123',
-                pipeline: generateMockPipeline({ id: '123' }),
-                error: null,
-              },
-            ];
-
-            getPipelineCreationRequestsHandler.mockResolvedValue(
-              generatePipelineCreationRequestsResponse({ requests: mixedRequests }),
-            );
-
-            mock.onGet('endpoint.json').reply(HTTP_STATUS_OK, [
-              {
-                ...pipeline,
-                flags: {
-                  ...pipeline.flags,
-                  detached_merge_request_pipeline: true,
-                  merge_request_pipeline: true,
-                },
-              },
-            ]);
-            findPipelinesTable().vm.$emit('refresh-pipelines-table');
-            await waitForPromises();
-
-            expect(findSkeletonLoader().exists()).toBe(true);
-          });
-
-          it('clears timeout on component unmount', async () => {
-            createComponent({
-              props: {
-                isMergeRequestTable: true,
-                targetProjectFullPath: 'test/project',
-                mergeRequestId: 3,
-              },
-              glFeatures,
-            });
-
-            await waitForPromises();
-
-            const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-
-            findRunPipelineBtn().trigger('click');
-
-            wrapper.destroy();
-
-            expect(clearTimeoutSpy).toHaveBeenCalled();
-          });
+      it('clears timeout on component unmount', async () => {
+        createComponent({
+          props: {
+            isMergeRequestTable: true,
+            targetProjectFullPath: 'test/project',
+            mergeRequestId: 3,
+          },
         });
+
+        await waitForPromises();
+
+        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+        findRunPipelineBtn().trigger('click');
+
+        wrapper.destroy();
+
+        expect(clearTimeoutSpy).toHaveBeenCalled();
       });
     });
   });

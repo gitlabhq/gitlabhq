@@ -205,7 +205,7 @@ differs from the hashed path. For more information, see
 Users can download an archive in formats such as `.zip` or `.tar.gz` of a repository by using either:
 
 - The GitLab UI.
-- The [Repositories API](../api/repositories.md#get-file-archive).
+- The [Repositories API](../api/repositories.md#retrieve-file-archive-from-a-repository).
 
 GitLab stores this archive in a cache in a directory on the GitLab server.
 

@@ -200,7 +200,7 @@ To keep existing approvals after more changes are added to a merge request:
 
 If you automate the creation and approval of merge requests, build in logic to ensure commits are
 processed fully before approving the merge request. This prevents an unintentional approval reset.
-See [Approvals for automated merge requests](../../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests)
+See [Handle timing issues with automated approvals](../../../../api/merge_request_approvals.md#prevent-approval-resets-in-automated-merge-requests)
 for more details.
 
 ## Remove approvals by Code Owners if their files changed

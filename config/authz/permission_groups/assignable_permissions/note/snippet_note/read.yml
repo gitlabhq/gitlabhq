@@ -1,7 +1,0 @@
----
-name: read_snippet_note
-description: Grants the ability to read snippet notes
-permissions:
-  - read_snippet_note
-boundaries:
-  - project

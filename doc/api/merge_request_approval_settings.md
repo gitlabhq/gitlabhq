@@ -22,9 +22,9 @@ Prerequisites:
 
 - You must have the Owner role in the group.
 
-### Get group MR approval settings
+### Retrieve MR approval settings for a group
 
-Get the merge request approval settings of a group.
+Retrieves the merge request approval settings for a specified group.
 
 ```plaintext
 GET /groups/:id/merge_request_approval_setting
@@ -160,9 +160,9 @@ Prerequisites:
 
 - You must have the Maintainer role in the project.
 
-### Get project MR approval settings
+### Retrieve MR approval settings for a project
 
-Get the merge request approval settings of a project.
+Retrieves the merge request approval settings for a specified project.
 
 ```plaintext
 GET /projects/:id/merge_request_approval_setting

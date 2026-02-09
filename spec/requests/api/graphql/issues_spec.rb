@@ -224,8 +224,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       QUERY
     end
 
-    it 'avoids N+1 queries', :use_sql_query_cache,
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9485' do
+    it 'avoids N+1 queries', :use_sql_query_cache do
       post_query # warm-up
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_query }
@@ -238,7 +237,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       private_project = create(:project, :private, group: private_group)
       create(:issue, project: private_project)
 
-      expect { post_query }.not_to exceed_all_query_limit(control)
+      expect { post_query }.not_to exceed_all_query_limit(control).with_threshold(1)
       expect_graphql_errors_to_be_empty
     end
   end

@@ -2,7 +2,9 @@
 key_path: settings.certificate_based_clusters_ff
 name: "certificate_based_clusters_ff"
 description: "Certificate-based clusters feature flag"
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 value_type: boolean
 status: active
 milestone: "14.9"

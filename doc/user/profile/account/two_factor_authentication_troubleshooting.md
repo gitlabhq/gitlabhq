@@ -188,7 +188,7 @@ your account. This service is only available for accounts with a GitLab.com subs
 
 GitLab Support cannot reset 2FA for Free accounts. If you cannot recover your 2FA method, you will
 be permanently locked out of your account and must create a new one. For more information, see the
-[blog announcement](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
+[blog announcement](https://about.gitlab.com/blog/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
 
 To create a support request:
 

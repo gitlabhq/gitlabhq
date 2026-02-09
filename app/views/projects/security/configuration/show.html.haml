@@ -11,4 +11,5 @@
   can_read_attributes: can?(current_user, :read_security_attribute, @project.root_ancestor).to_s,
   can_manage_attributes: can?(current_user, :admin_security_attributes, @project.root_ancestor).to_s,
   group_manage_attributes_path: group_configuration_path,
+  security_scan_profiles_licensed: @project.licensed_feature_available?(:security_scan_profiles).to_s,
   use_graphql: 'false' } }

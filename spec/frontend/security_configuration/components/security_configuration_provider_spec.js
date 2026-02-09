@@ -46,6 +46,7 @@ describe('SecurityConfigurationProvider', () => {
     canApplyProfiles: true,
     canReadAttributes: true,
     canManageAttributes: false,
+    securityScanProfilesLicensed: true,
     groupManageAttributesPath: '/attributes',
   };
 

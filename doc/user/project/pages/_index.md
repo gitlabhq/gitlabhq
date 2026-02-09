@@ -28,7 +28,7 @@ These websites:
 To publish a website with Pages, use any static site generator like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch.
 Pages also supports websites written directly in plain HTML, CSS, JavaScript, and Wasm.
 Dynamic server-side processing (like `.php` and `.asp`) is not supported.
-For more information, see [Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
+For more information, see [Static vs dynamic websites](https://about.gitlab.com/blog/ssg-overview-gitlab-pages-part-1-dynamic-x-static/).
 
 ## Getting started
 
@@ -56,9 +56,9 @@ For more information, see:
 
 | Document | Description |
 |----------|-------------|
-| [Static vs dynamic websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/) | Static versus dynamic site overview. |
-| [Modern static site generators](https://about.gitlab.com/blog/2016/06/10/ssg-overview-gitlab-pages-part-2/) | SSG overview. |
-| [Build any SSG site with GitLab Pages](https://about.gitlab.com/blog/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/) | Use SSGs for GitLab Pages. |
+| [Static vs dynamic websites](https://about.gitlab.com/blog/ssg-overview-gitlab-pages-part-1-dynamic-x-static/) | Static versus dynamic site overview. |
+| [Modern static site generators](https://about.gitlab.com/blog/ssg-overview-gitlab-pages-part-2/) | SSG overview. |
+| [Build any SSG site with GitLab Pages](https://about.gitlab.com/blog/ssg-overview-gitlab-pages-part-3-examples-ci/) | Use SSGs for GitLab Pages. |
 
 ## Using GitLab Pages
 
@@ -99,11 +99,11 @@ chosen by your sysadmin, who can make them public or internal.
 These GitLab Pages website examples can teach you advanced techniques to use
 and adapt for your own needs:
 
-- [Posting to your GitLab Pages blog from iOS](https://about.gitlab.com/blog/2016/08/19/posting-to-your-gitlab-pages-blog-from-ios/).
-- [GitLab CI: Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2020/12/10/basics-of-gitlab-ci-updated/).
-- [GitLab CI: Deployment & environments](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
-- [Building a new GitLab documentation site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/).
-- [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
+- [Posting to your GitLab Pages blog from iOS](https://about.gitlab.com/blog/posting-to-your-gitlab-pages-blog-from-ios/).
+- [GitLab CI: Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/basics-of-gitlab-ci-updated/).
+- [GitLab CI: Deployment & environments](https://about.gitlab.com/blog/ci-deployment-and-environments/).
+- [Building a new GitLab documentation site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/blog/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/).
+- [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/blog/publish-code-coverage-report-with-gitlab-pages/).
 
 ## Administer GitLab Pages for GitLab Self-Managed instances
 

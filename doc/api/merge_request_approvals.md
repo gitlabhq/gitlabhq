@@ -85,7 +85,7 @@ Supported attributes:
 }
 ```
 
-### Approvals for automated merge requests
+### Prevent approval resets in automated merge requests
 
 If you use the API to create and immediately approve a merge request, your automation
 might approve the merge request before the commit is fully processed. By default, adding

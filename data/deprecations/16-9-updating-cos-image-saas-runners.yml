@@ -12,4 +12,4 @@
 
     Docker-in-Docker prior to version 20.10 or Kaniko images older than v1.9.0, will be unable to detect the container runtime and fail.
 
-    For more information, see [Upgrading the operating system version of our SaaS runners on Linux](https://about.gitlab.com/blog/2023/10/04/updating-the-os-version-of-saas-runners-on-linux/).
+    For more information, see [Upgrading the operating system version of our SaaS runners on Linux](https://about.gitlab.com/blog/updating-the-os-version-of-saas-runners-on-linux/).

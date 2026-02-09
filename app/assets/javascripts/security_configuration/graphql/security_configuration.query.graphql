@@ -52,6 +52,7 @@ query getProjectSecurityConfiguration($projectId: ProjectID!) {
     canApplyProfiles
     canReadAttributes
     canManageAttributes
+    securityScanProfilesLicensed
     groupManageAttributesPath
   }
 }

@@ -8,7 +8,9 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
     {
       foo: {
         label: 'group::global search',
-        engineers: ['@john_doe']
+        engineers: %w[@john_doe @jane_doe],
+        backend_engineers: ['@john_doe'],
+        frontend_engineers: ['@jane_doe']
       }
     }
   end
@@ -92,16 +94,10 @@ RSpec.describe Keeps::MarkOldAdvancedSearchMigrationsAsObsolete, feature_categor
     allow(File).to receive(:read).and_call_original
     allow(File).to receive(:read).with('VERSION').and_return('16.5.0')
 
-    reviewer_roulette = instance_double(Keeps::Helpers::ReviewerRoulette, reviewer_available?: true)
-    allow_next_instance_of(Keeps::Helpers::Groups) do |keeps_groups_helper|
-      allow(keeps_groups_helper).to receive_messages(
-        roulette: reviewer_roulette,
-        group_for_group_label: {
-          'label' => groups.dig(:foo, :label),
-          'engineers' => groups.dig(:foo, :engineers)
-        }
-      )
-    end
+    keeps_groups_helper = instance_double(Keeps::Helpers::Groups, group_for_group_label: groups[:foo].to_json,
+      available_reviewers_for_group: groups.dig(:foo, :backend_engineers))
+
+    allow(Keeps::Helpers::Groups).to receive(:instance).and_return(keeps_groups_helper)
   end
 
   after do

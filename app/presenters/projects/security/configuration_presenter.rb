@@ -37,6 +37,7 @@ module Projects
           can_apply_profiles: can_apply_profiles?,
           can_read_attributes: can_read_attributes?,
           can_manage_attributes: can_manage_attributes?,
+          security_scan_profiles_licensed: security_scan_profiles_licensed?,
           group_manage_attributes_path: group_manage_attributes_path
         }
       end
@@ -56,6 +57,10 @@ module Projects
 
       def secret_push_protection_licensed?
         project.licensed_feature_available?(:secret_push_protection)
+      end
+
+      def security_scan_profiles_licensed?
+        project.licensed_feature_available?(:security_scan_profiles)
       end
 
       def can_enable_auto_devops?

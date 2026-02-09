@@ -585,4 +585,4 @@ GitLab does not rewrite image URLs when:
 - [System hooks API](../../../api/system_hooks.md)
 - [Troubleshooting webhooks](webhooks_troubleshooting.md)
 - [Send SMS alerts with webhooks and Twilio](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
-- [Applying GitLab labels automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/)
+- [Applying GitLab labels automatically](https://about.gitlab.com/blog/applying-gitlab-labels-automatically/)

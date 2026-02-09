@@ -24,7 +24,7 @@ To prepare the deployment:
 
    1. [Kubernetes](#auto-devops-requirements-for-kubernetes).
    1. [Amazon Elastic Container Service (ECS)](cloud_deployments/auto_devops_with_ecs.md).
-   1. [Amazon Elastic Kubernetes Service (EKS)](https://about.gitlab.com/blog/2020/05/05/deploying-application-eks/).
+   1. [Amazon Elastic Kubernetes Service (EKS)](https://about.gitlab.com/blog/deploying-application-eks/).
    1. [Amazon EC2](cloud_deployments/auto_devops_with_ec2.md).
    1. [Google Kubernetes Engine](cloud_deployments/auto_devops_with_gke.md).
    1. [Bare metal](#auto-devops-requirements-for-bare-metal).

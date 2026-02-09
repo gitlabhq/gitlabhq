@@ -658,7 +658,7 @@ For language-specific guidelines, refer to the following docs:
 
 ### TLS minimum recommended version
 
-As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), you must use TLS 1.2 and later.
+As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/gitlab-to-deprecate-older-tls/), you must use TLS 1.2 and later.
 
 #### Ciphers
 

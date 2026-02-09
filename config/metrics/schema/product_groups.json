@@ -58,6 +58,7 @@
     "quality",
     "remote_development",
     "runner",
+    "runner_core",
     "scalability",
     "seat_management",
     "secret_detection",

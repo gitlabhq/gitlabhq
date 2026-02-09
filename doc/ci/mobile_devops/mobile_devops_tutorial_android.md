@@ -180,4 +180,4 @@ a merge request to trigger your first pipeline.
 See the Mobile DevOps [Android Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/android_demo)
 project for a complete build, sign, and release pipeline example for Android.
 
-For additional reference materials, see the [DevOps section](https://about.gitlab.com/blog/categories/devops/) of the GitLab blog.
+For additional reference materials, see the [DevSecOps section](https://about.gitlab.com/blog/categories/devsecops/) of the GitLab blog.

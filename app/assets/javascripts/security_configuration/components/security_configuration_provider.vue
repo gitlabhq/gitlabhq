@@ -27,6 +27,9 @@ export default {
       canApplyProfiles: computed(() => this.graphqlData?.canApplyProfiles ?? false),
       canReadAttributes: computed(() => this.graphqlData?.canReadAttributes ?? false),
       canManageAttributes: computed(() => this.graphqlData?.canManageAttributes ?? false),
+      securityScanProfilesLicensed: computed(
+        () => this.graphqlData?.securityScanProfilesLicensed ?? false,
+      ),
       groupManageAttributesPath: computed(() => this.graphqlData?.groupManageAttributesPath || ''),
       autoDevopsHelpPagePath: computed(() => this.graphqlData?.autoDevopsHelpPagePath || ''),
       autoDevopsPath: computed(() => this.graphqlData?.autoDevopsPath || ''),
@@ -132,6 +135,7 @@ export default {
           canApplyProfiles: config.canApplyProfiles,
           canReadAttributes: config.canReadAttributes,
           canManageAttributes: config.canManageAttributes,
+          securityScanProfilesLicensed: config.securityScanProfilesLicensed,
           groupManageAttributesPath: config.groupManageAttributesPath,
         };
 

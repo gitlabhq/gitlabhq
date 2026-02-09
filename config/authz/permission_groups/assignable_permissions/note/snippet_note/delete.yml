@@ -1,7 +1,0 @@
----
-name: delete_snippet_note
-description: Grants the ability to delete snippet notes
-permissions:
-  - delete_snippet_note
-boundaries:
-  - project

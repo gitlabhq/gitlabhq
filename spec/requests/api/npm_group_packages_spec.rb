@@ -139,11 +139,35 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
     it_behaves_like 'handling get dist tags requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags") }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_npm_package_tag do
+      let(:boundary_object) { group }
+      let(:request) do
+        get api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags", personal_access_token: pat)
+      end
+
+      before do
+        group.add_developer(user)
+      end
+    end
   end
 
   describe 'PUT /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling create dist tag requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_npm_package_tag do
+      let(:tag_name) { 'test' }
+      let(:boundary_object) { group }
+      let(:request) do
+        put api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}",
+          personal_access_token: pat), env: { 'api.request.body': package.version }
+      end
+
+      before do
+        group.add_developer(user)
+      end
     end
 
     it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
@@ -166,6 +190,21 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
   describe 'DELETE /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling delete dist tag requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_npm_package_tag do
+      let_it_be(:package_tag) { create(:packages_tag, package: package) }
+
+      let(:tag_name) { package_tag.name }
+      let(:boundary_object) { group }
+      let(:request) do
+        delete api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}",
+          personal_access_token: pat)
+      end
+
+      before do
+        group.add_maintainer(user)
+      end
     end
 
     it_behaves_like 'enqueue a worker to sync a npm metadata cache' do

@@ -330,7 +330,7 @@ For a web developer writing a webpage for your company's website:
 1. After approval, GitLab:
    - [Squashes](squash_and_merge.md) the commits.
    - Merges the commit.
-   - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
+   - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/ci-deployment-and-environments/).
 1. Your production team cherry-picks the merge commit into production.
 
 ## Filter activity in a merge request

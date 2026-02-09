@@ -10917,6 +10917,9 @@ msgstr ""
 msgid "Available ID"
 msgstr ""
 
+msgid "Available with Ultimate"
+msgstr ""
+
 msgid "Avatar for %{assigneeName}"
 msgstr ""
 
@@ -13578,12 +13581,6 @@ msgid "CICD|%{policy} to %{resource}"
 msgstr ""
 
 msgid "CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project."
-msgstr ""
-
-msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
-msgstr ""
-
-msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
 msgstr ""
 
 msgid "CICD|Add an existing project to the scope"
@@ -40070,6 +40067,9 @@ msgstr ""
 msgid "Learn more about shards and replicas in the %{configuration_link_start}advanced search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
+msgid "Learn more about the Ultimate security suite"
+msgstr ""
+
 msgid "Learn more about vulnerability management on non-default branches and tags."
 msgstr ""
 
@@ -65142,10 +65142,19 @@ msgstr ""
 msgid "Shared secret"
 msgstr ""
 
+msgid "SharedRunnersMinutesSettings|Changes the compute usage for this group to zero."
+msgstr ""
+
+msgid "SharedRunnersMinutesSettings|Changes the compute usage for this user to zero."
+msgstr ""
+
 msgid "SharedRunnersMinutesSettings|Reset compute usage"
 msgstr ""
 
-msgid "SharedRunnersMinutesSettings|When you reset the compute usage for this namespace, the compute usage changes to zero."
+msgid "SharedRunnersMinutesSettings|Reset compute usage for this group."
+msgstr ""
+
+msgid "SharedRunnersMinutesSettings|Reset compute usage for this user."
 msgstr ""
 
 msgid "ShellOperations|Git SSH operations rate limits"
@@ -67324,9 +67333,6 @@ msgid "Successfully regenerated unique domain"
 msgstr ""
 
 msgid "Successfully removed email."
-msgstr ""
-
-msgid "Successfully reset compute usage for namespace."
 msgstr ""
 
 msgid "Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details."
@@ -75076,9 +75082,6 @@ msgstr ""
 msgid "View logs"
 msgstr ""
 
-msgid "View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following."
-msgstr ""
-
 msgid "View milestones"
 msgstr ""
 
@@ -75899,9 +75902,6 @@ msgid "VisibilityLevel|This visibility level is not allowed because the parent g
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"
-msgstr ""
-
-msgid "Visit new homepage"
 msgstr ""
 
 msgid "Visual Studio"
@@ -80946,9 +80946,6 @@ msgid "Your membership in %{project_or_group} %{project_or_group_name} will expi
 msgstr ""
 
 msgid "Your merge requests"
-msgstr ""
-
-msgid "Your merge requests have a new homepage!"
 msgstr ""
 
 msgid "Your merge requests merged in the last 2 weeks."

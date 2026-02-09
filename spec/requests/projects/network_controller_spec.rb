@@ -75,17 +75,6 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
             subject
             expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json, ref_type: 'heads'))
           end
-
-          context 'when verified_ref_extractor is disabled' do
-            before do
-              stub_feature_flags(verified_ref_extractor: false)
-            end
-
-            it 'does not include inferred ref_type' do
-              subject
-              expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
-            end
-          end
         end
 
         context 'when ref is for a tag' do
@@ -94,17 +83,6 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
           it 'includes inferred ref_type=tags' do
             subject
             expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json, ref_type: 'tags'))
-          end
-
-          context 'when verified_ref_extractor is disabled' do
-            before do
-              stub_feature_flags(verified_ref_extractor: false)
-            end
-
-            it 'does not include inferred ref_type' do
-              subject
-              expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
-            end
           end
         end
 
@@ -123,17 +101,6 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
           it 'does not include ref_type' do
             subject
             expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
-          end
-
-          context 'when verified_ref_extractor is disabled' do
-            before do
-              stub_feature_flags(verified_ref_extractor: false)
-            end
-
-            it 'does not include ref_type' do
-              subject
-              expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
-            end
           end
         end
       end

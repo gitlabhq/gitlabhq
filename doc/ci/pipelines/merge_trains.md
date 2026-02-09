@@ -28,7 +28,7 @@ Each merge request is compared to the other, earlier merge requests, to ensure t
 For more information about:
 
 - How merge trains work, review the [merge train workflow](#merge-train-workflow).
-- Why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/2020/01/30/all-aboard-merge-trains/).
+- Why you might want to use merge trains, read [How starting merge trains improve efficiency for DevOps](https://about.gitlab.com/blog/all-aboard-merge-trains/).
 
 ## Merge train workflow
 

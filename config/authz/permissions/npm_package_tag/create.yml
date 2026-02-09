@@ -1,0 +1,6 @@
+---
+name: create_npm_package_tag
+description: Grants the ability to create NPM package tags
+boundaries:
+  - group
+  - project

@@ -7,7 +7,7 @@
   resolution_role: Maintainer
   manual_task: true
   body: |
-    The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+    The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/deprecating-the-cert-based-kubernetes-integration/).
 
     For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/administration/feature_flags/#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 

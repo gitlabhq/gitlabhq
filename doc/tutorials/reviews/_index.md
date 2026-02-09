@@ -391,4 +391,4 @@ After you provide your feedback, tidy up.
 ## Related topics
 
 - [Conventional comments](https://conventionalcomments.org/) provide helpful structure for comments.
-- [Efficient code review tips](https://about.gitlab.com/blog/2020/09/08/efficient-code-review-tips/)
+- [Efficient code review tips](https://about.gitlab.com/blog/efficient-code-review-tips/)

@@ -15,9 +15,9 @@ title: Repositories API
 
 Use this API to manage [Git repositories](../user/project/repository/_index.md).
 
-## List repository tree
+## List all repository trees in a project
 
-Get a list of repository files and directories in a project. This endpoint can
+Lists all repository files and directories in a specified project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
 
 This command provides essentially the same features as the `git ls-tree`
@@ -113,9 +113,9 @@ Example response:
 ]
 ```
 
-## Get a blob from repository
+## Retrieve a blob from a repository
 
-Allows you to receive information, such as size and content, about blobs in a repository.
+Retrieves information, such as size and content, about blobs in a repository.
 Blob content is Base64 encoded. This endpoint can be accessed without authentication,
 if the repository is publicly accessible.
 
@@ -160,9 +160,9 @@ Example response:
 }
 ```
 
-## Get raw blob content
+## Retrieve raw blob content
 
-Get the raw file contents for a blob, by blob SHA. This endpoint can be accessed
+Retrieves the raw file contents for a blob, by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```plaintext
@@ -183,9 +183,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/blobs/79f7bbd25901e8334750839545a9bd021f0e4c83/raw"
 ```
 
-## Get file archive
+## Retrieve file archive from a repository
 
-Get an archive of the repository. This endpoint can be accessed without
+Retrieves the file archive of the specified repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
 For GitLab.com users, this endpoint has a rate limit threshold of 5 requests per minute.

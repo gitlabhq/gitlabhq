@@ -92,7 +92,7 @@ The storage management and cleanup automation methods described in this page use
 - The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-api-python/) project.
 
 For more information about use cases for the `python-gitlab` library,
-see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
+see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
 
 For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
@@ -901,7 +901,7 @@ export GL_PROJECT_ID=48349263
 glab api --method GET projects/$GL_PROJECT_ID/search --field "scope=blobs" --field "search=expire_in filename:*.yml"
 ```
 
-For more information about the inventory approach, see [How GitLab can help mitigate deletion of open source container images on Docker Hub](https://about.gitlab.com/blog/2023/03/16/how-gitlab-can-help-mitigate-deletion-open-source-images-docker-hub/).
+For more information about the inventory approach, see [How GitLab can help mitigate deletion of open source container images on Docker Hub](https://about.gitlab.com/blog/how-gitlab-can-help-mitigate-deletion-open-source-images-docker-hub/).
 
 ### Set default expiry for job artifacts
 

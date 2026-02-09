@@ -24,7 +24,7 @@ want to move your project to a group namespace instead. With a group namespace, 
 - View all unique users in the group namespace, across all projects.
 - Manage usage quotas.
 - Start a trial or upgrade to a paid subscription tier. This option is important if you're
-  impacted by the [changes to user limits](https://about.gitlab.com/blog/2022/03/24/efficient-free-tier/),
+  impacted by the [changes to user limits](https://about.gitlab.com/blog/efficient-free-tier/),
   and need more users.
 
 This tutorial shows you how to move your project from a personal namespace

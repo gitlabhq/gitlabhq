@@ -26,7 +26,7 @@ own advantages. These methods can be mixed and matched if needed:
   For an overview, see the [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
 
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines): Good for larger products that require cross-project interdependencies,
-  like those with a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
+  like those with a [microservices architecture](https://about.gitlab.com/blog/trends-in-version-control-land-microservices/).
 
   For example, you might deploy your web application from three different GitLab projects.
   With multi-project pipelines you can trigger a pipeline in each project, where each

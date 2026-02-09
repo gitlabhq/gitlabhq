@@ -549,10 +549,10 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080' },
           'value' => [1000, '512']
         },
-                    {
-                      'metric' => { 'instance' => 'instance2:8090' },
-                      'value' => [1000, '1024']
-                    }
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '1024']
+        }
       ])
   end
 
@@ -564,10 +564,10 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080' },
           'value' => [1000, '0.45']
         },
-                    {
-                      'metric' => { 'instance' => 'instance2:8090' },
-                      'value' => [1000, '0.25']
-                    }
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '0.25']
+        }
       ])
   end
 
@@ -579,10 +579,10 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance2:8090' },
           'value' => [1000, '16']
         },
-                    {
-                      'metric' => { 'instance' => 'instance1:8080' },
-                      'value' => [1000, '8']
-                    }
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '8']
+        }
       ])
   end
 
@@ -594,10 +594,10 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance2:8090' },
           'value' => [1000, '0.2']
         },
-                    {
-                      'metric' => { 'instance' => 'instance1:8080' },
-                      'value' => [1000, '0.1']
-                    }
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '0.1']
+        }
       ])
   end
 
@@ -618,19 +618,19 @@ RSpec.describe Gitlab::UsageData::Topology do
           },
           "value" => [1592463033.359, "1"]
         },
-                    {
-                      "metric" => {
-                        "__name__" => "node_uname_info",
-                        "domainname" => "(none)",
-                        "instance" => "instance2:9100",
-                        "job" => "node_exporter",
-                        "machine" => "x86_64",
-                        "nodename" => "instance2",
-                        "release" => "4.15.0-101-generic",
-                        "sysname" => "Linux"
-                      },
-                      "value" => [1592463033.359, "1"]
-                    }
+        {
+          "metric" => {
+            "__name__" => "node_uname_info",
+            "domainname" => "(none)",
+            "instance" => "instance2:9100",
+            "job" => "node_exporter",
+            "machine" => "x86_64",
+            "nodename" => "instance2",
+            "release" => "4.15.0-101-generic",
+            "sysname" => "Linux"
+          },
+          "value" => [1592463033.359, "1"]
+        }
       ])
   end
 
@@ -642,19 +642,19 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
           'value' => [1000, '300']
         },
-                    {
-                      'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
-                      'value' => [1000, '303']
-                    },
-                    # instance 2: runs a dedicated Sidekiq + Redis (which uses a different metric name)
-                    {
-                      'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
-                      'value' => [1000, '400']
-                    },
-                    {
-                      'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
-                      'value' => [1000, '402']
-                    }
+        {
+          'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '303']
+        },
+        # instance 2: runs a dedicated Sidekiq + Redis (which uses a different metric name)
+        {
+          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '400']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
+          'value' => [1000, '402']
+        }
       ])
   end
 
@@ -677,10 +677,10 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
           'value' => [1000, '302']
         },
-                    {
-                      'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
-                      'value' => [1000, '401']
-                    }
+        {
+          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '401']
+        }
       ])
   end
 
@@ -693,23 +693,23 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
           'value' => [1000, '10']
         },
-                    {
-                      'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
-                      'value' => [1000, '5']
-                    },
-                    # instance 2
-                    {
-                      'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
-                      'value' => [1000, '15']
-                    },
-                    {
-                      'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
-                      'value' => [1000, '1']
-                    },
-                    {
-                      'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
-                      'value' => [1000, '1']
-                    }
+        {
+          'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '5']
+        },
+        # instance 2
+        {
+          'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
+          'value' => [1000, '15']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
+          'value' => [1000, '1']
+        },
+        {
+          'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
+          'value' => [1000, '1']
+        }
       ])
   end
 
@@ -722,11 +722,11 @@ RSpec.describe Gitlab::UsageData::Topology do
           'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
           'value' => [1000, '2']
         },
-                    # instance 2
-                    {
-                      'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
-                      'value' => [1000, '1']
-                    }
+        # instance 2
+        {
+          'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
+          'value' => [1000, '1']
+        }
       ])
   end
 end

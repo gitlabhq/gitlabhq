@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.count_distinct_project_id_from_click_delete_pod_monthly
 description: Monthly count of unique projects where click on the delete Kubernetes pod confirmation button occurred
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

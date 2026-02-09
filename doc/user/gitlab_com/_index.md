@@ -610,7 +610,7 @@ see [SSH maximum number of connections](#ssh-maximum-number-of-connections).
 ### Alternative SSH port
 
 GitLab.com can be reached by using a
-[different SSH port](https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
+[different SSH port](https://about.gitlab.com/blog/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/) for `git+ssh`.
 
 | Setting    | Value               |
 |------------|---------------------|

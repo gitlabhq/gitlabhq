@@ -9,10 +9,13 @@ permissions:
   - download_generic_package
   - download_helm_chart
   - download_maven_package_file
+  - download_npm_package
   - download_nuget_package
   - download_pypi_package
   - download_terraform_module
   - read_conan_package
+  - read_npm_package
+  - read_npm_package_tag
   - read_nuget_package
   - read_package
   - read_pypi_package

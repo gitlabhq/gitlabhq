@@ -113,18 +113,28 @@ RSpec.describe AutocompleteController do
     end
 
     context 'user order' do
-      it 'shows exact matches first',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9309' do
-        reported_user = create(:user, username: 'reported_user', name: 'Doug')
-        user = create(:user, username: 'user', name: 'User')
-        user1 = create(:user, username: 'user1', name: 'Ian')
+      let(:reported_user) { create(:user, name: 'Doug') }
+      let(:exact_match_user) { create(:user, name: 'User') }
+      let(:user1) { create(:user, name: 'Ian') }
 
-        sign_in(user)
+      it 'shows exact matches first' do
+        # Ensure users are created in this order
+        reported_user
+        exact_match_user
+        user1
+
+        sign_in(exact_match_user)
         get(:users, params: { search: 'user' })
 
-        response_usernames = json_response.map { |user| user['username']  }
+        response_usernames = json_response.map { |user| user['username'] }
 
-        expect(response_usernames.take(3)).to match_array([user.username, reported_user.username, user1.username])
+        expect(response_usernames.take(3)).to match_array(
+          [
+            exact_match_user.username,
+            reported_user.username,
+            user1.username
+          ]
+        )
       end
     end
 
@@ -253,6 +263,27 @@ RSpec.describe AutocompleteController do
 
         get(:users, params: { search: 'foo@bar.com' })
       end
+    end
+  end
+
+  describe 'GET #user', feature_category: :user_management do
+    let_it_be(:target_user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'returns the user' do
+      get :user, params: { id: target_user.id }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include('id' => target_user.id)
+    end
+
+    it 'returns 404 when user is not found' do
+      get :user, params: { id: non_existing_record_id }
+
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 
@@ -455,6 +486,121 @@ RSpec.describe AutocompleteController do
             end
           end
         end
+      end
+    end
+  end
+
+  describe 'param filtering methods', feature_category: :user_management do
+    let(:controller_instance) { described_class.new }
+
+    before do
+      allow(controller_instance).to receive(:current_user).and_return(user)
+    end
+
+    describe '#group_finder_params' do
+      it 'permits only the group_id parameter' do
+        allow(controller_instance).to receive(:params) do
+          ActionController::Parameters.new(
+            group_id: 1,
+            project_id: 2,
+            search: 'test',
+            extra_param: 'value'
+          )
+        end
+
+        result = controller_instance.send(:group_finder_params)
+
+        expect(result.keys).to contain_exactly('group_id')
+        expect(result.permitted?).to be true
+      end
+    end
+
+    describe '#users_finder_params' do
+      it 'permits the expected user-related parameters and includes current_user' do
+        allow(controller_instance).to receive(:params) do
+          ActionController::Parameters.new(
+            search: 'test',
+            author_id: 1,
+            todo_filter: true,
+            todo_state_filter: ['pending'],
+            states: 'active',
+            push_code: true,
+            extra_param: 'value',
+            current_user: true
+          )
+        end
+
+        result = controller_instance.send(:users_finder_params)
+
+        expect(result.keys).to contain_exactly(
+          'search',
+          'author_id',
+          'todo_filter',
+          'todo_state_filter',
+          'states',
+          'push_code',
+          'current_user'
+        )
+        expect(result.permitted?).to be true
+      end
+    end
+
+    describe '#user_serializer_params' do
+      it 'permits the expected parameters and current_user for user serialization' do
+        allow(controller_instance).to receive(:params) do
+          ActionController::Parameters.new(
+            approval_rules: true,
+            target_branch: 'main',
+            merge_request_iid: 1,
+            suggested: true,
+            extra_param: 'value'
+          )
+        end
+
+        result = controller_instance.send(:user_serializer_params)
+
+        expect(result.keys).to contain_exactly(
+          'approval_rules',
+          'target_branch',
+          'merge_request_iid',
+          'suggested'
+        )
+        expect(result.permitted?).to be true
+      end
+    end
+
+    describe '#user_finder_params' do
+      it 'permits only the id parameter' do
+        allow(controller_instance).to receive(:params) do
+          ActionController::Parameters.new(
+            id: 1,
+            group_id: 2,
+            search: 'test'
+          )
+        end
+
+        result = controller_instance.send(:user_finder_params)
+
+        expect(result.keys).to contain_exactly('id')
+        expect(result.permitted?).to be true
+      end
+    end
+
+    describe '#move_to_project_finder_params' do
+      it 'permits search and project_id parameters' do
+        allow(controller_instance).to receive(:params) do
+          ActionController::Parameters.new(
+            search: 'test',
+            project_id: 1,
+            group_id: 2,
+            extra_param: 'value'
+          )
+        end
+
+        result = controller_instance.send(:move_to_project_finder_params)
+
+        expect(result.keys).to contain_exactly('search', 'project_id')
+        expect(result.permitted?).to be true
       end
     end
   end

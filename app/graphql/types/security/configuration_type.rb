@@ -142,6 +142,11 @@ module Types
         null: false,
         description: 'Whether the current user can manage security attributes.'
 
+      field :security_scan_profiles_licensed,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether the project has a license for security scan profiles.'
+
       field :group_manage_attributes_path,
         GraphQL::Types::String,
         null: true,

@@ -249,7 +249,7 @@ Other examples of review apps:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
-- [Review apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
+- [Review apps for Android](https://about.gitlab.com/blog/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route maps
 

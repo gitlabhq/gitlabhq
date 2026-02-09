@@ -41,7 +41,7 @@ module ExtractsPath
     end
 
     rectify_format!
-    ref_type if Feature.enabled?(:verified_ref_extractor, @project)
+    ref_type
 
     rectify_renamed_default_branch! && return
 
@@ -54,14 +54,10 @@ module ExtractsPath
   end
 
   def ref_type
-    if Feature.enabled?(:verified_ref_extractor, @project)
-      return @ref_type if defined? @ref_type
+    return @ref_type if defined? @ref_type
 
-      @ref_type = ExtractsRef::VerifiedRefExtractor
-        .ref_type(repository_container.repository, ref: ref_extractor.ref, ref_type: ref_extractor.ref_type)
-    else
-      ExtractsRef::RefExtractor.ref_type(params[:ref_type])
-    end
+    @ref_type = ExtractsRef::VerifiedRefExtractor
+      .ref_type(repository_container.repository, ref: ref_extractor.ref, ref_type: ref_extractor.ref_type)
   end
 
   private

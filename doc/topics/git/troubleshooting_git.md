@@ -304,7 +304,7 @@ fatal: index-pack failed
 ```
 
 This problem is common in Git itself, due to its inability to handle large files or large quantities of files.
-[Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
+[Git LFS](https://about.gitlab.com/blog/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
 
 - The number of files in the repository.
 - The number of revisions in the history.

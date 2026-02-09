@@ -62,8 +62,8 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
 
         expect(described_class.levels_for_user(user))
           .to eq([Gitlab::VisibilityLevel::PRIVATE,
-                  Gitlab::VisibilityLevel::INTERNAL,
-                  Gitlab::VisibilityLevel::PUBLIC])
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC])
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
 
         expect(described_class.levels_for_user(user))
             .to eq([Gitlab::VisibilityLevel::INTERNAL,
-                    Gitlab::VisibilityLevel::PUBLIC])
+              Gitlab::VisibilityLevel::PUBLIC])
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::INTERNAL,
-                Gitlab::VisibilityLevel::PUBLIC])
+          Gitlab::VisibilityLevel::PUBLIC])
     end
 
     it 'returns PUBLIC for external users' do
@@ -143,8 +143,8 @@ RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
 
     it 'picks PRIVATE if nothing is available' do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC,
-                                                              Gitlab::VisibilityLevel::INTERNAL,
-                                                              Gitlab::VisibilityLevel::PRIVATE])
+        Gitlab::VisibilityLevel::INTERNAL,
+        Gitlab::VisibilityLevel::PRIVATE])
 
       expect(described_class.closest_allowed_level(described_class::PUBLIC))
         .to eq(described_class::PRIVATE)

@@ -109,8 +109,8 @@ to be reintroduced to handle an edge case in the data structure and ensure that 
 GitLab 18.6.2, 18.5.4, and 18.4.6 introduced size and rate limits on requests made to the following endpoints:
 
 - `POST /projects/:id/repository/commits` - [Create a commit](../../api/commits.md#create-a-commit)
-- `POST /projects/:id/repository/files/:file_path` - [Create new file in repository](../../api/repository_files.md#create-new-file-in-repository)
-- `PUT /projects/:id/repository/files/:file_path` - [Update existing file in repository](../../api/repository_files.md#update-existing-file-in-repository)
+- `POST /projects/:id/repository/files/:file_path` - [Create a file in a repository](../../api/repository_files.md#create-a-file-in-a-repository)
+- `PUT /projects/:id/repository/files/:file_path` - [Update a file in a repository](../../api/repository_files.md#update-a-file-in-a-repository)
 
 GitLab responds to requests that exceed the size limit with a `413 Entity Too large` status, and requests that exceed the rate limit with a `429 Too Many Requests` status. For more information, see [Commits and Files API limits](../../administration/instance_limits.md#commits-and-files-api-limits)
 

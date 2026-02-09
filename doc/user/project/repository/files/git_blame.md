@@ -90,7 +90,7 @@ showing the previous meaningful changes instead.
 
 ## Related topics
 
-- [Git file blame REST API](../../../../api/repository_files.md#get-file-blame-from-repository)
+- [Git file blame REST API](../../../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)
 - [Common Git commands](../../../../topics/git/commands.md)
 - [File management with Git](../../../../topics/git/file_management.md)
 - [File tree browser](file_tree_browser.md)

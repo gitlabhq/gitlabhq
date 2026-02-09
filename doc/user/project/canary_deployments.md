@@ -16,7 +16,7 @@ Canary deployments are a popular [continuous deployment](https://en.wikipedia.or
 strategy, where a small portion of the fleet is updated to the new version of
 your application.
 
-When embracing [continuous delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/), an organization needs to decide what
+When embracing [continuous delivery](https://about.gitlab.com/blog/continuous-integration-delivery-and-deployment-with-gitlab/), an organization needs to decide what
 type of deployment strategy to use. One of the most popular strategies is canary
 deployments, where a small portion of the fleet is updated to the new version
 first. This subset, the canaries, then serve as the proverbial

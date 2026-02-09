@@ -29,8 +29,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :assign_blob_vars, except: [:show]
   before_action :assign_ref_vars, only: [:show]
   before_action :set_is_ambiguous_ref, only: [:show]
-  before_action :check_for_ambiguous_ref, only: [:show],
-    if: -> { Feature.disabled?(:verified_ref_extractor, @project) }
 
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 
@@ -199,10 +197,6 @@ class Projects::BlobController < Projects::ApplicationController
     end
 
     redirect_to_tree_root_for_missing_path(@project, @ref, @path)
-  end
-
-  def check_for_ambiguous_ref
-    @ref_type = ref_type
   end
 
   def commit

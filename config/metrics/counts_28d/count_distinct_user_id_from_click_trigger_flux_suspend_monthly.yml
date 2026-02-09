@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_click_trigger_flux_suspend_monthly
 description: Monthly count of unique users who clicked suspend Flux resource reconciliation button
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 performance_indicator_type: []
 value_type: number
 status: active

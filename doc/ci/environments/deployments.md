@@ -146,7 +146,7 @@ To retry or roll back a deployment:
 
 - [Environments](_index.md)
 - [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
-- [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
+- [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/ci-deployment-and-environments/)
 - [Review apps](../review_apps/_index.md)
 - [Track deployments of an external deployment tool](external_deployment_tools.md)
 

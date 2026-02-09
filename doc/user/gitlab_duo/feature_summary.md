@@ -8,7 +8,7 @@ title: GitLab Duo (Classic) features
 
 {{< history >}}
 
-- [GitLab Duo first introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
+- [GitLab Duo first introduced](https://about.gitlab.com/blog/gitlab-ai-assisted-features/) in GitLab 16.0.
 - [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
 - [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
 

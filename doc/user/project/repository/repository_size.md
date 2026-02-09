@@ -236,7 +236,7 @@ To remove blobs from your repository:
 #### Get a list of object IDs
 
 To remove blobs, you need a list of objects to remove.
-To get these IDs, use the `ls-tree` command or use the [Repositories API list repository tree](../../../api/repositories.md#list-repository-tree) endpoint.
+To get these IDs, use the `ls-tree` command or use the [Repositories API list repository tree](../../../api/repositories.md#list-all-repository-trees-in-a-project) endpoint.
 The following instructions use the `ls-tree` command.
 
 Prerequisites:

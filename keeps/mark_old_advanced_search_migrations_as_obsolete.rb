@@ -300,7 +300,9 @@ module Keeps
     end
 
     def get_group_team_map(group_label)
-      @group_team_maps[group_label] ||= groups_helper.group_for_group_label(group_label)['engineers'].index_with(0)
+      group = groups_helper.group_for_group_label(group_label)
+      @group_team_maps[group_label] ||= groups_helper.available_reviewers_for_group(group,
+        reviewer_types: ['backend_engineers']).index_with(0)
     end
 
     def groups_helper

@@ -408,4 +408,4 @@ Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.
 
 ## Related topics
 
-- [Blog: GitLab Duo Chat gets agentic AI makeover](https://about.gitlab.com/blog/2025/05/29/gitlab-duo-chat-gets-agentic-ai-makeover/)
+- [Blog: GitLab Duo Chat gets agentic AI makeover](https://about.gitlab.com/blog/gitlab-duo-chat-gets-agentic-ai-makeover/)

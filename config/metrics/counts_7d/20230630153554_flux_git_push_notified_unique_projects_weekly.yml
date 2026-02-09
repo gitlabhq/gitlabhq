@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.kubernetes_agent.flux_git_push_notified_unique_projects_weekly
 description: WAU of the unique projects which were notified by agentk about new Git push events in order to reconcile their Flux workloads
-product_group: environments
+product_group: runner_core
+product_categories:
+- environment_management
 value_type: number
 status: active
 milestone: "16.2"

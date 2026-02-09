@@ -310,7 +310,7 @@ This section describes common errors you can encounter.
 > GPG key.
 
 The pre-configured GitLab image in Azure (provided by Bitnami) uses
-a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gpg-key-for-gitlab-package-repositories-metadata-changing/).
+a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/gpg-key-for-gitlab-package-repositories-metadata-changing/).
 
 If you try to update the repositories, the system returns the following error:
 

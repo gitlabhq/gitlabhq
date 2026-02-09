@@ -164,7 +164,7 @@ Disadvantages:
 
 This is similar to the approach used for GitLab.com. To learn more about this process and how the
 different types of indexes were handled, see the blog post about
-[upgrading the operating system on our PostgreSQL database clusters](https://about.gitlab.com/blog/2022/08/12/upgrading-database-os/).
+[upgrading the operating system on our PostgreSQL database clusters](https://about.gitlab.com/blog/upgrading-database-os/).
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 

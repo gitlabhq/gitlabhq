@@ -283,7 +283,7 @@ This operation is a blocking operation, but it doesn't cause problems because th
 and therefore it does not have any records yet.
 
 > [!note]
-> Subtransactions are [disallowed](https://about.gitlab.com/blog/2021/09/29/why-we-spent-the-last-month-eliminating-postgresql-subtransactions/) in general.
+> Subtransactions are [disallowed](https://about.gitlab.com/blog/why-we-spent-the-last-month-eliminating-postgresql-subtransactions/) in general.
 > Use multiple, separate transactions
 > if needed as described in [Heavy operations in a single transaction](#heavy-operations-in-a-single-transaction).
 

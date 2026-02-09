@@ -63,5 +63,5 @@ the migration requirements:
 
 ## Related topics
 
-- How to migrate Atlassian Bamboo Server's CI/CD infrastructure to GitLab CI/CD, [part one](https://about.gitlab.com/blog/2022/07/06/migration-from-atlassian-bamboo-server-to-gitlab-ci/)
-  and [part two](https://about.gitlab.com/blog/2022/07/11/how-to-migrate-atlassians-bamboo-servers-ci-cd-infrastructure-to-gitlab-ci-part-two/)
+- How to migrate Atlassian Bamboo Server's CI/CD infrastructure to GitLab CI/CD, [part one](https://about.gitlab.com/blog/migration-from-atlassian-bamboo-server-to-gitlab-ci/)
+  and [part two](https://about.gitlab.com/blog/how-to-migrate-atlassians-bamboo-servers-ci-cd-infrastructure-to-gitlab-ci-part-two/)

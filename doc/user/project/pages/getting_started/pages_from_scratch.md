@@ -439,7 +439,7 @@ The example in this page uses [user-defined job names](../_index.md#user-defined
 
 ## Related topics
 
-- [Deploy your web app to staging and production](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2020/12/10/basics-of-gitlab-ci-updated/)
-- [Pull specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-- [Use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
+- [Deploy your web app to staging and production](https://about.gitlab.com/blog/ci-deployment-and-environments/)
+- [Run jobs sequentially, in parallel, or build a custom pipeline](https://about.gitlab.com/blog/basics-of-gitlab-ci-updated/)
+- [Pull specific directories from different projects](https://about.gitlab.com/blog/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+- [Use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/publish-code-coverage-report-with-gitlab-pages/)
