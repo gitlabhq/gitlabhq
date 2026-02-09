@@ -276,11 +276,19 @@ module Gitlab
         handler.validate!(body)
       # Could be either a Oj::ParseError or an EncodingError depending on
       # whether mimic_JSON has been called.
-      rescue Oj::ParseError, EncodingError
-        # If this string isn't valid JSON, let it go
-        nil
+      rescue Oj::ParseError, EncodingError => e
+        log_malformed_json(e)
+        raise ::Gitlab::Json::StreamValidator::InvalidJsonError, "Malformed JSON"
       ensure
         store_metadata(env, handler)
+      end
+
+      def log_malformed_json(exception)
+        Gitlab::AppLogger.warn(
+          message: "Malformed JSON rejected by JSON validation middleware",
+          error: exception.class.name,
+          error_message: exception.message.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+        )
       end
 
       def store_metadata(env, handler)

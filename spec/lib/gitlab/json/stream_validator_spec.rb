@@ -14,6 +14,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
       "Hash parameter too large" | described_class::HashSizeLimitError
       "Too many total parameters" | described_class::ElementCountLimitError
       "JSON body too large" | described_class::BodySizeExceededError
+      "Invalid JSON format" | described_class::InvalidJsonError
       "Invalid JSON: limit exceeded" | StandardError
     end
 
@@ -115,6 +116,24 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
         json = "\xFF\xFE123"
 
         expect { validator.validate!(json) }.to raise_error(EncodingError)
+      end
+    end
+
+    context 'when simple string contains invalid escape sequence' do
+      it 'raises InvalidJsonError' do
+        json = '"te\st"'
+
+        expect { validator.validate!(json) }
+          .to raise_error(described_class::InvalidJsonError, /Malformed JSON string/)
+      end
+    end
+
+    context 'when simple string is unterminated' do
+      it 'raises InvalidJsonError' do
+        json = '"hello'
+
+        expect { validator.validate!(json) }
+          .to raise_error(described_class::InvalidJsonError, /Malformed JSON string/)
       end
     end
   end
