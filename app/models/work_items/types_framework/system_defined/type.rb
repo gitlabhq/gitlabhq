@@ -8,18 +8,29 @@ module WorkItems
         include GlobalID::Identification
         include Gitlab::Utils::StrongMemoize
 
+        BASE_TYPES = [
+          WorkItems::TypesFramework::SystemDefined::Definitions::Issue.configuration,
+          WorkItems::TypesFramework::SystemDefined::Definitions::Incident.configuration,
+          WorkItems::TypesFramework::SystemDefined::Definitions::Task.configuration,
+          WorkItems::TypesFramework::SystemDefined::Definitions::Ticket.configuration
+        ].freeze
+
         attribute :name, :string
         attribute :base_type, :string
         attribute :icon_name, :string
 
         class << self
           def fixed_items
-            [
-              WorkItems::TypesFramework::SystemDefined::Definitions::Issue.configuration,
-              WorkItems::TypesFramework::SystemDefined::Definitions::Incident.configuration,
-              WorkItems::TypesFramework::SystemDefined::Definitions::Task.configuration,
-              WorkItems::TypesFramework::SystemDefined::Definitions::Ticket.configuration
-            ]
+            BASE_TYPES
+          end
+
+          # Helper method for the transition from the old `WorkItems::Type`
+          # to the new `WorkItems::TypesFramework::SystemDefined::Type`
+          #
+          # TODO: Remove this once the transition is complete.
+          # See https://gitlab.com/gitlab-org/gitlab/-/work_items/581926
+          def base_types
+            all.index_by(&:base_type)
           end
 
           def by_type(type)
@@ -28,7 +39,11 @@ module WorkItems
           end
 
           def find_by_type(type)
-            find_by(base_type: type.to_s)
+            find_by(base_type: type&.to_s)
+          end
+
+          def find_by_id(id)
+            find_by(id: id&.to_i)
           end
 
           alias_method :default_by_type, :find_by_type
@@ -53,10 +68,24 @@ module WorkItems
             name_sorting_asc(by_type(types))
           end
 
+          def with_widget_definition(widget_type)
+            all.select do |type|
+              ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+                .where(work_item_type_id: type.id, widget_type: widget_type.to_s)
+                .present?
+            end
+          end
+
           private
 
           def name_sorting_asc(items)
             items.sort_by { |type| type.name.downcase }
+          end
+        end
+
+        BASE_TYPES.each do |type|
+          define_method :"#{type[:base_type]}?" do
+            base_type == type[:base_type]
           end
         end
 

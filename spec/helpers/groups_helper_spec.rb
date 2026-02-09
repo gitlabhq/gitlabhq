@@ -471,8 +471,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         expect(helper.subgroup_creation_data(subgroup)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: name,
-          parent_group_url: group_url(group),
-          is_saas: 'false'
+          parent_group_url: group_url(group)
         })
       end
     end
@@ -482,8 +481,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         expect(helper.subgroup_creation_data(group)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: nil,
-          parent_group_url: nil,
-          is_saas: 'false'
+          parent_group_url: nil
         })
       end
     end

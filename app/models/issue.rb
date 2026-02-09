@@ -891,8 +891,9 @@ class Issue < ApplicationRecord
     project.autoclose_referenced_issues
   end
 
+  # Overridden in EE
   def epic_work_item?
-    work_item_type&.epic?
+    false
   end
 
   def group_epic_work_item?
@@ -1018,7 +1019,7 @@ class Issue < ApplicationRecord
   def allowed_work_item_type_change
     return unless changes[:work_item_type_id]
 
-    involved_types = work_item_type_provider.by_ids(changes[:work_item_type_id].compact).pluck(:base_type).uniq
+    involved_types = work_item_type_provider.base_types_by_ids(changes[:work_item_type_id].compact)
     disallowed_types = involved_types - CHANGEABLE_BASE_TYPES
 
     return if disallowed_types.empty?

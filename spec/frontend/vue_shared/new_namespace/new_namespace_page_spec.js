@@ -5,7 +5,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
-import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
 jest.mock('~/super_sidebar/constants');
 describe('Experimental new namespace creation app', () => {
@@ -15,7 +14,6 @@ describe('Experimental new namespace creation app', () => {
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
   const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
-  const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
   const findMountingPortal = () => wrapper.findComponent(MountingPortal);
 
@@ -111,41 +109,6 @@ describe('Experimental new namespace creation app', () => {
     await nextTick();
     expect(findWelcomePage().exists()).toBe(false);
     expect(findLegacyContainer().exists()).toBe(true);
-  });
-
-  describe('top level group alert', () => {
-    beforeEach(() => {
-      window.location.hash = `#${DEFAULT_PROPS.panels[0].name}`;
-    });
-
-    describe('when self-managed', () => {
-      it('does not render alert', () => {
-        createComponent();
-
-        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
-      });
-    });
-
-    describe('when on .com', () => {
-      it('does not render alert', () => {
-        createComponent({ propsData: { isSaas: true } });
-
-        expect(findNewTopLevelGroupAlert().exists()).toBe(false);
-      });
-
-      describe('when empty parent group name', () => {
-        it('renders alert', () => {
-          createComponent({
-            propsData: {
-              isSaas: true,
-              panels: [{ ...DEFAULT_PROPS.panels[0], detailProps: { parentGroupName: '' } }],
-            },
-          });
-
-          expect(findNewTopLevelGroupAlert().exists()).toBe(true);
-        });
-      });
-    });
   });
 
   describe('top bar', () => {

@@ -28,7 +28,6 @@ function initNewGroupCreation(el) {
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
-    isSaas,
     identityVerificationRequired,
     identityVerificationPath,
   } = el.dataset;
@@ -40,7 +39,6 @@ function initNewGroupCreation(el) {
     parentGroupName,
     importExistingGroupPath,
     hasErrors: parseBoolean(hasErrors),
-    isSaas: parseBoolean(isSaas),
   };
 
   const provide = {

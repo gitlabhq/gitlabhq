@@ -1,7 +1,6 @@
 <script>
 import { MountingPortal } from 'portal-vue';
 import { GlBreadcrumb, GlIcon, GlAlert } from '@gitlab/ui';
-import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 import { s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import LegacyContainer from './components/legacy_container.vue';
@@ -10,7 +9,6 @@ import WelcomePage from './components/welcome.vue';
 export default {
   components: {
     PageHeading,
-    NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
     GlAlert,
@@ -45,11 +43,6 @@ export default {
     persistenceKey: {
       type: String,
       required: true,
-    },
-    isSaas: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
 
@@ -86,10 +79,6 @@ export default {
             },
           ]
         : this.initialBreadcrumbs;
-    },
-
-    showNewTopLevelGroupAlert() {
-      return this.isSaas && this.activePanel.detailProps?.parentGroupName === '';
     },
 
     isUsingPaneledView() {
@@ -187,8 +176,6 @@ export default {
       </gl-alert>
 
       <div v-else>
-        <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
-
         <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
       </div>
     </template>

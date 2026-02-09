@@ -1,0 +1,14 @@
+# LabKit Logging Field Standardization TODO
+# This file tracks deprecated logging fields that need migration.
+#
+# To collect offenses from CI:
+#   bundle exec labkit-logging fetch <project> <pipeline_id>
+#
+# To collect offenses locally:
+#   LABKIT_LOGGING_TODO_UPDATE=true <local development process>
+#
+# More info: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/doc/FIELD_STANDARDIZATION.md
+
+skip_ci_failure: true  # Remove this flag once baseline is established
+
+offenses: []

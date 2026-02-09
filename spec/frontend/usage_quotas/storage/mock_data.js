@@ -57,11 +57,17 @@ export const MOCK_REPOSITORY = {
 
 export const MOCK_REPOSITORY_HEALTH_DETAILS = {
   updatedAt: '2026-01-01T00:00:00.000Z',
+  lastFullRepack: {
+    seconds: 1640995200, // 2022-01-01 00:00:00 UTC
+  },
   size: 5000,
   objects: {
     size: 3000,
     recentSize: 1500,
     staleSize: 1500,
+    packfileCount: 5,
+    cruftCount: 2,
+    looseObjectsCount: 100,
   },
   references: {
     packedSize: 2000,

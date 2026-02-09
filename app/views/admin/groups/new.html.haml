@@ -2,5 +2,10 @@
 - breadcrumb_title _("New group")
 
 - page_title _("New Group")
-= render ::Layouts::PageHeadingComponent.new(_('New group'))
+= render ::Layouts::PageHeadingComponent.new(_('New group')) do |c|
+  - c.with_description do
+    - groups_link = link_to('', help_page_path('user/group/_index.md'), target: '_blank', rel: 'noopener noreferrer')
+    - subgroups_link = link_to('', help_page_path('user/group/subgroups/_index.md'), target: '_blank', rel: 'noopener noreferrer')
+    = safe_format(s_('GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects.'), tag_pair(groups_link, :linkStart, :linkEnd))
+    = safe_format(s_('GroupsNew|Groups can also be nested by creating %{linkStart}subgroups%{linkEnd}.'), tag_pair(subgroups_link, :linkStart, :linkEnd))
 = render 'form', visibility_level: default_group_visibility

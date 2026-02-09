@@ -47673,6 +47673,25 @@ Represents security metrics.
 
 #### Fields with arguments
 
+##### `SecurityMetrics.vulnerabilitiesByAge`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Vulnerability age statistics based on predefined age bands.
+See [`VulnerabilitiesByAge`](#vulnerabilitiesbyage) for details.
+This feature is currently under development and not yet available for general use.
+
+Returns [`[VulnerabilitiesByAge!]`](#vulnerabilitiesbyage).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitymetricsvulnerabilitiesbyageseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
+
 ##### `SecurityMetrics.vulnerabilitiesOverTime`
 
 Vulnerability metrics over time with filtering and grouping capabilities.
@@ -49779,6 +49798,19 @@ Represents a virtual registry cleanup policy.
 | <a id="virtualregistrycleanuppolicynotifyonsuccess"></a>`notifyOnSuccess` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.7. **Status**: Experiment. Boolean to notify group owners on successful cleanup runs. |
 | <a id="virtualregistrycleanuppolicystatus"></a>`status` {{< icon name="warning-solid" >}} | [`PolicyStatus!`](#policystatus) | **Introduced** in GitLab 18.7. **Status**: Experiment. Current execution status of the cleanup policy. |
 | <a id="virtualregistrycleanuppolicyupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 18.7. **Status**: Experiment. Timestamp when the cleanup policy was last updated. |
+
+### `VulnerabilitiesByAge`
+
+Represents vulnerability metrics by age with filtering and grouping capabilities.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitiesbyagebyreporttype"></a>`byReportType` | [`[VulnerabilityReportTypeCount!]`](#vulnerabilityreporttypecount) | Vulnerability counts grouped by report type. |
+| <a id="vulnerabilitiesbyagebyseverity"></a>`bySeverity` | [`[VulnerabilitySeverityCount!]`](#vulnerabilityseveritycount) | Vulnerability counts grouped by severity level. |
+| <a id="vulnerabilitiesbyagecount"></a>`count` | [`Int`](#int) | Number of vulnerabilities in the age band. |
+| <a id="vulnerabilitiesbyagename"></a>`name` | [`String!`](#string) | Age band name ("< 7 days", "7 - 14 days", "15 - 30 days", "31 - 60 days", "61 - 90 days", "91 - 180 days", "> 180 days" ). |
 
 ### `VulnerabilitiesCountByDay`
 
@@ -56190,7 +56222,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_error_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
-| <a id="usercalloutfeaturenameenumnew_top_level_group_alert"></a>`NEW_TOP_LEVEL_GROUP_ALERT` | Callout feature name for new_top_level_group_alert. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumopenssl_callout"></a>`OPENSSL_CALLOUT` | Callout feature name for openssl_callout. |
 | <a id="usercalloutfeaturenameenumperiod_in_terraform_state_name_alert"></a>`PERIOD_IN_TERRAFORM_STATE_NAME_ALERT` | Callout feature name for period_in_terraform_state_name_alert. |

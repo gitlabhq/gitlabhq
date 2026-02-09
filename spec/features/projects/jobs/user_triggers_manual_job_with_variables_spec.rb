@@ -20,6 +20,8 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
   end
 
   it 'passes variables values correctly' do
+    click_button 'Variables'
+
     within_testid('ci-variable-row') do
       find_by_testid('ci-variable-key').set('key_name')
       find_by_testid('ci-variable-value').set('key_value')

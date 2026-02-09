@@ -62,7 +62,7 @@ module Users
       namespace_storage_limit_alert_alert_threshold: 57, # EE-only
       namespace_storage_limit_alert_error_threshold: 58, # EE-only
       # 60 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154140
-      new_top_level_group_alert: 61,
+      # 61 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221324
       # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       # 65 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221274

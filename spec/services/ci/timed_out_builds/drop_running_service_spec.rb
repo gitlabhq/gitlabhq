@@ -33,12 +33,33 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
     end
 
     context 'when the job is not complete' do
-      context 'when the status transition fails' do
-        it 'dooms the job' do
+      context 'when the status changes to completed on a retry in retry_lock' do
+        before do
           allow_next_found_instance_of(Ci::Build) do |build|
-            allow(build).to receive(:drop!).and_raise(StandardError)
-          end
+            allow(build).to receive(:drop!) do
+              raise ActiveRecord::StaleObjectError, "mocked stale"
+            end
 
+            allow(build).to receive(:reset) do
+              build.success!
+            end
+          end
+        end
+
+        it 'does not doom the job' do
+          service.execute
+          expect(job.reload).to be_success
+        end
+      end
+
+      context 'when the status transition fails' do
+        before do
+          allow_next_found_instance_of(Ci::Build) do |build|
+            allow(build).to receive(:drop!).and_raise(StateMachines::InvalidTransition)
+          end
+        end
+
+        it 'dooms the job' do
           service.execute
           expect(job.reload.status).to eq("failed")
           expect(job.failure_reason).to eq("data_integrity_failure")

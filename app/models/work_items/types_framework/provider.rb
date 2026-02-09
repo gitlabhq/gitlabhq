@@ -14,6 +14,12 @@ module WorkItems
     class Provider
       include Gitlab::Utils::StrongMemoize
 
+      class << self
+        def unfiltered_base_types
+          WorkItems::Type.base_types.keys
+        end
+      end
+
       def initialize(namespace = nil)
         # Always try to pass the current namespace or subtypes(Group, Project::Namepsace) and not the root ancestor.
         #
@@ -27,12 +33,25 @@ module WorkItems
         @namespace = namespace
       end
 
+      attr_reader :namespace
+
+      def fetch_work_item_type(work_item_type)
+        work_item_type_id = work_item_type.is_a?(Integer) ? work_item_type : work_item_type&.id
+        type_class.find_by(id: work_item_type_id)
+      end
+
       # This list of types will exclude custom types because they're based on top of the `issue` base type.
       # We use the base types in cases where we know an item needs to have a certain type
       # which doesn't apply to custom types.
       def unfiltered_base_types
-        # TODO: Introduce system defined types behind feature flag here.
-        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/581926
+        # TODO: Remove the comment once we integrate the system defined types in the provider
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
+        # if use_system_defined_types?
+        #   type_class.all.map(&:base_type)
+        # else
+        #   type_class.base_types.keys
+        # end
+
         type_class.base_types.keys
       end
 
@@ -57,6 +76,16 @@ module WorkItems
       end
 
       def ids_by_base_types(types)
+        # TODO: Remove the comment once we integrate the system defined types in the provider
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
+        # if use_system_defined_types?
+        #   by_base_types(types).map(&:id)
+        # else
+        #   Array(types).filter_map do |type|
+        #     type_class::BASE_TYPES.dig(type.to_sym, :id)
+        #   end
+        # end
+
         Array(types).filter_map do |type|
           type_class::BASE_TYPES.dig(type.to_sym, :id)
         end
@@ -82,7 +111,7 @@ module WorkItems
         model_id = gid.try(:model_id)
         return unless model_id.present?
 
-        type_class.find_by_id(model_id)
+        find_by_id(model_id)
       end
 
       # Id is ambiguous in terms of system-defined and custom types.
@@ -94,11 +123,33 @@ module WorkItems
       #
       # For now it looks like we can use the GID in most cases.
       def find_by_id(id)
-        type_class.find_by_id(id)
+        type_class.find_by(id: id.to_i)
       end
 
       def by_ids(ids)
-        type_class.where(id: ids)
+        integer_ids = Array.wrap(ids).map(&:to_i)
+        type_class.where(id: integer_ids)
+      end
+
+      # This method should be removed as it's only used in the old WorkItems::Type model
+      # and not in the new WorkItems::TypesFramework::SystemDefined::Type model.
+      # The `with_widget_definition_preload` method is specific to the old model
+      # and is not needed when using system-defined types.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581931
+      def by_ids_with_widget_definition_preload(ids)
+        # TODO: Remove the comment once we integrate the system defined types in the provider
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
+        #   if use_system_defined_types?
+        #     by_ids(ids)
+        #   else
+        #     by_ids(ids).with_widget_definition_preload
+        #   end
+
+        by_ids(ids).with_widget_definition_preload
+      end
+
+      def base_types_by_ids(ids)
+        type_class.where(id: ids).map(&:base_type).uniq
       end
 
       def all_ordered_by_name
@@ -106,10 +157,27 @@ module WorkItems
       end
 
       def by_ids_ordered_by_name(ids)
+        # TODO: Remove the comment once we integrate the system defined types in the provider
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
+        # if use_system_defined_types?
+        #   type_class.by_ids_ordered_by_name(ids)
+        # else
+        #   by_ids(ids).order_by_name_asc
+        # end
+
         by_ids(ids).order_by_name_asc
       end
 
       def by_base_types_ordered_by_name(names)
+        # TODO: Remove the comment once we integrate the system defined types in the provider
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
+        #
+        # if use_system_defined_types?
+        #   type_class.by_base_type_ordered_by_name(names)
+        # else
+        #   by_base_types(names).order_by_name_asc
+        # end
+
         by_base_types(names).order_by_name_asc
       end
 
@@ -119,6 +187,10 @@ module WorkItems
         # TODO: Introduce system defined types behind feature flag here.
         # See https://gitlab.com/gitlab-org/gitlab/-/work_items/581926
         WorkItems::Type
+      end
+
+      def use_system_defined_types?
+        Feature.enabled?(:work_item_system_defined_type, :instance)
       end
     end
   end

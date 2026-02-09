@@ -106,6 +106,10 @@ describe('Manual Variables Form', () => {
     it('provides job variables form', () => {
       expect(findVariablesForm().props('jobId')).toBe(mockId);
     });
+
+    it('passes isExpanded as true when ciJobInputs feature flag is disabled', () => {
+      expect(findVariablesForm().props('isExpanded')).toBe(true);
+    });
   });
 
   describe('when job has not been retried', () => {
@@ -291,6 +295,10 @@ describe('Manual Variables Form', () => {
           },
         });
         await waitForPromises();
+      });
+
+      it('passes isExpanded as false when ciJobInputs feature flag is enabled', () => {
+        expect(findVariablesForm().props('isExpanded')).toBe(false);
       });
 
       it('passes saved inputs to form', () => {

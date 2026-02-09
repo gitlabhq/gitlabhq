@@ -406,11 +406,6 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
         expect(described_class.integration_issue_type(issue.work_item_type.base_type)).to eq(expected_i18n_issue_type)
       end
     end
-
-    it "only consider these enumeration values are valid" do
-      expected_valid_types = %w[issue incident test_case requirement task objective key_result epic ticket]
-      expect(WorkItems::Type.base_types.keys).to contain_exactly(*expected_valid_types)
-    end
   end
 
   describe '#integration_todo_target_type' do

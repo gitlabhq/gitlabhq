@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import RepositoryHealthDetailsHeader from './repository_health_details_header.vue';
 import RepositoryHealthDetailsStorageBreakdown from './repository_health_details_storage_breakdown.vue';
 import RepositoryHealthDetailsPerformanceOptimizations from './repository_health_details_performance_optimizations.vue';
+import RepositoryHealthDetailsMaintenanceStatus from './repository_health_details_maintenance_status.vue';
 
 export default {
   name: 'RepositoryHealthDetailsSection',
@@ -18,6 +19,7 @@ export default {
     RepositoryHealthDetailsHeader,
     RepositoryHealthDetailsStorageBreakdown,
     RepositoryHealthDetailsPerformanceOptimizations,
+    RepositoryHealthDetailsMaintenanceStatus,
   },
   props: {
     repository: {
@@ -100,6 +102,7 @@ export default {
       />
       <repository-health-details-storage-breakdown :health-details="healthDetails" />
       <repository-health-details-performance-optimizations :health-details="healthDetails" />
+      <repository-health-details-maintenance-status :health-details="healthDetails" />
     </template>
   </section>
 </template>

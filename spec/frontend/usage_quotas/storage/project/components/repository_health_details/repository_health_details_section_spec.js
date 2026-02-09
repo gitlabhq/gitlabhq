@@ -9,6 +9,7 @@ import RepositoryHealthDetailsSection from '~/usage_quotas/storage/project/compo
 import RepositoryHealthDetailsHeader from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_header.vue';
 import RepositoryHealthDetailsStorageBreakdown from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_storage_breakdown.vue';
 import RepositoryHealthDetailsPerformanceOptimizations from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_performance_optimizations.vue';
+import RepositoryHealthDetailsMaintenanceStatus from '~/usage_quotas/storage/project/components/repository_health_details/repository_health_details_maintenance_status.vue';
 import {
   MOCK_REPOSITORY,
   MOCK_REPOSITORY_HEALTH_DETAILS,
@@ -71,6 +72,8 @@ describe('RepositoryHealthDetailsSection', () => {
     wrapper.findComponent(RepositoryHealthDetailsStorageBreakdown);
   const findRepositoryHealthDetailsPerformanceOptimizations = () =>
     wrapper.findComponent(RepositoryHealthDetailsPerformanceOptimizations);
+  const findRepositoryHealthDetailsMaintenanceStatus = () =>
+    wrapper.findComponent(RepositoryHealthDetailsMaintenanceStatus);
 
   describe('when no projectId exists', () => {
     beforeEach(async () => {
@@ -174,6 +177,12 @@ describe('RepositoryHealthDetailsSection', () => {
 
     it('renders RepositoryHealthDetailsPerformanceOptimizations with correct props', () => {
       expect(findRepositoryHealthDetailsPerformanceOptimizations().props('healthDetails')).toEqual(
+        MOCK_REPOSITORY_HEALTH_DETAILS,
+      );
+    });
+
+    it('renders RepositoryHealthDetailsMaintenanceStatus with correct props', () => {
+      expect(findRepositoryHealthDetailsMaintenanceStatus().props('healthDetails')).toEqual(
         MOCK_REPOSITORY_HEALTH_DETAILS,
       );
     });

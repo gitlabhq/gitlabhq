@@ -55,10 +55,13 @@ module Ci
       def drop_incomplete_build(type, build, reason)
         log_dropping_message(type, build, reason)
         Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
-          b.drop!(reason)
+          # retry_lock resets the build on retry. Builds only lock on status, so
+          # if we retry then the status has changed. This saves us a rescue +
+          # query below.
+          b.drop!(reason) unless b.complete?
         end
       rescue StandardError => ex
-        # If these causes many race conditions we will need a common lock of
+        # If this causes many race conditions we will need a common lock of
         # build status updates and this method.
         # Errors are expected when jobs complete during timeout processing.
         # Only track exceptions for incomplete builds as those are unexpected.

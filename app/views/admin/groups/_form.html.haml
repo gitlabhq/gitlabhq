@@ -29,9 +29,6 @@
       = render 'shared/admin/admin_note_form', f: f
 
   - if @group.new_record?
-    = render Pajamas::AlertComponent.new(dismissible: false) do |c|
-      - c.with_body do
-        = render 'shared/group_tips'
     .settings-sticky-footer.gl-flex.gl-gap-3
       = f.submit _('Create group'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_groups_path) do

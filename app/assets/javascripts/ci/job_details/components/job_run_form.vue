@@ -193,16 +193,11 @@ export default {
     <job-variables-form
       v-if="canSetPipelineVariables"
       :job-id="jobId"
+      :is-expanded="!glFeatures.ciJobInputs"
       @update-variables="onVariablesUpdate"
     />
 
-    <div class="gl-mt-5 gl-flex gl-justify-center gl-gap-x-2">
-      <gl-button
-        v-if="isRetryable"
-        data-testid="cancel-btn"
-        @click="$emit('hide-manual-variables-form')"
-        >{{ $options.i18n.cancel }}
-      </gl-button>
+    <div class="gl-mt-5 gl-flex gl-gap-x-4">
       <gl-button
         variant="confirm"
         category="primary"
@@ -211,6 +206,12 @@ export default {
         @click="runJob"
       >
         {{ runBtnText }}
+      </gl-button>
+      <gl-button
+        v-if="isRetryable"
+        data-testid="cancel-btn"
+        @click="$emit('hide-manual-variables-form')"
+        >{{ $options.i18n.cancel }}
       </gl-button>
     </div>
   </div>

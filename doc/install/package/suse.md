@@ -79,7 +79,7 @@ To install GitLab, first add the GitLab package repository.
    {{< tab title="Enterprise Edition" >}}
 
    ```shell
-   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
+   curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh" | sudo bash
    ```
 
    {{< /tab >}}
@@ -87,7 +87,7 @@ To install GitLab, first add the GitLab package repository.
    {{< tab title="Community Edition" >}}
 
    ```shell
-   curl "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh" | sudo bash
+   curl --location "https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh" | sudo bash
    ```
 
    {{< /tab >}}

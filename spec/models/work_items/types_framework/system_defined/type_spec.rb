@@ -347,6 +347,51 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
         expect(result1.map(&:name)).to eq(result2.map(&:name))
       end
     end
+
+    describe '.with_widget_definition' do
+      let(:assignees_widget_type) { :assignees }
+      let(:description_widget_type) { :description }
+      let(:non_existent_widget_type) { :non_existent_widget }
+
+      it 'returns types that have the specified widget definition' do
+        types = described_class.with_widget_definition(assignees_widget_type)
+
+        expect(types).to be_present
+        expect(types).to all(be_a(described_class))
+      end
+
+      it 'only returns types with the specified widget' do
+        types = described_class.with_widget_definition(assignees_widget_type)
+
+        types.each do |type|
+          widget_defs = WorkItems::TypesFramework::SystemDefined::WidgetDefinition
+            .where(work_item_type_id: type.id, widget_type: assignees_widget_type.to_s)
+
+          expect(widget_defs).to be_present
+        end
+      end
+
+      it 'returns empty array when no types have the widget' do
+        types = described_class.with_widget_definition(non_existent_widget_type)
+
+        expect(types).to be_empty
+      end
+
+      it 'accepts string widget type' do
+        types = described_class.with_widget_definition('description')
+
+        expect(types).to be_present
+      end
+
+      it 'returns different results for different widgets' do
+        types_with_assignees = described_class.with_widget_definition(:assignees)
+        types_with_description = described_class.with_widget_definition(:description)
+
+        # Both should have results but they might be different sets
+        expect(types_with_assignees).to be_present
+        expect(types_with_description).to be_present
+      end
+    end
   end
 
   describe 'GlobalID integration' do
@@ -381,6 +426,35 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     describe '#to_gid' do
       it 'returns the same result as to_global_id' do
         expect(issue_type.to_gid).to eq(issue_type.to_global_id)
+      end
+    end
+  end
+
+  describe 'dynamically defined predicate methods' do
+    # Get all available types from the fixed_items configuration
+    let(:all_types) { described_class.all }
+    let(:type_names) { all_types.map(&:base_type) }
+
+    it 'defines predicate methods for all work item types' do
+      # Verify that predicate methods are defined for each type
+      type_names.each do |type_name|
+        expect(described_class.all.first).to respond_to(:"#{type_name}?")
+      end
+    end
+
+    context 'when verifying all types have unique predicates' do
+      it 'ensures each type only returns true for its own predicate' do
+        all_types.each do |type|
+          type_names.each do |type_name|
+            predicate_result = type.public_send(:"#{type_name}?")
+
+            if type.base_type == type_name
+              expect(predicate_result).to be true
+            else
+              expect(predicate_result).to be false
+            end
+          end
+        end
       end
     end
   end
@@ -549,8 +623,8 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
   end
 
   describe 'hierarchy methods' do
-    let(:issue_type) { described_class.find_by_type(:issue) }
-    let(:task_type) { described_class.find_by_type(:task) }
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+    let(:task_type) { build(:work_item_system_defined_type, :task) }
 
     describe '#allowed_child_types_by_name' do
       it 'returns child types ordered by name' do
@@ -567,7 +641,7 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
 
       it 'orders results by name' do
         # Add multiple children to test ordering
-        incident_type = described_class.find_by_type(:incident)
+        incident_type = build(:work_item_system_defined_type, :incident)
 
         children = incident_type.allowed_child_types_by_name
         names = children.map(&:name)
@@ -696,8 +770,8 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
   end
 
   describe '#supported_conversion_types' do
-    let(:issue_type) { described_class.find_by_type(:issue) }
-    let(:task_type) { described_class.find_by_type(:task) }
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+    let(:task_type) { build(:work_item_system_defined_type, :task) }
     let(:project) { build(:project) }
     let(:user) { build(:user) }
 
@@ -1066,6 +1140,146 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     describe '#enabled?' do
       it 'returns true' do
         expect(type.enabled?).to be true
+      end
+    end
+  end
+
+  describe '.base_types' do
+    it 'includes all types from .all' do
+      base_types = described_class.base_types
+      all_types = described_class.all
+
+      expect(base_types.values).to match_array(all_types)
+    end
+
+    it 'uses base_type as the key' do
+      base_types = described_class.base_types
+
+      base_types.each do |key, value|
+        expect(value.base_type).to eq(key)
+      end
+    end
+  end
+
+  describe '.find_by_id' do
+    it 'finds type by numeric id' do
+      type = described_class.find_by_id(1)
+
+      expect(type).to be_present
+      expect(type.id).to eq(1)
+      expect(type.name).to eq('Issue')
+    end
+
+    it 'finds type by string id' do
+      type = described_class.find_by_id('5')
+
+      expect(type).to be_present
+      expect(type.id).to eq(5)
+      expect(type.name).to eq('Task')
+    end
+
+    it 'returns nil for non-existent id' do
+      expect(described_class.find_by_id(999)).to be_nil
+    end
+
+    it 'returns nil for nil id' do
+      expect(described_class.find_by_id(nil)).to be_nil
+    end
+  end
+
+  describe '#configuration_class' do
+    it 'returns the correct configuration class for issue type' do
+      issue_type = build(:work_item_system_defined_type, :issue)
+
+      expect(issue_type.configuration_class).to eq(
+        WorkItems::TypesFramework::SystemDefined::Definitions::Issue
+      )
+    end
+
+    it 'returns the correct configuration class for incident type' do
+      incident_type = build(:work_item_system_defined_type, :incident)
+
+      expect(incident_type.configuration_class).to eq(
+        WorkItems::TypesFramework::SystemDefined::Definitions::Incident
+      )
+    end
+
+    it 'returns the correct configuration class for task type' do
+      task_type = build(:work_item_system_defined_type, :task)
+
+      expect(task_type.configuration_class).to eq(
+        WorkItems::TypesFramework::SystemDefined::Definitions::Task
+      )
+    end
+
+    it 'returns the correct configuration class for ticket type' do
+      ticket_type = build(:work_item_system_defined_type, :ticket)
+
+      expect(ticket_type.configuration_class).to eq(
+        WorkItems::TypesFramework::SystemDefined::Definitions::Ticket
+      )
+    end
+
+    it 'camelizes the base_type name' do
+      issue_type = build(:work_item_system_defined_type, :issue)
+
+      expect(issue_type.base_type).to eq('issue')
+      expect(issue_type.configuration_class.name).to include('Issue')
+    end
+  end
+
+  describe '#license_name' do
+    let(:type) { build(:work_item_system_defined_type) }
+
+    context 'when configuration_class defines a license_name' do
+      it 'returns the license name' do
+        allow(type.configuration_class).to receive(:license_name).and_return('premium')
+
+        expect(type.license_name).to eq('premium')
+      end
+    end
+
+    context 'when configuration_class does not define a license_name' do
+      it 'returns nil' do
+        allow(type.configuration_class).to receive(:license_name).and_return(nil)
+
+        expect(type.license_name).to be_nil
+      end
+    end
+
+    context 'when configuration_class does not respond to license_name' do
+      it 'returns nil' do
+        allow(type.configuration_class).to receive(:try).with(:license_name).and_return(nil)
+
+        expect(type.license_name).to be_nil
+      end
+    end
+  end
+
+  describe '#licensed?' do
+    let(:type) { build(:work_item_system_defined_type) }
+
+    context 'when license_name is present' do
+      it 'returns true' do
+        allow(type).to receive(:license_name).and_return('premium')
+
+        expect(type.licensed?).to be true
+      end
+    end
+
+    context 'when license_name is nil' do
+      it 'returns false' do
+        allow(type).to receive(:license_name).and_return(nil)
+
+        expect(type.licensed?).to be false
+      end
+    end
+
+    context 'when license_name is an empty string' do
+      it 'returns false' do
+        allow(type).to receive(:license_name).and_return('')
+
+        expect(type.licensed?).to be false
       end
     end
   end
