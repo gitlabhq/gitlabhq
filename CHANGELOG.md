@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.6.6 (2026-02-09)
+
+### Fixed (1 change)
+
+- [Add preflight checks to resume_indexing rake task](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1bd343ec2e8cd5add61639d7ed814f45af0b7e1c) **GitLab Enterprise Edition**
+
+### Security (14 changes)
+
+- [587546 DoS Customizable Dashboards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52eab6dc3f9cc03b40a3e782b75166ec2a6abc87) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5729))
+- [Fix SSRF in virtual_registries without restriction](https://gitlab.com/gitlab-org/security/gitlab/-/commit/646f839bd30081a7fd5bac164ee43dfcabf972c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5628))
+- [Filter groups by accessible to user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/19ab1d761584c8c55acb8df886d1a7966f2397bb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5716))
+- [Secure Web IDE workbench URLs with session-based secret](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf8c570f8594540252652769b8239f3ac212283c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5682))
+- [Don't quadratically re-process children in TaskListFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/328ca8aeaaef5223bf40f969cae73f943f4c413c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5724))
+- [Add authorization for pipeline schedule inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e8d96b640567828f535fbf12a824c6d8c19ff566) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5692))
+- [Don't copy the whole path per component removed in RepositoryLinkFilter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/90d61bcbab6afb20b1d169d3383e3bac9e938dce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5720))
+- [Fix DoS vulnerability via malformed JSON escape sequences](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b4ec2ad98f1302cecc28b2b02d7f0ff4efc5ffa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5710))
+- [Pass full context to query service in /api/glql; deny sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8b41df9ab30249d3fae04fcfc1c3ac20e3dbcb2b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5704))
+- [Don't render label link tooltip names as HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7a933b5c8f55ec69cb7794013b592dbb4e3978b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5700))
+- [Fix test case title html injection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f87270f125d6ffc4468ae88fdab5d6f5d1c49f06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5685))
+- [HTML injection in vulnerability reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e7d09be7146f2766b5bb8f38fcc78c88f6a6b0b4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5668))
+- [Disable GraphQL Introspection](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7274cb7edc5566e5a46b3dce771168472b6dc407) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5638))
+- [Enforce git import url validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b87264c399f9f58f4fc0cd988d821c28dac405fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5674))
+
 ## 18.6.5 (2026-02-04)
 
 ### Fixed (4 changes)
