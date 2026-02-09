@@ -7,8 +7,6 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
   let(:group) { create(:group) }
   let(:page_path) { dashboard_groups_path }
 
-  it_behaves_like 'page with product usage data collection banner'
-
   context 'when user has no groups' do
     before do
       sign_in(user)

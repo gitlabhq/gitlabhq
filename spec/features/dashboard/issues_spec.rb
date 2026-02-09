@@ -26,10 +26,6 @@ RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_cate
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :issues_dashboard_path, :issues
 
-  it_behaves_like 'page with product usage data collection banner' do
-    let(:page_path) { issues_dashboard_path(assignee_username: user.username) }
-  end
-
   context 'for accessibility testing' do
     before do
       visit_dashboard_issues

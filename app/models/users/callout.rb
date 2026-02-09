@@ -104,7 +104,7 @@ module Users
       # 100 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220975
       pipeline_new_inputs_adoption_banner: 101,
       pipeline_schedules_inputs_adoption_banner: 102,
-      product_usage_data_collection_changes: 103,
+      # 103 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222229
       # 104 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983

@@ -17,12 +17,6 @@ module Users
     NEW_MR_DASHBOARD_BANNER = 'new_mr_dashboard_banner'
     EMAIL_OTP_ENROLLMENT_CALLOUT = 'email_otp_enrollment_callout'
 
-    def render_product_usage_data_collection_changes(current_user)
-      return unless current_user&.can_admin_all_resources?
-
-      render 'shared/product_usage_data_collection_changes_callout'
-    end
-
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
         can?(current_user, :create_cluster, project) &&

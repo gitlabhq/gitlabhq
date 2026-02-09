@@ -54,12 +54,12 @@ module Security
       def comment
         <<~YAML
           # You can override the included template(s) by including variable overrides
-          # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
-          # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-          # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+          # SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
+          # Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/#customizing-analyzer-behavior
+          # Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
           # Note that environment variables can be set in several places
-          # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
         YAML
       end
     end

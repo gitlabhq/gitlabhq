@@ -269,47 +269,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     end
   end
 
-  describe '.render_product_usage_data_collection_changes', :do_not_mock_admin_mode_setting do
-    let_it_be(:admin) { create(:user, :admin) }
-
-    subject(:render_callout) { helper.render_product_usage_data_collection_changes(current_user) }
-
-    context 'when current_user is nil' do
-      let(:current_user) { nil }
-
-      it 'does not render the callout' do
-        expect(helper).not_to receive(:render)
-        render_callout
-      end
-    end
-
-    context 'when current_user is not an admin' do
-      let(:current_user) { user }
-
-      before do
-        allow(user).to receive(:can_admin_all_resources?).and_return(false)
-      end
-
-      it 'does not render the callout' do
-        expect(helper).not_to receive(:render)
-        render_callout
-      end
-    end
-
-    context 'when current_user is admin' do
-      let(:current_user) { admin }
-
-      before do
-        allow(admin).to receive(:can_admin_all_resources?).and_return(true)
-      end
-
-      it 'renders the callout' do
-        expect(helper).to receive(:render).with('shared/product_usage_data_collection_changes_callout')
-        render_callout
-      end
-    end
-  end
-
   describe '#show_email_otp_enrollment_callout?' do
     subject { helper.show_email_otp_enrollment_callout? }
 

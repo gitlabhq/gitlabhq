@@ -22,7 +22,7 @@ module Security
       end
 
       def description
-        _('Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST IaC settings.')
+        _('Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables) to customize SAST IaC settings.')
       end
 
       def name

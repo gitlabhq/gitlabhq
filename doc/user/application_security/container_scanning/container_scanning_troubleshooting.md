@@ -93,3 +93,18 @@ up to date.
 
 To resolve this issue, update the container scanning image. For details, see
 [update local container image](_index.md#update-local-container-image).
+
+## Error: `Unknown scheme in CS_IMAGE. Allowed schemes: docker, archive`
+
+You might encounter this error when the `CS_IMAGE` environment variable is set with an invalid or
+missing URI scheme.
+
+This issue occurs when the image reference doesn't use one of the supported schemes. The scheme
+must be either the `docker://` scheme for container images from a registry, or
+the `archive://` scheme for local tar archive files.
+
+If you're scanning a standard container image, you can omit the scheme and use just the image name
+(for example, `myapp:latest` or `registry.example.com/myapp:latest`), as the analyzer defaults to
+the Docker scheme.
+
+Verify the `CS_IMAGE` variable is set correctly and doesn't contain typos or unsupported prefixes.
