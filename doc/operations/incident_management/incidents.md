@@ -167,7 +167,7 @@ every 15 minutes so you do not have to refresh the page to see the time remainin
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To configure the timer:
 

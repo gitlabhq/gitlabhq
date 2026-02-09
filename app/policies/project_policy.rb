@@ -759,7 +759,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_runners
     enable :read_runners
     enable :read_runners_registration_token
-    enable :register_project_runners
     enable :update_runners_registration_token
   end
 
@@ -1231,12 +1230,10 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
-    prevent :register_project_runners
     prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do
-    prevent :register_project_runners
     prevent :read_runners_registration_token
     prevent :update_runners_registration_token
   end

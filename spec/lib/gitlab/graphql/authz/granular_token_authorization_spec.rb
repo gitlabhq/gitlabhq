@@ -74,7 +74,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
 
         it 'raises an ResourceNotAvailable error that includes the message from the service response' do
           expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable,
-            'Unable to determine boundary and permissions for authorization')
+            'Unable to determine boundaries and permissions for authorization')
         end
       end
 

@@ -22,7 +22,7 @@ where you manage [on-call schedules](oncall_schedules.md).
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 - You must have an [on-call schedule](oncall_schedules.md).
 
 To create an escalation policy:

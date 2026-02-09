@@ -13,6 +13,8 @@ import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form
 import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
 import PipelineInputsPreviewDrawer from '~/ci/common/pipeline_inputs/pipeline_inputs_preview_drawer.vue';
 import getPipelineInputsQuery from '~/ci/common/pipeline_inputs/graphql/queries/pipeline_creation_inputs.query.graphql';
+import { CI_FORM_MAX_POLLING_TIME, CI_FORM_POLLING_INTERVAL } from '~/ci/constants';
+
 /** mock data to be replaced with fixtures - https://gitlab.com/gitlab-org/gitlab/-/issues/525243 */
 import {
   mockPipelineInputsResponse,
@@ -23,7 +25,9 @@ import {
 } from './mock_data';
 
 Vue.use(VueApollo);
+
 jest.mock('~/alert');
+jest.useFakeTimers();
 
 const defaultProps = {
   queryRef: 'main',
@@ -467,6 +471,154 @@ describe('PipelineInputsForm', () => {
       it('does not execute the GraphQL query', () => {
         expect(pipelineInputsHandler).not.toHaveBeenCalled();
         expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('when polling for cached inputs', () => {
+    const mockCacheMiss = () => ({
+      data: {
+        project: {
+          id: mockPipelineInputsResponse.data.project.id,
+          ciPipelineCreationInputs: null,
+        },
+      },
+    });
+
+    const waitForPollingCycles = async (cycles = 1) => {
+      for (let i = 0; i < cycles; i += 1) {
+        jest.runOnlyPendingTimers();
+
+        // Each poll cycle must complete before the next one starts
+        // eslint-disable-next-line no-await-in-loop
+        await waitForPromises();
+      }
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('polling lifecycle', () => {
+      it('sets up polling with correct intervals on mount', async () => {
+        pipelineInputsHandler = jest
+          .fn()
+          .mockResolvedValueOnce(mockCacheMiss())
+          .mockResolvedValueOnce(mockPipelineInputsResponse);
+
+        await createComponent();
+        await waitForPromises();
+
+        expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), CI_FORM_POLLING_INTERVAL);
+        expect(pipelineInputsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ failOnCacheMiss: false }),
+        );
+      });
+
+      it('continues polling on cache miss and stops when data is received', async () => {
+        pipelineInputsHandler = jest
+          .fn()
+          .mockResolvedValueOnce(mockCacheMiss())
+          .mockResolvedValueOnce(mockPipelineInputsResponse);
+
+        createComponent();
+
+        expect(findSkeletonLoader().exists()).toBe(true);
+
+        await waitForPromises();
+        expect(pipelineInputsHandler).toHaveBeenCalledTimes(1);
+
+        await waitForPollingCycles();
+
+        expect(pipelineInputsHandler).toHaveBeenCalledTimes(2);
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('sends failOnCacheMiss: true on final attempt and stops polling', async () => {
+        pipelineInputsHandler = jest
+          .fn()
+          .mockImplementation(({ failOnCacheMiss }) =>
+            Promise.resolve(
+              failOnCacheMiss
+                ? { data: { project: { ciPipelineCreationInputs: [] } } }
+                : mockCacheMiss(),
+            ),
+          );
+
+        await createComponent();
+
+        await waitForPollingCycles(CI_FORM_MAX_POLLING_TIME / CI_FORM_POLLING_INTERVAL);
+
+        expect(pipelineInputsHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ failOnCacheMiss: true }),
+        );
+        expect(wrapper.vm.pollInterval).toBe(0);
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('clears timeouts on component destroy', async () => {
+        pipelineInputsHandler = jest.fn().mockResolvedValue(mockCacheMiss());
+
+        await createComponent();
+        wrapper.destroy();
+
+        expect(clearTimeout).toHaveBeenCalled();
+      });
+    });
+
+    describe('error handling', () => {
+      it('stops polling and shows alert on query failure', async () => {
+        pipelineInputsHandler = jest
+          .fn()
+          .mockResolvedValueOnce(mockCacheMiss())
+          .mockRejectedValueOnce(new Error('Network error'));
+
+        await createComponent();
+
+        jest.runOnlyPendingTimers();
+
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was a problem fetching the pipeline inputs. Please try again.',
+        });
+        expect(wrapper.vm.pollInterval).toBe(0);
+      });
+    });
+
+    describe('when queryRef changes', () => {
+      it('resets state, clears timeouts, and restarts polling', async () => {
+        pipelineInputsHandler = jest
+          .fn()
+          .mockResolvedValueOnce(mockCacheMiss())
+          .mockResolvedValueOnce(mockPipelineInputsResponse);
+
+        await createComponent();
+        await waitForPromises();
+
+        pipelineInputsHandler.mockResolvedValueOnce(mockCacheMiss());
+        await wrapper.setProps({ queryRef: 'new-branch' });
+
+        expect(clearTimeout).toHaveBeenCalled();
+        expect(wrapper.vm.sourceInputs).toBeNull();
+        expect(findSkeletonLoader().exists()).toBe(true);
+      });
+
+      it('fetches inputs for the new ref', async () => {
+        pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+        await createComponent();
+
+        expect(pipelineInputsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ ref: 'main' }),
+        );
+
+        jest.clearAllMocks();
+        await wrapper.setProps({ queryRef: 'develop' });
+        await waitForPromises();
+
+        expect(pipelineInputsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ ref: 'develop' }),
+        );
       });
     });
   });

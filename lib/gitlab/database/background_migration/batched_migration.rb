@@ -334,7 +334,29 @@ module Gitlab
 
           return unless total_tuple_count.to_i > 0
 
-          100 * migrated_tuple_count / total_tuple_count
+          100.0 * migrated_tuple_count / total_tuple_count
+        end
+
+        def compute_estimated_seconds_remaining
+          return if finished? || finalized?
+          return if migrated_tuple_count == 0
+
+          stats = succeeded_job_stats
+          return if stats.nil?
+
+          average_job_time = stats[:total_duration] / stats[:job_count]
+          average_batch_size = migrated_tuple_count.to_f / stats[:job_count]
+          remaining_batches = (total_tuple_count - migrated_tuple_count) / average_batch_size
+
+          (remaining_batches * [average_job_time, interval].max).to_i
+        end
+        strong_memoize_attr :compute_estimated_seconds_remaining
+
+        def estimated_time_remaining
+          seconds = compute_estimated_seconds_remaining
+          return unless seconds&.positive?
+
+          ChronicDuration.output(seconds, format: :long)
         end
 
         def finalize_command
@@ -345,6 +367,18 @@ module Gitlab
         end
 
         private
+
+        def succeeded_job_stats
+          job_count, total_duration = batched_jobs
+            .with_status(:succeeded)
+            .where.not(finished_at: nil, started_at: nil)
+            .pick(Arel.sql('COUNT(*)'), Arel.sql('SUM(EXTRACT(EPOCH FROM (finished_at - started_at)))'))
+
+          return if job_count.nil? || job_count == 0
+
+          { job_count: job_count, total_duration: total_duration.to_f }
+        end
+        strong_memoize_attr :succeeded_job_stats
 
         def validate_batched_jobs_status
           errors.add(:batched_jobs, 'jobs need to be succeeded') if batched_jobs.except_succeeded.exists?

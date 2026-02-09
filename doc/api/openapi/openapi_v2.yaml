@@ -68103,6 +68103,9 @@ definitions:
         type: string
         format: date-time
         example: '2022-11-28T16:26:39+02:00'
+      estimated_time_remaining:
+        type: string
+        example: 1 day
     description: API_Entities_BatchedBackgroundMigration model
   putApiV4AdminBatchedBackgroundMigrationsIdResume:
     type: object

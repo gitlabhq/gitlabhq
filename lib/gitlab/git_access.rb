@@ -250,7 +250,7 @@ module Gitlab
 
     def check_granular_pat_permissions!
       result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-        boundary: ::Authz::Boundary.for(project),
+        boundaries: ::Authz::Boundary.for(project),
         permissions: permission_for_command,
         token: personal_access_token
       ).execute

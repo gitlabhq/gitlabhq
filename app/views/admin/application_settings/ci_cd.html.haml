@@ -15,13 +15,6 @@
     %p.gl-text-subtle.gl-mb-3= s_('CICD|Control whether pipeline variables are allowed by default in new projects in new groups.')
     = render 'pipeline_variables_settings'
     %hr.gl-my-5
-    - if ci_variable_protected_by_default?
-      = render Pajamas::AlertComponent.new(variant: :warning,
-        dismissible: false,
-        alert_options: { class: 'gl-mb-3' }) do |c|
-        - c.with_body do
-          - help_link = link_to('', help_page_path('ci/variables/_index.md', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
-          = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 
 = render ::Layouts::SettingsBlockComponent.new(_('Continuous Integration and Deployment'),

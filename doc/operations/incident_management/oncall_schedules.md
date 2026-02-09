@@ -29,7 +29,7 @@ Set up an on-call schedule for your team to add rotations to.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To create an on-call schedule:
 

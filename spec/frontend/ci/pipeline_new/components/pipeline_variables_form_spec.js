@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { reportToSentry } from '~/ci/utils';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import { CI_VARIABLE_TYPE_ENV_VAR } from '~/ci/pipeline_new/constants';
+import { CI_FORM_MAX_POLLING_TIME, CI_FORM_POLLING_INTERVAL } from '~/ci/constants';
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import { createAlert } from '~/alert';
 import VariablesForm from '~/ci/common/variables_form.vue';
@@ -303,8 +304,8 @@ describe('PipelineVariablesForm', () => {
 
       wrapper.vm.startManualPolling();
 
-      expect(setInterval).toHaveBeenCalledWith(expect.any(Function), 2000);
-      expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 10000);
+      expect(setInterval).toHaveBeenCalledWith(expect.any(Function), CI_FORM_POLLING_INTERVAL);
+      expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), CI_FORM_MAX_POLLING_TIME);
     });
 
     it('executes query immediately when starting manual polling', async () => {
@@ -344,7 +345,7 @@ describe('PipelineVariablesForm', () => {
 
       await createComponent();
 
-      jest.advanceTimersByTime(2000);
+      jest.advanceTimersByTime(CI_FORM_POLLING_INTERVAL);
       await waitForPromises();
 
       expect(clearInterval).toHaveBeenCalled();
@@ -358,7 +359,7 @@ describe('PipelineVariablesForm', () => {
       await createComponent();
       jest.spyOn(wrapper.vm, 'executeQuery').mockResolvedValue(true);
 
-      jest.advanceTimersByTime(2000);
+      jest.advanceTimersByTime(CI_FORM_POLLING_INTERVAL);
       await waitForPromises();
 
       expect(clearInterval).toHaveBeenCalled();

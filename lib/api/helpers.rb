@@ -92,7 +92,7 @@ module API
 
         if token && authorize_granular_token?
           result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-            boundary: boundary_for_endpoint, permissions: permissions_for_endpoint, token: token
+            boundaries: boundaries_for_endpoint, permissions: permissions_for_endpoint, token: token
           ).execute
 
           raise Gitlab::Auth::GranularPermissionsError, result.message if result.error?
@@ -1120,18 +1120,13 @@ module API
       Array(authorization_settings[:permissions])
     end
 
-    def boundary_for_endpoint
+    def boundaries_for_endpoint
       if authorization_settings[:boundary] && authorization_settings[:boundary].respond_to?(:call)
         boundary_object = instance_exec(&authorization_settings[:boundary])
         ::Authz::Boundary.for(boundary_object) if boundary_object
       elsif authorization_settings[:boundaries]
-        boundary_type_order = { project: 0, group: 1, user: 2, instance: 3 }
-
         authorization_settings[:boundaries]
-          .sort_by { |b| boundary_type_order[b[:boundary_type]] }
-          .lazy
           .filter_map { |b| build_boundary(b[:boundary_type], b[:boundary_param]) }
-          .first
       else
         build_boundary(authorization_settings[:boundary_type], authorization_settings[:boundary_param])
       end

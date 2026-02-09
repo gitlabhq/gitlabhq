@@ -62,3 +62,6 @@ export const FOUR_MINUTES_IN_MS = 1000 * 60 * 4;
 export const NETWORK_STATUS_READY = 7;
 
 export const DEFAULT_MANUAL_ACTIONS_LIMIT = 50;
+
+export const CI_FORM_POLLING_INTERVAL = 3000;
+export const CI_FORM_MAX_POLLING_TIME = 15000;

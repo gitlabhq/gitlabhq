@@ -58,6 +58,7 @@ module API
           ]
           tags %w[access_requests]
         end
+        route_setting :authorization, permissions: :create_access_request, boundary_type: :user
         post ":id/access_requests" do
           source = find_source(source_type, params[:id])
           access_requester = source.request_access(current_user)
@@ -118,7 +119,8 @@ module API
           requires :user_id, type: Integer, desc: 'The user ID of the access requester'
         end
         # rubocop: disable CodeReuse/ActiveRecord
-        route_setting :authorization, permissions: :delete_access_request, boundary_type: source_type.to_sym
+        route_setting :authorization, permissions: :delete_access_request,
+          boundaries: [{ boundary_type: :group }, { boundary_type: :project }, { boundary_type: :user }]
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
           member = source.requesters.find_by!(user_id: params[:user_id])

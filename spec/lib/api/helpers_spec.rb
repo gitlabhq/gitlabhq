@@ -1856,7 +1856,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
   end
 
-  describe '#boundary_for_endpoint' do
+  describe '#boundaries_for_endpoint' do
     let_it_be(:project) { create(:project) }
     let_it_be(:group) { create(:group) }
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
@@ -1869,7 +1869,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'with :boundary authorization setting' do
-      subject(:boundary) { helper.send(:boundary_for_endpoint) }
+      subject(:boundary) { helper.send(:boundaries_for_endpoint) }
 
       before do
         allow(helper).to receive(:authorization_settings).and_return({ boundary: boundary_setting })
@@ -1921,10 +1921,18 @@ RSpec.describe API::Helpers, feature_category: :api do
         })
       end
 
-      it 'returns the first boundary after sorting by project, group, user, instance' do
-        boundary = helper.send(:boundary_for_endpoint)
+      it 'returns an array of boundaries' do
+        boundary = helper.send(:boundaries_for_endpoint)
 
-        expect(boundary).to be_a(Authz::Boundary::ProjectBoundary)
+        expect(boundary.to_a.map(&:class)).to eq([
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::GroupBoundary,
+          Authz::Boundary::ProjectBoundary
+        ])
+
+        expect(boundary.to_a[0].access).to eq(Authz::GranularScope::Access::INSTANCE)
+        expect(boundary.to_a[1].access).to eq(Authz::GranularScope::Access::USER)
       end
     end
 
@@ -1940,28 +1948,13 @@ RSpec.describe API::Helpers, feature_category: :api do
         })
       end
 
-      it 'returns the first non-nil boundary after sorting' do
-        boundary = helper.send(:boundary_for_endpoint)
+      it 'returns an array of valid boundaries' do
+        boundary = helper.send(:boundaries_for_endpoint)
 
-        expect(boundary).to be_a(Authz::Boundary::GroupBoundary)
-      end
-    end
-
-    context 'when only user and instance boundaries are defined' do
-      before do
-        allow(helper).to receive(:authorization_settings).and_return({
-          boundaries: [
-            { boundary_type: :instance },
-            { boundary_type: :user }
-          ]
-        })
-      end
-
-      it 'returns user boundary before instance' do
-        boundary = helper.send(:boundary_for_endpoint)
-
-        expect(boundary).to be_a(Authz::Boundary::NilBoundary)
-        expect(boundary.access).to eq(Authz::GranularScope::Access::USER)
+        expect(boundary.to_a.map(&:class)).to eq([
+          Authz::Boundary::NilBoundary,
+          Authz::Boundary::GroupBoundary
+        ])
       end
     end
   end

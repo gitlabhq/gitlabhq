@@ -49,7 +49,7 @@ Create a timeline event manually using the form.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create a timeline event:
 
@@ -81,7 +81,7 @@ You can create a timeline event using the [`/timeline` quick action](../../user/
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 > [!warning]
 > Internal notes added to incident timelines in public and internal
@@ -143,7 +143,7 @@ You can also delete timeline events.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To delete a timeline event:
 

@@ -1,7 +1,13 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { GlLoadingIcon, GlPagination, GlAlert, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlPagination,
+  GlAlert,
+  GlSearchBoxByType,
+  GlFormCheckbox,
+} from '@gitlab/ui';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import {
   DEFAULT_GROUPS_PER_PAGE,
@@ -18,6 +24,7 @@ export default {
     GlPagination,
     GlAlert,
     GlSearchBoxByType,
+    GlFormCheckbox,
     GroupsListItem,
   },
   inject: {
@@ -35,6 +42,7 @@ export default {
       errorMessage: null,
       userSearchTerm: '',
       searchValue: '',
+      topLevelOnly: false,
     };
   },
   computed: {
@@ -61,6 +69,7 @@ export default {
           page: this.page,
           perPage: this.$options.DEFAULT_GROUPS_PER_PAGE,
           search: this.searchValue,
+          top_level_only: this.topLevelOnly,
         },
         this.accessToken,
       )
@@ -96,6 +105,10 @@ export default {
       this.searchValue = newSearchValue;
       this.loadGroups();
     },
+    onTopLevelOnlyChange() {
+      this.page = 1;
+      this.loadGroups();
+    },
     setPage(page) {
       this.page = page;
       this.loadGroups();
@@ -119,6 +132,10 @@ export default {
       :value="userSearchTerm"
       @input="onGroupSearch"
     />
+
+    <gl-form-checkbox v-model="topLevelOnly" class="gl-mb-3" @change="onTopLevelOnlyChange">
+      {{ s__('JiraConnect|Show only top-level groups') }}
+    </gl-form-checkbox>
 
     <p v-if="isAdmin" class="gl-mb-3">
       {{ s__('JiraConnect|Not seeing your groups? Only groups you have access to appear here.') }}

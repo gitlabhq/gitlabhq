@@ -32,8 +32,6 @@ module Authz
         namespace&.full_path
       end
 
-      private
-
       attr_reader :boundary
     end
 

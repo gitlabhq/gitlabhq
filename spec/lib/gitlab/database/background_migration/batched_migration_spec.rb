@@ -877,7 +877,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       let(:migration) { create(:batched_background_migration, :active) }
 
       it 'returns zero' do
-        expect(subject).to be 0
+        expect(subject).to be 0.0
       end
     end
 
@@ -896,7 +896,148 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       let!(:batched_job) { create(:batched_background_migration_job, :succeeded, batched_migration: migration, batch_size: 8) }
 
       it 'calculates the progress' do
-        expect(subject).to be 8
+        expect(subject).to be 8.0
+      end
+    end
+  end
+
+  describe '#compute_estimated_seconds_remaining' do
+    let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100, interval: 120) }
+
+    context 'when migration is finished' do
+      let(:batched_migration) { create(:batched_background_migration, :finished, total_tuple_count: 100) }
+
+      it 'returns nil' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
+      end
+    end
+
+    context 'when migration is finalized' do
+      let(:batched_migration) { create(:batched_background_migration, :finalized, total_tuple_count: 100) }
+
+      it 'returns nil' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
+      end
+    end
+
+    context 'when no tuples have been migrated' do
+      it 'returns nil' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
+      end
+    end
+
+    context 'when there are no succeeded jobs with timestamps' do
+      before do
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 20,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: nil,
+          finished_at: nil
+        )
+      end
+
+      it 'returns nil' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to be_nil
+      end
+    end
+
+    context 'when average job time is less than interval', :freeze_time do
+      before do
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 50,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: 10.seconds.ago,
+          finished_at: Time.current
+        )
+      end
+
+      it 'uses interval for estimation' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to eq(120)
+      end
+    end
+
+    context 'when average job time is greater than interval', :freeze_time do
+      let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100, interval: 5) }
+
+      before do
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 50,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: 60.seconds.ago,
+          finished_at: Time.current
+        )
+      end
+
+      it 'uses average job time for estimation' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to eq(60)
+      end
+    end
+
+    context 'with multiple succeeded jobs', :freeze_time do
+      let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100, interval: 5) }
+
+      before do
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 25,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: 30.seconds.ago,
+          finished_at: 20.seconds.ago
+        )
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 25,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: 20.seconds.ago,
+          finished_at: Time.current
+        )
+      end
+
+      it 'calculates based on all succeeded jobs' do
+        expect(batched_migration.compute_estimated_seconds_remaining).to eq(30)
+      end
+    end
+  end
+
+  describe '#estimated_time_remaining' do
+    let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100, interval: 5) }
+
+    context 'when compute_estimated_seconds_remaining returns nil' do
+      it 'returns nil' do
+        expect(batched_migration.estimated_time_remaining).to be_nil
+      end
+    end
+
+    context 'when migration is finished' do
+      let(:batched_migration) { create(:batched_background_migration, :finished, total_tuple_count: 100) }
+
+      it 'returns nil' do
+        expect(batched_migration.estimated_time_remaining).to be_nil
+      end
+    end
+
+    context 'when there is progress', :freeze_time do
+      before do
+        create(:batched_background_migration_job, :succeeded,
+          batched_migration: batched_migration,
+          batch_size: 50,
+          sub_batch_size: 10,
+          pause_ms: 100,
+          started_at: 60.seconds.ago,
+          finished_at: Time.current
+        )
+      end
+
+      it 'returns human-readable duration string' do
+        expect(batched_migration.estimated_time_remaining).to eq('1 minute')
       end
     end
   end

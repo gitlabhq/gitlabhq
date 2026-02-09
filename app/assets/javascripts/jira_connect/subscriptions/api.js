@@ -28,7 +28,7 @@ export const removeSubscription = async (removePath) => {
 
 export const fetchGroups = async (
   groupsPath,
-  { minAccessLevel, page, perPage, search },
+  { minAccessLevel, page, perPage, search, top_level_only },
   accessToken = null,
 ) => {
   return axiosInstance.get(groupsPath, {
@@ -37,6 +37,7 @@ export const fetchGroups = async (
       page,
       per_page: perPage,
       search,
+      top_level_only,
     },
     headers: {
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),

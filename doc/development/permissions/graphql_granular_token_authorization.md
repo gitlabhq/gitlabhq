@@ -159,7 +159,7 @@ boundary = BoundaryExtractor.new(object:, arguments:, context:, directive:).extr
 permissions = directive.arguments[:permissions].map(&:downcase)
 ```
 
-**Note**: When no directive is found, `boundary` and `permissions` are both `nil`. The authorization service will return the error message: "Unable to determine boundary and permissions for authorization".
+**Note**: When no directive is found, `boundary` and `permissions` are both `nil`. The authorization service will return the error message: "Unable to determine boundaries and permissions for authorization".
 
 The boundary extractor behavior:
 
@@ -274,7 +274,7 @@ This method:
 
    ```ruby
    ::Authz::Tokens::AuthorizeGranularScopesService.new(
-     boundary: boundary,
+     boundaries: boundary,
      permissions: permissions,
      token: context[:access_token]
    ).execute
@@ -465,7 +465,7 @@ raise_resource_not_available_error!(response.message)
 1. **No directive found (with granular PAT)**
    - **Behavior**: Authorization proceeds with `boundary: nil, permissions: nil`
    - **Result**: Authorization service returns error
-   - **Error message**: `"Unable to determine boundary and permissions for authorization"`
+   - **Error message**: `"Unable to determine boundaries and permissions for authorization"`
    - **Note**: All fields accessed with granular PATs must have directives
 
 1. **Directive has empty permissions array**
@@ -479,7 +479,7 @@ raise_resource_not_available_error!(response.message)
 1. **Boundary extraction returns nil (resource not found)**
    - **Behavior**: Authorization proceeds with `boundary: nil` (permissions still provided)
    - **Result**: Authorization service returns error
-   - **Error message**: `"Unable to determine boundary for authorization"`
+   - **Error message**: `"Unable to determine boundaries for authorization"`
    - **Causes**:
      - Invalid path/GlobalID that doesn't resolve to a resource
      - Object missing expected association (e.g., `issue.project` returns `nil`)
@@ -489,19 +489,19 @@ raise_resource_not_available_error!(response.message)
 1. **Invalid GlobalID format**
    - **Behavior**: `GlobalID.parse("invalid")` returns `nil`
    - **Result**: Boundary extraction returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundary for authorization"`
+   - **Error message**: `"Unable to determine boundaries for authorization"`
    - **Note**: Fails gracefully without raising exceptions
 
 1. **Boundary method returns nil**
    - **Behavior**: `issue.project` returns `nil`
    - **Result**: Returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundary for authorization"`
+   - **Error message**: `"Unable to determine boundaries for authorization"`
    - **Common causes**: Soft-deleted associations, orphaned records
 
 1. **GlobalID points to non-existent record**
    - **Behavior**: `GlobalID::Locator.locate(gid)` raises `ActiveRecord::RecordNotFound`, rescued and returns `nil`
    - **Result**: Boundary extraction returns `nil` → authorization error
-   - **Error message**: `"Unable to determine boundary for authorization"`
+   - **Error message**: `"Unable to determine boundaries for authorization"`
 
 #### Configuration Errors
 

@@ -17,7 +17,7 @@ Alerts are a critical entity in your incident management workflow. They represen
 
 ## Alert list
 
-Users with at least the Developer role can access the Alert list at **Monitor** > **Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
+Users with the Developer, Maintainer, or Owner role can access the Alert list at **Monitor** > **Alerts** in your project's sidebar. The Alert list displays alerts sorted by start time, but you can change the sort order by selecting the headers in the Alert list.
 
 The alert list displays the following information:
 
@@ -63,7 +63,7 @@ Alerts contain one of the following icons:
 
 ## Alert details page
 
-Go to the Alert details view by visiting the [Alert list](#alert-list) and selecting an alert from the list. You need at least the Developer role to access alerts. Select any alert in the list to examine its alert details page.
+Go to the Alert details view by visiting the [Alert list](#alert-list) and selecting an alert from the list. You need the Developer, Maintainer, or Owner role to access alerts. Select any alert in the list to examine its alert details page.
 
 Alerts provide **Overview** and **Alert details** tabs to give you the right amount of information you need.
 
@@ -115,7 +115,7 @@ The available statuses are:
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To change an alert's status:
 
@@ -135,7 +135,7 @@ To stop email notifications for alert recurrences in projects with [email notifi
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 When you [close an incident](manage_incidents.md#close-an-incident) that is linked to an alert, GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**. You are then credited with the alert's status change.
 
@@ -201,7 +201,7 @@ Turn on creating [incidents](incidents.md) automatically whenever an alert is tr
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To configure the actions:
 

@@ -650,7 +650,6 @@ read_workspaces_agent_config
 receive_confirmation_instructions
 receive_notifications
 register_group_runners
-register_project_runners
 reject_user
 remove_fork_project
 remove_group

@@ -48,7 +48,7 @@ Add a linked resource manually from an incident.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To add a linked resource:
 
@@ -106,7 +106,7 @@ You can also remove a linked resource.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To remove a linked resource:
 

@@ -38,7 +38,7 @@ module Gitlab
           return if cache.include?(cache_key)
 
           response = ::Authz::Tokens::AuthorizeGranularScopesService.new(
-            boundary: boundary,
+            boundaries: boundary,
             permissions: permissions,
             token: context[:access_token]
           ).execute

@@ -48,7 +48,7 @@ Alternatively, you can use the [`/iteration` quick action](../../user/project/qu
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create an incident from the **Incidents** page:
 
@@ -60,7 +60,7 @@ To create an incident from the **Incidents** page:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To create an incident from the **Issues** page:
 
@@ -77,7 +77,7 @@ The incident description is populated from the alert.
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To create an incident from an alert:
 
@@ -118,7 +118,7 @@ in both PagerDuty and GitLab.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To set up a webhook with PagerDuty:
 
@@ -155,8 +155,8 @@ Whether you can view an incident depends on the [project visibility level](../..
 the incident's confidentiality status:
 
 - Public project and a non-confidential incident: Anyone can view the incident.
-- Private project and non-confidential incident: You must have at least the Guest role for the project.
-- Confidential incident (regardless of project visibility): You must have at least the Planner role for the project.
+- Private project and non-confidential incident: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- Confidential incident (regardless of project visibility): You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 ## Assign to a user
 
@@ -164,7 +164,7 @@ Assign incidents to users that are actively responding.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To assign a user:
 
@@ -178,7 +178,7 @@ See the [incidents list](incidents.md#incidents-list) topic for a full descripti
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To change an incident's severity:
 
@@ -199,7 +199,7 @@ You can also change the severity using the [`/severity` quick action](../../user
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To change the status of an incident:
 
@@ -241,7 +241,7 @@ the alert status is independent and does not change when the incident status cha
 
 Prerequisites:
 
-- You must have at least the Developer role for the project.
+- You must have the Developer, Maintainer, or Owner role for the project.
 
 To change the escalation policy of an incident:
 
@@ -261,7 +261,7 @@ the incident escalation policy is independent and can be changed.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the project.
 
 To close an incident, in the upper-right corner, select **Incident actions** ({{< icon name="ellipsis_v" >}}) and then **Close incident**.
 
@@ -276,7 +276,7 @@ from an HTTP or Prometheus webhook.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To configure the setting:
 

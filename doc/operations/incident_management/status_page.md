@@ -46,7 +46,7 @@ Only AWS S3 is supported as a deploy target.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To provide GitLab with the AWS account information needed to push content to your Status Page:
 

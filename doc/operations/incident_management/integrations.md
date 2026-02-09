@@ -18,7 +18,7 @@ can [trigger paging](paging.md#paging) for on-call rotations or be used to [crea
 
 ## Integrations list
 
-With at least the Maintainer role, you can view the list of configured
+With the Maintainer or Owner role, you can view the list of configured
 alerting integrations by navigating to **Settings** > **Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
@@ -368,7 +368,7 @@ After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
-1. Sign in as a user with at least the Developer role.
+1. Sign in as a user with the Developer, Maintainer, or Owner role.
 1. Go to **Settings** > **Monitor** in your project.
 1. Select **Alerts** to expand the section.
 1. Select the {{< icon name="settings" >}} settings icon on the right side of the integration in [the list](#integrations-list).
@@ -438,7 +438,7 @@ active at the same time.
 
 To enable Opsgenie integration:
 
-1. Sign in as a user with at least the Maintainer role.
+1. Sign in as a user with the Maintainer or Owner role.
 1. Go to **Monitor** > **Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.

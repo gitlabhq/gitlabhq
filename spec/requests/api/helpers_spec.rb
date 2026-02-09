@@ -333,7 +333,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       context 'when authorization permissions and boundary type are not defined for an endpoint' do
         it 'raises an error stating that the permissions cannot be determined' do
           expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
-            'Unable to determine boundary and permissions for authorization'
+            'Unable to determine boundaries and permissions for authorization'
         end
       end
 

@@ -7260,10 +7260,10 @@ msgstr ""
 msgid "AiImpactAnalytics|Users with assigned Duo seats who used at least one Duo feature. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Value can't be calculated due to division by zero."
+msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
-msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
+msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data. Change calculation requires at least six months of historical data."
 msgstr ""
 
 msgid "AiModelDeprecation|Change model"
@@ -27653,9 +27653,6 @@ msgstr ""
 msgid "Environment scope"
 msgstr ""
 
-msgid "Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default."
-msgstr ""
-
 msgid "Environment:"
 msgstr ""
 
@@ -38286,6 +38283,9 @@ msgid "JiraConnect|Set up your instance"
 msgstr ""
 
 msgid "JiraConnect|Setting up this integration is only possible if you're a GitLab administrator."
+msgstr ""
+
+msgid "JiraConnect|Show only top-level groups"
 msgstr ""
 
 msgid "JiraConnect|Sign in to %{url}"

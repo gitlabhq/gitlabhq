@@ -98957,6 +98957,9 @@ components:
         created_at:
           type: DateTime
           example: '2022-11-28T16:26:39+02:00'
+        estimated_time_remaining:
+          type: string
+          example: 1 day
     APIEntitiesCustomAttribute:
       type: object
       properties:
