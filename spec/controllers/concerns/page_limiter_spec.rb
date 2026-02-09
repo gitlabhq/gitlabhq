@@ -24,12 +24,10 @@ RSpec.describe PageLimiter do
   end
 
   before do
-    allow(instance).to receive(:params) do
-      {
-        controller: "explore/projects",
-        action: "index"
-      }
-    end
+    allow(instance).to receive(:params).and_return({
+      controller: "explore/projects",
+      action: "index"
+    })
 
     allow(instance).to receive(:request) do
       double(:request, user_agent: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")

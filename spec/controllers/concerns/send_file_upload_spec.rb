@@ -210,7 +210,7 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
           stub_uploads_object_storage(uploader: uploader_class)
           uploader.object_store = ObjectStorage::Store::REMOTE
           uploader.store!(temp_file)
-          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { true }
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(true)
         end
 
         it 'sends a file with a custom type' do
@@ -286,7 +286,7 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
       context 'and proxying is enabled' do
         before do
-          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { true }
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(true)
         end
 
         it_behaves_like 'proxied file'
@@ -307,7 +307,7 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
       context 'and proxying is disabled' do
         before do
-          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { false }
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(false)
         end
 
         it 'sends a file' do
@@ -337,7 +337,7 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
         stub_uploads_object_storage(uploader: cdn_uploader_class)
         uploader.object_store = ObjectStorage::Store::REMOTE
         uploader.store!(temp_file)
-        allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { false }
+        allow(Gitlab.config.uploads.object_store).to receive(:proxy_download).and_return(false)
       end
 
       it 'sends a file when CDN URL' do

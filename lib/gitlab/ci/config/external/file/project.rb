@@ -45,8 +45,6 @@ module Gitlab
               # calling these methods lazily loads them via BatchLoader
               #
               project
-              can_access_local_content?
-              sha
             end
 
             def validate_context!
@@ -83,33 +81,29 @@ module Gitlab
             def can_access_local_content?
               return if project.nil?
 
-              # We are force-loading the project with the `itself` method
-              # because the `project` variable can be a `BatchLoader` object and we should not
-              # pass a `BatchLoader` object in the `for` method to prevent unwanted behaviors.
-              BatchLoader.for(project.itself)
-                         .batch(key: context.user) do |projects, loader, args|
-                projects.uniq.each do |project|
-                  context.logger.instrument(:config_file_project_validate_access) do
-                    loader.call(project, project_access_allowed?(args[:key], project))
-                  end
-                end
+              context.logger.instrument(:config_file_project_validate_access) do
+                project_access_allowed?(context.user, project)
               end
             end
 
             def project_access_allowed?(user, project)
-              context.logger.instrument(:config_file_project_validate_access_download_code) do
-                Ability.allowed?(user, :download_code, project)
+              Gitlab::SafeRequestStore.fetch(
+                ['Ci::Config::External::File::Project', 'project_access_allowed_download_code', project.id, user&.id]
+              ) do
+                context.logger.instrument(:config_file_project_validate_access_download_code) do
+                  Ability.allowed?(user, :download_code, project)
+                end
               end
             end
 
             def sha
               return if project.nil?
 
-              # with `itself`, we are force-loading the project
-              BatchLoader.for([project.itself, ref_name])
-                         .batch do |project_ref_pairs, loader|
-                project_ref_pairs.uniq.each do |project, ref_name|
-                  loader.call([project, ref_name], project.commit(ref_name).try(:sha))
+              context.logger.instrument(:config_file_project_sha) do
+                Gitlab::SafeRequestStore.fetch(
+                  ['Ci::Config::External::File::Project', 'sha', project.id, ref_name]
+                ) do
+                  project.commit(ref_name).try(:sha)
                 end
               end
             end

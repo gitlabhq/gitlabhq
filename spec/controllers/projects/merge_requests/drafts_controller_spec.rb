@@ -97,6 +97,24 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(json_response['note_html']).to eq('<p dir="auto">This is a unpublished comment</p>')
     end
 
+    it 'creates draft note with code suggestion' do
+      diff_refs = project.commit(sample_commit.id).try(:diff_refs)
+
+      position = Gitlab::Diff::Position.new(
+        old_path: "files/ruby/popen.rb",
+        new_path: "files/ruby/popen.rb",
+        old_line: nil,
+        new_line: 14,
+        diff_refs: diff_refs
+      )
+
+      create_draft_note(draft_overrides: { position: position.to_json, note: "```suggestion:-0+0\nchanged line\n```" })
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['suggestions']).to be_present
+      expect(json_response['note_html']).to include('js-render-suggestion')
+    end
+
     it 'creates a draft note with quick actions' do
       stub_commonmark_sourcepos_enabled
       create_draft_note(draft_overrides: { note: "#{user2.to_reference}\n/assign #{user.to_reference}" })

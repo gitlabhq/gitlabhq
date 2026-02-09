@@ -137,7 +137,7 @@ module Gitlab
 
         validate_and_save_access_token!(scopes: scopes)
 
-        ::PersonalAccessTokens::LastUsedService.new(access_token).execute
+        ::PersonalAccessTokens::LastUsedService.new(access_token).execute unless access_token.is_a?(::Authn::Tokens::IamOauthToken)
 
         user = access_token.user || raise(UnauthorizedError)
         resolve_composite_identity_user(user)
@@ -148,7 +148,7 @@ module Gitlab
 
         validate_and_save_access_token!
 
-        ::PersonalAccessTokens::LastUsedService.new(access_token).execute
+        ::PersonalAccessTokens::LastUsedService.new(access_token).execute unless access_token.is_a?(::Authn::Tokens::IamOauthToken)
 
         user = access_token.user || raise(UnauthorizedError)
         resolve_composite_identity_user(user)
@@ -320,7 +320,7 @@ module Gitlab
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
           else
-            # The token can be a PAT or an OAuth (doorkeeper) token
+            # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
             begin
               find_oauth_access_token
             rescue UnauthorizedError
@@ -349,19 +349,25 @@ module Gitlab
         self.current_token = parsed_oauth_token
         return unless current_token
 
-        # Ensure we use correct load balancing logic in case it's a newly created token
-        load_balancer_stick_request(
-          ::OauthAccessToken,
-          :oauth_token,
-          current_token,
-          hash_id: true
-        )
+        # Try IAM JWT first (if enabled and looks like JWT)
+        oauth_token = Authn::Tokens::IamOauthToken.from_jwt(current_token)
 
-        # Expiration, revocation and scopes are verified in `validate_access_token!`
-        oauth_token = OauthAccessToken.by_token(current_token)
-        raise UnauthorizedError unless oauth_token
+        # Fallback to Doorkeeper OAuth tokens
+        unless oauth_token
+          # Ensure we use correct load balancing logic in case it's a newly created token
+          load_balancer_stick_request(
+            ::OauthAccessToken,
+            :oauth_token,
+            current_token,
+            hash_id: true
+          )
 
-        oauth_token.revoke_previous_refresh_token!
+          # Expiration, revocation and scopes are verified in `validate_access_token!`
+          oauth_token = OauthAccessToken.by_token(current_token)
+          raise UnauthorizedError unless oauth_token
+
+          oauth_token.revoke_previous_refresh_token!
+        end
 
         ::Gitlab::Auth::Identity.link_from_oauth_token(oauth_token).tap do |identity|
           raise UnauthorizedError if identity && !identity.valid?

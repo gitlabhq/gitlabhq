@@ -8176,9 +8176,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       create(
         :merge_request_diff_commit,
         merge_request_diff: merge_request_diff,
-        merge_request_commits_metadata_id: commits_metadata.id,
-        relative_order: 0,
-        sha: nil
+        merge_request_commits_metadata: commits_metadata,
+        relative_order: 0
       )
     end
 

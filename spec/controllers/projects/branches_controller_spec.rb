@@ -71,6 +71,78 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         it { is_expected.to render_template('new') }
         it { project.repository.branch_exists?('feature/test') }
       end
+
+      context 'when branch name contains percent followed by hex digits' do
+        let(:branch) { 'test%ab' }
+        let(:ref) { 'master' }
+
+        it 'creates branch with literal percent character' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'test%ab')
+          )
+          expect(project.repository.find_branch('test%ab')).to be_present
+        end
+      end
+
+      context 'when branch name contains percent followed by uppercase hex' do
+        let(:branch) { 'test%AB' }
+        let(:ref) { 'master' }
+
+        it 'creates branch with literal percent character' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'test%AB')
+          )
+          expect(project.repository.find_branch('test%AB')).to be_present
+        end
+      end
+
+      context 'when branch name contains mixed valid and invalid percent encoding' do
+        let(:branch) { 'feature%2Ftest%ab' }
+        let(:ref) { 'master' }
+
+        it 'preserves the original string when decoding produces invalid UTF-8' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'feature%2Ftest%ab')
+          )
+          expect(project.repository.find_branch('feature%2Ftest%ab')).to be_present
+        end
+      end
+
+      context 'when branch name contains invalid percent sequence with non-hex characters' do
+        let(:branch) { 'test%zz' }
+        let(:ref) { 'master' }
+
+        it 'preserves the original string' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'test%zz')
+          )
+          expect(project.repository.find_branch('test%zz')).to be_present
+        end
+      end
+
+      context 'when branch name contains percent at end of string' do
+        let(:branch) { 'test%' }
+        let(:ref) { 'master' }
+
+        it 'preserves the original string' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'test%')
+          )
+          expect(project.repository.find_branch('test%')).to be_present
+        end
+      end
+
+      context 'when branch name contains multiple invalid percent sequences' do
+        let(:branch) { 'test%ab%cd%ef' }
+        let(:ref) { 'master' }
+
+        it 'preserves the original string with literal percent characters' do
+          expect(response).to redirect_to(
+            project_tree_path(project, 'test%ab%cd%ef')
+          )
+          expect(project.repository.find_branch('test%ab%cd%ef')).to be_present
+        end
+      end
     end
 
     describe "created from the new branch button on issues" do

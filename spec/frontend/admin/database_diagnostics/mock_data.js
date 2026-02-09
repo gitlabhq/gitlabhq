@@ -56,6 +56,7 @@ export const noIssuesResults = {
     main: {
       collation_mismatches: [],
       corrupted_indexes: [],
+      skipped_indexes: [],
     },
   },
 };

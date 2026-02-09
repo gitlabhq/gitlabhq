@@ -224,8 +224,8 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
         mr1_diff = mr1.merge_request_diff
         mr2_diff = mr2.merge_request_diff
 
-        create_commit(mr1_diff, sha1, create_metadata: true)
-        create_commit(mr2_diff, sha1, create_metadata: true)
+        create_commit(mr1_diff, sha1, create_metadata: true, duplicate_data: true)
+        create_commit(mr2_diff, sha1, create_metadata: true, duplicate_data: true)
         create_commit(mr2_diff, sha2, position: 1, create_metadata: false)
 
         commits = [
@@ -243,21 +243,10 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
     end
   end
 
-  def create_commit(diff, sha, position: 0, create_metadata: false)
-    metadata =
-      if create_metadata
-        MergeRequest::CommitsMetadata.find_by(sha: sha, project: project) ||
-          create(:merge_request_commits_metadata, sha: sha, project: project)
-      end
+  def create_commit(diff, sha, position: 0, create_metadata: false, duplicate_data: false)
+    factory_name = create_metadata ? :merge_request_diff_commit : :diff_commit_without_metadata
+    args = { merge_request_diff: diff, sha: sha, relative_order: position }
 
-    sha_value = create_metadata ? nil : sha
-
-    create(
-      :merge_request_diff_commit,
-      merge_request_diff: diff,
-      sha: sha_value,
-      relative_order: position,
-      merge_request_commits_metadata_id: metadata&.id
-    )
+    duplicate_data ? create(factory_name, :with_duplicated_data, args) : create(factory_name, args)
   end
 end

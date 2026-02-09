@@ -18,6 +18,7 @@ description: Passwordless authentication and 2FA using passkeys
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206407) in GitLab 18.6
   [with a flag](../administration/feature_flags/_index.md) named `passkeys`.
   Disabled by default on GitLab Self-Managed.
+- Generally available in GitLab 18.9. Feature flag enabled by default.
 
 {{< /history >}}
 

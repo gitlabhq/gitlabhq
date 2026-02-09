@@ -626,6 +626,132 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
+    describe 'using IAM JWT tokens as passwords' do
+      include_context 'with IAM authentication setup'
+
+      let(:user) { create(:user) }
+      let(:iam_scopes) { %w[api] }
+      let(:iam_jwt_token) do
+        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+      end
+
+      def authenticate(username:, password:)
+        gl_auth.find_for_git_client(username, password, project: nil, request: request)
+      end
+
+      shared_examples 'an oauth failure' do
+        it 'fails' do
+          expect(authenticate(username: "oauth2", password: iam_jwt_token))
+            .to have_attributes(auth_failure)
+        end
+      end
+
+      context 'when IAM service is disabled' do
+        before do
+          allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+        end
+
+        it_behaves_like 'an oauth failure'
+      end
+
+      context 'when IAM service is enabled' do
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(iam_svc_oauth: false)
+          end
+
+          it_behaves_like 'an oauth failure'
+        end
+
+        context 'when feature flag is enabled' do
+          before do
+            stub_feature_flags(iam_svc_oauth: user)
+          end
+
+          context 'with specified scopes' do
+            using RSpec::Parameterized::TableSyntax
+
+            where(:scopes, :abilities) do
+              'api'              | described_class.full_authentication_abilities
+              'read_api'         | described_class.read_only_authentication_abilities
+              'read_repository'     | %i[download_code]
+              'write_repository'    | %i[download_code push_code]
+              'create_runner'       | %i[create_instance_runners create_runners]
+              'manage_runner'       | %i[assign_runner update_runner delete_runner]
+              'read_user'           | []
+              'sudo'                | []
+              'openid'              | []
+              'profile'             | []
+              'email'               | []
+              'read_observability'  | []
+              'write_observability' | []
+            end
+
+            with_them do
+              let(:iam_scopes) { scopes }
+
+              it 'authenticates with correct abilities' do
+                expect(authenticate(username: 'oauth2', password: iam_jwt_token))
+                  .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+              end
+
+              it 'authenticates with correct abilities without special username' do
+                expect(authenticate(username: user.username, password: iam_jwt_token))
+                  .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+              end
+
+              it 'tracks any composite identity' do
+                expect(::Gitlab::Auth::Identity).to receive(:link_from_oauth_token).and_call_original
+
+                expect(authenticate(username: "oauth2", password: iam_jwt_token))
+                  .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+              end
+
+              context 'with invalid composite identity' do
+                let(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+                it_behaves_like 'an oauth failure'
+              end
+            end
+          end
+
+          it 'does not query database for OAuth token' do
+            expect(OauthAccessToken).not_to receive(:by_token)
+
+            authenticate(username: 'oauth2', password: iam_jwt_token)
+          end
+
+          context 'with expired token' do
+            let(:iam_jwt_token) do
+              create_iam_jwt(user: user, scopes: iam_scopes, expires_at: 1.hour.ago,
+                issuer: iam_issuer, private_key: private_key, kid: kid)
+            end
+
+            it 'falls back to database OAuth token lookup and fails' do
+              expect(OauthAccessToken).to receive(:by_token).and_return(nil)
+
+              expect(authenticate(username: 'oauth2', password: iam_jwt_token))
+                .to have_attributes(auth_failure)
+            end
+          end
+
+          context 'with blocked user' do
+            let(:user) { create(:user, :blocked) }
+
+            it_behaves_like 'an oauth failure'
+          end
+
+          context 'orphaned token' do
+            before do
+              user.destroy!
+            end
+
+            it_behaves_like 'an oauth failure'
+          end
+        end
+      end
+    end
+
     context 'while using personal access tokens as passwords' do
       it 'succeeds for personal access tokens with the `api` scope' do
         personal_access_token = create(:personal_access_token, scopes: ['api'])
@@ -975,11 +1101,11 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           it 'tracks the internal event & increments its metrics' do
             expect { track_event }
               .to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
-                .with(user: user, project: nil, namespace: nil)
-              .and increment_usage_metrics(
-                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_monthly',
-                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_weekly'
-              )
+                    .with(user: user, project: nil, namespace: nil)
+                    .and increment_usage_metrics(
+                      'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_monthly',
+                      'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_weekly'
+                    )
           end
         end
       end

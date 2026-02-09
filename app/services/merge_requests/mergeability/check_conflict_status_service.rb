@@ -8,8 +8,7 @@ module MergeRequests
 
       def execute
         # rubocop:disable Lint/DuplicateBranch -- Need to check this first
-        if Feature.enabled?(:validate_diff_sha_mr_head_sha, merge_request.project) &&
-            merge_request.source_branch_sha != merge_request.merge_request_diff&.head_commit_sha
+        if merge_request.source_branch_sha != merge_request.merge_request_diff&.head_commit_sha
           checking
         elsif merge_request.can_be_merged?
           success

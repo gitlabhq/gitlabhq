@@ -22,6 +22,14 @@ RSpec.describe JwtController, feature_category: :system_access do
     end
   end
 
+  shared_examples 'rejecting a blocked user' do
+    context 'with blocked user' do
+      let(:user) { create(:user, :blocked) }
+
+      it_behaves_like 'with invalid credentials'
+    end
+  end
+
   shared_examples 'a token that expires today' do
     let(:pat) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today) }
     let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
@@ -50,6 +58,139 @@ RSpec.describe JwtController, feature_category: :system_access do
           }]
         }
       )
+    end
+  end
+
+  shared_examples 'IAM JWT authentication' do
+    include_context 'with IAM authentication setup'
+
+    let(:iam_jwt_token) do
+      create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+    end
+
+    let(:expected_auth_type) { :oauth }
+
+    subject(:jwt_request) { get '/jwt/auth', params: parameters, headers: headers }
+
+    context 'when IAM service is disabled' do
+      before do
+        allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+      end
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'when IAM service is enabled' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(iam_svc_oauth: false)
+        end
+
+        it_behaves_like 'with invalid credentials'
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(iam_svc_oauth: user)
+        end
+
+        it 'authenticates successfully' do
+          jwt_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'passes the user and correct auth_type to the service' do
+          jwt_request
+
+          expect(service_class).to have_received(:new)
+                                     .with(nil, user, hash_including(auth_type: expected_auth_type))
+        end
+
+        it 'logs username and ID' do
+          jwt_request
+
+          expect(log_data['username']).to eq(user.username)
+          expect(log_data['user_id']).to eq(user.id)
+          expect(log_data['meta.user']).to eq(user.username)
+        end
+
+        it_behaves_like 'rejecting a blocked user'
+
+        context 'with expired token' do
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: user, scopes: iam_scopes, expires_at: 1.hour.ago,
+              issuer: iam_issuer, private_key: private_key, kid: kid)
+          end
+
+          it_behaves_like 'with invalid credentials'
+        end
+
+        context 'when JWKS endpoint times out' do
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: user, scopes: iam_scopes,
+              issuer: iam_issuer, private_key: private_key, kid: 'timeout_kid')
+          end
+
+          before do
+            # Clear JWKS cache to force fetch
+            Rails.cache.delete("iam:jwks:#{iam_issuer}")
+
+            # Simulate timeout when fetching JWKS
+            stub_request(:get, "#{iam_issuer}/.well-known/jwks.json")
+              .to_timeout
+          end
+
+          it 'returns unauthorized status' do
+            jwt_request
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'with malformed JWT' do
+          let(:iam_jwt_token) { 'invalid.jwt.token' }
+
+          it 'returns unauthorized status' do
+            jwt_request
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'with wrong audience claim' do
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: user, scopes: iam_scopes,
+              issuer: iam_issuer, private_key: private_key, kid: kid,
+              aud: 'wrong-audience')
+          end
+
+          it 'returns unauthorized status' do
+            jwt_request
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'when JWKS service is unavailable' do
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: user, scopes: iam_scopes,
+              issuer: iam_issuer, private_key: private_key, kid: 'unavailable_kid')
+          end
+
+          before do
+            Rails.cache.delete("iam:jwks:#{iam_issuer}")
+            stub_request(:get, "#{iam_issuer}/.well-known/jwks.json")
+              .to_return(status: 503, body: 'Service Unavailable')
+          end
+
+          it 'returns unauthorized status' do
+            jwt_request
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+      end
     end
   end
 
@@ -87,14 +228,6 @@ RSpec.describe JwtController, feature_category: :system_access do
     end
 
     context 'when using authenticated request' do
-      shared_examples 'rejecting a blocked user' do
-        context 'with blocked user' do
-          let(:user) { create(:user, :blocked) }
-
-          it_behaves_like 'with invalid credentials'
-        end
-      end
-
       context 'using personal access tokens' do
         let(:personal_access_token) { create(:personal_access_token, scopes: ['read_registry']) }
         let(:headers) { { authorization: credentials('personal_access_token', personal_access_token.token) } }
@@ -298,6 +431,20 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
       end
 
+      context 'when using IAM JWT tokens' do
+        let(:user) { create(:user) }
+        let(:iam_scopes) { %w[api read_registry write_registry] }
+        let(:headers) { { authorization: credentials(user.username, iam_jwt_token) } }
+
+        before do
+          stub_container_registry_config(enabled: true, key: 'spec/fixtures/x509_certificate_pk.key')
+          # We want to test the real service for proper integration coverage
+          allow(Auth::ContainerRegistryAuthenticationService).to receive(:new).and_call_original
+        end
+
+        it_behaves_like 'IAM JWT authentication'
+      end
+
       context 'using invalid login' do
         let(:headers) { { authorization: credentials('invalid', 'password') } }
         let(:subject) { get '/jwt/auth', params: parameters, headers: headers }
@@ -485,6 +632,24 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:credential_password) { 'bar' }
 
       it_behaves_like 'returning response status', :unauthorized
+    end
+
+    context 'with IAM JWT token' do
+      let(:user) { create(:user) }
+      let(:iam_scopes) { %w[api read_virtual_registry write_virtual_registry] }
+      let(:service_class) { Auth::DependencyProxyAuthenticationService }
+
+      let(:credential_user) { user.username }
+      let(:credential_password) { iam_jwt_token }
+      let(:headers) { { authorization: credentials(credential_user, credential_password) } }
+      let(:params) { { account: credential_user, client_id: 'docker', offline_token: true, service: service_name } }
+      let(:parameters) { params }
+
+      before do
+        allow(Auth::DependencyProxyAuthenticationService).to receive(:new).and_call_original
+      end
+
+      it_behaves_like 'IAM JWT authentication'
     end
   end
 

@@ -510,10 +510,7 @@ When you turn on restricted access, the following known issues might occur and r
 - The number of seats can still be exceeded if:
   - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the [Minimal Access fallback](#provisioning-behavior-with-saml-scim-and-ldap) feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with the Owner role add members simultaneously.
-  - New billable members delay accepting an invitation.
-  - You change from using the user cap to restricted access, and have members pending approval
-    from before you changed to restricted access. In this case, those members remain in a pending state. If
-    pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
+  - New billable members delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
@@ -617,6 +614,11 @@ To ensure that the user cap applies when groups, subgroups, or projects are shar
 A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
+
+## Changing from user cap to restricted access
+
+When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
+To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
 
 ## Group file templates
 

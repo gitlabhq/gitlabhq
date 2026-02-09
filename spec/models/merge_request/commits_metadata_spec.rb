@@ -296,6 +296,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
         create(:merge_request_diff_commit, merge_request_diff: mr_diff_3, sha: commit_sha_2)
         # populate sha in both tables to test for duplication
         create(:merge_request_diff_commit,
+          :with_duplicated_data,
           merge_request_diff: mr_diff_4,
           sha: commit_sha_4,
           merge_request_commits_metadata: commits_metadata_4)

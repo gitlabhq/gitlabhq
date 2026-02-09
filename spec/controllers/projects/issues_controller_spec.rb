@@ -1442,7 +1442,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
           before do
             expect_next_instance_of(Captcha::CaptchaVerificationService) do |instance|
-              expect(instance).to receive(:execute) { true }
+              expect(instance).to receive(:execute).and_return(true)
             end
           end
 

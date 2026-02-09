@@ -2081,6 +2081,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="querytopicsorganizationid"></a>`organizationId` {{< icon name="warning-solid" >}} | [`OrganizationsOrganizationID`](#organizationsorganizationid) | **Introduced** in GitLab 17.7. **Status**: Experiment. Global ID of the organization. |
 | <a id="querytopicssearch"></a>`search` | [`String`](#string) | Search query for topic name. |
 
+### `Query.trialUsage`
+
+{{< details >}}
+**Introduced** in GitLab 18.9.
+**Status**: Experiment.
+{{< /details >}}
+
+Usage data for trial subscriptions.
+
+Returns [`GitlabTrialUsage`](#gitlabtrialusage).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querytrialusagenamespacepath"></a>`namespacePath` | [`ID`](#id) | Path of the top-level namespace. Leave it blank if querying the instance subscription. |
+
 ### `Query.usageTrendsMeasurements`
 
 Get statistics on the instance.
@@ -20324,6 +20341,29 @@ The edge type for [`GitlabSubscriptionUsageUserEvent`](#gitlabsubscriptionusageu
 | <a id="gitlabsubscriptionusageusereventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="gitlabsubscriptionusageusereventedgenode"></a>`node` | [`GitlabSubscriptionUsageUserEvent`](#gitlabsubscriptionusageuserevent) | The item at the end of the edge. |
 
+#### `GitlabTrialUsageUserConnection`
+
+The connection type for [`GitlabTrialUsageUser`](#gitlabtrialusageuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabtrialusageuserconnectionedges"></a>`edges` | [`[GitlabTrialUsageUserEdge]`](#gitlabtrialusageuseredge) | A list of edges. |
+| <a id="gitlabtrialusageuserconnectionnodes"></a>`nodes` | [`[GitlabTrialUsageUser]`](#gitlabtrialusageuser) | A list of nodes. |
+| <a id="gitlabtrialusageuserconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GitlabTrialUsageUserEdge`
+
+The edge type for [`GitlabTrialUsageUser`](#gitlabtrialusageuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabtrialusageuseredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="gitlabtrialusageuseredgenode"></a>`node` | [`GitlabTrialUsageUser`](#gitlabtrialusageuser) | The item at the end of the edge. |
+
 #### `GoogleCloudArtifactRegistryArtifactConnection`
 
 The connection type for [`GoogleCloudArtifactRegistryArtifact`](#googlecloudartifactregistryartifact).
@@ -25568,6 +25608,17 @@ Permission that belongs to a granular scope.
 | <a id="achievementuniqueusers"></a>`uniqueUsers` {{< icon name="warning-solid" >}} | [`UserCoreConnection!`](#usercoreconnection) | **Introduced** in GitLab 18.6. **Status**: Experiment. Unique users who have received the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 | <a id="achievementuserachievements"></a>`userAchievements` {{< icon name="warning-solid" >}} | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Recipients for the achievement. |
+
+### `ActiveTrial`
+
+Active trial information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="activetrialenddate"></a>`endDate` | [`ISO8601Date`](#iso8601date) | Trial end date. |
+| <a id="activetrialstartdate"></a>`startDate` | [`ISO8601Date`](#iso8601date) | Trial start date. |
 
 ### `AddOnPurchase`
 
@@ -34258,6 +34309,42 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionusageusersusageusersusername"></a>`username` | [`String`](#string) | Username of the User. |
+
+### `GitlabTrialUsage`
+
+Describes the usage and details of a trial subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabtrialusageactivetrial"></a>`activeTrial` | [`ActiveTrial`](#activetrial) | Active trial information if the subscription has an active trial. |
+| <a id="gitlabtrialusageusersusage"></a>`usersUsage` | [`TrialUsage`](#trialusage) | Trial usage statistics for users. |
+
+### `GitlabTrialUsageUser`
+
+Describes the user with their trial usage data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabtrialusageuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="gitlabtrialusageuserid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
+| <a id="gitlabtrialusageusername"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+| <a id="gitlabtrialusageuserusage"></a>`usage` | [`GitlabTrialUsageUserUsage`](#gitlabtrialusageuserusage) | Credit usage for a user during a trial. |
+| <a id="gitlabtrialusageuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within the instance of GitLab. |
+
+### `GitlabTrialUsageUserUsage`
+
+Describes any credit usage for a user during a trial.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabtrialusageuserusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | GitLab Credits consumed by the user during a trial. |
+| <a id="gitlabtrialusageuserusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total GitLab Credits available to the user during a trial. |
 
 ### `GoogleCloudArtifactRegistryDockerImage`
 
@@ -48733,6 +48820,35 @@ Represents a directory.
 | <a id="treeentrytype"></a>`type` | [`EntryType!`](#entrytype) | Type of tree entry. |
 | <a id="treeentrywebpath"></a>`webPath` | [`String`](#string) | Web path for the tree entry (directory). |
 | <a id="treeentryweburl"></a>`webUrl` | [`String`](#string) | Web URL for the tree entry (directory). |
+
+### `TrialUsage`
+
+Trial usage statistics.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="trialusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | Total credits used during a trial. |
+| <a id="trialusagetotalusersusingcredits"></a>`totalUsersUsingCredits` | [`Int`](#int) | Number of users who have used credits during a trial. |
+
+#### Fields with arguments
+
+##### `TrialUsage.users`
+
+List of users with their trial usage data.
+
+Returns [`GitlabTrialUsageUserConnection`](#gitlabtrialusageuserconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="trialusageusersusername"></a>`username` | [`String`](#string) | Username of the User. |
 
 ### `UnprotectAccessLevel`
 

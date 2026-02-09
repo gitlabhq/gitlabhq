@@ -381,7 +381,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       create(
         :merge_request_diff_commit,
         merge_request_diff: merge_request_diff,
-        merge_request_commits_metadata_id: commits_metadata_1.id
+        merge_request_commits_metadata: commits_metadata_1
       )
     end
 
@@ -405,19 +405,10 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
     let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    let_it_be(:commits_metadata) do
-      create(
-        :merge_request_commits_metadata,
-        project: project,
-        message: 'This is a commit metadata message'
-      )
-    end
-
     let_it_be(:diff_commit_with_metadata) do
       create(
         :merge_request_diff_commit,
         merge_request_diff: merge_request_diff,
-        merge_request_commits_metadata_id: commits_metadata.id,
         commit_author: create(:merge_request_diff_commit_user),
         committer: create(:merge_request_diff_commit_user),
         authored_date: 2.days.ago,
@@ -429,7 +420,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
     let_it_be(:diff_commit_without_metadata) do
       create(
-        :merge_request_diff_commit,
+        :diff_commit_without_metadata,
         merge_request_diff: merge_request_diff,
         commit_author: create(:merge_request_diff_commit_user),
         committer: create(:merge_request_diff_commit_user),
@@ -439,6 +430,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         relative_order: 1
       )
     end
+
+    let_it_be(:commits_metadata) { diff_commit_with_metadata.merge_request_commits_metadata }
 
     shared_examples_for 'delegated method to merge_request_commits_metadata' do |delegated_method|
       context 'when diff commit has merge_request_commits_metadata_id' do

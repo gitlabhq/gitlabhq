@@ -5,19 +5,22 @@ module Authn
     class IamOauthToken
       include Gitlab::Utils::StrongMemoize
 
-      # Feature flag for gradual rollout, will be used in Gitlab::Auth layer
-      # TODO: Remove when implemented in
-      FEATURE_FLAG = :iam_svc_oauth
-
       class << self
         # Primary public interface for creating validated tokens.
         def from_jwt(token_string)
+          return unless Gitlab.config.authn.iam_service.enabled
           return unless iam_issued_jwt?(token_string)
 
           result = ::Authn::IamService::JwtValidationService.new(token: token_string).execute
           return unless result.success?
 
-          from_validated_jwt(result.payload)
+          token = from_validated_jwt(result.payload)
+
+          # Check user-scoped feature flag for gradual production rollout
+          return unless token&.user
+          return unless Feature.enabled?(:iam_svc_oauth, token.user)
+
+          token
         end
 
         private
@@ -90,6 +93,12 @@ module Authn
       # TODO: Implement JTI-based revocation list to support token invalidation.
       def revoked?
         false
+      end
+
+      # For compatibility with Doorkeeper
+      # Provided by doorkeeper/models/concerns/accessible.rb
+      def accessible?
+        active?
       end
 
       # Extracted scoped user from 'user:X' scope (for composite identity)

@@ -190,15 +190,14 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       create(
         :merge_request_diff_commit,
         merge_request_diff: merge_request_diff,
-        merge_request_commits_metadata_id: commits_metadata.id,
-        relative_order: 0,
-        sha: nil
+        merge_request_commits_metadata: commits_metadata,
+        relative_order: 0
       )
     end
 
     let_it_be(:diff_commit_without_metadata) do
       create(
-        :merge_request_diff_commit,
+        :diff_commit_without_metadata,
         merge_request_diff: merge_request_diff,
         relative_order: 1,
         sha: 'def456'
@@ -253,9 +252,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         create(
           :merge_request_diff_commit,
           merge_request_diff: forked_mr_diff,
-          merge_request_commits_metadata_id: commits_metadata1.id,
-          relative_order: 0,
-          sha: nil
+          merge_request_commits_metadata: commits_metadata1,
+          relative_order: 0
         )
       end
 
@@ -279,9 +277,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           create(
             :merge_request_diff_commit,
             merge_request_diff: forked_mr_diff_2,
-            merge_request_commits_metadata_id: commits_metadata2.id,
-            relative_order: 0,
-            sha: nil
+            merge_request_commits_metadata: commits_metadata2,
+            relative_order: 0
           )
         end
 
@@ -1645,22 +1642,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       create(:merge_request, source_project: project, target_project: project).merge_request_diff
     end
 
-    let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project, sha: 'abc123') }
-
     let_it_be(:diff_commit_with_metadata) do
       create(:merge_request_diff_commit,
         merge_request_diff: merge_request_diff,
-        merge_request_commits_metadata_id: commits_metadata.id,
-        relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
-        sha: nil
+        sha: 'abc123',
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1
       )
     end
 
     let_it_be(:diff_commit_without_metadata) do
-      create(:merge_request_diff_commit,
+      create(:diff_commit_without_metadata,
         merge_request_diff: merge_request_diff,
         relative_order: merge_request_diff.merge_request_diff_commits.count + 1,
         sha: 'def456'
+      )
+    end
+
+    let_it_be(:diff_commit_with_duplicated_data) do
+      create(:merge_request_diff_commit,
+        :with_duplicated_data,
+        merge_request_diff: merge_request_diff,
+        sha: 'ghi789',
+        relative_order: merge_request_diff.merge_request_diff_commits.count + 1
       )
     end
 
@@ -1700,7 +1703,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
 
-    context 'when SHA is present in `merge_request_diff_commits` table' do
+    context 'when SHA is present only in `merge_request_diff_commits` table' do
       let(:expected_metadata_queries) { 7 }
       let(:expected_commit_queries) { 7 }
       let(:existing_shas) { ['def456'] }
@@ -1708,7 +1711,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it_behaves_like 'merge request diff with commit shas'
     end
 
-    context 'when SHA is present in `merge_request_commits_metadata` table' do
+    context 'when SHA is present only in `merge_request_commits_metadata` table' do
       let(:expected_metadata_queries) { 7 }
       let(:expected_commit_queries) { 6 }
       let(:existing_shas) { ['abc123'] }
@@ -1719,7 +1722,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     context 'when `sha` data is present across both tables' do
       let(:expected_metadata_queries) { 7 }
       let(:expected_commit_queries) { 6 }
-      let(:existing_shas) { %w[abc123 def456] }
+      let(:existing_shas) { %w[abc123 def456 ghi789] }
 
       it_behaves_like 'merge request diff with commit shas'
     end

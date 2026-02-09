@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::Call, feature_category: :gitaly do
+RSpec.describe Gitlab::GitalyClient::Call, :clean_gitlab_redis_rate_limiting, feature_category: :gitaly do
   describe '#call', :request_store do
     let(:client) { Gitlab::GitalyClient }
     let(:storage) { 'default' }
@@ -171,6 +171,54 @@ RSpec.describe Gitlab::GitalyClient::Call, feature_category: :gitaly do
               )
             end
           end
+        end
+      end
+    end
+
+    describe 'circuit breaker integration' do
+      let(:exhausted_exception) { GRPC::ResourceExhausted.new("Gitaly exhausted") }
+
+      before do
+        allow(Gitlab::GitalyClient).to receive(:stub).and_return(double)
+      end
+
+      it 'opens circuit after threshold of ResourceExhausted errors' do
+        unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
+
+        allow(Gitlab::GitalyClient).to receive(:execute).and_raise(exhausted_exception)
+
+        gitaly_call = described_class.new(storage, service, unique_rpc, request, nil, 10)
+
+        5.times do
+          expect { gitaly_call.call }.to raise_error(GRPC::ResourceExhausted)
+        end
+
+        expect(Gitlab::GitalyClient).not_to receive(:execute)
+
+        expect { gitaly_call.call }.to raise_error(Gitlab::Git::ResourceExhaustedError, /Circuit is open/)
+      end
+
+      context 'with streaming enumerator responses' do
+        it 'opens circuit when enumerator consumption fails with ResourceExhausted' do
+          unique_rpc = :"find_branch_#{SecureRandom.hex(4)}"
+          allow(Gitlab::GitalyClient).to receive(:execute) do
+            Enumerator.new do
+              raise exhausted_exception
+            end
+          end
+
+          gitaly_call = described_class.new(storage, service, unique_rpc, request, nil, 10)
+
+          # Fail 5 times during enumerator consumption (Circuitbox default threshold)
+          5.times do
+            response = gitaly_call.call
+            expect { response.to_a }.to raise_error(GRPC::ResourceExhausted)
+          end
+
+          expect(Gitlab::GitalyClient).not_to receive(:execute)
+
+          # Circuit should now be open
+          expect { gitaly_call.call }.to raise_error(Gitlab::Git::ResourceExhaustedError, /Circuit is open/)
         end
       end
     end

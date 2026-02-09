@@ -46,8 +46,6 @@ describe('SchemaIssuesSection component', () => {
 
     it('displays success alert with correct message', () => {
       expect(findNoIssuesAlert().text()).toBe('No schema issues detected.');
-      expect(findNoIssuesAlert().props('variant')).toBe('success');
-      expect(findNoIssuesAlert().props('dismissible')).toBe(false);
     });
 
     it('displays all section type labels', () => {
@@ -83,16 +81,12 @@ describe('SchemaIssuesSection component', () => {
 
     it('displays correct count badges for sections with issues', () => {
       expect(findIndexesCount().text()).toBe('2');
-      expect(findIndexesCount().props('variant')).toBe('warning');
 
       expect(findTablesCount().text()).toBe('1');
-      expect(findTablesCount().props('variant')).toBe('warning');
 
       expect(findForeignKeysCount().text()).toBe('1');
-      expect(findForeignKeysCount().props('variant')).toBe('warning');
 
       expect(findSequencesCount().text()).toBe('2'); // 1 missing + 1 ownership = 2
-      expect(findSequencesCount().props('variant')).toBe('warning');
     });
 
     it('displays Details button text and proper configuration', () => {

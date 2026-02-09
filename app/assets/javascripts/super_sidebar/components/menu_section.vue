@@ -95,22 +95,31 @@ export default {
   watch: {
     isExpanded(newIsExpanded) {
       this.$emit('collapse-toggle', newIsExpanded);
-      this.keepFlyoutClosed = !this.newIsExpanded;
+      this.keepFlyoutClosed = !newIsExpanded && !this.isIconOnly;
       if (!newIsExpanded) {
         this.isMouseOverFlyout = false;
+      }
+    },
+    isIconOnly(newIsIconOnly) {
+      // Reset keepFlyoutClosed when toggling between expanded/collapsed sidebar
+      if (newIsIconOnly) {
+        this.keepFlyoutClosed = false;
       }
     },
   },
   methods: {
     handleClick() {
       if (this.isIconOnly) {
-        this.isMouseOverSection = true; // Allows touch devices to open the flyout menus by touch
+        this.isMouseOverSection = !this.isMouseOverSection; // Allows touch devices to open the flyout menus by touch
         return;
       }
       this.isExpanded = !this.isExpanded;
     },
-    handleClickOutside() {
+    handleClickOutside(targetId) {
       this.isMouseOverSection = false; // Allows touch devices to close the flyout menus by touch
+      if (targetId) {
+        document.getElementById(targetId)?.focus();
+      }
     },
     handlePointerover(e) {
       if (!this.hasFlyout) return;
@@ -148,6 +157,7 @@ export default {
       :aria-label="item.title"
       v-bind="buttonProps"
       @click="handleClick"
+      @keydown.escape="handleClickOutside"
       @pointerover="handlePointerover"
       @pointerleave="handlePointerleave"
     >
@@ -181,6 +191,8 @@ export default {
       @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
       @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
       @nav-link-click="$emit('nav-link-click')"
+      @nav-item-keydown-esc="handleClickOutside"
+      @nav-pin-keydown-esc="handleClickOutside"
     />
 
     <gl-collapse

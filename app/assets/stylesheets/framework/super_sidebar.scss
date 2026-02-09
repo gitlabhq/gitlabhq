@@ -224,6 +224,14 @@ html:not(.application-chrome) .super-sidebar {
     width: $super-sidebar-width;
   }
 
+  &:is(.super-sidebar-is-icon-only) {
+    // Stack section buttons above SVG polygon for clickable space
+    // Only target top-level nav items, not those inside flyout menus
+    > * .super-sidebar-nav-item:not(.nav-flyout-menu .super-sidebar-nav-item) {
+      z-index: $super-sidebar-nav-item-z-index;
+    }
+  }
+
   &.super-sidebar-loading {
     transform: translate3d(-100%, 0, 0);
     transition: none;

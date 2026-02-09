@@ -1,4 +1,4 @@
-import { GlModal, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlLoadingIcon, GlIcon, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -99,6 +99,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
   const findSavedViewItems = () => wrapper.findAllByTestId('saved-view-item');
   const findSubscribedIcons = () => wrapper.findAllByTestId('subscribed-view-icon');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findWarningMessage = () => wrapper.find('.gl-bg-orange-50');
+  const findWarningIcon = () => findWarningMessage().findComponent(GlIcon);
+  const findLearnMoreLink = () => findWarningMessage().findComponent(GlLink);
 
   beforeEach(async () => {
     await createComponent();
@@ -212,6 +215,37 @@ describe('WorkItemsExistingSavedViewsModal', () => {
 
       expect(wrapper.emitted('hide')).toEqual([[false]]);
       expect(wrapper.emitted('show-new-view-modal')).toEqual([[]]);
+    });
+  });
+
+  describe('subscription limit warning', () => {
+    describe('when showSubscriptionLimitWarning is false', () => {
+      it('does not show the warning message', async () => {
+        await createComponent({ props: { showSubscriptionLimitWarning: false } });
+
+        expect(findWarningMessage().exists()).toBe(false);
+      });
+    });
+
+    describe('when showSubscriptionLimitWarning is true', () => {
+      beforeEach(async () => {
+        await createComponent({ props: { showSubscriptionLimitWarning: true } });
+      });
+
+      it('shows the warning message with icon and link', () => {
+        expect(findWarningMessage().exists()).toBe(true);
+        expect(findWarningIcon().props('name')).toBe('warning');
+        expect(findLearnMoreLink().exists()).toBe(true);
+      });
+
+      it('contains the correct warning text', () => {
+        expect(findWarningMessage().text()).toContain(
+          'You have reached the maximum number of views in your list.',
+        );
+        expect(findWarningMessage().text()).toContain(
+          'If you add a view, the last view in your list will be removed.',
+        );
+      });
     });
   });
 });

@@ -33,7 +33,11 @@ module Gitlab
               paths = context.project.repository.search_files_by_wildcard_path(location[:local], context.sha)
 
               paths.filter_map do |path|
-                next if context.expandset.any? { |f| f.location == path && f.class.name.demodulize == 'Local' }
+                next if context.expandset.any? do |f|
+                  f.location == path &&
+                    f.class.name.demodulize == 'Local' &&
+                    f.context.project == context.project
+                end
 
                 location.merge(local: path)
               end

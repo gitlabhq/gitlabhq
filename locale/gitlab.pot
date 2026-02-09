@@ -23146,7 +23146,7 @@ msgstr ""
 msgid "DatabaseDiagnostics|Collation mismatches are informational and might not indicate a problem."
 msgstr ""
 
-msgid "DatabaseDiagnostics|Contact Support"
+msgid "DatabaseDiagnostics|Contact support"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Current Owner"
@@ -23158,16 +23158,19 @@ msgstr ""
 msgid "DatabaseDiagnostics|Details"
 msgstr ""
 
-msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade"
+msgid "DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade."
 msgstr ""
 
-msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues"
+msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Expected Owner"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Foreign keys"
+msgstr ""
+
+msgid "DatabaseDiagnostics|How to fix these?"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Incorrect ownership"
@@ -23182,16 +23185,10 @@ msgstr ""
 msgid "DatabaseDiagnostics|Last checked: %{timestamp}"
 msgstr ""
 
-msgid "DatabaseDiagnostics|Learn more"
-msgstr ""
-
 msgid "DatabaseDiagnostics|Missing items"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Missing sequences"
-msgstr ""
-
-msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No schema issues detected."
@@ -23207,9 +23204,6 @@ msgid "DatabaseDiagnostics|Run schema check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Schema health check"
-msgstr ""
-
-msgid "DatabaseDiagnostics|Select \"Run Schema Check\" to analyze your database schema for potential issues."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Sequence Name"
@@ -34974,6 +34968,9 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "How can I check them?"
+msgstr ""
+
 msgid "How can I make my variables more secure?"
 msgstr ""
 
@@ -39822,9 +39819,6 @@ msgstr ""
 msgid "Large File Storage"
 msgstr ""
 
-msgid "Large table corruption checks were skipped to avoid long-running queries. Administrators can manually check them with a higher table size limit."
-msgstr ""
-
 msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
@@ -40002,9 +39996,6 @@ msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}
 msgstr ""
 
 msgid "Learn how to %{no_packages_link_start}publish and share your packages%{no_packages_link_end} with GitLab."
-msgstr ""
-
-msgid "Learn how to run the check with higher limits"
 msgstr ""
 
 msgid "Learn more"
@@ -70795,6 +70786,9 @@ msgstr ""
 msgid "To avoid future interruption to notifications for %{project_or_group}, update your notification preferences."
 msgstr ""
 
+msgid "To avoid long-running queries, large tables were skipped."
+msgstr ""
+
 msgid "To configure a path_prefix, please add a license to your project."
 msgstr ""
 
@@ -72963,6 +72957,9 @@ msgid_plural "UsageBilling|%{poolCreditsRemaining} credits remaining"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "UsageBilling|(Trial)"
+msgstr ""
+
 msgid "UsageBilling|Accept on-demand billing"
 msgstr ""
 
@@ -73000,6 +72997,9 @@ msgid "UsageBilling|Date/Time"
 msgstr ""
 
 msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn how to enable it%{linkEnd}."
+msgstr ""
+
+msgid "UsageBilling|Displaying user data is disabled. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "UsageBilling|Explore GitLab Duo"
@@ -73102,6 +73102,9 @@ msgid "UsageBilling|This dashboard may not display all current subscription data
 msgstr ""
 
 msgid "UsageBilling|Total credits used"
+msgstr ""
+
+msgid "UsageBilling|Trial period:"
 msgstr ""
 
 msgid "UsageBilling|Try the GitLab Duo Agent Platform and agentic chat to delegate routine tasks like code refactoring, security scans, and research to AI-powered assistants."
@@ -78550,6 +78553,12 @@ msgstr ""
 msgid "WorkItem|Lavender"
 msgstr ""
 
+msgid "WorkItem|Learn more about view limits."
+msgstr ""
+
+msgid "WorkItem|Learn more."
+msgstr ""
+
 msgid "WorkItem|Lifecycle created."
 msgstr ""
 
@@ -79372,6 +79381,12 @@ msgid "WorkItem|You don't have the necessary permission to view the ancestor."
 msgstr ""
 
 msgid "WorkItem|You don't have the necessary permission to view the ancestors."
+msgstr ""
+
+msgid "WorkItem|You have reached the maximum number of views in your list."
+msgstr ""
+
+msgid "WorkItem|You have reached the maximum number of views in your list. If you add a view, the last view in your list will be removed."
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."

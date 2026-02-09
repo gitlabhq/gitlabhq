@@ -9,8 +9,8 @@ import {
   GlFormGroup,
   GlFormRadio,
   GlAlert,
+  GlLink,
 } from '@gitlab/ui';
-
 import { s__ } from '~/locale';
 import { SAVED_VIEW_VISIBILITY, ROUTES } from '~/work_items/constants';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
@@ -29,6 +29,7 @@ export default {
     GlButton,
     GlModal,
     GlAlert,
+    GlLink,
   },
   i18n: {
     descriptionValidation: s__('WorkItem|140 characters max'),
@@ -37,7 +38,12 @@ export default {
     sharedView: s__(
       'WorkItem|Anyone with access to this project can add the view, and those with the Planner and above roles can edit it.',
     ),
+    subscriptionLimitWarningMessage: s__(
+      'WorkItem|You have reached the maximum number of views in your list. If you add a view, the last view in your list will be removed.',
+    ),
+    learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
+  inject: ['subscribedSavedViewLimit'],
   model: {
     prop: 'show',
     event: 'hide',
@@ -70,6 +76,11 @@ export default {
       type: String,
       required: true,
     },
+    showSubscriptionLimitWarning: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['hide'],
   MAX_DESCRIPTION_LENGTH: 140,
@@ -81,6 +92,7 @@ export default {
       isTitleValid: true,
       savedViewVisibility: this.getSavedViewVisibility(),
       error: '',
+      showWarningOnOpen: false,
     };
   },
   computed: {
@@ -97,10 +109,13 @@ export default {
   watch: {
     show: {
       immediate: true,
-      handler() {
+      handler(newValue) {
         this.savedViewTitle = this.savedView?.name;
         this.savedViewDescription = this.savedView?.description;
         this.savedViewVisibility = this.getSavedViewVisibility();
+        if (newValue) {
+          this.showWarningOnOpen = this.showSubscriptionLimitWarning;
+        }
       },
     },
   },
@@ -135,6 +150,7 @@ export default {
           subscribed: this.savedView?.subscribed,
           mutationKey,
           apolloClient: this.$apollo,
+          subscribedSavedViewLimit: this.subscribedSavedViewLimit,
         });
 
         if (data[mutationKey].errors?.length) {
@@ -156,6 +172,7 @@ export default {
         this.$toast.show(
           this.isEdit ? s__('WorkItem|View has been saved.') : s__('WorkItem|New view created.'),
         );
+
         this.hideAddNewViewModal();
       } catch (e) {
         Sentry.captureException(e);
@@ -199,6 +216,19 @@ export default {
     @shown="focusTitleInput"
     @hide="hideAddNewViewModal"
   >
+    <div
+      v-if="showWarningOnOpen && !isEdit"
+      class="gl-mb-4 gl-flex gl-gap-3 gl-rounded-base gl-bg-orange-50 gl-p-3"
+      data-testid="subscription-limit-warning"
+    >
+      <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
+      <span class="gl-text-sm">
+        {{ $options.i18n.subscriptionLimitWarningMessage }}
+        <gl-link href="#" target="_blank">
+          {{ $options.i18n.learnMoreAboutViewLimits }}
+        </gl-link>
+      </span>
+    </div>
     <gl-form data-testid="add-new-saved-view-form" @submit.prevent="saveView">
       <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="error = undefined">
         {{ error }}

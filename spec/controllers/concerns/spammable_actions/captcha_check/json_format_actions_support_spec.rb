@@ -12,7 +12,7 @@ RSpec.describe SpammableActions::CaptchaCheck::JsonFormatActionsSupport do
   end
 
   before do
-    allow(Gitlab::Recaptcha).to receive(:load_configurations!) { true }
+    allow(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
   end
 
   describe '#with_captcha_check_json_format' do

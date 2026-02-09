@@ -29,16 +29,22 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
     end
 
     context 'when IAM is enabled' do
-      context 'when token is not IAM-issued JWT format' do
+      context 'when feature flag is disabled for user' do
+        before do
+          stub_feature_flags(iam_svc_oauth: false)
+        end
+
         it 'returns nil' do
-          expect(described_class.from_jwt('not-a-jwt')).to be_nil
-          expect(described_class.from_jwt(nil)).to be_nil
-          expect(described_class.from_jwt('only.two')).to be_nil
+          expect(token).to be_nil
         end
       end
 
-      context 'when token is IAM-issued JWT format' do
-        context 'when validation succeeds' do
+      context 'when feature flag is enabled for user' do
+        before do
+          stub_feature_flags(iam_svc_oauth: user)
+        end
+
+        context 'when token is IAM-issued JWT format' do
           it 'returns token with correct attributes', :freeze_time do
             is_expected.to be_a(described_class)
             expect(token.user_id).to eq(user.id)
@@ -49,11 +55,51 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
           end
         end
 
+        context 'when token is not IAM-issued JWT format' do
+          it 'returns nil' do
+            expect(described_class.from_jwt('not-a-jwt')).to be_nil
+            expect(described_class.from_jwt(nil)).to be_nil
+            expect(described_class.from_jwt('only.two')).to be_nil
+          end
+        end
+
         context 'when validation fails' do
           let(:expires_at) { 1.hour.ago }
 
           it { is_expected.to be_nil }
         end
+
+        context 'when token refers to non-existent user' do
+          let(:sub) { non_existing_record_id.to_s }
+
+          it 'returns nil when user does not exist in database' do
+            expect(token).to be_nil
+          end
+        end
+
+        context 'when from_validated_jwt returns nil' do
+          before do
+            allow(described_class).to receive(:from_validated_jwt).and_return(nil)
+          end
+
+          it 'returns nil' do
+            expect(described_class.from_jwt(valid_token_string)).to be_nil
+          end
+        end
+      end
+    end
+  end
+
+  describe '#accessible?' do
+    it 'returns true for valid token' do
+      expect(token.accessible?).to be(true)
+    end
+
+    it 'returns false when token is expired' do
+      token
+
+      travel_to(2.hours.from_now) do
+        expect(token.accessible?).to be(false)
       end
     end
   end
@@ -134,6 +180,14 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
 
       it 'returns the scoped user' do
         expect(token.scope_user).to eq(scope_user)
+      end
+    end
+
+    context 'when scopes include non-existent user' do
+      let(:scopes) { ['api', "user:#{non_existing_record_id}"] }
+
+      it 'returns nil' do
+        expect(token.scope_user).to be_nil
       end
     end
 

@@ -194,8 +194,8 @@ For premium models with optimized integration:
 | claude-sonnet-4.5 <=200k tokens | 2.0 |
 | claude-sonnet-4.5 >200k tokens | 1.1 |
 | claude-opus-4.5 | 1.2 |
-| claude-opus-4.6 <=200k tokens | 1.7 |
-| claude-opus-4.6 >200k tokens | 2.9 |
+| claude-opus-4.6 <=200k tokens | 1.2 |
+| claude-opus-4.6 >200k tokens | 0.7 |
 
 ### Features
 

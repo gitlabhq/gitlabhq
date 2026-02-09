@@ -22,5 +22,6 @@ query workItemMetadata($fullPath: ID!) {
     metadata {
       ...WorkItemMetadata
     }
+    subscribedSavedViewLimit
   }
 }

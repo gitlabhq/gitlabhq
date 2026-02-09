@@ -26,13 +26,13 @@ describe('DbIssuesCta component', () => {
 
   it('provides properly configured buttons for getting help', () => {
     const learnMoreButton = findLearnMoreButton();
-    expect(learnMoreButton.text()).toBe('Learn more');
+    expect(learnMoreButton.text()).toBe('How to fix these?');
     expect(learnMoreButton.attributes()).toMatchObject({
       href: helpPagePath('administration/postgresql/upgrading_os'),
     });
 
     const contactSupportButton = findContactSupportButton();
-    expect(contactSupportButton.text()).toBe('Contact Support');
+    expect(contactSupportButton.text()).toBe('Contact support');
     expect(contactSupportButton.attributes()).toMatchObject({
       href: SUPPORT_URL,
     });

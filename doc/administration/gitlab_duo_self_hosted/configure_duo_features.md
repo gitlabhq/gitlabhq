@@ -102,10 +102,7 @@ For more information on troubleshooting timeout errors, see [Error A1000](troubl
 Prerequisites:
 
 - Self-hosted beta models and features are [turned on](#turn-on-self-hosted-beta-models-and-features).
-
-> [!note]
-> If your instance has an offline license, to change the model for features in the GitLab Duo Agent Platform,
-> you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on.
+- If your instance has an offline license, you must have the [GitLab Duo Agent Platform Self-Hosted](../../subscriptions/subscription-add-ons.md) add-on.
 
 To access the Agent Platform service from your GitLab instance:
 

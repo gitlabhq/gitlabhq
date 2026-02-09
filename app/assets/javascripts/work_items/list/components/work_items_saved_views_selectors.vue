@@ -20,6 +20,7 @@ export default {
   i18n: {
     defaultViewtitle: s__('WorkItem|All items'),
   },
+  inject: ['subscribedSavedViewLimit'],
   props: {
     fullPath: {
       type: String,
@@ -64,9 +65,20 @@ export default {
     isDefaultButtonActive() {
       return !window.location.pathname.includes('views');
     },
+    isSubscriptionLimitReached() {
+      return (
+        this.subscribedSavedViewLimit && this.savedViews.length >= this.subscribedSavedViewLimit
+      );
+    },
+    activeViewId() {
+      return this.$route.params.view_id;
+    },
   },
   watch: {
     savedViews() {
+      this.$nextTick(this.detectViewsOverflow);
+    },
+    activeViewId() {
       this.$nextTick(this.detectViewsOverflow);
     },
   },
@@ -156,7 +168,8 @@ export default {
         query: getSubscribedSavedViewsQuery,
         variables: {
           fullPath: this.fullPath,
-          subscribedOnly: false,
+          subscribedOnly: true,
+          sort: 'RELATIVE_POSITION',
         },
       };
 
@@ -329,6 +342,7 @@ export default {
         :sort-key="sortKey"
         :filters="filters"
         :display-settings="displaySettings"
+        :show-subscription-limit-warning="isSubscriptionLimitReached"
         class="gl-ml-2"
       />
     </div>

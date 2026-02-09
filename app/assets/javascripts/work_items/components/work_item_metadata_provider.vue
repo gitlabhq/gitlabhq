@@ -76,6 +76,7 @@ export default normalizeRender({
         return this.workItemTypesConfiguration[typeName];
       }),
       workItemTypesConfiguration: computed(() => this.workItemTypesConfiguration),
+      subscribedSavedViewLimit: computed(() => this.metadata.subscribedSavedViewLimit),
     };
   },
   props: {
@@ -106,6 +107,7 @@ export default normalizeRender({
           ...(namespace.userPermissions || {}),
           ...(namespace.metadata || {}),
           id: namespace.id,
+          subscribedSavedViewLimit: namespace.subscribedSavedViewLimit,
         };
       },
     },

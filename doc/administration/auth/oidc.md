@@ -1751,6 +1751,99 @@ step-up authentication actually failed, making the guidance more relevant and ac
 > - Link to internal documentation that explains the specific authentication requirements for your organization.
 > - Include information about how to enable `MFA` or other required authentication methods.
 
+### Session expiration
+
+By default, step-up authentication sessions expire based on the identity provider (IdP) token
+expiration time, typically around 10 minutes. This behavior provides strong security assurance
+but may require users to re-authenticate frequently during long working sessions.
+
+#### Disabling session expiration
+
+To allow step-up authentication to remain valid for the entire user session,
+you can disable session expiration in your provider configuration:
+
+:::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "openid_connect",
+       label: "Provider name",
+       args: {
+         name: "openid_connect",
+         # ... other args ...
+       },
+       step_up_auth: {
+         session_expiration_enabled: false,  # Disable session expiration
+         admin_mode: {
+           # ... admin_mode config ...
+         },
+         namespace: {
+           # ... namespace config ...
+         }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+         - { name: 'openid_connect',
+             label: 'Provider name',
+             args: {
+               name: 'openid_connect',
+               # ... other args ...
+             },
+             step_up_auth: {
+               session_expiration_enabled: false,
+               admin_mode: {
+                 # ... admin_mode config ...
+               },
+               namespace: {
+                 # ... namespace config ...
+               }
+             }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+:::EndTabs
+
+| Setting | Behavior |
+|---------|----------|
+| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim (typically ~10 minutes). |
+| `session_expiration_enabled: false` | Step-up authentication remains valid for the entire user session until logout. |
+
+WARNING:
+Disabling session expiration reduces security assurance. Only disable this setting if your
+security requirements allow session-lifetime step-up authentication. When disabled, users
+authenticate once per session rather than periodically re-verifying their identity.
+
 ## Troubleshooting
 
 1. Ensure `discovery` is set to `true`. If you set it to `false`, you must

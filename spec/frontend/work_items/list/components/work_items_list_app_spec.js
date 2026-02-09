@@ -361,6 +361,7 @@ const mountComponent = ({
       newIssuePath: '',
       workItemPlanningViewEnabled: false,
       workItemsSavedViewsEnabled,
+      subscribedSavedViewLimit: 5,
       ...provide,
     },
     propsData: {
@@ -2344,6 +2345,49 @@ describe('when workItemsSavedViewsEnabled flag is enabled', () => {
       await nextTick();
 
       expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
+    });
+  });
+
+  describe('subscription limit warning', () => {
+    it('passes showSubscriptionLimitWarning as false to modal when not at limit', async () => {
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        provide: {
+          subscribedSavedViewLimit: 10,
+        },
+      });
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+      await nextTick();
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(false);
+    });
+
+    it('passes showSubscriptionLimitWarning as true to modal when at limit', async () => {
+      mountComponent({
+        workItemPlanningView: true,
+        workItemsSavedViewsEnabled: true,
+        provide: {
+          subscribedSavedViewLimit: 1,
+        },
+      });
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+      ]);
+
+      await findSaveViewButton().trigger('click');
+      await nextTick();
+
+      expect(findNewSavedViewModal().props('showSubscriptionLimitWarning')).toBe(true);
     });
   });
 });

@@ -28,8 +28,15 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
 
         expect(payload[:gitaly_calls]).to eq(1)
         expect(payload[:gitaly_duration_s]).to be >= 0
-        expect(payload[:redis_calls]).to eq(nil)
-        expect(payload[:redis_duration_ms]).to be_nil
+
+        # Note: Gitaly circuit breaker stores state in Redis::RateLimiting,
+        # so Redis calls occur even when only making Gitaly calls.
+        expect(payload[:redis_calls]).to eq(payload[:redis_rate_limiting_calls])
+        expect(payload[:redis_rate_limiting_calls]).to be > 0
+
+        # No other Redis stores should be used
+        expect(payload[:redis_queues_calls]).to be_nil
+        expect(payload[:redis_cache_calls]).to be_nil
       end
     end
 

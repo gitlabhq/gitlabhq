@@ -699,6 +699,24 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
       end
     end
+
+    context 'with IAM JWT token' do
+      include_context 'with IAM authentication setup'
+
+      let(:iam_scopes) { %w[api] }
+      let(:iam_jwt_token) do
+        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+      end
+
+      before do
+        stub_feature_flags(iam_svc_oauth: user)
+        set_bearer_token(iam_jwt_token)
+      end
+
+      it 'returns user for valid IAM JWT token' do
+        expect(find_user_from_access_token).to eq(user)
+      end
+    end
   end
 
   describe '#find_user_from_web_access_token' do
@@ -797,6 +815,31 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
             set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
 
             expect(find_user_from_web_access_token(:api)).to eq(user)
+          end
+        end
+
+        context 'with IAM JWT token' do
+          include_context 'with IAM authentication setup'
+
+          let(:iam_scopes) { %w[api] }
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+          end
+
+          before do
+            stub_feature_flags(iam_svc_oauth: user)
+            set_bearer_token(iam_jwt_token)
+            set_header('SCRIPT_NAME', '/api/endpoint')
+          end
+
+          it 'returns the user for API requests' do
+            expect(find_user_from_web_access_token(:api)).to eq(user)
+          end
+
+          it 'does not call LastUsedService for stateless IAM tokens' do
+            expect(::PersonalAccessTokens::LastUsedService).not_to receive(:new)
+
+            find_user_from_web_access_token(:api)
           end
         end
       end
@@ -951,6 +994,88 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         it 'raises an exception' do
           expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+      end
+    end
+
+    context 'with IAM JWT token' do
+      include_context 'with IAM authentication setup'
+
+      let(:iam_scopes) { %w[api] }
+      let(:iam_jwt_token) do
+        create_iam_jwt(user: user, scopes: iam_scopes, issuer: iam_issuer, private_key: private_key, kid: kid)
+      end
+
+      before do
+        set_bearer_token(iam_jwt_token)
+      end
+
+      context 'when IAM service is disabled' do
+        before do
+          allow(Gitlab.config.authn.iam_service).to receive(:enabled).and_return(false)
+        end
+
+        it 'raises UnauthorizedError' do
+          expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(iam_svc_oauth: false)
+        end
+
+        it 'raises UnauthorizedError' do
+          expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(iam_svc_oauth: user)
+        end
+
+        it 'returns IamOauthToken when valid' do
+          token = find_oauth_access_token
+
+          expect(token).to be_a(Authn::Tokens::IamOauthToken)
+          expect(token.user_id).to eq(user.id)
+          expect(token.scopes).to eq(iam_scopes)
+        end
+
+        context 'with composite identity', :request_store do
+          let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+          let_it_be(:scoped_user) { create(:user) }
+          let(:iam_scopes) { ['api', "user:#{scoped_user.id}"] }
+          let(:iam_jwt_token) do
+            create_iam_jwt(user: service_account, scopes: iam_scopes,
+              issuer: iam_issuer, private_key: private_key, kid: kid)
+          end
+
+          before do
+            stub_feature_flags(iam_svc_oauth: service_account)
+          end
+
+          it 'links composite identity from IAM token' do
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_oauth_token).and_call_original
+
+            token = find_oauth_access_token
+
+            expect(token).to be_a(Authn::Tokens::IamOauthToken)
+            expect(token.scope_user).to eq(scoped_user)
+          end
+
+          context 'when identity link fails' do
+            before do
+              allow(Gitlab::Auth::Identity).to(
+                receive(:link_from_oauth_token).and_raise(::Gitlab::Auth::Identity::IdentityLinkMismatchError)
+              )
+            end
+
+            it 'raises an error' do
+              expect { find_oauth_access_token }.to raise_error(::Gitlab::Auth::Identity::IdentityLinkMismatchError)
+            end
+          end
         end
       end
     end

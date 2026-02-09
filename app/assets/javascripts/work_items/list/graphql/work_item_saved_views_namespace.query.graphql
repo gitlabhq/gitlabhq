@@ -1,8 +1,8 @@
 # @feature_category: portfolio_management
-query savedViews($fullPath: ID!, $subscribedOnly: Boolean) {
+query savedViews($fullPath: ID!, $subscribedOnly: Boolean, $sort: WorkItemsSavedViewsSort) {
   namespace(fullPath: $fullPath) {
     id
-    savedViews(subscribedOnly: $subscribedOnly) {
+    savedViews(subscribedOnly: $subscribedOnly, sort: $sort) {
       nodes {
         id
         name

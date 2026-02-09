@@ -125,6 +125,242 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
   end
 
+  describe 'keyboard behavior in pinnable navigation menu' do
+    before do
+      visit project_path(project)
+    end
+
+    it 'adds sensible defaults' do
+      within_testid 'pinned-nav-items' do
+        expect(page).to have_link 'Work items'
+      end
+    end
+
+    it 'shows the Pinned section' do
+      within '#super-sidebar' do
+        expect(page).to have_content 'Pinned'
+      end
+    end
+
+    it 'allows to pin and unpin items with keyboard' do
+      within '#super-sidebar' do
+        find(:button, id: 'menu-section-button-manage').base.send_keys(:enter)
+        send_keys :tab, :tab
+        send_keys :enter
+        send_keys :tab, :tab
+        send_keys :enter
+      end
+
+      within_testid 'pinned-nav-items' do
+        expect(page).to have_link 'Work items'
+        expect(page).to have_link 'Activity'
+        expect(page).to have_link 'Members'
+      end
+
+      within '#super-sidebar' do
+        find(:button, id: 'menu-section-button-pinned').base
+        send_keys :tab, :tab
+        send_keys :space
+        send_keys :tab, :tab
+        send_keys :space
+      end
+
+      within_testid 'pinned-nav-items' do
+        expect(page).to have_link 'Members'
+      end
+    end
+  end
+
+  describe 'keyboard behavior with collapsed sidebar' do
+    before do
+      visit project_path(project)
+      # Collapse the sidebar to icon-only mode
+      find_by_testid('super-sidebar-collapse-button').click
+      wait_for_requests
+    end
+
+    it 'opens and closes flyout menu with Enter key' do
+      find(:button, id: 'menu-section-button-manage').base.send_keys(:enter)
+      expect(page).to have_css('#menu-section-button-manage-flyout', visible: :visible)
+      send_keys(:escape)
+      expect(page).not_to have_css('#menu-section-button-manage-flyout', visible: :visible)
+    end
+
+    it 'opens and closes flyout menu with Space key' do
+      find(:button, id: 'menu-section-button-manage').base.send_keys(:space)
+      expect(page).to have_css('#menu-section-button-manage-flyout', visible: :visible)
+      send_keys(:escape)
+      expect(page).not_to have_css('#menu-section-button-manage-flyout', visible: :visible)
+    end
+
+    it 'returns focus to section button after closing flyout with Escape' do
+      find(:button, id: 'menu-section-button-manage')
+        .base
+        .send_keys(:enter)
+      send_keys(:tab)
+      send_keys(:escape)
+      expect(page).not_to have_css('#menu-section-button-manage-flyout', visible: :visible)
+      expect(page.find(':focus')).to eq(find('#menu-section-button-manage'))
+    end
+
+    it 'pins item from flyout menu using Enter key' do
+      find(:button, id: 'menu-section-button-operate')
+        .base
+        .send_keys(:enter)
+      send_keys :tab
+      send_keys :tab
+      send_keys :enter
+      wait_for_requests
+      send_keys(:escape)
+
+      # Verify item is pinned
+      find(:button, id: 'menu-section-button-pinned').base.send_keys(:enter)
+      within '#menu-section-button-pinned-flyout' do
+        expect(page).to have_link 'Environments'
+      end
+    end
+
+    it 'removes pinned item from pinned section using Space key' do
+      find(:button, id: 'menu-section-button-operate')
+        .base
+        .send_keys(:enter)
+      send_keys :tab
+      send_keys :tab
+      send_keys :enter
+      wait_for_requests
+      send_keys(:escape)
+
+      # Verify item is pinned
+      find(:button, id: 'menu-section-button-pinned').base.send_keys(:enter)
+      within '#menu-section-button-pinned-flyout' do
+        expect(page).to have_link 'Environments'
+      end
+
+      # Now remove it from the pinned section using keyboard
+      find(:button, id: 'menu-section-button-pinned').base
+      # live_debug
+      send_keys :tab
+      send_keys :tab
+      send_keys :tab
+      send_keys :tab
+      send_keys :enter
+      wait_for_requests
+
+      # Verify item is pinned
+      within '#menu-section-button-pinned-flyout' do
+        expect(page).not_to have_link 'Environments'
+      end
+    end
+  end
+
+  describe 'mouse behavior with collapsed sidebar' do
+    before do
+      visit project_path(project)
+      # Collapse the sidebar to icon-only mode
+      find_by_testid('super-sidebar-collapse-button').click
+      wait_for_requests
+    end
+
+    it 'allows pinning items from flyout menu with mouse hover and click' do
+      # Hover over the Operate section to open flyout
+      section_button = find(:button, id: 'menu-section-button-operate')
+      section_button.hover
+
+      # Wait for flyout to appear and be fully visible
+      flyout = find('#menu-section-button-operate-flyout', visible: :visible)
+
+      # Find and pin an item in the flyout menu
+      within flyout do
+        nav_item = find_by_testid('nav-item', text: 'Environments')
+        nav_item.hover
+        find_by_testid('nav-item-pin', context: nav_item).click
+        wait_for_requests
+      end
+
+      # Verify item is pinned by checking the pinned section flyout
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      pinned_button.hover
+
+      pinned_flyout = find('#menu-section-button-pinned-flyout', visible: :visible)
+      within pinned_flyout do
+        expect(page).to have_link 'Environments'
+      end
+    end
+
+    it 'allows unpinning items from pinned section flyout with mouse hover and click' do
+      # First, pin an item
+      section_button = find(:button, id: 'menu-section-button-operate')
+      section_button.hover
+
+      flyout = find('#menu-section-button-operate-flyout', visible: :visible)
+      within flyout do
+        nav_item = find_by_testid('nav-item', text: 'Environments')
+        nav_item.hover
+        find_by_testid('nav-item-pin', context: nav_item).click
+        wait_for_requests
+      end
+
+      # Now unpin it from the pinned section
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      pinned_button.hover
+
+      pinned_flyout = find('#menu-section-button-pinned-flyout', visible: :visible)
+      within pinned_flyout do
+        nav_item = find_by_testid('nav-item', text: 'Environments')
+        nav_item.hover
+        find_by_testid('nav-item-unpin', context: nav_item).click
+        wait_for_requests
+      end
+
+      # Verify item is no longer pinned
+      pinned_button.hover
+      pinned_flyout = find('#menu-section-button-pinned-flyout', visible: :visible)
+      within pinned_flyout do
+        expect(page).not_to have_link 'Environments'
+      end
+    end
+
+    it 'allows unpinning items from their original section flyout with mouse hover and click' do
+      # First, pin an item
+      section_button = find(:button, id: 'menu-section-button-operate')
+      section_button.hover
+
+      flyout = find('#menu-section-button-operate-flyout', visible: :visible)
+      within flyout do
+        nav_item = find_by_testid('nav-item', text: 'Environments')
+        nav_item.hover
+        find_by_testid('nav-item-pin', context: nav_item).click
+        wait_for_requests
+      end
+
+      # Verify it's pinned
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      pinned_button.hover
+
+      pinned_flyout = find('#menu-section-button-pinned-flyout', visible: :visible)
+      within pinned_flyout do
+        expect(page).to have_link 'Environments'
+      end
+
+      # Now unpin it from the original section
+      section_button.hover
+      flyout = find('#menu-section-button-operate-flyout', visible: :visible)
+      within flyout do
+        nav_item = find_by_testid('nav-item', text: 'Environments')
+        nav_item.hover
+        find_by_testid('nav-item-unpin', context: nav_item).click
+        wait_for_requests
+      end
+
+      # Verify item is no longer pinned
+      pinned_button.hover
+      pinned_flyout = find('#menu-section-button-pinned-flyout', visible: :visible)
+      within pinned_flyout do
+        expect(page).not_to have_link 'Environments'
+      end
+    end
+  end
+
   describe 'reordering pins with hidden pins from non-available features' do
     let_it_be(:project_with_repo) { create(:project, :repository, developers: user) }
     let_it_be(:project_without_repo) { create(:project, :repository_disabled, developers: user) }

@@ -16,6 +16,13 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
       expect(json_response['notification_email']).to eq(user.notification_email_or_default)
       expect(json_response['level']).to eq(user.global_notification_setting.level)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_notification_setting do
+      let(:boundary_object) { :user }
+      let(:request) do
+        get api('/notification_settings', personal_access_token: pat)
+      end
+    end
   end
 
   describe "PUT /notification_settings" do
@@ -28,6 +35,13 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
       expect(json_response['notification_email']).to eq(email.email)
       expect(user.reload.notification_email).to eq(email.email)
       expect(json_response['level']).to eq(user.reload.global_notification_setting.level)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_notification_setting do
+      let(:boundary_object) { :user }
+      let(:request) do
+        put api('/notification_settings', personal_access_token: pat), params: { level: 'watch', notification_email: email.email }
+      end
     end
   end
 
@@ -47,6 +61,17 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
       expect(json_response).to be_a Hash
       expect(json_response['level']).to eq(user.notification_settings_for(group).level)
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_notification_setting do
+      let(:boundary_object) { group }
+      let(:request) do
+        get api("/groups/#{group.id}/notification_settings", personal_access_token: pat)
+      end
+
+      before do
+        group.add_guest(user)
+      end
+    end
   end
 
   describe "PUT /groups/:id/notification_settings" do
@@ -55,6 +80,17 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(group).level)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_notification_setting do
+      let(:boundary_object) { group }
+      let(:request) do
+        put api("/groups/#{group.id}/notification_settings", personal_access_token: pat), params: { level: 'watch' }
+      end
+
+      before do
+        group.add_guest(user)
+      end
     end
   end
 
@@ -65,6 +101,17 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
       expect(json_response['level']).to eq(user.notification_settings_for(project).level)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_notification_setting do
+      let(:boundary_object) { project }
+      let(:request) do
+        get api("/projects/#{project.id}/notification_settings", personal_access_token: pat)
+      end
+
+      before do
+        project.add_guest(user)
+      end
     end
   end
 
@@ -77,6 +124,17 @@ RSpec.describe API::NotificationSettings, feature_category: :team_planning do
       expect(json_response['events']['new_note']).to be_truthy
       expect(json_response['events']['new_issue']).to be_falsey
       expect(json_response['events']['moved_project']).to be_truthy
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_notification_setting do
+      let(:boundary_object) { project }
+      let(:request) do
+        put api("/projects/#{project.id}/notification_settings", personal_access_token: pat)
+      end
+
+      before do
+        project.add_guest(user)
+      end
     end
   end
 

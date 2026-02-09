@@ -9673,6 +9673,7 @@ export const mockMetadataQueryResponse = {
     namespace: {
       __typename: 'Group',
       id: 'gid://gitlab/Group/15',
+      subscribedSavedViewLimit: 5,
       availableFeatures: {
         __typename: 'AvailableFeatures',
         hasIssueWeightsFeature: true,

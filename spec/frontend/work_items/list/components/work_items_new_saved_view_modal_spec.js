@@ -1,11 +1,9 @@
-import { GlForm, GlModal, GlAlert, GlFormRadio } from '@gitlab/ui';
-
+import { GlForm, GlModal, GlAlert, GlFormRadio, GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
 import { SAVED_VIEW_VISIBILITY } from '~/work_items/constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import { saveSavedView } from 'ee_else_ce/work_items/list/utils';
 
 jest.mock('ee_else_ce/work_items/list/utils', () => ({
@@ -95,6 +93,9 @@ describe('WorkItemsNewSavedViewModal', () => {
           push: jest.fn(),
         },
       },
+      provide: {
+        subscribedSavedViewLimit: 5,
+      },
     });
   };
 
@@ -106,6 +107,9 @@ describe('WorkItemsNewSavedViewModal', () => {
   const findCreateButton = () => wrapper.findByTestId('create-view-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findVisibilityGlRadioButtons = () => findVisibilityInputs().findAllComponents(GlFormRadio);
+  const findWarningMessage = () => wrapper.findByTestId('subscription-limit-warning');
+  const findWarningIcon = () => findWarningMessage().findComponent(GlIcon);
+  const findLearnMoreLink = () => findWarningMessage().findComponent(GlLink);
 
   beforeEach(() => {
     mockToastShow.mockClear();
@@ -159,6 +163,48 @@ describe('WorkItemsNewSavedViewModal', () => {
     expect(findModal().exists()).toBe(true);
   });
 
+  describe('subscription limit warning', () => {
+    describe('when showSubscriptionLimitWarning is false', () => {
+      it('does not show the warning message', () => {
+        createComponent({ props: { showSubscriptionLimitWarning: false } });
+
+        expect(findWarningMessage().exists()).toBe(false);
+      });
+    });
+
+    describe('when showSubscriptionLimitWarning is true', () => {
+      beforeEach(() => {
+        createComponent({ props: { showSubscriptionLimitWarning: true } });
+      });
+
+      it('shows the warning message with icon and link', () => {
+        expect(findWarningMessage().exists()).toBe(true);
+        expect(findWarningIcon().props('name')).toBe('warning');
+        expect(findLearnMoreLink().exists()).toBe(true);
+      });
+
+      it('contains the correct warning text', () => {
+        expect(findWarningMessage().text()).toContain(
+          'You have reached the maximum number of views in your list.',
+        );
+        expect(findWarningMessage().text()).toContain(
+          'If you add a view, the last view in your list will be removed.',
+        );
+      });
+    });
+
+    describe('when in edit mode', () => {
+      it('does not show the warning even when showSubscriptionLimitWarning is true', () => {
+        createComponent({
+          props: { showSubscriptionLimitWarning: true },
+          mockSavedView: existingSavedView,
+        });
+
+        expect(findWarningMessage().exists()).toBe(false);
+      });
+    });
+  });
+
   describe('createSavedViewMutation', () => {
     const filters = { filters: { search: 'text' } };
     const displaySettings = { hiddenMetadataKeys: ['assignee'] };
@@ -200,6 +246,7 @@ describe('WorkItemsNewSavedViewModal', () => {
           mutationKey: 'workItemSavedViewCreate',
           subscribed: undefined,
           userPermissions: undefined,
+          subscribedSavedViewLimit: 5,
         });
 
         expect(mockToastShow).toHaveBeenCalledWith('New view created.');
@@ -292,6 +339,7 @@ describe('WorkItemsNewSavedViewModal', () => {
         mutationKey: 'workItemSavedViewUpdate',
         namespacePath: 'test-project-path',
         subscribed: true,
+        subscribedSavedViewLimit: 5,
         userPermissions: {
           deleteSavedView: true,
           updateSavedView: true,

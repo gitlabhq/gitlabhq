@@ -143,11 +143,16 @@ When you turn on restricted access, the following known issues might occur and r
 - The number of billable users can still be exceeded if:
   - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with administrator access add members simultaneously.
-  - New billable users delay accepting an invitation.
+  - New billable users delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
 you will be charged overages for the five additional users.
+
+Additionally, restricted access might block the standard non-overage flows:
+
+- Service bots that are updated or added to a billable role are incorrectly blocked.
+- Inviting or updating existing billable users through email is blocked unexpectedly.
 
 ## User cap
 
@@ -212,6 +217,11 @@ To remove the user cap:
 1. Expand **Sign-up restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
+
+## Changing from user cap to restricted access
+
+When you change from user cap to restricted access, all pending members (both members awaiting approval and invited members) are automatically removed.
+To ensure users are approved as members, you must approve or remove pending members before enabling restricted access.
 
 ## Modify password complexity requirements
 

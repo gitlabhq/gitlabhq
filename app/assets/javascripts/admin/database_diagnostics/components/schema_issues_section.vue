@@ -1,11 +1,10 @@
 <script>
-import { GlAlert, GlButton, GlIcon, GlBadge, GlTable } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge, GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
   name: 'SchemaIssuesSection',
   components: {
-    GlAlert,
     GlButton,
     GlIcon,
     GlBadge,
@@ -131,9 +130,9 @@ export default {
   <div>
     <!-- Overall Status -->
     <div v-if="totalIssuesCount === 0" class="gl-mb-4">
-      <gl-alert variant="success" :dismissible="false" data-testid="no-issues-alert">
+      <p class="gl-text-sm gl-text-subtle" data-testid="no-issues-alert">
         {{ s__('DatabaseDiagnostics|No schema issues detected.') }}
-      </gl-alert>
+      </p>
     </div>
 
     <!-- Individual Sections -->
@@ -142,12 +141,8 @@ export default {
       <div class="gl-flex gl-items-center gl-justify-between gl-rounded-base gl-bg-gray-50 gl-p-3">
         <div class="gl-flex gl-items-center gl-gap-2">
           <gl-icon v-bind="getSectionIcon(section)" class="gl-mr-2" />
-          <h4 class="gl-heading-4 gl-mb-0">{{ section.title }}</h4>
-          <gl-badge
-            v-if="section.issues.length > 0"
-            variant="warning"
-            :data-testid="`${section.key}-count`"
-          >
+          <h4 class="gl-heading-5 !gl-mb-0">{{ section.title }}</h4>
+          <gl-badge v-if="section.issues.length > 0" :data-testid="`${section.key}-count`">
             {{ section.issues.length }}
           </gl-badge>
         </div>
@@ -183,13 +178,13 @@ export default {
               <h5 class="gl-heading-5 gl-flex gl-items-center gl-gap-2">
                 <gl-icon name="warning" :size="16" class="gl-text-orange-500" />
                 {{ subsection.title }}
-                <gl-badge variant="warning" :data-testid="`${subsection.key}-count`">
+                <gl-badge :data-testid="`${subsection.key}-count`">
                   {{ subsection.issues.length }}
                 </gl-badge>
               </h5>
 
               <!-- Subsection Content -->
-              <div class="gl-pl-5">
+              <div class="gl-pl-6">
                 <!-- Table format for sequence ownership -->
                 <div v-if="subsection.renderType === 'table'" class="gl-overflow-x-auto">
                   <div class="gl-min-w-96">
@@ -213,11 +208,7 @@ export default {
                     class="gl-mb-2 gl-flex gl-items-center gl-text-sm last:gl-mb-0"
                     :data-testid="`${subsection.key}-list-item`"
                   >
-                    <gl-icon
-                      name="dash"
-                      :size="12"
-                      class="gl-mr-2 gl-mt-1 gl-flex-shrink-0 gl-text-gray-500"
-                    />
+                    <gl-icon name="dash" :size="12" class="gl-mr-2 gl-mt-1 gl-flex-shrink-0" />
                     <span class="gl-flex-grow">
                       {{ issue.name }}
                     </span>
@@ -234,25 +225,19 @@ export default {
           class="gl-rounded-base gl-border-1 gl-border-solid gl-border-orange-200 gl-bg-orange-50 gl-p-3"
         >
           <div class="gl-mb-2">
-            <h4
-              class="gl-font-weight-semibold gl-mb-0 gl-flex gl-items-center gl-text-base gl-text-gray-900"
-            >
+            <h5 class="gl-heading-5 !gl-mb-0">
               <gl-icon name="warning" :size="16" class="gl-mr-2 gl-text-orange-500" />
               {{ section.issueLabel }}
-            </h4>
+            </h5>
           </div>
 
-          <div class="gl-pl-5">
+          <div class="gl-pl-6">
             <div
               v-for="(issue, index) in section.issues"
               :key="index"
               class="gl-mb-2 gl-flex gl-items-center gl-text-sm last:gl-mb-0"
             >
-              <gl-icon
-                name="dash"
-                :size="12"
-                class="gl-mr-2 gl-mt-1 gl-flex-shrink-0 gl-text-gray-500"
-              />
+              <gl-icon name="dash" :size="12" class="gl-mr-2 gl-mt-1 gl-flex-shrink-0" />
               <span class="gl-flex-grow">
                 {{ issue.name }}
               </span>

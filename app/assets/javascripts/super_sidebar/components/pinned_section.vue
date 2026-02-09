@@ -93,7 +93,7 @@ export default {
       });
     },
     onPinRemove(itemId, itemTitle) {
-      this.$emit('pin-remove', itemId, itemTitle);
+      this.$emit('pin-remove', itemId, itemTitle, { fromPinnedSection: true });
     },
     writePinnedClick() {
       sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, true);

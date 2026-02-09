@@ -6,6 +6,7 @@ import {
   GlIcon,
   GlTooltipDirective,
   GlLoadingIcon,
+  GlLink,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -19,6 +20,7 @@ export default {
     GlButton,
     GlIcon,
     GlLoadingIcon,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +35,10 @@ export default {
     notFound: s__('WorkItem|No results found'),
     notFoundDescription: s__('WorkItem|Edit your search and try again.'),
     privateTooltip: s__('WorkItem|Private: only you can see and edit this view.'),
+    subscriptionLimitWarningMessage: s__(
+      'WorkItem|You have reached the maximum number of views in your list. If you add a view, the last view in your list will be removed.',
+    ),
+    learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
   model: {
     prop: 'show',
@@ -47,7 +53,14 @@ export default {
       type: String,
       required: true,
     },
+    showSubscriptionLimitWarning: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
+  // TODO: Add 'view-subscribed' emit once subscribe functionality is implemented
+  // See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588295
   emits: ['hide', 'show-new-view-modal'],
   data() {
     return {
@@ -87,8 +100,8 @@ export default {
         return this.savedViews;
       }
 
-      return this.savedViews.filter(({ title, description }) =>
-        [title, description].some((field) =>
+      return this.savedViews.filter(({ name, description }) =>
+        [name, description].some((field) =>
           field?.toLowerCase().includes(this.searchInput.trim().toLowerCase()),
         ),
       );
@@ -106,9 +119,23 @@ export default {
       this.$emit('hide', false);
       this.$emit('show-new-view-modal');
     },
+    // TODO: Implement handleViewClick once subscribe functionality is available
+    // This should:
+    // 1. If view.subscribed, emit 'view-subscribed' and navigate
+    // 2. If not subscribed, call subscribe mutation, then emit 'view-subscribed'
+    // 3. Parent will handle unsubscribing from last view if at limit
+    // See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588295
+    handleViewClick(view) {
+      if (view.subscribed) {
+        // Navigate to already subscribed view
+        this.hideModal();
+      }
+      // Subscribe logic to be added in separate MR
+    },
   },
 };
 </script>
+
 <template>
   <gl-modal
     modal-id="add-existing-view-modal"
@@ -122,14 +149,26 @@ export default {
     @shown="focusSearchInput"
     @hide="hideModal"
   >
+    <div
+      v-if="showSubscriptionLimitWarning"
+      class="gl-mb-4 gl-flex gl-gap-3 gl-rounded-base gl-bg-orange-50 gl-p-3"
+    >
+      <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
+      <span class="gl-text-sm">
+        {{ $options.i18n.subscriptionLimitWarningMessage }}
+        <gl-link href="#" target="_blank">
+          {{ $options.i18n.learnMoreAboutViewLimits }}
+        </gl-link>
+      </span>
+    </div>
     <gl-search-box-by-type
       ref="savedViewSearch"
       v-model="searchInput"
       :disabled="!hasSavedViews"
+      autofocus
       :placeholder="$options.i18n.searchPlaceholder"
     />
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
-
     <template v-if="!hasSavedViews">
       <div class="gl-mt-4 gl-pb-7 gl-text-center">
         <h3 class="gl-mb-2 gl-text-lg gl-text-default">
@@ -162,7 +201,7 @@ export default {
           <button
             class="saved-view-item gl-flex gl-w-full gl-cursor-pointer gl-rounded-base gl-border-none gl-px-4 gl-py-3 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
             data-testid="saved-view-item"
-            @click="hideModal"
+            @click="handleViewClick(view)"
           >
             <gl-icon name="list-bulleted" class="gl-mr-3 gl-shrink-0" variant="subtle" />
             <span class="gl-text-start">

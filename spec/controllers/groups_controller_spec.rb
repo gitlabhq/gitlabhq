@@ -440,7 +440,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to create a group with `default_branch_protection`' do
         it 'does not create the group with the specified branch protection level' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
           subject
 
@@ -490,7 +490,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to create a group with `default_branch_protection`' do
         it 'does not create the group with the specified branch protection level' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection) { false }
+          allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
           subject
 
@@ -848,7 +848,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       context 'for users who do not have the ability to update default_branch_protection' do
         it 'does not update the attribute' do
           allow(Ability).to receive(:allowed?).and_call_original
-          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group) { false }
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group).and_return(false)
 
           subject
 

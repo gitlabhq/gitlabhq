@@ -5,7 +5,6 @@ import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { __, s__, sprintf } from '~/locale';
 import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import DbDiagnosticResults from './db_diagnostic_results.vue';
-import DbIssuesCta from './db_issues_cta.vue';
 
 export default {
   name: 'CollationCheckerApp',
@@ -14,7 +13,6 @@ export default {
     GlButton,
     GlSkeletonLoader,
     DbDiagnosticResults,
-    DbIssuesCta,
   },
   retryIntervalMs: 5000, // 5 seconds
   maxRetryAttempts: 60, // 5 minutes total (60 × 5 seconds)
@@ -40,13 +38,6 @@ export default {
     },
     hasDbDiagnostics() {
       return Boolean(this.dbDiagnostics?.databases);
-    },
-    hasIssues() {
-      if (!this.dbDiagnostics?.databases) return false;
-
-      return Object.values(this.dbDiagnostics.databases).some(
-        (db) => db.corrupted_indexes?.length > 0,
-      );
     },
   },
   created() {
@@ -124,19 +115,18 @@ export default {
       <h2 data-testid="title">
         {{ s__('DatabaseDiagnostics|Collation health check') }}
       </h2>
-      <p class="gl-text-gray-500">
+      <p>
         {{
           s__(
-            'DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade',
+            'DatabaseDiagnostics|Detect collation-related index corruption issues that might occur after OS upgrade.',
           )
         }}
       </p>
-      <p v-if="formattedLastRunAt" class="gl-text-sm gl-text-gray-500" data-testid="last-run">
+      <p v-if="formattedLastRunAt" class="gl-text-sm gl-text-subtle" data-testid="last-run">
         {{ formattedLastRunAt }}
       </p>
 
       <gl-button
-        variant="confirm"
         :disabled="isLoading"
         data-testid="run-diagnostics-button"
         @click="runDatabaseDiagnostics"
@@ -169,16 +159,6 @@ export default {
         :db-name="dbName"
         :db-diagnostic-result="dbDiagnosticResult"
       />
-
-      <db-issues-cta v-if="hasIssues" />
     </template>
-
-    <gl-alert v-else variant="info" data-testid="no-results-message" :dismissible="false">
-      {{
-        s__(
-          'DatabaseDiagnostics|No diagnostics have been run yet. Click "Run Collation Check" to analyze your database for potential collation issues.',
-        )
-      }}
-    </gl-alert>
   </main>
 </template>

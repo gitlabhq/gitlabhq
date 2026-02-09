@@ -247,6 +247,7 @@ export default {
     'newIssuePath',
     'workItemPlanningViewEnabled',
     'workItemsSavedViewsEnabled',
+    'subscribedSavedViewLimit',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -539,6 +540,7 @@ export default {
         return {
           fullPath: this.rootPageFullPath,
           subscribedOnly: true,
+          sort: 'RELATIVE_POSITION',
         };
       },
       update(data) {
@@ -1103,6 +1105,12 @@ export default {
         sortKey: this.sortKey,
         displaySettings: this.localDisplaySettings,
       };
+    },
+    isSubscriptionLimitReached() {
+      return (
+        this.subscribedSavedViewLimit &&
+        this.subscribedSavedViews.length >= this.subscribedSavedViewLimit
+      );
     },
   },
   watch: {
@@ -1999,6 +2007,7 @@ export default {
                   :sort-key="sortKey"
                   :filters="apiFilterParams"
                   :display-settings="displaySettingsSoT.namespacePreferences"
+                  :show-subscription-limit-warning="isSubscriptionLimitReached"
                   @hide="isNewViewModalVisible = false"
                 />
               </template>
@@ -2014,7 +2023,7 @@ export default {
                   >
                     {{ s__('WorkItem|Reset to defaults') }}
                   </gl-button>
-                  <div class="gl-border-r gl-mx-4 gl-h-5 gl-h-full gl-w-1 gl-border-r-subtle"></div>
+                  <div class="gl-border-r gl-mx-4 gl-h-full gl-w-1 gl-border-r-subtle"></div>
                   <gl-button
                     size="small"
                     category="primary"

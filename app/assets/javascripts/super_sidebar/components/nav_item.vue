@@ -182,9 +182,15 @@ export default {
   },
   methods: {
     pinAdd() {
+      // Reset mouse state before emitting to prevent Safari bug where mouseleave
+      // doesn't fire when the element is removed from DOM
+      this.isMouseIn = false;
       this.$emit('pin-add', this.item.id, this.item.title);
     },
     pinRemove() {
+      // Reset mouse state before emitting to prevent Safari bug where mouseleave
+      // doesn't fire when the element is removed from DOM
+      this.isMouseIn = false;
       this.$emit('pin-remove', this.item.id, this.item.title);
     },
     togglePointerEvents() {
@@ -210,6 +216,7 @@ export default {
       data-testid="nav-item-link"
       :aria-label="item.title"
       @nav-link-click="$emit('nav-link-click')"
+      @nav-item-keydown-esc="$emit('nav-item-keydown-esc')"
     >
       <div
         v-if="!isFlyout"
@@ -282,6 +289,9 @@ export default {
         icon="thumbtack-solid"
         size="small"
         @click="pinRemove"
+        @keydown.enter.stop.prevent="pinRemove"
+        @keydown.space.stop.prevent="pinRemove"
+        @keydown.escape="$emit('nav-pin-keydown-esc')"
         @transitionend="togglePointerEvents"
       />
       <gl-button
@@ -295,6 +305,9 @@ export default {
         icon="thumbtack"
         size="small"
         @click="pinAdd"
+        @keydown.enter.stop.prevent="pinAdd"
+        @keydown.space.stop.prevent="pinAdd"
+        @keydown.escape="$emit('nav-pin-keydown-esc')"
         @transitionend="togglePointerEvents"
       />
     </template>

@@ -33,6 +33,8 @@ module Gitlab
         end
 
         def expired?
+          return false unless session_expiration_enabled?
+
           check_and_save_if_step_up_auth_expired!
 
           state.to_s == STATE_EXPIRED.to_s
@@ -137,6 +139,15 @@ module Gitlab
           {
             'exp_timestamp' => exp_timestamp
           }
+        end
+
+        # Checks if session expiration is enabled for this provider's step-up auth
+        # Defaults to true (expiration enabled) for security
+        #
+        # @return [Boolean] true if expiration should be checked, false otherwise
+        def session_expiration_enabled?
+          config = ::Gitlab::Auth::OAuth::Provider.config_for(provider.to_s)
+          config&.dig('step_up_auth', 'session_expiration_enabled') != false
         end
 
         def omniauth_step_up_auth_session_data

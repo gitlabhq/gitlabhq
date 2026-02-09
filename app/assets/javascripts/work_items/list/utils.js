@@ -93,6 +93,7 @@ import {
 import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
 import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
+import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
 
 /**
  * Get the types of work items that should be displayed on issues lists.
@@ -798,13 +799,20 @@ const updateSavedViewsQueryCache = ({
   responseData,
   mutationKey,
   namespacePath,
-  isEdit,
+  action = 'create', // 'create', 'update', or 'remove'
   subscribedOnly,
 }) => {
+  const variables = {
+    fullPath: namespacePath,
+    subscribedOnly,
+    ...(subscribedOnly && { sort: 'RELATIVE_POSITION' }),
+  };
+
   const query = {
     query: getSubscribedSavedViewsQuery,
-    variables: { fullPath: namespacePath, subscribedOnly },
+    variables,
   };
+
   const sourceData = cache.readQuery(query);
 
   if (!sourceData) {
@@ -815,13 +823,18 @@ const updateSavedViewsQueryCache = ({
     const { savedView } = responseData[mutationKey];
     const { nodes: savedViews } = draftState.namespace.savedViews;
 
-    if (isEdit) {
+    if (action === 'remove') {
+      const index = savedViews.findIndex(({ id }) => id === savedView.id);
+      if (index !== -1) {
+        savedViews.splice(index, 1);
+      }
+    } else if (action === 'update') {
       const index = savedViews.findIndex(({ id }) => id === savedView.id);
       if (index !== -1) {
         savedViews[index] = savedView;
       }
-    } else {
-      savedViews.unshift(savedView);
+    } else if (action === 'create') {
+      savedViews.push(savedView);
     }
   });
 
@@ -829,12 +842,14 @@ const updateSavedViewsQueryCache = ({
 };
 
 const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath, isEdit }) => {
+  const action = isEdit ? 'update' : 'create';
+
   updateSavedViewsQueryCache({
     cache,
     responseData,
     mutationKey,
     namespacePath,
-    isEdit,
+    action,
     subscribedOnly: true,
   });
   updateSavedViewsQueryCache({
@@ -842,15 +857,72 @@ const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath
     responseData,
     mutationKey,
     namespacePath,
-    isEdit,
+    action,
     subscribedOnly: false,
   });
+};
+
+export const handleEnforceSubscriptionLimit = async ({
+  subscribedSavedViewLimit,
+  apolloClient,
+  namespacePath,
+}) => {
+  const { data } = await apolloClient.query({
+    query: getSubscribedSavedViewsQuery,
+    variables: {
+      fullPath: namespacePath,
+      subscribedOnly: true,
+      sort: 'RELATIVE_POSITION',
+    },
+    fetchPolicy: 'cache-only',
+  });
+
+  if (!data) return;
+
+  const subscribedViews = data.namespace.savedViews.nodes;
+
+  // Check if we're over the limit
+  if (subscribedViews.length > subscribedSavedViewLimit) {
+    const viewToUnsubscribe = subscribedViews[subscribedViews.length - 2];
+
+    await apolloClient.mutate({
+      mutation: workItemSavedViewUnsubscribe,
+      variables: {
+        input: {
+          id: viewToUnsubscribe.id,
+        },
+      },
+      optimisticResponse: {
+        workItemSavedViewUnsubscribe: {
+          __typename: 'WorkItemSavedViewUnsubscribePayload',
+          savedView: {
+            __typename: 'WorkItemSavedViewType',
+            id: viewToUnsubscribe.id,
+          },
+        },
+      },
+      update: (cache) => {
+        updateSavedViewsQueryCache({
+          cache,
+          responseData: {
+            workItemSavedViewUnsubscribe: {
+              savedView: viewToUnsubscribe,
+            },
+          },
+          mutationKey: 'workItemSavedViewUnsubscribe',
+          namespacePath,
+          action: 'remove',
+          subscribedOnly: true,
+        });
+      },
+    });
+  }
 };
 
 // Centralized logic for creating and updating saved views
 // Reused across All items > Save view, Save changes, and Create/Edit saved view
 // TODO: Break this into smaller functions (create, updateMeta, updateConfig) with clearer responsibilities
-export const saveSavedView = ({
+export const saveSavedView = async ({
   isEdit = false,
   isForm = false,
   id = '',
@@ -865,6 +937,8 @@ export const saveSavedView = ({
   subscribed,
   mutationKey,
   apolloClient,
+  enforceSubscriptionLimit = true,
+  subscribedSavedViewLimit,
 }) => {
   const mutation = isEdit ? updateSavedViewMutation : createSavedViewMutation;
 
@@ -919,11 +993,13 @@ export const saveSavedView = ({
     },
   };
 
-  return apolloClient.mutate({
+  const result = await apolloClient.mutate({
     mutation,
     variables: { input: inputVariables },
     optimisticResponse,
     update: (cache, { data: responseData }) => {
+      if (!responseData) return;
+
       if (!isEdit) {
         updateSavedViewsCache({
           cache,
@@ -935,4 +1011,14 @@ export const saveSavedView = ({
       }
     },
   });
+
+  if (!isEdit && enforceSubscriptionLimit && result.data?.[mutationKey]?.savedView) {
+    await handleEnforceSubscriptionLimit({
+      subscribedSavedViewLimit,
+      apolloClient,
+      namespacePath,
+    });
+  }
+
+  return result;
 };

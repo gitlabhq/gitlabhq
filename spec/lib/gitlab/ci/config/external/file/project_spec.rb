@@ -95,6 +95,20 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
           expect(project_file.error_message).to include("Project `#{project.full_path}` not found or access denied!")
         end
       end
+
+      context 'when checking access for the same project and user multiple times', :request_store do
+        let(:project_file2) { described_class.new(params, context) }
+
+        it 'caches the download_code ability check' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?).with(user, :download_code, project).once.and_call_original
+
+          Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([project_file, project_file2])
+
+          expect(project_file).to be_valid
+          expect(project_file2).to be_valid
+        end
+      end
     end
 
     context 'when a valid path is used in uppercase' do

@@ -827,7 +827,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       let!(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
-        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?).and_return(false)
         allow_any_instance_of(JobArtifactUploader).to receive(:url) { url }
         allow_any_instance_of(JobArtifactUploader).to receive(:size) { File.size(file_path) }
       end
@@ -1506,7 +1506,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
       before do
-        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
+        allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?).and_return(false)
       end
 
       it 'redirect to the trace file url' do

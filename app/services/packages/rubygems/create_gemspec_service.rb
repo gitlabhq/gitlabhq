@@ -24,7 +24,7 @@ module Packages
           file.write(content)
           file.flush
 
-          md5 = Gitlab::FIPS.enabled? ? nil : Digest::MD5.hexdigest(content)
+          md5 = Gitlab::FIPS.enabled? ? nil : Digest::MD5.hexdigest(content) # rubocop:disable Fips/MD5 -- MD5 is not used when in FIPS-compliant mode
 
           package.package_files.create!(
             file: file,

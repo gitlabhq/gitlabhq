@@ -279,18 +279,19 @@ module Gitlab
       end
 
       def oauth_access_token_check(password)
-        if password.present?
-          token = OauthAccessToken.by_token(password)
+        return unless password.present?
 
-          if valid_oauth_token?(token)
-            identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
-            return if identity && !identity.valid?
+        # Try IAM JWT first (if enabled and looks like JWT) or fallback to Doorkeeper OAuth tokens
+        token = Authn::Tokens::IamOauthToken.from_jwt(password) || OauthAccessToken.by_token(password)
 
-            user = User.id_in(token.resource_owner_id).first
-            return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
+        if valid_oauth_token?(token)
+          identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
+          return if identity && !identity.valid?
 
-            Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
-          end
+          user = User.id_in(token.resource_owner_id).first
+          return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
+
+          Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
         end
       end
 
