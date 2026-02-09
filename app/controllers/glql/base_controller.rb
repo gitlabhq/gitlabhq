@@ -17,7 +17,7 @@ module Glql
       result = query_service.execute(
         query: permitted_params[:query],
         variables: permitted_params[:variables].to_h,
-        context: { is_sessionless_user: false } # Controller requests are not sessionless
+        context: context
       )
 
       # Handle rate limiting
