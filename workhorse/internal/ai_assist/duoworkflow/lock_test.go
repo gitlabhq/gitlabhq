@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	redis "github.com/redis/go-redis/v9"
 )
 
 func TestWorkflowLockManager_AcquireAndRelease(t *testing.T) {
@@ -51,4 +53,19 @@ func TestWorkflowLockManager_ConcurrentLockAttempts(t *testing.T) {
 	require.NotNil(t, mutex3)
 
 	manager.releaseLock(ctx, mutex3, workflowID)
+}
+
+func TestWorkflowLockManager_MisconfiguredRedis(t *testing.T) {
+	rdb := redis.NewClient(&redis.Options{})
+	manager := newWorkflowLockManager(rdb)
+	require.NotNil(t, manager)
+
+	ctx := context.Background()
+	workflowID := "test-workflow-concurrent"
+
+	mutex, err := manager.acquireLock(ctx, workflowID)
+	require.ErrorIs(t, err, errLockIsUnavailable)
+	require.Nil(t, mutex)
+
+	manager.releaseLock(ctx, mutex, workflowID)
 }
