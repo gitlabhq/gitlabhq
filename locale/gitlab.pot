@@ -65557,15 +65557,6 @@ msgstr ""
 msgid "Slack logo"
 msgstr ""
 
-msgid "Slack notifications integration is deprecated"
-msgstr ""
-
-msgid "Slack notifications will be brought into the GitLab for Slack app so you can manage both integrations from one place. %{learn_more_link_start}Learn more%{link_end}."
-msgstr ""
-
-msgid "Slack notifications will be deprecated"
-msgstr ""
-
 msgid "SlackIntegration|- *Notifications:* Get notifications to your team's Slack channel about events happening inside your GitLab projects."
 msgstr ""
 
@@ -68528,9 +68519,6 @@ msgid "The Planner role is suitable for team members who need to manage projects
 msgstr ""
 
 msgid "The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`)."
-msgstr ""
-
-msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "The Slack token."

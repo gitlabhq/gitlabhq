@@ -8,13 +8,14 @@ title: AI Event Instrumentation Guide
 This guide describes all fields required for instrumenting AI and GitLab Duo Agentic Platform (DAP) events.
 AI events use two context schemas:
 
-- **Standard Context** (`iglu:com.gitlab/gitlab_standard/jsonschema/*`) - Contains general fields used across all GitLab events, including AI-specific fields like model information and token tracking
-- **AI Context** (`iglu:com.gitlab/ai_context/jsonschema/*`) - Contains DAP-specific fields for workflow and session management
+- [Standard Context](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/gitlab_standard/jsonschema) - Contains general fields used across all GitLab events.
+See documentation for [Standard context](standard_context_fields.md) fields.
+- [AI Context](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/ai_context/jsonschema) - Contains DAP-specific fields for workflow and session management, model information, and token tracking
 
 ## Overview
 
-When instrumenting AI events, you need to include fields from both contexts to provide complete tracking information.
-This page consolidates all required and optional fields in one place, clearly indicating which context each field belongs to.
+When instrumenting AI events, in addition to Standard context fields, you need to include fields specific to DAP.
+These fields are part of the AI Context schema and are specific to DAP (Duo Agentic Platform) and AI Gateway events.
 
 ## When to Use This Guide
 
@@ -26,60 +27,45 @@ Use this guide when:
 - Monitoring AI session and workflow execution
 - Events have `classification: duo` in their event definition
 
-## Field Reference by Context
-
-The tables below show all available fields for AI events, organized by which context they belong to.
-
-## Standard Context Fields (Required)
-
-These fields are part of the Standard Context and are required for all events.
-
-| Field          | Type   | Description                        | Example               | Context |
-|----------------|--------|------------------------------------|-----------------------|---------|
-| `environment`  | string | Name of the source environment.   | `"production"`, `"staging"` | Standard Context |
-
-## Standard Context Fields (Optional)
-
-These fields are part of the Standard Context and should be included when available. For a complete reference of all Standard Context fields including descriptions, types, and examples, see the [Standard Context Fields documentation](standard_context_fields.md).
-
-Key Standard Context fields for AI events include:
-
-- **User and instance information** - `user_id`, `instance_id`, `host_name`, `realm`
-- **Project and namespace context** - `project_id`, `namespace_id`, `ultimate_parent_namespace_id`
-- **Client information** - `client_name`, `client_version`, `client_type`, `interface`
-- **Billing and correlation** - `correlation_id`, `billing_event_id`, `feature_enablement_type`
-- **Model information** - `model_provider`, `model_engine`, `model_name`
-
 ## AI Context Fields
-
-These fields are part of the AI Context schema and are specific to DAP (Duo Agentic Platform) and AI Gateway events.
 
 ### Session and Workflow Identifiers
 
-| Field             | Type          | Description                                                                                       | Example             | Context |
-|-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|---------|
-| `session_id`      | string, null  | Session identifier from instance (not globally unique). | `"session_abc123"` | AI Context |
+| Field             | Type          | Description                                                                                       | Example             |
+|-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
+| `session_id`      | string, null  | Session identifier from instance (not globally unique). | `"session_abc123"` |
+| `workflow_id`  | string, null | Globally unique session identifier. | `"workflow_xyz789"` |
 
 ### Workflow and Agent Information
 
-| Field             | Type          | Description                                                                                       | Example             | Context |
-|-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|---------|
-| `flow_type`       | string, null  | Type of DAP flow (more custom flows to be included in the future). | `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` | AI Context |
-| `agent_name`      | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` | AI Context |
-| `agent_type`      | string, null  | Which agent type within the flow is executing. | `"foundational"`, `"custom"` | AI Context |
+| Field             | Type          | Description                                                                                       | Example             |
+|-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
+| `flow_type`       | string, null  | Type of DAP flow (more custom flows to be included in the future). | `"chat"`, `"software_development"`, `"convert_to_gitlab_ci"` |
+| `flow_version`    | string, null  | Version of the AI feature implementation for the flow (maximum length: 64 characters). | `"2.1.0"`, `"3.0.1"` |
+| `flow_registry_version` | string, null | Flow Registry framework version used to build the flow (maximum length: 64 characters). | `"1.0.0"`, `"1.1.0"` |
+| `agent_name`      | string, null  | Which agent within the flow is executing. | `"duo_chat"`, `"code_agent"`, `"planning_agent"` |
+| `agent_type`      | string, null  | Which agent type within the flow is executing. | `"foundational"`, `"custom"` |
+
+### Model Information
+
+| Field             | Type          | Description                                                                                       | Example             |
+|-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
+| `model_provider`  | string, null  | Model provider used for the AI request (maximum length: 64 characters). | `"anthropic"`, `"vertex-ai"` |
+| `model_engine`    | string, null  | Model engine used for the AI request (maximum length: 64 characters). | `"claude-3-5"`, `"gemini-2.0"` |
+| `model_name`      | string, null  | Model name used for the AI request (maximum length: 64 characters). | `"claude-3-5-sonnet-20241022"`, `"gemini-2.0-flash-exp"` |
 
 ### Token Tracking
 
 Token tracking fields capture the usage of AI model tokens for cost and performance monitoring.
 
-| Field                        | Type          | Description                                                                                       | Example             | Context |
-|------------------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|---------|
-| `input_tokens`               | integer, null | Tokens from user inputs. | `1500`, `3200` | AI Context |
-| `output_tokens`              | integer, null | Tokens generated by system. | `500`, `1200` | AI Context |
-| `total_tokens`               | integer, null | Sum of input + output tokens. | `2000`, `4400` | AI Context |
-| `ephemeral_5m_input_tokens`  | integer, null | 5-minute cached input tokens. | `100`, `250` | AI Context |
-| `ephemeral_1h_input_tokens`  | integer, null | 1-hour cached input tokens. | `500`, `1000` | AI Context |
-| `cache_read`                 | integer, null | Cache read operations. | `2`, `5` | AI Context |
+| Field                        | Type          | Description                                                                                       | Example             |
+|------------------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
+| `input_tokens`               | integer, null | Tokens from user inputs. | `1500`, `3200` |
+| `output_tokens`              | integer, null | Tokens generated by system. | `500`, `1200` |
+| `total_tokens`               | integer, null | Sum of input + output tokens. | `2000`, `4400` |
+| `ephemeral_5m_input_tokens`  | integer, null | 5-minute cached input tokens. | `100`, `250` |
+| `ephemeral_1h_input_tokens`  | integer, null | 1-hour cached input tokens. | `500`, `1000` |
+| `cache_read`                 | integer, null | Cache read operations. | `2`, `5` |
 
 ## Complete Instrumentation Example
 
@@ -88,36 +74,27 @@ Here's a complete example showing how to instrument a DAP event with both Standa
 ```ruby
 track_internal_event(
   "request_duo_workflow_success",
-  # Standard Context fields (automatically included)
   user: user,
   project: project,
   namespace: namespace,
 
-  # Additional Standard Context fields for AI events
   additional_properties: {
-    # Model information (Standard Context)
-    model_provider: "anthropic",
-    model_engine: "claude-3-5",
-    model_name: "claude-3-5-sonnet-20241022",
-
-    # Feature and billing (Standard Context)
-    feature_enablement_type: "duo_pro",
-    app_id: "gitlab_duo_workflow",
-    correlation_id: SecureRandom.uuid,
-    billing_event_id: SecureRandom.uuid
-  },
-
-  # AI Context fields
-  ai_context: {
+    # AI Context fields
     # Session and workflow identifiers
     session_id: session.id,
+    workflow_id: session.id + instance.id,
 
     # Flow and agent information
     flow_type: "software_development",
+    flow_version: "2.1.0",
+    flow_registry_version: "1.0.0",
     agent_name: "code_generator",
     agent_type: "code_agent",
-    flow_version: "2.1.0",
 
+    # Model information (AI Context)
+    model_provider: "anthropic",
+    model_engine: "claude-3-5",
+    model_name: "claude-3-5-sonnet-20241022",
     # Token tracking (AI Context)
     input_tokens: 1500,
     output_tokens: 800,
@@ -153,7 +130,7 @@ The following events illustrate the lifecycle of a DAP session and should be tra
 
 ### Session and Workflow Identifiers
 
-**`session_id` (AI Context)**
+**`session_id`**
 
 - Local identifier for a user's session within a specific GitLab instance
 - Generated by the instance
@@ -167,7 +144,7 @@ When tracking token usage in AI Context:
 1. **Always include `total_tokens`** when tracking AI model interactions
 1. **Track both input and output tokens** separately for accurate billing
 1. **Record cache usage** (`cache_read`, `ephemeral_5m_input_tokens`, `ephemeral_1h_input_tokens`) to monitor cache effectiveness
-1. **Include model information** (`model_provider`, `model_engine`, `model_name`) in Standard Context to enable model-specific analysis
+1. **Include model information** (`model_provider`, `model_engine`, `model_name`) in AI Context to enable model-specific analysis
 
 ### Billing and Attribution
 
@@ -178,23 +155,7 @@ For proper billing and customer attribution:
 1. **Include `ultimate_parent_namespace_id`** (Standard Context) - Ensures customer attribution aligns with usage billing
 1. **Include `feature_enabled_by_namespace_ids`** (Standard Context) - Current method for customer attribution in AI data models
 
-## Adding New Fields
-
-### Adding a Field to Standard Context
-
-To add a new field to the Standard Context:
-
-1. Create a merge request in the [iglu](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/gitlab_standard/jsonschema?ref_type=heads) repository to update the schema.
-
-1. If the new field should be pseudonymized, add it to the [ATTRIBUTE_TO_PSEUDONYMISE](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/snowplow-pseudonymization/-/blob/main/lib/snowplow/gitlab_standard_context.rb?ref_type=heads#L9) constant in the `snowplow-pseudonymization` project.
-
-1. Update the `GITLAB_STANDARD_SCHEMA_URL` in [tracking/standard_context.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/tracking/standard_context.rb#L6) to match the new version from `gitlab-org/iglu`.
-
-1. Start sending events that include the new field in Standard Context.
-
-1. Update the [Standard Context Fields documentation](standard_context_fields.md) and this page.
-
-### Adding a Field to AI Context
+## Adding a Field to AI Context
 
 You can add new fields to the AI Context if you want to track new properties that most AI events have in common.
 

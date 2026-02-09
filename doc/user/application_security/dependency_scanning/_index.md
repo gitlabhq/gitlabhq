@@ -421,7 +421,7 @@ The following languages and dependency managers are supported by dependency scan
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://docs.astral.sh/uv/">uv</a></td>
+      <td><a href="https://docs.astral.sh/uv/">uv</a><sup>11</sup></td>
       <td><code>uv.lock</code></td>
       <td>Y</td>
     </tr>
@@ -482,6 +482,7 @@ The following languages and dependency managers are supported by dependency scan
 8. Excludes both `pip` and `setuptools` from the report as they are required by the installer.
 9. Only SBOM, without advisories. See [issue 468764](https://gitlab.com/gitlab-org/gitlab/-/issues/468764).
 10. No license detection. See [epic 17037](https://gitlab.com/groups/gitlab-org/-/epics/17037).
+11. If a lock file contains multiple entries for the same package with different environment markers (for example, numpy==2.2.6 for Python <3.11 and numpy==2.4.1 for Python ≥3.11), only the first entry is parsed and reported.
 <!-- markdownlint-enable MD029 -->
 <!-- markdownlint-enable MD044 -->
 
