@@ -7,6 +7,7 @@ class IdeController < ApplicationController
   include StaticObjectExternalStorageCSP
   include ProductAnalyticsTracking
 
+  before_action :set_coop_header
   before_action :authorize_read_project!, only: [:index]
   before_action :ensure_web_ide_oauth_application!, only: [:index]
 
@@ -23,6 +24,8 @@ class IdeController < ApplicationController
 
   def index
     @fork_info = fork_info(project, params[:branch])
+
+    @workbench_secret = generate_workbench_secret
 
     render layout: 'fullscreen'
   end
@@ -54,6 +57,11 @@ class IdeController < ApplicationController
     ::WebIde::DefaultOauthApplication.ensure_oauth_application!
   end
 
+  def set_coop_header
+    # why: Blocks cross-origin attacks from accessing  the IDE window
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+  end
+
   def fork_info(project, branch)
     return if can?(current_user, :push_code, project)
 
@@ -66,6 +74,11 @@ class IdeController < ApplicationController
       path = helpers.ide_fork_and_edit_path(project, branch, '', with_notice: false)
       { fork_path: path }
     end
+  end
+
+  def generate_workbench_secret
+    # why: To ensure the web-ide workbench url can't be easily calculable
+    session[:web_ide_workbench_secret] ||= SecureRandom.hex(32)
   end
 
   def project

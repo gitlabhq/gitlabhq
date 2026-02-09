@@ -22,6 +22,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
 
   describe '#ide_data' do
     let_it_be(:fork_info) { { ide_path: '/test/ide/path' } }
+    let_it_be(:workbench_secret) { 'test-workbench-secret' }
     let_it_be(:params) do
       {
         branch: 'master',
@@ -42,33 +43,42 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
     end
 
     it 'returns hash' do
-      expect(helper.ide_data(project: nil, fork_info: fork_info, params: params))
+      expect(helper.ide_data(project: nil, fork_info: fork_info, workbench_secret: workbench_secret, params: params))
         .to include(base_data)
     end
 
     context 'with project' do
       it 'returns hash with parameters' do
         expect(
-          helper.ide_data(project: project, fork_info: nil, params: params)
+          helper.ide_data(project: project, fork_info: nil, workbench_secret: workbench_secret, params: params)
         ).to include(base_data.merge(
           'fork-info' => nil,
           'branch-name' => params[:branch],
           'file-path' => params[:path],
           'merge-request' => params[:merge_request_id],
-          'project-path' => project.full_path
+          'project-path' => project.full_path,
+          'workbench-secret' => workbench_secret
         ))
       end
 
       context 'with fork info' do
         it 'returns hash with fork info' do
-          expect(helper.ide_data(project: project, fork_info: fork_info, params: params))
+          expect(helper.ide_data(project: project, fork_info: fork_info, workbench_secret: workbench_secret,
+            params: params))
             .to include('fork-info' => fork_info.to_json)
+        end
+      end
+
+      context 'with workbench secret' do
+        it 'returns hash with workbench secret' do
+          expect(helper.ide_data(project: project, fork_info: nil, workbench_secret: workbench_secret, params: params))
+            .to include('workbench-secret' => workbench_secret)
         end
       end
     end
 
     it 'includes editor font configuration' do
-      ide_data = helper.ide_data(project: nil, fork_info: fork_info, params: params)
+      ide_data = helper.ide_data(project: nil, fork_info: fork_info, workbench_secret: workbench_secret, params: params)
       editor_font = ::Gitlab::Json.parse(ide_data.fetch('editor-font'), symbolize_names: true)
 
       expect(editor_font).to include({
@@ -110,7 +120,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           expect(WebIde::ExtensionMarketplace).to receive(:extension_host_domain_changed?)
             .and_return(true)
 
-          actual = helper.ide_data(project: nil, fork_info: fork_info, params: params)
+          actual = helper.ide_data(project: nil, fork_info: fork_info, workbench_secret: workbench_secret,
+            params: params)
 
           expect(actual).to include({
             'extension-marketplace-settings' => settings.to_json,
